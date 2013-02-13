@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+		"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+		"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.password">ensarm</property>
+        <property name="hibernate.connection.url">jdbc:mysql://10.10.10.103:3306/appops_test</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
+        <property name="javax.persistence.validation.mode">none</property>
+        
+        <mapping class="hibernateEntityStoreTest.code.domain.Author" />
+		<mapping class="hibernateEntityStoreTest.code.domain.Book" />
+        
+    </session-factory>
+</hibernate-configuration>
