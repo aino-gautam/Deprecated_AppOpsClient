@@ -100,12 +100,12 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>13.02.2013</version>
+			<version>14.02.2013</version>
 		</dependency>
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>13.02.2013</version>
+			<version>14.02.2013</version>
 		</dependency>
 	</dependencies>
 
@@ -113,17 +113,20 @@
 		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
 		<finalName>appops_client-${buildNumber}</finalName>
 		<resources>
-	<resource>
-      <directory>src/main/resources</directory>
-    </resource>
-    <resource>
-      <directory>src/main/java</directory>
-      <includes>
-        <include>**</include>
-        
-      </includes>
-    </resource>
-	</resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**</include>
+
+				</includes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -131,7 +134,7 @@
 				<version>2.4.0</version>
 
 				<configuration>
-					<runTarget>hello.html</runTarget>
+					<runTarget>AddressBook.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 
 					<!-- what ever is needed to complie we can add them as below here. When 
@@ -202,18 +205,9 @@
 					<artifactId>appops_client</artifactId>
 					<version>${buildNumber}</version>
 					<packaging>jar</packaging>
-					<repositoryId>server.ensarm.com</repositoryId>
-					<url>http://server.ensarm.com:8085/artifactory/libs-release-local</url>
+					<repositoryId>10.10.10.100</repositoryId>
+					<url>http://10.10.10.100:8085/artifactory/libs-release-local</url>
 					<description>${description}</description>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<includes>
-						<include>**</include>
-					</includes>
-					
 				</configuration>
 			</plugin>
 		</plugins>
