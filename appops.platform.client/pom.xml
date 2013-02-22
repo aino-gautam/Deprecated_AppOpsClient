@@ -96,17 +96,34 @@
 			<artifactId>guice-assisted-inject</artifactId>
 			<version>2.0</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.google.gwt.inject</groupId>
+			<artifactId>gin</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.mvp4g</groupId>
+			<artifactId>mvp4g</artifactId>
+			<version>1.4.0</version>
+		</dependency>
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
 			<version>13.02.2013</version>
 		</dependency>
+		
+		<!--  This should be used when using a final version of the jar
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
 			<version>13.02.2013</version>
+		</dependency> -->
+		<dependency>
+   			<groupId>nairutee_appops_platform</groupId>
+    		<artifactId>appops_shared</artifactId>
+    		<version>18.02.2013</version>
 		</dependency>
+		
 	</dependencies>
 
 	<build>
@@ -202,8 +219,8 @@
 					<artifactId>appops_client</artifactId>
 					<version>${buildNumber}</version>
 					<packaging>jar</packaging>
-					<repositoryId>server.ensarm.com</repositoryId>
-					<url>http://server.ensarm.com:8085/artifactory/libs-release-local</url>
+					<repositoryId>10.10.10.100</repositoryId>
+ 					<url>http://10.10.10.100:8085/artifactory/libs-release-local</url>
 					<description>${description}</description>
 				</configuration>
 			</plugin>
