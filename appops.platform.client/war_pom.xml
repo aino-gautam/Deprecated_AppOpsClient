@@ -11,9 +11,7 @@
 	<name>GWT Maven Archetype</name>
 
 	<properties>
-		<!-- Convenience property to set the GWT version -->
 		<gwtVersion>2.4.0</gwtVersion>
-		<!-- GWT needs at least java 1.5 -->
 		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -106,8 +104,6 @@
 			<artifactId>appops_shared</artifactId>
 			<version>14.02.2013</version>
 		</dependency>
-		
-
 	</dependencies>
 
 	<build>
@@ -124,7 +120,6 @@
 				<directory>src/main/java</directory>
 				<includes>
 					<include>**</include>
-
 				</includes>
 			</resource>
 		</resources>
@@ -133,14 +128,9 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
 				<version>2.4.0</version>
-
 				<configuration>
 					<runTarget>hello.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
-
-					<!-- what ever is needed to complie we can add them as below here. When 
-						nothing is specified we all module are complied -->
-
 					<modules>
 						<module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module>
 						<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module>
@@ -154,14 +144,14 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
-				 <executions>
+				<executions>
 					<execution>
 						<phase>compile</phase>
 						<goals>
 							<goal>exploded</goal>
 						</goals>
 					</execution>
-				</executions> 
+				</executions>
 				<configuration>
 					<webappDirectory>${webappDirectory}</webappDirectory>
 				</configuration>
@@ -174,10 +164,7 @@
 					<source>1.6</source>
 					<target>1.6</target>
 				</configuration>
-
 			</plugin>
-	
-			
 		</plugins>
 	</build>
 </project>
