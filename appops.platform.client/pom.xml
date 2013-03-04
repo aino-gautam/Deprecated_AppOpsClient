@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>appops.platform.client</groupId>
 	<artifactId>appops_client</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>GWT Maven Archetype</name>
 
@@ -96,35 +96,23 @@
 			<artifactId>guice-assisted-inject</artifactId>
 			<version>2.0</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>com.google.gwt.inject</groupId>
-			<artifactId>gin</artifactId>
-			<version>2.0.0</version>
-		</dependency>
-		<dependency>
+		 <dependency>
 			<groupId>com.googlecode.mvp4g</groupId>
 			<artifactId>mvp4g</artifactId>
 			<version>1.4.0</version>
-		</dependency>
+		</dependency> 
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
 			<version>14.02.2013</version>
 		</dependency>
 		
-		<!--  This should be used when using a final version of the jar
+		<!--  This should be used when using a final version of the jar -->
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>14.02.2013</version>
-		</dependency> -->
-		<dependency>
-   			<groupId>nairutee_appops_platform</groupId>
-    		<artifactId>appops_shared</artifactId>
-    		<version>18.02.2013</version>
+			<version>01.03.2013</version>
 		</dependency>
-		
 	</dependencies>
 
 	<build>
@@ -159,15 +147,18 @@
 						nothing is specified we all module are complied -->
 
 					<modules>
-						<module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module>
+						<module>in.appops.client.Client</module>
+						<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module>
+						
+						<!-- <module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module>
 						<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module>
 						<module>in.appops.showcase.web.gwt.uploadservice.UploadService</module>
-						<module>in.appops.showcase.web.gwt.validateServiceOperation.VailidateServiceOperation</module>
+						<module>in.appops.showcase.web.gwt.validateServiceOperation.VailidateServiceOperation</module> -->
 					</modules>
 				</configuration>
 			</plugin>
 
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
@@ -182,7 +173,7 @@
 				<configuration>
 					<webappDirectory>${webappDirectory}</webappDirectory>
 				</configuration>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -224,7 +215,7 @@
 					<version>${buildNumber}</version>
 					<packaging>jar</packaging>
 					<repositoryId>10.10.10.100</repositoryId>
- 					<url>http://10.10.10.100:8085/artifactory/libs-release-local</url>
+					<url>http://10.10.10.100:8085/artifactory/libs-release-local</url>
 					<description>${description}</description>
 				</configuration>
 			</plugin>
