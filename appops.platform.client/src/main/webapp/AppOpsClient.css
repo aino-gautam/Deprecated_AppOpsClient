@@ -1,0 +1,21 @@
+.labelField {
+	width: 250px;
+	height: 30px;
+	position: absolute;
+	top: 0px; /*y pos*/
+	left: 0px;  /*x pos*/
+}
+.textField {
+	width: 250px;
+	height: 30px;
+	position: absolute;
+	top: 0px; /*y pos*/
+	left: 0px;  /*x pos*/
+}
+.linkField {
+	width: 250px;
+	height: 30px;
+	position: absolute;
+	top: 0px; /*y pos*/
+	left: 0px;  /*x pos*/
+}

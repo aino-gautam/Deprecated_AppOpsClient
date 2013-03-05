@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Queries>
+	<Query>
+		<Name>getAllAuthors</Name>
+		<Type>HQL</Type>
+		<QueryString>from Author</QueryString>
+		<IsSearchQuery>false</IsSearchQuery>
+		<Parameters></Parameters>
+	</Query>
+	
+	<Query>
+		<Name>getAuthorWithNameAge</Name>
+		<Type>HQL</Type>
+		<QueryString>from Author where author_name=:authorName and age=:authorAge</QueryString>
+		<IsSearchQuery>false</IsSearchQuery>
+		<Parameters>
+			<Parameter>authorName</Parameter>
+			<Parameter>authorAge</Parameter>
+		</Parameters>
+	</Query>
+</Queries>
