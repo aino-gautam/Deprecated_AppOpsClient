@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>appops.platform.client</groupId>
 	<artifactId>appops_client</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>GWT Maven Archetype</name>
 
@@ -19,6 +19,29 @@
 	</properties>
 
 	<dependencies>
+		<!-- lucene related jars -->
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-spatial</artifactId>
+			<version>3.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-misc</artifactId>
+			<version>3.0.2</version>
+		</dependency>
+
+		<!-- facebook related jars -->
+		<dependency>
+			<groupId>com.restfb</groupId>
+			<artifactId>restfb</artifactId>
+			<version>1.6.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
@@ -96,12 +119,23 @@
 			<artifactId>guice-assisted-inject</artifactId>
 			<version>2.0</version>
 		</dependency>
-
-		<dependency>
+		 <dependency>
+			<groupId>com.googlecode.mvp4g</groupId>
+			<artifactId>mvp4g</artifactId>
+			<version>1.4.0</version>
+		</dependency> 
+		<!-- <dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
 			<version>14.02.2013</version>
+		</dependency> -->
+		<dependency>
+			<groupId>mahesh_appops_platform</groupId>
+			<artifactId>appops_server</artifactId>
+			<version>04.03.2013</version>
 		</dependency>
+		
+		<!--  This should be used when using a final version of the jar -->
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
@@ -141,15 +175,18 @@
 						nothing is specified we all module are complied -->
 
 					<modules>
-						<module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module>
+						<module>in.appops.client.Client</module>
+						<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module>
+						
+						<!-- <module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module>
 						<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module>
 						<module>in.appops.showcase.web.gwt.uploadservice.UploadService</module>
-						<module>in.appops.showcase.web.gwt.validateServiceOperation.VailidateServiceOperation</module>
+						<module>in.appops.showcase.web.gwt.validateServiceOperation.VailidateServiceOperation</module> -->
 					</modules>
 				</configuration>
 			</plugin>
 
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
@@ -164,7 +201,7 @@
 				<configuration>
 					<webappDirectory>${webappDirectory}</webappDirectory>
 				</configuration>
-			</plugin>
+			</plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

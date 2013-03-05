@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.4.0//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.4.0/distro-source/core/src/gwt-module.dtd">
-<module rename-to="addressbook">
+<module rename-to="client">
 	<inherits name="com.google.gwt.user.User" />
-	
 	<inherits name="in.appops.platform.core.Core" />
 	<inherits name='in.appops.platform.bindings.web.gwt.dispatch.Dispatch'/>
 	
-	<inherits name='com.google.gwt.user.theme.standard.Standard' />
 	
-	
-	<entry-point class='in.appops.showcase.web.gwt.addressbook.client.AddressBook'/>
-	
-	
-	<source path='client' />
-    <source path='shared' />
+	<source path="client" />
+	<source path="touch" />
+	<source path="common" />
+	<source path="gwt" />
 	<!-- <source path='server'/> -->
 	
 </module>
