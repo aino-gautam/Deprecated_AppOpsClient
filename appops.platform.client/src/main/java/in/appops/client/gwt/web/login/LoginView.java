@@ -3,16 +3,12 @@ package in.appops.client.gwt.web.login;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 
-import in.appops.client.common.core.AppOpsView;
-import in.appops.client.common.core.AppopsPresenter;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.TextField;
 import in.appops.platform.core.shared.Configuration;
 
-public class LoginView extends Composite implements AppOpsView, ILoginView{
+public class LoginView extends Composite implements ILoginView {
 	
 	private LoginPresenter	presenter;
 	private AbsolutePanel basePanel;
@@ -29,6 +25,7 @@ public class LoginView extends Composite implements AppOpsView, ILoginView{
 	 * creates the view UI
 	 */
 	public void createView(){
+		System.out.println("LoginView createView() started");
 		LabelField usernameLbl = new LabelField();
 		usernameLbl.setConfiguration(getLabelFieldConfiguration(true, "labelField", null, null));
 		
@@ -49,6 +46,7 @@ public class LoginView extends Composite implements AppOpsView, ILoginView{
 		flex.setWidget(3, 0, passwordTb);
 		
 		basePanel.add(flex);
+		System.out.println("LoginView createView() completed");
 	}
 
 	/**
@@ -90,13 +88,13 @@ public class LoginView extends Composite implements AppOpsView, ILoginView{
 	}
 	
 	@Override
-	public void setPresenter(AppopsPresenter presenter) {
-		this.presenter = (LoginPresenter) presenter;
+	public void setPresenter(LoginPresenter presenter) {
+		this.presenter = presenter;
 	}
 
 	@Override
-	public AppopsPresenter getPresenter() {
-		return presenter;
+	public LoginPresenter getPresenter() {
+	    return this.presenter;
 	}
 
 }
