@@ -34,15 +34,15 @@ public class LabelField extends Label  implements Field{
 		if(getConfiguration() == null)
 			throw new AppOpsException(" LabelField configuration unavailable");
 		
-		label = new Label();
-		label.setText(getFieldValue());
-		label.setWordWrap((Boolean) getConfiguration().getPropertyByName(LABELFIELD_WORDWRAP));
+		//label = new Label();
+		this.setText(getFieldValue());
+		this.setWordWrap((Boolean) getConfiguration().getPropertyByName(LABELFIELD_WORDWRAP));
 		if(getConfiguration().getPropertyByName(LABELFIELD_PRIMARYCSS) != null)
-			label.setStylePrimaryName(getConfiguration().getPropertyByName(LABELFIELD_PRIMARYCSS).toString());
+			this.setStylePrimaryName(getConfiguration().getPropertyByName(LABELFIELD_PRIMARYCSS).toString());
 		if(getConfiguration().getPropertyByName(LABELFIELD_DEPENDENTCSS) != null)
-			label.addStyleName(getConfiguration().getPropertyByName(LABELFIELD_DEPENDENTCSS).toString());
+			this.addStyleName(getConfiguration().getPropertyByName(LABELFIELD_DEPENDENTCSS).toString());
 		if(getConfiguration().getPropertyByName(LABELFIELD_DEBUGID) != null)
-			label.ensureDebugId(getConfiguration().getPropertyByName(LABELFIELD_DEBUGID).toString());
+			this.ensureDebugId(getConfiguration().getPropertyByName(LABELFIELD_DEBUGID).toString());
 	}
 	
 	/**
@@ -50,7 +50,7 @@ public class LabelField extends Label  implements Field{
 	 */
 	@Override
 	public void clearField() {
-		label.setText("");
+		this.setText("");
 	}
 	
 	/**
@@ -58,7 +58,7 @@ public class LabelField extends Label  implements Field{
 	 */
 	@Override
 	public void resetField() {
-		label.setText(getFieldValue());
+		this.setText(getFieldValue());
 	}
 	
 	@Override

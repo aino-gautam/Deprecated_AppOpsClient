@@ -8,6 +8,7 @@ public class WizardForm {
 	
 	private Entity entity;
 	private HashMap<Integer, Screen> screensMap;
+	private Screen currentScreen;
 	
 	public WizardForm(){
 		
@@ -24,14 +25,17 @@ public class WizardForm {
 		
 		screensMap.put(order, screen);
 	}
-
+	
 	/**
-	 * removes the screen of the particular order
-	 * @param order Integer order no of the screen
+	 * displays a particular screen based on the order provided
+	 * @param order Integer order number of the screen which needs to be displayed
 	 */
-	public void removeScreen(int order){
-		if(screensMap != null)
-			screensMap.remove(order);
+	public void displayScreen(int order){
+		if(screensMap != null){
+			Screen screen = screensMap.get(order);
+			screen.createScreen();
+			setCurrentScreen(screen);
+		}
 	}
 	
 	/**
@@ -48,5 +52,13 @@ public class WizardForm {
 	 */
 	public void setEntity(Entity entity) {
 		this.entity = entity;
+	}
+
+	public Screen getCurrentScreen() {
+		return currentScreen;
+	}
+
+	public void setCurrentScreen(Screen currentScreen) {
+		this.currentScreen = currentScreen;
 	}
 }
