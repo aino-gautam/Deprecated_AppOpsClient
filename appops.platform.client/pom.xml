@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>appops.platform.client</groupId>
 	<artifactId>appops_client</artifactId>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>GWT Maven Archetype</name>
 
@@ -132,7 +132,7 @@
 		<dependency>
 			<groupId>mahesh_appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>04.03.2013</version>
+			<version>07.03.2013</version>
 		</dependency>
 		
 		<!--  This should be used when using a final version of the jar -->
@@ -168,7 +168,7 @@
 				<version>2.4.0</version>
 
 				<configuration>
-					<runTarget>AddressBook.html</runTarget>
+					<runTarget>FaceBookDemo.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 
 					<!-- what ever is needed to complie we can add them as below here. When 
@@ -176,17 +176,17 @@
 
 					<modules>
 						<module>in.appops.client.Client</module>
-						<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module>
-						
+					
 						<!-- <module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module>
 						<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module>
 						<module>in.appops.showcase.web.gwt.uploadservice.UploadService</module>
 						<module>in.appops.showcase.web.gwt.validateServiceOperation.VailidateServiceOperation</module> -->
+						<module>in.appops.showcase.web.gwt.facebook.facebook</module>
 					</modules>
 				</configuration>
 			</plugin>
 
-			<!-- <plugin>
+			 <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
@@ -201,7 +201,7 @@
 				<configuration>
 					<webappDirectory>${webappDirectory}</webappDirectory>
 				</configuration>
-			</plugin> -->
+			</plugin> 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
