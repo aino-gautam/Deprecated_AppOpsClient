@@ -51,7 +51,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		if(getConfiguration() == null)
 			throw new AppOpsException("TextField configuration unavailable");
 		
-		int visibleLines = getConfiguration().getPropertyByName(TEXTFIELD_VISIBLELINES);
+		Integer visibleLines = (Integer) getConfiguration().getPropertyByName(TEXTFIELD_VISIBLELINES);
 		fieldType = getConfiguration().getPropertyByName(TEXTFIELD_TYPE).toString();
 		if(visibleLines == 1){
 			if(fieldType.equalsIgnoreCase(TEXTFIELDTYPE_TEXTBOX)){
