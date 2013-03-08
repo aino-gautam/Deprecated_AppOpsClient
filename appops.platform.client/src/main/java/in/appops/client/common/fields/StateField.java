@@ -22,7 +22,10 @@ public class StateField extends Composite implements Field, ChangeHandler{
 	public static final String STATEFIELD_MODE ="stateFieldMode;";
 	public static final String STATEFIELD_TYPE = "stateFieldType";
 	public static final String STATEFIELD_READONLY = "stateFieldReadOnly";
-	
+	public static final String STATEFIELD_PRIMARYCSS = "stateFieldPrimaryCss";
+	public static final String STATEFIELD_DEPENDENTCSS = "stateFieldDependentCss";
+	public static final String STATEFIELD_DEBUGID = "stateFieldDebugId";
+	public static final String STATEFIELD_QUERY = "stateFieldQuery";
 	public static final String STATEFIELDTYPE_LIST = "stateFieldModeList";
 	public static final String STATEFIELDTYPE_COMBO = "stateFieldModeCombo";
 	public static final String STATEFIELDMODE_ENUM = "stateFieldTypeEnum";
@@ -43,14 +46,45 @@ public class StateField extends Composite implements Field, ChangeHandler{
 		if(fieldMode.equalsIgnoreCase(STATEFIELDMODE_ENUM)){
 			 if(fieldType.equalsIgnoreCase(STATEFIELDTYPE_LIST)){
 				 listBox = new ListBox(true);
+				 initWidget(listBox);
 				 populateList(null, listBox); // need to provide or fetch the entitylist to be populated
+				 for(int i=0; i<=listBox.getItemCount();i++){
+					 String value = listBox.getItemText(i);
+					 
+					 if(getFieldValue().equalsIgnoreCase(value)){
+						 listBox.setSelectedIndex(i);
+						 break;
+					 }
+				 }
 			 }else if(fieldType.equalsIgnoreCase(STATEFIELDTYPE_COMBO)){
 				 listBox = new ListBox(false);
+				 listBox = new ListBox(true);
 				 populateList(null, listBox); // need to provide or fetch the entitylist to be populated
+				 for(int i=0; i<=listBox.getItemCount();i++){
+					 String value = listBox.getItemText(i);
+					 
+					 if(getFieldValue().equalsIgnoreCase(value)){
+						 listBox.setSelectedIndex(i);
+						 break;
+					 }
+				 }
 			 }
-			
+			 
+			 if(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS) != null)
+				 	listBox.setStylePrimaryName(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS).toString());
+			 if(getConfiguration().getPropertyByName(STATEFIELD_DEPENDENTCSS) != null)
+					listBox.addStyleName(getConfiguration().getPropertyByName(STATEFIELD_DEPENDENTCSS).toString());
+			 if(getConfiguration().getPropertyByName(STATEFIELD_DEBUGID) != null)
+					listBox.ensureDebugId(getConfiguration().getPropertyByName(STATEFIELD_DEBUGID).toString());
 		} else if(fieldMode.equalsIgnoreCase(STATEFIELDMODE_SUGGESTIVE)){
 				suggestBox = new SuggestBox();
+				initWidget(suggestBox);
+				if(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS) != null)
+					suggestBox.setStylePrimaryName(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS).toString());
+				if(getConfiguration().getPropertyByName(STATEFIELD_DEPENDENTCSS) != null)
+					suggestBox.addStyleName(getConfiguration().getPropertyByName(STATEFIELD_DEPENDENTCSS).toString());
+				if(getConfiguration().getPropertyByName(STATEFIELD_DEBUGID) != null)
+					suggestBox.ensureDebugId(getConfiguration().getPropertyByName(STATEFIELD_DEBUGID).toString());
 		}
 	}
 

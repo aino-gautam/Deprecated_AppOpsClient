@@ -19,6 +19,29 @@
 	</properties>
 
 	<dependencies>
+		<!-- lucene related jars -->
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-spatial</artifactId>
+			<version>3.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-misc</artifactId>
+			<version>3.0.2</version>
+		</dependency>
+
+		<!-- facebook related jars -->
+		<dependency>
+			<groupId>com.restfb</groupId>
+			<artifactId>restfb</artifactId>
+			<version>1.6.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
@@ -101,10 +124,15 @@
 			<artifactId>mvp4g</artifactId>
 			<version>1.4.0</version>
 		</dependency> 
-		<dependency>
+		<!-- <dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
 			<version>14.02.2013</version>
+		</dependency> -->
+		<dependency>
+			<groupId>mahesh_appops_platform</groupId>
+			<artifactId>appops_server</artifactId>
+			<version>04.03.2013</version>
 		</dependency>
 		
 		<!--  This should be used when using a final version of the jar -->
