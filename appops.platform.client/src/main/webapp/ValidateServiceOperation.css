@@ -1,0 +1,29 @@
+h1 {
+  font-size: 2em;
+  font-weight: bold;
+  color: #777777;
+  margin: 40px 0px 70px;
+  text-align: center;
+}
+
+.suggestion_list {
+	background-color: #F3F2F2;
+}
+
+.suggestion_list a {
+	text-decoration: none;
+	color: gray;
+}
+
+.headerLbl {
+	font-weight: bold;
+	font-size: 20px;
+}
+
+.subHeaderLbl {
+	font-weight: bold;
+	font-size: 15px;
+}
+.notificationPopup{
+	background-color: #F3F2F1;
+}
