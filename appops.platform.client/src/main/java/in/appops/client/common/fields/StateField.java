@@ -2,10 +2,13 @@ package in.appops.client.common.fields;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.shared.GwtEvent.Type;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SuggestBox;
 
+import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -136,6 +139,12 @@ public class StateField extends Composite implements Field, ChangeHandler{
 		if( event.getSource() instanceof ListBox){
 			
 		}
+	}
+
+	@Override
+	public HandlerRegistration addFieldHandler(FieldEventHandler handler,
+			Type<FieldEventHandler> type) {
+		return addHandler(handler, type);
 	}
 
 }

@@ -2,16 +2,24 @@ package in.appops.client.touch;
 
 import java.util.HashMap;
 
-import in.appops.platform.core.entity.Entity;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.SimplePanel;
 
-public class WizardForm {
+import in.appops.client.common.core.EntityModel;
+import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.shared.Configuration;
+
+public class WizardForm extends Composite implements Form{
 	
-	private Entity entity;
+	private EntityModel entityModel;
 	private HashMap<Integer, Screen> screensMap;
 	private Screen currentScreen;
+	private SimplePanel panel;
+	private Configuration configuration;
 	
 	public WizardForm(){
-		
+		panel = new SimplePanel();
+		initWidget(panel);
 	}
 
 	/**
@@ -35,7 +43,17 @@ public class WizardForm {
 			Screen screen = screensMap.get(order);
 			screen.createScreen();
 			setCurrentScreen(screen);
+			panel.clear();
+			panel.setWidget(screen);
 		}
+	}
+	
+	public void goToNextScreen(){
+		
+	}
+	
+	public void goToPreviousScreen(){
+		
 	}
 	
 	/**
@@ -43,7 +61,7 @@ public class WizardForm {
 	 * @return Entity
 	 */
 	public Entity getEntity() {
-		return entity;
+		return entityModel.getEntity();
 	}
 
 	/**
@@ -51,7 +69,7 @@ public class WizardForm {
 	 * @param entity Entity to be set
 	 */
 	public void setEntity(Entity entity) {
-		this.entity = entity;
+		this.getEntityModel().setEntity(entity);
 	}
 
 	public Screen getCurrentScreen() {
@@ -60,5 +78,26 @@ public class WizardForm {
 
 	public void setCurrentScreen(Screen currentScreen) {
 		this.currentScreen = currentScreen;
+	}
+
+	public EntityModel getEntityModel() {
+		return entityModel;
+	}
+
+	public void setEntityModel(EntityModel entityModel) {
+		this.entityModel = entityModel;
+	}
+
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+
+	@Override
+	public Form getFormInstance() {
+		return this;
 	}
 }
