@@ -19,3 +19,12 @@
 	top: 0px; /*y pos*/
 	left: 0px;  /*x pos*/
 }
+
+.dragonWheel{
+	width: 100%;
+	height: 100%;
+	position: relative;
+	top: 0px;
+	left: 0px;
+	border: 1px thick black ;
+}
