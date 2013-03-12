@@ -132,7 +132,7 @@
 		<dependency>
 			<groupId>mahesh_appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>04.03.2013</version>
+			<version>07.03.2013</version>
 		</dependency>
 		
 		<!--  This should be used when using a final version of the jar -->
@@ -168,7 +168,7 @@
 				<version>2.4.0</version>
 
 				<configuration>
-					<runTarget>dragonwheel.html</runTarget>
+					<runTarget>FaceBookDemo.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 
 					<!-- what ever is needed to complie we can add them as below here. When 
@@ -176,12 +176,14 @@
 
 					<modules>
 						<module>in.appops.client.Client</module>
-						<module>in.appops.showcase.web.gwt.dragonwheel.DragonWheel</module>
+						<module>in.appops.showcase.web.gwt.dragonwheel.dragonwheel</module>
 						
 						<!-- <module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module>
 						<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module>
 						<module>in.appops.showcase.web.gwt.uploadservice.UploadService</module>
 						<module>in.appops.showcase.web.gwt.validateServiceOperation.VailidateServiceOperation</module> -->
+						<module>in.appops.showcase.web.gwt.facebook.facebook</module>
+					
 					</modules>
 				</configuration>
 			</plugin>

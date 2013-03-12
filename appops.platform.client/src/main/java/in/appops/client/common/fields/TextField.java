@@ -1,14 +1,20 @@
 package in.appops.client.common.fields;
 
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.GwtEvent.Type;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 
@@ -17,7 +23,7 @@ import in.appops.platform.core.util.AppOpsException;
  * @author nairutee
  *
  */
-public class TextField extends Composite implements Field, FocusHandler, ValueChangeHandler{
+public class TextField extends Composite implements Field, FocusHandler, ValueChangeHandler, BlurHandler{
 
 	private Configuration configuration;
 	private String fieldValue;
@@ -66,6 +72,9 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 					textBox.ensureDebugId(getConfiguration().getPropertyByName(TEXTFIELD_DEBUGID).toString());
 				
 				initWidget(textBox);
+				textBox.addFocusHandler(this);
+				textBox.addBlurHandler(this);
+				textBox.addValueChangeHandler(this);
 			}else if(fieldType.equalsIgnoreCase(TEXTFIELDTYPE_PASSWORDTEXTBOX)){
 				passwordTextBox = new PasswordTextBox();
 				passwordTextBox.setText(getFieldValue());
@@ -78,6 +87,9 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 					passwordTextBox.ensureDebugId(getConfiguration().getPropertyByName(TEXTFIELD_DEBUGID).toString());
 				
 				initWidget(passwordTextBox);
+				passwordTextBox.addFocusHandler(this);
+				passwordTextBox.addBlurHandler(this);
+				passwordTextBox.addValueChangeHandler(this);
 			}
 		}else{
 			textArea = new TextArea();
@@ -93,6 +105,9 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 				textArea.ensureDebugId(getConfiguration().getPropertyByName(TEXTFIELD_DEBUGID).toString());
 			
 			initWidget(textArea);
+			textArea.addFocusHandler(this);
+			textArea.addBlurHandler(this);
+			textArea.addValueChangeHandler(this);
 		}
 	}
 	
@@ -144,31 +159,58 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 
 	@Override
 	public void onFocus(FocusEvent event) {
+		FieldEvent fieldEvent = new FieldEvent();
+		fieldEvent.setSource(this);
+		fieldEvent.setEventType(FieldEvent.EDITINITIATED);
 		if(event.getSource() instanceof TextBox){
-			
+			fieldEvent.setEventData(textBox.getText());
 		} else if(event.getSource() instanceof TextArea){
-			
+			fieldEvent.setEventData(textArea.getText());
 		} else if(event.getSource() instanceof PasswordTextBox){
-			
+			fieldEvent.setEventData(passwordTextBox.getText());
 		}
+		fireEvent(fieldEvent);
 	}
 
 	@Override
 	public void onValueChange(ValueChangeEvent event) {
 		if(event.getSource() instanceof TextBox){
-			
+			FieldEvent fieldEvent = new FieldEvent(this, FieldEvent.EDITINPROGRESS, textBox.getText());
+			fireEvent(fieldEvent);
 		} else if(event.getSource() instanceof TextArea){
-			
+			FieldEvent fieldEvent = new FieldEvent(this, FieldEvent.EDITINPROGRESS, textArea.getText());
+			fireEvent(fieldEvent);
 		} else if(event.getSource() instanceof PasswordTextBox){
-			
+			FieldEvent fieldEvent = new FieldEvent(this, FieldEvent.EDITINPROGRESS, passwordTextBox.getText());
+			fireEvent(fieldEvent);
 		}
 	}
 
+	@Override
+	public void onBlur(BlurEvent event) {
+		FieldEvent fieldEvent = new FieldEvent();
+		fieldEvent.setSource(this);
+		fieldEvent.setEventType(FieldEvent.EDITCOMPLETED);
+		if(event.getSource() instanceof TextBox){
+			fieldEvent.setEventData(textBox.getText());
+		} else if(event.getSource() instanceof TextArea){
+			fieldEvent.setEventData(textArea.getText());
+		} else if(event.getSource() instanceof PasswordTextBox){
+			fieldEvent.setEventData(passwordTextBox.getText());
+		}
+		fireEvent(fieldEvent);
+	}
+	
 	public String getTempFieldValue() {
 		return tempFieldValue;
 	}
 
 	public void setTempFieldValue(String tempFieldValue) {
 		this.tempFieldValue = tempFieldValue;
+	}
+
+	@Override
+	public HandlerRegistration addFieldHandler(FieldEventHandler handler, Type<FieldEventHandler> type) {
+		return addHandler(handler, type);
 	}
 }
