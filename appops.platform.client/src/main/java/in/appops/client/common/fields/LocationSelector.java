@@ -1,53 +1,62 @@
 package in.appops.client.common.fields;
 
+import com.google.gwt.event.shared.GwtEvent.Type;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.TextBox;
+
+import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 
-public class LocationSelector implements Field {
+public class LocationSelector extends Composite implements Field {
 
+	private Configuration configuration;
+	private String fieldValue;
+	private TextBox textBox;
+	
 	public LocationSelector(){
 		
 	}
 	
 	@Override
-	public Configuration getConfiguration() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setConfiguration(Configuration conf) {
-		// TODO Auto-generated method stub
+	public void createField() {
+		// TODO will need a map + textbox to enter a location
 
 	}
-
-	@Override
-	public String getFieldValue() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setFieldValue(String fieldValue) {
-		// TODO Auto-generated method stub
-
-	}
-
+	
 	@Override
 	public void clearField() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void createField() {
-		// TODO Auto-generated method stub
-
+		textBox.setText("");
 	}
 
 	@Override
 	public void resetField() {
-		// TODO Auto-generated method stub
-		
+		textBox.setText(getFieldValue());
+	}
+	
+	@Override
+	public Configuration getConfiguration() {
+		return this.configuration;
+	}
+
+	@Override
+	public void setConfiguration(Configuration conf) {
+		this.configuration = conf;
+	}
+
+	@Override
+	public String getFieldValue() {
+		return this.fieldValue;
+	}
+
+	@Override
+	public void setFieldValue(String fieldValue) {
+		this.fieldValue = fieldValue;
+	}
+
+	@Override
+	public HandlerRegistration addFieldHandler(FieldEventHandler handler, Type<FieldEventHandler> type) {
+		return addHandler(handler, type);
 	}
 
 }
