@@ -1,26 +1,22 @@
 package in.appops.client.common.fields;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.shared.GwtEvent.Type;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.SuggestBox;
-
 import in.appops.client.common.event.FieldEvent;
-import in.appops.client.common.event.handlers.FieldEventHandler;
+import in.appops.client.common.fields.suggestion.AppopsSuggestionBox;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ListBox;
 public class StateField extends Composite implements Field, ChangeHandler{
 
 	private Configuration configuration;
 	private String fieldValue;
 	private ListBox listBox;
-	private SuggestBox suggestBox;
+	private AppopsSuggestionBox appopsSuggestionBox;
 	private String fieldType;
 	
 	public static final String STATEFIELD_MODE ="stateFieldMode;";
@@ -34,6 +30,7 @@ public class StateField extends Composite implements Field, ChangeHandler{
 	public static final String STATEFIELDTYPE_COMBO = "stateFieldModeCombo";
 	public static final String STATEFIELDMODE_ENUM = "stateFieldTypeEnum";
 	public static final String STATEFIELDMODE_SUGGESTIVE = "stateFieldTypeSuggestive";
+	public static final String STATEFIELD_OPERATION = "stateFieldOperation";
 	
 	public StateField(){
 		
@@ -45,7 +42,9 @@ public class StateField extends Composite implements Field, ChangeHandler{
 			throw new AppOpsException("Statefield configuration unavailable");
 		
 		String fieldMode = getConfiguration().getPropertyByName(STATEFIELD_MODE).toString();
-		fieldType = getConfiguration().getPropertyByName(STATEFIELD_TYPE).toString();
+		
+		if(getConfiguration().getPropertyByName(STATEFIELD_TYPE) != null)
+			fieldType = getConfiguration().getPropertyByName(STATEFIELD_TYPE).toString();
 		
 		if(fieldMode.equalsIgnoreCase(STATEFIELDMODE_ENUM)){
 			 if(fieldType.equalsIgnoreCase(STATEFIELDTYPE_LIST)){
@@ -81,14 +80,20 @@ public class StateField extends Composite implements Field, ChangeHandler{
 			 if(getConfiguration().getPropertyByName(STATEFIELD_DEBUGID) != null)
 					listBox.ensureDebugId(getConfiguration().getPropertyByName(STATEFIELD_DEBUGID).toString());
 		} else if(fieldMode.equalsIgnoreCase(STATEFIELDMODE_SUGGESTIVE)){
-				suggestBox = new SuggestBox();
-				initWidget(suggestBox);
-				if(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS) != null)
-					suggestBox.setStylePrimaryName(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS).toString());
-				if(getConfiguration().getPropertyByName(STATEFIELD_DEPENDENTCSS) != null)
-					suggestBox.addStyleName(getConfiguration().getPropertyByName(STATEFIELD_DEPENDENTCSS).toString());
-				if(getConfiguration().getPropertyByName(STATEFIELD_DEBUGID) != null)
-					suggestBox.ensureDebugId(getConfiguration().getPropertyByName(STATEFIELD_DEBUGID).toString());
+			
+			appopsSuggestionBox = new AppopsSuggestionBox();
+			if(getConfiguration().getPropertyByName(STATEFIELD_QUERY) != null)
+				appopsSuggestionBox.setQuery(getConfiguration().getPropertyByName(STATEFIELD_QUERY).toString());
+			if(getConfiguration().getPropertyByName(STATEFIELD_OPERATION) != null)
+				appopsSuggestionBox.setOperationName(getConfiguration().getPropertyByName(STATEFIELD_OPERATION).toString());
+			
+			initWidget(appopsSuggestionBox);
+			if(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS) != null)
+				appopsSuggestionBox.getSuggestBox().setStylePrimaryName(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS).toString());
+			if(getConfiguration().getPropertyByName(STATEFIELD_DEPENDENTCSS) != null)
+				appopsSuggestionBox.getSuggestBox().addStyleName(getConfiguration().getPropertyByName(STATEFIELD_DEPENDENTCSS).toString());
+			if(getConfiguration().getPropertyByName(STATEFIELD_DEBUGID) != null)
+				appopsSuggestionBox.getSuggestBox().ensureDebugId(getConfiguration().getPropertyByName(STATEFIELD_DEBUGID).toString());
 		}
 	}
 
@@ -141,7 +146,7 @@ public class StateField extends Composite implements Field, ChangeHandler{
 			
 		}
 	}
-
+	
 	@Override
 	public void onFieldEvent(FieldEvent event) {
 		// TODO Auto-generated method stub
