@@ -1,7 +1,10 @@
 package in.appops.showcase.web.gwt.fields.client;
 
+import in.appops.client.common.fields.CheckboxField;
+import in.appops.client.common.fields.CheckboxGroupField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.LinkField;
+import in.appops.client.common.fields.StateField;
 import in.appops.client.common.fields.TextField;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -48,6 +51,19 @@ public class FieldsShowCase implements EntryPoint {
 		anchor.setFieldValue("Anchor");
 		anchor.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_HYPERLINK, "appops-LinkField", null, null));
 		
+		StateField stateField = new StateField();
+		//stateField.setFieldValue("Suggestion");
+		stateField.setConfiguration(getStateFieldConfiguration(StateField.STATEFIELDMODE_SUGGESTIVE, "getAllSpaceTypes", "spacemanagement.SpaceManagementService.getEntityList"));
+		
+		CheckboxField checkboxfield = new CheckboxField();
+		Configuration config = getCheckboxFieldConfiguration("Allow permissions");
+		checkboxfield.setFieldValue("true");
+		checkboxfield.setConfiguration(config);
+		
+		CheckboxGroupField checkboxGroupField = new CheckboxGroupField();
+		Configuration configuration = getCheckboxGroupFieldConfiguration(CheckboxGroupField.CHECKBOX_MULTISELECT,CheckboxGroupField.CHECKBOX_VERTICALBASEPANEL);
+		checkboxGroupField.setConfiguration(configuration);
+		
 		try {
 			labelFieldTB.createField();
 			textFieldTB.createField();
@@ -61,10 +77,21 @@ public class FieldsShowCase implements EntryPoint {
 			hyperlink.createField();
 			anchor.createField();
 			
+			stateField.createField();
+			
+			checkboxfield.createField();
+			
+			checkboxGroupField.createField();
+			
+			
 		} catch (AppOpsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		checkboxGroupField.addCheckItem("Red");
+		checkboxGroupField.addCheckItem("Green");
+		checkboxGroupField.addCheckItem("Blue");
 		
 		flex.setWidget(0, 0, labelFieldTB);
 		flex.setWidget(0, 1, textFieldTB);
@@ -78,6 +105,11 @@ public class FieldsShowCase implements EntryPoint {
 		flex.setWidget(3, 0, hyperlink);
 		flex.setWidget(3, 1, anchor);
 		
+		flex.setWidget(4, 0, checkboxGroupField);
+		
+		flex.setWidget(5, 0, checkboxfield);
+		
+		flex.setWidget(6, 0, stateField);
 		
 		RootPanel.get().add(flex);
 		
@@ -129,5 +161,26 @@ public class FieldsShowCase implements EntryPoint {
 		configuration.setPropertyByName(LinkField.LINKFIELD_DEBUGID, debugId);
 		return configuration;
 	}
+	
+	private Configuration getStateFieldConfiguration(String stateFieldType, String qname, String operationName) {
 
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(StateField.STATEFIELD_MODE, stateFieldType);
+		configuration.setPropertyByName(StateField.STATEFIELD_QUERY, qname);
+		configuration.setPropertyByName(StateField.STATEFIELD_OPERATION, operationName);
+		return configuration;
+	}
+	
+	public Configuration getCheckboxFieldConfiguration(String text) {
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(CheckboxField.CHECKBOXFIELD_DISPLAYTEXT, text);
+		return configuration;
+	}
+	
+	private Configuration getCheckboxGroupFieldConfiguration(String selectMode, String basePanel) {
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(CheckboxGroupField.CHECKBOX_SELECT_MODE, selectMode);
+		configuration.setPropertyByName(CheckboxGroupField.CHECKBOX_BASEPANEL, basePanel);
+		return configuration;
+	}
 }
