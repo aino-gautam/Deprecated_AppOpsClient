@@ -1,5 +1,6 @@
 package in.appops.client.common.fields;
 
+import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -57,11 +58,10 @@ public class CheckboxField extends CheckBox implements Field{
 		this.fieldValue = fieldValue;
 	}
 
-	@Override
-	public HandlerRegistration addFieldHandler(FieldEventHandler handler,
-			Type<FieldEventHandler> type) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
 }
