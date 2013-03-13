@@ -31,7 +31,7 @@
 
 .widgetHover{
 	padding: 2em;
-	background-color: gray;
+	background-color: #380000 ;
 	 -moz-border-radius: 50% 50%;
 	border-radius: 50% 50%;
 	-webkit-border-radius: 50% 50%; 
@@ -41,10 +41,10 @@
 
 .wheelWidget{
 	padding: 5em;
-	background-color: gray;
-	/* -moz-border-radius: 50% 50%;
+	background-color: #380000;
+	 -moz-border-radius: 50% 50%;
 	border-radius: 50% 50%;
-	-webkit-border-radius: 50% 50%;  */
+	-webkit-border-radius: 50% 50%;  
 	
 }
 
@@ -53,14 +53,14 @@
 }
 
 .center{
-	background-color: gray;
+	background-color: orange;
 	padding: 5em;
 	z-index: 99;
 	position: absolute;
 	left: 268px;
 	top:180px;
 	
-	/* -moz-border-radius: 50% 50%;
+	 -moz-border-radius: 50% 50%;
 	border-radius: 50% 50%;
-	-webkit-border-radius: 50% 50%;  */
+	-webkit-border-radius: 50% 50%; 
 }

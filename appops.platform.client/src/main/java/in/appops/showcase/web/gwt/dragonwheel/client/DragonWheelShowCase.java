@@ -22,7 +22,7 @@ public class DragonWheelShowCase implements EntryPoint {
 	@Override
 	public void onModuleLoad() {
 		DragonWheel wheel = new DragonWheel() ;
-		wheel.setWidgetList(getDummyWidgetList(8));
+		wheel.setWidgetList(getDummyWidgetList(9));
 		wheel.layOutDragonWheel();
 		
 		RootPanel.get("nameFieldContainer").add(wheel);

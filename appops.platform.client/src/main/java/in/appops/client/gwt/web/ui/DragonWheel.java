@@ -40,8 +40,8 @@ public class DragonWheel extends Composite implements MouseWheelHandler,MouseOve
 	private int startAngle=0;
 	private double currentAngle=startAngle * Math.PI /180;
 	private double radius=200;
-	private double radius_y =120;
-	double shift_v = Math.PI ;
+	private double radius_y =150;
+	double shift_v = Math.PI/2 ;
 	private Widget prevSelectedWidget;
 	private double top = 0,left = 0.0;
 	
@@ -89,7 +89,7 @@ public class DragonWheel extends Composite implements MouseWheelHandler,MouseOve
 	 * 
 	 */
 	private void initWidgetPositions() {
-		widget_gap = Math.PI/(widgetList.size()/1.95);
+		widget_gap = Math.PI/(widgetList.size()/2);
 		
 		if (widgetList.size() > 3) {
 			
@@ -97,6 +97,8 @@ public class DragonWheel extends Composite implements MouseWheelHandler,MouseOve
 				Widget widget = widgetList.get(i);
 				int left = (int) Math.round((Math.cos(startAngle + i * widget_gap+shift_v ) * radius + xcenter));
 				int top = (int) Math.round((-Math.sin(startAngle + i * widget_gap+shift_v )* radius_y + ycenter));
+				
+				System.out.println("widget No "+ i +" at left="+left +"top="+top);
 				int z = (int) Math.round((Math.sin(startAngle + i * widget_gap+shift_v) * radius + zcenter));
 				
 				DragonWheelWidget dww = new DragonWheelWidget(left, top, z,100, 100);
@@ -226,10 +228,10 @@ public class DragonWheel extends Composite implements MouseWheelHandler,MouseOve
 		
 		if (move < 0) {
 			// mouse wheel is moving north .
-			currentAngle = currentAngle - Math.PI / 90;
+			currentAngle = currentAngle - Math.PI / 180;
 		} else {
 			// mouse wheel is moving south
-			currentAngle = currentAngle + Math.PI /90;
+			currentAngle = currentAngle + Math.PI /180;
 		}
 		
 		for (Map.Entry<Widget, DragonWheelWidget> e : dWidgetMap.entrySet()) {
@@ -242,9 +244,8 @@ public class DragonWheel extends Composite implements MouseWheelHandler,MouseOve
 			double scale = fl/ (fl + Math.sin(currentAngle + indexOfWidget * widget_gap+shift_v )* radius + zcenter);
 			
 			DOM.setStyleAttribute(widget.getElement(), "opacity",String.valueOf(scale));
-			
 			widget.getElement().getStyle().setFontSize(scale, Unit.EM);
-					
+								
 			dww.setLeftOffset(newXpos);
 			dww.setTopOffset(newYPos);
 			
@@ -287,8 +288,8 @@ public class DragonWheel extends Composite implements MouseWheelHandler,MouseOve
 			prevSelectedWidget.setStylePrimaryName("center");
 			
 			//need to change the calculation..
-			prevSelectedWidget.getElement().getStyle().setTop(180, Unit.PX);
-			prevSelectedWidget.getElement().getStyle().setLeft(268, Unit.PX);
+			prevSelectedWidget.getElement().getStyle().setTop(ycenter, Unit.PX);
+			prevSelectedWidget.getElement().getStyle().setLeft(xcenter, Unit.PX);
 			
 	}
 
