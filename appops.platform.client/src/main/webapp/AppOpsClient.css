@@ -63,4 +63,9 @@
 	-moz-border-radius: 50% 50%;
 	border-radius: 50% 50%;
 	-webkit-border-radius: 50% 50%; 
+	
+	transition: width 2s;
+-moz-transition: width 2s; /* Firefox 4 */
+-webkit-transition: width 2s; /* Safari and Chrome */
+-o-transition: width 2s; /* Opera */
 }
