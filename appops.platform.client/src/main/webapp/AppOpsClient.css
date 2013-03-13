@@ -1,25 +1,23 @@
-.labelField {
-	width: 250px;
-	height: 30px;
-	position: absolute;
-	top: 0px; /*y pos*/
-	left: 0px;  /*x pos*/
+.appops-LabelField {
+	color: #333;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 12px;
 }
-.textField {
-	width: 250px;
-	height: 30px;
-	position: absolute;
-	top: 0px; /*y pos*/
-	left: 0px;  /*x pos*/
+.appops-TextField {
+		width: 250px;
+	height: 25px;
+	color: #333;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 12px;
 }
-.linkField {
-	width: 250px;
-	height: 30px;
-	position: absolute;
-	top: 0px; /*y pos*/
-	left: 0px;  /*x pos*/
+.appops-LinkField:link, .appops-LinkField:visited, .appops-LinkField:active{
+	color: blue;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 12px;
 }
-
+.appops-LinkField:hover{
+	color: red;
+}
 .dragonWheel{
 	width: 100%;
 	height: 100%;

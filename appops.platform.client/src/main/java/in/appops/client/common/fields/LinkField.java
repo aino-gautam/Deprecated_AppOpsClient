@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Hyperlink;
 
+import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -114,8 +115,8 @@ public class LinkField extends Composite implements Field {
 	}
 
 	@Override
-	public HandlerRegistration addFieldHandler(FieldEventHandler handler,
-			Type<FieldEventHandler> type) {
-		return addHandler(handler, type);
+	public void onFieldEvent(FieldEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
 }
