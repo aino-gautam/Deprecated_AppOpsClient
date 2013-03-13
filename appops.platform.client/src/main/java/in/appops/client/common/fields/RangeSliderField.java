@@ -1,5 +1,6 @@
 package in.appops.client.common.fields;
 
+import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -57,10 +58,8 @@ public class RangeSliderField extends Composite implements Field{
 	}
 
 	@Override
-	public HandlerRegistration addFieldHandler(FieldEventHandler handler,
-			Type<FieldEventHandler> type) {
+	public void onFieldEvent(FieldEvent event) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
-
 }
