@@ -1,25 +1,23 @@
-.labelField {
-	width: 250px;
-	height: 30px;
-	position: absolute;
-	top: 0px; /*y pos*/
-	left: 0px;  /*x pos*/
+.appops-LabelField {
+	color: #333;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 12px;
 }
-.textField {
-	width: 250px;
-	height: 30px;
-	position: absolute;
-	top: 0px; /*y pos*/
-	left: 0px;  /*x pos*/
+.appops-TextField {
+		width: 250px;
+	height: 25px;
+	color: #333;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 12px;
 }
-.linkField {
-	width: 250px;
-	height: 30px;
-	position: absolute;
-	top: 0px; /*y pos*/
-	left: 0px;  /*x pos*/
+.appops-LinkField:link, .appops-LinkField:visited, .appops-LinkField:active{
+	color: blue;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 12px;
 }
-
+.appops-LinkField:hover{
+	color: red;
+}
 .dragonWheel{
 	width: 100%;
 	height: 100%;
@@ -27,4 +25,45 @@
 	top: 0px;
 	left: 0px;
 	border: 1px thick black ;
+}
+
+.widgetHover{
+	padding: 2em;
+	background-color: red ;
+	 -moz-border-radius: 50% 50%;
+	border-radius: 50% 50%;
+	-webkit-border-radius: 50% 50%; 
+	position: absolute;
+    z-index: 99;
+    width: 200% ;!important
+
+   }
+
+.wheelWidget{
+	padding: 5em;
+	background-color: #3333CC;
+	 -moz-border-radius: 50% 50%;
+	border-radius: 50% 50%;
+	-webkit-border-radius: 50% 50%;  
+	
+}
+
+.label{
+	color: silver;
+	font: bold;
+}
+
+.center{
+	background-color: #333366;
+	padding: 5em;
+	z-index: 99;
+	position: absolute;
+	-moz-border-radius: 50% 50%;
+	border-radius: 50% 50%;
+	-webkit-border-radius: 50% 50%; 
+	
+	transition: width 2s;
+-moz-transition: width 2s; /* Firefox 4 */
+-webkit-transition: width 2s; /* Safari and Chrome */
+-o-transition: width 2s; /* Opera */
 }
