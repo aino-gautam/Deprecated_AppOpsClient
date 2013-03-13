@@ -130,17 +130,30 @@
 			<version>14.02.2013</version>
 		</dependency> -->
 		<dependency>
-			<groupId>mahesh_appops_platform</groupId>
+			<groupId>milind_appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>09.03.2013</version>
+			<version>13.03.2013</version>
 		</dependency>
 		
 		<!--  This should be used when using a final version of the jar -->
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>01.03.2013</version>
+			<version>09.03.2013</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>gwt-maps</groupId>
+		    <artifactId>gwt-maps</artifactId>
+		    <version>3.0.2b.gwt22</version>
+        </dependency>
+    
+       <dependency>
+		    <groupId>gwt-html5-geolocation</groupId>
+		    <artifactId>gwt-html5-geolocation</artifactId>
+		    <version>gwt-html5-geolocation</version>
+      </dependency> 
+		
 	</dependencies>
 
 	<build>
@@ -168,7 +181,7 @@
 				<version>2.4.0</version>
 
 				<configuration>
-					<runTarget>FaceBookDemo.html</runTarget>
+					<runTarget>MasterShowcase.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 
 					<!-- what ever is needed to complie we can add them as below here. When 
