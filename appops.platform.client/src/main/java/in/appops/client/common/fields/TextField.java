@@ -1,18 +1,26 @@
 package in.appops.client.common.fields;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.GwtEvent.Type;
+import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.HasHandlers;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.AppopsEvent;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
@@ -32,7 +40,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	private TextArea textArea;
 	private String fieldType;
 	private String tempFieldValue;
-	
+	private HandlerManager handlerManager;
 	
 	public static final String TEXTFIELD_VISIBLELINES = "textFieldVisibleLines";
 	public static final String TEXTFIELD_READONLY = "textFieldReadOnly";
@@ -45,8 +53,10 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	public static final String TEXTFIELDTYPE_PASSWORDTEXTBOX = "passowrdTextbox";
 	public static final String TEXTFIELDTYPE_TEXTAREA = "textarea";
 	
+	static EventBus eventBus = GWT.create(SimpleEventBus.class); 
+	
 	public TextField(){
-		
+		handlerManager = new HandlerManager(this);
 	}
 	
 	/**
@@ -160,7 +170,6 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	@Override
 	public void onFocus(FocusEvent event) {
 		FieldEvent fieldEvent = new FieldEvent();
-		fieldEvent.setSource(this);
 		fieldEvent.setEventType(FieldEvent.EDITINITIATED);
 		if(event.getSource() instanceof TextBox){
 			fieldEvent.setEventData(textBox.getText());
@@ -169,27 +178,26 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		} else if(event.getSource() instanceof PasswordTextBox){
 			fieldEvent.setEventData(passwordTextBox.getText());
 		}
-		fireEvent(fieldEvent);
+		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 	}
 
 	@Override
 	public void onValueChange(ValueChangeEvent event) {
+		FieldEvent fieldEvent = new FieldEvent();
+		fieldEvent.setEventType(FieldEvent.EDITINPROGRESS);
 		if(event.getSource() instanceof TextBox){
-			FieldEvent fieldEvent = new FieldEvent(this, FieldEvent.EDITINPROGRESS, textBox.getText());
-			fireEvent(fieldEvent);
+			fieldEvent.setEventData(textBox.getText());
 		} else if(event.getSource() instanceof TextArea){
-			FieldEvent fieldEvent = new FieldEvent(this, FieldEvent.EDITINPROGRESS, textArea.getText());
-			fireEvent(fieldEvent);
+			fieldEvent.setEventData(textArea.getText());
 		} else if(event.getSource() instanceof PasswordTextBox){
-			FieldEvent fieldEvent = new FieldEvent(this, FieldEvent.EDITINPROGRESS, passwordTextBox.getText());
-			fireEvent(fieldEvent);
+			fieldEvent.setEventData(passwordTextBox.getText());
 		}
+		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 	}
 
 	@Override
 	public void onBlur(BlurEvent event) {
 		FieldEvent fieldEvent = new FieldEvent();
-		fieldEvent.setSource(this);
 		fieldEvent.setEventType(FieldEvent.EDITCOMPLETED);
 		if(event.getSource() instanceof TextBox){
 			fieldEvent.setEventData(textBox.getText());
@@ -198,7 +206,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		} else if(event.getSource() instanceof PasswordTextBox){
 			fieldEvent.setEventData(passwordTextBox.getText());
 		}
-		fireEvent(fieldEvent);
+		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 	}
 	
 	public String getTempFieldValue() {
@@ -210,7 +218,9 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	}
 
 	@Override
-	public HandlerRegistration addFieldHandler(FieldEventHandler handler, Type<FieldEventHandler> type) {
-		return addHandler(handler, type);
+	public void onFieldEvent(FieldEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
+
 }

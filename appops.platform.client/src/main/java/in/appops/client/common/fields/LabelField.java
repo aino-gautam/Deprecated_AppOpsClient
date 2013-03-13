@@ -4,6 +4,7 @@ import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Label;
 
+import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -86,9 +87,9 @@ public class LabelField extends Label  implements Field{
 	}
 
 	@Override
-	public HandlerRegistration addFieldHandler(FieldEventHandler handler,
-			Type<FieldEventHandler> type) {
-		return addHandler(handler, type);
+	public void onFieldEvent(FieldEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
