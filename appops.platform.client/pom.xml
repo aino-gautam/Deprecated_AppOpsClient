@@ -124,22 +124,18 @@
 			<artifactId>mvp4g</artifactId>
 			<version>1.4.0</version>
 		</dependency> 
-		<!-- <dependency>
-			<groupId>appops_platform</groupId>
-			<artifactId>appops_server</artifactId>
-			<version>14.02.2013</version>
-		</dependency> -->
+		
 		<dependency>
-			<groupId>mahesh_appops_platform</groupId>
+			<groupId>milind_appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>07.03.2013</version>
+			<version>12.03.2013</version>
 		</dependency>
 		
 		<!--  This should be used when using a final version of the jar -->
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>01.03.2013</version>
+			<version>09.03.2013</version>
 		</dependency>
 	</dependencies>
 
@@ -169,6 +165,10 @@
 
 				<configuration>
 					<runTarget>FaceBookDemo.html</runTarget>
+					<runTarget>dragonwheel.html</runTarget>
+					<runTarget>AddressBook.html</runTarget>
+					<runTarget>hello.html</runTarget>
+					<runTarget>ValidateServiceOperation.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 
 					<!-- what ever is needed to complie we can add them as below here. When 
