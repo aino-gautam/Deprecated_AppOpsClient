@@ -168,7 +168,7 @@
 				<version>2.4.0</version>
 
 				<configuration>
-					<runTarget>fields.html</runTarget>
+					<runTarget>MasterShowcase.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 
 					<!-- what ever is needed to complie we can add them as below here. When 
