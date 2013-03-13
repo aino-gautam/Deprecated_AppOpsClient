@@ -287,8 +287,8 @@ public class DragonWheel extends Composite implements MouseWheelHandler,MouseOve
 			prevSelectedWidget.setStylePrimaryName("center");
 			
 			//need to change the calculation..
-			/*prevSelectedWidget.getElement().getStyle().setTop(180, Unit.PX);
-			prevSelectedWidget.getElement().getStyle().setLeft(268, Unit.PX);*/
+			prevSelectedWidget.getElement().getStyle().setTop(180, Unit.PX);
+			prevSelectedWidget.getElement().getStyle().setLeft(268, Unit.PX);
 			
 	}
 
