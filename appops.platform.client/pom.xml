@@ -141,6 +141,19 @@
 			<artifactId>appops_shared</artifactId>
 			<version>09.03.2013</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>gwt-maps</groupId>
+		    <artifactId>gwt-maps</artifactId>
+		    <version>3.0.2b.gwt22</version>
+        </dependency>
+    
+       <dependency>
+		    <groupId>gwt-html5-geolocation</groupId>
+		    <artifactId>gwt-html5-geolocation</artifactId>
+		    <version>gwt-html5-geolocation</version>
+      </dependency> 
+		
 	</dependencies>
 
 	<build>
