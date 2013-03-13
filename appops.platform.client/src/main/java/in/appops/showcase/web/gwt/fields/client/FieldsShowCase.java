@@ -64,6 +64,10 @@ public class FieldsShowCase implements EntryPoint {
 		Configuration configuration = getCheckboxGroupFieldConfiguration(CheckboxGroupField.CHECKBOX_MULTISELECT,CheckboxGroupField.CHECKBOX_VERTICALBASEPANEL);
 		checkboxGroupField.setConfiguration(configuration);
 		
+		CheckboxGroupField singleSelectCheckboxGroupField = new CheckboxGroupField();
+		Configuration singleSelectionConfiguration = getCheckboxGroupFieldConfiguration(CheckboxGroupField.CHECKBOX_SINGLESELECT,CheckboxGroupField.CHECKBOX_VERTICALBASEPANEL);
+		singleSelectCheckboxGroupField.setConfiguration(singleSelectionConfiguration);
+		
 		try {
 			labelFieldTB.createField();
 			textFieldTB.createField();
@@ -83,6 +87,7 @@ public class FieldsShowCase implements EntryPoint {
 			
 			checkboxGroupField.createField();
 			
+			singleSelectCheckboxGroupField.createField();
 			
 		} catch (AppOpsException e) {
 			// TODO Auto-generated catch block
@@ -92,6 +97,10 @@ public class FieldsShowCase implements EntryPoint {
 		checkboxGroupField.addCheckItem("Red");
 		checkboxGroupField.addCheckItem("Green");
 		checkboxGroupField.addCheckItem("Blue");
+		
+		singleSelectCheckboxGroupField.addCheckItem("Red");
+		singleSelectCheckboxGroupField.addCheckItem("Green");
+		singleSelectCheckboxGroupField.addCheckItem("Blue");
 		
 		flex.setWidget(0, 0, labelFieldTB);
 		flex.setWidget(0, 1, textFieldTB);
@@ -107,9 +116,11 @@ public class FieldsShowCase implements EntryPoint {
 		
 		flex.setWidget(4, 0, checkboxGroupField);
 		
-		flex.setWidget(5, 0, checkboxfield);
+		flex.setWidget(5, 0, singleSelectCheckboxGroupField);
 		
-		flex.setWidget(6, 0, stateField);
+		flex.setWidget(6, 0, checkboxfield);
+		
+		flex.setWidget(7, 0, stateField);
 		
 		RootPanel.get().add(flex);
 		
