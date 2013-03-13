@@ -132,7 +132,7 @@
 		<dependency>
 			<groupId>mahesh_appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>07.03.2013</version>
+			<version>09.03.2013</version>
 		</dependency>
 		
 		<!--  This should be used when using a final version of the jar -->
@@ -177,7 +177,8 @@
 					<modules>
 						<module>in.appops.client.Client</module>
 						<module>in.appops.showcase.web.gwt.dragonwheel.dragonwheel</module>
-						
+						<module>in.appops.showcase.web.gwt.fields.fields</module>
+						<!-- <module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> -->
 						<!-- <module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module>
 						<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module>
 						<module>in.appops.showcase.web.gwt.uploadservice.UploadService</module>
