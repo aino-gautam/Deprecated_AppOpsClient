@@ -38,12 +38,12 @@ public class DragonWheel extends Composite implements MouseWheelHandler,MouseOve
 	private int fl=200;
 	private double widget_gap = 0.0;
 	private int startAngle=0;
-	private double currentAngle=startAngle * Math.PI /180;
-	private double radius=200;
-	private double radius_y =150;
-	double shift_v = Math.PI/2 ;
+	private double currentAngle=startAngle * (Math.PI /180);
+	private double radius=180;
+	private double radius_y =90;
+	double shift_v = Math.PI/2;
 	private Widget prevSelectedWidget;
-	private double top = 0,left = 0.0;
+	private double height = 0,width = 0.0;
 	
 	public DragonWheel(){
 		parent = new AbsolutePanel();
@@ -72,7 +72,8 @@ public class DragonWheel extends Composite implements MouseWheelHandler,MouseOve
 			wactual.setVisible(true);
 			
 			wactual.addDomHandler(this, ClickEvent.getType());
-			//wactual.addDomHandler(this, MouseOutEvent.getType());
+			wactual.addDomHandler(this, MouseOverEvent.getType());
+			wactual.addDomHandler(this, MouseOutEvent.getType());
 			
 			double scale = fl/ (fl + Math.sin(startAngle + indexOfWidget * widget_gap+shift_v ) * radius + zcenter);
 			
@@ -89,7 +90,7 @@ public class DragonWheel extends Composite implements MouseWheelHandler,MouseOve
 	 * 
 	 */
 	private void initWidgetPositions() {
-		widget_gap = Math.PI/(widgetList.size()/2);
+		widget_gap = Math.PI/(widgetList.size()/1.98);
 		
 		if (widgetList.size() > 3) {
 			
@@ -249,8 +250,8 @@ public class DragonWheel extends Composite implements MouseWheelHandler,MouseOve
 			dww.setLeftOffset(newXpos);
 			dww.setTopOffset(newYPos);
 			
-			parent.add(widget, newXpos, newYPos);
 			
+			parent.add(widget, newXpos, newYPos);
 			indexOfWidget++;
 		}
 	
@@ -259,17 +260,32 @@ public class DragonWheel extends Composite implements MouseWheelHandler,MouseOve
 	public void onMouseOut(MouseOutEvent event) {
 		Widget sender = (Widget) event.getSource();
 		sender.setStylePrimaryName("wheelWidget");
+		sender.getElement().getStyle().setHeight(height, Unit.PX);
+		sender.getElement().getStyle().setWidth(width, Unit.PX);
 	}
 	@Override
 	public void onMouseOver(MouseOverEvent event) {
 		Widget sender = (Widget) event.getSource();
-			
+		sender.setStylePrimaryName("center");
+		
+		height = Double.parseDouble(sender.getElement().getStyle().getHeight().replace("px", ""));
+		width = Double.parseDouble(sender.getElement().getStyle().getWidth().replace("px", ""));
+		
+		sender.getElement().getStyle().setHeight(10, Unit.PC);
+		sender.getElement().getStyle().setWidth(10, Unit.PC);
+		
+		//sender.getElement().getStyle().setZIndex(99);
 	}
 
 	@Override
 	public void onClick(ClickEvent event) {
 		Widget sender = (Widget) event.getSource();
-		if(prevSelectedWidget ==null){
+		
+		/*sender.setStylePrimaryName("center");
+		sender.getElement().getStyle().setHeight(10, Unit.PC);
+		sender.getElement().getStyle().setWidth(10, Unit.PC);
+		sender.getElement().getStyle().setZIndex(99);*/
+		/*if(prevSelectedWidget ==null){
 			prevSelectedWidget = (Widget) event.getSource();
 			 
 			top = Double.parseDouble(prevSelectedWidget.getElement().getStyle().getTop().replace("px", ""));
@@ -289,8 +305,10 @@ public class DragonWheel extends Composite implements MouseWheelHandler,MouseOve
 			
 			//need to change the calculation..
 			prevSelectedWidget.getElement().getStyle().setTop(ycenter, Unit.PX);
-			prevSelectedWidget.getElement().getStyle().setLeft(xcenter, Unit.PX);
+			prevSelectedWidget.getElement().getStyle().setLeft(xcenter, Unit.PX);*/
 			
+		
+		
 	}
 
 }
