@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SuggestBox;
 
+import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
@@ -142,9 +143,8 @@ public class StateField extends Composite implements Field, ChangeHandler{
 	}
 
 	@Override
-	public HandlerRegistration addFieldHandler(FieldEventHandler handler,
-			Type<FieldEventHandler> type) {
-		return addHandler(handler, type);
+	public void onFieldEvent(FieldEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
-
 }
