@@ -28,3 +28,39 @@
 	left: 0px;
 	border: 1px thick black ;
 }
+
+.widgetHover{
+	padding: 2em;
+	background-color: gray;
+	 -moz-border-radius: 50% 50%;
+	border-radius: 50% 50%;
+	-webkit-border-radius: 50% 50%; 
+	position: absolute;
+    z-index: 99;
+   }
+
+.wheelWidget{
+	padding: 5em;
+	background-color: gray;
+	/* -moz-border-radius: 50% 50%;
+	border-radius: 50% 50%;
+	-webkit-border-radius: 50% 50%;  */
+	
+}
+
+.label{
+	color: black;
+}
+
+.center{
+	background-color: gray;
+	padding: 5em;
+	z-index: 99;
+	position: absolute;
+	left: 268px;
+	top:180px;
+	
+	/* -moz-border-radius: 50% 50%;
+	border-radius: 50% 50%;
+	-webkit-border-radius: 50% 50%;  */
+}
