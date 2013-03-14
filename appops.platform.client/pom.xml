@@ -153,6 +153,18 @@
 		    <artifactId>gwt-html5-geolocation</artifactId>
 		    <version>gwt-html5-geolocation</version>
       </dependency> 
+      
+      		<!--  Dependency for Uploading files -->
+	    <dependency>
+		    <groupId>com.googlecode.gwtupload</groupId>
+			<artifactId>gwtupload</artifactId>
+			<version>0.6.4</version>
+ 	    </dependency>
+	    <dependency>
+			<groupId>com.googlecode.gwtphonegap</groupId>
+			<artifactId>gwtphonegap</artifactId>
+			<version>2.0.0.0</version>
+		</dependency>
 		
 	</dependencies>
 
@@ -191,12 +203,13 @@
 						<module>in.appops.client.Client</module>
 						<module>in.appops.showcase.web.gwt.dragonwheel.dragonwheel</module>
 						<module>in.appops.showcase.web.gwt.fields.fields</module>
+					    <module>in.appops.showcase.web.gwt.intellithought.IntelliThought</module>
 						<!-- <module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> -->
 						<!-- <module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module>
 						<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module>
 						<module>in.appops.showcase.web.gwt.uploadservice.UploadService</module>
-						<module>in.appops.showcase.web.gwt.validateServiceOperation.VailidateServiceOperation</module> -->
-						<module>in.appops.showcase.web.gwt.facebook.facebook</module>
+						<module>in.appops.showcase.web.gwt.validateServiceOperation.VailidateServiceOperation</module> 
+						<module>in.appops.showcase.web.gwt.facebook.facebook</module> -->
 					
 					</modules>
 				</configuration>
