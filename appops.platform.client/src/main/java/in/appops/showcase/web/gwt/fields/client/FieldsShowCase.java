@@ -2,8 +2,10 @@ package in.appops.showcase.web.gwt.fields.client;
 
 import in.appops.client.common.fields.CheckboxField;
 import in.appops.client.common.fields.CheckboxGroupField;
+import in.appops.client.common.fields.DateTimeField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.LinkField;
+import in.appops.client.common.fields.LocationSelector;
 import in.appops.client.common.fields.StateField;
 import in.appops.client.common.fields.TextField;
 import in.appops.platform.core.shared.Configuration;
@@ -68,6 +70,75 @@ public class FieldsShowCase implements EntryPoint {
 		Configuration singleSelectionConfiguration = getCheckboxGroupFieldConfiguration(CheckboxGroupField.CHECKBOX_SINGLESELECT,CheckboxGroupField.CHECKBOX_VERTICALBASEPANEL);
 		singleSelectCheckboxGroupField.setConfiguration(singleSelectionConfiguration);
 		
+		LabelField labelFieldDT = new LabelField();
+		labelFieldDT.setFieldValue("Time Picker");
+		labelFieldDT.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+		
+		
+		DateTimeField dateTimeField = new DateTimeField();
+		dateTimeField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY));
+				
+		LabelField labelFieldD = new LabelField();
+		labelFieldD.setFieldValue("Date Picker");
+		labelFieldD.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+		
+		
+		DateTimeField dateField = new DateTimeField();
+		dateField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATEONLY));
+		
+		
+		LabelField labelFieldDTF = new LabelField();
+		labelFieldDTF.setFieldValue("Date Time Picker");
+		labelFieldDTF.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+		
+		
+		DateTimeField dateTimeOnlyField = new DateTimeField();
+		dateTimeOnlyField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATETIMEONLY));
+		
+		
+		/*LabelField labelFieldLocation = new LabelField();
+		labelFieldLocation.setFieldValue("Location Selector");
+		labelFieldLocation.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+		
+		
+		if (Geolocation.isSupported()) {
+			Geolocation.getGeolocation().getCurrentPosition(new PositionCallback() {
+				
+				public void onSuccess(Position position) {
+					
+					Coordinates coords = position.getCoords();
+					LatLng latLng = new LatLng(coords.getLatitude(), coords.getLongitude());
+					
+					
+					//locationSelector.setConfiguration(getLocationSelectorConf());
+					Configuration configuration = new Configuration();
+					
+					configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "google_pin.png");
+					configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "google_pin.png");
+
+					locationSelector.setConfiguration(getLocationSelectorConf());
+					locationSelector.setMapMode(true);
+					locationSelector.setMapWidth("600px");
+					locationSelector.setMapHeight("350px");
+					locationSelector.setLatLong(latLng);
+					
+					
+					
+									
+				}
+				
+				
+
+				@Override
+				public void onFailure(com.google.code.gwt.geolocation.client.PositionError error) {
+					System.out.println(" "+error.getMessage());
+					
+				}
+			});
+			
+		}*/
+		
+		
 		try {
 			labelFieldTB.createField();
 			textFieldTB.createField();
@@ -88,6 +159,16 @@ public class FieldsShowCase implements EntryPoint {
 			checkboxGroupField.createField();
 			
 			singleSelectCheckboxGroupField.createField();
+			
+			labelFieldDT.createField();
+			dateTimeField.createField();
+			
+			labelFieldD.createField();
+			dateField.createField();
+			
+			labelFieldDTF.createField();
+			dateTimeOnlyField.createField();
+			
 			
 		} catch (AppOpsException e) {
 			// TODO Auto-generated catch block
@@ -111,8 +192,8 @@ public class FieldsShowCase implements EntryPoint {
 		flex.setWidget(2, 0, labelFieldTA);
 		flex.setWidget(2, 1, textFieldTA);
 		
-		flex.setWidget(3, 0, hyperlink);
-		flex.setWidget(3, 1, anchor);
+		//flex.setWidget(3, 0, hyperlink);
+		//flex.setWidget(3, 1, anchor);
 		
 		flex.setWidget(4, 0, checkboxGroupField);
 		
@@ -122,8 +203,35 @@ public class FieldsShowCase implements EntryPoint {
 		
 		flex.setWidget(7, 0, stateField);
 		
+		flex.setWidget(8, 0, labelFieldDT);
+		flex.setWidget(8, 1, dateTimeField);
+		
+		flex.setWidget(9, 0, labelFieldD);
+		flex.setWidget(9, 1, dateField);
+		
+		flex.setWidget(10, 0, labelFieldDTF);
+		flex.setWidget(10, 1, dateTimeOnlyField);
+		
+		
 		RootPanel.get().add(flex);
 		
+	}
+	
+	private Configuration getDateTimeFieldConfiguration(String modeSelection,String datetimefieldTimeonly) {
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(DateTimeField.DATETIMEFIELD_MODE, modeSelection);
+		configuration.setPropertyByName(DateTimeField.DATETIMEFIELD_TYPE, datetimefieldTimeonly);
+		
+		
+		return configuration;
+	}
+	
+	private Configuration getLocationSelectorConf() {
+		Configuration configuration = new Configuration();
+		
+		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "google_pin.png");
+		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "google_pin.png");
+		return configuration;
 	}
 	
 	/**
