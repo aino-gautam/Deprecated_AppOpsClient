@@ -1,5 +1,10 @@
 package in.appops.client.common.fields;
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.AppOpsException;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -8,23 +13,13 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.event.shared.HasHandlers;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
-
-import in.appops.client.common.event.AppUtils;
-import in.appops.client.common.event.AppopsEvent;
-import in.appops.client.common.event.FieldEvent;
-import in.appops.client.common.event.handlers.FieldEventHandler;
-import in.appops.platform.core.shared.Configuration;
-import in.appops.platform.core.util.AppOpsException;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Field class to represent a {@link TextBox}, {@link TextArea} or {@link PasswordTextBox}
@@ -222,5 +217,27 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		// TODO Auto-generated method stub
 		
 	}
-
+	
+	public String getText() {
+		if(fieldType.equalsIgnoreCase(TEXTFIELDTYPE_TEXTBOX)) {
+			setTempFieldValue(textBox.getText());
+		} else if(fieldType.equalsIgnoreCase(TEXTFIELDTYPE_PASSWORDTEXTBOX)) {
+			setTempFieldValue(passwordTextBox.getText());
+		} else {
+			setTempFieldValue(textArea.getText());
+		}
+		
+		return getTempFieldValue();
+	}
+	
+	public Widget getWidget() {
+		
+		if(fieldType.equalsIgnoreCase(TEXTFIELDTYPE_TEXTBOX)) {
+			return textBox;
+		} else if(fieldType.equalsIgnoreCase(TEXTFIELDTYPE_PASSWORDTEXTBOX)) {
+			return passwordTextBox;
+		} else {
+			return textArea;
+		}
+	}
 }
