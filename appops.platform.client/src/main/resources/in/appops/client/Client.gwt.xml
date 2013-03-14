@@ -5,6 +5,7 @@
 	<inherits name="in.appops.platform.core.Core" />
 	<inherits name='in.appops.platform.bindings.web.gwt.dispatch.Dispatch'/>
 	
+	<inherits name="gwtupload.GWTUpload"/>
 	
 	<source path="client" />
 	<source path="touch" />

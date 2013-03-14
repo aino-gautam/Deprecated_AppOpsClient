@@ -31,8 +31,8 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 		suggestBox.getTextBox().addClickHandler(this);
 	}
 	
-	public void setQuery(String query) {
-		oracle.setQuery(query);
+	public void setQueryName(String queryName) {
+		oracle.setQueryName(queryName);
 	}
 	
 	public void setOperationName(String name) {

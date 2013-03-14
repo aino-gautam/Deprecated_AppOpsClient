@@ -53,18 +53,35 @@ public class FieldsShowCase implements EntryPoint {
 		anchor.setFieldValue("Anchor");
 		anchor.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_HYPERLINK, "appops-LinkField", null, null));
 		
+		LabelField stateFieldLabel = new LabelField();
+		stateFieldLabel.setFieldValue("StateField");
+		stateFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+		
 		StateField stateField = new StateField();
 		//stateField.setFieldValue("Suggestion");
-		stateField.setConfiguration(getStateFieldConfiguration(StateField.STATEFIELDMODE_SUGGESTIVE, "getAllSpaceTypes", "spacemanagement.SpaceManagementService.getEntityList"));
+		Configuration stateFieldConfig = getStateFieldConfiguration(StateField.STATEFIELDMODE_SUGGESTIVE, "getAllSpaceTypes", "spacemanagement.SpaceManagementService.getEntityList");
+		stateField.setConfiguration(stateFieldConfig);
+		
+		LabelField CheckboxFieldLabel = new LabelField();
+		CheckboxFieldLabel.setFieldValue("CheckboxField");
+		CheckboxFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
 		
 		CheckboxField checkboxfield = new CheckboxField();
 		Configuration config = getCheckboxFieldConfiguration("Allow permissions");
 		checkboxfield.setFieldValue("true");
 		checkboxfield.setConfiguration(config);
 		
+		LabelField CheckboxGroupFieldLabel = new LabelField();
+		CheckboxGroupFieldLabel.setFieldValue("CheckboxGroupField - MultiSelect");
+		CheckboxGroupFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+		
 		CheckboxGroupField checkboxGroupField = new CheckboxGroupField();
 		Configuration configuration = getCheckboxGroupFieldConfiguration(CheckboxGroupField.CHECKBOX_MULTISELECT,CheckboxGroupField.CHECKBOX_VERTICALBASEPANEL);
 		checkboxGroupField.setConfiguration(configuration);
+		
+		LabelField singleSelectCheckboxFieldLabel = new LabelField();
+		singleSelectCheckboxFieldLabel.setFieldValue("CheckboxGroupField - SingleSelect");
+		singleSelectCheckboxFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
 		
 		CheckboxGroupField singleSelectCheckboxGroupField = new CheckboxGroupField();
 		Configuration singleSelectionConfiguration = getCheckboxGroupFieldConfiguration(CheckboxGroupField.CHECKBOX_SINGLESELECT,CheckboxGroupField.CHECKBOX_VERTICALBASEPANEL);
@@ -152,12 +169,16 @@ public class FieldsShowCase implements EntryPoint {
 			hyperlink.createField();
 			anchor.createField();
 			
+			stateFieldLabel.createField();
 			stateField.createField();
 			
+			CheckboxFieldLabel.createField();
 			checkboxfield.createField();
 			
+			CheckboxGroupFieldLabel.createField();
 			checkboxGroupField.createField();
 			
+			singleSelectCheckboxFieldLabel.createField();
 			singleSelectCheckboxGroupField.createField();
 			
 			labelFieldDT.createField();
@@ -195,13 +216,17 @@ public class FieldsShowCase implements EntryPoint {
 		//flex.setWidget(3, 0, hyperlink);
 		//flex.setWidget(3, 1, anchor);
 		
-		flex.setWidget(4, 0, checkboxGroupField);
+		flex.setWidget(4, 0, CheckboxGroupFieldLabel);
+		flex.setWidget(4, 1, checkboxGroupField);
 		
-		flex.setWidget(5, 0, singleSelectCheckboxGroupField);
+		flex.setWidget(5, 0, singleSelectCheckboxFieldLabel);
+		flex.setWidget(5, 1, singleSelectCheckboxGroupField);
 		
-		flex.setWidget(6, 0, checkboxfield);
+		flex.setWidget(6, 0, CheckboxFieldLabel);
+		flex.setWidget(6, 1, checkboxfield);
 		
-		flex.setWidget(7, 0, stateField);
+		flex.setWidget(7, 0, stateFieldLabel);
+		flex.setWidget(7, 1, stateField);
 		
 		flex.setWidget(8, 0, labelFieldDT);
 		flex.setWidget(8, 1, dateTimeField);
