@@ -3,11 +3,12 @@
  */
 package in.appops.showcase.web.gwt.dragonwheel.client;
 
-import java.util.ArrayList;
-
 import in.appops.client.gwt.web.ui.DragonWheel;
 
+import java.util.ArrayList;
+
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -21,7 +22,7 @@ public class DragonWheelShowCase implements EntryPoint {
 	@Override
 	public void onModuleLoad() {
 		DragonWheel wheel = new DragonWheel() ;
-		wheel.setWidgetList(getDummyWidgetList(10));
+		wheel.setWidgetList(getDummyWidgetList(9));
 		wheel.layOutDragonWheel();
 		
 		RootPanel.get("nameFieldContainer").add(wheel);
@@ -34,9 +35,12 @@ public class DragonWheelShowCase implements EntryPoint {
 		
 		ArrayList<Widget> dummyList = new ArrayList<Widget>();
 		for (int indx = 0 ; indx < num ; indx++){
-			Label lbl = new Label("dummy test " + indx) ; 
-			lbl.setVisible(true);
-			dummyList.add(lbl) ;
+			HorizontalPanel hPanel = new HorizontalPanel();
+			Label lbl = new Label("test " + indx) ; 
+			lbl.setStylePrimaryName("label");
+			hPanel.add(lbl);
+			hPanel.setStylePrimaryName("wheelWidget");
+			dummyList.add(hPanel) ;
 		}
 		return dummyList ;
 	}

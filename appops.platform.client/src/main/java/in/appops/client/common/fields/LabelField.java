@@ -1,7 +1,11 @@
 package in.appops.client.common.fields;
 
+import com.google.gwt.event.shared.GwtEvent.Type;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Label;
 
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 
@@ -80,6 +84,12 @@ public class LabelField extends Label  implements Field{
 	@Override
 	public void setFieldValue(String fieldValue) {
 		this.fieldValue = fieldValue;
+	}
+
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
