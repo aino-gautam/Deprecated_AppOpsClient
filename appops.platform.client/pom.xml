@@ -19,6 +19,29 @@
 	</properties>
 
 	<dependencies>
+		<!-- lucene related jars -->
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-spatial</artifactId>
+			<version>3.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-misc</artifactId>
+			<version>3.0.2</version>
+		</dependency>
+
+		<!-- facebook related jars -->
+		<dependency>
+			<groupId>com.restfb</groupId>
+			<artifactId>restfb</artifactId>
+			<version>1.6.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20090211</version>
+		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
@@ -96,17 +119,53 @@
 			<artifactId>guice-assisted-inject</artifactId>
 			<version>2.0</version>
 		</dependency>
-
-		<dependency>
+		 <dependency>
+			<groupId>com.googlecode.mvp4g</groupId>
+			<artifactId>mvp4g</artifactId>
+			<version>1.4.0</version>
+		</dependency> 
+		<!-- <dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
 			<version>14.02.2013</version>
+		</dependency> -->
+		<dependency>
+			<groupId>milind_appops_platform</groupId>
+			<artifactId>appops_server</artifactId>
+			<version>13.03.2013</version>
 		</dependency>
+		
+		<!--  This should be used when using a final version of the jar -->
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>14.02.2013</version>
+			<version>09.03.2013</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>gwt-maps</groupId>
+		    <artifactId>gwt-maps</artifactId>
+		    <version>3.0.2b.gwt22</version>
+        </dependency>
+    
+       <dependency>
+		    <groupId>gwt-html5-geolocation</groupId>
+		    <artifactId>gwt-html5-geolocation</artifactId>
+		    <version>gwt-html5-geolocation</version>
+      </dependency> 
+      
+      		<!--  Dependency for Uploading files -->
+	    <dependency>
+		    <groupId>com.googlecode.gwtupload</groupId>
+			<artifactId>gwtupload</artifactId>
+			<version>0.6.4</version>
+ 	    </dependency>
+	    <dependency>
+			<groupId>com.googlecode.gwtphonegap</groupId>
+			<artifactId>gwtphonegap</artifactId>
+			<version>2.0.0.0</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
@@ -134,17 +193,24 @@
 				<version>2.4.0</version>
 
 				<configuration>
-					<runTarget>AddressBook.html</runTarget>
+					<runTarget>MasterShowcase.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 
 					<!-- what ever is needed to complie we can add them as below here. When 
 						nothing is specified we all module are complied -->
 
 					<modules>
-						<module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module>
+						<module>in.appops.client.Client</module>
+						<module>in.appops.showcase.web.gwt.dragonwheel.dragonwheel</module>
+						<module>in.appops.showcase.web.gwt.fields.fields</module>
+					    <module>in.appops.showcase.web.gwt.intellithought.IntelliThought</module>
+						<!-- <module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> -->
+						<!-- <module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module>
 						<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module>
 						<module>in.appops.showcase.web.gwt.uploadservice.UploadService</module>
-						<module>in.appops.showcase.web.gwt.validateServiceOperation.VailidateServiceOperation</module>
+						<module>in.appops.showcase.web.gwt.validateServiceOperation.VailidateServiceOperation</module> 
+						<module>in.appops.showcase.web.gwt.facebook.facebook</module> -->
+					
 					</modules>
 				</configuration>
 			</plugin>
@@ -164,7 +230,7 @@
 				<configuration>
 					<webappDirectory>${webappDirectory}</webappDirectory>
 				</configuration>
-			</plugin>
+			</plugin> 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
