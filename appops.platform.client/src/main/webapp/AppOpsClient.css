@@ -35,7 +35,7 @@
 	 -moz-border-radius: 50% 50%;
 	border-radius: 50% 50%;
 	-webkit-border-radius: 50% 50%; 
-	position: absolute;
+	position: absolute;	
     z-index: 99;
     width: 200% ;!important
 
@@ -44,10 +44,9 @@
 .wheelWidget{
 	padding: 5em;
 	background-color: #3333CC;
-	 -moz-border-radius: 50% 50%;
-	border-radius: 50% 50%;
-	-webkit-border-radius: 50% 50%;  
-	
+	 -moz-border-radius: 4% 4%;
+	border-radius: 4% 4%;
+	-webkit-border-radius: 4% 4%;  
 }
 
 .label{
@@ -55,17 +54,3 @@
 	font: bold;
 }
 
-.center{
-	background-color: #333366;
-	padding: 5em;
-	z-index: 99;
-	position: absolute;
-	-moz-border-radius: 50% 50%;
-	border-radius: 50% 50%;
-	-webkit-border-radius: 50% 50%; 
-	
-	transition: width 2s;
--moz-transition: width 2s; /* Firefox 4 */
--webkit-transition: width 2s; /* Safari and Chrome */
--o-transition: width 2s; /* Opera */
-}
