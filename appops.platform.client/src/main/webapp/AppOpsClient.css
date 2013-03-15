@@ -1,23 +1,22 @@
-.labelField {
-	width: 250px;
-	height: 30px;
-	position: absolute;
-	top: 0px; /*y pos*/
-	left: 0px;  /*x pos*/
+.appops-LabelField {
+	color: #333;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 12px;
 }
-.textField {
-	width: 250px;
-	height: 30px;
-	position: absolute;
-	top: 0px; /*y pos*/
-	left: 0px;  /*x pos*/
+.appops-TextField {
+		width: 250px;
+	height: 25px;
+	color: #333;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 12px;
 }
-.linkField {
-	width: 250px;
-	height: 30px;
-	position: absolute;
-	top: 0px; /*y pos*/
-	left: 0px;  /*x pos*/
+.appops-LinkField:link, .appops-LinkField:visited, .appops-LinkField:active{
+	color: blue;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 12px;
+}
+.appops-LinkField:hover{
+	color: red;
 }
 
 .dragonWheel{
@@ -54,3 +53,99 @@
 	font: bold;
 }
 
+
+.intelliShareField {	
+	height: 32px;
+}
+.intelliTextField {	
+	width: 250px;
+    font-family: Ubuntu;
+    font-size: 12px;
+    color: black;
+    background: #FFF;
+    padding: 7px;
+	outline: 0;
+}
+.intelliThoughtFieldCol {	
+	border-left: 2px solid;
+}
+.appops-intelliThought-Label{
+	font-family: Verdana;
+    font-size: 12px;
+    font-style: italic;
+    color: #333;
+    margin-right: 5px;
+}
+
+/* .intelliTextField [contenteditable="true"]{	
+	padding: 10px;
+	outline: 2px dashed #CCC;
+}
+.intelliTextField [contenteditable="true"]:HOVER {	
+	outline: 2px;
+	dashed: #0090D2;
+} */
+.suggestionPanel {
+	display: inline;
+}
+.suggestionLabel {
+	font-family: 'Ubuntu', sans-serif !important;
+	display: inline;
+	text-align: center;
+	margin-right: 4px !important;
+	display:block;
+}
+.suggestionActionLabel {
+	font-family: 'Ubuntu', sans-serif !important;
+	display: inline;
+	text-align: center;
+	margin-right: 4px !important;
+}
+.mediaImage{
+	height: 24px;
+	width: 24px;
+}
+
+@-webkit-keyframes fadeInLeft {
+	0% {
+		opacity: 0;
+		-webkit-transform: translateX(-10px);
+	}
+	100% {
+		opacity: 1;
+		-webkit-transform: translateX(0);
+	}
+}
+.fadeInLeft {
+	-webkit-animation-duration: 2s;
+	-webkit-animation-name: fadeInLeft;
+}
+@-webkit-keyframes fadeInUp {
+	0% {
+		opacity: 0;
+		-webkit-transform: translateY(10px);
+	}
+	100% {
+		opacity: 1;
+		-webkit-transform: translateY(0);
+	}
+}
+.fadeInUp {
+	-webkit-animation-duration: 2s;
+	-webkit-animation-name: fadeInUp;
+}
+@-webkit-keyframes fadeInDown {
+	0% {
+		opacity: 0;
+		-webkit-transform: translateY(-20px);
+	}
+	100% {
+		opacity: 1;
+		-webkit-transform: translateY(0);
+	}
+}
+.fadeInDown {
+	-webkit-animation-duration: 2s;
+	-webkit-animation-name: fadeInDown;
+	padding: 2px;
+}

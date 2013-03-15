@@ -124,11 +124,15 @@
 			<artifactId>mvp4g</artifactId>
 			<version>1.4.0</version>
 		</dependency> 
-		
+		<!-- <dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>appops_server</artifactId>
+			<version>14.02.2013</version>
+		</dependency> -->
 		<dependency>
 			<groupId>milind_appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>12.03.2013</version>
+			<version>14.03.2013</version>
 		</dependency>
 		
 		<!--  This should be used when using a final version of the jar -->
@@ -137,6 +141,31 @@
 			<artifactId>appops_shared</artifactId>
 			<version>09.03.2013</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>gwt-maps</groupId>
+		    <artifactId>gwt-maps</artifactId>
+		    <version>3.0.2b.gwt22</version>
+        </dependency>
+    
+       <dependency>
+		    <groupId>gwt-html5-geolocation</groupId>
+		    <artifactId>gwt-html5-geolocation</artifactId>
+		    <version>gwt-html5-geolocation</version>
+      </dependency> 
+      
+      		<!--  Dependency for Uploading files -->
+	    <dependency>
+		    <groupId>com.googlecode.gwtupload</groupId>
+			<artifactId>gwtupload</artifactId>
+			<version>0.6.4</version>
+ 	    </dependency>
+	    <dependency>
+			<groupId>com.googlecode.gwtphonegap</groupId>
+			<artifactId>gwtphonegap</artifactId>
+			<version>2.0.0.0</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
@@ -164,11 +193,7 @@
 				<version>2.4.0</version>
 
 				<configuration>
-					<runTarget>FaceBookDemo.html</runTarget>
-					<runTarget>dragonwheel.html</runTarget>
-					<runTarget>AddressBook.html</runTarget>
-					<runTarget>hello.html</runTarget>
-					<runTarget>ValidateServiceOperation.html</runTarget>
+					<runTarget>MasterShowcase.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 
 					<!-- what ever is needed to complie we can add them as below here. When 
@@ -177,12 +202,14 @@
 					<modules>
 						<module>in.appops.client.Client</module>
 						<module>in.appops.showcase.web.gwt.dragonwheel.dragonwheel</module>
-						
+						<module>in.appops.showcase.web.gwt.fields.fields</module>
+					    <module>in.appops.showcase.web.gwt.intellithought.IntelliThought</module>
+						<!-- <module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> -->
 						<!-- <module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module>
 						<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module>
 						<module>in.appops.showcase.web.gwt.uploadservice.UploadService</module>
-						<module>in.appops.showcase.web.gwt.validateServiceOperation.VailidateServiceOperation</module> -->
-						<module>in.appops.showcase.web.gwt.facebook.facebook</module>
+						<module>in.appops.showcase.web.gwt.validateServiceOperation.VailidateServiceOperation</module> 
+						<module>in.appops.showcase.web.gwt.facebook.facebook</module> -->
 					
 					</modules>
 				</configuration>
