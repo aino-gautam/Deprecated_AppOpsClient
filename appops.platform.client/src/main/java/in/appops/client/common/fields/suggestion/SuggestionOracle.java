@@ -20,13 +20,13 @@ import com.google.gwt.user.client.ui.SuggestOracle;
 public class SuggestionOracle extends SuggestOracle {
 
 	private List<AppopsSuggestion> store;
-	private String query;
+	private String queryName;
 	private String operationName;
 	private final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 	
-	public void setQuery(String query) {
-		this.query = query;
+	public void setQueryName(String queryName) {
+		this.queryName = queryName;
 	}
 	
 	public void setOperationName(String operationName) {
@@ -55,11 +55,8 @@ public class SuggestionOracle extends SuggestOracle {
 			
 			Query queryObj = new Query();
 			
-			HashMap<String,Object> map = new HashMap<String,Object>();
 			/*map.put("qName", query);*/
-			//queryObj.setQueryName(query);
-			queryObj.setName(query);
-			queryObj.setQueryParameterMap(map);
+			queryObj.setQueryName(queryName);
 			Map parameterMap = new HashMap();
 			parameterMap.put("query", queryObj);
 			

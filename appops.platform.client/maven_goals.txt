@@ -1,0 +1,44 @@
+--------------------------------------------------------------------------------------------------------------------
+*Maven goal for compilation and execution of AppOps Client
+
+clean gwt:clean compile gwt:compile gwt:run / clean gwt:clean compile gwt:compile gwt:debug
+
+--------------------------------------------------------------------------------------------------------------------
+*Maven goal for packaging and deploying the jar on ensarm maven repo
+
+buildnumber:create package deploy:deploy-file
+
+In case you face issues while packaging of jar please refer to this link
+
+https://sites.google.com/a/ensarm.com/how_to_configure/maven/jar-packaging
+---------------------------------------------------------------------------------------------------------------------
+*Maven configuration and goal to deploy a war locally
+
+*) Add server tag to maven/settings.xml <servers>
+<server>
+	<id>TomcatServer</id>
+	<username>tomcat</username>
+	<password>tomcat</password>
+</server>
+
+*) Create following roles in tomcat-users.xml in tomcat6 conf 
+<role rolename="manager"/>
+  <role rolename="manager-script"/>
+  <role rolename="admin"/>
+  <role rolename="admin-gui"/>
+  <role rolename="manager-gui"/>
+  <role rolename="admin-script"/>
+  <user username="tomcat" password="tomcat" roles="manager-gui,admin-gui,manager,admin,manager-script,admin-script"/>
+
+*) Change the url and port as per your local setup
+    <url>http://localhost:8080/manager</url>
+    
+*) Goal to deploy war -> tomcat:deploy
+   Goal to compile and deploy war ->clean gwt:clean compile gwt:compile tomcat:deploy
+  
+  ***Note
+  The above role configuration is only for tomcat6, tomcat7 has different configuration.
+  ---------------------------------------------------------------------------------------------------------------------
+  
+  
+  

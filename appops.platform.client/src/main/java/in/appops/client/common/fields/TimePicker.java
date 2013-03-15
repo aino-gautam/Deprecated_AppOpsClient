@@ -1,5 +1,6 @@
 package in.appops.client.common.fields;
 
+import java.util.Date;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -29,7 +30,7 @@ public class TimePicker extends Composite implements FocusHandler, BlurHandler, 
 	private ListBox minListBox = new ListBox();
 	private ListBox secListBox = new ListBox();
 	private TextBox textBox = new TextBox();
-	private Button selectTimeButton = new Button("->"); 
+	private Button selectTimeButton = new Button("Done"); 
 	private PopupPanel popupPanel;
 	private String value; 
 	
@@ -51,18 +52,21 @@ public class TimePicker extends Composite implements FocusHandler, BlurHandler, 
 
 	private HorizontalPanel createTimePickerPanel() {
 		HorizontalPanel subHorizontalPanel = new HorizontalPanel();
+		Date date = new Date( );
+		String[] time=date.toString().split(" ");
+		String[] item=time[3].split(":");
 		Label lblHour= new Label("(hh):");
 		Label lblMinute= new Label("(mm):");
 		Label lblSecond= new Label("(ss)");
 		subHorizontalPanel.add(hoursListBox);
 		subHorizontalPanel.add(lblHour);
-		populateTimeListbox(hoursListBox,23);
+		populateTimeListbox(hoursListBox,23,item[0]);
 		subHorizontalPanel.add(minListBox);
 		subHorizontalPanel.add(lblMinute);
-		populateTimeListbox(minListBox,59);
+		populateTimeListbox(minListBox,59,item[1]);
 		subHorizontalPanel.add(secListBox);
 		subHorizontalPanel.add(lblSecond);
-		populateTimeListbox(secListBox,59);
+		populateTimeListbox(secListBox,59,item[2]);
 		
 		subHorizontalPanel.add(selectTimeButton);
 		
@@ -76,6 +80,7 @@ public class TimePicker extends Composite implements FocusHandler, BlurHandler, 
 			public void onClick(ClickEvent event) {
 				 value = hoursListBox.getItemText(hoursListBox.getSelectedIndex())+":"+ minListBox.getItemText(minListBox.getSelectedIndex())+":"+ secListBox.getItemText(secListBox.getSelectedIndex());
 				 textBox.setText(value);
+				 hideTimePicker();
 			}
 		});
 		
@@ -84,7 +89,7 @@ public class TimePicker extends Composite implements FocusHandler, BlurHandler, 
 		
 	}
 	
-    private void populateTimeListbox(ListBox listBox,Integer lastNumber) {
+    private void populateTimeListbox(ListBox listBox,Integer lastNumber, String item) {
 		
 		listBox.clear();
 		for(Integer i=0;i<=lastNumber;i++){
@@ -94,6 +99,7 @@ public class TimePicker extends Composite implements FocusHandler, BlurHandler, 
 			else
 				listBox.addItem(i.toString(), i.toString());
 		}
+		listBox.setSelectedIndex(Integer.parseInt(item));
 	}
 
 	 public void showDatePicker() {
@@ -137,7 +143,13 @@ public class TimePicker extends Composite implements FocusHandler, BlurHandler, 
 
 	@Override
 	public void onClick(ClickEvent event) {
+		Date date = new Date();
+		String[] time=date.toString().split(" ");
+		String[] item=time[3].split(":");
 		 showDatePicker();
+		 hoursListBox.setSelectedIndex(Integer.parseInt(item[0]));
+		 minListBox.setSelectedIndex(Integer.parseInt(item[1]));
+		 secListBox.setSelectedIndex(Integer.parseInt(item[2]));
 		
 	}
 

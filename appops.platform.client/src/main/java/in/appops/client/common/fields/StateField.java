@@ -83,7 +83,7 @@ public class StateField extends Composite implements Field, ChangeHandler{
 			
 			appopsSuggestionBox = new AppopsSuggestionBox();
 			if(getConfiguration().getPropertyByName(STATEFIELD_QUERY) != null)
-				appopsSuggestionBox.setQuery(getConfiguration().getPropertyByName(STATEFIELD_QUERY).toString());
+				appopsSuggestionBox.setQueryName(getConfiguration().getPropertyByName(STATEFIELD_QUERY).toString());
 			if(getConfiguration().getPropertyByName(STATEFIELD_OPERATION) != null)
 				appopsSuggestionBox.setOperationName(getConfiguration().getPropertyByName(STATEFIELD_OPERATION).toString());
 			
