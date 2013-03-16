@@ -11,112 +11,21 @@ import in.appops.client.common.fields.TextField;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 
+import com.google.code.gwt.geolocation.client.Coordinates;
+import com.google.code.gwt.geolocation.client.Geolocation;
+import com.google.code.gwt.geolocation.client.Position;
+import com.google.code.gwt.geolocation.client.PositionCallback;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.maps.client.base.LatLng;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public class FieldsShowCase implements EntryPoint {
 
 	private FlexTable flex = new FlexTable();
-	
+	private LocationSelector locationSelector = new LocationSelector();
 	@Override
 	public void onModuleLoad() {
-		LabelField labelFieldTB = new LabelField();
-		labelFieldTB.setFieldValue("Text Box");
-		labelFieldTB.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-		
-		TextField textFieldTB = new TextField();
-		textFieldTB.setFieldValue("");
-		textFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "appops-TextField", null, null));
-		
-		LabelField labelFieldPTB = new LabelField();
-		labelFieldPTB.setFieldValue("Password Textbox");
-		labelFieldPTB.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-		
-		TextField textFieldPTB = new TextField();
-		textFieldPTB.setFieldValue("Password");
-		textFieldPTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_PASSWORDTEXTBOX, "appops-TextField", null, null));
-		
-		LabelField labelFieldTA = new LabelField();
-		labelFieldTA.setFieldValue("Text Area");
-		labelFieldTA.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-		
-		TextField textFieldTA = new TextField();
-		textFieldTA.setFieldValue("");
-		textFieldTA.setConfiguration(getTextFieldConfiguration(10, false, TextField.TEXTFIELDTYPE_TEXTAREA, "appops-TextField", null, null));
-		
-		LinkField hyperlink = new LinkField();
-		hyperlink.setFieldValue("Hyperlink");
-		hyperlink.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_HYPERLINK, "appops-LinkField", null, null));
-		
-		LinkField anchor = new LinkField();
-		anchor.setFieldValue("Anchor");
-		anchor.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_HYPERLINK, "appops-LinkField", null, null));
-		
-		LabelField stateFieldLabel = new LabelField();
-		stateFieldLabel.setFieldValue("StateField");
-		stateFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-		
-		StateField stateField = new StateField();
-		//stateField.setFieldValue("Suggestion");
-		Configuration stateFieldConfig = getStateFieldConfiguration(StateField.STATEFIELDMODE_SUGGESTIVE, "getAllSpaceTypes", "spacemanagement.SpaceManagementService.getEntityList");
-		stateField.setConfiguration(stateFieldConfig);
-		
-		LabelField CheckboxFieldLabel = new LabelField();
-		CheckboxFieldLabel.setFieldValue("CheckboxField");
-		CheckboxFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-		
-		CheckboxField checkboxfield = new CheckboxField();
-		Configuration config = getCheckboxFieldConfiguration("Allow permissions");
-		checkboxfield.setFieldValue("true");
-		checkboxfield.setConfiguration(config);
-		
-		LabelField CheckboxGroupFieldLabel = new LabelField();
-		CheckboxGroupFieldLabel.setFieldValue("CheckboxGroupField - MultiSelect");
-		CheckboxGroupFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-		
-		CheckboxGroupField checkboxGroupField = new CheckboxGroupField();
-		Configuration configuration = getCheckboxGroupFieldConfiguration(CheckboxGroupField.CHECKBOX_MULTISELECT,CheckboxGroupField.CHECKBOX_VERTICALBASEPANEL);
-		checkboxGroupField.setConfiguration(configuration);
-		
-		LabelField singleSelectCheckboxFieldLabel = new LabelField();
-		singleSelectCheckboxFieldLabel.setFieldValue("CheckboxGroupField - SingleSelect");
-		singleSelectCheckboxFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-		
-		CheckboxGroupField singleSelectCheckboxGroupField = new CheckboxGroupField();
-		Configuration singleSelectionConfiguration = getCheckboxGroupFieldConfiguration(CheckboxGroupField.CHECKBOX_SINGLESELECT,CheckboxGroupField.CHECKBOX_VERTICALBASEPANEL);
-		singleSelectCheckboxGroupField.setConfiguration(singleSelectionConfiguration);
-		
-		LabelField labelFieldDT = new LabelField();
-		labelFieldDT.setFieldValue("Time Picker");
-		labelFieldDT.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-		
-		
-		DateTimeField dateTimeField = new DateTimeField();
-		dateTimeField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY));
-				
-		LabelField labelFieldD = new LabelField();
-		labelFieldD.setFieldValue("Date Picker");
-		labelFieldD.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-		
-		
-		DateTimeField dateField = new DateTimeField();
-		dateField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATEONLY));
-		
-		
-		LabelField labelFieldDTF = new LabelField();
-		labelFieldDTF.setFieldValue("Date Time Picker");
-		labelFieldDTF.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-		
-		
-		DateTimeField dateTimeOnlyField = new DateTimeField();
-		dateTimeOnlyField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATETIMEONLY));
-		
-		
-		/*LabelField labelFieldLocation = new LabelField();
-		labelFieldLocation.setFieldValue("Location Selector");
-		labelFieldLocation.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-		
 		
 		if (Geolocation.isSupported()) {
 			Geolocation.getGeolocation().getCurrentPosition(new PositionCallback() {
@@ -125,121 +34,209 @@ public class FieldsShowCase implements EntryPoint {
 					
 					Coordinates coords = position.getCoords();
 					LatLng latLng = new LatLng(coords.getLatitude(), coords.getLongitude());
-					
-					
-					//locationSelector.setConfiguration(getLocationSelectorConf());
-					Configuration configuration = new Configuration();
-					
-					configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "google_pin.png");
-					configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "google_pin.png");
+														
 
 					locationSelector.setConfiguration(getLocationSelectorConf());
 					locationSelector.setMapMode(true);
-					locationSelector.setMapWidth("600px");
-					locationSelector.setMapHeight("350px");
-					locationSelector.setLatLong(latLng);
+					locationSelector.setMapWidth("300px");
+					locationSelector.setMapHeight("200px");
+					//locationSelector.setLatLong(latLng);
+					locationSelector.setCoordinates(coords);
+		
+			LabelField labelFieldTB = new LabelField();
+			labelFieldTB.setFieldValue("Text Box");
+			labelFieldTB.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+			
+			TextField textFieldTB = new TextField();
+			textFieldTB.setFieldValue("");
+			textFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "appops-TextField", null, null));
+			
+			LabelField labelFieldPTB = new LabelField();
+			labelFieldPTB.setFieldValue("Password Textbox");
+			labelFieldPTB.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+			
+			TextField textFieldPTB = new TextField();
+			textFieldPTB.setFieldValue("Password");
+			textFieldPTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_PASSWORDTEXTBOX, "appops-TextField", null, null));
+			
+			LabelField labelFieldTA = new LabelField();
+			labelFieldTA.setFieldValue("Text Area");
+			labelFieldTA.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+			
+			TextField textFieldTA = new TextField();
+			textFieldTA.setFieldValue("");
+			textFieldTA.setConfiguration(getTextFieldConfiguration(10, false, TextField.TEXTFIELDTYPE_TEXTAREA, "appops-TextField", null, null));
+			
+			LinkField hyperlink = new LinkField();
+			hyperlink.setFieldValue("Hyperlink");
+			hyperlink.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_HYPERLINK, "appops-LinkField", null, null));
+			
+			LinkField anchor = new LinkField();
+			anchor.setFieldValue("Anchor");
+			anchor.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_HYPERLINK, "appops-LinkField", null, null));
+			
+			LabelField stateFieldLabel = new LabelField();
+			stateFieldLabel.setFieldValue("StateField");
+			stateFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+			
+			StateField stateField = new StateField();
+			//stateField.setFieldValue("Suggestion");
+			Configuration stateFieldConfig = getStateFieldConfiguration(StateField.STATEFIELDMODE_SUGGESTIVE, "getAllSpaceTypes", "spacemanagement.SpaceManagementService.getEntityList");
+			stateField.setConfiguration(stateFieldConfig);
+			
+			LabelField CheckboxFieldLabel = new LabelField();
+			CheckboxFieldLabel.setFieldValue("CheckboxField");
+			CheckboxFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+			
+			CheckboxField checkboxfield = new CheckboxField();
+			Configuration config = getCheckboxFieldConfiguration("Allow permissions");
+			checkboxfield.setFieldValue("true");
+			checkboxfield.setConfiguration(config);
+			
+			LabelField CheckboxGroupFieldLabel = new LabelField();
+			CheckboxGroupFieldLabel.setFieldValue("CheckboxGroupField - MultiSelect");
+			CheckboxGroupFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+			
+			CheckboxGroupField checkboxGroupField = new CheckboxGroupField();
+			Configuration configuration = getCheckboxGroupFieldConfiguration(CheckboxGroupField.CHECKBOX_MULTISELECT,CheckboxGroupField.CHECKBOX_VERTICALBASEPANEL);
+			checkboxGroupField.setConfiguration(configuration);
+			
+			LabelField singleSelectCheckboxFieldLabel = new LabelField();
+			singleSelectCheckboxFieldLabel.setFieldValue("CheckboxGroupField - SingleSelect");
+			singleSelectCheckboxFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+			
+			CheckboxGroupField singleSelectCheckboxGroupField = new CheckboxGroupField();
+			Configuration singleSelectionConfiguration = getCheckboxGroupFieldConfiguration(CheckboxGroupField.CHECKBOX_SINGLESELECT,CheckboxGroupField.CHECKBOX_VERTICALBASEPANEL);
+			singleSelectCheckboxGroupField.setConfiguration(singleSelectionConfiguration);
+			
+			LabelField labelFieldDT = new LabelField();
+			labelFieldDT.setFieldValue("Time Picker");
+			labelFieldDT.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+			
+			
+			DateTimeField dateTimeField = new DateTimeField();
+			dateTimeField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY));
 					
-					
-					
-									
-				}
+			LabelField labelFieldD = new LabelField();
+			labelFieldD.setFieldValue("Date Picker");
+			labelFieldD.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+			
+			
+			DateTimeField dateField = new DateTimeField();
+			dateField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATEONLY));
+			
+			
+			LabelField labelFieldDTF = new LabelField();
+			labelFieldDTF.setFieldValue("Date Time Picker");
+			labelFieldDTF.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+			
+			
+			DateTimeField dateTimeOnlyField = new DateTimeField();
+			dateTimeOnlyField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATETIMEONLY));
+			
+			LabelField labelFieldLocation = new LabelField();
+			labelFieldLocation.setFieldValue("Location Selector");
+			labelFieldLocation.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+				
+			
+			try {
+				labelFieldTB.createField();
+				textFieldTB.createField();
+				
+				labelFieldPTB.createField();
+				textFieldPTB.createField();
+				
+				labelFieldTA.createField();
+				textFieldTA.createField();
+				
+				hyperlink.createField();
+				anchor.createField();
+				
+				stateFieldLabel.createField();
+				stateField.createField();
+				
+				CheckboxFieldLabel.createField();
+				checkboxfield.createField();
+				
+				CheckboxGroupFieldLabel.createField();
+				checkboxGroupField.createField();
+				
+				singleSelectCheckboxFieldLabel.createField();
+				singleSelectCheckboxGroupField.createField();
+				
+				labelFieldDT.createField();
+				dateTimeField.createField();
+				
+				labelFieldD.createField();
+				dateField.createField();
+				
+				labelFieldDTF.createField();
+				dateTimeOnlyField.createField();
+				
+				labelFieldLocation.createField();
+				locationSelector.createField();
 				
 				
+			} catch (AppOpsException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			checkboxGroupField.addCheckItem("Red");
+			checkboxGroupField.addCheckItem("Green");
+			checkboxGroupField.addCheckItem("Blue");
+			
+			singleSelectCheckboxGroupField.addCheckItem("Red");
+			singleSelectCheckboxGroupField.addCheckItem("Green");
+			singleSelectCheckboxGroupField.addCheckItem("Blue");
+			
+			flex.setWidget(0, 0, labelFieldTB);
+			flex.setWidget(0, 1, textFieldTB);
+			
+			flex.setWidget(1, 0, labelFieldPTB);
+			flex.setWidget(1, 1, textFieldPTB);
+			
+			flex.setWidget(2, 0, labelFieldTA);
+			flex.setWidget(2, 1, textFieldTA);
+			
+			//flex.setWidget(3, 0, hyperlink);
+			//flex.setWidget(3, 1, anchor);
+			
+			flex.setWidget(4, 0, CheckboxGroupFieldLabel);
+			flex.setWidget(4, 1, checkboxGroupField);
+			
+			flex.setWidget(5, 0, singleSelectCheckboxFieldLabel);
+			flex.setWidget(5, 1, singleSelectCheckboxGroupField);
+			
+			flex.setWidget(6, 0, CheckboxFieldLabel);
+			flex.setWidget(6, 1, checkboxfield);
+			
+			flex.setWidget(7, 0, stateFieldLabel);
+			flex.setWidget(7, 1, stateField);
+			
+			flex.setWidget(8, 0, labelFieldDT);
+			flex.setWidget(8, 1, dateTimeField);
+			
+			flex.setWidget(9, 0, labelFieldD);
+			flex.setWidget(9, 1, dateField);
+			
+			flex.setWidget(10, 0, labelFieldDTF);
+			flex.setWidget(10, 1, dateTimeOnlyField);
+			
+			flex.setWidget(11, 0, labelFieldLocation);
+			flex.setWidget(11, 1, locationSelector);
+			
+			RootPanel.get().add(flex);
+			
+			}
+			@Override
+			public void onFailure(com.google.code.gwt.geolocation.client.PositionError error) {
+				System.out.println(" "+error.getMessage());
+				
+			}
+		 });
+	   }
 
-				@Override
-				public void onFailure(com.google.code.gwt.geolocation.client.PositionError error) {
-					System.out.println(" "+error.getMessage());
-					
-				}
-			});
-			
-		}*/
-		
-		
-		try {
-			labelFieldTB.createField();
-			textFieldTB.createField();
-			
-			labelFieldPTB.createField();
-			textFieldPTB.createField();
-			
-			labelFieldTA.createField();
-			textFieldTA.createField();
-			
-			hyperlink.createField();
-			anchor.createField();
-			
-			stateFieldLabel.createField();
-			stateField.createField();
-			
-			CheckboxFieldLabel.createField();
-			checkboxfield.createField();
-			
-			CheckboxGroupFieldLabel.createField();
-			checkboxGroupField.createField();
-			
-			singleSelectCheckboxFieldLabel.createField();
-			singleSelectCheckboxGroupField.createField();
-			
-			labelFieldDT.createField();
-			dateTimeField.createField();
-			
-			labelFieldD.createField();
-			dateField.createField();
-			
-			labelFieldDTF.createField();
-			dateTimeOnlyField.createField();
-			
-			
-		} catch (AppOpsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		checkboxGroupField.addCheckItem("Red");
-		checkboxGroupField.addCheckItem("Green");
-		checkboxGroupField.addCheckItem("Blue");
-		
-		singleSelectCheckboxGroupField.addCheckItem("Red");
-		singleSelectCheckboxGroupField.addCheckItem("Green");
-		singleSelectCheckboxGroupField.addCheckItem("Blue");
-		
-		flex.setWidget(0, 0, labelFieldTB);
-		flex.setWidget(0, 1, textFieldTB);
-		
-		flex.setWidget(1, 0, labelFieldPTB);
-		flex.setWidget(1, 1, textFieldPTB);
-		
-		flex.setWidget(2, 0, labelFieldTA);
-		flex.setWidget(2, 1, textFieldTA);
-		
-		//flex.setWidget(3, 0, hyperlink);
-		//flex.setWidget(3, 1, anchor);
-		
-		flex.setWidget(4, 0, CheckboxGroupFieldLabel);
-		flex.setWidget(4, 1, checkboxGroupField);
-		
-		flex.setWidget(5, 0, singleSelectCheckboxFieldLabel);
-		flex.setWidget(5, 1, singleSelectCheckboxGroupField);
-		
-		flex.setWidget(6, 0, CheckboxFieldLabel);
-		flex.setWidget(6, 1, checkboxfield);
-		
-		flex.setWidget(7, 0, stateFieldLabel);
-		flex.setWidget(7, 1, stateField);
-		
-		flex.setWidget(8, 0, labelFieldDT);
-		flex.setWidget(8, 1, dateTimeField);
-		
-		flex.setWidget(9, 0, labelFieldD);
-		flex.setWidget(9, 1, dateField);
-		
-		flex.setWidget(10, 0, labelFieldDTF);
-		flex.setWidget(10, 1, dateTimeOnlyField);
-		
-		
-		RootPanel.get().add(flex);
-		
 	}
 	
 	private Configuration getDateTimeFieldConfiguration(String modeSelection,String datetimefieldTimeonly) {
@@ -254,8 +251,8 @@ public class FieldsShowCase implements EntryPoint {
 	private Configuration getLocationSelectorConf() {
 		Configuration configuration = new Configuration();
 		
-		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "google_pin.png");
-		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "google_pin.png");
+		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "imgaes/locationMarker1.png");
+		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "imgaes/locationMarker1.png");
 		return configuration;
 	}
 	
