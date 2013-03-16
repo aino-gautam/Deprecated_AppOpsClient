@@ -1,5 +1,6 @@
 package in.appops.client.common.fields;
 
+import com.google.code.gwt.geolocation.client.Coordinates;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.maps.client.base.LatLng;
@@ -156,9 +157,9 @@ public class LocationSelector extends Composite implements Field {
 		    image.setStylePrimaryName(LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE_PRIMARYCSS);
 		 
 		 horizontalPanel.add(image);
-		 horizontalPanel.setCellWidth(image, "20%");
+		 horizontalPanel.setCellWidth(image, "8%");
 		 horizontalPanel.add(currentLocationLabel);
-		 horizontalPanel.setCellWidth(currentLocationLabel, "75%");
+		 horizontalPanel.setCellWidth(currentLocationLabel, "80%");
 		 horizontalPanel.setHeight("30%");
 		 horizontalPanel.setWidth("100%");
 		 basePanel.add(horizontalPanel);
@@ -293,6 +294,11 @@ public class LocationSelector extends Composite implements Field {
 		this.latLng = latLng;
 	}
 
+	public void setCoordinates(Coordinates coords){
+		
+		latLng = new LatLng(coords.getLatitude(), coords.getLongitude());
+	}
+	
 	public String getMapWidth() {
 		return mapWidth;
 	}

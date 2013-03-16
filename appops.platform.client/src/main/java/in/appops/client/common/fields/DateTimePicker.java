@@ -39,7 +39,7 @@ public class DateTimePicker extends Composite implements FocusHandler{
 	private Date			currentDate;
 	private PopupPanel popupPanel;
 	private TextBox textbox;
-	private Button btDone = new Button("->");
+	private Button btDone = new Button("Done");
 	private String currentDateTimeString;
 	private VerticalPanel   vpBase = new VerticalPanel();
 	
@@ -71,6 +71,7 @@ public class DateTimePicker extends Composite implements FocusHandler{
 		        textbox.setText(dateString);
 		        currentDate =  date;
 		        currentDateTimeString = dateString;
+		        
 		     }});
 		
 		vpBase.add(textbox);
@@ -91,6 +92,7 @@ public class DateTimePicker extends Composite implements FocusHandler{
 				textbox.setText(dateString);
 				currentDateTimeString = dateString;
 			    DomEvent.fireNativeEvent(Document.get().createChangeEvent(),textbox);
+			    popupPanel.hide();
 			    
 			 }
 			
@@ -102,9 +104,14 @@ public class DateTimePicker extends Composite implements FocusHandler{
 	
 	private Widget createTimeComponent() {
 		timeFieldPanel.clear();
-		populateTimeListbox(lstHours,23);
-		populateTimeListbox(lstMinutes,59);
-		populateTimeListbox(lstSeconds, 59);
+		
+		Date date = new Date( );
+		String[] time=date.toString().split(" ");
+		String[] item=time[3].split(":");
+		
+		populateTimeListbox(lstHours,23,item[0]);
+		populateTimeListbox(lstMinutes,59,item[1]);
+		populateTimeListbox(lstSeconds, 59,item[2]);
 		timeFieldPanel.add(lstHours);
 		Label lblHour= new Label("(hh):");
 		lblHour.setStylePrimaryName("timePanelFont");
@@ -129,17 +136,18 @@ public class DateTimePicker extends Composite implements FocusHandler{
 		return timeFieldPanel;
 	}
 	
-	private void populateTimeListbox(ListBox listBox,Integer lastNumber) {
-		
-		listBox.clear();
-		for(Integer i=0;i<=lastNumber;i++){
+	 private void populateTimeListbox(ListBox listBox,Integer lastNumber, String item) {
 			
-			if(i<10)
-				listBox.addItem("0"+i.toString(), "0"+i.toString());
-			else
-				listBox.addItem(i.toString(), i.toString());
+			listBox.clear();
+			for(Integer i=0;i<=lastNumber;i++){
+				
+				if(i<10)
+					listBox.addItem("0"+i.toString(), "0"+i.toString());
+				else
+					listBox.addItem(i.toString(), i.toString());
+			}
+			listBox.setSelectedIndex(Integer.parseInt(item));
 		}
-	}
 
 		
 	public TextBox getTextbox() {
@@ -155,6 +163,12 @@ public class DateTimePicker extends Composite implements FocusHandler{
 		Date today = new Date();
         String todayString  = DateTimeFormat.getFormat("dd-MM-yyyy").format(today);
         textbox.setText(todayString);
+        
+		String[] time=today.toString().split(" ");
+		String[] item=time[3].split(":");
+		lstHours.setSelectedIndex(Integer.parseInt(item[0]));
+		 lstMinutes.setSelectedIndex(Integer.parseInt(item[1]));
+		 lstSeconds.setSelectedIndex(Integer.parseInt(item[2]));
 		//popupPanel.setVisible(true);
 		popupPanel.showRelativeTo(this);
 		
