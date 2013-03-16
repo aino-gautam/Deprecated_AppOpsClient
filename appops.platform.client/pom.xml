@@ -197,6 +197,7 @@
 						<module>in.appops.showcase.web.gwt.dragonwheel.dragonwheel</module>
 						<module>in.appops.showcase.web.gwt.fields.fields</module>
 						<module>in.appops.showcase.web.gwt.intellithought.IntelliThought</module>
+						<module>in.appops.showcase.web.gwt.wizardform.wizardform</module>
 						<!-- <module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> -->
 						<!-- <module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module> 
 							<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> <module>in.appops.showcase.web.gwt.uploadservice.UploadService</module> 
