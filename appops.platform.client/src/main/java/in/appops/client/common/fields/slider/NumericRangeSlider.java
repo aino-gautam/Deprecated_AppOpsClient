@@ -21,6 +21,7 @@ public class NumericRangeSlider extends FocusPanel implements ResizableWidget{
 	private double curValue;
 	private Image knobImage = new Image();
 	private KeyTimer keyTimer = new KeyTimer();
+	//private List<Label> labelElements = new ArrayList<Label>();
 	private List<Element> labelElements = new ArrayList<Element>();
 	private LabelFormatter labelFormatter;
 	private HTMLPanel htmlPanel = null;
@@ -65,34 +66,6 @@ public class NumericRangeSlider extends FocusPanel implements ResizableWidget{
 		DOM.setElementProperty(knobElement, "className", "gwt-SliderBar-line");
 
 		sinkEvents(Event.MOUSEEVENTS | Event.KEYEVENTS | Event.FOCUSEVENTS);
-	}
-
-	public double getCurrentValue() {
-		return curValue;
-	}
-
-	public LabelFormatter getLabelFormatter() {
-		return labelFormatter;
-	}
-
-	public double getMaxValue() {
-		return maxValue;
-	}
-
-	public double getMinValue() {
-		return minValue;
-	}
-
-	public int getNumLabels() {
-		return numLabels;
-	}
-
-	public int getNumTicks() {
-		return numTicks;
-	}
-
-	public double getStepSize() {
-		return stepSize;
 	}
 
 	public double getTotalRange() {
@@ -245,6 +218,34 @@ public class NumericRangeSlider extends FocusPanel implements ResizableWidget{
 		setCurrentValue(getCurrentValue() + numSteps * stepSize);
 	}
 
+	public double getCurrentValue() {
+		return curValue;
+	}
+
+	public LabelFormatter getLabelFormatter() {
+		return labelFormatter;
+	}
+
+	public double getMaxValue() {
+		return maxValue;
+	}
+
+	public double getMinValue() {
+		return minValue;
+	}
+
+	public int getNumLabels() {
+		return numLabels;
+	}
+
+	public int getNumTicks() {
+		return numTicks;
+	}
+
+	public double getStepSize() {
+		return stepSize;
+	}
+	
 	protected String formatLabel(double value) {
 		if (labelFormatter != null) {
 			return labelFormatter.formatLabel(this, value);
@@ -283,6 +284,46 @@ public class NumericRangeSlider extends FocusPanel implements ResizableWidget{
 		DOM.setStyleAttribute(knobElement, "left", knobLeftOffset + "px");
 	}
 
+	/*private void drawLabels() {
+		if (!isAttached())
+			return;
+
+		int lineWidth = DOM.getElementPropertyInt(htmlPanel.getElement(), "offsetWidth");
+		if (numLabels > 0) {
+			Label label = null;
+			for (int i = 0; i <= numLabels; i++) {
+				if (i < labelElements.size())
+					label = labelElements.get(i);
+				else {
+					label = new Label();
+					label.setStylePrimaryName("sliderStepEnableLbl");
+					if (enabled)
+						label.addStyleName("sliderStepEnableLbl");
+					else
+						label.addStyleName("sliderStepDisableLbl");
+					DOM.appendChild(getElement(), label.getElement());
+					labelElements.add(label);
+				}
+
+				double value = minValue + (getTotalRange() * i / numLabels);
+				label.addStyleName("sliderStepDisplayLbl");
+				label.setText(formatLabel(value));
+
+				int labelWidth = DOM.getElementPropertyInt(label.getElement(), "offsetWidth");
+				int labelLeftOffset = lineLeftOffset + (lineWidth * i / numLabels) - (labelWidth / 2);
+				labelLeftOffset = Math.min(labelLeftOffset, lineLeftOffset + lineWidth	- labelWidth);
+				labelLeftOffset = Math.max(labelLeftOffset, lineLeftOffset);
+				DOM.setStyleAttribute(label.getElement(), "left", labelLeftOffset + "px");
+				DOM.setStyleAttribute(label.getElement(), "visibility", "visible");
+			}
+
+			for (int i = (numLabels + 1); i < labelElements.size(); i++)
+				label.addStyleName("sliderStepDisableLbl");
+		} else {
+			for (Label elem : labelElements)
+				elem.addStyleName("sliderStepDisableLbl");
+		}
+	}*/
 	private void drawLabels() {
 		if (!isAttached()) {
 			return;
@@ -298,11 +339,10 @@ public class NumericRangeSlider extends FocusPanel implements ResizableWidget{
 					label = DOM.createDiv();
 					DOM.setStyleAttribute(label, "position", "absolute");
 					DOM.setStyleAttribute(label, "display", "none");
-					if (enabled) {
+					if (enabled)
 						DOM.setElementProperty(label, "className", "gwt-SliderBar-label");
-					} else {
+					else
 						DOM.setElementProperty(label, "className", "gwt-SliderBar-label-disabled");
-					}
 					DOM.appendChild(getElement(), label);
 					labelElements.add(label);
 				}

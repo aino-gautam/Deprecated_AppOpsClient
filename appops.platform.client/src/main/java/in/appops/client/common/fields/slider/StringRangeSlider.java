@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ImageBundle;
+import com.google.gwt.user.client.ui.Label;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class StringRangeSlider extends FocusPanel implements ResizableWidget{
 	private double curValue;
 	private Image knobImage = new Image();
 	private KeyTimer keyTimer = new KeyTimer();
+	//private List<Label> labelElements = new ArrayList<Label>();
 	private List<Element> labelElements = new ArrayList<Element>();
 	private LabelFormatter labelFormatter;
 	private HTMLPanel htmlPanel = null;
