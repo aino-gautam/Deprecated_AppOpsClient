@@ -209,15 +209,15 @@ background-color: #AAAAAA;
  * Applied to SliderBar.
  */
 .gwt-SliderBar-shell {
-	height: 34pt;
-	width: 50%;
+	height: 25pt;
+	width: 100%;
 	position: relative;
 }
 
 .gwt-SliderBar-shell .gwt-SliderBar-line {
 	border: 1px solid black;
-	background-color: white;
-	height: 4px;
+	background-color: gray;
+	height: 2px;
 	width: 95%;
 	top: 22pt;
 	overflow: hidden;
@@ -254,7 +254,7 @@ background-color: #AAAAAA;
 }
 
 .gwt-SliderBar-shell-focused {
-	width: 600px;
+	
 }
 
 .gwt-SliderBar-shell .gwt-SliderBar-line-sliding {
@@ -269,5 +269,5 @@ background-color: #AAAAAA;
 }
 
 .stringRangeSliderPanel{
-	width: 50%;
+	width: 70%;
 }
