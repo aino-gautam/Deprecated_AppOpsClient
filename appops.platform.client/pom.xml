@@ -11,9 +11,7 @@
 	<name>GWT Maven Archetype</name>
 
 	<properties>
-		<!-- Convenience property to set the GWT version -->
 		<gwtVersion>2.4.0</gwtVersion>
-		<!-- GWT needs at least java 1.5 -->
 		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -62,12 +60,11 @@
 		</dependency>
 
 		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>1.0.0.GA</version>
-			<classifier>sources</classifier>
-			<scope>test</scope>
+			<groupId>gwt-servlet</groupId>
+			<artifactId>deps</artifactId>
+			<version>1.0.0</version>
 		</dependency>
+
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -119,53 +116,50 @@
 			<artifactId>guice-assisted-inject</artifactId>
 			<version>2.0</version>
 		</dependency>
-		 <dependency>
+		<dependency>
 			<groupId>com.googlecode.mvp4g</groupId>
 			<artifactId>mvp4g</artifactId>
 			<version>1.4.0</version>
-		</dependency> 
-		<!-- <dependency>
+		</dependency>
+		<!-- <dependency> <groupId>appops_platform</groupId> <artifactId>appops_server</artifactId> 
+			<version>14.02.2013</version> </dependency> -->
+		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>14.02.2013</version>
-		</dependency> -->
-		<dependency>
-			<groupId>milind_appops_platform</groupId>
-			<artifactId>appops_server</artifactId>
-			<version>14.03.2013</version>
+			<version>16.03.2013</version>
 		</dependency>
-		
-		<!--  This should be used when using a final version of the jar -->
+
+		<!-- This should be used when using a final version of the jar -->
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
 			<version>09.03.2013</version>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>gwt-maps</groupId>
-		    <artifactId>gwt-maps</artifactId>
-		    <version>3.0.2b.gwt22</version>
-        </dependency>
-    
-       <dependency>
-		    <groupId>gwt-html5-geolocation</groupId>
-		    <artifactId>gwt-html5-geolocation</artifactId>
-		    <version>gwt-html5-geolocation</version>
-      </dependency> 
-      
-      		<!--  Dependency for Uploading files -->
-	    <dependency>
-		    <groupId>com.googlecode.gwtupload</groupId>
+			<groupId>gwt-maps</groupId>
+			<artifactId>gwt-maps</artifactId>
+			<version>3.0.2b.gwt22</version>
+		</dependency>
+
+		<dependency>
+			<groupId>gwt-html5-geolocation</groupId>
+			<artifactId>gwt-html5-geolocation</artifactId>
+			<version>gwt-html5-geolocation</version>
+		</dependency>
+
+		<!-- Dependency for Uploading files -->
+		<dependency>
+			<groupId>com.googlecode.gwtupload</groupId>
 			<artifactId>gwtupload</artifactId>
 			<version>0.6.4</version>
- 	    </dependency>
-	    <dependency>
+		</dependency>
+		<dependency>
 			<groupId>com.googlecode.gwtphonegap</groupId>
 			<artifactId>gwtphonegap</artifactId>
 			<version>2.0.0.0</version>
 		</dependency>
-		
+
 	</dependencies>
 
 	<build>
@@ -182,7 +176,6 @@
 				<directory>src/main/java</directory>
 				<includes>
 					<include>**</include>
-
 				</includes>
 			</resource>
 		</resources>
@@ -203,14 +196,14 @@
 						<module>in.appops.client.Client</module>
 						<module>in.appops.showcase.web.gwt.dragonwheel.dragonwheel</module>
 						<module>in.appops.showcase.web.gwt.fields.fields</module>
-					    <module>in.appops.showcase.web.gwt.intellithought.IntelliThought</module>
+						<module>in.appops.showcase.web.gwt.intellithought.IntelliThought</module>
+						<module>in.appops.showcase.web.gwt.wizardform.wizardform</module>
 						<!-- <module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> -->
-						<!-- <module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module>
-						<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module>
-						<module>in.appops.showcase.web.gwt.uploadservice.UploadService</module>
-						<module>in.appops.showcase.web.gwt.validateServiceOperation.VailidateServiceOperation</module> 
-						<module>in.appops.showcase.web.gwt.facebook.facebook</module> -->
-					
+						<!-- <module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module> 
+							<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> <module>in.appops.showcase.web.gwt.uploadservice.UploadService</module> 
+							<module>in.appops.showcase.web.gwt.validateServiceOperation.VailidateServiceOperation</module> 
+							<module>in.appops.showcase.web.gwt.facebook.facebook</module> -->
+
 					</modules>
 				</configuration>
 			</plugin>
@@ -230,7 +223,7 @@
 				<configuration>
 					<webappDirectory>${webappDirectory}</webappDirectory>
 				</configuration>
-			</plugin> 
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -239,9 +232,8 @@
 					<source>1.6</source>
 					<target>1.6</target>
 				</configuration>
-
 			</plugin>
-
+			
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
@@ -262,6 +254,7 @@
 				</executions>
 
 			</plugin>
+			
 			<plugin>
 				<artifactId>maven-deploy-plugin</artifactId>
 				<version>2.4</version>
@@ -274,6 +267,27 @@
 					<repositoryId>10.10.10.100</repositoryId>
 					<url>http://10.10.10.100:8085/artifactory/libs-release-local</url>
 					<description>${description}</description>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>tomcat-maven-plugin</artifactId>
+				<configuration>
+					<url>http://localhost:8090/manager</url>
+					<server>TomcatServer</server>
+					<warFile>target/appopsClient.war</warFile>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.0</version>
+				<configuration>
+					<url>http://localhost:8080/manager</url>
+					<server>TomcatServer</server>
+					<warFile>target/appops_client-${buildNumber}.war</warFile>
 				</configuration>
 			</plugin>
 		</plugins>
