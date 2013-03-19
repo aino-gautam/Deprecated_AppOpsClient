@@ -93,9 +93,9 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 					passwordTextBox.ensureDebugId(getConfiguration().getPropertyByName(TEXTFIELD_DEBUGID).toString());
 				
 				initWidget(passwordTextBox);
-				passwordTextBox.addFocusHandler(this);
-				passwordTextBox.addBlurHandler(this);
-				passwordTextBox.addValueChangeHandler(this);
+				//passwordTextBox.addFocusHandler(this);
+			//	passwordTextBox.addBlurHandler(this);
+				//passwordTextBox.addValueChangeHandler(this);
 			}
 		}else{
 			textArea = new TextArea();
