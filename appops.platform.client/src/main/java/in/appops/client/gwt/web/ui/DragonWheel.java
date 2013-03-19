@@ -8,8 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -56,9 +54,7 @@ public class DragonWheel extends Composite implements MouseWheelHandler,MouseOve
 	 * Call this method after all initialisation for initial layout. It lays the widgets according to current positions
 	 */
 	public void layOutDragonWheel() {
-		
-		//radius_y = (80*radius)/radius;
-		
+					
 		initWidgetPositions();
 		int indexOfWidget = 0;
 		
