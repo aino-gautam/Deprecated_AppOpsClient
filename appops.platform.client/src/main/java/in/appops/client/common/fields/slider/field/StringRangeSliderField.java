@@ -2,6 +2,7 @@ package in.appops.client.common.fields.slider.field;
 
 import java.util.ArrayList;
 
+import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.fields.Field;
 import in.appops.client.common.fields.slider.StringRangeSlider;
@@ -56,24 +57,40 @@ public class StringRangeSliderField extends Composite implements Field{
 		stringRangeSlider.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent arg0) {
-				String str = listOfOption.get(((int)stringRangeSlider.getCurrentValue())-1);
-				System.out.println("Selected Mode: "+str);
+				String selectedSettingStr = listOfOption.get(((int)stringRangeSlider.getCurrentValue())-1);
+				System.out.println("Selected Mode: "+selectedSettingStr);
+				
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventType(FieldEvent.EDITINITIATED);
+				fieldEvent.setEventData(selectedSettingStr);
+				
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 			}
 		});
 		
 		stringRangeSlider.addMouseWheelHandler(new MouseWheelHandler() {
 			@Override
 			public void onMouseWheel(MouseWheelEvent arg0) {
-				String str = listOfOption.get(((int)stringRangeSlider.getCurrentValue())-1);
-				System.out.println("Selected Mode: "+str);
+				String selectedSettingStr = listOfOption.get(((int)stringRangeSlider.getCurrentValue())-1);
+				System.out.println("Selected Mode: "+selectedSettingStr);
+				
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventType(FieldEvent.EDITINITIATED);
+				fieldEvent.setEventData(selectedSettingStr);
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 			}
 		});
 
 		stringRangeSlider.addMouseUpHandler(new MouseUpHandler() {
 			@Override
 			public void onMouseUp(MouseUpEvent arg0) {
-				String str = listOfOption.get(((int)stringRangeSlider.getCurrentValue())-1);
-				System.out.println("Selected Mode: "+str);
+				String selectedSettingStr = listOfOption.get(((int)stringRangeSlider.getCurrentValue())-1);
+				System.out.println("Selected Mode: "+selectedSettingStr);
+				
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventType(FieldEvent.EDITINITIATED);
+				fieldEvent.setEventData(selectedSettingStr);
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 			}
 		});
 
