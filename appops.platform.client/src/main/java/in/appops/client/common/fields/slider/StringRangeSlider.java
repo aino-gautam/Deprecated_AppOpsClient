@@ -21,7 +21,6 @@ public class StringRangeSlider extends FocusPanel implements ResizableWidget{
 	private double curValue;
 	private Image knobImage = new Image();
 	private KeyTimer keyTimer = new KeyTimer();
-	//private List<Label> labelElements = new ArrayList<Label>();
 	private List<Element> labelElements = new ArrayList<Element>();
 	private LabelFormatter labelFormatter;
 	private HTMLPanel htmlPanel = null;
@@ -37,7 +36,8 @@ public class StringRangeSlider extends FocusPanel implements ResizableWidget{
 	private double stepSize;
 	private List<Element> tickElements = new ArrayList<Element>();
 	private ArrayList<String> listOfOption = null;
-
+	int count = 0;
+	
 	public StringRangeSlider(double minValue, double maxValue) {
 		this(minValue, maxValue, null);
 	}
@@ -275,11 +275,12 @@ public class StringRangeSlider extends FocusPanel implements ResizableWidget{
 	}
 
 	private void drawLabels() {
-		if (!isAttached()) {
+		/*if (!isAttached()) {
 			return;
-		}
+		}*/
 
 		int lineWidth = DOM.getElementPropertyInt(htmlPanel.getElement(), "offsetWidth");
+		System.out.println("in drawLabl()"+numLabels);
 		if (numLabels > 0) {
 			for (int i = 0; i <= numLabels; i++) {
 				Element label = null;
@@ -300,15 +301,20 @@ public class StringRangeSlider extends FocusPanel implements ResizableWidget{
 				double value = minValue + (getTotalRange() * i / numLabels);
 				DOM.setStyleAttribute(label, "visibility", "hidden");
 				DOM.setStyleAttribute(label, "display", "");
+				System.out.println("in drawLabl() lable: "+formatLabel(value));
 				DOM.setElementProperty(label, "innerHTML", formatLabel(value));
 
-				DOM.setStyleAttribute(label, "left", "0px");
+				//DOM.setStyleAttribute(label, "left", "0px");
 
 				int labelWidth = DOM.getElementPropertyInt(label, "offsetWidth");
 				int labelLeftOffset = lineLeftOffset + (lineWidth * i / numLabels) - (labelWidth / 2);
 				labelLeftOffset = Math.min(labelLeftOffset, lineLeftOffset + lineWidth	- labelWidth);
 				labelLeftOffset = Math.max(labelLeftOffset, lineLeftOffset);
 				DOM.setStyleAttribute(label, "left", labelLeftOffset + "px");
+				/*DOM.setStyleAttribute(label, "left", count + "px");
+				if(count==0)
+					count = 25;
+				count = count*2;*/
 				DOM.setStyleAttribute(label, "visibility", "visible");
 			}
 

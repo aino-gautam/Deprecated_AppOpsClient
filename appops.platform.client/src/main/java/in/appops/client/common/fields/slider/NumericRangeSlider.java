@@ -21,7 +21,6 @@ public class NumericRangeSlider extends FocusPanel implements ResizableWidget{
 	private double curValue;
 	private Image knobImage = new Image();
 	private KeyTimer keyTimer = new KeyTimer();
-	//private List<Label> labelElements = new ArrayList<Label>();
 	private List<Element> labelElements = new ArrayList<Element>();
 	private LabelFormatter labelFormatter;
 	private HTMLPanel htmlPanel = null;
@@ -250,7 +249,7 @@ public class NumericRangeSlider extends FocusPanel implements ResizableWidget{
 		if (labelFormatter != null) {
 			return labelFormatter.formatLabel(this, value);
 		} else {
-			return (int) (10 * value) / 10.0 + "";
+			return (int) (10 * value) / 10 + "";
 		}
 	}
 
@@ -284,46 +283,6 @@ public class NumericRangeSlider extends FocusPanel implements ResizableWidget{
 		DOM.setStyleAttribute(knobElement, "left", knobLeftOffset + "px");
 	}
 
-	/*private void drawLabels() {
-		if (!isAttached())
-			return;
-
-		int lineWidth = DOM.getElementPropertyInt(htmlPanel.getElement(), "offsetWidth");
-		if (numLabels > 0) {
-			Label label = null;
-			for (int i = 0; i <= numLabels; i++) {
-				if (i < labelElements.size())
-					label = labelElements.get(i);
-				else {
-					label = new Label();
-					label.setStylePrimaryName("sliderStepEnableLbl");
-					if (enabled)
-						label.addStyleName("sliderStepEnableLbl");
-					else
-						label.addStyleName("sliderStepDisableLbl");
-					DOM.appendChild(getElement(), label.getElement());
-					labelElements.add(label);
-				}
-
-				double value = minValue + (getTotalRange() * i / numLabels);
-				label.addStyleName("sliderStepDisplayLbl");
-				label.setText(formatLabel(value));
-
-				int labelWidth = DOM.getElementPropertyInt(label.getElement(), "offsetWidth");
-				int labelLeftOffset = lineLeftOffset + (lineWidth * i / numLabels) - (labelWidth / 2);
-				labelLeftOffset = Math.min(labelLeftOffset, lineLeftOffset + lineWidth	- labelWidth);
-				labelLeftOffset = Math.max(labelLeftOffset, lineLeftOffset);
-				DOM.setStyleAttribute(label.getElement(), "left", labelLeftOffset + "px");
-				DOM.setStyleAttribute(label.getElement(), "visibility", "visible");
-			}
-
-			for (int i = (numLabels + 1); i < labelElements.size(); i++)
-				label.addStyleName("sliderStepDisableLbl");
-		} else {
-			for (Label elem : labelElements)
-				elem.addStyleName("sliderStepDisableLbl");
-		}
-	}*/
 	private void drawLabels() {
 		if (!isAttached()) {
 			return;
@@ -350,6 +309,7 @@ public class NumericRangeSlider extends FocusPanel implements ResizableWidget{
 				double value = minValue + (getTotalRange() * i / numLabels);
 				DOM.setStyleAttribute(label, "visibility", "hidden");
 				DOM.setStyleAttribute(label, "display", "");
+				System.out.println("in drawLabl() lable: "+formatLabel(value));
 				DOM.setElementProperty(label, "innerHTML", formatLabel(value));
 
 				DOM.setStyleAttribute(label, "left", "0px");
