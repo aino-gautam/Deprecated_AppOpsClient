@@ -111,12 +111,32 @@ public class Navigator extends Composite implements ClickHandler {
 			int screenNo = currentScreenNo+1;
 			navEvent.setEventData(screenNo);
 			setCurrentScreenNo(screenNo);
+			setVisibilityOfNextPrevElement();
+			
 		} else if(widget == prevWidget){
 			navEvent.setEventType(NavigationEvent.GOPREVIOUS);
 			int screenNo = currentScreenNo-1;
 			navEvent.setEventData(screenNo);
 			setCurrentScreenNo(screenNo);
+			setVisibilityOfNextPrevElement();
 		}
 		AppUtils.EVENT_BUS.fireEvent(navEvent);
+	}
+
+	private void setVisibilityOfNextPrevElement() {
+		if(currentScreenNo == 1 && currentScreenNo < totalScreens){
+			prevWidget.setVisible(false);
+			nextWidget.setVisible(true);
+		} else if(currentScreenNo > 1 && currentScreenNo < totalScreens){
+			prevWidget.setVisible(true);
+			nextWidget.setVisible(true);
+		} else if(currentScreenNo > 1 && currentScreenNo == totalScreens){
+			prevWidget.setVisible(true);
+			nextWidget.setVisible(false);
+		} else if(currentScreenNo == 1 && currentScreenNo == totalScreens){
+			prevWidget.setVisible(false);
+			nextWidget.setVisible(false);
+		}
+		
 	}
 }
