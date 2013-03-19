@@ -13,10 +13,6 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class NumericRangeSliderField extends Composite implements Field{
@@ -57,9 +53,6 @@ public class NumericRangeSliderField extends Composite implements Field{
 		
 		initializeConfiguration();
 		
-		Label headerLbl = new Label("Selected Value: ");
-		final TextBox curBox = new TextBox();
-		
 		final NumericRangeSlider numericRngeSlider = new NumericRangeSlider(minValue, maxValue);
 		numericRngeSlider.setStepSize(stepValue);
 		numericRngeSlider.setCurrentValue(minValue);
@@ -68,34 +61,27 @@ public class NumericRangeSliderField extends Composite implements Field{
 		numericRngeSlider.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent arg0) {
-				curBox.setText(numericRngeSlider.getCurrentValue() + "");
+				System.out.println("Selected Range: "+numericRngeSlider.getCurrentValue());
 			}
 		});
 		
 		numericRngeSlider.addMouseWheelHandler(new MouseWheelHandler() {
 			@Override
 			public void onMouseWheel(MouseWheelEvent arg0) {
-				curBox.setText(numericRngeSlider.getCurrentValue() + "");
+				System.out.println("Selected Range: "+numericRngeSlider.getCurrentValue());
 			}
 		});
 
 		numericRngeSlider.addMouseUpHandler(new MouseUpHandler() {
 			@Override
 			public void onMouseUp(MouseUpEvent arg0) {
-				curBox.setText(numericRngeSlider.getCurrentValue() + "");
+				System.out.println("Selected Range: "+numericRngeSlider.getCurrentValue());
 			}
 		});
 		
 		VerticalPanel verticalPanel = new VerticalPanel();
 		verticalPanel.setSpacing(10);
 		verticalPanel.add(numericRngeSlider);
-		verticalPanel.add(new HTML("<BR>"));
-		
-		HorizontalPanel horizontalPanel = new HorizontalPanel();
-		horizontalPanel.add(headerLbl);
-		horizontalPanel.add(curBox);
-		
-		verticalPanel.add(horizontalPanel);
 		verticalPanel.setStylePrimaryName("numericRangeSliderPanel");
 		
 		initWidget(verticalPanel);

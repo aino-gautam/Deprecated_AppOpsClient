@@ -15,10 +15,6 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class StringRangeSliderField extends Composite implements Field{
@@ -47,10 +43,7 @@ public class StringRangeSliderField extends Composite implements Field{
 	@Override
 	public void createField() throws AppOpsException {
 		
-		Label headerLbl = new Label("Selected Value: ");
-		final TextBox curBox = new TextBox();
 		final VerticalPanel verticalPanel = new VerticalPanel();
-		
 		final ArrayList<String> listOfOption = getOptionListFromConfig();
 		
 		final StringRangeSlider stringRangeSlider = new StringRangeSlider(1, listOfOption.size());
@@ -64,7 +57,7 @@ public class StringRangeSliderField extends Composite implements Field{
 			@Override
 			public void onClick(ClickEvent arg0) {
 				String str = listOfOption.get(((int)stringRangeSlider.getCurrentValue())-1);
-				curBox.setText(str);
+				System.out.println("Selected Mode: "+str);
 			}
 		});
 		
@@ -72,7 +65,7 @@ public class StringRangeSliderField extends Composite implements Field{
 			@Override
 			public void onMouseWheel(MouseWheelEvent arg0) {
 				String str = listOfOption.get(((int)stringRangeSlider.getCurrentValue())-1);
-				curBox.setText(str);
+				System.out.println("Selected Mode: "+str);
 			}
 		});
 
@@ -80,21 +73,12 @@ public class StringRangeSliderField extends Composite implements Field{
 			@Override
 			public void onMouseUp(MouseUpEvent arg0) {
 				String str = listOfOption.get(((int)stringRangeSlider.getCurrentValue())-1);
-				curBox.setText(str);
+				System.out.println("Selected Mode: "+str);
 			}
 		});
 
 		verticalPanel.setSpacing(10);
 		verticalPanel.add(stringRangeSlider);
-		verticalPanel.add(new HTML("<BR>"));
-		
-		HorizontalPanel horizontalPanel = new HorizontalPanel();
-		horizontalPanel.add(headerLbl);
-		horizontalPanel.add(curBox);
-		
-		verticalPanel.add(horizontalPanel);
-		
-		verticalPanel.add(curBox);
 		verticalPanel.setStylePrimaryName("stringRangeSliderPanel");
 		initWidget(verticalPanel);
 	}
