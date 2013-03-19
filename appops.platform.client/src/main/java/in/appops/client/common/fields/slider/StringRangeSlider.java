@@ -10,14 +10,13 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ImageBundle;
-import com.google.gwt.user.client.ui.Label;
-
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class StringRangeSlider extends FocusPanel implements ResizableWidget{
 
+	private double curretnValueInTxtBox;
 	private double curValue;
 	private Image knobImage = new Image();
 	private KeyTimer keyTimer = new KeyTimer();
@@ -36,7 +35,6 @@ public class StringRangeSlider extends FocusPanel implements ResizableWidget{
 	private double stepSize;
 	private List<Element> tickElements = new ArrayList<Element>();
 	private ArrayList<String> listOfOption = null;
-	int count = 0;
 	
 	public StringRangeSlider(double minValue, double maxValue) {
 		this(minValue, maxValue, null);
@@ -67,34 +65,6 @@ public class StringRangeSlider extends FocusPanel implements ResizableWidget{
 		DOM.setElementProperty(knobElement, "className", "gwt-SliderBar-line");
 
 		sinkEvents(Event.MOUSEEVENTS | Event.KEYEVENTS | Event.FOCUSEVENTS);
-	}
-
-	public double getCurrentValue() {
-		return curValue;
-	}
-
-	public LabelFormatter getLabelFormatter() {
-		return labelFormatter;
-	}
-
-	public double getMaxValue() {
-		return maxValue;
-	}
-
-	public double getMinValue() {
-		return minValue;
-	}
-
-	public int getNumLabels() {
-		return numLabels;
-	}
-
-	public int getNumTicks() {
-		return numTicks;
-	}
-
-	public double getStepSize() {
-		return stepSize;
 	}
 
 	public double getTotalRange() {
@@ -157,9 +127,8 @@ public class StringRangeSlider extends FocusPanel implements ResizableWidget{
 				}
 				break;
 			case Event.ONMOUSEMOVE:
-				if (slidingMouse) {
+				if (slidingMouse)
 					slideKnob(event);
-				}
 				break;
 			}
 		}
@@ -248,6 +217,34 @@ public class StringRangeSlider extends FocusPanel implements ResizableWidget{
 		setCurrentValue(getCurrentValue() + numSteps * stepSize);
 	}
 
+	public double getCurrentValue() {
+		return curValue;
+	}
+
+	public LabelFormatter getLabelFormatter() {
+		return labelFormatter;
+	}
+
+	public double getMaxValue() {
+		return maxValue;
+	}
+
+	public double getMinValue() {
+		return minValue;
+	}
+
+	public int getNumLabels() {
+		return numLabels;
+	}
+
+	public int getNumTicks() {
+		return numTicks;
+	}
+
+	public double getStepSize() {
+		return stepSize;
+	}
+
 	protected String formatLabel(double value) {
 		String str = listOfOption.get(((int)value)-1);
 		if (labelFormatter != null)
@@ -256,11 +253,31 @@ public class StringRangeSlider extends FocusPanel implements ResizableWidget{
 			return str;
 	}
 
+	public ArrayList<String> getListOfOption() {
+		return listOfOption;
+	}
+
+	public void setListOfOption(ArrayList<String> listOfOption) {
+		this.listOfOption = listOfOption;
+	}
+
 	protected double getKnobPercent() {
 		if (maxValue <= minValue)
 			return 0;
 		double percent = (curValue - minValue) / (maxValue - minValue);
 		return Math.max(0.0, Math.min(1.0, percent));
+	}
+
+	@Override
+	protected void onLoad() {
+		DOM.setStyleAttribute(getElement(), "position", "relative");
+		ResizableWidgetCollection.get().add(this);
+		redraw();
+	}
+
+	@Override
+	protected void onUnload() {
+		ResizableWidgetCollection.get().remove(this);
 	}
 
 	private void drawKnob() {
@@ -275,12 +292,11 @@ public class StringRangeSlider extends FocusPanel implements ResizableWidget{
 	}
 
 	private void drawLabels() {
-		/*if (!isAttached()) {
+		if (!isAttached()) {
 			return;
-		}*/
+		}
 
 		int lineWidth = DOM.getElementPropertyInt(htmlPanel.getElement(), "offsetWidth");
-		System.out.println("in drawLabl()"+numLabels);
 		if (numLabels > 0) {
 			for (int i = 0; i <= numLabels; i++) {
 				Element label = null;
@@ -304,17 +320,13 @@ public class StringRangeSlider extends FocusPanel implements ResizableWidget{
 				System.out.println("in drawLabl() lable: "+formatLabel(value));
 				DOM.setElementProperty(label, "innerHTML", formatLabel(value));
 
-				//DOM.setStyleAttribute(label, "left", "0px");
+				DOM.setStyleAttribute(label, "left", "0px");
 
 				int labelWidth = DOM.getElementPropertyInt(label, "offsetWidth");
 				int labelLeftOffset = lineLeftOffset + (lineWidth * i / numLabels) - (labelWidth / 2);
 				labelLeftOffset = Math.min(labelLeftOffset, lineLeftOffset + lineWidth	- labelWidth);
 				labelLeftOffset = Math.max(labelLeftOffset, lineLeftOffset);
 				DOM.setStyleAttribute(label, "left", labelLeftOffset + "px");
-				/*DOM.setStyleAttribute(label, "left", count + "px");
-				if(count==0)
-					count = 25;
-				count = count*2;*/
 				DOM.setStyleAttribute(label, "visibility", "visible");
 			}
 
@@ -385,8 +397,6 @@ public class StringRangeSlider extends FocusPanel implements ResizableWidget{
 
 	private void startSliding(boolean highlight, boolean fireEvent) {
 		if (highlight) {
-			//DOM.setElementProperty(htmlPanel.getElement(), "className", "gwt-SliderBar-line gwt-SliderBar-line-sliding");
-			//htmlPanel.addStyleName("gwt-SliderBar-line gwt-SliderBar-line-sliding");
 			DOM.setElementProperty(knobImage.getElement(), "className", "gwt-SliderBar-knob gwt-SliderBar-knob-sliding");
 			images.sliderSliding().applyTo(knobImage);
 		}
@@ -412,12 +422,12 @@ public class StringRangeSlider extends FocusPanel implements ResizableWidget{
 	}
 
 
-	public ArrayList<String> getListOfOption() {
-		return listOfOption;
+	public double getCurretnValueInTxtBox() {
+		return curretnValueInTxtBox;
 	}
 
-	public void setListOfOption(ArrayList<String> listOfOption) {
-		this.listOfOption = listOfOption;
+	public void setCurretnValueInTxtBox(double curretnValueInTxtBox) {
+		this.curretnValueInTxtBox = curretnValueInTxtBox;
 	}
 
 
@@ -466,5 +476,4 @@ public class StringRangeSlider extends FocusPanel implements ResizableWidget{
 		AbstractImagePrototype users();
 
 	}
-
 }
