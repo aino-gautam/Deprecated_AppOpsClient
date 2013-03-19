@@ -46,6 +46,7 @@ public class DateOnlyPicker extends Composite implements FocusHandler{
 				java.util.Date date = (java.util.Date) event.getValue();
 		        String dateString = DateTimeFormat.getFormat("dd-MM-yyyy").format(date);
 		        textbox.setText(dateString);
+		        popupPanel.hide();
 		     }});
 		
 		vpBase.add(textbox);

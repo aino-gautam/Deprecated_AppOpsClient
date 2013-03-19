@@ -2,8 +2,6 @@ package in.appops.client.common.fields.suggestion;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Composite;
@@ -12,14 +10,14 @@ import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class AppopsSuggestionBox extends Composite implements SelectionHandler<SuggestOracle.Suggestion>, ClickHandler{
+public class SuggestionField extends Composite implements SelectionHandler<SuggestOracle.Suggestion>, ClickHandler{
 	
 	private VerticalPanel basePanel;
 	private AppopsSuggestion selectedSuggestion;
 	private SuggestionOracle oracle = new SuggestionOracle();
 	private SuggestBox suggestBox = new SuggestBox(oracle);
 	
-	public AppopsSuggestionBox() {
+	public SuggestionField() {
 		basePanel = new VerticalPanel();
 		createUi();
 		initWidget(basePanel);
