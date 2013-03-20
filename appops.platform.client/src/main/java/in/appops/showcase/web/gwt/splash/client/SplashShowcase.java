@@ -2,7 +2,6 @@ package in.appops.showcase.web.gwt.splash.client;
 
 
 import in.appops.client.gwt.web.ui.Splash;
-import in.appops.showcase.web.gwt.wizardform.client.ContactDetailsScreen;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -17,11 +16,11 @@ public class SplashShowcase implements EntryPoint {
 		@Override
 		public void onModuleLoad() {
 			Splash splash = new Splash();
-			ContactDetailsScreen sc = new ContactDetailsScreen();
+			//ContactDetailsScreen sc = new ContactDetailsScreen();
 			
-			splash.addWidget(getWidgets("Security"), "Security", sc);
-			splash.addWidget(getWidgets("Contacts"), "Contacts", sc);
-			splash.addWidget(getWidgets("Widget settings"), "Widget settings", sc);
+			splash.addWidget(getWidgets("Security"), "Security", null);
+			splash.addWidget(getWidgets("Contacts"), "Contacts", null);
+			splash.addWidget(getWidgets("Widget settings"), "Widget settings", null);
 			splash.setMainImage("imgaes/opptin.png");
 			splash.initialize();
 			
