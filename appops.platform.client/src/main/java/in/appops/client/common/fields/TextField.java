@@ -47,6 +47,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	public static final String TEXTFIELDTYPE_TEXTBOX = "textbox";
 	public static final String TEXTFIELDTYPE_PASSWORDTEXTBOX = "passowrdTextbox";
 	public static final String TEXTFIELDTYPE_TEXTAREA = "textarea";
+	public static final String PROPERTY_BY_FIELD_NAME = "propertyByFieldName";
 	
 	static EventBus eventBus = GWT.create(SimpleEventBus.class); 
 	
@@ -92,9 +93,9 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 					passwordTextBox.ensureDebugId(getConfiguration().getPropertyByName(TEXTFIELD_DEBUGID).toString());
 				
 				initWidget(passwordTextBox);
-				passwordTextBox.addFocusHandler(this);
-				passwordTextBox.addBlurHandler(this);
-				passwordTextBox.addValueChangeHandler(this);
+				//passwordTextBox.addFocusHandler(this);
+			//	passwordTextBox.addBlurHandler(this);
+				//passwordTextBox.addValueChangeHandler(this);
 			}
 		}else{
 			textArea = new TextArea();
