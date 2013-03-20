@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class Splash extends Composite implements ClickHandler{
@@ -23,6 +24,7 @@ public class Splash extends Composite implements ClickHandler{
 	private LinkedHashMap<Widget , SplashWidget> splashWidgetMap = new LinkedHashMap<Widget, SplashWidget>();
 	private LinkedHashMap<String, HashMap<Widget, Screen>> widgetMap;
 	private AbsolutePanel parent ;
+	private SimplePanel simplePanel = new SimplePanel();
 
 	
 	double shift_v = 10;// Math.PI/1.2	; //
@@ -38,7 +40,8 @@ public class Splash extends Composite implements ClickHandler{
 	
 	public Splash(){
 		parent = new AbsolutePanel();
-		initWidget(parent);
+		simplePanel.add(parent);
+		initWidget(simplePanel);
 	}
 	
 	public void setMainImage(String imageUrl){
@@ -244,6 +247,7 @@ public class Splash extends Composite implements ClickHandler{
 				Screen sc = sw.getScreen();
 				sc.createScreen();
 				popup.add(sc);
+				popup.center();
 				break;
 			}
 		}

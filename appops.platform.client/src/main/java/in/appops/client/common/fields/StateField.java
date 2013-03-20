@@ -35,7 +35,7 @@ public class StateField extends Composite implements Field, ChangeHandler{
 	public static final String STATEFIELDMODE_ENUM = "stateFieldTypeEnum";
 	public static final String STATEFIELDMODE_SUGGESTIVE = "stateFieldTypeSuggestive";
 	public static final String STATEFIELD_OPERATION = "stateFieldOperation";
-	
+	public static final String PROPERTY_BY_FIELD_NAME = "propertyByFieldName";
 	public StateField(){
 	}
 	
@@ -129,6 +129,15 @@ public class StateField extends Composite implements Field, ChangeHandler{
 
 	@Override
 	public String getFieldValue() {
+		String fieldMode = getConfiguration().getPropertyByName(STATEFIELD_MODE).toString();
+		if(fieldMode.equalsIgnoreCase(STATEFIELDMODE_ENUM)){
+			 if(fieldType.equalsIgnoreCase(STATEFIELDTYPE_LIST)){
+				 
+			 }
+		}else{
+			setFieldValue(appopsSuggestionBox.getSuggestBox().getValue());
+			return appopsSuggestionBox.getSuggestBox().getValue();
+		}
 		return this.getFieldValue();
 	}
 
