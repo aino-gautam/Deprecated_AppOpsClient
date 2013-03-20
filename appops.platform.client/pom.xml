@@ -126,14 +126,14 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>16.03.2013</version>
+			<version>19.03.2013</version>
 		</dependency>
 
 		<!-- This should be used when using a final version of the jar -->
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>16.03.2013</version>
+			<version>19.03.2013</version>
 		</dependency>
 
 		<dependency>
@@ -198,6 +198,7 @@
 						<module>in.appops.showcase.web.gwt.fields.fields</module>
 						<module>in.appops.showcase.web.gwt.intellithought.IntelliThought</module>
 						<module>in.appops.showcase.web.gwt.wizardform.wizardform</module>
+						<module>in.appops.showcase.web.gwt.splash.splash</module>
 						<!-- <module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> -->
 						<!-- <module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module> 
 							<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> <module>in.appops.showcase.web.gwt.uploadservice.UploadService</module> 
