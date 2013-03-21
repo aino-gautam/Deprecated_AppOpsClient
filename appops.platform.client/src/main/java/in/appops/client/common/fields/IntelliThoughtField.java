@@ -6,13 +6,15 @@ import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
-public class IntelliThoughtField extends Widget implements Field, HasText {
+public class IntelliThoughtField extends Widget implements Field, HasText, ClickHandler {
 	private Configuration configuration;
 	private String fieldValue;
 	
@@ -50,8 +52,9 @@ public class IntelliThoughtField extends Widget implements Field, HasText {
 			intelliText.setClassName("intelliTextField");
 			intelliText.setId("intelliTextField");
 			this.setElement(intelliText);
+			this.setText("Any Thoughts");
 			this.getElement().setAttribute(INTELLITEXTFIELD_CONTENTEDITABLE, "true");
-			
+			this.addDomHandler(this, ClickEvent.getType());
 		}
 		
 	}
@@ -104,6 +107,14 @@ public class IntelliThoughtField extends Widget implements Field, HasText {
 	public void onFieldEvent(FieldEvent event) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	@Override
+	public void onClick(ClickEvent event) {
+		if(this.getText().equalsIgnoreCase("Any Thoughts")) {
+			this.setText("");
+		}
 	}
 
 }
