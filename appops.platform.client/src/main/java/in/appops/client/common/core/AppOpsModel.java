@@ -9,7 +9,8 @@ public interface AppOpsModel {
 	
 	public Entity deleteEntity(Entity entity);
 	
-	public Query getQuery();
+	public Query getQueryToBind();
 	
-	public void setQuery();
+	public void setQueryToBind(Query query);
+
 }

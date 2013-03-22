@@ -18,5 +18,7 @@ public interface Screen extends IsWidget{
 	
 	public void setEntity(Entity entity);
 	
+	public Entity populateEntity();
+	
 	
 }
