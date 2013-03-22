@@ -260,12 +260,12 @@ public class LocationSelector extends Composite implements Field {
 				final HorizontalPanel hpPanel = new HorizontalPanel(); 
 				popupPanelForMap = new PopupPanel();
 				
-				searchIconImage = new Image("imgaes/search_off.png");
+				//searchIconImage = new Image("imgaes/search_off.png");
 				popupPanelForMap.setAutoHideEnabled(true);
 				hpPanel.add(mapField);
 				//hpPanel.add(searchIconImage);
-				hpPanel.setCellVerticalAlignment(searchIconImage, HasVerticalAlignment.ALIGN_MIDDLE);
-				hpPanel.setCellHorizontalAlignment(searchIconImage, HasHorizontalAlignment.ALIGN_RIGHT);
+				//hpPanel.setCellVerticalAlignment(searchIconImage, HasVerticalAlignment.ALIGN_MIDDLE);
+				//hpPanel.setCellHorizontalAlignment(searchIconImage, HasHorizontalAlignment.ALIGN_RIGHT);
 				popupPanelForMap.add(hpPanel);
 				hpPanel.setBorderWidth(1);
 				
