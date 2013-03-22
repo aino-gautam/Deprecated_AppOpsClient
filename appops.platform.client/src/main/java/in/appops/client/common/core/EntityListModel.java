@@ -7,13 +7,16 @@ import in.appops.platform.core.util.EntityList;
 public class EntityListModel implements AppOpsModel {
 	
 	private EntityList entityList;
+	private Query query;
 	
 	public EntityListModel(){
 		
 	}
 
 	public EntityList getEntityList() {
-		return entityList;
+		// do the entity list fetching here using the query.
+		
+		return null;
 	}
 
 	public void setEntityList(EntityList entityList) {
@@ -33,15 +36,13 @@ public class EntityListModel implements AppOpsModel {
 	}
 
 	@Override
-	public Query getQuery() {
-		// TODO Auto-generated method stub
-		return null;
+	public Query getQueryToBind() {
+		return this.query;
 	}
 
 	@Override
-	public void setQuery() {
-		// TODO Auto-generated method stub
-		
+	public void setQueryToBind(Query query) {
+		this.query = query;
 	}
 	
 

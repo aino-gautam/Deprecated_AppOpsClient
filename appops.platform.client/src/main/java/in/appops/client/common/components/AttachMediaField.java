@@ -42,7 +42,7 @@ public class AttachMediaField extends Composite implements ClickHandler, OnFinis
 
 	private void initialize() {
 		basePanel = new FlexTable();
-		media = new Image("image/Media.png");
+		media = new Image("images/Media.png");
 		media.setStylePrimaryName("mediaImage");
 		media.addStyleName("fadeInUp");
 
