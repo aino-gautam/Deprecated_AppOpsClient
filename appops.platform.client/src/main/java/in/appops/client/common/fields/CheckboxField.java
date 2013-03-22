@@ -33,7 +33,7 @@ public class CheckboxField extends CheckBox implements Field{
 	public void createField() throws AppOpsException {
 		
 		if(getConfiguration() == null)
-			throw new AppOpsException("Statefield configuration unavailable");
+			throw new AppOpsException("CheckBox configuration unavailable");
 		
 		this.setValue(Boolean.valueOf(getFieldValue()));
 			
