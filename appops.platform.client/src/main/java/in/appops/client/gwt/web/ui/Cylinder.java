@@ -3,8 +3,10 @@
  */
 package in.appops.client.gwt.web.ui;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -15,8 +17,11 @@ import com.google.gwt.user.client.ui.Widget;
 public class Cylinder extends Row {
 
 	private int order ;
-	private LinkedHashMap<String, Row> rowMap = null ;
-	private String dispalyName;
+	private HashMap<String, Row> rowMap = null ;
+	private String displayName;
+	private int height;
+	private double radius ;
+	
 	
 	
 	public Cylinder() {
@@ -30,12 +35,11 @@ public class Cylinder extends Row {
 
 	public void addRow(Row row){
 		if(rowMap==null)
-			rowMap = new LinkedHashMap<String, Row>();
+			rowMap = new HashMap<String, Row>();
 		
 		rowMap.put(row.getName(),row);
 		row.setParentCylinder(this);
-		add(row, row.getxLeft(), row.getyTop());
-		
+				
 	}
 	
 	public void removeRow(Row row){
@@ -50,7 +54,7 @@ public class Cylinder extends Row {
 		Map<String, Row> rowmap = getRowMap();
 		for ( String rowName : rowmap.keySet()){
 			Row row =rowmap.get(rowName);
-			LinkedHashMap<Widget, DragonWheelWidget> map =  row.getdWidgetMap();
+			Set<Widget> widgetSetForRow = row.getWidgetSetForRow();
 			double currentAngle = 0.0;
 			int indexOfWidget = 0;
 			
@@ -63,20 +67,15 @@ public class Cylinder extends Row {
 			}
 			row.setCurrentAngle(currentAngle);
 			
-			for (Map.Entry<Widget, DragonWheelWidget> e : map.entrySet()) {
-				Widget widget = e.getKey();
-				DragonWheelWidget dww = e.getValue();
+			for (Widget widget : widgetSetForRow) {
+				
 				int newXpos = (int) Math.round(Math.cos(row.getCurrentAngle()*2 + indexOfWidget* row.getWidgetSpacing()+row.getSpeed() )* row.getRadius() + row.getxLeft());
 				int newYPos = (int) Math.round(-Math.sin(row.getCurrentAngle()*2 + indexOfWidget* row.getWidgetSpacing()+row.getSpeed())* row.getElevation_angle() + row.getyTop());
 
 				double scale = row.getScalingConstant()/ (row.getScalingConstant() + Math.sin(row.getCurrentAngle()*2 + indexOfWidget * row.getWidgetSpacing()+row.getSpeed() )* row.getRadius() + row.getZcenter());
 				
-				widget = scaleWheelWidget(widget, scale);
-				
-				dww.setLeftOffset(newXpos);
-				dww.setTopOffset(newYPos);
-				dww.setWrapped(widget);
-				
+				widget = scaleWheelWidget(widget, scale,indexOfWidget);
+												
 				row.add(widget, newXpos, newYPos);
 				
 				indexOfWidget++;
@@ -100,25 +99,20 @@ public class Cylinder extends Row {
 		Map<String, Row> rowmap = getRowMap();
 		for ( String rowName : rowmap.keySet()){
 			Row row =rowmap.get(rowName);
-			LinkedHashMap<Widget, DragonWheelWidget> map =  row.getdWidgetMap();
+			Set<Widget> widgetSetForRow = row.getWidgetSetForRow();
 			
 			int indexOfWidget = 0;
 			row.setElevation_angle(elevation_angle);	
 			
-			for (Map.Entry<Widget, DragonWheelWidget> e : map.entrySet()) {
-				Widget widget = e.getKey();
-				DragonWheelWidget dww = e.getValue();
+			for (Widget widget : widgetSetForRow) {
+				
 				int newXpos = (int) Math.round(Math.cos(row.getCurrentAngle() + indexOfWidget* row.getWidgetSpacing()+row.getSpeed() )* row.getRadius() + row.getxLeft());
 				int newYPos = (int) Math.round(-Math.sin(row.getCurrentAngle() + indexOfWidget* row.getWidgetSpacing()+row.getSpeed())* row.getElevation_angle() + row.getyTop());
 				
 				double scale = row.getScalingConstant()/ (row.getScalingConstant() + Math.sin(row.getCurrentAngle() + indexOfWidget * row.getWidgetSpacing()+row.getSpeed() )* row.getRadius() + row.getZcenter());
 				
-				widget = scaleWheelWidget(widget, scale);
-				
-				dww.setLeftOffset(newXpos);
-				dww.setTopOffset(newYPos);
-				dww.setWrapped(widget);
-				
+				widget = scaleWheelWidget(widget, scale,indexOfWidget);
+								
 				row.add(widget, newXpos, newYPos);
 				
 				indexOfWidget++;
@@ -138,12 +132,44 @@ public class Cylinder extends Row {
 		this.order = order;
 	}
 
-	public String getDispalyName() {
-		return dispalyName;
+	public String getDisplayName() {
+		return displayName;
 	}
 
-	public void setDispalyName(String dispalyName) {
-		this.dispalyName = dispalyName;
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
+	public void initWidgetPositions(MediaViewer mediaViewer) {
+		
+		Map<Row, LinkedHashSet<Widget>> widgetSetForCylinder = mediaViewer.getNextWidgetSet(this);
+		
+		for (Row row : widgetSetForCylinder.keySet()){
+			row.initWidgetPositions(mediaViewer,widgetSetForCylinder.get(row));
+			row.setRadius(radius);
+			add(row);
+		}
+		
+	}
+
+	public void setRowMap(HashMap<String, Row> rowMap) {
+		this.rowMap = rowMap;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public double getRadius() {
+		return radius;
+	}
+
+	public void setRadius(double radius) {
+		this.radius = radius;
 	}
 	
 	

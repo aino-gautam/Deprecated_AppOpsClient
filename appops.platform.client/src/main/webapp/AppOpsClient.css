@@ -20,37 +20,30 @@
 }
 
 .dragonWheel{
-	width: 100%;
-	height: 100%;
-	position: relative;
+	/* width: 100%;
+	height: 100%; */
+	position: absolute !important;
 	top: 0px;
 	left: 0px;
 	border: 1px thick black ;
+	display: inline !important;
 }
 
-.widgetHover{
-	padding: 2em;
-	background-color: red ;
-	 -moz-border-radius: 50% 50%;
-	border-radius: 50% 50%;
-	-webkit-border-radius: 50% 50%; 
-	position: absolute;	
-    z-index: 99;
-    width: 200% ;!important
+.rowPanel{
+	
+	position: absolute !important;
+	border: 1px thick black ;
+	display: inline !important;
+	overflow: visible !important;
+}
 
-   }
-
-.wheelWidget{
-	padding: 5em;
-	background-color: #3333CC;
+.imageWidget{
 	 -moz-border-radius: 4% 4%;
 	border-radius: 4% 4%;
-	-webkit-border-radius: 4% 4%;  
-}
-
-.label{
-	color: silver;
-	font: bold;
+	-webkit-border-radius: 4% 4%;
+	width: 150px;
+	height:100px;  
+	border: 1px;
 }
 
 
@@ -211,13 +204,25 @@ background-color: #AAAAAA;
 .gwt-SliderBar-shell {
 	height: 25pt;
 	width: 100%;
-	position: relative;
+	border: none;
 }
 
 .gwt-SliderBar-shell .gwt-SliderBar-line {
-	border: 1px solid black;
-	background-color: gray;
-	height: 2px;
+	/* border: 1px solid black; */
+	border: 1px solid #B3B3B3;
+	border-radius: 5px;
+	
+	/* for drop shadow*/
+	-webkit-box-shadow: 2px 2px 0 #B3B3B3;
+	box-shadow: 2px 2px 0 #B3B3B3;
+
+	/* For IE 8 */
+	-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#B3B3B3')";
+	/* For IE 5.5 - 7 */
+	filter: progid:DXImageTransform.Microsoft.Shadow(Strength=2, Direction=135, Color='#B3B3B3');
+	
+	/* background-color: gray; */
+	height: 8px;
 	width: 95%;
 	top: 22pt;
 	overflow: hidden;
@@ -228,9 +233,7 @@ background-color: #AAAAAA;
 }
 
 .gwt-SliderBar-shell .gwt-SliderBar-knob {
-	top: 14pt;
-	width: 11px;
-	height: 21px;
+	top: 15pt;
 	z-index: 1;
 	cursor: pointer;
 }
@@ -251,6 +254,7 @@ background-color: #AAAAAA;
 	top: 2pt;
 	font-size: 8pt;
 	cursor: default;
+	font-weight: bold;
 }
 
 .gwt-SliderBar-shell-focused {
@@ -269,7 +273,7 @@ background-color: #AAAAAA;
 }
 
 .stringRangeSliderPanel{
-	width: 70%;
+	width: 100%;
 }
 
 /**** splash widget css *******/
