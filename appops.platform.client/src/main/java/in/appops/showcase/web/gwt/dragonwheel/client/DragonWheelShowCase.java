@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import in.appops.client.gwt.web.ui.Cylinder;
+import in.appops.client.gwt.web.ui.DragonWheelNew;
 import in.appops.client.gwt.web.ui.MediaViewer;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
@@ -42,8 +43,8 @@ public class DragonWheelShowCase implements EntryPoint{
 	public void onModuleLoad() {
 		
 		MediaViewer mediaViewer = new MediaViewer();
-				
-		//RootPanel.get().add(new Image(GWT.getHostPageBaseURL()+"download?blobId=%2B%2B0Ge9ehUutBBZRidFNt0grgTz%2F0cTirp%2BOzwwZywQ9CoOMWY3WpLol8kiAFBKmMGn4bgkooUQ4%3D"));
+		RootPanel.get("wheelContainer").add(mediaViewer);
+		
 			
 	}
 
