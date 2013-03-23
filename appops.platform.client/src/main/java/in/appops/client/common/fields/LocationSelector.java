@@ -505,4 +505,12 @@ public class LocationSelector extends Composite implements Field {
 		this.currentLocationLabel = currentLocationLabel;
 	}
 
+	public TextField getCurrentLocationTextField() {
+		return currentLocationTextField;
+	}
+
+	public void setCurrentLocationTextField(TextField currentLocationTextField) {
+		this.currentLocationTextField = currentLocationTextField;
+	}
+
 }
