@@ -13,6 +13,9 @@ public class FieldEvent extends GwtEvent<FieldEventHandler> {
 	public static final int EDITINPROGRESS = 2;
 	public static final int EDITCOMPLETED = 3;
 	public static final int EDITFAIL = 4;
+	public static final int WORDENTERED = 5;
+	public static final int THREE_CHAR_ENTERED = 6;
+	public static final int SUGGESTION_CLICKED = 7;
 	
 	public static Type<FieldEventHandler> TYPE = new Type<FieldEventHandler>();
 	
