@@ -1,12 +1,14 @@
 package in.appops.client.common.fields;
 
+import in.appops.client.common.event.FieldEvent;
+import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.shared.Configuration;
+
 import java.util.List;
+
 import com.google.code.gwt.geolocation.client.Coordinates;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.maps.client.base.HasLatLng;
 import com.google.gwt.maps.client.base.LatLng;
 import com.google.gwt.maps.client.event.Event;
@@ -29,10 +31,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
-import in.appops.client.common.event.FieldEvent;
-import in.appops.platform.core.entity.Entity;
-import in.appops.platform.core.shared.Configuration;
 
 public class LocationSelector extends Composite implements Field {
 
@@ -207,19 +205,33 @@ public class LocationSelector extends Composite implements Field {
 		 horizontalPanel.setWidth("100%");
 		 basePanel.add(horizontalPanel);
 		 
+		 try{
+				mapField = new MapField(latLng);
+				mapField.setMapHeight(getConfiguration().getPropertyByName(MAP_HEIGHT).toString());
+				mapField.setMapWidth(getConfiguration().getPropertyByName(MAP_WIDTH).toString());
+				mapField.setMapZoomParameter(Integer.parseInt(getConfiguration().getPropertyByName(MAP_ZOOM).toString()));
+				mapField.createMapUi();
+				mapField.getAddressAndSet(latLng);
+				Timer timer = new Timer() {
+					
+					@Override
+					public void run() {
+						currentLocationLabel.setText("");
+						currentLocationLabel.setText(mapField.getChoosenAddress());
+						
+					}
+				};timer.schedule(2000);
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		 
+		 
 		 image.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				try{
-					mapField = new MapField(latLng);
-					mapField.setMapHeight(getConfiguration().getPropertyByName(MAP_HEIGHT).toString());
-					mapField.setMapWidth(getConfiguration().getPropertyByName(MAP_WIDTH).toString());
-					mapField.setMapZoomParameter(Integer.parseInt(getConfiguration().getPropertyByName(MAP_ZOOM).toString()));
-					mapField.createMapUi();
-				}catch(Exception e){
-					e.printStackTrace();
-				}
+				
 				
 				MouseEventCallback mapClickCallback = new MouseEventCallback() {
 			          
@@ -257,6 +269,7 @@ public class LocationSelector extends Composite implements Field {
 						
 					}
 				};timer.schedule(2000);
+				
 				final HorizontalPanel hpPanel = new HorizontalPanel(); 
 				popupPanelForMap = new PopupPanel();
 				
@@ -482,6 +495,14 @@ public class LocationSelector extends Composite implements Field {
 
 	public void setDoneBtn(Image doneBtn) {
 		this.doneBtn = doneBtn;
+	}
+
+	public Label getCurrentLocationLabel() {
+		return currentLocationLabel;
+	}
+
+	public void setCurrentLocationLabel(Label currentLocationLabel) {
+		this.currentLocationLabel = currentLocationLabel;
 	}
 
 }
