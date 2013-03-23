@@ -18,7 +18,7 @@ public class ImageField extends Image implements Field {
 	public static final String IMAGEFIELD_DEBUGID = "imageFieldDebugId";
 	
 	public ImageField(){
-		
+		super();
 	}
 	
 	/**

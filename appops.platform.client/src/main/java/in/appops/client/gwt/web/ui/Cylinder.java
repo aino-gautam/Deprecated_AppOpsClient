@@ -44,7 +44,7 @@ public class Cylinder extends Row {
 	private void setDefaultPropertiesToRow(Row row) {
 		row.setRadius(radius);
 		row.setxLeft(xLeft);
-		yTop+=50;
+		yTop+=120;
 		row.setyTop(yTop);
 		rowMap.put(row.getName(),row);
 	}
@@ -86,7 +86,7 @@ public class Cylinder extends Row {
 
 				double scale = row.getScalingConstant()/ (row.getScalingConstant() + Math.sin(row.getCurrentAngle()*2 + indexOfWidget * row.getWidgetSpacing()+row.getSpeed() )* row.getRadius() + row.getZcenter());
 				
-				widget = scaleWheelWidget(widget, scale,indexOfWidget,0);
+				widget = scaleWheelWidget(widget, scale,0,indexOfWidget);
 												
 				row.add(widget, newXpos, newYPos);
 				

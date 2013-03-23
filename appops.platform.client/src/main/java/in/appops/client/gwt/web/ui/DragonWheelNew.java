@@ -132,7 +132,9 @@ public class DragonWheelNew extends Composite {
 				
 					double scale = row.getScalingConstant()/ (row.getScalingConstant() + Math.sin(row.getCurrentAngle() + indexOfWidget * row.getWidgetSpacing()+row.getSpeed() )* row.getRadius() + row.getZcenter());
 					
-					widget = row.scaleWheelWidget(widget, scale,indexOfWidget);
+					
+					double angleInRadian = 0;
+					widget = row.scaleWheelWidget(widget, scale,angleInRadian,indexOfWidget);
 								
 					row.add(widget, newXpos, newYPos);
 				
