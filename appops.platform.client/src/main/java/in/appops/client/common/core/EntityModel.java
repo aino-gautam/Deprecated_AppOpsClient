@@ -2,6 +2,8 @@ package in.appops.client.common.core;
 
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.query.Query;
+import in.appops.platform.core.entity.type.Type;
+import in.appops.platform.core.util.EntityList;
 
 public class EntityModel implements AppOpsModel{
 	
@@ -12,10 +14,7 @@ public class EntityModel implements AppOpsModel{
 		
 	}
 
-	/**
-	 * Makes a server call to fetch the requested entity using the specified query to bind to
-	 * @return Entity
-	 */
+	
 	public Entity getEntity() {
 		// do the entity fetch here using the query
 		return null;
@@ -61,6 +60,29 @@ public class EntityModel implements AppOpsModel{
 	@Override
 	public void setQueryToBind(Query query) {
 		this.query = query;
+	}
+
+	/**
+	 * Makes a server call to fetch the requested entitylist using the specified query to bind to
+	 * @return EntityList
+	 */
+	@Override
+	public EntityList getEntityList(int noOfEntities,
+			EntityListReceiver listReceiver) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Makes a server call to fetch the requested entity using the specified query to bind to for the type and 
+	 * entity id provided
+	 * @return Entity
+	 */
+	@Override
+	public Entity getEntity(Type type, int entityId,
+			EntityReceiver entityReceiver) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
