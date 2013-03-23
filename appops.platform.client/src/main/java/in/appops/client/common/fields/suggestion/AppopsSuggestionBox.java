@@ -65,5 +65,8 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 			getSuggestBox().setText(" ");
 		}
 		getSuggestBox().showSuggestionList();
+		if(getSuggestBox().getText().equals(" ")) {
+			getSuggestBox().setText("");
+		}
 	}
 }

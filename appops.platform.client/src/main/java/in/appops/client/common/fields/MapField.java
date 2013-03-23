@@ -32,6 +32,7 @@ public class MapField  extends Composite{
 	private LatLng latLng;
 	private String mapWidth;
 	private String mapHeight;
+	private int mapZoomParameter;
 	
 	public MapField(LatLng latLng) {
 		this.latLng = latLng;
@@ -43,7 +44,7 @@ public class MapField  extends Composite{
 		
 		final MapOptions options = new MapOptions();
 	    // Zoom level. Required
-	    options.setZoom(8);
+	    options.setZoom(mapZoomParameter);
 	    // Open a map centered on current location. 
 	    options.setCenter(latLng);
 	    // Map type. Required.
@@ -168,5 +169,13 @@ public class MapField  extends Composite{
 	 */
 	public void setMapHeight(String mapHeight) {
 		this.mapHeight = mapHeight;
+	}
+
+	public int getMapZoomParameter() {
+		return mapZoomParameter;
+	}
+
+	public void setMapZoomParameter(int mapZoomParameter) {
+		this.mapZoomParameter = mapZoomParameter;
 	}
 }
