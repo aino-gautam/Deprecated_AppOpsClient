@@ -199,6 +199,7 @@
 						<module>in.appops.showcase.web.gwt.intellithought.IntelliThought</module>
 						<module>in.appops.showcase.web.gwt.wizardform.wizardform</module>
 						<module>in.appops.showcase.web.gwt.splash.splash</module>
+						<module>in.appops.showcase.web.gwt.contactselector.contactselector</module>
 						<!-- <module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> -->
 						<!-- <module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module> 
 							<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> <module>in.appops.showcase.web.gwt.uploadservice.UploadService</module> 
