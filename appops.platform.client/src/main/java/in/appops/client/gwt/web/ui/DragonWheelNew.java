@@ -14,11 +14,7 @@ import com.google.gwt.user.client.ui.DeckPanel;
  * @author Debasish Padhy Created it on 14-Mar-2013
  *
  */
-public class DragonWheelNew extends Composite implements WheelEventHandler{
-	
-	private int xWheelCenter = 300;
-	private int yWheelCenter = 200;
-	private int zWheelcenter = 200;
+public class DragonWheelNew extends Composite {
 	
 	private int elevateAngle = 60 ;
 	private int wheelSpeed = 30 ;
@@ -32,7 +28,6 @@ public class DragonWheelNew extends Composite implements WheelEventHandler{
 		parent = new DeckPanel();
 		DOM.setStyleAttribute(parent.getElement(), "position", "absolute");
 		parent.setStylePrimaryName("dragonWheel");
-		addHandler(this, WheelEvent.TYPE);
 		initWidget(parent);
 	}
 	
@@ -89,9 +84,10 @@ public class DragonWheelNew extends Composite implements WheelEventHandler{
 	/**
 	 * 
 	 */
-	public void initWidgetPositions() {
+	public void initWidgetPositions(MediaViewer mediaViewer) {
 		Cylinder topMost = getTopMost();
-		parent.showWidget(topMost.getOrder());
+		topMost.initWidgetPositions(mediaViewer);
+		parent.showWidget(0);
 	}
 	
 
@@ -104,13 +100,5 @@ public class DragonWheelNew extends Composite implements WheelEventHandler{
 		return null ;
 	}
 
-	@Override
-	public void onWheelEvent(WheelEvent event) {
-		/*WheelWidgetProvider provider = new WheelWidgetProviderImpl();
-		nextWidgetSet = provider.getNextWidgetSet(this);*/
-		
-		//get the next widget set.
-		
-	}
-		 
+			 
 }
