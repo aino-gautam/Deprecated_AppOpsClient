@@ -21,7 +21,8 @@ public class Cylinder extends Row {
 	private String displayName;
 	private int height;
 	private double radius ;
-	
+	private int xLeft=0;
+	private int yTop=0;
 	
 	
 	public Cylinder() {
@@ -37,11 +38,17 @@ public class Cylinder extends Row {
 		if(rowMap==null)
 			rowMap = new HashMap<String, Row>();
 		
-		rowMap.put(row.getName(),row);
-		row.setParentCylinder(this);
-				
+		setDefaultPropertiesToRow(row);
 	}
 	
+	private void setDefaultPropertiesToRow(Row row) {
+		row.setRadius(radius);
+		row.setxLeft(xLeft);
+		yTop+=120;
+		row.setyTop(yTop);
+		rowMap.put(row.getName(),row);
+	}
+
 	public void removeRow(Row row){
 		rowMap.remove(row.getName());
 	}
@@ -50,6 +57,11 @@ public class Cylinder extends Row {
 		return rowMap.get(name);
 	}
 
+	/**
+	 * When non-independent row will be rotated the whole cylinder will rotate. 
+	 * @param direction
+	 */
+	
 	public void rotate(int direction){
 		Map<String, Row> rowmap = getRowMap();
 		for ( String rowName : rowmap.keySet()){
@@ -74,7 +86,7 @@ public class Cylinder extends Row {
 
 				double scale = row.getScalingConstant()/ (row.getScalingConstant() + Math.sin(row.getCurrentAngle()*2 + indexOfWidget * row.getWidgetSpacing()+row.getSpeed() )* row.getRadius() + row.getZcenter());
 				
-				widget = scaleWheelWidget(widget, scale,indexOfWidget);
+				widget = scaleWheelWidget(widget, scale,0,indexOfWidget);
 												
 				row.add(widget, newXpos, newYPos);
 				
@@ -86,38 +98,6 @@ public class Cylinder extends Row {
 	
 	public Map<String, Row> getRowMap(){
 		return rowMap;
-	}
-	/**
-	 * Method used to spin the cylinder.
-	 */
-	public void spinRow(){
-		if(super.elevation_angle == 50)
-			elevation_angle = 70;
-		else
-			elevation_angle = 50;
-		
-		Map<String, Row> rowmap = getRowMap();
-		for ( String rowName : rowmap.keySet()){
-			Row row =rowmap.get(rowName);
-			Set<Widget> widgetSetForRow = row.getWidgetSetForRow();
-			
-			int indexOfWidget = 0;
-			row.setElevation_angle(elevation_angle);	
-			
-			for (Widget widget : widgetSetForRow) {
-				
-				int newXpos = (int) Math.round(Math.cos(row.getCurrentAngle() + indexOfWidget* row.getWidgetSpacing()+row.getSpeed() )* row.getRadius() + row.getxLeft());
-				int newYPos = (int) Math.round(-Math.sin(row.getCurrentAngle() + indexOfWidget* row.getWidgetSpacing()+row.getSpeed())* row.getElevation_angle() + row.getyTop());
-				
-				double scale = row.getScalingConstant()/ (row.getScalingConstant() + Math.sin(row.getCurrentAngle() + indexOfWidget * row.getWidgetSpacing()+row.getSpeed() )* row.getRadius() + row.getZcenter());
-				
-				widget = scaleWheelWidget(widget, scale,indexOfWidget);
-								
-				row.add(widget, newXpos, newYPos);
-				
-				indexOfWidget++;
-			}
-		}
 	}
 	
 	public int getOrder() {
@@ -170,6 +150,12 @@ public class Cylinder extends Row {
 
 	public void setRadius(double radius) {
 		this.radius = radius;
+	}
+
+	public void setCoordinates(int xLeft, int yTop) {
+		this.xLeft  =xLeft;
+		this.yTop = yTop;
+		
 	}
 	
 	

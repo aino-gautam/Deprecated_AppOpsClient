@@ -104,13 +104,14 @@ public class WizardForm extends Composite implements Form, NavigationEventHandle
 			if(screen1!=null)
 			 entity=screen1.populateEntity();
 			
-			Screen screen = screensMap.get(order);
-			screen.setEntity(entity);
-			screen.createScreen();
-			setCurrentScreen(screen);
-			panel.clear();
-			Widget widget = (Widget) screen;
-			panel.add(widget);
+				Screen screen = screensMap.get(order);
+				screen.setEntity(entity);
+				screen.createScreen();
+				setCurrentScreen(screen);
+				panel.clear();
+				Widget widget = (Widget) screen;
+				panel.add(widget);
+			
 		}
 	}
 	
