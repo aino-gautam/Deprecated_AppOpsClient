@@ -3,75 +3,49 @@
  */
 package in.appops.showcase.web.gwt.dragonwheel.client;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import in.appops.client.gwt.web.ui.Cylinder;
-import in.appops.client.gwt.web.ui.DragonWheelNew;
-import in.appops.client.gwt.web.ui.Row;
+import in.appops.client.gwt.web.ui.MediaViewer;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.operation.Result;
+import in.appops.platform.core.util.EntityList;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 
 /**
  * @author Debasish Padhy Created it on 06-Mar-2013
  *
  */
-public class DragonWheelShowCase implements EntryPoint,ClickHandler{
+
+public class DragonWheelShowCase implements EntryPoint{
 
 	final Cylinder cylinder = new Cylinder();
 	Button btn =new Button("spin");
 		
+	private final DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
+	private final DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onModuleLoad() {
 		
-		HorizontalPanel hpanel =new HorizontalPanel();
-		btn.addClickHandler(this);
-		
-		DragonWheelNew wheel = new DragonWheelNew() ;
-		cylinder.setName("cyl1");
-		
-		Row row =new Row("2012");
-		row.setWidgetSpacing(150);
-		row.setxLeft(200);
-		row.setyTop(30);
-		row.setIndependent(true);
-		row.setRowPosition(0);
-		row.initializeRow();
-		cylinder.addRow(row);
-		
-		Row row1 =new Row("2013");
-		row1.setWidgetSpacing(150);
-		row1.setxLeft(200);
-		row1.setyTop(150);
-		row1.setIndependent(false);
-		row1.setRowPosition(1);
-		row1.initializeRow();
-		
-		cylinder.addRow(row1);
-		cylinder.setOrder(0);
-		wheel.addCylinder(cylinder);
-		
-		
-		btn.setVisible(true);
-		hpanel.add(btn);
-		
-		wheel.initWidgetPositions();
-		hpanel.add(wheel);
-		
-		RootPanel.get().add(hpanel);
-		//wheel.setWidth("100%") ;
-		//wheel.setHeight("100%") ;
-		
+		MediaViewer mediaViewer = new MediaViewer();
+				
+		//RootPanel.get().add(new Image(GWT.getHostPageBaseURL()+"download?blobId=%2B%2B0Ge9ehUutBBZRidFNt0grgTz%2F0cTirp%2BOzwwZywQ9CoOMWY3WpLol8kiAFBKmMGn4bgkooUQ4%3D"));
+			
 	}
 
-	@Override
-	public void onClick(ClickEvent event) {
-		if(event.getSource() instanceof Button){
-			cylinder.spinRow();
-		}
-		
-	}
 	
 }

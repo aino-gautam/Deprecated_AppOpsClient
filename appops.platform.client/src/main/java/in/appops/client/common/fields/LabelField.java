@@ -18,7 +18,6 @@ public class LabelField extends Label  implements Field{
 
 	private Configuration configuration;
 	private String fieldValue;
-	private Label label;
 	
 	public static final String LABELFIELD_WORDWRAP = "labelFieldWordWrap";
 	public static final String LABELFIELD_PRIMARYCSS = "labelFieldPrimaryCss";
@@ -38,7 +37,6 @@ public class LabelField extends Label  implements Field{
 		if(getConfiguration() == null)
 			throw new AppOpsException(" LabelField configuration unavailable");
 		
-		//label = new Label();
 		this.setText(getFieldValue());
 		this.setWordWrap((Boolean) getConfiguration().getPropertyByName(LABELFIELD_WORDWRAP));
 		if(getConfiguration().getPropertyByName(LABELFIELD_PRIMARYCSS) != null)
