@@ -32,14 +32,14 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 	private int rowPosition ;
 	private Cylinder parentCylinder = null ;
 	private Entity entity; //row is basically one album entity.
-	private Set<Widget> widgetSetForRow;
-	private int scalingConstant = 250; // used for calculating opacity and scale
+	private LinkedHashSet<Widget> widgetSetForRow;
+	private int scalingConstant = 220; // used for calculating opacity and scale
 	private int startAngle = 30;
 	private double currentAngle = startAngle * (Math.PI /180);
-	private double radius=250; // in px
-	public double elevation_angle = 25; // in pixels - elevation angle decision maker
-	public double speed = 10	; // 
-	private int zcenter = 250;
+	private double radius=220; // in px
+	public double elevation_angle = 15; // in pixels - elevation angle decision maker
+	public double speed = 20	; // 
+	private int zcenter = 220;
 	private MediaViewer mediaViewer;
 	
 	public Row() {
@@ -168,18 +168,18 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 
 			double scale = scalingConstant/ (scalingConstant + Math.sin(startAngle + index * getWidgetSpacing() + speed ) * radius + zcenter);
 			
-			double  deltaX = 317 - left;
+			/*double  deltaX = 317 - left;
 			double  deltaY= 75 - top;
 			
-			double angleInDegrees = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+			double angleInDegrees = Math.atan2(deltaY, deltaX) * 180 / Math.PI;*/
 			
 					 
 			//angleInDegrees = Math.abs(Math.atan2(75-50, 317-303) - Math.atan2(top-50, left-303));
 			
-			System.out.println("-----------index ="+index+"-------------left="+left+"-----------------top="+top +"angle======"+angleInDegrees);
+			System.out.println("-----------index ="+index+"-------------left="+left+"-----------------top="+top );
 
 			
-			widget = scaleWheelWidget(widget, scale,index,angleInDegrees);
+			widget = scaleWheelWidget(widget, scale,0,index);
 				
 			
 			add(widget, left, top);
@@ -213,13 +213,13 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 
 				double scale = scalingConstant/ (scalingConstant + Math.sin(currentAngle*2 + indexOfWidget * getWidgetSpacing()+speed )* radius + zcenter);
 				
-				double  deltaX = newXpos - 317;
-				double  deltaY= newYPos - 75;
+				double  deltaX =317- newXpos  ;
+				double  deltaY= 75-newYPos ;
 						
 				
 				double angleInDegrees = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
 				
-				widget = scaleWheelWidget(widget, scale,indexOfWidget,angleInDegrees);
+				widget = scaleWheelWidget(widget, scale,angleInDegrees,indexOfWidget);
 				
 				
 				add(widget, newXpos, newYPos);
@@ -294,30 +294,37 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 
 	
 	
-	public Widget scaleWheelWidget(Widget widget,double scale,int index,double rotationAngle){
+	public Widget scaleWheelWidget(Widget widget,double scale,double rotationiAngle,int index){
 		String strNumber = Double.toString(scale).substring(2);
 		int zIndex = Integer.parseInt(strNumber.substring(0, 1));
 		widget.getElement().getStyle().setZIndex(zIndex);
 		widget.setStylePrimaryName("imageWidget");
 		
 		widget.getElement().getStyle().setProperty("zoom", "scale(" + scale + ") ");
-		//widget.getElement().getStyle().setProperty("MozTransform", "scale(" + scale + ") perspective("+ (zIndex*600/9)+"px) rotateY("+ (100-zIndex*8)+"deg)");
-	//	widget.getElement().getStyle().setProperty("WebkitTransform", "scale(" + scale + ") perspective("+ (zIndex*600/9)+"px) rotateY("+ (100-zIndex*8)+"deg)");
-		//widget.getElement().getStyle().setProperty("MozTransform", "rotate("+30+"deg) perspective( 600px )");
+	
+		//angle calculated from widget on front.
+		double rotationAngle =0;
 		
-		//int rotationAngle  = (int) (100-zIndex*8);
+		if(index==0)
+			rotationAngle = 330;
+		else if(index==1)
+			rotationAngle =0;
+		else
+			rotationAngle+=36;
 		
-		widget.getElement().getStyle().setProperty("MozTransform", "scale(" + scale + ") rotateY("+ (rotationAngle)+"deg)");
-		widget.getElement().getStyle().setProperty("WebkitTransform", "scale(" + scale + ") rotateY("+ (rotationAngle)+"deg)");
+		// = 100-zIndex*8;
 		
-		/*if(rotationAngle<16){
-			widget.getElement().getStyle().setProperty("MozTransform", "scale(" + scale + ") rotateX("+ (rotationAngle)+"deg)");
-			widget.getElement().getStyle().setProperty("WebkitTransform", "scale(" + scale + ") rotateX("+ (rotationAngle)+"deg)");
-		}else{
-			widget.getElement().getStyle().setProperty("MozTransform", "scale(" + scale + ") rotateY("+ (rotationAngle)+"deg)");
-			widget.getElement().getStyle().setProperty("WebkitTransform", "scale(" + scale + ") rotateY("+ (rotationAngle)+"deg)");
-		}*/
+		//Frontmost widget will have perspective 600px.
+		int perspective = 0;
 		
+		if(zIndex ==9)
+			perspective = 600;
+		else
+			perspective = (int) Math.floor(600*(zIndex-1)/9);
+				
+		widget.getElement().getStyle().setProperty("MozTransform", "scale(" + scale + ")  perspective("+perspective+"px) rotateY("+ (rotationAngle)+"deg)");
+		widget.getElement().getStyle().setProperty("WebkitTransform", "scale(" + scale + ")  perspective("+perspective+"px) rotateY("+ (rotationAngle)+"deg)");
+					
 		
 		if(scale>=0.98){
 			scale = 1;
@@ -339,7 +346,7 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 		return widgetSetForRow;
 	}
 
-	public void setWidgetSetForRow(Set<Widget> widgetSetForRow) {
+	public void setWidgetSetForRow(LinkedHashSet<Widget> widgetSetForRow) {
 		this.widgetSetForRow = widgetSetForRow;
 	}
 
