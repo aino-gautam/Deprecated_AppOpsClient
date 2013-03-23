@@ -41,9 +41,8 @@ public class FieldsShowCase implements EntryPoint {
 														
 
 					locationSelector.setConfiguration(getLocationSelectorConf());
-					locationSelector.setMapMode(false);
-					locationSelector.setMapWidth("300px");
-					locationSelector.setMapHeight("200px");
+					locationSelector.setMapMode(true);
+					
 					//locationSelector.setLatLong(latLng);
 					locationSelector.setCoordinates(coords);
 
@@ -308,6 +307,9 @@ public class FieldsShowCase implements EntryPoint {
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CHOOSE_LOCATION_BTN, "chooseLocationBtn");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_POPUPPANEL, "currentLocationField");
 		configuration.setPropertyByName(LocationSelector.MAP_ZOOM, "8");
+		configuration.setPropertyByName(LocationSelector.MAP_WIDTH, "300px");
+		configuration.setPropertyByName(LocationSelector.MAP_HEIGHT, "200px");
+		
 		return configuration;
 	}
 	
