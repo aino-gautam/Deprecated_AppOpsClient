@@ -6,6 +6,7 @@ import in.appops.client.common.fields.DateTimeField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.LinkField;
 import in.appops.client.common.fields.LocationSelector;
+import in.appops.client.common.fields.SpinnerField;
 import in.appops.client.common.fields.StateField;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.slider.field.NumericRangeSliderField;
@@ -141,6 +142,14 @@ public class FieldsShowCase implements EntryPoint {
 					labelFieldLocation.setFieldValue("Location Selector");
 					labelFieldLocation.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
 
+					LabelField spinnerFieldLabel = new LabelField();
+					spinnerFieldLabel.setFieldValue("SpinnerField");
+					spinnerFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+					
+					SpinnerField spinnerField = new SpinnerField();
+					spinnerField.setFieldValue("3");
+					Configuration spinnerConfig = getSpinnerFieldConfiguration(SpinnerField.SPINNERFIELD_VALUESPINNER);
+					spinnerField.setConfiguration(spinnerConfig);
 
 					try {
 						labelFieldTB.createField();
@@ -178,6 +187,9 @@ public class FieldsShowCase implements EntryPoint {
 
 						labelFieldLocation.createField();
 						locationSelector.createField();
+						
+						spinnerFieldLabel.createField();
+						spinnerField.createField();
 
 
 					} catch (AppOpsException e) {
@@ -256,6 +268,9 @@ public class FieldsShowCase implements EntryPoint {
 
 					flex.setWidget(13, 0, stringRangeSliderLbl);
 					flex.setWidget(13, 1, stringRangeSlider);
+					
+					flex.setWidget(14, 0, spinnerFieldLabel);
+					flex.setWidget(14, 1, spinnerField);
 
 					RootPanel.get().add(flex);
 
@@ -380,5 +395,11 @@ public class FieldsShowCase implements EntryPoint {
 		configuration.setPropertyByName(CheckboxGroupField.CHECKBOX_SELECT_MODE, selectMode);
 		configuration.setPropertyByName(CheckboxGroupField.CHECKBOX_BASEPANEL, basePanel);
 		return configuration;
+	}
+	
+	protected Configuration getSpinnerFieldConfiguration(String spinnerfieldMode) {
+		Configuration config = new Configuration();
+		config.setPropertyByName(SpinnerField.SPINNERFIELDMODE, spinnerfieldMode);
+		return config;
 	}
 }
