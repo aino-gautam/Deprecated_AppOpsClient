@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class Navigator extends Composite implements ClickHandler {
 
-	private SimplePanel basePanel;
+	private HorizontalPanel basePanel;
 	private Configuration configuration;
 	private int totalScreens = 0;
 	private int currentScreenNo = 1;
@@ -27,11 +27,12 @@ public class Navigator extends Composite implements ClickHandler {
 	public static final String ALIGNMENT_VERTICAL = "verticalAlignment";
 	
 	public Navigator(){
-		basePanel = new SimplePanel();
+		basePanel = new HorizontalPanel();
 		initWidget(basePanel);
 	}
 	
 	public void createNavigatorUI() throws AppOpsException {
+		basePanel.clear();
 		if(getConfiguration() == null)
 			throw new AppOpsException("Navigator configuration unavailable");
 		

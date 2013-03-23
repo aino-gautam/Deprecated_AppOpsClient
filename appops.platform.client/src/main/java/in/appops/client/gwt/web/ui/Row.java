@@ -3,9 +3,10 @@
  */
 package in.appops.client.gwt.web.ui;
 
-import java.util.LinkedHashMap;
+import in.appops.platform.core.entity.Entity;
+
 import java.util.LinkedHashSet;
-import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
@@ -30,16 +31,18 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 	private String displayName ;
 	private int rowPosition ;
 	private Cylinder parentCylinder = null ;
-	private LinkedHashSet<Widget> nextWidgetSet ;
-	
-	private int scalingConstant = 200; // used for calculating opacity and scale
+	private Entity entity; //row is basically one album entity.
+	private LinkedHashSet<Widget> widgetSetForRow;
+	private int scalingConstant = 220; // used for calculating opacity and scale
 	private int startAngle = 30;
 	private double currentAngle = startAngle * (Math.PI /180);
-	private double radius = 200; // in px
-	public double elevation_angle = 40; // in pixels - elevation angle decision maker
-	public double speed = 10	; // 
-	private int zcenter = 200;
-	private LinkedHashMap<Widget , DragonWheelWidget> dWidgetMap = new LinkedHashMap<Widget, DragonWheelWidget>();
+	private double radius=220; // in px
+	public double elevation_angle = 15; // in pixels - elevation angle decision maker
+	public double speed = 20	; // 
+	private int zcenter = 220;
+	private MediaViewer mediaViewer;
+	private double rotationAngle =0;
+	private boolean isSkewMode = false;
 	
 	public Row() {
 		addDomHandler(this, MouseWheelEvent.getType());
@@ -148,39 +151,46 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 	/**
 	 * Method will get next set of widgets and place it in the row.
 	 */
-	public void initializeRow() {
-		
-		WheelWidgetProvider provider = new WheelWidgetProviderImpl();
-		nextWidgetSet = provider.getNextWidgetSet(this);
+	public void initWidgetPositions(MediaViewer mediaViewer,LinkedHashSet<Widget> nextWidgetSet) {
 
-		Object[] widgets = nextWidgetSet.toArray();
-		
 		//widget spacing will be half the no of widgets in the row bydefault there are 10 widgets in the row. 
+		widgetSetForRow = nextWidgetSet;
 		
 		widgetSpacing = Math.PI/(nextWidgetSet.size()/1.98);
 		
+		int index = 0;
 
-		for (int index = 0; index < widgets.length; index++) {
-			Widget widget = (Widget) widgets[index];
-
+		
+		for (Widget widget:widgetSetForRow) {
+			
 			int left = (int) Math.round((Math.cos(startAngle + index* getWidgetSpacing() + speed)* radius + getxLeft()));
 			int top = (int) Math.round((-Math.sin(startAngle + index* getWidgetSpacing() + speed)* elevation_angle + getyTop()));
 
 			int z = (int) Math.round((Math.sin(startAngle + index* getWidgetSpacing() + speed)* radius + zcenter));
 
 			double scale = scalingConstant/ (scalingConstant + Math.sin(startAngle + index * getWidgetSpacing() + speed ) * radius + zcenter);
+			
+			/*double  deltaX = 317 - left;
+			double  deltaY= 75 - top;
+			
+			double angleInDegrees = Math.atan2(deltaY, deltaX) * 180 / Math.PI;*/
+			
+					 
+			//angleInDegrees = Math.abs(Math.atan2(75-50, 317-303) - Math.atan2(top-50, left-303));
+			
+			System.out.println("-----------index ="+index+"-------------left="+left+"-----------------top="+top );
 
-			widget = scaleWheelWidget(widget, scale);
-
-			DragonWheelWidget dww = new DragonWheelWidget(left, top, z, 100,100);
-			dww.setWrapped(widget);
-
-			dWidgetMap.put(widget, dww);
+			
+			widget = scaleWheelWidget(widget, scale,0,index);
+				
 			
 			add(widget, left, top);
+			
+			index++;
 		}
 	}
-
+	
+	
 	@Override
 	public void onMouseWheel(MouseWheelEvent event) {
 		int move = event.getDeltaY(); 
@@ -196,114 +206,33 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 			} else {
 				// mouse wheel is moving south
 				currentAngle = currentAngle + Math.PI / speed;
-				
 			}
 			
-			for (Map.Entry<Widget, DragonWheelWidget> e : dWidgetMap.entrySet()) {
-				Widget widget = e.getKey();
-				DragonWheelWidget dww = e.getValue();
+			for (Widget widget : widgetSetForRow) {
+				
 				int newXpos = (int) Math.round(Math.cos(currentAngle*2 + indexOfWidget* getWidgetSpacing()+speed)* radius + getxLeft());
 				int newYPos = (int) Math.round(-Math.sin(currentAngle*2 + indexOfWidget* getWidgetSpacing()+speed)* elevation_angle + getyTop());
 
 				double scale = scalingConstant/ (scalingConstant + Math.sin(currentAngle*2 + indexOfWidget * getWidgetSpacing()+speed )* radius + zcenter);
 				
-				widget = scaleWheelWidget(widget, scale);
+				double  deltaX =317- newXpos  ;
+				double  deltaY= 75-newYPos ;
+						
 				
+				double angleInDegrees = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
 				
-				dww.setLeftOffset(newXpos);
-				dww.setTopOffset(newYPos);
+				widget = scaleWheelWidget(widget, scale,angleInDegrees,indexOfWidget);
+				
 				
 				add(widget, newXpos, newYPos);
 				
 				indexOfWidget++;
 			}
 		}else{
-			getParentCylinder().rotate(move);
-		}
-		
-	}
-
-	
-	final class DragonWheelWidget {
-		
-		public int getLeftOffset() {
-			return xLeft;
-		}
-
-
-		public void setLeftOffset(int xLeft) {
-			this.xLeft = xLeft;
-		}
-
-
-		public int getTopOffset() {
-			return yTop;
-		}
-
-
-		public void setTopOffset(int yTop) {
-			this.yTop = yTop;
-		}
-
-
-		public int getOrder() {
-			return zOrder;
-		}
-
-
-		public void setOrder(int zOrder) {
-			this.zOrder = zOrder;
-		}
-
-
-		public int getWidth() {
-			return width;
-		}
-
-
-		public void setWidth(int width) {
-			this.width = width;
-		}
-
-
-		public int getHeight() {
-			return height;
-		}
-
-
-		public void setHeight(int height) {
-			this.height = height;
-		}
-
-
-		public Widget getWrapped() {
-			return wrapped;
-		}
-
-		public void setWrapped(Widget wrapped) {
-			this.wrapped = wrapped;
-		}
-
-
-		int xLeft = 0 ;
-		int yTop = 0 ;
-		
-		int zOrder = 1 ;
-		
-		int width = 100 ;
-		int height = 100 ;
-		
-		Widget wrapped = null ;
-		
-		DragonWheelWidget(int x , int y , int z , int w , int h){
-			xLeft = x ;
-			yTop = y ;
-			zOrder = z;
-			width = w ;
-			height = h ;
+			if(parentCylinder!=null)
+			parentCylinder.rotate(move);
 		}
 	}
-
 
 	public int getScalingConstant() {
 		return scalingConstant;
@@ -365,34 +294,84 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 		this.widgetSpacing = widgetSpacing;
 	}
 
-	public LinkedHashSet<Widget> getNextWidgetSet() {
-		return nextWidgetSet;
-	}
-
-	public void setNextWidgetSet(LinkedHashSet<Widget> nextWidgetSet) {
-		this.nextWidgetSet = nextWidgetSet;
-	}
-
-	public LinkedHashMap<Widget, DragonWheelWidget> getdWidgetMap() {
-		return dWidgetMap;
-	}
-
-	public void setdWidgetMap(LinkedHashMap<Widget, DragonWheelWidget> dWidgetMap) {
-		this.dWidgetMap = dWidgetMap;
-	}
 	
 	
-	public Widget scaleWheelWidget(Widget widget,double scale){
+	public Widget scaleWheelWidget(Widget widget,double scale,double rotationiAngle,int index){
+		String strNumber = Double.toString(scale).substring(2);
+		int zIndex = Integer.parseInt(strNumber.substring(0, 1));
+		widget.getElement().getStyle().setZIndex(zIndex);
+		widget.setStylePrimaryName("imageWidget");
 		
-		widget.getElement().getStyle().setProperty("zoom", "scale(" + scale + ")");
-		widget.getElement().getStyle().setProperty("MozTransform", "scale(" + scale + ") skewX(" + (scale) + "deg)");
-		widget.getElement().getStyle().setProperty("WebkitTransform", "scale(" + scale + ")");
+		widget.getElement().getStyle().setProperty("zoom", "scale(" + scale + ") ");
+	
+		//angle calculated from widget on front.
+		
+		/*if(index==0)
+			rotationAngle = 72;
+		else if(rotationAngle>=360)
+			rotationAngle =rotationAngle-324;
+		else
+			rotationAngle+=36;*/
+		
+		rotationAngle = 100-zIndex*8;
+		
+		
+		if(isSkewMode){
+			//Frontmost widget will have perspective 600px.
+			int perspective = 0;
+		
+			if(zIndex ==9)
+				perspective = 600;
+			else
+				perspective = (int) Math.floor(600*(zIndex-1)/9);
 				
-		if(scale>=0.98)
+			widget.getElement().getStyle().setProperty("MozTransform", "scale(" + scale + ")  perspective("+perspective+"px) rotateY("+ (rotationAngle)+"deg)");
+			widget.getElement().getStyle().setProperty("WebkitTransform", "scale(" + scale + ")  perspective("+perspective+"px) rotateY("+ (rotationAngle)+"deg)");
+					
+		}else{
+			widget.getElement().getStyle().setProperty("MozTransform", "scale(" + scale + ") rotateY("+ (rotationAngle)+"deg)");
+			widget.getElement().getStyle().setProperty("WebkitTransform", "scale(" + scale + ") rotateY("+ (rotationAngle)+"deg)");
+		}
+		if(scale>=0.98){
 			scale = 1;
+		}
 		
 		DOM.setStyleAttribute(widget.getElement(), "opacity",String.valueOf(scale));
 		return widget;
 	}
+
+	public Entity getEntity() {
+		return entity;
+	}
+
+	public void setEntity(Entity entity) {
+		this.entity = entity;
+	}
+
+	public Set<Widget> getWidgetSetForRow() {
+		return widgetSetForRow;
+	}
+
+	public void setWidgetSetForRow(LinkedHashSet<Widget> widgetSetForRow) {
+		this.widgetSetForRow = widgetSetForRow;
+	}
+
+	public MediaViewer getMediaViewer() {
+		return mediaViewer;
+	}
+
+	public void setMediaViewer(MediaViewer mediaViewer) {
+		this.mediaViewer = mediaViewer;
+	}
+
+	public boolean isSkewMode() {
+		return isSkewMode;
+	}
+
+	public void setSkewMode(boolean isSkewMode) {
+		this.isSkewMode = isSkewMode;
+	}
+	
+	
 
 }

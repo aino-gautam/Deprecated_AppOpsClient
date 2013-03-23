@@ -42,7 +42,7 @@ public class SuggestionOracle extends SuggestOracle {
 
 		if(store != null && !store.isEmpty() && !search.equals(" ")){
 			for(AppopsSuggestion suggestion : store){
-				if(suggestion.getDisplayString().toLowerCase().contains(search.trim().toLowerCase())){
+				if(suggestion.getDisplayString().toLowerCase().startsWith(search.trim().toLowerCase())){
 					suggestionList.add(suggestion);
 				}
 			}
@@ -54,9 +54,13 @@ public class SuggestionOracle extends SuggestOracle {
 		} else{
 			
 			Query queryObj = new Query();
-			
-			/*map.put("qName", query);*/
 			queryObj.setQueryName(queryName);
+			
+			/*HashMap map = new HashMap();
+			map.put("searchChar", "%" + search + "%");
+			//map.put("max", maxResult);
+			queryObj.setQueryParameterMap(map);*/
+			
 			Map parameterMap = new HashMap();
 			parameterMap.put("query", queryObj);
 			
@@ -85,7 +89,7 @@ public class SuggestionOracle extends SuggestOracle {
 					} else{
 						List<AppopsSuggestion> suggestionList = new LinkedList<AppopsSuggestion>();
 						for(AppopsSuggestion suggestion : store){
-							if(suggestion.getDisplayString().toLowerCase().contains(search.trim().toLowerCase())){
+							if(suggestion.getDisplayString().toLowerCase().startsWith(search.trim().toLowerCase())){
 								suggestionList.add(suggestion);
 							}
 						}
@@ -96,5 +100,4 @@ public class SuggestionOracle extends SuggestOracle {
 			});
 		}
 	}
-
 }
