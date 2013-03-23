@@ -5,10 +5,12 @@ package in.appops.client.gwt.web.ui;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author Debasish Padhy Created it on 14-Mar-2013
@@ -16,7 +18,7 @@ import com.google.gwt.user.client.ui.DeckPanel;
  */
 public class DragonWheelNew extends Composite {
 	
-	private int elevateAngle = 60 ;
+	private int elevateAngle = 5 ;
 	private int wheelSpeed = 30 ;
 	private boolean elevatedView = false ;
 	
@@ -68,7 +70,10 @@ public class DragonWheelNew extends Composite {
 	}
 	
 	public void addCylinder(Cylinder cylinder){
+		
 		cylinderMap.put(cylinder.getName(), cylinder);
+		cylinder.setElevation_angle(elevateAngle);
+		
 		parent.add(cylinder);
 	}
 
@@ -99,6 +104,44 @@ public class DragonWheelNew extends Composite {
 		}
 		return null ;
 	}
-
+	
+	/**
+	 * Method used to spin the cylinder.
+	 */
+	public void spin(){
+		if(elevateAngle == 60)
+			elevateAngle = 80;
+		else
+			elevateAngle = 60;
+		
+		for ( String cylinderName : cylinderMap.keySet()){
+			Cylinder cylinder = cylinderMap.get(cylinderName);
+		
+			Map<String, Row> rowmap = cylinder.getRowMap();
+			for ( String rowName : rowmap.keySet()){
+				Row row =rowmap.get(rowName);
+				Set<Widget> widgetSetForRow = row.getWidgetSetForRow();
+			
+				int indexOfWidget = 0;
+				row.setElevation_angle(elevateAngle);	
+			
+				for (Widget widget : widgetSetForRow) {
+				
+					int newXpos = (int) Math.round(Math.cos(row.getCurrentAngle() + indexOfWidget* row.getWidgetSpacing()+row.getSpeed() )* row.getRadius() + row.getxLeft());
+					int newYPos = (int) Math.round(-Math.sin(row.getCurrentAngle() + indexOfWidget* row.getWidgetSpacing()+row.getSpeed())* row.getElevation_angle() + row.getyTop());
+				
+					double scale = row.getScalingConstant()/ (row.getScalingConstant() + Math.sin(row.getCurrentAngle() + indexOfWidget * row.getWidgetSpacing()+row.getSpeed() )* row.getRadius() + row.getZcenter());
+					
+					
+					double angleInRadian = 0;
+					widget = row.scaleWheelWidget(widget, scale,angleInRadian,indexOfWidget);
+								
+					row.add(widget, newXpos, newYPos);
+				
+					indexOfWidget++;
+				}
+			}
+			}
+		}
 			 
 }
