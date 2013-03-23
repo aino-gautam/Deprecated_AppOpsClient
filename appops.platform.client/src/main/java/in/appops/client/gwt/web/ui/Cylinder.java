@@ -44,7 +44,7 @@ public class Cylinder extends Row {
 	private void setDefaultPropertiesToRow(Row row) {
 		row.setRadius(radius);
 		row.setxLeft(xLeft);
-		yTop+=50;
+		yTop+=120;
 		row.setyTop(yTop);
 		rowMap.put(row.getName(),row);
 	}
