@@ -436,3 +436,11 @@ background-color: #AAAAAA;
 .contactSelectorBase{
 	margin-left: 30px;
 }
+.selectedItem {
+	background-color: #E6E6E6;
+	border: 1px #999999 solid;
+}
+
+.selectedItem1:HOVER {
+	background-color: #E6E6E6;
+}
