@@ -43,6 +43,7 @@ public class MediaViewer extends VerticalPanel implements WheelWidgetProvider {
 		
 		for(String rowName:rowsPerAlbumMap.keySet()){
 			Row row =rowsPerAlbumMap.get(rowName);
+			row.setIndependent(true);
 			cylinder.addRow(row);
 		}
 
@@ -91,11 +92,12 @@ public class MediaViewer extends VerticalPanel implements WheelWidgetProvider {
 				
 		for (Map.Entry<Entity, EntityList> e : map.entrySet()) {
 			Entity albumEnt = e.getKey();
-			Row row =new Row(albumEnt.getProperty(TagConstant.NAME).getType().toString());
+			String name = albumEnt.getProperty(TagConstant.NAME).getValue().toString();
+			Row row =new Row(name);
 			row.setIndependent(true);
 			row.setEntity(albumEnt);
 			row.setStylePrimaryName("rowPanel");
-			rowMap.put(albumEnt.getProperty(TagConstant.NAME).getType().toString(), row);
+			rowMap.put(name, row);
 		}
 				
 		return rowMap;
@@ -126,10 +128,11 @@ public class MediaViewer extends VerticalPanel implements WheelWidgetProvider {
 		
 		Map<Row, LinkedHashSet<Widget>> rowVsWidgetSet =new HashMap<Row, LinkedHashSet<Widget>>();
 		
-		LinkedHashSet<Widget> imageWidgetSet  = new LinkedHashSet<Widget>();
+		
 		
 		for ( String rowName : rowmap.keySet()){
 			Row row =rowmap.get(rowName);
+			LinkedHashSet<Widget> imageWidgetSet  = new LinkedHashSet<Widget>();
 			EntityList photoList = photoAlbumMap.get(row.getEntity());
 			
 			for(Entity photoEnt:photoList){
