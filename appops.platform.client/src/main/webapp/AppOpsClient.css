@@ -20,37 +20,30 @@
 }
 
 .dragonWheel{
-	width: 100%;
-	height: 100%;
-	position: relative;
+	/* width: 100%;
+	height: 100%; */
+	position: absolute !important;
 	top: 0px;
 	left: 0px;
 	border: 1px thick black ;
+	display: inline !important;
 }
 
-.widgetHover{
-	padding: 2em;
-	background-color: red ;
-	 -moz-border-radius: 50% 50%;
-	border-radius: 50% 50%;
-	-webkit-border-radius: 50% 50%; 
-	position: absolute;	
-    z-index: 99;
-    width: 200% ;!important
+.rowPanel{
+	
+	position: absolute !important;
+	border: 1px thick black ;
+	display: inline !important;
+	overflow: visible !important;
+}
 
-   }
-
-.wheelWidget{
-	padding: 5em;
-	background-color: #3333CC;
+.imageWidget{
 	 -moz-border-radius: 4% 4%;
 	border-radius: 4% 4%;
-	-webkit-border-radius: 4% 4%;  
-}
-
-.label{
-	color: silver;
-	font: bold;
+	-webkit-border-radius: 4% 4%;
+	width: 150px;
+	height:100px;  
+	border: 1px;
 }
 
 
@@ -368,4 +361,86 @@ background-color: #AAAAAA;
 	-moz-transform:scale(2,2); /* Firefox */
 	-webkit-transform:scale(2,2); /* Safari and Chrome */
 	-o-transform:scale(2,2); /* Opera */
+}
+.spinnerUpArrow {
+	background-image: url("image/spinnerArrowIcons.png");
+	width: 15px;
+	height: 13px;
+	background-position: -45px 0px;
+	background-repeat: no-repeat no-repeat;
+	outline: none;
+}
+.spinnerUpArrow:HOVER {
+	background-image: url("image/spinnerArrowIcons.png");
+	width: 15px;
+	height: 13px;
+	background-position: -15px 0px;
+	background-repeat: no-repeat no-repeat;
+	outline: none;
+}
+.spinnerDownArrow {
+	background: url("image/spinnerArrowIcons.png");
+	width: 15px;
+	height: 9px;
+	background-position: -105px 0px;
+	background-repeat: no-repeat no-repeat;
+	outline: none;
+}
+.spinnerDownArrow:HOVER {
+	background: url("image/spinnerArrowIcons.png");
+	width: 15px;
+	height: 9px;
+	background-position: -75px 0px;
+	background-repeat: no-repeat no-repeat;
+	outline: none;
+}
+.defaultIcon{
+	width: 60px;
+	background: #999999;
+	webkit-box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1);
+	moz-box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1);
+	box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1);
+	padding: 4px;
+	z-index: 0;
+}
+.flowPanelContent{
+	display: inline-block;
+}
+.contactSnippetBasePanel{
+	width: 200px;
+	margin-right: 15px;
+	outline: none;
+	padding: 1px;
+}
+.contactSnippetBasePanel:HOVER {
+	background: #EEE;
+	/* webkit-box-shadows: 1px 2px 3px rgba(0, 0, 0, 0.1);
+	moz-box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1);
+	box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1); */
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-top: 2px;
+}
+.selectedContactSnippet{
+	background: #EEE;
+	border: solid 1px;
+}
+.contactSelectortitleLabel{
+	color: #333;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 17px;
+}
+.contactSelectorTitlePanel{
+	border-bottom: dotted thin;
+}
+.contactSelectorBase{
+	margin-left: 30px;
+}
+.selectedItem {
+	background-color: #E6E6E6;
+	border: 1px #999999 solid;
+}
+
+.selectedItem1:HOVER {
+	background-color: #E6E6E6;
 }

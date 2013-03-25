@@ -3,6 +3,7 @@ package in.appops.client.common.fields;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.fields.slider.field.NumericRangeSliderField;
 import in.appops.client.common.fields.slider.field.StringRangeSliderField;
+import in.appops.client.common.fields.suggestion.AppopsSuggestion;
 import in.appops.client.common.fields.suggestion.SuggestionField;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
@@ -20,7 +21,7 @@ public class StateField extends Composite implements Field, ChangeHandler{
 	private ListBox listBox;
 	private SuggestionField appopsSuggestionBox;
 	private String fieldType;
-	
+	private String fieldMode ;
 	public static final String STATEFIELD_MODE ="stateFieldMode;";
 	public static final String STATEFIELD_TYPE = "stateFieldType";
 	public static final String STATEFIELD_READONLY = "stateFieldReadOnly";
@@ -44,7 +45,7 @@ public class StateField extends Composite implements Field, ChangeHandler{
 		if(getConfiguration() == null)
 			throw new AppOpsException("Statefield configuration unavailable");
 		
-		String fieldMode = getConfiguration().getPropertyByName(STATEFIELD_MODE).toString();
+		 fieldMode = getConfiguration().getPropertyByName(STATEFIELD_MODE).toString();
 		
 		if(getConfiguration().getPropertyByName(STATEFIELD_TYPE) != null)
 			fieldType = getConfiguration().getPropertyByName(STATEFIELD_TYPE).toString();
@@ -153,6 +154,26 @@ public class StateField extends Composite implements Field, ChangeHandler{
 		}
 	}
 	
+	public AppopsSuggestion getFieldWidget(){
+		if(fieldMode.equalsIgnoreCase(STATEFIELDMODE_ENUM)){
+			//TODO:Use the numberField,StringRangeField & listBox,Combo here for future
+		}else if(fieldMode.equalsIgnoreCase(STATEFIELDMODE_SUGGESTIVE)){
+			
+			return appopsSuggestionBox.getSelectedSuggestion();
+			
+		}
+		return null;
+	}
+	
+	
+	public SuggestionField getAppopsSuggestionBox() {
+		return appopsSuggestionBox;
+	}
+
+	public void setAppopsSuggestionBox(SuggestionField appopsSuggestionBox) {
+		this.appopsSuggestionBox = appopsSuggestionBox;
+	}
+
 	@Override
 	public void onFieldEvent(FieldEvent event) {
 		// TODO Auto-generated method stub
