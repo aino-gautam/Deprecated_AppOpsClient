@@ -44,7 +44,7 @@ public class CheckboxGroupField extends Composite implements Field{
 	public void createField() throws AppOpsException {
 		 
 		if(getConfiguration() == null)
-			throw new AppOpsException("Statefield configuration unavailable");
+			throw new AppOpsException("CheckboxGroupField configuration unavailable");
 		
 		if(getConfiguration().getPropertyByName(CHECKBOX_SELECT_MODE) != null) 
 			checkboxSelectMode = getConfiguration().getPropertyByName(CHECKBOX_SELECT_MODE).toString();
