@@ -1,16 +1,14 @@
 package in.appops.client.common.components;
 
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.IntelliThoughtField;
 import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -20,7 +18,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class IntelliThoughtWidget extends Composite implements Configurable, ClickHandler, KeyUpHandler{
+public class IntelliThoughtWidget extends Composite implements Configurable, ClickHandler, FieldEventHandler{
 	private FlexTable basePanel;
 	private IntelliThoughtField intelliShareField;
 	private AttachMediaField attachMediaField;
@@ -59,27 +57,20 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	 * @throws AppOpsException
 	 */
 	public void createComponent(Configuration configuration) throws AppOpsException{
-			//mediaServicePanel.setBorderWidth(2);
-			//fieldAndPredefineOptionPanel.setBorderWidth(2);
-			
 			basePanel.setWidget(0, 0, mediaServicePanel);
-			//basePanel.setBorderWidth(2);
-		//	basePanel.add(fieldAndPredefineOptionPanel);
 			mediaServicePanel.setStylePrimaryName("intelliShareField");
 			
 			Boolean isIntelliShareField = 	configuration.getPropertyByName(IS_INTELLISHAREFIELD);
-//			Boolean isAttachMediaField = 	configuration.getPropertyByName(IS_ATTACHMEDIAFIELD);
 
-//			if(isAttachMediaField){
-//				createAttachMediaField();
-//			}
 			createAttachMediaField();
 			if(isIntelliShareField){
 				createIntelliShareField();
 			}
-		//	fieldAndPredefineOptionPanel.add(prominentOptionlPanel);
 			addPredefinedOptions();
 			basePanel.setWidget(5, 0, suggestionAction);
+			
+			intelliShareField.addFieldEventHandler(this);
+			
 	}
 	
 	private void addPredefinedOptions() {
@@ -129,7 +120,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		basePanel.getFlexCellFormatter().setVerticalAlignment(1, 0, HasVerticalAlignment.ALIGN_TOP);
 		basePanel.getFlexCellFormatter().getElement(1, 0).setClassName("intelliThoughtFieldCol");
 		//fieldAndPredefineOptionPanel.add(intelliShareField);
-		intelliShareField.addDomHandler(this, KeyUpEvent.getType());
+		//intelliShareField.addDomHandler(this, KeyUpEvent.getType());
 	}
 
 	public void setIntelliShareFieldConfiguration(Configuration conf){
@@ -154,27 +145,27 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		}
 	}
 
-	@Override
-	public void onKeyUp(KeyUpEvent event) {
-		char enteredChar = getCharCode(event.getNativeEvent()) ;
-		if(event.getSource().equals(intelliShareField)){
-			wordBuffer.append(Character.toString(enteredChar));
-			
-			if( !intelliShareField.getText().trim().equals("") && (enteredChar == ' ' || event.getNativeKeyCode() == KeyCodes.KEY_ENTER)){
-				fireWordEnteredEvent(wordBuffer.toString());
-				wordBuffer = new StringBuffer();
-			}
-			if(!intelliShareField.getText().trim().equals("") && !isAttachedMediaField){
-				attachMediaField.setVisible(true);
-				setAttachedMediaField(true);
-			} else if(intelliShareField.getText().trim().equals("")){
-				attachMediaField.setVisible(false);
-				setAttachedMediaField(false);
-			}
-		}
-	}
+//	@Override
+//	public void onKeyUp(KeyUpEvent event) {
+//		char enteredChar = getCharCode(event.getNativeEvent()) ;
+//		if(event.getSource().equals(intelliShareField)){
+//			wordBuffer.append(Character.toString(enteredChar));
+//			
+//			if( !intelliShareField.getText().trim().equals("") && (enteredChar == ' ' || event.getNativeKeyCode() == KeyCodes.KEY_ENTER)){
+//				fireWordEnteredEvent(wordBuffer.toString());
+//				wordBuffer = new StringBuffer();
+//			}
+//			if(!intelliShareField.getText().trim().equals("") && !isAttachedMediaField){
+//				attachMediaField.setVisible(true);
+//				setAttachedMediaField(true);
+//			} else if(intelliShareField.getText().trim().equals("")){
+//				attachMediaField.setVisible(false);
+//				setAttachedMediaField(false);
+//			}
+//		}
+//	}
 
-	private void fireWordEnteredEvent(String string) {
+	private void handleWordEnteredEvent(String string) {
 		
 		String intelliText  = intelliShareField.getText();
 		String[] words = intelliText.split("\\s+");
@@ -208,15 +199,30 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		this.isAttachedMediaField = isAttachedMediaField;
 	}
 
-	private native char getCharCode(NativeEvent e)/*-{
-	    var code = e.keyCode ? e.keyCode : e.charCode ? e.charCode : e.which ? e.which : void 0;
-	    if( e.which ) {
-	        if( code && ( ! ( e.ctrlKey || e.altKey ) ) ){
-	            return code;
-	        }
-	    }
-	    return void 0;
-	}-*/;
+///*	private native char getCharCode(NativeEvent e)-{
+//	    var code = e.keyCode ? e.keyCode : e.charCode ? e.charCode : e.which ? e.which : void 0;
+//	    if( e.which ) {
+//	        if( code && ( ! ( e.ctrlKey || e.altKey ) ) ){
+//	            return code;
+//	        }
+//	    }
+//	    return void 0;
+//	}-;*/
+
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		int eventType = event.getEventType();
+		String eventData = (String) event.getEventData();
+		
+		if(eventType == FieldEvent.EDITINITIATED) {
+			if (!isAttachedMediaField) {
+				attachMediaField.setVisible(true);
+				setAttachedMediaField(true);
+			} 
+		} else if(eventType == FieldEvent.WORDENTERED) {
+			handleWordEnteredEvent(eventData);
+		}
+	}
 
 	
 }
