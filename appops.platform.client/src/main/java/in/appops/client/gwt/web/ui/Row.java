@@ -41,6 +41,8 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 	public double speed = 20	; // 
 	private int zcenter = 220;
 	private MediaViewer mediaViewer;
+	private double rotationAngle =0;
+	private boolean isSkewMode = false;
 	
 	public Row() {
 		addDomHandler(this, MouseWheelEvent.getType());
@@ -303,29 +305,33 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 		widget.getElement().getStyle().setProperty("zoom", "scale(" + scale + ") ");
 	
 		//angle calculated from widget on front.
-		double rotationAngle =0;
 		
-		if(index==0)
-			rotationAngle = 330;
-		else if(index==1)
-			rotationAngle =0;
+		/*if(index==0)
+			rotationAngle = 72;
+		else if(rotationAngle>=360)
+			rotationAngle =rotationAngle-324;
 		else
-			rotationAngle+=36;
+			rotationAngle+=36;*/
 		
-		// = 100-zIndex*8;
+		rotationAngle = 100-zIndex*8;
 		
-		//Frontmost widget will have perspective 600px.
-		int perspective = 0;
 		
-		if(zIndex ==9)
-			perspective = 600;
-		else
-			perspective = (int) Math.floor(600*(zIndex-1)/9);
+		if(isSkewMode){
+			//Frontmost widget will have perspective 600px.
+			int perspective = 0;
+		
+			if(zIndex ==9)
+				perspective = 600;
+			else
+				perspective = (int) Math.floor(600*(zIndex-1)/9);
 				
-		widget.getElement().getStyle().setProperty("MozTransform", "scale(" + scale + ")  perspective("+perspective+"px) rotateY("+ (rotationAngle)+"deg)");
-		widget.getElement().getStyle().setProperty("WebkitTransform", "scale(" + scale + ")  perspective("+perspective+"px) rotateY("+ (rotationAngle)+"deg)");
+			widget.getElement().getStyle().setProperty("MozTransform", "scale(" + scale + ")  perspective("+perspective+"px) rotateY("+ (rotationAngle)+"deg)");
+			widget.getElement().getStyle().setProperty("WebkitTransform", "scale(" + scale + ")  perspective("+perspective+"px) rotateY("+ (rotationAngle)+"deg)");
 					
-		
+		}else{
+			widget.getElement().getStyle().setProperty("MozTransform", "scale(" + scale + ") rotateY("+ (rotationAngle)+"deg)");
+			widget.getElement().getStyle().setProperty("WebkitTransform", "scale(" + scale + ") rotateY("+ (rotationAngle)+"deg)");
+		}
 		if(scale>=0.98){
 			scale = 1;
 		}
@@ -356,6 +362,14 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 
 	public void setMediaViewer(MediaViewer mediaViewer) {
 		this.mediaViewer = mediaViewer;
+	}
+
+	public boolean isSkewMode() {
+		return isSkewMode;
+	}
+
+	public void setSkewMode(boolean isSkewMode) {
+		this.isSkewMode = isSkewMode;
 	}
 	
 	
