@@ -46,10 +46,16 @@ public class MediaViewer extends VerticalPanel implements WheelWidgetProvider {
 		
 		HashMap<String, Row> rowsPerAlbumMap = getRowPerAlbum();
 		
+		int index = 0; 
 		for(String rowName:rowsPerAlbumMap.keySet()){
 			Row row =rowsPerAlbumMap.get(rowName);
-			row.setIndependent(true);
-			cylinder.addRow(row);
+			
+			if(index%2==0){
+				row.setIndependent(true);
+			}else
+				row.setIndependent(false);
+				
+				cylinder.addRow(row);
 		}
 
 		DragonWheelNew wheel = new DragonWheelNew() ;
