@@ -1,6 +1,7 @@
 package in.appops.client.gwt.web.ui;
 
 
+import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 
 import com.google.gwt.user.client.ui.Composite;
@@ -14,6 +15,8 @@ public class ImageWidget extends Composite{
 	private int zOrder = 1 ;
 	private int width = 100 ;
 	private int height = 100 ;
+	private double rotationAngle= 0;
+	private Entity entity;
 	
 	private HorizontalPanel imagePanel =new HorizontalPanel();
 	private Configuration configuration = new Configuration();
@@ -108,6 +111,22 @@ public class ImageWidget extends Composite{
 
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
+	}
+
+	public double getRotationAngle() {
+		return rotationAngle;
+	}
+
+	public void setRotationAngle(double rotationAngle) {
+		this.rotationAngle = rotationAngle;
+	}
+
+	public Entity getEntity() {
+		return entity;
+	}
+
+	public void setEntity(Entity entity) {
+		this.entity = entity;
 	}
 	
 }
