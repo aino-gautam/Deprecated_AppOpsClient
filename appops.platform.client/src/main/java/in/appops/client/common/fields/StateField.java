@@ -1,24 +1,27 @@
 package in.appops.client.common.fields;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.SuggestBox;
-
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.fields.slider.field.NumericRangeSliderField;
+import in.appops.client.common.fields.slider.field.StringRangeSliderField;
+import in.appops.client.common.fields.suggestion.AppopsSuggestion;
+import in.appops.client.common.fields.suggestion.SuggestionField;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ListBox;
 public class StateField extends Composite implements Field, ChangeHandler{
 
 	private Configuration configuration;
 	private String fieldValue;
 	private ListBox listBox;
-	private SuggestBox suggestBox;
+	private SuggestionField appopsSuggestionBox;
 	private String fieldType;
-	
+	private String fieldMode ;
 	public static final String STATEFIELD_MODE ="stateFieldMode;";
 	public static final String STATEFIELD_TYPE = "stateFieldType";
 	public static final String STATEFIELD_READONLY = "stateFieldReadOnly";
@@ -28,11 +31,13 @@ public class StateField extends Composite implements Field, ChangeHandler{
 	public static final String STATEFIELD_QUERY = "stateFieldQuery";
 	public static final String STATEFIELDTYPE_LIST = "stateFieldModeList";
 	public static final String STATEFIELDTYPE_COMBO = "stateFieldModeCombo";
+	public static final String STATEFIELDTYPE_NUMERICRANGE = "stateFieldModeNumericRange";
+	public static final String STATEFIELDTYPE_STRINGRANGE = "stateFieldModeStringRange";
 	public static final String STATEFIELDMODE_ENUM = "stateFieldTypeEnum";
 	public static final String STATEFIELDMODE_SUGGESTIVE = "stateFieldTypeSuggestive";
-	
+	public static final String STATEFIELD_OPERATION = "stateFieldOperation";
+	public static final String PROPERTY_BY_FIELD_NAME = "propertyByFieldName";
 	public StateField(){
-		
 	}
 	
 	@Override
@@ -40,51 +45,53 @@ public class StateField extends Composite implements Field, ChangeHandler{
 		if(getConfiguration() == null)
 			throw new AppOpsException("Statefield configuration unavailable");
 		
-		String fieldMode = getConfiguration().getPropertyByName(STATEFIELD_MODE).toString();
-		fieldType = getConfiguration().getPropertyByName(STATEFIELD_TYPE).toString();
+		 fieldMode = getConfiguration().getPropertyByName(STATEFIELD_MODE).toString();
+		
+		if(getConfiguration().getPropertyByName(STATEFIELD_TYPE) != null)
+			fieldType = getConfiguration().getPropertyByName(STATEFIELD_TYPE).toString();
 		
 		if(fieldMode.equalsIgnoreCase(STATEFIELDMODE_ENUM)){
-			 if(fieldType.equalsIgnoreCase(STATEFIELDTYPE_LIST)){
-				 listBox = new ListBox(true);
-				 initWidget(listBox);
-				 populateList(null, listBox); // need to provide or fetch the entitylist to be populated
-				 for(int i=0; i<=listBox.getItemCount();i++){
-					 String value = listBox.getItemText(i);
-					 
-					 if(getFieldValue().equalsIgnoreCase(value)){
-						 listBox.setSelectedIndex(i);
-						 break;
-					 }
-				 }
-			 }else if(fieldType.equalsIgnoreCase(STATEFIELDTYPE_COMBO)){
-				 listBox = new ListBox(false);
-				 listBox = new ListBox(true);
-				 populateList(null, listBox); // need to provide or fetch the entitylist to be populated
-				 for(int i=0; i<=listBox.getItemCount();i++){
-					 String value = listBox.getItemText(i);
-					 
-					 if(getFieldValue().equalsIgnoreCase(value)){
-						 listBox.setSelectedIndex(i);
-						 break;
-					 }
-				 }
-			 }
-			 
-			 if(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS) != null)
-				 	listBox.setStylePrimaryName(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS).toString());
-			 if(getConfiguration().getPropertyByName(STATEFIELD_DEPENDENTCSS) != null)
-					listBox.addStyleName(getConfiguration().getPropertyByName(STATEFIELD_DEPENDENTCSS).toString());
-			 if(getConfiguration().getPropertyByName(STATEFIELD_DEBUGID) != null)
-					listBox.ensureDebugId(getConfiguration().getPropertyByName(STATEFIELD_DEBUGID).toString());
-		} else if(fieldMode.equalsIgnoreCase(STATEFIELDMODE_SUGGESTIVE)){
-				suggestBox = new SuggestBox();
-				initWidget(suggestBox);
+			if(fieldType.equalsIgnoreCase(STATEFIELDTYPE_NUMERICRANGE)){
+				NumericRangeSliderField numericRangeSliderField = new NumericRangeSliderField();
+				numericRangeSliderField.setConfiguration(getConfiguration());
+				numericRangeSliderField.createField();
+				initWidget(numericRangeSliderField);
+			}else if(fieldType.equalsIgnoreCase(STATEFIELDTYPE_STRINGRANGE)){
+				StringRangeSliderField stringRangeSliderField = new StringRangeSliderField();
+				stringRangeSliderField.setConfiguration(getConfiguration());
+				stringRangeSliderField.createField();
+				initWidget(stringRangeSliderField);
+			}else{
+				if(fieldType.equalsIgnoreCase(STATEFIELDTYPE_LIST)){
+					ListBoxField listBoxField = new ListBoxField();
+					listBoxField.setConfiguration(getConfiguration());
+					listBoxField.createField();
+				}else if(fieldType.equalsIgnoreCase(STATEFIELDTYPE_COMBO)){
+					ComboBoxField comboBoxField = new ComboBoxField();
+					comboBoxField.setConfiguration(getConfiguration());
+					comboBoxField.createField();
+				}
 				if(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS) != null)
-					suggestBox.setStylePrimaryName(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS).toString());
+					listBox.setStylePrimaryName(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS).toString());
 				if(getConfiguration().getPropertyByName(STATEFIELD_DEPENDENTCSS) != null)
-					suggestBox.addStyleName(getConfiguration().getPropertyByName(STATEFIELD_DEPENDENTCSS).toString());
+					listBox.addStyleName(getConfiguration().getPropertyByName(STATEFIELD_DEPENDENTCSS).toString());
 				if(getConfiguration().getPropertyByName(STATEFIELD_DEBUGID) != null)
-					suggestBox.ensureDebugId(getConfiguration().getPropertyByName(STATEFIELD_DEBUGID).toString());
+					listBox.ensureDebugId(getConfiguration().getPropertyByName(STATEFIELD_DEBUGID).toString());
+			}
+		} else if(fieldMode.equalsIgnoreCase(STATEFIELDMODE_SUGGESTIVE)){
+			appopsSuggestionBox = new SuggestionField();
+			if(getConfiguration().getPropertyByName(STATEFIELD_QUERY) != null)
+				appopsSuggestionBox.setQueryName(getConfiguration().getPropertyByName(STATEFIELD_QUERY).toString());
+			if(getConfiguration().getPropertyByName(STATEFIELD_OPERATION) != null)
+				appopsSuggestionBox.setOperationName(getConfiguration().getPropertyByName(STATEFIELD_OPERATION).toString());
+			
+			initWidget(appopsSuggestionBox);
+			if(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS) != null)
+				appopsSuggestionBox.getSuggestBox().setStylePrimaryName(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS).toString());
+			if(getConfiguration().getPropertyByName(STATEFIELD_DEPENDENTCSS) != null)
+				appopsSuggestionBox.getSuggestBox().addStyleName(getConfiguration().getPropertyByName(STATEFIELD_DEPENDENTCSS).toString());
+			if(getConfiguration().getPropertyByName(STATEFIELD_DEBUGID) != null)
+				appopsSuggestionBox.getSuggestBox().ensureDebugId(getConfiguration().getPropertyByName(STATEFIELD_DEBUGID).toString());
 		}
 	}
 
@@ -123,6 +130,15 @@ public class StateField extends Composite implements Field, ChangeHandler{
 
 	@Override
 	public String getFieldValue() {
+		String fieldMode = getConfiguration().getPropertyByName(STATEFIELD_MODE).toString();
+		if(fieldMode.equalsIgnoreCase(STATEFIELDMODE_ENUM)){
+			 if(fieldType.equalsIgnoreCase(STATEFIELDTYPE_LIST)){
+				 
+			 }
+		}else{
+			setFieldValue(appopsSuggestionBox.getSuggestBox().getValue());
+			return appopsSuggestionBox.getSuggestBox().getValue();
+		}
 		return this.getFieldValue();
 	}
 
@@ -137,5 +153,30 @@ public class StateField extends Composite implements Field, ChangeHandler{
 			
 		}
 	}
+	
+	public AppopsSuggestion getFieldWidget(){
+		if(fieldMode.equalsIgnoreCase(STATEFIELDMODE_ENUM)){
+			//TODO:Use the numberField,StringRangeField & listBox,Combo here for future
+		}else if(fieldMode.equalsIgnoreCase(STATEFIELDMODE_SUGGESTIVE)){
+			
+			return appopsSuggestionBox.getSelectedSuggestion();
+			
+		}
+		return null;
+	}
+	
+	
+	public SuggestionField getAppopsSuggestionBox() {
+		return appopsSuggestionBox;
+	}
 
+	public void setAppopsSuggestionBox(SuggestionField appopsSuggestionBox) {
+		this.appopsSuggestionBox = appopsSuggestionBox;
+	}
+
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
 }
