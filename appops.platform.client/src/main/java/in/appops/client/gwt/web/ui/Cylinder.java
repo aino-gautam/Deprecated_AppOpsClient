@@ -23,7 +23,7 @@ public class Cylinder extends Row {
 	private double radius ;
 	private int xLeft=0;
 	private int yTop=0;
-	
+	private boolean isSkewMode;
 	
 	public Cylinder() {
 		
@@ -44,6 +44,8 @@ public class Cylinder extends Row {
 	private void setDefaultPropertiesToRow(Row row) {
 		row.setRadius(radius);
 		row.setxLeft(xLeft);
+		row.setSkewMode(isSkewMode);
+		
 		yTop+=120;
 		row.setyTop(yTop);
 		rowMap.put(row.getName(),row);
@@ -86,7 +88,7 @@ public class Cylinder extends Row {
 
 				double scale = row.getScalingConstant()/ (row.getScalingConstant() + Math.sin(row.getCurrentAngle()*2 + indexOfWidget * row.getWidgetSpacing()+row.getSpeed() )* row.getRadius() + row.getZcenter());
 				
-				widget = scaleWheelWidget(widget, scale,0,indexOfWidget);
+				widget = scaleWheelWidget(widget, scale,indexOfWidget,0);
 												
 				row.add(widget, newXpos, newYPos);
 				
@@ -156,6 +158,14 @@ public class Cylinder extends Row {
 		this.xLeft  =xLeft;
 		this.yTop = yTop;
 		
+	}
+
+	public boolean isSkewMode() {
+		return isSkewMode;
+	}
+
+	public void setSkewMode(boolean isSkewMode) {
+		this.isSkewMode = isSkewMode;
 	}
 	
 	

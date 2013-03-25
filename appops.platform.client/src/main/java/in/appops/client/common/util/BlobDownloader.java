@@ -9,12 +9,12 @@ public class BlobDownloader {
 		 
 	 }
 	 public String getIconDownloadURL(String blobId){
-		 return GWT.getHostPageBaseURL()+"download?blobId=i:"+blobId;
+		 return GWT.getHostPageBaseURL()+"download?blobId=i_"+blobId;
 		 
 	 }
 
 	 public String getThumbNailDownloadURL(String blobId){
-		 return GWT.getHostPageBaseURL()+"download?blobId=t:"+blobId;
+		 return GWT.getHostPageBaseURL()+"download?blobId=t_"+blobId;
 		 
 	 }
 }
