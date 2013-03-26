@@ -56,6 +56,8 @@ public class MediaViewer extends VerticalPanel implements WheelWidgetProvider {
 				row.setIndependent(false);
 				
 				cylinder.addRow(row);
+				
+				index++;
 		}
 
 		DragonWheelNew wheel = new DragonWheelNew() ;
@@ -103,12 +105,15 @@ public class MediaViewer extends VerticalPanel implements WheelWidgetProvider {
 				
 		for (Map.Entry<Entity, EntityList> e : map.entrySet()) {
 			Entity albumEnt = e.getKey();
+			EntityList photList  = e.getValue();
 			String name = albumEnt.getProperty(TagConstant.NAME).getValue().toString();
-			Row row =new Row(name);
-			row.setIndependent(true);
-			row.setEntity(albumEnt);
-			row.setStylePrimaryName("rowPanel");
-			rowMap.put(name, row);
+			if(photList.size()!=0){
+				Row row =new Row(name);
+				row.setIndependent(true);
+				row.setEntity(albumEnt);
+				row.setStylePrimaryName("rowPanel");
+				rowMap.put(name, row);
+			}
 		}
 				
 		return rowMap;
@@ -154,7 +159,7 @@ public class MediaViewer extends VerticalPanel implements WheelWidgetProvider {
 			for(Entity photoEnt:photoList){
 				String blobId  = photoEnt.getProperty(MediaConstant.BLOBID).getValue().toString();
 				
-				ImageWidget imageWidget =new ImageWidget(blobDownloader.getImageDownloadURL(blobId));
+				ImageWidget imageWidget =new ImageWidget(blobDownloader.getThumbNailDownloadURL(blobId));
 				imageWidget.setEntity(photoEnt);
 				imageWidgetSet.add(imageWidget);
 				
