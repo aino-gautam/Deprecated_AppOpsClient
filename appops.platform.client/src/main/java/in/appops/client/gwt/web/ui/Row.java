@@ -5,6 +5,7 @@ package in.appops.client.gwt.web.ui;
 
 import in.appops.platform.core.entity.Entity;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -45,6 +46,9 @@ public class Row extends AbsolutePanel implements MouseWheelHandler,ClickHandler
 	private MediaViewer mediaViewer;
 	private double rotationAngle =0;
 	private boolean isSkewMode;
+	private ImageSliderPopup imageSliderPopup = new ImageSliderPopup();
+	//private LinkedHashSet<Widget> widgetSet;
+	private ArrayList<ImageWidget> widgetList = new ArrayList<ImageWidget>();
 	
 	public Row() {
 		addDomHandler(this, MouseWheelEvent.getType());
@@ -157,6 +161,12 @@ public class Row extends AbsolutePanel implements MouseWheelHandler,ClickHandler
 
 		//widget spacing will be half the no of widgets in the row bydefault there are 10 widgets in the row. 
 		widgetSetForRow = nextWidgetSet;
+		
+		for (Widget widget:widgetSetForRow) {
+			ImageWidget imageWidget = (ImageWidget) widget;
+						
+			widgetList.add(imageWidget);
+		}
 		
 		widgetSpacing = Math.PI/(nextWidgetSet.size()/1.98);
 		
@@ -442,7 +452,13 @@ public class Row extends AbsolutePanel implements MouseWheelHandler,ClickHandler
 	public void onClick(ClickEvent event) {
 		ImageWidget widget =(ImageWidget) event.getSource();
 		
+		if(!imageSliderPopup.isShowing()){
+			imageSliderPopup.initialize(widgetList);
+		}
+					
+		imageSliderPopup.showImage(widget);
 		
+		imageSliderPopup.center();
 	}
 	
 	
