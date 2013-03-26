@@ -85,7 +85,7 @@ public class FieldsShowCase implements EntryPoint {
 
 					StateField stateField = new StateField();
 					//stateField.setFieldValue("Suggestion");
-					Configuration stateFieldConfig = getStateFieldConfiguration(StateField.STATEFIELDMODE_SUGGESTIVE, "getAllSpaceTypes", "spacemanagement.SpaceManagementService.getEntityList");
+					Configuration stateFieldConfig = getStateFieldConfiguration(StateField.STATEFIELDMODE_SUGGESTIVE, "getSpaceTypesWithName", "spacemanagement.SpaceManagementService.getEntityList");
 					stateField.setConfiguration(stateFieldConfig);
 
 					LabelField CheckboxFieldLabel = new LabelField();
