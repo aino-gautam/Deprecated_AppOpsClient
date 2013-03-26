@@ -30,6 +30,7 @@ public class ImageSliderPopup extends PopupPanel implements ClickHandler {
 	
 	public ImageSliderPopup() {
 
+		
 	}
 	
 	public void initialize(ArrayList<ImageWidget> widgetSetForRow){
