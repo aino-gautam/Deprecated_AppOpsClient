@@ -85,4 +85,18 @@ public class EntityModel implements AppOpsModel{
 		return null;
 	}
 
+
+	@Override
+	public String getOperationNameToBind() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void setOperationNameToBind(String name) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

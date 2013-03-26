@@ -45,6 +45,7 @@ public class Cylinder extends Row {
 		row.setRadius(radius);
 		row.setxLeft(xLeft);
 		row.setSkewMode(isSkewMode);
+		row.setParentCylinder(this);
 		
 		yTop+=120;
 		row.setyTop(yTop);
