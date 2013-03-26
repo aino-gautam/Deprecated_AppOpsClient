@@ -37,6 +37,8 @@ public class StateField extends Composite implements Field, ChangeHandler{
 	public static final String STATEFIELDMODE_SUGGESTIVE = "stateFieldTypeSuggestive";
 	public static final String STATEFIELD_OPERATION = "stateFieldOperation";
 	public static final String PROPERTY_BY_FIELD_NAME = "propertyByFieldName";
+	public static final String STATEFIELD_QUERY_MAXRESULT = "stateFieldQueryMaxresult";
+	
 	public StateField(){
 	}
 	
@@ -84,6 +86,12 @@ public class StateField extends Composite implements Field, ChangeHandler{
 				appopsSuggestionBox.setQueryName(getConfiguration().getPropertyByName(STATEFIELD_QUERY).toString());
 			if(getConfiguration().getPropertyByName(STATEFIELD_OPERATION) != null)
 				appopsSuggestionBox.setOperationName(getConfiguration().getPropertyByName(STATEFIELD_OPERATION).toString());
+			
+			if(getConfiguration().getPropertyByName(STATEFIELD_QUERY_MAXRESULT) != null) {
+				appopsSuggestionBox.setMaxResult((Integer)getConfiguration().getPropertyByName(STATEFIELD_QUERY_MAXRESULT));
+			} else {
+				appopsSuggestionBox.setMaxResult(25);
+			}
 			
 			initWidget(appopsSuggestionBox);
 			if(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS) != null)
