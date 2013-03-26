@@ -24,6 +24,7 @@ public class SuggestionOracle extends SuggestOracle {
 	private String operationName;
 	private final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+	private int maxResult;
 	
 	public void setQueryName(String queryName) {
 		this.queryName = queryName;
@@ -55,11 +56,11 @@ public class SuggestionOracle extends SuggestOracle {
 			
 			Query queryObj = new Query();
 			queryObj.setQueryName(queryName);
-			
-			/*HashMap map = new HashMap();
+			queryObj.setListSize(maxResult);
+			HashMap map = new HashMap();
 			map.put("searchChar", "%" + search + "%");
 			//map.put("max", maxResult);
-			queryObj.setQueryParameterMap(map);*/
+			queryObj.setQueryParameterMap(map);
 			
 			Map parameterMap = new HashMap();
 			parameterMap.put("query", queryObj);
@@ -99,5 +100,9 @@ public class SuggestionOracle extends SuggestOracle {
 				}
 			});
 		}
+	}
+	
+	public void setMaxResult(int max) {
+		this.maxResult = max;
 	}
 }
