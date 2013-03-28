@@ -322,6 +322,8 @@ public class FieldsShowCase implements EntryPoint {
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CHOOSE_LOCATION_BTN, "chooseLocationBtn");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_POPUPPANEL, "currentLocationField");
 		configuration.setPropertyByName(LocationSelector.MAP_ZOOM, "8");
+		configuration.setPropertyByName(LocationSelector.CHANGE_LOCATION_IMAGE_URL, "images/iconEdit.png");
+		configuration.setPropertyByName(LocationSelector.DONE_SELECTION_IMAGE_URL, "images/iconTickBlackCircle.png");
 		configuration.setPropertyByName(LocationSelector.MAP_WIDTH, "300px");
 		configuration.setPropertyByName(LocationSelector.MAP_HEIGHT, "200px");
 		
