@@ -157,7 +157,62 @@ public class Row extends AbsolutePanel implements MouseWheelHandler,ClickHandler
 	/**
 	 * Method will get next set of widgets and place it in the row.
 	 */
-	public void initWidgetPositions(MediaViewer mediaViewer,LinkedHashSet<Widget> nextWidgetSet) {
+	public void initWidgetPositions(MediaViewer viewer,LinkedHashSet<Widget> nextWidgetSet) {
+
+		//widget spacing will be half the no of widgets in the row bydefault there are 10 widgets in the row. 
+		widgetSetForRow = nextWidgetSet;
+		this.mediaViewer = viewer;
+		
+		for (Widget widget:widgetSetForRow) {
+			ImageWidget imageWidget = (ImageWidget) widget;
+						
+			widgetList.add(imageWidget);
+		}
+		
+		widgetSpacing = Math.PI/(nextWidgetSet.size()/1.98);
+		
+		int index = 0;
+
+		
+		for (Widget widget:widgetSetForRow) {
+			
+			int left = (int) Math.round((Math.cos(startAngle + index* getWidgetSpacing() + speed)* radius + getxLeft()));
+			int top = (int) Math.round((-Math.sin(startAngle + index* getWidgetSpacing() + speed)* elevation_angle + getyTop()));
+
+			int z = (int) Math.round((Math.sin(startAngle + index* getWidgetSpacing() + speed)* radius + zcenter));
+
+			double scale = scalingConstant/ (scalingConstant + Math.sin(startAngle + index * getWidgetSpacing() + speed ) * radius + zcenter);
+						
+			widget = scaleWidget(widget, scale,0,index);
+			
+			ClickHandler clickHandler = new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					ImageWidget widget =(ImageWidget) event.getSource();
+					
+					//if(!imageSliderPopup.isShowing()){
+					ImageSliderPopup imageSliderPopup = new ImageSliderPopup();
+					imageSliderPopup.initialize(widgetList);
+				//	}
+					imageSliderPopup.showImage(widget);
+					
+					imageSliderPopup.center();
+					init(mediaViewer, widgetSetForRow);
+					
+				}
+			};
+			
+			//widget.addHandler(clickHandler, ClickEvent.getType());
+			
+			widget.addDomHandler(clickHandler, ClickEvent.getType());
+			
+			add(widget, left, top);
+			
+			index++;
+		}
+	}
+	
+	public void init(MediaViewer mediaViewer,LinkedHashSet<Widget> nextWidgetSet) {
 
 		//widget spacing will be half the no of widgets in the row bydefault there are 10 widgets in the row. 
 		widgetSetForRow = nextWidgetSet;
@@ -183,8 +238,26 @@ public class Row extends AbsolutePanel implements MouseWheelHandler,ClickHandler
 			double scale = scalingConstant/ (scalingConstant + Math.sin(startAngle + index * getWidgetSpacing() + speed ) * radius + zcenter);
 						
 			widget = scaleWidget(widget, scale,0,index);
-				
-			widget.addDomHandler(this, ClickEvent.getType());
+			
+			ClickHandler clickHandler = new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					ImageWidget widget =(ImageWidget) event.getSource();
+					
+					//if(!imageSliderPopup.isShowing()){
+					ImageSliderPopup imageSliderPopup = new ImageSliderPopup();
+					imageSliderPopup.initialize(widgetList);
+				//	}
+					imageSliderPopup.showImage(widget);
+					
+					imageSliderPopup.center();
+					
+				}
+			};
+			
+			//widget.addHandler(clickHandler, ClickEvent.getType());
+			
+			widget.addDomHandler(clickHandler, ClickEvent.getType());
 			
 			add(widget, left, top);
 			
@@ -452,10 +525,10 @@ public class Row extends AbsolutePanel implements MouseWheelHandler,ClickHandler
 	public void onClick(ClickEvent event) {
 		ImageWidget widget =(ImageWidget) event.getSource();
 		
-		if(!imageSliderPopup.isShowing()){
-			imageSliderPopup.initialize(widgetList);
-		}
-					
+		//if(!imageSliderPopup.isShowing()){
+		ImageSliderPopup imageSliderPopup = new ImageSliderPopup();
+		imageSliderPopup.initialize(widgetList);
+	//	}
 		imageSliderPopup.showImage(widget);
 		
 		imageSliderPopup.center();
