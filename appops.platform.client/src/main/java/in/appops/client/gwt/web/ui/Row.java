@@ -5,9 +5,12 @@ package in.appops.client.gwt.web.ui;
 
 import in.appops.platform.core.entity.Entity;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.user.client.DOM;
@@ -18,7 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Debasish Padhy Created it on 14-Mar-2013
  *
  */
-public class Row extends AbsolutePanel implements MouseWheelHandler{
+public class Row extends AbsolutePanel implements MouseWheelHandler,ClickHandler{
 
 	private int rowHeight ; 
 	private int rowWidth ;
@@ -31,18 +34,21 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 	private String displayName ;
 	private int rowPosition ;
 	private Cylinder parentCylinder = null ;
-	private Entity entity; //row is basically one album entity.
+	private Entity entity; //row is associated with entity.
 	private LinkedHashSet<Widget> widgetSetForRow;
-	private int scalingConstant = 220; // used for calculating opacity and scale
+	private int scalingConstant = 200; // used for calculating opacity and scale
 	private int startAngle = 30;
 	private double currentAngle = startAngle * (Math.PI /180);
-	private double radius=220; // in px
+	private double radius; // in px
 	public double elevation_angle = 15; // in pixels - elevation angle decision maker
-	public double speed = 20	; // 
-	private int zcenter = 220;
+	public double speed = 5	; // 
+	private int zcenter = 200;
 	private MediaViewer mediaViewer;
 	private double rotationAngle =0;
-	private boolean isSkewMode = false;
+	private boolean isSkewMode;
+	private ImageSliderPopup imageSliderPopup = new ImageSliderPopup();
+	//private LinkedHashSet<Widget> widgetSet;
+	private ArrayList<ImageWidget> widgetList = new ArrayList<ImageWidget>();
 	
 	public Row() {
 		addDomHandler(this, MouseWheelEvent.getType());
@@ -151,10 +157,17 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 	/**
 	 * Method will get next set of widgets and place it in the row.
 	 */
-	public void initWidgetPositions(MediaViewer mediaViewer,LinkedHashSet<Widget> nextWidgetSet) {
+	public void initWidgetPositions(MediaViewer viewer,LinkedHashSet<Widget> nextWidgetSet) {
 
 		//widget spacing will be half the no of widgets in the row bydefault there are 10 widgets in the row. 
 		widgetSetForRow = nextWidgetSet;
+		this.mediaViewer = viewer;
+		
+		for (Widget widget:widgetSetForRow) {
+			ImageWidget imageWidget = (ImageWidget) widget;
+						
+			widgetList.add(imageWidget);
+		}
 		
 		widgetSpacing = Math.PI/(nextWidgetSet.size()/1.98);
 		
@@ -169,20 +182,82 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 			int z = (int) Math.round((Math.sin(startAngle + index* getWidgetSpacing() + speed)* radius + zcenter));
 
 			double scale = scalingConstant/ (scalingConstant + Math.sin(startAngle + index * getWidgetSpacing() + speed ) * radius + zcenter);
+						
+			widget = scaleWidget(widget, scale,0,index);
 			
-			/*double  deltaX = 317 - left;
-			double  deltaY= 75 - top;
+			ClickHandler clickHandler = new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					ImageWidget widget =(ImageWidget) event.getSource();
+					
+					//if(!imageSliderPopup.isShowing()){
+					ImageSliderPopup imageSliderPopup = new ImageSliderPopup();
+					imageSliderPopup.initialize(widgetList);
+				//	}
+					imageSliderPopup.showImage(widget);
+					
+					imageSliderPopup.center();
+					init(mediaViewer, widgetSetForRow);
+					
+				}
+			};
 			
-			double angleInDegrees = Math.atan2(deltaY, deltaX) * 180 / Math.PI;*/
+			//widget.addHandler(clickHandler, ClickEvent.getType());
 			
-					 
-			//angleInDegrees = Math.abs(Math.atan2(75-50, 317-303) - Math.atan2(top-50, left-303));
+			widget.addDomHandler(clickHandler, ClickEvent.getType());
 			
-			System.out.println("-----------index ="+index+"-------------left="+left+"-----------------top="+top );
+			add(widget, left, top);
+			
+			index++;
+		}
+	}
+	
+	public void init(MediaViewer mediaViewer,LinkedHashSet<Widget> nextWidgetSet) {
 
+		//widget spacing will be half the no of widgets in the row bydefault there are 10 widgets in the row. 
+		widgetSetForRow = nextWidgetSet;
+		
+		for (Widget widget:widgetSetForRow) {
+			ImageWidget imageWidget = (ImageWidget) widget;
+						
+			widgetList.add(imageWidget);
+		}
+		
+		widgetSpacing = Math.PI/(nextWidgetSet.size()/1.98);
+		
+		int index = 0;
+
+		
+		for (Widget widget:widgetSetForRow) {
 			
-			widget = scaleWheelWidget(widget, scale,0,index);
-				
+			int left = (int) Math.round((Math.cos(startAngle + index* getWidgetSpacing() + speed)* radius + getxLeft()));
+			int top = (int) Math.round((-Math.sin(startAngle + index* getWidgetSpacing() + speed)* elevation_angle + getyTop()));
+
+			int z = (int) Math.round((Math.sin(startAngle + index* getWidgetSpacing() + speed)* radius + zcenter));
+
+			double scale = scalingConstant/ (scalingConstant + Math.sin(startAngle + index * getWidgetSpacing() + speed ) * radius + zcenter);
+						
+			widget = scaleWidget(widget, scale,0,index);
+			
+			ClickHandler clickHandler = new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					ImageWidget widget =(ImageWidget) event.getSource();
+					
+					//if(!imageSliderPopup.isShowing()){
+					ImageSliderPopup imageSliderPopup = new ImageSliderPopup();
+					imageSliderPopup.initialize(widgetList);
+				//	}
+					imageSliderPopup.showImage(widget);
+					
+					imageSliderPopup.center();
+					
+				}
+			};
+			
+			//widget.addHandler(clickHandler, ClickEvent.getType());
+			
+			widget.addDomHandler(clickHandler, ClickEvent.getType());
 			
 			add(widget, left, top);
 			
@@ -199,12 +274,10 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 			
 			int indexOfWidget = 0;
 			
-			if (move < 0) {
-				// mouse wheel is moving north .
+			if (move > 0) {
 				currentAngle = currentAngle - (Math.PI / speed);
 				
 			} else {
-				// mouse wheel is moving south
 				currentAngle = currentAngle + Math.PI / speed;
 			}
 			
@@ -214,15 +287,8 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 				int newYPos = (int) Math.round(-Math.sin(currentAngle*2 + indexOfWidget* getWidgetSpacing()+speed)* elevation_angle + getyTop());
 
 				double scale = scalingConstant/ (scalingConstant + Math.sin(currentAngle*2 + indexOfWidget * getWidgetSpacing()+speed )* radius + zcenter);
-				
-				double  deltaX =317- newXpos  ;
-				double  deltaY= 75-newYPos ;
-						
-				
-				double angleInDegrees = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
-				
-				widget = scaleWheelWidget(widget, scale,angleInDegrees,indexOfWidget);
-				
+							
+				widget = scaleWheelWidget(widget, scale,indexOfWidget,move);
 				
 				add(widget, newXpos, newYPos);
 				
@@ -293,10 +359,84 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 	public void setWidgetSpacing(double widgetSpacing) {
 		this.widgetSpacing = widgetSpacing;
 	}
+	
+	public Widget scaleWheelWidget(Widget imageWidget,double scale,int index,int move){
+		ImageWidget widget = (ImageWidget) imageWidget;
+		String strNumber = Double.toString(scale).substring(2);
+		int zIndex = Integer.parseInt(strNumber.substring(0, 1));
+		widget.getElement().getStyle().setZIndex(zIndex);
+		widget.setStylePrimaryName("imageWidget");
+		
+		widget.getElement().getStyle().setProperty("zoom", "scale(" + scale + ") ");
+				
+		if(isSkewMode()){
+			//Frontmost widget will have perspective 600px.
+			int perspective = 0;
+			double rotationAngle = widget.getRotationAngle();
+			
+			if(move>0){
+				
+				if(rotationAngle==360)
+					rotationAngle =36;
+				else{
+					rotationAngle+=36;
+					if(rotationAngle ==360)
+						rotationAngle =0;
+				}
+			}else{
+				if(rotationAngle==0)
+					rotationAngle = 324;
+				
+				else
+					rotationAngle-=36;
+			}
+			if(zIndex ==9)
+				perspective = 600;
+			else
+				perspective = (int) Math.floor(600*(zIndex-1)/9);
+			
+			widget.setRotationAngle(rotationAngle);
+				
+			widget.getElement().getStyle().setProperty("MozTransform", "scale(" + scale + ")  perspective("+perspective+"px) rotateY("+ (rotationAngle)+"deg)");
+			widget.getElement().getStyle().setProperty("WebkitTransform", "scale(" + scale + ")  perspective("+perspective+"px) rotateY("+ (rotationAngle)+"deg)");
+					
+		}else{
+			rotationAngle = 100-zIndex*8;
+			
+			widget.getElement().getStyle().setProperty("MozTransform", "scale(" + scale + ") rotateY("+ (rotationAngle)+"deg)");
+			widget.getElement().getStyle().setProperty("WebkitTransform", "scale(" + scale + ") rotateY("+ (rotationAngle)+"deg)");
+		}
+		if(scale>=0.50){
+			scale = 1;
+		}
+		
+		DOM.setStyleAttribute(widget.getElement(), "opacity",String.valueOf(scale));
+		return widget;
+	}
+	
+	public void rotateRow(){
+			int index = 0;
+			
+			for (Widget widget:widgetSetForRow) {
+			
+			int left = (int) Math.round((Math.cos(startAngle + index* getWidgetSpacing() + speed)* radius + getxLeft()));
+			int top = (int) Math.round((-Math.sin(startAngle + index* getWidgetSpacing() + speed)* elevation_angle + getyTop()));
 
+			int z = (int) Math.round((Math.sin(startAngle + index* getWidgetSpacing() + speed)* radius + zcenter));
+
+			double scale = scalingConstant/ (scalingConstant + Math.sin(startAngle + index * getWidgetSpacing() + speed ) * radius + zcenter);
+			
+			widget = scaleWidget(widget, scale,0,index);
+				
+			
+			add(widget, left, top);
+			
+			index++;
+		}
+	}
 	
-	
-	public Widget scaleWheelWidget(Widget widget,double scale,double rotationiAngle,int index){
+	public Widget scaleWidget(Widget imageWidget,double scale,double rotationiAngle,int index){
+		ImageWidget widget = (ImageWidget) imageWidget;
 		String strNumber = Double.toString(scale).substring(2);
 		int zIndex = Integer.parseInt(strNumber.substring(0, 1));
 		widget.getElement().getStyle().setZIndex(zIndex);
@@ -306,39 +446,48 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 	
 		//angle calculated from widget on front.
 		
-		/*if(index==0)
-			rotationAngle = 72;
-		else if(rotationAngle>=360)
-			rotationAngle =rotationAngle-324;
-		else
-			rotationAngle+=36;*/
-		
-		rotationAngle = 100-zIndex*8;
-		
-		
-		if(isSkewMode){
-			//Frontmost widget will have perspective 600px.
+		if(isSkewMode()){
+			
 			int perspective = 0;
+						
+			if(index==0)
+				rotationAngle = 72;
+			else if(rotationAngle>360){
+				rotationAngle =rotationAngle-324;
+				if(rotationAngle==360)
+					rotationAngle=0;
+			}else{
+				rotationAngle+=36;
+				if(rotationAngle==360)
+					rotationAngle=0;
+			}
 		
 			if(zIndex ==9)
 				perspective = 600;
 			else
 				perspective = (int) Math.floor(600*(zIndex-1)/9);
+			
+			widget.setRotationAngle(rotationAngle);
 				
 			widget.getElement().getStyle().setProperty("MozTransform", "scale(" + scale + ")  perspective("+perspective+"px) rotateY("+ (rotationAngle)+"deg)");
 			widget.getElement().getStyle().setProperty("WebkitTransform", "scale(" + scale + ")  perspective("+perspective+"px) rotateY("+ (rotationAngle)+"deg)");
 					
 		}else{
+			rotationAngle = 100-zIndex*8;
+			
 			widget.getElement().getStyle().setProperty("MozTransform", "scale(" + scale + ") rotateY("+ (rotationAngle)+"deg)");
 			widget.getElement().getStyle().setProperty("WebkitTransform", "scale(" + scale + ") rotateY("+ (rotationAngle)+"deg)");
 		}
-		if(scale>=0.98){
+		
+		if(scale>=0.50){
 			scale = 1;
 		}
 		
 		DOM.setStyleAttribute(widget.getElement(), "opacity",String.valueOf(scale));
 		return widget;
 	}
+	
+	
 
 	public Entity getEntity() {
 		return entity;
@@ -370,6 +519,19 @@ public class Row extends AbsolutePanel implements MouseWheelHandler{
 
 	public void setSkewMode(boolean isSkewMode) {
 		this.isSkewMode = isSkewMode;
+	}
+
+	@Override
+	public void onClick(ClickEvent event) {
+		ImageWidget widget =(ImageWidget) event.getSource();
+		
+		//if(!imageSliderPopup.isShowing()){
+		ImageSliderPopup imageSliderPopup = new ImageSliderPopup();
+		imageSliderPopup.initialize(widgetList);
+	//	}
+		imageSliderPopup.showImage(widget);
+		
+		imageSliderPopup.center();
 	}
 	
 	

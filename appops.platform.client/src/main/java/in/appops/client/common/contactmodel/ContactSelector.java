@@ -1,26 +1,29 @@
 package in.appops.client.common.contactmodel;
 
+import in.appops.client.common.core.EntityListReceiver;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.SelectionEvent;
 import in.appops.client.common.event.handlers.SelectionEventHandler;
 import in.appops.client.common.fields.ImageField;
+import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.util.BlobDownloader;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
+import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 
 import java.util.Iterator;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class ContactSelector extends Composite implements SelectionEventHandler{
+public class ContactSelector extends Composite implements SelectionEventHandler,EntityListReceiver{
 
 	private boolean isSelectionAllowed;
 	private VerticalPanel basePanel;
@@ -32,9 +35,9 @@ public class ContactSelector extends Composite implements SelectionEventHandler{
 	private EntityList contactMayKnownEntityList;
 	private EntityList selectedContactList = new EntityList();
 	private ContactSelectorModel contactSelectorModel;
-	private Label nearByContact;
-	private Label yourContact;
-	private Label contactMayKnown;
+	private LabelField nearByContact;
+	private LabelField yourContact;
+	private LabelField contactMayKnown;
 	private FlowPanel nearByContactFlowPanel;
 	private FlowPanel yourContactFlowPanel;
 	private FlowPanel contactMayKnownFlowPanel;
@@ -64,7 +67,7 @@ public class ContactSelector extends Composite implements SelectionEventHandler{
 		setInnerPanelWidth();
 		
 		scrollPanel = new ScrollPanel(innerHorizonPanel);
-		int height = Window.getClientHeight() - 110;
+		int height = Window.getClientHeight() - 120;
 		int width = Window.getClientWidth() - 100;
 		scrollPanel.setHeight(height + "px");
 		scrollPanel.setWidth(width + "px");
@@ -72,38 +75,61 @@ public class ContactSelector extends Composite implements SelectionEventHandler{
 		basePanel.add(titleHorizonPanel);
 		basePanel.add(scrollPanel);
 		basePanel.setStylePrimaryName("contactSelectorBase");
+		
+		contactSelectorModel.getEntityList(0, this);
 	}
 
 	private void addNearByContactComponents() {
 		if(isNearByContact) {
-			nearByContact = new Label("Contact Near You");
-			nearByContactFlowPanel = new FlowPanel();
-			nearByContactFlowPanel.setSize("100%", "100%");
-			innerHorizonPanel.add(nearByContactFlowPanel);
-			titleHorizonPanel.add(nearByContact);
-			nearByContact.setStylePrimaryName("contactSelectortitleLabel");
+			try {
+				nearByContact = new LabelField();
+				nearByContact.setFieldValue("Contact Near You");
+				Configuration config = getLabelFieldConfiguration(true, "contactSelectortitleLabel", null, null);
+				nearByContact.setConfiguration(config);
+				nearByContact.createField();
+				nearByContactFlowPanel = new FlowPanel();
+				nearByContactFlowPanel.setSize("100%", "100%");
+				innerHorizonPanel.add(nearByContactFlowPanel);
+				titleHorizonPanel.add(nearByContact);
+			} catch (AppOpsException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	private void addYourContactComponents() {
 		if(isYourContact) {
-			yourContact = new Label("Your Contacts");
-			yourContactFlowPanel = new FlowPanel();
-			yourContactFlowPanel.setSize("100%", "100%");
-			innerHorizonPanel.add(yourContactFlowPanel);
-			titleHorizonPanel.add(yourContact);
-			yourContact.setStylePrimaryName("contactSelectortitleLabel");
+			try {
+				yourContact = new LabelField();
+				yourContact.setFieldValue("Your Contacts");
+				Configuration config = getLabelFieldConfiguration(true, "contactSelectortitleLabel", null, null);
+				yourContact.setConfiguration(config);
+				yourContact.createField();
+				yourContactFlowPanel = new FlowPanel();
+				yourContactFlowPanel.setSize("100%", "100%");
+				innerHorizonPanel.add(yourContactFlowPanel);
+				titleHorizonPanel.add(yourContact);
+			} catch (AppOpsException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	private void addontactMayKnownComponents() {
 		if(isContactKnown) {
-			contactMayKnown = new Label("Contacts you may known");
-			contactMayKnownFlowPanel = new FlowPanel();
-			contactMayKnownFlowPanel.setSize("100%", "100%");
-			innerHorizonPanel.add(contactMayKnownFlowPanel);
-			titleHorizonPanel.add(contactMayKnown);
-			contactMayKnown.setStylePrimaryName("contactSelectortitleLabel");
+			try {
+				contactMayKnown = new LabelField();
+				contactMayKnown.setFieldValue("Contacts you may known");
+				Configuration config = getLabelFieldConfiguration(true, "contactSelectortitleLabel", null, null);
+				contactMayKnown.setConfiguration(config);
+				contactMayKnown.createField();
+				contactMayKnownFlowPanel = new FlowPanel();
+				contactMayKnownFlowPanel.setSize("100%", "100%");
+				innerHorizonPanel.add(contactMayKnownFlowPanel);
+				titleHorizonPanel.add(contactMayKnown);
+			} catch (AppOpsException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -207,16 +233,21 @@ public class ContactSelector extends Composite implements SelectionEventHandler{
 		this.contactMayKnownEntityList = contactMayKnownEntityList;
 	}
 
-	public void initialize() {
+	public void initialize(EntityList entityList) {
 		
 		if(isNearByContact) {
-			setNearByContactEntityList(contactSelectorModel.getEntityList());
+			BlobDownloader downloader = new BlobDownloader();
+			setNearByContactEntityList(entityList);
 			if(nearByContactEntityList != null && !nearByContactEntityList.isEmpty()) {
 				Iterator<Entity> iterator = nearByContactEntityList.iterator();
 				while(iterator.hasNext()) {
 					Entity entity = iterator.next();
 					ContactSnippet contactSnippet = new ContactSnippet(isSelectionAllowed);
-					contactSnippet.setConfigurationForImageField(getImageFieldConfiguration());
+					String blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
+					String url = downloader.getIconDownloadURL(blobId);
+					Configuration imageConfig = getImageFieldConfiguration(url, "defaultIcon");
+					Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
+					contactSnippet.setConfigurationForFields(labelConfig, imageConfig);
 					contactSnippet.initialize(entity);
 					contactSnippet.addStyleName("flowPanelContent");
 					nearByContactFlowPanel.add(contactSnippet);
@@ -225,13 +256,18 @@ public class ContactSelector extends Composite implements SelectionEventHandler{
 		}
 
 		if(isYourContact) {
-			setYourContactEntityList(contactSelectorModel.getEntityList());
+			BlobDownloader downloader = new BlobDownloader();
+			setYourContactEntityList(entityList);
 			if(yourContactEntityList != null && !yourContactEntityList.isEmpty()) {
 				Iterator<Entity> iterator = yourContactEntityList.iterator();
 				while(iterator.hasNext()) {
 					Entity entity = iterator.next();
 					ContactSnippet contactSnippet = new ContactSnippet(isSelectionAllowed);
-					contactSnippet.setConfigurationForImageField(getImageFieldConfiguration());
+					String blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
+					String url = downloader.getIconDownloadURL(blobId);
+					Configuration imageConfig = getImageFieldConfiguration(url, "defaultIcon");
+					Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
+					contactSnippet.setConfigurationForFields(labelConfig, imageConfig);
 					contactSnippet.initialize(entity);
 					contactSnippet.addStyleName("flowPanelContent");
 					yourContactFlowPanel.add(contactSnippet);
@@ -240,13 +276,18 @@ public class ContactSelector extends Composite implements SelectionEventHandler{
 		}
 
 		if(isContactKnown) {
-			setContactMayKnownEntityList(contactSelectorModel.getEntityList());
+			BlobDownloader downloader = new BlobDownloader();
+			setContactMayKnownEntityList(entityList);
 			if(contactMayKnownEntityList != null && !contactMayKnownEntityList.isEmpty()) {
 				Iterator<Entity> iterator = contactMayKnownEntityList.iterator();
 				while(iterator.hasNext()) {
 					Entity entity = iterator.next();
 					ContactSnippet contactSnippet = new ContactSnippet(isSelectionAllowed);
-					contactSnippet.setConfigurationForImageField(getImageFieldConfiguration());
+					String blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
+					String url = downloader.getIconDownloadURL(blobId);
+					Configuration imageConfig = getImageFieldConfiguration(url, "defaultIcon");
+					Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
+					contactSnippet.setConfigurationForFields(labelConfig, imageConfig);
 					contactSnippet.initialize(entity);
 					contactSnippet.addStyleName("flowPanelContent");
 					contactMayKnownFlowPanel.add(contactSnippet);
@@ -279,11 +320,36 @@ public class ContactSelector extends Composite implements SelectionEventHandler{
 		}
 	}
 	
-	public Configuration getImageFieldConfiguration() {
+	public Configuration getImageFieldConfiguration(String url, String primaryCSS) {
 		Configuration config = new Configuration();
-		String userImage = "images/default_Icon.png";
-		config.setPropertyByName(ImageField.IMAGEFIELD_BLOBID, userImage);
-		config.setPropertyByName(ImageField.IMAGEFIELD_PRIMARYCSS, "defaultIcon");
+		config.setPropertyByName(ImageField.IMAGEFIELD_BLOBID, url);
+		config.setPropertyByName(ImageField.IMAGEFIELD_PRIMARYCSS, primaryCSS);
+		return config;
+	}
+
+	@Override
+	public void noMoreData() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEntityListReceived(EntityList entityList) {
+		initialize(entityList);
+	}
+
+	@Override
+	public void onEntityListUpdated() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
+		Configuration config = new Configuration();
+		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
+		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
+		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
+		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
 		return config;
 	}
 }
