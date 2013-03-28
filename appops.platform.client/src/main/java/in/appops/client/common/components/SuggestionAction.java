@@ -24,17 +24,13 @@ public class SuggestionAction extends Composite{
 	private FlexTable basePanel;
 	private List<String> suggestionList;
 	private Map<String, List> suggestionMap = new HashMap<String, List>();
-	private static int ROW_COUNT;
-	private static int COLUMN_COUNT;
 	private List<WidgetManagement> suggestionActionWidgetList = new LinkedList<WidgetManagement>();
-
 	
 	public SuggestionAction(){
 		initialize();
 		initWidget(basePanel);
 		createUI();
 	}
-
 
 	private void initialize() {
 		basePanel = new FlexTable();
@@ -51,39 +47,20 @@ public class SuggestionAction extends Composite{
 		
 	}
 
-
 	private void createUI() {
 		basePanel.setStylePrimaryName("suggestionLabel");
 	}
 
 	@SuppressWarnings("unchecked")
 	public void showActionSuggestion(String word){
-//		Set<String> keyWords = suggestionMap.keySet();
-//		
-//		for(String keyWord : keyWords){
-//			List<String> suggestionList  = suggestionMap.get(keyWord);
-//			
-//			for(String suggestion : suggestionList){
-//				if(keyWord.equalsIgnoreCase(word.trim())){
-//					Label suggestionLabel = new Label(suggestion);
-//					suggestionLabel.setStylePrimaryName("appops-intelliThought-Label");
-//					suggestionLabel.addStyleName("fadeInDown");
-//					basePanel.setWidget(ROW_COUNT, COLUMN_COUNT, suggestionLabel);
-//					
-//				}
-//			}
-//			
-//		}
-		
+	
 		DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
 		DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
 
-		Map map = new HashMap();
-		map.put("word", "%"+ word +"%");
-
-
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("word", "%"+ word +"%");
 		
-		StandardAction action = new StandardAction(EntityList.class, "spacemanagement.SpaceManagementService.getSuggestionAction", map);
+		StandardAction action = new StandardAction(EntityList.class, "spacemanagement.SpaceManagementService.getSuggestionAction", paramMap);
 		dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
 			
 			
@@ -113,17 +90,6 @@ public class SuggestionAction extends Composite{
 		manageSuggestionActionPlacement();
 		placeWidget(widgetPlacement, true);
 		suggestionActionWidgetList.add(widgetPlacement);
-		
-		manageRowCol();
-	}
-	
-	private void manageRowCol() {
-		COLUMN_COUNT++;
-
-		if(COLUMN_COUNT >= 2){
-			ROW_COUNT++;
-			COLUMN_COUNT = 0;
-		}
 	}
 	
 	private void manageSuggestionActionPlacement() {
@@ -144,7 +110,6 @@ public class SuggestionAction extends Composite{
 			}
 		}
 	}
-
 
 	private void placeWidget(WidgetManagement management, boolean isNew) {
 		Label suggestionAction = (Label)management.getWidget();
@@ -174,16 +139,13 @@ public class SuggestionAction extends Composite{
 			return row;
 		}
 
-
 		public void setRow(int row) {
 			this.row = row;
 		}
 
-
 		public int getColumn() {
 			return column;
 		}
-
 
 		public void setColumn(int column) {
 			this.column = column;
@@ -192,8 +154,7 @@ public class SuggestionAction extends Composite{
 		public Widget getWidget() {
 			return widget;
 		}
-		
-		
+				
 		public void setWidget(Widget widget) {
 			this.widget = widget;
 		}
