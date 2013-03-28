@@ -400,7 +400,7 @@ public class Row extends AbsolutePanel implements MouseWheelHandler,ClickHandler
 	public void onClick(ClickEvent event) {
 		ImageWidget widget =(ImageWidget) event.getSource();
 		
-		ImageSliderPopup imageSliderPopup = new ImageSliderPopup();
+		ImagePopup imageSliderPopup = new ImagePopup();
 		imageSliderPopup.initialize(widgetList);
 		imageSliderPopup.showImage(widget);
 		

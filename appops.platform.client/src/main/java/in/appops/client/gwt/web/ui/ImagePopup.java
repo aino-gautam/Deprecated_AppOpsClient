@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ImageSliderPopup extends PopupPanel implements ClickHandler {
+public class ImagePopup extends PopupPanel implements ClickHandler {
 
 	private Image crossImg = new Image("images/cross.png");
 	private Image nextImg = new Image("images/next.png");
@@ -30,7 +30,7 @@ public class ImageSliderPopup extends PopupPanel implements ClickHandler {
 	private ArrayList<ImageWidget> widgetList = new ArrayList<ImageWidget>();
 	private int index = 0;
 	
-	public ImageSliderPopup() {
+	public ImagePopup() {
 		
 	}
 	
