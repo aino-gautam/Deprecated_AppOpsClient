@@ -23,6 +23,7 @@ import com.google.gwt.maps.client.geocoder.HasGeocoderResult;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -66,6 +67,7 @@ public class LocationSelector extends Composite implements Field {
 	private String mapWidth;
 	private String mapHeight;
 	private boolean isMapMode = false;
+	private static String currentSelectedLocation ; 
 	
 	public LocationSelector(){
 		basePanel = new VerticalPanel();
@@ -82,7 +84,10 @@ public class LocationSelector extends Composite implements Field {
 	public void createField() {
 		// TODO will need a map + textbox to enter a location
 		basePanel.clear();
+		//basePanel.setBorderWidth(1);
 	 if(!isMapMode){	
+		 FlexTable  flexTable = new FlexTable(); 
+		 //flexTable.setBorderWidth(1);
 		locationSelectorPopupPanel = new PopupPanel(); 
 		currentLocationTextField = new TextField();
 		currentLocationTextField.setFieldValue("Current location");
@@ -94,13 +99,15 @@ public class LocationSelector extends Composite implements Field {
 			e.printStackTrace();
 		}
 		 
-		if(getConfiguration().getPropertyByName(CHANGE_LOCATION_IMAGE_URL)!=null)
+		if(getConfiguration().getPropertyByName(CHANGE_LOCATION_IMAGE_URL)!=null){
 	        chooseLocationBtn = new  Image(getConfiguration().getPropertyByName(CHANGE_LOCATION_IMAGE_URL).toString());
 		    chooseLocationBtn.setTitle("Change Location");
+		}
 	    
 	    if(getConfiguration().getPropertyByName(DONE_SELECTION_IMAGE_URL)!=null)
 	       doneBtn = new  Image(getConfiguration().getPropertyByName(DONE_SELECTION_IMAGE_URL).toString());
 	       doneBtn.setTitle("Done Selection");
+
 	    
 	    if( getConfiguration().getPropertyByName(LOCATION_SELECTOR_CHOOSE_LOCATION_BTN)!=null){
 	       chooseLocationBtn.setStylePrimaryName( getConfiguration().getPropertyByName(LOCATION_SELECTOR_CHOOSE_LOCATION_BTN).toString());
@@ -112,22 +119,27 @@ public class LocationSelector extends Composite implements Field {
 	    HorizontalPanel currentLocationHpPanel = new HorizontalPanel();
 		currentLocationHpPanel.setWidth("100%");
 		currentLocationHpPanel.add(currentLocationTextField);
-		currentLocationHpPanel.setCellWidth(currentLocationTextField, "70");
-		currentLocationHpPanel.add(chooseLocationBtn);
-		currentLocationHpPanel.setCellWidth(chooseLocationBtn, "10%");
+		currentLocationHpPanel.setCellWidth(currentLocationTextField, "40%");
+		//currentLocationHpPanel.add(chooseLocationBtn);
+		//currentLocationHpPanel.setCellWidth(chooseLocationBtn, "6%");
 		currentLocationHpPanel.add(doneBtn);
-		currentLocationHpPanel.setCellWidth(doneBtn, "20%");
+		currentLocationHpPanel.setCellWidth(doneBtn, "50%");
 		
 		
 		locationSelectorPopupPanel.add(currentLocationHpPanel);
-		locationSelectorPopupPanel.center();
-		locationSelectorPopupPanel.show();
+		//locationSelectorPopupPanel.center();
+		//locationSelectorPopupPanel.show();
+		flexTable.setWidget(0, 0,currentLocationHpPanel);
+		
+		
 		//locationSelectorPopupPanel.setGlassEnabled(true);
-		locationSelectorPopupPanel.setAnimationEnabled(true);
-		locationSelectorPopupPanel.setAutoHideEnabled(true);
+		//locationSelectorPopupPanel.setAnimationEnabled(true);
+		//locationSelectorPopupPanel.setAutoHideEnabled(true);
+		
+		
 		
 		if(getConfiguration().getPropertyByName(LOCATION_SELECTOR_POPUPPANEL)!=null)
-		  locationSelectorPopupPanel.setStylePrimaryName(getConfiguration().getPropertyByName(LOCATION_SELECTOR_POPUPPANEL).toString());
+			currentLocationHpPanel.setStylePrimaryName(getConfiguration().getPropertyByName(LOCATION_SELECTOR_POPUPPANEL).toString());
 		
 		try{
 			mapField = new MapField(latLng);
@@ -139,9 +151,14 @@ public class LocationSelector extends Composite implements Field {
 			e.printStackTrace();
 		}
 		
-		basePanel.add(mapField);
-		basePanel.setCellHorizontalAlignment(mapField, HasHorizontalAlignment.ALIGN_CENTER);
-		basePanel.setCellVerticalAlignment(mapField, HasVerticalAlignment.ALIGN_MIDDLE);
+		flexTable.setWidget(2, 0,mapField);
+		
+		
+		
+		
+		basePanel.add(flexTable);
+		basePanel.setCellHorizontalAlignment(flexTable, HasHorizontalAlignment.ALIGN_CENTER);
+		basePanel.setCellVerticalAlignment(flexTable, HasVerticalAlignment.ALIGN_MIDDLE);
 		mapField.getAddressAndSet(latLng);
 		
 		Timer timer = new Timer() {
@@ -218,6 +235,7 @@ public class LocationSelector extends Composite implements Field {
 					public void run() {
 						currentLocationLabel.setText("");
 						currentLocationLabel.setText(mapField.getChoosenAddress());
+						setCurrentSelectedLocation(mapField.getChoosenAddress());
 						
 					}
 				};timer.schedule(2000);
@@ -248,6 +266,7 @@ public class LocationSelector extends Composite implements Field {
 								public void run() {
 									currentLocationLabel.setText("");
 									currentLocationLabel.setText(mapField.getChoosenAddress());
+									setCurrentSelectedLocation(mapField.getChoosenAddress());
 									
 								}
 							};timer.schedule(1000);
@@ -265,7 +284,7 @@ public class LocationSelector extends Composite implements Field {
 					public void run() {
 						currentLocationLabel.setText("");
 						currentLocationLabel.setText(mapField.getChoosenAddress());
-						
+						setCurrentSelectedLocation(mapField.getChoosenAddress());
 						
 					}
 				};timer.schedule(2000);
@@ -362,6 +381,7 @@ public class LocationSelector extends Composite implements Field {
 		currentLocationTextField.clearField();
 		currentLocationTextField.setFieldValue(mapField.getChoosenAddress());
 		currentLocationTextField.resetField();
+		setCurrentSelectedLocation(mapField.getChoosenAddress());
 		locationSelectorPopupPanel.show();
 		
 	}
@@ -511,6 +531,14 @@ public class LocationSelector extends Composite implements Field {
 
 	public void setCurrentLocationTextField(TextField currentLocationTextField) {
 		this.currentLocationTextField = currentLocationTextField;
+	}
+
+	public static String getCurrentSelectedLocation() {
+		return currentSelectedLocation;
+	}
+
+	public static void setCurrentSelectedLocation(String currentSelectedLocation) {
+		LocationSelector.currentSelectedLocation = currentSelectedLocation;
 	}
 
 }

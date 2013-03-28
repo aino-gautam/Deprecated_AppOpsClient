@@ -63,5 +63,12 @@ public class SuggestionField extends Composite implements SelectionHandler<Sugge
 			getSuggestBox().setText(" ");
 		}
 		getSuggestBox().showSuggestionList();
+		if(getSuggestBox().getText().equals(" ")) {
+			getSuggestBox().setText("");
+		}
+	}
+	
+	public void setMaxResult(int max) {
+		oracle.setMaxResult(max);
 	}
 }
