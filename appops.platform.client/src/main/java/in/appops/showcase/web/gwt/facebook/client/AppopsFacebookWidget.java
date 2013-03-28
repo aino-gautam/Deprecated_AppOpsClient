@@ -33,7 +33,7 @@ public class AppopsFacebookWidget extends Composite {
 	private String requestUrl;
 	
 	public AppopsFacebookWidget(String clientId,String serviceId) {
-		facebookImg = new Image("fb-icon.png");
+		facebookImg = new Image("images/fb-icon.png");
 		initailze(clientId,serviceId);
 	}
 	
