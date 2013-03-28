@@ -493,6 +493,12 @@ background-color: #AAAAAA;
 	height: 100%;
 }
 
+.nextPrevImagePanel{
+	width: 80px;
+	text-align: center;
+}
+
+
 .basePanelInPopup{
 	width:100%;
 	height: 100%;

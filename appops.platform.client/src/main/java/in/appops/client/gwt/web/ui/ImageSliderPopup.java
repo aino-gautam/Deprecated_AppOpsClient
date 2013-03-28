@@ -25,11 +25,12 @@ public class ImageSliderPopup extends PopupPanel implements ClickHandler {
 	private HorizontalPanel actualImagePanel;
 	private BlobDownloader blobDownloader;
 	private VerticalPanel slider ;
+	private VerticalPanel nextImagePanel  = new VerticalPanel();
+	private VerticalPanel prevImagePanel  = new VerticalPanel();
 	private ArrayList<ImageWidget> widgetList = new ArrayList<ImageWidget>();
 	private int index = 0;
 	
 	public ImageSliderPopup() {
-
 		
 	}
 	
@@ -39,25 +40,29 @@ public class ImageSliderPopup extends PopupPanel implements ClickHandler {
 		actualImagePanel = new HorizontalPanel();
 		slider = new VerticalPanel();
 		widgetList = widgetSetForRow;
-				
-		for (Widget widget:widgetSetForRow) {
-			ImageWidget imageWidget = (ImageWidget) widget;
-			imageWidget.addDomHandler(this,ClickEvent.getType());
-			slider.add(imageWidget);
-		}
-		
+			
 		crossImg.addClickHandler(this);
 		prevImg.addClickHandler(this);
 		nextImg.addClickHandler(this);
+		nextImagePanel.add(nextImg);
+		prevImagePanel.add(prevImg);
 		
-		imageWithSliderPanel.add(prevImg);
+		imageWithSliderPanel.add(prevImagePanel);
 		imageWithSliderPanel.add(actualImagePanel);
-		imageWithSliderPanel.add(nextImg);
-		imageWithSliderPanel.add(slider);
+		imageWithSliderPanel.add(nextImagePanel);
 		
-		imageWithSliderPanel.setCellVerticalAlignment(prevImg, HasVerticalAlignment.ALIGN_MIDDLE);
+		nextImagePanel.setStylePrimaryName("nextPrevImagePanel");
+		prevImagePanel.setStylePrimaryName("nextPrevImagePanel");
+		//imageWithSliderPanel.add(slider);
+		
+		imageWithSliderPanel.setCellVerticalAlignment(prevImagePanel, HasVerticalAlignment.ALIGN_MIDDLE);
+		prevImagePanel.setCellHorizontalAlignment(prevImg, HasHorizontalAlignment.ALIGN_CENTER);
+		
 		actualImagePanel.setStylePrimaryName("actualImagePanel");
-		imageWithSliderPanel.setCellVerticalAlignment(nextImg, HasVerticalAlignment.ALIGN_MIDDLE);
+		
+		imageWithSliderPanel.setCellVerticalAlignment(nextImagePanel, HasVerticalAlignment.ALIGN_MIDDLE);
+		nextImagePanel.setCellHorizontalAlignment(nextImg, HasHorizontalAlignment.ALIGN_CENTER);
+		
 		slider.setStylePrimaryName("sliderPanel");
 		imageWithSliderPanel.setCellHorizontalAlignment(slider, HasHorizontalAlignment.ALIGN_RIGHT);
 		
@@ -74,7 +79,7 @@ public class ImageSliderPopup extends PopupPanel implements ClickHandler {
 		setGlassStyleName("imageGlassPanel");
 		
 		basePanel.setStylePrimaryName("basePanelInPopup");
-		add(basePanel);
+		setWidget(basePanel);
 		
 	}
 	
@@ -89,8 +94,11 @@ public class ImageSliderPopup extends PopupPanel implements ClickHandler {
 		if(blobDownloader==null)
 			blobDownloader = new BlobDownloader();
 		String bloId = imageWidget.getEntity().getProperty(MediaConstant.BLOBID).getValue().toString();
-		ImageWidget image = new ImageWidget(blobDownloader.getImageDownloadURL(bloId));
+		Image image = new Image(blobDownloader.getImageDownloadURL(bloId));
+		image.setSize("800px", "550px");
 		actualImagePanel.add(image);
+		
+		actualImagePanel.setCellHorizontalAlignment(image, HasHorizontalAlignment.ALIGN_CENTER);
 	}
 	
 	@Override
@@ -99,23 +107,33 @@ public class ImageSliderPopup extends PopupPanel implements ClickHandler {
 		Widget widget = (Widget) event.getSource();
 		if(widget.equals(crossImg)){
 			hide();
+			return;
 		}else if(widget.equals(prevImg)){
 			if(index!=0){
 				index--;
 				actualImagePanel.clear();
-				actualImagePanel.add(widgetList.get(index));
+				String bloId = widgetList.get(index).getEntity().getProperty(MediaConstant.BLOBID).getValue().toString();
+				Image image = new Image(blobDownloader.getImageDownloadURL(bloId));
+				image.setSize("800px", "550px");
+				actualImagePanel.add(image);
 				
 			}else{
 				index=widgetList.size()-1;
 				actualImagePanel.clear();
-				actualImagePanel.add(widgetList.get(index));
+				String bloId = widgetList.get(index).getEntity().getProperty(MediaConstant.BLOBID).getValue().toString();
+				Image image = new Image(blobDownloader.getImageDownloadURL(bloId));
+				image.setSize("800px", "550px");
+				actualImagePanel.add(image);
 				
 			}
 		}else if(widget.equals(nextImg)){
 			if(index<widgetList.size()-1){
 				index++;
 				actualImagePanel.clear();
-				actualImagePanel.add(widgetList.get(index));
+				String bloId = widgetList.get(index).getEntity().getProperty(MediaConstant.BLOBID).getValue().toString();
+				Image image = new Image(blobDownloader.getImageDownloadURL(bloId));
+				image.setSize("800px", "550px");
+				actualImagePanel.add(image);
 				
 			}else{
 				index=0;
