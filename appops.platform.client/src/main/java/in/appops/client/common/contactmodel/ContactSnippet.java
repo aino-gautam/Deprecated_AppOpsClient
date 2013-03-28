@@ -3,6 +3,7 @@ package in.appops.client.common.contactmodel;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.SelectionEvent;
 import in.appops.client.common.fields.ImageField;
+import in.appops.client.common.fields.LabelField;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -14,15 +15,13 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 
 public class ContactSnippet extends Composite implements ClickHandler {
 	
 	private FocusPanel basePanel;
 	private HorizontalPanel userDetailsPanel;
 	private FlowPanel userNameFlowPanel;
-	private Label userName;
+	private LabelField userName;
 	private ImageField imageField;
 	private Entity entity;
 	private boolean isSelected;
@@ -38,7 +37,7 @@ public class ContactSnippet extends Composite implements ClickHandler {
 		basePanel = new FocusPanel();
 		userDetailsPanel = new HorizontalPanel();
 		userNameFlowPanel = new FlowPanel();
-		userName = new Label();
+		userName = new LabelField();
 		imageField = new ImageField();
 		
 		userNameFlowPanel.add(userName);
@@ -48,14 +47,14 @@ public class ContactSnippet extends Composite implements ClickHandler {
 		basePanel.add(userDetailsPanel);
 		userDetailsPanel.setWidth("100%");
 		basePanel.addClickHandler(this);
-		userName.addStyleName("flowPanelContent");
 		basePanel.setStylePrimaryName("contactSnippetBasePanel");
 	}
 	
 	public void initialize(Entity entity) {
 		this.entity = entity;
 		String name = entity.getPropertyByName(ContactConstant.NAME).toString();
-		userName.setText(name);
+		userName.setFieldValue(name);
+		userName.resetField();
 	}
 
 	public FocusPanel getBasePanel() {
@@ -92,9 +91,12 @@ public class ContactSnippet extends Composite implements ClickHandler {
 		}
 	}
 
-	public void setConfigurationForImageField(Configuration config) {
-		imageField.setConfiguration(config);
+	public void setConfigurationForFields(Configuration labelConfig, Configuration imageConfig) {
+
 		try {
+			userName.setConfiguration(labelConfig);
+			userName.createField();
+			imageField.setConfiguration(imageConfig);
 			imageField.createField();
 		} catch (AppOpsException e) {
 			e.printStackTrace();
