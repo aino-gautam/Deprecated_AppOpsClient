@@ -20,6 +20,9 @@ public class FacebookTest implements EntryPoint {
 			String serviceId = "11";
 			AppopsFacebookWidget widget = new AppopsFacebookWidget(clientId,serviceId);
 			RootPanel.get().add(widget);
+			
+	/*		SearchWidgetTest searchWidget = new SearchWidgetTest();
+			RootPanel.get().add(searchWidget);*/
 		}
 		catch (Exception e) {
 			e.printStackTrace();
