@@ -23,6 +23,8 @@ public class Cylinder extends Row {
 	private double radius ;
 	private int xLeft=0;
 	private int yTop=0;
+	private double elevation_angle =0; 
+	private double speed =0	; // 
 	private boolean isSkewMode;
 	
 	public Cylinder() {
@@ -42,14 +44,29 @@ public class Cylinder extends Row {
 	}
 	
 	private void setDefaultPropertiesToRow(Row row) {
-		row.setRadius(radius);
 		row.setxLeft(xLeft);
 		row.setSkewMode(isSkewMode);
 		row.setParentCylinder(this);
-		
+				
 		yTop+=120;
 		row.setyTop(yTop);
 		rowMap.put(row.getName(),row);
+	}
+
+	public double getElevation_angle() {
+		return elevation_angle;
+	}
+
+	public void setElevation_angle(double elevation_angle) {
+		this.elevation_angle = elevation_angle;
+	}
+
+	public double getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(double speed) {
+		this.speed = speed;
 	}
 
 	public void removeRow(Row row){
@@ -73,23 +90,23 @@ public class Cylinder extends Row {
 			double currentAngle = 0.0;
 			int indexOfWidget = 0;
 			
-			if (direction<0) {
-				currentAngle = row.getCurrentAngle() - (Math.PI / row.getSpeed());
+			if (direction>0) {
+				currentAngle = row.getCurrentAngle() - (Math.PI / speed);
 				
 			} else {
 				// mouse wheel is moving south
-				currentAngle = row.getCurrentAngle() + (Math.PI / row.getSpeed());
+				currentAngle = row.getCurrentAngle() + (Math.PI / speed);
 			}
 			row.setCurrentAngle(currentAngle);
 			
 			for (Widget widget : widgetSetForRow) {
 				
-				int newXpos = (int) Math.round(Math.cos(row.getCurrentAngle()*2 + indexOfWidget* row.getWidgetSpacing()+row.getSpeed() )* row.getRadius() + row.getxLeft());
-				int newYPos = (int) Math.round(-Math.sin(row.getCurrentAngle()*2 + indexOfWidget* row.getWidgetSpacing()+row.getSpeed())* row.getElevation_angle() + row.getyTop());
+				int newXpos = (int) Math.round(Math.cos(row.getCurrentAngle() + indexOfWidget* row.getWidgetSpacing()+speed )* radius + row.getxLeft());
+				int newYPos = (int) Math.round(-Math.sin(row.getCurrentAngle() + indexOfWidget* row.getWidgetSpacing()+speed)* elevation_angle + row.getyTop());
 
-				double scale = row.getScalingConstant()/ (row.getScalingConstant() + Math.sin(row.getCurrentAngle()*2 + indexOfWidget * row.getWidgetSpacing()+row.getSpeed() )* row.getRadius() + row.getZcenter());
+				double scale = row.getScalingConstant()/ (row.getScalingConstant() + Math.sin(row.getCurrentAngle() + indexOfWidget * row.getWidgetSpacing()+speed )* radius + row.getZcenter());
 				
-				widget = scaleWheelWidget(widget, scale,indexOfWidget,0);
+				widget = scaleExistingWheelWidget(widget, scale,indexOfWidget,0);
 												
 				row.add(widget, newXpos, newYPos);
 				
@@ -129,7 +146,6 @@ public class Cylinder extends Row {
 		
 		for (Row row : widgetSetForCylinder.keySet()){
 			row.initWidgetPositions(mediaViewer,widgetSetForCylinder.get(row));
-			row.setRadius(radius);
 			add(row);
 		}
 		
