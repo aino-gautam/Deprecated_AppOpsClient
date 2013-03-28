@@ -43,7 +43,6 @@ public class LocationSelector extends Composite implements Field {
 	private LatLng latLng ;
 	private MapField mapField;
 	private TextField currentLocationTextField ;
-	private PopupPanel locationSelectorPopupPanel;
 	private PopupPanel popupPanelForMap;
 	private PopupPanel popupPanelForMapSearch;
 	private Image image ;
@@ -84,11 +83,10 @@ public class LocationSelector extends Composite implements Field {
 	public void createField() {
 		// TODO will need a map + textbox to enter a location
 		basePanel.clear();
-		//basePanel.setBorderWidth(1);
+		
 	 if(!isMapMode){	
 		 FlexTable  flexTable = new FlexTable(); 
-		 //flexTable.setBorderWidth(1);
-		locationSelectorPopupPanel = new PopupPanel(); 
+		
 		currentLocationTextField = new TextField();
 		currentLocationTextField.setFieldValue("Current location");
 		currentLocationTextField.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, getConfiguration().getPropertyByName(TextField.TEXTFIELD_PRIMARYCSS).toString(), null, null));
@@ -126,16 +124,8 @@ public class LocationSelector extends Composite implements Field {
 		currentLocationHpPanel.setCellWidth(doneBtn, "50%");
 		
 		
-		locationSelectorPopupPanel.add(currentLocationHpPanel);
-		//locationSelectorPopupPanel.center();
-		//locationSelectorPopupPanel.show();
+		
 		flexTable.setWidget(0, 0,currentLocationHpPanel);
-		
-		
-		//locationSelectorPopupPanel.setGlassEnabled(true);
-		//locationSelectorPopupPanel.setAnimationEnabled(true);
-		//locationSelectorPopupPanel.setAutoHideEnabled(true);
-		
 		
 		
 		if(getConfiguration().getPropertyByName(LOCATION_SELECTOR_POPUPPANEL)!=null)
@@ -176,7 +166,7 @@ public class LocationSelector extends Composite implements Field {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				locationSelectorPopupPanel.hide();
+				//locationSelectorPopupPanel.hide();
 				
 			}
 		});
@@ -382,7 +372,7 @@ public class LocationSelector extends Composite implements Field {
 		currentLocationTextField.setFieldValue(mapField.getChoosenAddress());
 		currentLocationTextField.resetField();
 		setCurrentSelectedLocation(mapField.getChoosenAddress());
-		locationSelectorPopupPanel.show();
+		//locationSelectorPopupPanel.show();
 		
 	}
 	
@@ -501,14 +491,7 @@ public class LocationSelector extends Composite implements Field {
 		this.entity = entity;
 	}
 
-	public PopupPanel getLocationSelectorPopupPanel() {
-		return locationSelectorPopupPanel;
-	}
-
-	public void setLocationSelectorPopupPanel(PopupPanel locationSelectorPopupPanel) {
-		this.locationSelectorPopupPanel = locationSelectorPopupPanel;
-	}
-
+	
 	public Image getDoneBtn() {
 		return doneBtn;
 	}

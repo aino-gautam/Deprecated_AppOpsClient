@@ -126,14 +126,14 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>26.03.2013</version>
+			<version>28.03.2013</version>
 		</dependency>
 
 		<!-- This should be used when using a final version of the jar -->
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>23.03.2013</version>
+			<version>28.03.2013</version>
 		</dependency>
 
 		<dependency>
@@ -200,11 +200,13 @@
 						<module>in.appops.showcase.web.gwt.wizardform.wizardform</module>
 						<module>in.appops.showcase.web.gwt.splash.splash</module>
 						<module>in.appops.showcase.web.gwt.contactselector.contactselector</module>
+						<module>in.appops.showcase.web.gwt.mediaupload.mediaupload</module>
+						<module>in.appops.showcase.web.gwt.navigationmaze.navigationmaze</module>
 						<!-- <module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> -->
 						<!-- <module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module> 
 							<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> <module>in.appops.showcase.web.gwt.uploadservice.UploadService</module> 
-							<module>in.appops.showcase.web.gwt.validateServiceOperation.VailidateServiceOperation</module> 
-							<module>in.appops.showcase.web.gwt.facebook.facebook</module> -->
+							<module>in.appops.showcase.web.gwt.validateServiceOperation.VailidateServiceOperation</module>  -->
+							<module>in.appops.showcase.web.gwt.facebook.facebook</module>
 
 					</modules>
 				</configuration>
