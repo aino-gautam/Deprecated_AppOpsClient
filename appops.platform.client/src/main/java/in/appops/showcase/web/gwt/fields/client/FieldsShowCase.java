@@ -354,7 +354,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 		Configuration configuration = new Configuration();
 		configuration.setPropertyByName(DateTimeField.DATETIMEFIELD_MODE, modeSelection);
 		configuration.setPropertyByName(DateTimeField.DATETIMEFIELD_TYPE, datetimefieldTimeonly);
-		
+		configuration.setPropertyByName(DateTimeField.Full_Time, DateTimeField.Full_Time);
 		
 		return configuration;
 	}
