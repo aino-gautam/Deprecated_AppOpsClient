@@ -42,8 +42,9 @@ public class Navigator extends Composite implements ClickHandler {
 		
 		if(getConfiguration().getPropertyByName(NAVIGATOR_ALIGNMENT).equals(ALIGNMENT_HORIZONTAL)){
 			HorizontalPanel hpanel = new HorizontalPanel();
-			hpanel.add(nextWidget);
 			hpanel.add(prevWidget);
+			hpanel.add(nextWidget);
+			
 		
 			if(currentScreenNo == 1 && currentScreenNo < totalScreens){
 				prevWidget.setVisible(false);

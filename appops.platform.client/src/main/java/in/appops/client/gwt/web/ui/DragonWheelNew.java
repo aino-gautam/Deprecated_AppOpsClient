@@ -18,8 +18,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DragonWheelNew extends Composite {
 	
-	private int elevateAngle = 5 ;
-	private int wheelSpeed = 30 ;
+	private double elevateAngle =15 ;
+	private double wheelSpeed = 5  ;
 	private boolean elevatedView = false ;
 	
 	private Map<String , Cylinder> cylinderMap = new HashMap<String, Cylinder>();
@@ -33,7 +33,7 @@ public class DragonWheelNew extends Composite {
 		initWidget(parent);
 	}
 	
-	public int getElevateAngle() {
+	public double getElevateAngle() {
 		return elevateAngle;
 	}
 
@@ -41,11 +41,11 @@ public class DragonWheelNew extends Composite {
 	 * sets elevation angle
 	 * @param elevateAngle
 	 */
-	public void setElevateAngle(int elevateAngle) {
+	public void setElevateAngle(double elevateAngle) {
 		this.elevateAngle = elevateAngle;
 	}
 
-	public int getWheelSpeed() {
+	public double getWheelSpeed() {
 		return wheelSpeed;
 	}
 
@@ -53,7 +53,7 @@ public class DragonWheelNew extends Composite {
 	 * Change speed of wheel between 1 to 100
 	 * @param wheelSpeed
 	 */
-	public void setWheelSpeed(int wheelSpeed) {
+	public void setWheelSpeed(double wheelSpeed) {
 		this.wheelSpeed = wheelSpeed;
 	}
 
@@ -73,7 +73,8 @@ public class DragonWheelNew extends Composite {
 		
 		cylinderMap.put(cylinder.getName(), cylinder);
 		cylinder.setElevation_angle(elevateAngle);
-		
+		cylinder.setSpeed(wheelSpeed);
+			
 		parent.add(cylinder);
 	}
 
@@ -115,26 +116,27 @@ public class DragonWheelNew extends Composite {
 			elevateAngle = 60;
 		
 		for ( String cylinderName : cylinderMap.keySet()){
+			
 			Cylinder cylinder = cylinderMap.get(cylinderName);
+			
+			cylinder.setElevation_angle(elevateAngle);
 		
 			Map<String, Row> rowmap = cylinder.getRowMap();
 			for ( String rowName : rowmap.keySet()){
 				Row row =rowmap.get(rowName);
+				Cylinder parentCylinder =row.getParentCylinder();
 				Set<Widget> widgetSetForRow = row.getWidgetSetForRow();
 			
 				int indexOfWidget = 0;
-				row.setElevation_angle(elevateAngle);	
-			
+							
 				for (Widget widget : widgetSetForRow) {
 				
-					int newXpos = (int) Math.round(Math.cos(row.getCurrentAngle() + indexOfWidget* row.getWidgetSpacing()+row.getSpeed() )* row.getRadius() + row.getxLeft());
-					int newYPos = (int) Math.round(-Math.sin(row.getCurrentAngle() + indexOfWidget* row.getWidgetSpacing()+row.getSpeed())* row.getElevation_angle() + row.getyTop());
+					int newXpos = (int) Math.round(Math.cos(row.getCurrentAngle() + indexOfWidget* row.getWidgetSpacing()+parentCylinder.getSpeed() )* parentCylinder.getRadius() + row.getxLeft());
+					int newYPos = (int) Math.round(-Math.sin(row.getCurrentAngle() + indexOfWidget* row.getWidgetSpacing()+parentCylinder.getSpeed())* parentCylinder.getElevation_angle() + row.getyTop());
 				
-					double scale = row.getScalingConstant()/ (row.getScalingConstant() + Math.sin(row.getCurrentAngle() + indexOfWidget * row.getWidgetSpacing()+row.getSpeed() )* row.getRadius() + row.getZcenter());
+					double scale = row.getScalingConstant()/ (row.getScalingConstant() + Math.sin(row.getCurrentAngle() + indexOfWidget * row.getWidgetSpacing()+parentCylinder.getSpeed() )* parentCylinder.getRadius() + row.getZcenter());
 					
-					
-					double angleInRadian = 0;
-					widget = row.scaleWheelWidget(widget, scale,angleInRadian,indexOfWidget);
+					widget = row.scaleWheelWidget(widget, scale,indexOfWidget,0);
 								
 					row.add(widget, newXpos, newYPos);
 				
