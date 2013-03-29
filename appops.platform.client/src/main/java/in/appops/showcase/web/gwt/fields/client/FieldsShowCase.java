@@ -1,11 +1,15 @@
 package in.appops.showcase.web.gwt.fields.client;
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.CheckboxField;
 import in.appops.client.common.fields.CheckboxGroupField;
 import in.appops.client.common.fields.DateTimeField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.LinkField;
 import in.appops.client.common.fields.LocationSelector;
+import in.appops.client.common.fields.NumberField;
 import in.appops.client.common.fields.SpinnerField;
 import in.appops.client.common.fields.StateField;
 import in.appops.client.common.fields.TextField;
@@ -25,10 +29,16 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class FieldsShowCase implements EntryPoint {
+public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 
 	private FlexTable flex = new FlexTable();
 	private LocationSelector locationSelector = new LocationSelector();
+	private Label numberfieldErrorLabel;
+	
+	public FieldsShowCase() {
+		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+	}
+	
 	@Override
 	public void onModuleLoad() {
 		
@@ -85,7 +95,7 @@ public class FieldsShowCase implements EntryPoint {
 
 					StateField stateField = new StateField();
 					//stateField.setFieldValue("Suggestion");
-					Configuration stateFieldConfig = getStateFieldConfiguration(StateField.STATEFIELDMODE_SUGGESTIVE, "getAllSpaceTypes", "spacemanagement.SpaceManagementService.getEntityList");
+					Configuration stateFieldConfig = getStateFieldConfiguration(StateField.STATEFIELDMODE_SUGGESTIVE, "getSpaceTypesWithName", "spacemanagement.SpaceManagementService.getEntityList");
 					stateField.setConfiguration(stateFieldConfig);
 
 					LabelField CheckboxFieldLabel = new LabelField();
@@ -151,6 +161,30 @@ public class FieldsShowCase implements EntryPoint {
 					Configuration spinnerConfig = getSpinnerFieldConfiguration(SpinnerField.SPINNERFIELD_VALUESPINNER);
 					spinnerField.setConfiguration(spinnerConfig);
 
+					LabelField spinnerPercentLabel = new LabelField();
+					spinnerPercentLabel.setFieldValue("SpinnerField(Percent)");
+					spinnerPercentLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+					
+					SpinnerField percentSpinnerField = new SpinnerField();
+					percentSpinnerField.setFieldValue("3");
+					Configuration percentSpinnerConfig = getSpinnerFieldConfiguration(SpinnerField.SPINNERFIELD_PERCENTSPINNER);
+					percentSpinnerField.setConfiguration(percentSpinnerConfig);
+					
+					LabelField numberFieldLabel = new LabelField();
+					numberFieldLabel.setFieldValue("NumberField");
+					numberFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+					
+					NumberField numberField = new NumberField();
+					numberField.setFieldValue("3");
+					Configuration numberConfig = getNumberFieldConfiguration();
+					numberField.setConfiguration(numberConfig);
+					VerticalPanel numberFieldPanel = new VerticalPanel();
+					numberfieldErrorLabel = new Label("Can't contain characters");
+					numberFieldPanel.add(numberField);
+					numberFieldPanel.add(numberfieldErrorLabel);
+					numberfieldErrorLabel.setVisible(false);
+					numberfieldErrorLabel.setStylePrimaryName("errorLabel");
+					
 					try {
 						labelFieldTB.createField();
 						textFieldTB.createField();
@@ -190,6 +224,12 @@ public class FieldsShowCase implements EntryPoint {
 						
 						spinnerFieldLabel.createField();
 						spinnerField.createField();
+						
+						spinnerPercentLabel.createField();
+						percentSpinnerField.createField();
+						
+						numberFieldLabel.createField();
+						numberField.createField();
 
 
 					} catch (AppOpsException e) {
@@ -269,8 +309,14 @@ public class FieldsShowCase implements EntryPoint {
 					flex.setWidget(13, 0, stringRangeSliderLbl);
 					flex.setWidget(13, 1, stringRangeSlider);
 					
-					flex.setWidget(14, 0, spinnerFieldLabel);
-					flex.setWidget(14, 1, spinnerField);
+					flex.setWidget(18, 0, spinnerFieldLabel);
+					flex.setWidget(18, 1, spinnerField);
+					
+					flex.setWidget(19, 0, spinnerPercentLabel);
+					flex.setWidget(19, 1, percentSpinnerField);
+					
+					flex.setWidget(20, 0, numberFieldLabel);
+					flex.setWidget(20, 1, numberFieldPanel);
 
 					RootPanel.get().add(flex);
 
@@ -322,6 +368,8 @@ public class FieldsShowCase implements EntryPoint {
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CHOOSE_LOCATION_BTN, "chooseLocationBtn");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_POPUPPANEL, "currentLocationField");
 		configuration.setPropertyByName(LocationSelector.MAP_ZOOM, "8");
+		configuration.setPropertyByName(LocationSelector.CHANGE_LOCATION_IMAGE_URL, "images/iconEdit.png");
+		configuration.setPropertyByName(LocationSelector.DONE_SELECTION_IMAGE_URL, "images/iconTickBlackCircle.png");
 		configuration.setPropertyByName(LocationSelector.MAP_WIDTH, "300px");
 		configuration.setPropertyByName(LocationSelector.MAP_HEIGHT, "200px");
 		
@@ -401,5 +449,27 @@ public class FieldsShowCase implements EntryPoint {
 		Configuration config = new Configuration();
 		config.setPropertyByName(SpinnerField.SPINNERFIELDMODE, spinnerfieldMode);
 		return config;
+	}
+	
+	protected Configuration getNumberFieldConfiguration() {
+		Configuration config = new Configuration();
+		return config;
+	}
+	
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		int eventType = event.getEventType();
+		switch (eventType) {
+		case FieldEvent.EDITFAIL: {
+			numberfieldErrorLabel.setVisible(true);
+			break;
+		}
+		case FieldEvent.EDITSUCCESS: {
+			numberfieldErrorLabel.setVisible(false);
+			break;
+		}
+		default:
+			break;
+		}
 	}
 }
