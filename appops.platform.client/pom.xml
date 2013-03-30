@@ -124,7 +124,7 @@
 		<!-- <dependency> <groupId>appops_platform</groupId> <artifactId>appops_server</artifactId> 
 			<version>14.02.2013</version> </dependency> -->
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>mahesh_appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
 			<version>28.03.2013</version>
 		</dependency>
@@ -202,6 +202,7 @@
 						<module>in.appops.showcase.web.gwt.contactselector.contactselector</module>
 						<module>in.appops.showcase.web.gwt.mediaupload.mediaupload</module>
 						<module>in.appops.showcase.web.gwt.navigationmaze.navigationmaze</module>
+						
 						<!-- <module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> -->
 						<!-- <module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module> 
 							<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> <module>in.appops.showcase.web.gwt.uploadservice.UploadService</module> 
