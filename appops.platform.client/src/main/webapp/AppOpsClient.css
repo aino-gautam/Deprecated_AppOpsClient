@@ -492,8 +492,17 @@ background-color: #AAAAAA;
 	overflow: hidden;
 	height: 100%;
 }
-
+.nextPrevImagePanel{
+	width: 80px;
+	text-align: center;
+}
 .basePanelInPopup{
 	width:100%;
 	height: 100%;
+}
+.errorLabel{
+	color: red;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 10px;
+	margin: 0px 2px;
 }
