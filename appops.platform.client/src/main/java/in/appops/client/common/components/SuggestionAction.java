@@ -17,6 +17,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -84,11 +85,12 @@ public class SuggestionAction extends Composite{
 	private void addSuggestionAction(String suggestionAction){
 		Label suggestionLabel = new Label(suggestionAction);
 		suggestionLabel.setStylePrimaryName("appops-intelliThought-Label");
+		suggestionLabel.addStyleName("fadeInLeft");
 		
 		WidgetManagement widgetPlacement = new WidgetManagement(0, 0, suggestionLabel);
 
 		manageSuggestionActionPlacement();
-		placeWidget(widgetPlacement, true);
+		placeWidget(widgetPlacement);
 		suggestionActionWidgetList.add(widgetPlacement);
 	}
 	
@@ -102,26 +104,18 @@ public class SuggestionAction extends Composite{
 				if(row < 4){
 					management.setRow(row);
 					management.setColumn(0);
-					placeWidget(management, false);
 				}
 			} else{
 				management.setColumn(++col);
-				placeWidget(management, false);
 			}
+			placeWidget(management);
 		}
 	}
 
-	private void placeWidget(WidgetManagement management, boolean isNew) {
+	private void placeWidget(WidgetManagement management) {
 		Label suggestionAction = (Label)management.getWidget();
-		if(isNew){
-			suggestionAction.addStyleName("fadeInDown");
-		} else{
-			suggestionAction.removeStyleName("fadeInDown");
-		//	if(suggestionAction.getStyleName().equalsIgnoreCase("fadeInLeft")){
-				suggestionAction.addStyleName("fadeInLeft");
-		//	}
-		}
 		basePanel.setWidget(management.getRow(), management.getColumn(), suggestionAction);
+		basePanel.getCellFormatter().setHorizontalAlignment(management.getRow(), management.getColumn(), HasHorizontalAlignment.ALIGN_LEFT);
 	}
 
 	final class WidgetManagement{
