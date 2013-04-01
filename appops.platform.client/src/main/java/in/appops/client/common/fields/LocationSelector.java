@@ -1,15 +1,29 @@
 package in.appops.client.common.fields;
 
+import in.appops.client.common.event.FieldEvent;
+import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.shared.Configuration;
+
+import java.util.List;
+
 import com.google.code.gwt.geolocation.client.Coordinates;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.maps.client.base.HasLatLng;
 import com.google.gwt.maps.client.base.LatLng;
 import com.google.gwt.maps.client.event.Event;
 import com.google.gwt.maps.client.event.HasMouseEvent;
 import com.google.gwt.maps.client.event.MouseEventCallback;
+import com.google.gwt.maps.client.geocoder.Geocoder;
+import com.google.gwt.maps.client.geocoder.GeocoderCallback;
+import com.google.gwt.maps.client.geocoder.GeocoderRequest;
+import com.google.gwt.maps.client.geocoder.HasGeocoder;
+import com.google.gwt.maps.client.geocoder.HasGeocoderRequest;
+import com.google.gwt.maps.client.geocoder.HasGeocoderResult;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -18,10 +32,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-
-import in.appops.client.common.event.FieldEvent;
-import in.appops.platform.core.entity.Entity;
-import in.appops.platform.core.shared.Configuration;
 
 public class LocationSelector extends Composite implements Field {
 
@@ -33,25 +43,34 @@ public class LocationSelector extends Composite implements Field {
 	private LatLng latLng ;
 	private MapField mapField;
 	private TextField currentLocationTextField ;
-	private PopupPanel locationSelectorPopupPanel;
 	private PopupPanel popupPanelForMap;
+	private PopupPanel popupPanelForMapSearch;
 	private Image image ;
+	private Image searchIconImage ;
 	private Label currentLocationLabel ;
+	private Image doneBtn;
+	private Image chooseLocationBtn;;
 	public static final String LOCATION_SELECTOR_POPUPPANEL = "locationSelectorPopupPanel";
 	public static final String LOCATION_SELECTOR_CHOOSE_LOCATION_BTN = "chooseLocationBtn";
 	public static final String LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD = "currentLocationField";
 	public static final String LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE = "currentLocationImage";
 	public static final String LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE_PRIMARYCSS = "currentLocationImagePrimaryCss";
+	public static final String FEAR_IN_DOWN = "fadeInDown";
 	public static final String LATLNG = "latLng";
-	
+	public static final String MAP_WIDTH = "mapWidth";
+	public static final String MAP_HEIGHT = "mapHeight";
+	public static final String MAP_ZOOM = "mapZoom";
+	public static final String HAND_CURSOR = "appops-handCursor";
+	public static final String CHANGE_LOCATION_IMAGE_URL = "changelocationUrl";
+	public static final String DONE_SELECTION_IMAGE_URL = "doneSelctionUrl";
 	private String mapWidth;
 	private String mapHeight;
 	private boolean isMapMode = false;
+	private static String currentSelectedLocation ; 
 	
 	public LocationSelector(){
 		basePanel = new VerticalPanel();
-		currentLocationTextField = new TextField();
-		locationSelectorPopupPanel = new PopupPanel();
+		
 		currentLocationLabel = new Label();
 		image = new Image();
 		basePanel.setWidth("100%");
@@ -63,45 +82,73 @@ public class LocationSelector extends Composite implements Field {
 	@Override
 	public void createField() {
 		// TODO will need a map + textbox to enter a location
+		basePanel.clear();
+		
 	 if(!isMapMode){	
+		 FlexTable  flexTable = new FlexTable(); 
+		
+		currentLocationTextField = new TextField();
 		currentLocationTextField.setFieldValue("Current location");
-		//currentLocationTextField.setConfiguration(getTextFieldConfiguration(1, true, TextField.TEXTFIELDTYPE_TEXTBOX, "opptin-TextField", CURRENT_LOCATION_FIELD, null));
-		currentLocationTextField.setConfiguration(getTextFieldConfiguration(1, true, TextField.TEXTFIELDTYPE_TEXTBOX, getConfiguration().getPropertyByName(LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD).toString(), null, null));
+		currentLocationTextField.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, getConfiguration().getPropertyByName(TextField.TEXTFIELD_PRIMARYCSS).toString(), null, null));
+	
 		try{
 			currentLocationTextField.createField();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		 
+		if(getConfiguration().getPropertyByName(CHANGE_LOCATION_IMAGE_URL)!=null){
+	        chooseLocationBtn = new  Image(getConfiguration().getPropertyByName(CHANGE_LOCATION_IMAGE_URL).toString());
+		    chooseLocationBtn.setTitle("Change Location");
+		}
+	    
+	    if(getConfiguration().getPropertyByName(DONE_SELECTION_IMAGE_URL)!=null)
+	       doneBtn = new  Image(getConfiguration().getPropertyByName(DONE_SELECTION_IMAGE_URL).toString());
+	       doneBtn.setTitle("Done Selection");
+
+	    
+	    if( getConfiguration().getPropertyByName(LOCATION_SELECTOR_CHOOSE_LOCATION_BTN)!=null){
+	       chooseLocationBtn.setStylePrimaryName( getConfiguration().getPropertyByName(LOCATION_SELECTOR_CHOOSE_LOCATION_BTN).toString());
+	       doneBtn.setStylePrimaryName( getConfiguration().getPropertyByName(LOCATION_SELECTOR_CHOOSE_LOCATION_BTN).toString());
+	       chooseLocationBtn.addStyleName(HAND_CURSOR);
+	       doneBtn.addStyleName(HAND_CURSOR);
+	    }
 		
-	    Button chooseLocationBtn = new  Button("Choose location");
-	    if( getConfiguration().getPropertyByName(LOCATION_SELECTOR_CHOOSE_LOCATION_BTN)!=null)
-	     chooseLocationBtn.setStylePrimaryName( getConfiguration().getPropertyByName(LOCATION_SELECTOR_CHOOSE_LOCATION_BTN).toString());
-		
-		HorizontalPanel currentLocationHpPanel = new HorizontalPanel();
-		
+	    HorizontalPanel currentLocationHpPanel = new HorizontalPanel();
+		currentLocationHpPanel.setWidth("100%");
 		currentLocationHpPanel.add(currentLocationTextField);
-		currentLocationHpPanel.add(chooseLocationBtn);
-		locationSelectorPopupPanel.add(currentLocationHpPanel);
-		locationSelectorPopupPanel.center();
-		locationSelectorPopupPanel.show();
-		locationSelectorPopupPanel.setGlassEnabled(true);
-		locationSelectorPopupPanel.setAnimationEnabled(true);
+		currentLocationHpPanel.setCellWidth(currentLocationTextField, "40%");
+		//currentLocationHpPanel.add(chooseLocationBtn);
+		//currentLocationHpPanel.setCellWidth(chooseLocationBtn, "6%");
+		currentLocationHpPanel.add(doneBtn);
+		currentLocationHpPanel.setCellWidth(doneBtn, "50%");
+		
+		
+		
+		flexTable.setWidget(0, 0,currentLocationHpPanel);
+		
 		
 		if(getConfiguration().getPropertyByName(LOCATION_SELECTOR_POPUPPANEL)!=null)
-		  locationSelectorPopupPanel.setStylePrimaryName(getConfiguration().getPropertyByName(LOCATION_SELECTOR_POPUPPANEL).toString());
+			currentLocationHpPanel.setStylePrimaryName(getConfiguration().getPropertyByName(LOCATION_SELECTOR_POPUPPANEL).toString());
 		
 		try{
 			mapField = new MapField(latLng);
 			mapField.setMapHeight(mapHeight);
 			mapField.setMapWidth(mapWidth);
+			mapField.setMapZoomParameter(Integer.parseInt(getConfiguration().getPropertyByName(MAP_ZOOM).toString()));
 			mapField.createMapUi();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		
-		basePanel.add(mapField);
-		basePanel.setCellHorizontalAlignment(mapField, HasHorizontalAlignment.ALIGN_CENTER);
-		basePanel.setCellVerticalAlignment(mapField, HasVerticalAlignment.ALIGN_MIDDLE);
+		flexTable.setWidget(2, 0,mapField);
+		
+		
+		
+		
+		basePanel.add(flexTable);
+		basePanel.setCellHorizontalAlignment(flexTable, HasHorizontalAlignment.ALIGN_CENTER);
+		basePanel.setCellVerticalAlignment(flexTable, HasVerticalAlignment.ALIGN_MIDDLE);
 		mapField.getAddressAndSet(latLng);
 		
 		Timer timer = new Timer() {
@@ -119,7 +166,7 @@ public class LocationSelector extends Composite implements Field {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				locationSelectorPopupPanel.hide();
+				//locationSelectorPopupPanel.hide();
 				
 			}
 		});
@@ -129,7 +176,7 @@ public class LocationSelector extends Composite implements Field {
 	          
 			@Override
 				public void callback(HasMouseEvent event) {
-					
+					latLng =(LatLng) event.getLatLng();
 				mapField.getMarker().setPosition(event.getLatLng());
 				mapField.getMapWidget().getMap().panTo(event.getLatLng());
 				mapField.getAddressAndSet(event.getLatLng());
@@ -149,6 +196,7 @@ public class LocationSelector extends Composite implements Field {
 		};
 		Event.addListener(mapField.getMapWidget().getMap(), "click", mapClickCallback);
 	 }else{
+		 
 		 HorizontalPanel horizontalPanel = new HorizontalPanel();
 		 
 		 if(getConfiguration().getPropertyByName(LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE)!=null)		 
@@ -163,18 +211,35 @@ public class LocationSelector extends Composite implements Field {
 		 horizontalPanel.setHeight("30%");
 		 horizontalPanel.setWidth("100%");
 		 basePanel.add(horizontalPanel);
+		 
+		 try{
+				mapField = new MapField(latLng);
+				mapField.setMapHeight(getConfiguration().getPropertyByName(MAP_HEIGHT).toString());
+				mapField.setMapWidth(getConfiguration().getPropertyByName(MAP_WIDTH).toString());
+				mapField.setMapZoomParameter(Integer.parseInt(getConfiguration().getPropertyByName(MAP_ZOOM).toString()));
+				mapField.createMapUi();
+				mapField.getAddressAndSet(latLng);
+				Timer timer = new Timer() {
+					
+					@Override
+					public void run() {
+						currentLocationLabel.setText("");
+						currentLocationLabel.setText(mapField.getChoosenAddress());
+						setCurrentSelectedLocation(mapField.getChoosenAddress());
+						
+					}
+				};timer.schedule(2000);
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		 
+		 
 		 image.addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				try{
-					mapField = new MapField(latLng);
-					mapField.setMapHeight(mapHeight);
-					mapField.setMapWidth(mapWidth);
-					mapField.createMapUi();
-				}catch(Exception e){
-					e.printStackTrace();
-				}
+				
 				
 				MouseEventCallback mapClickCallback = new MouseEventCallback() {
 			          
@@ -191,6 +256,7 @@ public class LocationSelector extends Composite implements Field {
 								public void run() {
 									currentLocationLabel.setText("");
 									currentLocationLabel.setText(mapField.getChoosenAddress());
+									setCurrentSelectedLocation(mapField.getChoosenAddress());
 									
 								}
 							};timer.schedule(1000);
@@ -208,15 +274,61 @@ public class LocationSelector extends Composite implements Field {
 					public void run() {
 						currentLocationLabel.setText("");
 						currentLocationLabel.setText(mapField.getChoosenAddress());
-						
+						setCurrentSelectedLocation(mapField.getChoosenAddress());
 						
 					}
 				};timer.schedule(2000);
+				
+				final HorizontalPanel hpPanel = new HorizontalPanel(); 
 				popupPanelForMap = new PopupPanel();
+				
+				//searchIconImage = new Image("imgaes/search_off.png");
 				popupPanelForMap.setAutoHideEnabled(true);
-				popupPanelForMap.add(mapField);
+				hpPanel.add(mapField);
+				//hpPanel.add(searchIconImage);
+				//hpPanel.setCellVerticalAlignment(searchIconImage, HasVerticalAlignment.ALIGN_MIDDLE);
+				//hpPanel.setCellHorizontalAlignment(searchIconImage, HasHorizontalAlignment.ALIGN_RIGHT);
+				popupPanelForMap.add(hpPanel);
+				hpPanel.setBorderWidth(1);
+				
+				popupPanelForMap.setStylePrimaryName(FEAR_IN_DOWN);
 				mapField.getAddressAndSet(latLng);
 				popupPanelForMap.showRelativeTo(image);
+               
+				/*searchIconImage.addClickHandler(new ClickHandler() {
+					
+					@Override
+					public void onClick(ClickEvent event) {
+						popupPanelForMapSearch = new PopupPanel();
+						
+						popupPanelForMapSearch.setAutoHideEnabled(true);
+						popupPanelForMapSearch.setStylePrimaryName("slidingWindow");
+						ToggleButton toggler = new ToggleButton(searchIconImage,
+								searchIconImage);
+						PinnedPanel pinnedPanel = new PinnedPanel(200, toggler, popupPanelForMapSearch,popupPanelForMapSearch);
+						final TextBox textField = new TextBox();
+						
+						popupPanelForMapSearch.add(textField);
+						popupPanelForMapSearch.showRelativeTo(popupPanelForMap);
+						
+						
+						textField.addKeyDownHandler(new KeyDownHandler() {
+							
+							@Override
+							public void onKeyDown(KeyDownEvent event) {
+								switch (event.getNativeKeyCode()) {
+						        case KeyCodes.KEY_ENTER:
+						           displaySearchEdAddressIntoMapWidget(textField.getText());
+						           popupPanelForMapSearch.hide();
+								}
+								
+							}
+						});
+						
+						
+						
+					}
+				});*/
 				
 			}
 		});
@@ -259,7 +371,8 @@ public class LocationSelector extends Composite implements Field {
 		currentLocationTextField.clearField();
 		currentLocationTextField.setFieldValue(mapField.getChoosenAddress());
 		currentLocationTextField.resetField();
-		locationSelectorPopupPanel.show();
+		setCurrentSelectedLocation(mapField.getChoosenAddress());
+		//locationSelectorPopupPanel.show();
 		
 	}
 	
@@ -284,6 +397,41 @@ public class LocationSelector extends Composite implements Field {
 		return configuration;
 	}
 
+	
+	public void displaySearchEdAddressIntoMapWidget(String address){
+		final HasGeocoderRequest gRequest = new GeocoderRequest();
+        gRequest.setAddress(address);
+        
+        final HasGeocoder geocoder = new Geocoder();
+        geocoder.geocode(gRequest, new GeocoderCallback() {
+          
+          @Override
+          public void callback(List<HasGeocoderResult> responses, String status) {
+            if (status.equals("OK")) {
+              final HasGeocoderResult gResult = responses.get(0);
+              final HasLatLng gLatLng = gResult.getGeometry().getLocation();
+              latLng = (LatLng) gLatLng; 
+                mapField.getMarker().setPosition(latLng);
+				mapField.getMapWidget().getMap().panTo(latLng);
+				mapField.getAddressAndSet(gLatLng);
+				 Timer timer = new Timer() {
+						
+						@Override
+						public void run() {
+							currentLocationLabel.setText("");
+							currentLocationLabel.setText(mapField.getChoosenAddress());
+							
+						}
+					};timer.schedule(1000);
+				 
+				
+            } else {
+              Window.alert("Geocoder failed with response : " + status);
+            }
+          }
+        });
+	}
+	
 
 	public LatLng getLatLng() {
 		return latLng;
@@ -333,6 +481,47 @@ public class LocationSelector extends Composite implements Field {
 	public void onFieldEvent(FieldEvent event) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public Entity getEntity() {
+		return entity;
+	}
+
+	public void setEntity(Entity entity) {
+		this.entity = entity;
+	}
+
+	
+	public Image getDoneBtn() {
+		return doneBtn;
+	}
+
+	public void setDoneBtn(Image doneBtn) {
+		this.doneBtn = doneBtn;
+	}
+
+	public Label getCurrentLocationLabel() {
+		return currentLocationLabel;
+	}
+
+	public void setCurrentLocationLabel(Label currentLocationLabel) {
+		this.currentLocationLabel = currentLocationLabel;
+	}
+
+	public TextField getCurrentLocationTextField() {
+		return currentLocationTextField;
+	}
+
+	public void setCurrentLocationTextField(TextField currentLocationTextField) {
+		this.currentLocationTextField = currentLocationTextField;
+	}
+
+	public static String getCurrentSelectedLocation() {
+		return currentSelectedLocation;
+	}
+
+	public static void setCurrentSelectedLocation(String currentSelectedLocation) {
+		LocationSelector.currentSelectedLocation = currentSelectedLocation;
 	}
 
 }
