@@ -33,8 +33,11 @@ public class TimePicker extends Composite implements FocusHandler, BlurHandler, 
 	private Button selectTimeButton = new Button("Done"); 
 	private PopupPanel popupPanel;
 	private String value; 
+	private String timeMode;
 	
-	public TimePicker() {
+	
+	public TimePicker(String timeMode) {
+		this.timeMode = timeMode;
 		
 		popupPanel = new PopupPanel(true);
 		popupPanel.setWidget(createTimePickerPanel());
@@ -55,19 +58,39 @@ public class TimePicker extends Composite implements FocusHandler, BlurHandler, 
 		Date date = new Date( );
 		String[] time=date.toString().split(" ");
 		String[] item=time[3].split(":");
-		Label lblHour= new Label("(hh):");
-		Label lblMinute= new Label("(mm):");
-		Label lblSecond= new Label("(ss)");
-		subHorizontalPanel.add(hoursListBox);
-		subHorizontalPanel.add(lblHour);
-		populateTimeListbox(hoursListBox,23,item[0]);
-		subHorizontalPanel.add(minListBox);
-		subHorizontalPanel.add(lblMinute);
-		populateTimeListbox(minListBox,59,item[1]);
-		subHorizontalPanel.add(secListBox);
-		subHorizontalPanel.add(lblSecond);
-		populateTimeListbox(secListBox,59,item[2]);
+		Label lblHour= new Label();
+		Label lblMinute= new Label();
+		Label lblSecond= new Label();
 		
+		if(timeMode.equals(DateTimeField.Full_Time)){
+			subHorizontalPanel.add(hoursListBox);
+			subHorizontalPanel.add(lblHour);
+			lblHour.setText("(hh):");
+			populateTimeListbox(hoursListBox,23,item[0]);
+			subHorizontalPanel.add(minListBox);
+			subHorizontalPanel.add(lblMinute);
+			lblMinute.setText("(mm):");
+			populateTimeListbox(minListBox,59,item[1]);
+			subHorizontalPanel.add(secListBox);
+			subHorizontalPanel.add(lblSecond);
+			lblSecond.setText("(ss)");
+			populateTimeListbox(secListBox,59,item[2]);
+		}else if(timeMode.equals(DateTimeField.SHORT_HOURS)){
+			subHorizontalPanel.add(hoursListBox);
+			subHorizontalPanel.add(lblHour);
+			lblHour.setText("(hh)");
+			populateTimeListbox(hoursListBox,23,item[0]);
+		}else if(timeMode.equals(DateTimeField.SHORT_MINUTE)){
+			subHorizontalPanel.add(minListBox);
+			subHorizontalPanel.add(lblMinute);
+			lblMinute.setText("(mm)");
+			populateTimeListbox(minListBox,59,item[1]);
+		}else if(timeMode.equals(DateTimeField.SHORT_SECONDS)){
+			subHorizontalPanel.add(secListBox);
+			subHorizontalPanel.add(lblSecond);
+			lblSecond.setText("(ss)");
+			populateTimeListbox(secListBox,59,item[2]);
+		}
 		subHorizontalPanel.add(selectTimeButton);
 		
 		DOM.setStyleAttribute(lblHour.getElement(), "marginTop", "5px");
@@ -78,8 +101,19 @@ public class TimePicker extends Composite implements FocusHandler, BlurHandler, 
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				if(timeMode.equals(DateTimeField.Full_Time)){
 				 value = hoursListBox.getItemText(hoursListBox.getSelectedIndex())+":"+ minListBox.getItemText(minListBox.getSelectedIndex())+":"+ secListBox.getItemText(secListBox.getSelectedIndex());
 				 textBox.setText(value);
+				}else if(timeMode.equals(DateTimeField.SHORT_HOURS)){
+					 value = hoursListBox.getItemText(hoursListBox.getSelectedIndex());
+					 textBox.setText(value);
+				}else if(timeMode.equals(DateTimeField.SHORT_MINUTE)){
+					 value = minListBox.getItemText(minListBox.getSelectedIndex());
+					 textBox.setText(value);
+				}else if(timeMode.equals(DateTimeField.SHORT_SECONDS)){
+					value = secListBox.getItemText(secListBox.getSelectedIndex());
+					textBox.setText(value);
+				}
 				 hideTimePicker();
 			}
 		});
@@ -139,6 +173,14 @@ public class TimePicker extends Composite implements FocusHandler, BlurHandler, 
 	private void updateTimeFromTextBox() {
 		textBox.setText("");
 		
+	}
+
+	public String getTimeMode() {
+		return timeMode;
+	}
+
+	public void setTimeMode(String timeMode) {
+		this.timeMode = timeMode;
 	}
 
 	@Override

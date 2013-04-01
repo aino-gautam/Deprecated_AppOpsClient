@@ -10,5 +10,7 @@ import com.google.gwt.event.shared.EventHandler;
  *
  */
 public interface WheelEventHandler extends EventHandler {
+	
+	public void onWheelEvent(WheelEvent event);
 
 }
