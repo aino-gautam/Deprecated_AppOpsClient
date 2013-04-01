@@ -17,6 +17,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -24,17 +25,13 @@ public class SuggestionAction extends Composite{
 	private FlexTable basePanel;
 	private List<String> suggestionList;
 	private Map<String, List> suggestionMap = new HashMap<String, List>();
-	private static int ROW_COUNT;
-	private static int COLUMN_COUNT;
 	private List<WidgetManagement> suggestionActionWidgetList = new LinkedList<WidgetManagement>();
-
 	
 	public SuggestionAction(){
 		initialize();
 		initWidget(basePanel);
 		createUI();
 	}
-
 
 	private void initialize() {
 		basePanel = new FlexTable();
@@ -51,39 +48,20 @@ public class SuggestionAction extends Composite{
 		
 	}
 
-
 	private void createUI() {
 		basePanel.setStylePrimaryName("suggestionLabel");
 	}
 
 	@SuppressWarnings("unchecked")
 	public void showActionSuggestion(String word){
-//		Set<String> keyWords = suggestionMap.keySet();
-//		
-//		for(String keyWord : keyWords){
-//			List<String> suggestionList  = suggestionMap.get(keyWord);
-//			
-//			for(String suggestion : suggestionList){
-//				if(keyWord.equalsIgnoreCase(word.trim())){
-//					Label suggestionLabel = new Label(suggestion);
-//					suggestionLabel.setStylePrimaryName("appops-intelliThought-Label");
-//					suggestionLabel.addStyleName("fadeInDown");
-//					basePanel.setWidget(ROW_COUNT, COLUMN_COUNT, suggestionLabel);
-//					
-//				}
-//			}
-//			
-//		}
-		
+	
 		DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
 		DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
 
-		Map map = new HashMap();
-		map.put("word", "%"+ word +"%");
-
-
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("word", "%"+ word +"%");
 		
-		StandardAction action = new StandardAction(EntityList.class, "spacemanagement.SpaceManagementService.getSuggestionAction", map);
+		StandardAction action = new StandardAction(EntityList.class, "spacemanagement.SpaceManagementService.getSuggestionAction", paramMap);
 		dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
 			
 			
@@ -107,23 +85,13 @@ public class SuggestionAction extends Composite{
 	private void addSuggestionAction(String suggestionAction){
 		Label suggestionLabel = new Label(suggestionAction);
 		suggestionLabel.setStylePrimaryName("appops-intelliThought-Label");
+		suggestionLabel.addStyleName("fadeInLeft");
 		
 		WidgetManagement widgetPlacement = new WidgetManagement(0, 0, suggestionLabel);
 
 		manageSuggestionActionPlacement();
-		placeWidget(widgetPlacement, true);
+		placeWidget(widgetPlacement);
 		suggestionActionWidgetList.add(widgetPlacement);
-		
-		manageRowCol();
-	}
-	
-	private void manageRowCol() {
-		COLUMN_COUNT++;
-
-		if(COLUMN_COUNT >= 2){
-			ROW_COUNT++;
-			COLUMN_COUNT = 0;
-		}
 	}
 	
 	private void manageSuggestionActionPlacement() {
@@ -136,27 +104,18 @@ public class SuggestionAction extends Composite{
 				if(row < 4){
 					management.setRow(row);
 					management.setColumn(0);
-					placeWidget(management, false);
 				}
 			} else{
 				management.setColumn(++col);
-				placeWidget(management, false);
 			}
+			placeWidget(management);
 		}
 	}
 
-
-	private void placeWidget(WidgetManagement management, boolean isNew) {
+	private void placeWidget(WidgetManagement management) {
 		Label suggestionAction = (Label)management.getWidget();
-		if(isNew){
-			suggestionAction.addStyleName("fadeInDown");
-		} else{
-			suggestionAction.removeStyleName("fadeInDown");
-		//	if(suggestionAction.getStyleName().equalsIgnoreCase("fadeInLeft")){
-				suggestionAction.addStyleName("fadeInLeft");
-		//	}
-		}
 		basePanel.setWidget(management.getRow(), management.getColumn(), suggestionAction);
+		basePanel.getCellFormatter().setHorizontalAlignment(management.getRow(), management.getColumn(), HasHorizontalAlignment.ALIGN_LEFT);
 	}
 
 	final class WidgetManagement{
@@ -174,16 +133,13 @@ public class SuggestionAction extends Composite{
 			return row;
 		}
 
-
 		public void setRow(int row) {
 			this.row = row;
 		}
 
-
 		public int getColumn() {
 			return column;
 		}
-
 
 		public void setColumn(int column) {
 			this.column = column;
@@ -192,8 +148,7 @@ public class SuggestionAction extends Composite{
 		public Widget getWidget() {
 			return widget;
 		}
-		
-		
+				
 		public void setWidget(Widget widget) {
 			this.widget = widget;
 		}

@@ -125,7 +125,7 @@ public class Navigator extends Composite implements ClickHandler {
 		AppUtils.EVENT_BUS.fireEvent(navEvent);
 	}
 
-	private void setVisibilityOfNextPrevElement() {
+	public void setVisibilityOfNextPrevElement() {
 		if(currentScreenNo == 1 && currentScreenNo < totalScreens){
 			prevWidget.setVisible(false);
 			nextWidget.setVisible(true);

@@ -1,165 +1,149 @@
 package in.appops.client.gwt.web.ui;
 
+import in.appops.client.common.util.BlobDownloader;
+import in.appops.platform.server.core.services.media.constant.MediaConstant;
+
 import java.util.ArrayList;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.LoadEvent;
-import com.google.gwt.event.dom.client.LoadHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
-/**
- * 
- * @author dhananjay@ensarm.com
- *
- */
+public class ImagePopup extends PopupPanel implements ClickHandler {
 
-public class ImagePopup extends PopupPanel implements ClickHandler,MouseOverHandler,MouseOutHandler{
-	
-	
-	private ArrayList<String> listofImages;
-	private Image nextImg;
-	private Image prevImg;
-	private Image displayImage;
-	private Image crossImg;
-	private VerticalPanel mainMainPanel;
-	private HorizontalPanel mainPanel;
-	private HorizontalPanel imagePanel;
+	private Image crossImg = new Image("images/cross.png");
+	private Image nextImg = new Image("images/next.png");
+	private Image prevImg = new Image("images/prev.png");
+	private VerticalPanel basePanel  = new VerticalPanel();
+	private HorizontalPanel imageWithSliderPanel;
+	private HorizontalPanel actualImagePanel;
+	private BlobDownloader blobDownloader;
+	private VerticalPanel slider ;
+	private VerticalPanel nextImagePanel  = new VerticalPanel();
+	private VerticalPanel prevImagePanel  = new VerticalPanel();
+	private ArrayList<ImageWidget> widgetList = new ArrayList<ImageWidget>();
 	private int index = 0;
 	
-	public ArrayList<String> getListofImages() {
-		return listofImages;
-	}
-
-	public void setListofImages(ArrayList<String> list) {
+	public ImagePopup() {
 		
-		listofImages = new ArrayList<String>();
-		for(int i=0;i<list.size();i++){
-		    String str= list.get(i).replace("ThumbnailImages/", "");
-			listofImages.add(str);
+	}
+	
+	public void initialize(ArrayList<ImageWidget> widgetSetForRow){
+		
+		imageWithSliderPanel = new HorizontalPanel();
+		actualImagePanel = new HorizontalPanel();
+		slider = new VerticalPanel();
+		widgetList = widgetSetForRow;
 			
-		}
-	}
-
-	public ImagePopup(String imgPath) {
-		initialize();
-		imgPath = imgPath.replace("http://127.0.0.1:8888/", "");
-		imgPath = imgPath.replace("ThumbnailImages/", "");
-		displayImage.setUrl(imgPath);
-		imagePanel.add(displayImage);
-		createUi();
-		add(mainMainPanel);
-	}
-	
-	private void initialize() {
-		mainMainPanel = new VerticalPanel();
-		mainPanel = new HorizontalPanel();
-		imagePanel = new HorizontalPanel();
-		imagePanel.setSize("210px", "180px");
-		nextImg = new Image("images/next.png");
-		prevImg = new Image("images/previous.png");
-		displayImage = new Image();
-		displayImage.setStylePrimaryName("popupImageFullheighWidth");
-	
-		crossImg = new Image("images/cross.png");
+		crossImg.addClickHandler(this);
+		prevImg.addClickHandler(this);
+		nextImg.addClickHandler(this);
+		nextImagePanel.add(nextImg);
+		prevImagePanel.add(prevImg);
+		
+		imageWithSliderPanel.add(prevImagePanel);
+		imageWithSliderPanel.add(actualImagePanel);
+		imageWithSliderPanel.add(nextImagePanel);
+		
+		nextImagePanel.setStylePrimaryName("nextPrevImagePanel");
+		prevImagePanel.setStylePrimaryName("nextPrevImagePanel");
+		//imageWithSliderPanel.add(slider);
+		
+		imageWithSliderPanel.setCellVerticalAlignment(prevImagePanel, HasVerticalAlignment.ALIGN_MIDDLE);
+		prevImagePanel.setCellHorizontalAlignment(prevImg, HasHorizontalAlignment.ALIGN_CENTER);
+		
+		actualImagePanel.setStylePrimaryName("actualImagePanel");
+		
+		imageWithSliderPanel.setCellVerticalAlignment(nextImagePanel, HasVerticalAlignment.ALIGN_MIDDLE);
+		nextImagePanel.setCellHorizontalAlignment(nextImg, HasHorizontalAlignment.ALIGN_CENTER);
+		
+		slider.setStylePrimaryName("sliderPanel");
+		imageWithSliderPanel.setCellHorizontalAlignment(slider, HasHorizontalAlignment.ALIGN_RIGHT);
+		
+		
+		basePanel.add(crossImg);
+		basePanel.setCellHorizontalAlignment(crossImg, HasHorizontalAlignment.ALIGN_RIGHT);
+		basePanel.add(imageWithSliderPanel);
+		
 		setStylePrimaryName("imagePopup");
-		setSize("330px", "230px");
+		
 		setAutoHideEnabled(true);
 		setAnimationEnabled(true);
 		setGlassEnabled(true);
 		setGlassStyleName("imageGlassPanel");
-		prevImg.setStylePrimaryName("popupNextPrevImage");
-		nextImg.setStylePrimaryName("popupNextPrevImage");
-		displayImage.addMouseOutHandler(this);
-		displayImage.addMouseOverHandler(this);
-		displayImage.addClickHandler(this);
-		nextImg.addMouseOutHandler(this);
-		prevImg.addMouseOutHandler(this);
-		prevImg.addMouseOverHandler(this);
-		nextImg.addMouseOverHandler(this);
-		nextImg.addClickHandler(this);
-		prevImg.addClickHandler(this);
-		crossImg.addClickHandler(this);
-	}
-
-	private void createUi() {
-		mainMainPanel.add(crossImg);
-		mainPanel.add(prevImg);
-		mainPanel.add(imagePanel);
-		mainPanel.add(nextImg);
-		mainMainPanel.add(mainPanel);
-		mainMainPanel.setCellHorizontalAlignment(crossImg, HasHorizontalAlignment.ALIGN_RIGHT);
-		imagePanel.setCellVerticalAlignment(displayImage, HasVerticalAlignment.ALIGN_MIDDLE);
-		imagePanel.setCellHorizontalAlignment(displayImage, HasHorizontalAlignment.ALIGN_CENTER);
-		mainPanel.setCellVerticalAlignment(imagePanel, HasVerticalAlignment.ALIGN_MIDDLE);
-		mainPanel.setCellHorizontalAlignment(imagePanel, HasHorizontalAlignment.ALIGN_CENTER);
-		mainPanel.setCellVerticalAlignment(prevImg, HasVerticalAlignment.ALIGN_MIDDLE);
-		mainPanel.setCellVerticalAlignment(nextImg, HasVerticalAlignment.ALIGN_MIDDLE);
-		mainPanel.setCellHorizontalAlignment(nextImg, HasHorizontalAlignment.ALIGN_RIGHT);
-	}
-
-
-
-	@Override
-	public void onClick(ClickEvent event) {
-		Image img = (Image) event.getSource();
-		if(img.equals(nextImg)||img.equals(displayImage)){
-			if(index<listofImages.size()-1){
-				index++;
-				mainPanel.clear();
-				displayImage.setUrl(listofImages.get(index));
-				imagePanel.add(displayImage);
-				createUi();
-			}else{
-				index=0;
-				mainPanel.clear();
-				displayImage.setUrl(listofImages.get(index));
-				imagePanel.add(displayImage);
-				createUi();
-			}
-		}else if(img.equals(prevImg)){
-			if(index!=0){
-				index--;
-				mainPanel.clear();
-				displayImage.setUrl(listofImages.get(index));
-				imagePanel.add(displayImage);
-				createUi();
-			}else{
-				index=listofImages.size()-1;
-				mainPanel.clear();
-				displayImage.setUrl(listofImages.get(index));
-				imagePanel.add(displayImage);
-				createUi();
-			}
-		}
-		else if(img.equals(crossImg))
-			hide();
 		
-	}
-	@Override
-	public void onMouseOver(MouseOverEvent event) {
-		if(event.getSource() instanceof Image){
-			nextImg.removeStyleName("popupNextPrevImage");
-			prevImg.removeStyleName("popupNextPrevImage");
-		}
-	}
-
-	@Override
-	public void onMouseOut(MouseOutEvent event) {
+		basePanel.setStylePrimaryName("basePanelInPopup");
+		setWidget(basePanel);
 		
-		if(event.getSource() instanceof Image){
-			nextImg.setStylePrimaryName("popupNextPrevImage");
-			prevImg.setStylePrimaryName("popupNextPrevImage");
-		}
 	}
 	
+	public void showImage(Widget widget){
+		for(int i=0; i<widgetList.size(); i++){
+			if(widgetList.get(i).equals(widget)){
+				index = i;
+			}
+		}
+		ImageWidget imageWidget = (ImageWidget) widget;
+		actualImagePanel.clear();
+		if(blobDownloader==null)
+			blobDownloader = new BlobDownloader();
+		String bloId = imageWidget.getEntity().getProperty(MediaConstant.BLOBID).getValue().toString();
+		Image image = new Image(blobDownloader.getImageDownloadURL(bloId));
+		image.setSize("800px", "550px");
+		actualImagePanel.add(image);
+		
+		actualImagePanel.setCellHorizontalAlignment(image, HasHorizontalAlignment.ALIGN_CENTER);
+	}
+	
+	@Override
+	public void onClick(ClickEvent event) {
+		
+		Widget widget = (Widget) event.getSource();
+		if(widget.equals(crossImg)){
+			hide();
+			return;
+		}else if(widget.equals(prevImg)){
+			if(index!=0){
+				index--;
+				actualImagePanel.clear();
+				String bloId = widgetList.get(index).getEntity().getProperty(MediaConstant.BLOBID).getValue().toString();
+				Image image = new Image(blobDownloader.getImageDownloadURL(bloId));
+				image.setSize("800px", "550px");
+				actualImagePanel.add(image);
+				
+			}else{
+				index=widgetList.size()-1;
+				actualImagePanel.clear();
+				String bloId = widgetList.get(index).getEntity().getProperty(MediaConstant.BLOBID).getValue().toString();
+				Image image = new Image(blobDownloader.getImageDownloadURL(bloId));
+				image.setSize("800px", "550px");
+				actualImagePanel.add(image);
+				
+			}
+		}else if(widget.equals(nextImg)){
+			if(index<widgetList.size()-1){
+				index++;
+				actualImagePanel.clear();
+				String bloId = widgetList.get(index).getEntity().getProperty(MediaConstant.BLOBID).getValue().toString();
+				Image image = new Image(blobDownloader.getImageDownloadURL(bloId));
+				image.setSize("800px", "550px");
+				actualImagePanel.add(image);
+				
+			}else{
+				index=0;
+			}
+				
+		}else{
+			/*ImageWidget imageWidget = (ImageWidget) widget;
+			
+			showImage(imageWidget);*/
+		}
+	}
+
 }

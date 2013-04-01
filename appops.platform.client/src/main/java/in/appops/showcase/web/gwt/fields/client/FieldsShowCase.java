@@ -1,11 +1,15 @@
 package in.appops.showcase.web.gwt.fields.client;
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.CheckboxField;
 import in.appops.client.common.fields.CheckboxGroupField;
 import in.appops.client.common.fields.DateTimeField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.LinkField;
 import in.appops.client.common.fields.LocationSelector;
+import in.appops.client.common.fields.NumberField;
 import in.appops.client.common.fields.SpinnerField;
 import in.appops.client.common.fields.StateField;
 import in.appops.client.common.fields.TextField;
@@ -25,10 +29,17 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class FieldsShowCase implements EntryPoint {
+public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 
 	private FlexTable flex = new FlexTable();
 	private LocationSelector locationSelector = new LocationSelector();
+	private LocationSelector locationSelectorForFalseMode = new LocationSelector();
+	private Label numberfieldErrorLabel;
+	
+	public FieldsShowCase() {
+		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+	}
+	
 	@Override
 	public void onModuleLoad() {
 		
@@ -46,6 +57,15 @@ public class FieldsShowCase implements EntryPoint {
 					
 					//locationSelector.setLatLong(latLng);
 					locationSelector.setCoordinates(coords);
+					
+					
+					locationSelectorForFalseMode.setConfiguration(getLocationSelectorConf());
+					locationSelectorForFalseMode.setMapMode(false);
+					locationSelectorForFalseMode.setMapHeight("400px");
+					locationSelectorForFalseMode.setMapWidth("600px");
+					//locationSelector.setLatLong(latLng);
+					locationSelectorForFalseMode.setCoordinates(coords);
+					
 
 					LabelField labelFieldTB = new LabelField();
 					labelFieldTB.setFieldValue("Text Box");
@@ -119,7 +139,33 @@ public class FieldsShowCase implements EntryPoint {
 
 
 					DateTimeField dateTimeField = new DateTimeField();
-					dateTimeField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY));
+					dateTimeField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.Full_Time));
+					
+					LabelField labelFieldDT_ShortHours = new LabelField();
+					labelFieldDT_ShortHours.setFieldValue("Time Picker(Short_Hours )");
+					labelFieldDT_ShortHours.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+
+
+					DateTimeField dateTimeShortHoursField = new DateTimeField();
+					dateTimeShortHoursField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.SHORT_HOURS));
+					
+					
+					LabelField labelFieldDT_ShortMinute = new LabelField();
+					labelFieldDT_ShortMinute.setFieldValue("Time Picker(Short_Minute )");
+					labelFieldDT_ShortMinute.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+
+
+					DateTimeField dateTimeShortMinuteField = new DateTimeField();
+					dateTimeShortMinuteField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.SHORT_MINUTE));
+					
+					LabelField labelFieldDT_ShortSec = new LabelField();
+					labelFieldDT_ShortSec.setFieldValue("Time Picker(Short_Sec )");
+					labelFieldDT_ShortSec.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+
+
+					DateTimeField dateTimeShortSecField = new DateTimeField();
+					dateTimeShortSecField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.SHORT_SECONDS));
+					
 
 					LabelField labelFieldD = new LabelField();
 					labelFieldD.setFieldValue("Date Picker");
@@ -127,7 +173,7 @@ public class FieldsShowCase implements EntryPoint {
 
 
 					DateTimeField dateField = new DateTimeField();
-					dateField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATEONLY));
+					dateField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATEONLY,null));
 
 
 					LabelField labelFieldDTF = new LabelField();
@@ -136,11 +182,16 @@ public class FieldsShowCase implements EntryPoint {
 
 
 					DateTimeField dateTimeOnlyField = new DateTimeField();
-					dateTimeOnlyField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATETIMEONLY));
+					dateTimeOnlyField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATETIMEONLY,null));
 
 					LabelField labelFieldLocation = new LabelField();
-					labelFieldLocation.setFieldValue("Location Selector");
+					labelFieldLocation.setFieldValue("Location Selector(true)");
 					labelFieldLocation.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+					
+					LabelField labelFieldLocationForFalseLabelField = new LabelField();
+					labelFieldLocationForFalseLabelField.setFieldValue("Location Selector(false)");
+					labelFieldLocationForFalseLabelField.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+					
 
 					LabelField spinnerFieldLabel = new LabelField();
 					spinnerFieldLabel.setFieldValue("SpinnerField");
@@ -151,6 +202,30 @@ public class FieldsShowCase implements EntryPoint {
 					Configuration spinnerConfig = getSpinnerFieldConfiguration(SpinnerField.SPINNERFIELD_VALUESPINNER);
 					spinnerField.setConfiguration(spinnerConfig);
 
+					LabelField spinnerPercentLabel = new LabelField();
+					spinnerPercentLabel.setFieldValue("SpinnerField(Percent)");
+					spinnerPercentLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+					
+					SpinnerField percentSpinnerField = new SpinnerField();
+					percentSpinnerField.setFieldValue("3");
+					Configuration percentSpinnerConfig = getSpinnerFieldConfiguration(SpinnerField.SPINNERFIELD_PERCENTSPINNER);
+					percentSpinnerField.setConfiguration(percentSpinnerConfig);
+					
+					LabelField numberFieldLabel = new LabelField();
+					numberFieldLabel.setFieldValue("NumberField");
+					numberFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+					
+					NumberField numberField = new NumberField();
+					numberField.setFieldValue("3");
+					Configuration numberConfig = getNumberFieldConfiguration();
+					numberField.setConfiguration(numberConfig);
+					VerticalPanel numberFieldPanel = new VerticalPanel();
+					numberfieldErrorLabel = new Label("Can't contain characters");
+					numberFieldPanel.add(numberField);
+					numberFieldPanel.add(numberfieldErrorLabel);
+					numberfieldErrorLabel.setVisible(false);
+					numberfieldErrorLabel.setStylePrimaryName("errorLabel");
+					
 					try {
 						labelFieldTB.createField();
 						textFieldTB.createField();
@@ -178,6 +253,15 @@ public class FieldsShowCase implements EntryPoint {
 
 						labelFieldDT.createField();
 						dateTimeField.createField();
+						
+						labelFieldDT_ShortHours.createField();
+						dateTimeShortHoursField.createField();
+						
+						labelFieldDT_ShortMinute.createField();
+						dateTimeShortMinuteField.createField();
+						
+						labelFieldDT_ShortSec.createField();
+						dateTimeShortSecField.createField();
 
 						labelFieldD.createField();
 						dateField.createField();
@@ -188,8 +272,18 @@ public class FieldsShowCase implements EntryPoint {
 						labelFieldLocation.createField();
 						locationSelector.createField();
 						
+						labelFieldLocationForFalseLabelField.createField();
+						locationSelectorForFalseMode.createField();
+						
+						
 						spinnerFieldLabel.createField();
 						spinnerField.createField();
+						
+						spinnerPercentLabel.createField();
+						percentSpinnerField.createField();
+						
+						numberFieldLabel.createField();
+						numberField.createField();
 
 
 					} catch (AppOpsException e) {
@@ -253,24 +347,45 @@ public class FieldsShowCase implements EntryPoint {
 
 					flex.setWidget(8, 0, labelFieldDT);
 					flex.setWidget(8, 1, dateTimeField);
-
-					flex.setWidget(9, 0, labelFieldD);
-					flex.setWidget(9, 1, dateField);
-
-					flex.setWidget(10, 0, labelFieldDTF);
-					flex.setWidget(10, 1, dateTimeOnlyField);
-
-					flex.setWidget(11, 0, labelFieldLocation);
-					flex.setWidget(11, 1, locationSelector);
-
-					flex.setWidget(12, 0, numericRangeSliderLbl);
-					flex.setWidget(12, 1, numericRangeSlider);
-
-					flex.setWidget(13, 0, stringRangeSliderLbl);
-					flex.setWidget(13, 1, stringRangeSlider);
 					
-					flex.setWidget(14, 0, spinnerFieldLabel);
-					flex.setWidget(14, 1, spinnerField);
+					flex.setWidget(9, 0, labelFieldDT_ShortHours);
+					flex.setWidget(9, 1, dateTimeShortHoursField);
+					
+					flex.setWidget(10, 0, labelFieldDT_ShortMinute);
+					flex.setWidget(10, 1, dateTimeShortMinuteField);
+					
+					flex.setWidget(11, 0, labelFieldDT_ShortSec);
+					flex.setWidget(11, 1, dateTimeShortSecField);
+					
+					
+
+					flex.setWidget(13, 0, labelFieldD);
+					flex.setWidget(13, 1, dateField);
+
+					flex.setWidget(14, 0, labelFieldDTF);
+					flex.setWidget(14, 1, dateTimeOnlyField);
+
+					flex.setWidget(15, 0, labelFieldLocation);
+					flex.setWidget(15, 1, locationSelector);
+					
+					flex.setWidget(18, 0, labelFieldLocationForFalseLabelField);
+					flex.setWidget(18, 1, locationSelectorForFalseMode);
+					
+
+					flex.setWidget(19, 0, numericRangeSliderLbl);
+					flex.setWidget(19, 1, numericRangeSlider);
+
+					flex.setWidget(20, 0, stringRangeSliderLbl);
+					flex.setWidget(20, 1, stringRangeSlider);
+					
+					flex.setWidget(25, 0, spinnerFieldLabel);
+					flex.setWidget(25, 1, spinnerField);
+					
+					flex.setWidget(26, 0, spinnerPercentLabel);
+					flex.setWidget(26, 1, percentSpinnerField);
+					
+					flex.setWidget(27, 0, numberFieldLabel);
+					flex.setWidget(27, 1, numberFieldPanel);
 
 					RootPanel.get().add(flex);
 
@@ -304,11 +419,12 @@ public class FieldsShowCase implements EntryPoint {
 		return configuration;
 	}
 	
-	private Configuration getDateTimeFieldConfiguration(String modeSelection,String datetimefieldTimeonly) {
+	private Configuration getDateTimeFieldConfiguration(String modeSelection,String datetimefieldTimeonly, String modeTimeValue) {
 		Configuration configuration = new Configuration();
 		configuration.setPropertyByName(DateTimeField.DATETIMEFIELD_MODE, modeSelection);
 		configuration.setPropertyByName(DateTimeField.DATETIMEFIELD_TYPE, datetimefieldTimeonly);
-		
+		if(modeTimeValue!=null)
+		  configuration.setPropertyByName(modeTimeValue, modeTimeValue);
 		
 		return configuration;
 	}
@@ -403,5 +519,27 @@ public class FieldsShowCase implements EntryPoint {
 		Configuration config = new Configuration();
 		config.setPropertyByName(SpinnerField.SPINNERFIELDMODE, spinnerfieldMode);
 		return config;
+	}
+	
+	protected Configuration getNumberFieldConfiguration() {
+		Configuration config = new Configuration();
+		return config;
+	}
+	
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		int eventType = event.getEventType();
+		switch (eventType) {
+		case FieldEvent.EDITFAIL: {
+			numberfieldErrorLabel.setVisible(true);
+			break;
+		}
+		case FieldEvent.EDITSUCCESS: {
+			numberfieldErrorLabel.setVisible(false);
+			break;
+		}
+		default:
+			break;
+		}
 	}
 }

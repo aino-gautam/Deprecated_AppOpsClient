@@ -15,7 +15,6 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class IntelliThoughtWidget extends Composite implements Configurable, ClickHandler, FieldEventHandler{
@@ -23,11 +22,8 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	private IntelliThoughtField intelliShareField;
 	private AttachMediaField attachMediaField;
 	private SuggestionAction suggestionAction;
-	private HorizontalPanel fieldAndPredefineOptionPanel;
 	private HorizontalPanel mediaServicePanel;
-	private VerticalPanel prominentOptionlPanel;
 	private boolean isAttachedMediaField;
-	private StringBuffer wordBuffer = new StringBuffer();
 
 	private Label searchButton;
 	private Label postButton;
@@ -45,9 +41,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	private void initialize() {
 		basePanel = new FlexTable();
 		mediaServicePanel = new HorizontalPanel();
-		fieldAndPredefineOptionPanel = new HorizontalPanel();
 		intelliShareField = new IntelliThoughtField();
-		prominentOptionlPanel = new VerticalPanel();
 		suggestionAction = new SuggestionAction();
 	}
 	
