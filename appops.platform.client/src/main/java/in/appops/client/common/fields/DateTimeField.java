@@ -32,7 +32,10 @@ public class DateTimeField extends Composite implements Field{
 	public static final String MODE_VIEW = "view";
 	public static final String MODE_SELECTION = "selection";
 	
-	
+	public static final String SHORT_HOURS = "short_Hours";
+	public static final String SHORT_MINUTE = "short_Minute";
+	public static final String SHORT_SECONDS = "short_Seconds";
+	public static final String Full_Time = "full_Time";
 			
 	public DateTimeField(){
 		
@@ -69,7 +72,22 @@ public class DateTimeField extends Composite implements Field{
 				 long time=value.getTime();
 				 value.setTime(time);
 				 datePicker.setValue(value);*/
-				TimePicker timePicker = new TimePicker();
+				TimePicker timePicker = null ;
+				
+				if(getConfiguration().getPropertyByName(SHORT_HOURS)!=null){
+					timePicker = new TimePicker(SHORT_HOURS);
+					
+				}else if(getConfiguration().getPropertyByName(SHORT_MINUTE)!=null){
+					timePicker = new TimePicker(SHORT_MINUTE);
+					
+				}else if(getConfiguration().getPropertyByName(SHORT_SECONDS)!=null){
+					timePicker = new TimePicker(SHORT_SECONDS);
+					
+				}else if(getConfiguration().getPropertyByName(Full_Time)!=null){
+					timePicker = new TimePicker(Full_Time);
+					
+				}
+				
 				initWidget(timePicker);
 			}else if(fieldType.equalsIgnoreCase(DATETIMEFIELD_DATETIMEONLY)){
 				DateTimePicker dateTimePicker = new DateTimePicker();
