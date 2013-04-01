@@ -18,5 +18,9 @@ public interface AppOpsModel {
 	public EntityList getEntityList(int noOfEntities, EntityListReceiver listReceiver);
 	
 	public Entity getEntity(Type type, int entityId, EntityReceiver entityReceiver);
+	
+	public String getOperationNameToBind();
+	
+	public void setOperationNameToBind(String name);
 
 }

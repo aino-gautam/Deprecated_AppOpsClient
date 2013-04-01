@@ -101,9 +101,14 @@ public class WizardForm extends Composite implements Form, NavigationEventHandle
 	public void displayScreen(int order){
 		if(screensMap != null){
 			Screen screen1 = screensMap.get(order-1);
-			if(screen1!=null)
-			 entity=screen1.populateEntity();
-			
+			boolean result=true;
+			if(screen1!=null){
+				result= screen1.validate();
+				 entity=screen1.populateEntity();  
+			    
+			}
+			  if(result){
+				 
 				Screen screen = screensMap.get(order);
 				screen.setEntity(entity);
 				screen.createScreen();
@@ -111,6 +116,7 @@ public class WizardForm extends Composite implements Form, NavigationEventHandle
 				panel.clear();
 				Widget widget = (Widget) screen;
 				panel.add(widget);
+			  }
 			
 		}
 	}

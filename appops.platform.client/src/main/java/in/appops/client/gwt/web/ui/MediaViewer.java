@@ -1,5 +1,6 @@
 package in.appops.client.gwt.web.ui;
 
+import in.appops.client.common.util.BlobDownloader;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -9,12 +10,9 @@ import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.media.constant.MediaConstant;
 import in.appops.platform.server.core.services.media.constant.TagConstant;
-
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
-
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -25,6 +23,7 @@ public class MediaViewer extends VerticalPanel implements WheelWidgetProvider {
 	private final DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
 	private HashMap<Entity, EntityList> photoAlbumMap ;
 	private HashMap<String, Row> rowPerAlbum;
+	private BlobDownloader blobDownloader ;
 	
 	
 	public MediaViewer() {
@@ -36,18 +35,29 @@ public class MediaViewer extends VerticalPanel implements WheelWidgetProvider {
 		cylinder.setName("cylinder1");
 		cylinder.setOrder(0);
 		cylinder.setHeight(500);
-		cylinder.setRadius(220);
+		cylinder.setRadius(200);
 		cylinder.setCoordinates(300,0);
+		cylinder.setSkewMode(false);
 		
 		HashMap<String, Row> rowsPerAlbumMap = getRowPerAlbum();
 		
+		
+		int index = 0; 
 		for(String rowName:rowsPerAlbumMap.keySet()){
 			Row row =rowsPerAlbumMap.get(rowName);
-			row.setIndependent(true);
-			cylinder.addRow(row);
+			
+			if(index%2==0){
+				row.setIndependent(true);
+			}else
+				row.setIndependent(false);
+				
+				cylinder.addRow(row);
+				
+				index++;
 		}
 
 		DragonWheelNew wheel = new DragonWheelNew() ;
+		
 		
 		wheel.addCylinder(cylinder);
 			
@@ -92,12 +102,15 @@ public class MediaViewer extends VerticalPanel implements WheelWidgetProvider {
 				
 		for (Map.Entry<Entity, EntityList> e : map.entrySet()) {
 			Entity albumEnt = e.getKey();
+			EntityList photList  = e.getValue();
 			String name = albumEnt.getProperty(TagConstant.NAME).getValue().toString();
-			Row row =new Row(name);
-			row.setIndependent(true);
-			row.setEntity(albumEnt);
-			row.setStylePrimaryName("rowPanel");
-			rowMap.put(name, row);
+			if(photList.size()!=0){
+				Row row =new Row(name);
+				row.setIndependent(true);
+				row.setEntity(albumEnt);
+				row.setStylePrimaryName("rowPanel");
+				rowMap.put(name, row);
+			}
 		}
 				
 		return rowMap;
@@ -106,15 +119,20 @@ public class MediaViewer extends VerticalPanel implements WheelWidgetProvider {
 	
 	@Override
 	public LinkedHashSet<Widget> getNextWidgetSet(Row row) {
+		if(blobDownloader == null)
+			blobDownloader = new BlobDownloader();
 		
 		EntityList photoList = photoAlbumMap.get(row.getEntity());
 		LinkedHashSet<Widget> imageWidgetSet  = new LinkedHashSet<Widget>();
 		
 		for(Entity photoEnt:photoList){
-			String url  = photoEnt.getProperty(MediaConstant.URL).getValue().toString();
-			ImageWidget imageWidget =new ImageWidget(GWT.getHostPageBaseURL()+"download?"+url);
-			//imageWidget.setConfiguration(getImageWidgetConf());
+			
+			String blobId  = photoEnt.getProperty(MediaConstant.BLOBID).getValue().toString();
+			
+			ImageWidget imageWidget =new ImageWidget(blobDownloader.getImageDownloadURL(blobId));
+			imageWidget.setEntity(photoEnt);
 			imageWidgetSet.add(imageWidget);
+			
 			imageWidget.setStylePrimaryName("imageWidget");
 		}
 		return imageWidgetSet;
@@ -123,12 +141,12 @@ public class MediaViewer extends VerticalPanel implements WheelWidgetProvider {
 		
 	@Override
 	public Map<Row, LinkedHashSet<Widget>> getNextWidgetSet(Cylinder cyl) {
-		
-		Map<String, Row> rowmap = cyl.getRowMap();
+		if(blobDownloader == null)
+			blobDownloader = new BlobDownloader();
 		
 		Map<Row, LinkedHashSet<Widget>> rowVsWidgetSet =new HashMap<Row, LinkedHashSet<Widget>>();
 		
-		
+		Map<String, Row> rowmap = cyl.getRowMap();
 		
 		for ( String rowName : rowmap.keySet()){
 			Row row =rowmap.get(rowName);
@@ -136,11 +154,12 @@ public class MediaViewer extends VerticalPanel implements WheelWidgetProvider {
 			EntityList photoList = photoAlbumMap.get(row.getEntity());
 			
 			for(Entity photoEnt:photoList){
-				String url  = photoEnt.getProperty(MediaConstant.URL).getValue().toString();
+				String blobId  = photoEnt.getProperty(MediaConstant.BLOBID).getValue().toString();
 				
-				String imageUrl = GWT.getHostPageBaseURL()+"download?"+url;
-				ImageWidget imageWidget =new ImageWidget(imageUrl);
+				ImageWidget imageWidget =new ImageWidget(blobDownloader.getThumbNailDownloadURL(blobId));
+				imageWidget.setEntity(photoEnt);
 				imageWidgetSet.add(imageWidget);
+				
 				imageWidget.setStylePrimaryName("imageWidget");
 			}
 			rowVsWidgetSet.put(row, imageWidgetSet);
@@ -156,5 +175,6 @@ public class MediaViewer extends VerticalPanel implements WheelWidgetProvider {
 	public void setRowPerAlbum(HashMap<String, Row> rowPerAlbum) {
 		this.rowPerAlbum = rowPerAlbum;
 	}
+
 
 }

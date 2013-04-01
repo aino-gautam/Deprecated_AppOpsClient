@@ -17,6 +17,8 @@ public class WizardFormShowcase implements EntryPoint {
 		PersonalDetailsScreen screen1 = new PersonalDetailsScreen();
 		ContactDetailsScreen screen2 = new ContactDetailsScreen();
 		
+		//screen1.createScreen();
+		//screen2.createScreen();
 		form.addScreen(screen1, 1);
 		form.addScreen(screen2, 2);
 		
