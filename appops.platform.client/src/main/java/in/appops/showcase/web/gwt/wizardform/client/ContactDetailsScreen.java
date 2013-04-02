@@ -96,4 +96,10 @@ public class ContactDetailsScreen extends Composite implements Screen {
 		configuration.setPropertyByName(TextField.TEXTFIELD_DEBUGID, debugId);
 		return configuration;
 	}
+
+	@Override
+	public boolean validate() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
