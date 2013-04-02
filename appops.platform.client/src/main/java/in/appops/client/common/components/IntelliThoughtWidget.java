@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class IntelliThoughtWidget extends Composite implements Configurable, ClickHandler, FieldEventHandler{
 	private FlexTable basePanel;
 	private IntelliThoughtField intelliShareField;
-	private AttachMediaField attachMediaField;
+	private MediaField attachMediaField;
 	private SuggestionAction suggestionAction;
 	private HorizontalPanel mediaServicePanel;
 	private boolean isAttachedMediaField;
@@ -96,14 +96,22 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	}
 
 	private void createAttachMediaField() {
-		attachMediaField = new AttachMediaField();
-		attachMediaField.createMediaField();
-		attachMediaField.addHandler(this);
+		attachMediaField = new MediaField();
+		attachMediaField.isFadeUpEffect(true);
+		attachMediaField.showMediaField();
 		
 		mediaServicePanel.add(attachMediaField);
 		attachMediaField.setVisible(false);
 		mediaServicePanel.setWidth("100%");
 		mediaServicePanel.setCellHorizontalAlignment(attachMediaField, HasHorizontalAlignment.ALIGN_RIGHT);
+		
+		attachMediaField.getMedia().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				attachMediaField.showMediaOption();
+			}
+		});
 	}
 
 	private void createIntelliShareField() throws AppOpsException {
