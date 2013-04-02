@@ -10,14 +10,9 @@ import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.media.constant.MediaConstant;
 import in.appops.platform.server.core.services.media.constant.TagConstant;
-
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -46,6 +41,7 @@ public class MediaViewer extends VerticalPanel implements WheelWidgetProvider {
 		
 		HashMap<String, Row> rowsPerAlbumMap = getRowPerAlbum();
 		
+		
 		int index = 0; 
 		for(String rowName:rowsPerAlbumMap.keySet()){
 			Row row =rowsPerAlbumMap.get(rowName);
@@ -61,6 +57,7 @@ public class MediaViewer extends VerticalPanel implements WheelWidgetProvider {
 		}
 
 		DragonWheelNew wheel = new DragonWheelNew() ;
+		
 		
 		wheel.addCylinder(cylinder);
 			

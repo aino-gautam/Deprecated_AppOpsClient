@@ -25,7 +25,8 @@ public class SpinnerField extends Composite implements Field, ClickHandler{
 	private FocusPanel downArrowPanel;
 	
 	public static final String SPINNERFIELDMODE = "spinnerFieldMode";
-	public static final String SPINNERFIELD_VALUESPINNER = "spinnerFieldMode";
+	public static final String SPINNERFIELD_VALUESPINNER = "spinnerFieldValueSpinnerMode";
+	public static final String SPINNERFIELD_PERCENTSPINNER = "spinnerFieldPercentSpinnerMode";
 	
 	public SpinnerField(){
 		basePanel = new HorizontalPanel();
@@ -51,37 +52,49 @@ public class SpinnerField extends Composite implements Field, ClickHandler{
 		if(getConfiguration().getPropertyByName(SPINNERFIELDMODE) != null)
 			fieldMode = getConfiguration().getPropertyByName(SPINNERFIELDMODE).toString();
 			
+		textbox = new TextBox();
+		imagePanel = new VerticalPanel();
+		
 		if(fieldMode.equals(SPINNERFIELD_VALUESPINNER)) {
-			
-			textbox = new TextBox();
-			imagePanel = new VerticalPanel();
-			
 			if(getFieldValue() != null) {
 				textbox.setText(getFieldValue());
 			} else {
 				textbox.setText("0");
 			}
-			
-			upArrowPanel = new FocusPanel();
-			upArrowPanel.setStylePrimaryName("spinnerUpArrow");
-			downArrowPanel = new FocusPanel();
-			downArrowPanel.setStylePrimaryName("spinnerDownArrow");
-			imagePanel.add(upArrowPanel);
-			imagePanel.add(downArrowPanel);
-			
-			upArrowPanel.addClickHandler(this);
-			downArrowPanel.addClickHandler(this);
-			
-			basePanel.add(textbox);
-			basePanel.add(imagePanel);
-			basePanel.setCellVerticalAlignment(imagePanel, HasVerticalAlignment.ALIGN_MIDDLE);
+		} else if(fieldMode.equals(SPINNERFIELD_PERCENTSPINNER)) {
+			if(getFieldValue() != null) {
+				if(getFieldValue().contains("%")) {
+					textbox.setText(getFieldValue());
+				} else {
+					textbox.setText(getFieldValue() + "%");
+				}
+			} else {
+				textbox.setText("0%");
+			}
 		}
+			
+		upArrowPanel = new FocusPanel();
+		upArrowPanel.setStylePrimaryName("spinnerUpArrow");
+		downArrowPanel = new FocusPanel();
+		downArrowPanel.setStylePrimaryName("spinnerDownArrow");
+		imagePanel.add(upArrowPanel);
+		imagePanel.add(downArrowPanel);
+		
+		upArrowPanel.addClickHandler(this);
+		downArrowPanel.addClickHandler(this);
+			
+		basePanel.add(textbox);
+		basePanel.add(imagePanel);
+		basePanel.setCellVerticalAlignment(imagePanel, HasVerticalAlignment.ALIGN_MIDDLE);
+		textbox.setWidth("40px");
 	}
 
 	@Override
 	public void clearField() {
 		if(fieldMode.equals(SPINNERFIELD_VALUESPINNER)) {
 			textbox.setText("0");
+		} else if(fieldMode.equals(SPINNERFIELD_PERCENTSPINNER)) {
+			textbox.setText("0%");
 		}
 	}
 
@@ -89,6 +102,12 @@ public class SpinnerField extends Composite implements Field, ClickHandler{
 	public void resetField() {
 		if(fieldMode.equals(SPINNERFIELD_VALUESPINNER)) {
 			textbox.setText(getFieldValue());
+		} else if(fieldMode.equals(SPINNERFIELD_PERCENTSPINNER)) {
+			if(getFieldValue().contains("%")) {
+				textbox.setText(getFieldValue());
+			} else {
+				textbox.setText(getFieldValue() + "%");
+			}
 		}
 	}
 
@@ -111,9 +130,17 @@ public class SpinnerField extends Composite implements Field, ClickHandler{
 	@Override
 	public void onClick(ClickEvent event) {
 		if(event.getSource().equals(upArrowPanel)) {
-			incrementCount();
+			if(fieldMode.equals(SPINNERFIELD_VALUESPINNER)) {
+				incrementCount();
+			} else if(fieldMode.equals(SPINNERFIELD_PERCENTSPINNER)) {
+				incrementPercent();
+			}
 		} else if(event.getSource().equals(downArrowPanel)) {
-			decrementCount();
+			if(fieldMode.equals(SPINNERFIELD_VALUESPINNER)) {
+				decrementCount();
+			} else if(fieldMode.equals(SPINNERFIELD_PERCENTSPINNER)) {
+				decrementPercent();
+			}
 		}
 	}
 
@@ -125,9 +152,33 @@ public class SpinnerField extends Composite implements Field, ClickHandler{
 
 	private void decrementCount() {
 		int currentCount = Integer.valueOf(textbox.getText());
-		if(currentCount != 0) {
+		if(currentCount >= 0) {
 			currentCount = currentCount - 1;
 			textbox.setText(String.valueOf(currentCount));
+		}
+	}
+	
+	private void incrementPercent() {
+		String[] strArr = textbox.getText().split("%");
+		int currentCount = Integer.valueOf(strArr[0]);
+		if(currentCount >= 0 && currentCount < 100) {
+			currentCount = currentCount + 1;
+			String text = String.valueOf(currentCount) + "%";
+			textbox.setText(text);
+		} else {
+			textbox.setText("0%");
+		}
+	}
+	
+	private void decrementPercent() {
+		String[] strArr = textbox.getText().split("%");
+		int currentCount = Integer.valueOf(strArr[0]);
+		if(currentCount > 0 && currentCount <= 100) {
+			currentCount = currentCount - 1;
+			String text = String.valueOf(currentCount) + "%";
+			textbox.setText(text);
+		} else {
+			textbox.setText("100%");
 		}
 	}
 }
