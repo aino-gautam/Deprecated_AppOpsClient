@@ -4,9 +4,6 @@
 package in.appops.client.gwt.web.ui.messaging;
 
 import java.util.HashMap;
-import java.util.List;
-
-import org.atmosphere.gwt.client.AtmosphereListener;
 
 import in.appops.client.gwt.web.ui.messaging.chatuserlistcomponent.MainUserListingComponent;
 import in.appops.client.gwt.web.ui.messaging.datastructure.ChatEntity;
@@ -260,4 +257,5 @@ public class MessagingComponent extends Composite{
 		}
 	
 	}
+
 }
