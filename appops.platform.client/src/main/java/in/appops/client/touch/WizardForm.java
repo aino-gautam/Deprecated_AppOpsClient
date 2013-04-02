@@ -1,21 +1,24 @@
 package in.appops.client.touch;
 
-import java.util.HashMap;
-
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DockPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-
 import in.appops.client.common.core.EntityModel;
+import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.NavigationEvent;
 import in.appops.client.common.event.handlers.NavigationEventHandler;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 
+import java.util.HashMap;
+
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
+
 public class WizardForm extends Composite implements Form, NavigationEventHandler{
+	
 	
 	private EntityModel entityModel;
 	private HashMap<Integer, Screen> screensMap;
@@ -24,6 +27,8 @@ public class WizardForm extends Composite implements Form, NavigationEventHandle
 	private Configuration configuration;
 	private Navigator navigator;
 	private DockPanel dockPanel;
+	private Entity entity;
+	private static HandlerRegistration handlerRegistration = null;
 	
 	public final static String NAVIGATOR_ALIGNMENT = "navigatorAlignment";
 	public final static String ALIGNMENT_TOP ="alignmentTop";
@@ -37,6 +42,11 @@ public class WizardForm extends Composite implements Form, NavigationEventHandle
 		panel = new SimplePanel();
 		navigator = new Navigator();
 		initWidget(dockPanel);
+				
+		if(handlerRegistration == null){
+			handlerRegistration= AppUtils.EVENT_BUS.addHandler(NavigationEvent.TYPE, this);	
+		}
+		
 	}
 
 	/**
@@ -90,11 +100,24 @@ public class WizardForm extends Composite implements Form, NavigationEventHandle
 	 */
 	public void displayScreen(int order){
 		if(screensMap != null){
-			Screen screen = screensMap.get(order);
-			screen.createScreen();
-			setCurrentScreen(screen);
-			panel.clear();
-			panel.setWidget(screen.asWidget());
+			Screen screen1 = screensMap.get(order-1);
+			boolean result=true;
+			if(screen1!=null){
+				result= screen1.validate();
+				 entity=screen1.populateEntity();  
+			    
+			}
+			  if(result){
+				 
+				Screen screen = screensMap.get(order);
+				screen.setEntity(entity);
+				screen.createScreen();
+				setCurrentScreen(screen);
+				panel.clear();
+				Widget widget = (Widget) screen;
+				panel.add(widget);
+			  }
+			
 		}
 	}
 	
@@ -149,13 +172,47 @@ public class WizardForm extends Composite implements Form, NavigationEventHandle
 		switch (eventType) {
 			case NavigationEvent.GONEXT:{
 				displayScreen((Integer)event.getEventData());
+				
 				break;
 			}
 			case NavigationEvent.GOPREVIOUS:{
 				displayScreen((Integer)event.getEventData());
+				
 				break;
 			}	
 		}
 		
+	}
+
+	public Navigator getNavigator() {
+		return navigator;
+	}
+
+	public void setNavigator(Navigator navigator) {
+		this.navigator = navigator;
+	}
+
+	public DockPanel getDockPanel() {
+		return dockPanel;
+	}
+
+	public void setDockPanel(DockPanel dockPanel) {
+		this.dockPanel = dockPanel;
+	}
+
+	public HashMap<Integer, Screen> getScreensMap() {
+		return screensMap;
+	}
+
+	public void setScreensMap(HashMap<Integer, Screen> screensMap) {
+		this.screensMap = screensMap;
+	}
+
+	public SimplePanel getPanel() {
+		return panel;
+	}
+
+	public void setPanel(SimplePanel panel) {
+		this.panel = panel;
 	}
 }
