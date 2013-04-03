@@ -87,6 +87,12 @@
 			<version>3.0</version>
 		</dependency>
 		<dependency>
+			<groupId>com.google.gwt.inject</groupId>
+			<artifactId>gin</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.18</version>
@@ -202,7 +208,7 @@
 						<module>in.appops.showcase.web.gwt.contactselector.contactselector</module>
 						<module>in.appops.showcase.web.gwt.mediaupload.mediaupload</module>
 						<module>in.appops.showcase.web.gwt.navigationmaze.navigationmaze</module>
-						
+
 						<!-- <module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> -->
 						<!-- <module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module> 
 							<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> <module>in.appops.showcase.web.gwt.uploadservice.UploadService</module> 
@@ -238,7 +244,7 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
@@ -259,7 +265,7 @@
 				</executions>
 
 			</plugin>
-			
+
 			<plugin>
 				<artifactId>maven-deploy-plugin</artifactId>
 				<version>2.4</version>
