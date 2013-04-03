@@ -23,7 +23,7 @@ public class MediaUpload implements EntryPoint {
 	
 	public void onModuleLoad() {
 		final FormPanel formpanel = new FormPanel();
-		 formpanel.setAction(GWT.getModuleBaseURL() + "upload");
+		 formpanel.setAction(GWT.getHostPageBaseURL() + "servlet.gupld");
 		formpanel.setMethod(FormPanel.METHOD_POST);
 		formpanel.setEncoding(FormPanel.ENCODING_MULTIPART);
 		
