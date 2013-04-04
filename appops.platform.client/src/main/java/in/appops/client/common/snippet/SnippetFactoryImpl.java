@@ -2,7 +2,7 @@ package in.appops.client.common.snippet;
 
 import in.appops.platform.core.constants.typeconstants.TypeConstants;
 import in.appops.platform.core.entity.type.Type;
-import in.appops.showcase.web.gwt.listcomponent.client.ReminderSnippet;
+//import in.appops.showcase.web.gwt.listcomponent.client.ReminderSnippet;
 
 public class SnippetFactoryImpl implements SnippetFactory {
 
