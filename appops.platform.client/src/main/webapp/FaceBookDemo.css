@@ -1,0 +1,189 @@
+
+/* Space listing widget css */
+.a{
+	
+}
+
+.allSpacePanel{
+	margin: 0 25px 25px 0;
+}
+
+.baseChatListContainer{
+	background: none repeat scroll 1px center #CEECF5;
+    border: 3px double;
+    border-radius: 5px 5px 5px 5px;
+    margin: 5px;
+}
+
+.chatSpaceIcon{
+	width: 20px;
+	height: 20px;
+}
+
+.chatSpaceNameAnchor{
+	margin: 25px 10px !important;
+	color: #424242;
+	font-size: 16px;
+}
+
+.spaceWidgetIcon{
+	margin: 25px 10px 0;
+}
+
+.fullWidth{
+	width: 99%;	
+}
+
+.nearbyWidgetContainer{
+	margin: 25px 10px 0;
+}
+
+/* Chat widget list css */
+
+.chatUserListWidget{
+    background: none repeat scroll 1px center #CEECF5;
+    border: 3px double;
+    border-radius: 5px 5px 5px 5px;
+    margin: 5px 0 0 10px;
+    padding: 10px 5px;
+    width: 74% !important;
+}
+
+.chatUserSuggestionField{
+	margin: 10px;
+}
+
+.chatUserSuggestionBox {
+	background-image: url("images/searchIconLight.png");
+	background-position: 2% center;
+	background-repeat: no-repeat;
+	border: 1px solid #764560;
+	color: gray;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 13px;
+	height: 16px;
+	margin: 5px 0;
+	padding: 5px;
+	text-indent: 18px;
+	width: 190px;
+}
+
+.allSpecificBtn {
+	background-image: url("images/buttonPupleBgNormal.png");
+	background-repeat: repeat;
+	border: 2px double white;
+	color: white;
+	height: 25px;
+	text-align: center;
+	width: 80px;
+	margin: 12px 0;
+	padding: 8px 0 0;
+}
+
+.chatUserListNxtPrevImg{
+	margin: 13px 10px;
+}
+
+/* chat textarea */
+.chatTextArea{
+  border: 3px double black;
+    font-size: 14px;
+    margin: 10px 10px 0;
+    width: 95%;
+}
+
+.chatDisplayerDeck{
+	border: 3px double black;
+    height: 300px;
+    margin: 5px 0 0 10px;
+    width: 95%
+}
+
+.chatUserWidget {
+	border: 1px solid black;
+	background-color: #F5F6CE;
+	margin: 15px 10px;
+	padding: 5px;
+	border-radius: 4px;
+}
+
+.chatHeaderLabel{
+	font-size: 20px;
+	color: #764560;
+	margin: 25px 0;
+}
+
+.messageChatToogle {
+	background-image: url("images/buttonPupleBgNormal.png");
+	background-repeat: repeat;
+	border: 2px double white;
+	color: white;
+	height: 25px;
+	text-align: center;
+	width: 80px;
+	margin: 15px 10px;
+	padding: 8px 0 0;
+	border-radius: 5px;
+}
+
+.actualChatContainer{
+	overflow:hidden;
+}
+
+.ScrollXAxis{
+	overflow: scroll; 
+}
+
+.closeChat{
+	margin: 25px 10px;
+}
+
+.userChattingLbl{
+	font-size: 15px;
+	color: #764560;
+	margin: 8px 20px;
+}
+
+.chatTextLbl{
+	border: 1px solid #dfdfdf;
+	border: 1px solid rgba(0, 0, 0, .18);
+	border-bottom-color: rgba(0, 0, 0, .29);
+	-webkit-border-radius: 4px;
+	-webkit-box-shadow: 0 1px 0 #dce0e6;
+	clear: both;
+	color: #3e454c;
+	float: right;
+	margin: 5px 5px 5px 0;
+	max-width: 190px;
+	padding: 4px 5px 3px 6px;
+	position: relative;
+	text-shadow: rgba(255, 255, 255, .5) 0 1px 0;
+}
+
+::-webkit-scrollbar { 
+	width: 7px; 
+	background-color: #FFFFFF; 
+} 
+ 
+::-webkit-scrollbar:HOVER { 
+	width: 7px; 
+	background-color: #FFFFFF; 
+} 
+ 
+/* Track */ 
+/*::-webkit-scrollbar-track { 
+    -webkit-box-shadow: inset 0 0 6px rgba (0,0,0,0.3); 
+}*/ 
+/* Handle */ 
+::-webkit-scrollbar-thumb { /*  background: rgba (153,153,153,1); */ 
+	background-color: grey; 
+	-moz-border-radius: 15px; 
+	-webkit-border-radius: 15px; 
+	border-radius: 15px; 
+} 
+ 
+::-webkit-scrollbar-thumb:window-inactive { 
+	/* background: rgba (153,153,153,0.1); */ 
+	background-color: #E6E6E6; 
+}
+
