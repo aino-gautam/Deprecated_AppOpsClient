@@ -1,4 +1,4 @@
-package in.appops.client.common.fields;
+package in.appops.client.common.snippet;
 
 import in.appops.platform.core.entity.Entity;
 
