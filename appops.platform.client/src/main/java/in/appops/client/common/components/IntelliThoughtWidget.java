@@ -15,19 +15,15 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class IntelliThoughtWidget extends Composite implements Configurable, ClickHandler, FieldEventHandler{
 	private FlexTable basePanel;
 	private IntelliThoughtField intelliShareField;
-	private AttachMediaField attachMediaField;
+	private MediaField attachMediaField;
 	private SuggestionAction suggestionAction;
-	private HorizontalPanel fieldAndPredefineOptionPanel;
 	private HorizontalPanel mediaServicePanel;
-	private VerticalPanel prominentOptionlPanel;
 	private boolean isAttachedMediaField;
-	private StringBuffer wordBuffer = new StringBuffer();
 
 	private Label searchButton;
 	private Label postButton;
@@ -45,9 +41,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	private void initialize() {
 		basePanel = new FlexTable();
 		mediaServicePanel = new HorizontalPanel();
-		fieldAndPredefineOptionPanel = new HorizontalPanel();
 		intelliShareField = new IntelliThoughtField();
-		prominentOptionlPanel = new VerticalPanel();
 		suggestionAction = new SuggestionAction();
 	}
 	
@@ -102,14 +96,22 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	}
 
 	private void createAttachMediaField() {
-		attachMediaField = new AttachMediaField();
-		attachMediaField.createMediaField();
-		attachMediaField.addHandler(this);
+		attachMediaField = new MediaField();
+		attachMediaField.isFadeUpEffect(true);
+		attachMediaField.showMediaField();
 		
 		mediaServicePanel.add(attachMediaField);
 		attachMediaField.setVisible(false);
 		mediaServicePanel.setWidth("100%");
 		mediaServicePanel.setCellHorizontalAlignment(attachMediaField, HasHorizontalAlignment.ALIGN_RIGHT);
+		
+		attachMediaField.getMedia().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				attachMediaField.showMediaOption();
+			}
+		});
 	}
 
 	private void createIntelliShareField() throws AppOpsException {
