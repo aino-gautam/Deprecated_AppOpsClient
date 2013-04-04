@@ -27,8 +27,8 @@ public class SnippetFactoryImpl implements SnippetFactory {
 		typename = typename.substring(typename.lastIndexOf('.')+1).trim();
 		
 		if(typename.equals(TypeConstants.REMINDER)){
-			ReminderSnippet reminderSnippet = new ReminderSnippet();
-			return reminderSnippet;
+			//ReminderSnippet reminderSnippet = new ReminderSnippet();
+			//return reminderSnippet;
 		}
 		
 		
