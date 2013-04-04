@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class Navigator extends Composite implements ClickHandler {
 
-	private SimplePanel basePanel;
+	private HorizontalPanel basePanel;
 	private Configuration configuration;
 	private int totalScreens = 0;
 	private int currentScreenNo = 1;
@@ -27,11 +27,12 @@ public class Navigator extends Composite implements ClickHandler {
 	public static final String ALIGNMENT_VERTICAL = "verticalAlignment";
 	
 	public Navigator(){
-		basePanel = new SimplePanel();
+		basePanel = new HorizontalPanel();
 		initWidget(basePanel);
 	}
 	
 	public void createNavigatorUI() throws AppOpsException {
+		basePanel.clear();
 		if(getConfiguration() == null)
 			throw new AppOpsException("Navigator configuration unavailable");
 		
@@ -41,8 +42,9 @@ public class Navigator extends Composite implements ClickHandler {
 		
 		if(getConfiguration().getPropertyByName(NAVIGATOR_ALIGNMENT).equals(ALIGNMENT_HORIZONTAL)){
 			HorizontalPanel hpanel = new HorizontalPanel();
-			hpanel.add(nextWidget);
 			hpanel.add(prevWidget);
+			hpanel.add(nextWidget);
+			
 		
 			if(currentScreenNo == 1 && currentScreenNo < totalScreens){
 				prevWidget.setVisible(false);
@@ -111,12 +113,32 @@ public class Navigator extends Composite implements ClickHandler {
 			int screenNo = currentScreenNo+1;
 			navEvent.setEventData(screenNo);
 			setCurrentScreenNo(screenNo);
+			setVisibilityOfNextPrevElement();
+			
 		} else if(widget == prevWidget){
 			navEvent.setEventType(NavigationEvent.GOPREVIOUS);
 			int screenNo = currentScreenNo-1;
 			navEvent.setEventData(screenNo);
 			setCurrentScreenNo(screenNo);
+			setVisibilityOfNextPrevElement();
 		}
 		AppUtils.EVENT_BUS.fireEvent(navEvent);
+	}
+
+	public void setVisibilityOfNextPrevElement() {
+		if(currentScreenNo == 1 && currentScreenNo < totalScreens){
+			prevWidget.setVisible(false);
+			nextWidget.setVisible(true);
+		} else if(currentScreenNo > 1 && currentScreenNo < totalScreens){
+			prevWidget.setVisible(true);
+			nextWidget.setVisible(true);
+		} else if(currentScreenNo > 1 && currentScreenNo == totalScreens){
+			prevWidget.setVisible(true);
+			nextWidget.setVisible(false);
+		} else if(currentScreenNo == 1 && currentScreenNo == totalScreens){
+			prevWidget.setVisible(false);
+			nextWidget.setVisible(false);
+		}
+		
 	}
 }
