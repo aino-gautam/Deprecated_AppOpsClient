@@ -1,26 +1,37 @@
 package in.appops.client.common.snippet;
 
+import in.appops.client.common.util.BlobDownloader;
+import in.appops.platform.server.core.services.media.constant.MediaConstant;
+
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 
 public class IconSnippet extends Snippet {
 
-	HorizontalPanel basePanel = new HorizontalPanel();
-	Image iconImage = new Image();
-
+	private HorizontalPanel basePanel = null;
+	private Image iconImage = null;
+	
 	public IconSnippet() {
-
+		basePanel = new HorizontalPanel();
 		initWidget(basePanel);
-		createIconSnippet();
+		//createIconSnippet();
 	}
-
-	public void createIconSnippet() {
-
+	
+	@Override
+	public void initialize() {
+		String bloId = getEntity().getProperty(MediaConstant.BLOBID).getValue().toString();
+		BlobDownloader blobDownloader = new BlobDownloader();
+		iconImage = new Image(blobDownloader.getImageDownloadURL(bloId));
+		iconImage.addStyleName("iconSnippetImage");
+		basePanel.setStylePrimaryName("iconSnippetPanel");
+		basePanel.add(iconImage);
+	}
+	
+	/*public void createIconSnippet() {
 		iconImage.setUrl("images/userIcon.jpg");
 		iconImage.addStyleName("iconSnippetImage");
 		basePanel.setStylePrimaryName("iconSnippetPanel");
 		basePanel.add(iconImage);
-	
 	}
 
 	public HorizontalPanel getBasePanel() {
@@ -37,6 +48,6 @@ public class IconSnippet extends Snippet {
 
 	public void setIconLogo(Image iconLogo) {
 		this.iconImage = iconLogo;
-	}
+	}*/
 
 }
