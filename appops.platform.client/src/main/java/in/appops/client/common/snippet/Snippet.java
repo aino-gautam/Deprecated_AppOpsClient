@@ -22,6 +22,9 @@ public class Snippet extends Composite{
 		this.type = type;
 	}
 	
+	public void initialize(){
+		
+	}
 	
 	 
 }
