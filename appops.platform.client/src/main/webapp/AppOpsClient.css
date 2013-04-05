@@ -521,8 +521,8 @@ background-color: #AAAAAA;
 	margin-bottom: 20px;
 }
 .iconSnippetImage {
-	width: 40px;
-	height: 40px;
+	width: 45px;
+	height: 45px;
 }
 
 .iconSnippetPanel {
@@ -736,4 +736,14 @@ color: blue;
 .listComponentPanel{
 	width: 700px;
 	height: 500px;
+}
+
+.crossIconSmall {
+	cursor: pointer;
+	width: 16px;
+	height: 16px;
+	position: relative;
+	z-index: 2;
+	bottom: 5px;
+	right: 10px;
 }
