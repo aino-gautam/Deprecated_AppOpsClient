@@ -87,6 +87,12 @@
 			<version>3.0</version>
 		</dependency>
 		<dependency>
+			<groupId>com.google.gwt.inject</groupId>
+			<artifactId>gin</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.18</version>
@@ -126,14 +132,14 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>23.03.2013</version>
+			<version>06.04.2013</version>
 		</dependency>
 
 		<!-- This should be used when using a final version of the jar -->
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>23.03.2013</version>
+			<version>06.04.2013</version>
 		</dependency>
 
 		<dependency>
@@ -200,11 +206,14 @@
 						<module>in.appops.showcase.web.gwt.wizardform.wizardform</module>
 						<module>in.appops.showcase.web.gwt.splash.splash</module>
 						<module>in.appops.showcase.web.gwt.contactselector.contactselector</module>
+						<module>in.appops.showcase.web.gwt.mediaupload.mediaupload</module>
+						<module>in.appops.showcase.web.gwt.navigationmaze.navigationmaze</module>
+
 						<!-- <module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> -->
 						<!-- <module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module> 
 							<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> <module>in.appops.showcase.web.gwt.uploadservice.UploadService</module> 
-							<module>in.appops.showcase.web.gwt.validateServiceOperation.VailidateServiceOperation</module> 
-							<module>in.appops.showcase.web.gwt.facebook.facebook</module> -->
+							<module>in.appops.showcase.web.gwt.validateServiceOperation.VailidateServiceOperation</module>  -->
+							<module>in.appops.showcase.web.gwt.facebook.facebook</module>
 
 					</modules>
 				</configuration>
@@ -235,7 +244,7 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
@@ -256,7 +265,7 @@
 				</executions>
 
 			</plugin>
-			
+
 			<plugin>
 				<artifactId>maven-deploy-plugin</artifactId>
 				<version>2.4</version>
@@ -290,6 +299,22 @@
 					<url>http://localhost:8080/manager</url>
 					<server>TomcatServer</server>
 					<warFile>target/appops_client-${buildNumber}.war</warFile>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<overwrite>true</overwrite>
+					<outputDirectory>src/main/webapp/blobstore/</outputDirectory>
+					<resources>
+						<resource>
+							<directory>target/appops_client-${buildNumber}/blobstore</directory>
+						</resource>
+					</resources>
+
 				</configuration>
 			</plugin>
 		</plugins>
