@@ -520,6 +520,20 @@ background-color: #AAAAAA;
 	font-weight: bold;
 	margin-bottom: 20px;
 }
+.iconSnippetImage {
+	width: 45px;
+	height: 45px;
+}
+
+.iconSnippetPanel {
+	border-style: ridge;
+	margin-left: auto;
+	margin-right: auto;
+	border-color: black;
+	width: 38px;
+	height: 38px;
+	border-width: 2px;
+}
 
 /**** Multiuploader css *******/
 .appops-webMediaAttachment{
@@ -722,4 +736,14 @@ color: blue;
 .listComponentPanel{
 	width: 700px;
 	height: 500px;
+}
+
+.crossIconSmall {
+	cursor: pointer;
+	width: 16px;
+	height: 16px;
+	position: relative;
+	z-index: 2;
+	bottom: 5px;
+	right: 10px;
 }
