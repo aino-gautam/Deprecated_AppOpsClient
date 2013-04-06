@@ -9,7 +9,6 @@ import com.google.gwt.user.client.ui.Composite;
 public abstract class MediaAttachWidget extends Composite implements Configurable{
 	
 	public MediaAttachWidget(){
-		createUi();
 	}
 	
 	abstract void createUi();

@@ -46,6 +46,7 @@ public class MediaField extends Composite implements  Configurable{
 	
 	public void showMediaOption() {
 		mediaAttachWidget = new WebMediaAttachWidget();
+		mediaAttachWidget.createUi();
 		basePanel.add(mediaAttachWidget);
 	}
 	
