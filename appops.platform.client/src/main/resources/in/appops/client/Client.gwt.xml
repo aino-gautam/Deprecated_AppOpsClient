@@ -5,7 +5,9 @@
 	<inherits name="in.appops.platform.core.Core" />
 	<inherits name='in.appops.platform.bindings.web.gwt.dispatch.Dispatch'/>
 	
+	<inherits name="com.google.gwt.inject.Inject"/>
 	<inherits name="gwtupload.GWTUpload"/>
+	<stylesheet src="Upload.css"/>
 	
 	<source path="client" />
 	<source path="touch" />

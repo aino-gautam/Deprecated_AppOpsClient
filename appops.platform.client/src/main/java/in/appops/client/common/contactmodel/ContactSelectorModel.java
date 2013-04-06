@@ -34,9 +34,10 @@ public class ContactSelectorModel extends EntityListModel {
 		this.entityList = entityList;
 	}
 
-	public ContactSelectorModel(Query query) {
+	public ContactSelectorModel(Query query, String operatioName, int noOfEntities) {
 		setQueryToBind(query);
-		//fetchContactEntityList();
+		setOperationNameToBind(operatioName);
+		setNoOfEntities(noOfEntities);
 	}
 	
 	public boolean isNearByContact() {
