@@ -132,14 +132,14 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>03.04.2013</version>
+			<version>06.04.2013</version>
 		</dependency>
 
 		<!-- This should be used when using a final version of the jar -->
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>28.03.2013</version>
+			<version>06.04.2013</version>
 		</dependency>
 
 		<dependency>
@@ -299,6 +299,22 @@
 					<url>http://localhost:8080/manager</url>
 					<server>TomcatServer</server>
 					<warFile>target/appops_client-${buildNumber}.war</warFile>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<overwrite>true</overwrite>
+					<outputDirectory>src/main/webapp/blobstore/</outputDirectory>
+					<resources>
+						<resource>
+							<directory>target/appops_client-${buildNumber}/blobstore</directory>
+						</resource>
+					</resources>
+
 				</configuration>
 			</plugin>
 		</plugins>
