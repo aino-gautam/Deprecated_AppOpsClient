@@ -127,12 +127,19 @@
 			<artifactId>mvp4g</artifactId>
 			<version>1.4.0</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>lienzo</groupId>
+			<artifactId>lienzo</artifactId>
+			<version>1.1</version>
+		</dependency>
+		
 		<!-- <dependency> <groupId>appops_platform</groupId> <artifactId>appops_server</artifactId> 
 			<version>14.02.2013</version> </dependency> -->
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>06.04.2013</version>
+			<version>08.04.2013</version>
 		</dependency>
 
 		<!-- This should be used when using a final version of the jar -->
@@ -208,13 +215,7 @@
 						<module>in.appops.showcase.web.gwt.contactselector.contactselector</module>
 						<module>in.appops.showcase.web.gwt.mediaupload.mediaupload</module>
 						<module>in.appops.showcase.web.gwt.navigationmaze.navigationmaze</module>
-
-						<!-- <module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> -->
-						<!-- <module>in.appops.showcase.web.gwt.hellopojo.hellopojo</module> 
-							<module>in.appops.showcase.web.gwt.addressbook.AddressBook</module> <module>in.appops.showcase.web.gwt.uploadservice.UploadService</module> 
-							<module>in.appops.showcase.web.gwt.validateServiceOperation.VailidateServiceOperation</module>  -->
-							<module>in.appops.showcase.web.gwt.facebook.facebook</module>
-
+						<module>in.appops.showcase.web.gwt.facebook.facebook</module>
 					</modules>
 				</configuration>
 			</plugin>
@@ -302,7 +303,7 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.6</version>
@@ -316,7 +317,7 @@
 					</resources>
 
 				</configuration>
-			</plugin>
+			</plugin> -->
 		</plugins>
 	</build>
 </project>
