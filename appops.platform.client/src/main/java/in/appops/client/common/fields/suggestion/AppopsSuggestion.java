@@ -41,7 +41,7 @@ public class AppopsSuggestion implements Suggestion{
 		String actualTypeProp = splittedArray[splittedArray.length-1];
 		String name="";
 		
-		if(actualTypeProp.equals(TypeConstants.SPACE))
+		if(actualTypeProp.equals(TypeConstants.SPACETYPE))
 			name = entity.getProperty(SpaceTypeConstants.NAME).getValue().toString();
 		else if(actualTypeProp.equals(TypeConstants.CONTACT))
 			name = entity.getProperty(ContactConstant.NAME).getValue().toString();
