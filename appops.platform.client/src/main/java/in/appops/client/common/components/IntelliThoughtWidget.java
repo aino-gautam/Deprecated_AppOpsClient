@@ -1,20 +1,31 @@
 package in.appops.client.common.components;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import in.appops.client.common.event.ActionEvent;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.AttachmentEvent;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.AttachmentEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.IntelliThoughtField;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
+import in.appops.platform.core.util.EntityList;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -130,8 +141,6 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		basePanel.setWidget(1, 0, intelliShareField);
 		basePanel.getFlexCellFormatter().setVerticalAlignment(1, 0, HasVerticalAlignment.ALIGN_TOP);
 		basePanel.getFlexCellFormatter().getElement(1, 0).setClassName("intelliThoughtFieldCol");
-		//fieldAndPredefineOptionPanel.add(intelliShareField);
-		//intelliShareField.addDomHandler(this, KeyUpEvent.getType());
 	}
 
 	public void setIntelliShareFieldConfiguration(Configuration conf){
@@ -156,28 +165,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		}
 	}
 
-//	@Override
-//	public void onKeyUp(KeyUpEvent event) {
-//		char enteredChar = getCharCode(event.getNativeEvent()) ;
-//		if(event.getSource().equals(intelliShareField)){
-//			wordBuffer.append(Character.toString(enteredChar));
-//			
-//			if( !intelliShareField.getText().trim().equals("") && (enteredChar == ' ' || event.getNativeKeyCode() == KeyCodes.KEY_ENTER)){
-//				fireWordEnteredEvent(wordBuffer.toString());
-//				wordBuffer = new StringBuffer();
-//			}
-//			if(!intelliShareField.getText().trim().equals("") && !isAttachedMediaField){
-//				attachMediaField.setVisible(true);
-//				setAttachedMediaField(true);
-//			} else if(intelliShareField.getText().trim().equals("")){
-//				attachMediaField.setVisible(false);
-//				setAttachedMediaField(false);
-//			}
-//		}
-//	}
-
 	private void handleWordEnteredEvent(String string) {
-		
 		String intelliText  = intelliShareField.getText();
 		String[] words = intelliText.split("\\s+");
 		
@@ -187,19 +175,12 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 			messageButton.addStyleName("fadeInLeft");
 			messageButton.setVisible(true);
 		} 
-
 		
 		if(words.length == 2 && !postButton.isVisible()){
 			postButton.addStyleName("fadeInLeft");
 			postButton.setVisible(true);
 		}
-
-//		if(words.length == 5 && !messageButton.isVisible()){
-//
-//		}
-		
-		suggestionAction.showActionSuggestion(string);
-		
+		showActionSuggestion(string);
 	}
 
 	public boolean isAttachedMediaField() {
@@ -209,16 +190,6 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	public void setAttachedMediaField(boolean isAttachedMediaField) {
 		this.isAttachedMediaField = isAttachedMediaField;
 	}
-
-///*	private native char getCharCode(NativeEvent e)-{
-//	    var code = e.keyCode ? e.keyCode : e.charCode ? e.charCode : e.which ? e.which : void 0;
-//	    if( e.which ) {
-//	        if( code && ( ! ( e.ctrlKey || e.altKey ) ) ){
-//	            return code;
-//	        }
-//	    }
-//	    return void 0;
-//	}-;*/
 
 	@Override
 	public void onFieldEvent(FieldEvent event) {
@@ -252,5 +223,63 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 			}
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public void showActionSuggestion(String word){
+	
+		DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
+		DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
 
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("word", "%"+ word +"%");
+		
+		StandardAction action = new StandardAction(EntityList.class, "spacemanagement.SpaceManagementService.getSuggestionAction", paramMap);
+		dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
+			
+			public void onFailure(Throwable caught) {
+				Window.alert("operation failed ");
+				caught.printStackTrace();
+			}
+			
+			public void onSuccess(Result<EntityList> result) {
+				EntityList  entityList =  result.getOperationResult();
+				for(Entity entity : entityList ){
+					String widgetName = entity.getPropertyByName("widgetname");
+					final ActionLabelImpl actionLabel = new ActionLabelImpl(ActionLabel.WIDGET, widgetName);
+					actionLabel.setText(widgetName);
+					suggestionAction.addSuggestionAction(actionLabel);
+					
+					actionLabel.addClickHandler(new ClickHandler() {
+						
+						@Override
+						public void onClick(ClickEvent event) {
+							handleActionClick(actionLabel);
+						}
+					});
+				}
+			}
+		});
+	}
+	
+	private void handleActionClick(ActionLabel actionLabel) {
+		ActionContext context = new ActionContextImpl();
+		context.setAction(AppUtils.makeAction(actionLabel));
+		context.setSpaceId("4"); // Will be having the current space
+		context.setUploadedMedia(uploadedMediaId);
+		
+		String token = AppUtils.serializeToJson(AppUtils.makeActionContext(context));
+		ActionEvent actionEvent = getActionEvent(ActionEvent.TRANSFORMWIDGET, token); 
+		fireActionEvent(actionEvent);
+	}
+	
+	private ActionEvent getActionEvent(int type, String data){
+		ActionEvent actionEvent = new ActionEvent();
+		actionEvent.setEventType(type);			
+		actionEvent.setEventData(data);
+		return actionEvent;
+	}
+	
+	private void fireActionEvent(ActionEvent actionEvent) {
+		AppUtils.EVENT_BUS.fireEvent(actionEvent);
+	}
 }
