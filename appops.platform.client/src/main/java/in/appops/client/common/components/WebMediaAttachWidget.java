@@ -7,6 +7,8 @@ import in.appops.platform.core.entity.Entity;
 import in.appops.platform.server.core.services.media.constant.MediaConstant;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import gwtupload.client.IFileInput.FileInputType;
 import gwtupload.client.IUploadStatus.Status;
@@ -26,6 +28,7 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 	private VerticalPanel mainPanel = null;
 	private HorizontalPanel subPanel = null;
 	private HashMap<String, HorizontalPanel> uploadedBlobIdVsSnippetMap = null;
+	private List<String> uploadedMediaId = null;
 	
 	public WebMediaAttachWidget(){
 	}
@@ -49,6 +52,7 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 		mainPanel = new VerticalPanel();
 		subPanel = new HorizontalPanel();
 		uploadedBlobIdVsSnippetMap = new HashMap<String, HorizontalPanel>();
+		uploadedMediaId = new LinkedList<String>();
 	}
 
 	public MultiUploader getMultiUploader(){
@@ -107,6 +111,7 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 		
 		subPanel.add(iconPanel);
 		uploadedBlobIdVsSnippetMap.put(blobId, iconPanel);
+		uploadedMediaId.add(blobId);
 		
 		crossImage.addClickHandler(new ClickHandler() {
 			@Override
@@ -115,6 +120,8 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 				String blbId = crossImage.getBlobId();
 				if(uploadedBlobIdVsSnippetMap.containsKey(blbId)){
 					HorizontalPanel snippetPanel = uploadedBlobIdVsSnippetMap.get(blbId);
+					uploadedBlobIdVsSnippetMap.remove(blbId);
+					uploadedMediaId.remove(blbId);
 					subPanel.remove(snippetPanel);
 				}
 			}
@@ -129,6 +136,8 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 			String blobId = info.message;
 			if(uploadedBlobIdVsSnippetMap.containsKey(blobId)){
 				HorizontalPanel snippet = uploadedBlobIdVsSnippetMap.get(blobId);
+				uploadedMediaId.remove(blobId);
+				uploadedBlobIdVsSnippetMap.remove(blobId);
 				subPanel.remove(snippet);
 			}
 		}
@@ -140,6 +149,14 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 
 	public void setUploadedBlobIdVsSnippetMap(HashMap<String, HorizontalPanel> uploadedBlobIdVsSnippetMap) {
 		this.uploadedBlobIdVsSnippetMap = uploadedBlobIdVsSnippetMap;
+	}
+
+	public List<String> getUploadedMediaId() {
+		return uploadedMediaId;
+	}
+
+	public void setUploadedMediaId(List<String> uploadedMediaId) {
+		this.uploadedMediaId = uploadedMediaId;
 	}
 
 }
