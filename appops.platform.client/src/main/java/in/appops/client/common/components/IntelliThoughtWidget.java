@@ -1,6 +1,12 @@
 package in.appops.client.common.components;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.AttachmentEvent;
 import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.AttachmentEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.IntelliThoughtField;
 import in.appops.platform.core.shared.Configurable;
@@ -17,7 +23,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class IntelliThoughtWidget extends Composite implements Configurable, ClickHandler, FieldEventHandler{
+public class IntelliThoughtWidget extends Composite implements Configurable, ClickHandler, FieldEventHandler, AttachmentEventHandler{
 	private FlexTable basePanel;
 	private IntelliThoughtField intelliShareField;
 	private MediaField attachMediaField;
@@ -33,6 +39,8 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	public static String IS_ATTACHMEDIAFIELD = "isAttachMediaField";
 	public static String INTELLITHOUGHTOPTIONPANEL_PRIMARYSCSS = "intelliToughtOptionPanel";
 
+	private List<String> uploadedMediaId = null;
+	
 	public IntelliThoughtWidget(){
 		initialize();
 		initWidget(basePanel);
@@ -43,6 +51,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		mediaServicePanel = new HorizontalPanel();
 		intelliShareField = new IntelliThoughtField();
 		suggestionAction = new SuggestionAction();
+		uploadedMediaId = new ArrayList<String>();
 	}
 	
 	/**
@@ -64,7 +73,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 			basePanel.setWidget(5, 0, suggestionAction);
 			
 			intelliShareField.addFieldEventHandler(this);
-			
+			AppUtils.EVENT_BUS.addHandler(AttachmentEvent.TYPE, this);
 	}
 	
 	private void addPredefinedOptions() {
@@ -226,5 +235,22 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		}
 	}
 
-	
+	@Override
+	public void onAttachmentEvent(AttachmentEvent event) {
+		String blobId = (String) event.getEventData();
+		if(event.getEventType()==AttachmentEvent.ATTACHMENTINITIATED){
+
+		}else if(event.getEventType()==AttachmentEvent.ATTACHMENTCOMPLETED){
+			if(blobId!=null){
+				if(!uploadedMediaId.contains(blobId))
+					uploadedMediaId.add(blobId);
+			}
+		}else if(event.getEventType()==AttachmentEvent.ATTACHMENTCANCELLED){
+			if(blobId!=null){
+				if(uploadedMediaId.contains(blobId))
+					uploadedMediaId.remove(blobId);
+			}
+		}
+	}
+
 }
