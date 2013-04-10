@@ -120,7 +120,7 @@ public class SpaceWidgetIcon extends VerticalPanel implements MessengerEventHand
 	public void onMessengerEvent(MessengerEvent event) {
 		try{
 			if(event.getEventType() == MessengerEvent.ONSPACEMSGRECIEVED){
-				Window.alert("Space chat received");
+				//Window.alert("Space chat received");
 			}
 		}
 		catch (Exception e) {
