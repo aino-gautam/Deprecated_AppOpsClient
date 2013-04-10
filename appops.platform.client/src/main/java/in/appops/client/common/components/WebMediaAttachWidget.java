@@ -1,5 +1,7 @@
 package in.appops.client.common.components;
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.AttachmentEvent;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.client.common.snippet.Snippet;
 import in.appops.client.common.snippet.SnippetFactory;
@@ -86,6 +88,8 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 					/** This is the saved blob Id */
 					String savedBlobId = info.message;
 					createSnippet(savedBlobId);
+					
+					AppUtils.EVENT_BUS.fireEvent(new AttachmentEvent(2, savedBlobId));
 				}
 			}
 		});
@@ -123,6 +127,7 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 					uploadedBlobIdVsSnippetMap.remove(blbId);
 					uploadedMediaId.remove(blbId);
 					subPanel.remove(snippetPanel);
+					AppUtils.EVENT_BUS.fireEvent(new AttachmentEvent(3, blbId));
 				}
 			}
 		});
@@ -139,6 +144,7 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 				uploadedMediaId.remove(blobId);
 				uploadedBlobIdVsSnippetMap.remove(blobId);
 				subPanel.remove(snippet);
+				AppUtils.EVENT_BUS.fireEvent(new AttachmentEvent(3, blobId));
 			}
 		}
 	};

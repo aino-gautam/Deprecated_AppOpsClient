@@ -8,11 +8,17 @@
 	margin: 0 25px 25px 0;
 }
 
-.baseChatListContainer{
+.baseChatListContainer {
 	background: none repeat scroll 1px center #CEECF5;
-    border: 3px double;
-    border-radius: 5px 5px 5px 5px;
-    margin: 5px;
+	border: 3px double;
+	/* border-radius: 5px 5px 5px 5px; */
+	margin: 5px 0 5px 0;
+}
+
+.enterNameLbl{
+	font-size: 15px;
+	color: black;;
+	margin: 4px 10px;
 }
 
 .chatSpaceIcon{
@@ -43,10 +49,10 @@
 .chatUserListWidget{
     background: none repeat scroll 1px center #CEECF5;
     border: 3px double;
-    border-radius: 5px 5px 5px 5px;
+   /*  border-radius: 5px 5px 5px 5px; */
     margin: 5px 0 0 10px;
-    padding: 10px 5px;
-    width: 74% !important;
+/*     padding: 10px 5px;
+    width: 74% !important; */
 }
 
 .chatUserSuggestionField{
@@ -76,8 +82,8 @@
 	height: 25px;
 	text-align: center;
 	width: 80px;
-	margin: 12px 0;
-	padding: 8px 0 0;
+	margin: 12px 20px 12px 0;
+	padding: 7px 0 0;
 }
 
 .chatUserListNxtPrevImg{
@@ -89,14 +95,16 @@
   border: 3px double black;
     font-size: 14px;
     margin: 10px 10px 0;
-    width: 95%;
+    width: 98%;
+    height: 99%;
+    resize: none;
 }
 
-.chatDisplayerDeck{
+.chatDisplayerWidget{
 	border: 3px double black;
-    height: 300px;
+ /*    height: 310px; */
     margin: 5px 0 0 10px;
-    width: 95%
+    width: 99%
 }
 
 .chatUserWidget {
@@ -111,6 +119,10 @@
 	font-size: 20px;
 	color: #764560;
 	margin: 25px 0;
+}
+
+.scrollHeightForChat{
+	height: 233px;
 }
 
 .messageChatToogle {
@@ -154,10 +166,15 @@
 	color: #3e454c;
 	float: right;
 	margin: 5px 5px 5px 0;
-	max-width: 190px;
+	/* max-width: 190px; */
 	padding: 4px 5px 3px 6px;
 	position: relative;
 	text-shadow: rgba(255, 255, 255, .5) 0 1px 0;
+}
+
+.chatRecievedLbl{
+	background-color: #DBEDFE;
+	background-image: -moz-linear-gradient(center bottom, #C7DEFE, #E7F1FE);
 }
 
 ::-webkit-scrollbar { 
