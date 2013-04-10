@@ -7,6 +7,7 @@ import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.AttachmentEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.IntelliThoughtField;
+import in.appops.client.common.util.ActionUtils;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -245,7 +246,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 				EntityList  entityList =  result.getOperationResult();
 				for(Entity entity : entityList ){
 					String widgetName = entity.getPropertyByName("widgetname");
-					final ActionLabelImpl actionLabel = new ActionLabelImpl(ActionLabel.WIDGET, widgetName);
+					final ActionLabel actionLabel = new ActionLabel(IActionLabel.WIDGET, widgetName);
 					actionLabel.setText(widgetName);
 					suggestionAction.addSuggestionAction(actionLabel);
 					
@@ -261,13 +262,14 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		});
 	}
 	
-	private void handleActionClick(ActionLabel actionLabel) {
-		ActionContext context = new ActionContextImpl();
-		context.setAction(AppUtils.makeAction(actionLabel));
+	private void handleActionClick(IActionLabel actionLabel) {
+		IActionContext context = new ActionContext();
+		context.setAction(ActionUtils.makeAction(actionLabel));
 		context.setSpaceId("4"); // Will be having the current space
 		context.setUploadedMedia(uploadedMediaId);
+		context.setIntelliThought(ActionUtils.makeIntelliThought(intelliShareField.getIntelliThought()));
 		
-		String token = AppUtils.serializeToJson(AppUtils.makeActionContext(context));
+		String token = ActionUtils.serializeToJson(ActionUtils.makeActionContext(context));
 		ActionEvent actionEvent = getActionEvent(ActionEvent.TRANSFORMWIDGET, token); 
 		fireActionEvent(actionEvent);
 	}
