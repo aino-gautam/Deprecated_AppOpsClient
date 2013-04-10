@@ -1,5 +1,6 @@
 package in.appops.client.common.fields;
 
+import in.appops.client.common.components.IIntelliThought;
 import in.appops.client.common.components.LinkedSuggestion;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
@@ -26,6 +27,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
@@ -35,7 +37,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
  * @author nitish@ensarm.com
  * 
  */
-public class IntelliThoughtField extends Composite implements Field, HasText, EventListener{
+public class IntelliThoughtField extends Composite implements Field, HasText, HasHTML, EventListener{
 	private Configuration configuration;
 	private String fieldValue;
 	private LinkedSuggestion linkedSuggestion;
@@ -151,6 +153,17 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ev
 	@Override
 	public void setText(String text) {
 		intelliText.setInnerText(text);
+	}
+	
+	@Override
+	public String getHTML() {
+		String innerHtml = intelliText.getInnerHTML();
+		return innerHtml;
+	}
+
+	@Override
+	public void setHTML(String html) {
+		intelliText.setInnerHTML(html);
 	}
 
 	private void fireIntelliThoughtFieldEvent(FieldEvent fieldEvent) {
@@ -352,5 +365,14 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ev
 			}
 		});
 		
+	}
+	
+	public IIntelliThought getIntelliThought(){
+		IIntelliThought intelliThought = new IIntelliThought.IntelliThought();
+		
+		intelliThought.setIntelliText(getText());
+		intelliThought.setIntelliHtml(getHTML());
+		
+		return intelliThought;
 	}
 }
