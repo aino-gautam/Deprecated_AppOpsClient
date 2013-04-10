@@ -33,22 +33,23 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 	private List<String> uploadedMediaId = null;
 	
 	public WebMediaAttachWidget(){
+		initializeComponent();
 	}
 
-	@Override
-	void createUi() {
-		initializeComponent();
-		initWidget(mainPanel);
-		
-		mainPanel.setStylePrimaryName("appops-webMediaAttachment");
-		mainPanel.setSpacing(10);
-		
-		MultiUploader multiUploader = getMultiUploader();
-		mainPanel.add(multiUploader);
-		
-		subPanel.setSpacing(5);
-		mainPanel.add(subPanel);
-	}
+//	@Override
+//	public	void createUi() {
+//		initializeComponent();
+//		initWidget(mainPanel);
+//		
+//		mainPanel.setStylePrimaryName("appops-webMediaAttachment");
+//		mainPanel.setSpacing(10);
+//		
+//		MultiUploader multiUploader = getMultiUploader();
+//		mainPanel.add(multiUploader);
+//		
+//		subPanel.setSpacing(5);
+//		mainPanel.add(subPanel);
+//	}
 
 	public void initializeComponent(){
 		mainPanel = new VerticalPanel();
@@ -115,7 +116,9 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 		
 		subPanel.add(iconPanel);
 		uploadedBlobIdVsSnippetMap.put(blobId, iconPanel);
-		uploadedMediaId.add(blobId);
+		if(!uploadedMediaId.contains(blobId)){
+			uploadedMediaId.add(blobId);
+		}
 		
 		crossImage.addClickHandler(new ClickHandler() {
 			@Override
@@ -163,6 +166,34 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 
 	public void setUploadedMediaId(List<String> uploadedMediaId) {
 		this.uploadedMediaId = uploadedMediaId;
+	}
+
+	@Override
+	public	void createAttachmentUi() {
+		basePanel.add(mainPanel);
+		mainPanel.setStylePrimaryName("appops-webMediaAttachment");
+		mainPanel.setSpacing(10);
+		
+		MultiUploader multiUploader = getMultiUploader();
+		mainPanel.add(multiUploader);
+		
+		subPanel.setSpacing(5);
+		mainPanel.add(subPanel);
+		
+		if(uploadedMediaId != null && !uploadedMediaId.isEmpty()){
+			addToAttachments();
+		}
+	}
+
+	private void addToAttachments() {
+		for(String blobId : uploadedMediaId ){
+			createSnippet(blobId);
+		}
+	}
+
+	@Override
+	public	void setMediaAttachments(List<String> media) {
+		this.uploadedMediaId = media;
 	}
 
 }
