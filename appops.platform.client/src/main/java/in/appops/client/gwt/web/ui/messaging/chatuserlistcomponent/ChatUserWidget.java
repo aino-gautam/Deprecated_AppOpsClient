@@ -3,8 +3,8 @@
  */
 package in.appops.client.gwt.web.ui.messaging.chatuserlistcomponent;
 
-import in.appops.client.gwt.web.ui.messaging.datastructure.ChatEntity;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.broadcast.ChatEntity;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 
@@ -50,17 +50,23 @@ public class ChatUserWidget extends HorizontalPanel{
 					participantList.add(entity);
 					
 					ChatEntity chatEntity = new ChatEntity();
+					
+					participantList.add(parentUserListWidget.getParentMessagingComponent().getContactEntity());
+				
+					String currenUserName = parentUserListWidget.getParentMessagingComponent().getContactEntity().getPropertyByName(ContactConstant.NAME).toString();
 					String aliasName = entity.getPropertyByName(ContactConstant.NAME).toString();
-					if(parentUserListWidget.getParentMessagingComponent().getGrpMapEntityMap().get(aliasName)==null){
+					
+					String headerTitle = currenUserName +"##"+ aliasName;
+					if(parentUserListWidget.getParentMessagingComponent().getGrpMapEntityMap().get(headerTitle)==null){
+						
 						chatEntity.setParticipantEntity(participantList);
-						chatEntity.setHeaderTitle(aliasName);
-						chatEntity.setUserEntity(parentUserListWidget.getParentMessagingComponent().getUserEntity());
+						chatEntity.setHeaderTitle(headerTitle);
 						chatEntity.setIsGroupChat(false);
 
 						parentUserListWidget.getParentMessagingComponent().startNewChat(chatEntity);
 					}
 					else{
-						ChatEntity chatEnt = parentUserListWidget.getParentMessagingComponent().getGrpMapEntityMap().get(aliasName);
+						ChatEntity chatEnt = parentUserListWidget.getParentMessagingComponent().getGrpMapEntityMap().get(headerTitle);
 						parentUserListWidget.getParentMessagingComponent().startNewChat(chatEnt);
 					}
 				}

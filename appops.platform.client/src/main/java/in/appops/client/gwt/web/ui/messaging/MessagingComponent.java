@@ -3,19 +3,31 @@
  */
 package in.appops.client.gwt.web.ui.messaging;
 
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 
+import org.atmosphere.gwt.client.AtmosphereClient;
+import org.atmosphere.gwt.client.AtmosphereGWTSerializer;
+import org.atmosphere.gwt.client.AtmosphereListener;
+
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.gwt.web.ui.messaging.atomosphereutil.RealTimeSyncEventSerializer;
 import in.appops.client.gwt.web.ui.messaging.chatuserlistcomponent.MainUserListingComponent;
-import in.appops.client.gwt.web.ui.messaging.datastructure.ChatEntity;
+import in.appops.client.gwt.web.ui.messaging.event.MessengerEvent;
+import in.appops.client.gwt.web.ui.messaging.event.MessengerEventHandler;
 import in.appops.client.gwt.web.ui.messaging.spacelistcomponent.SpaceListModel;
 import in.appops.client.gwt.web.ui.messaging.spacelistcomponent.SpaceListWidget;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
+import in.appops.platform.core.entity.broadcast.ChatEntity;
+import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -27,17 +39,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * of appops chat widget.
  * 
  */
-public class MessagingComponent extends Composite{
+public class MessagingComponent extends Composite implements MessengerEventHandler , AtmosphereListener{
 	
 	/**
 	 * Actual base container.
 	 */
 	private VerticalPanel baseVp;
-	
-	/**
-	 * Panel to hold different chat display widget.
-	 */
-	private DeckPanel chatDisplayPanel;
 	
 	/**
 	 * Medium through which we can send input to our chat.
@@ -53,7 +60,7 @@ public class MessagingComponent extends Composite{
 	/**
 	 * The current user in the session who is initiating the chat.
 	 */
-	private Entity userEntity;
+	private Entity contactEntity;
 	
 	/**
 	 * A single chat display widget depending on the group user selected, the
@@ -67,7 +74,6 @@ public class MessagingComponent extends Composite{
 	 */
 	public MessagingComponent(){
 		initialize();
-		createUi();
 		initWidget(baseVp);
 	}
 
@@ -85,13 +91,22 @@ public class MessagingComponent extends Composite{
 			VerticalPanel chatWindowTextAreaConatiner = new VerticalPanel();
 			chatWindowTextAreaConatiner.setStylePrimaryName("fullWidth");
 			
-			chatWindowTextAreaConatiner.add(chatDisplayPanel);
+		//	chatWindowTextAreaConatiner.add(chatDisplayPanel);
+			chatWindowTextAreaConatiner.add(chatDisplayWidget);
 			chatWindowTextAreaConatiner.add(chatTextArea);
 			
 			middleContainerPanel.add(chatWindowTextAreaConatiner);
 
+			chatDisplayWidget.setStylePrimaryName("chatDisplayerWidget");
+
 			SpaceListWidget rightNavigatorPanel = createRightNavigatorPanel();
 			middleContainerPanel.add(rightNavigatorPanel);
+			
+			middleContainerPanel.setCellHorizontalAlignment(chatWindowTextAreaConatiner, HorizontalPanel.ALIGN_LEFT);
+			middleContainerPanel.setCellHorizontalAlignment(rightNavigatorPanel, HorizontalPanel.ALIGN_RIGHT);
+			
+			middleContainerPanel.setCellWidth(chatWindowTextAreaConatiner, "83%");
+			middleContainerPanel.setCellWidth(rightNavigatorPanel, "25%");
 			
 			baseVp.add(middleContainerPanel);
 			
@@ -112,14 +127,7 @@ public class MessagingComponent extends Composite{
 	 */
 	private void initailizeChatField() {
 		try{
-			
-			chatDisplayPanel.setAnimationEnabled(true);
-			chatDisplayPanel.add(chatDisplayWidget);
-			chatDisplayPanel.showWidget(0);
-			
-			chatDisplayPanel.setStylePrimaryName("chatDisplayerDeck");
-			chatDisplayPanel.addStyleName("fullWidth");
-			
+			chatDisplayWidget.setStylePrimaryName("chatDisplayerDeck");
 			chatTextArea.setStylePrimaryName("chatTextArea");
 			chatTextArea.addKeyDownHandler(new KeyDownHandler() {
 				
@@ -149,9 +157,7 @@ public class MessagingComponent extends Composite{
 	 */
 	private void addToDisplayPanel(String typedText) {
 		try{
-			ChatDisplayWidget chatDisplayWidget = (ChatDisplayWidget) chatDisplayPanel.getWidget(0);
-			chatDisplayWidget.addChatMessage(typedText, getUserEntity());
-			chatDisplayPanel.showWidget(0);
+			chatDisplayWidget.addChatMessage(typedText, getContactEntity());
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -175,7 +181,7 @@ public class MessagingComponent extends Composite{
 	 * @return
 	 */
 	private SpaceListWidget createRightNavigatorPanel() {
-		SpaceListModel spaceListModel  = new SpaceListModel();
+		SpaceListModel spaceListModel  = new SpaceListModel(contactEntity);
 		SpaceListWidget spaceListWidget = new SpaceListWidget(spaceListModel);
 		spaceListWidget.setParentMessagingWidget(this);
 		return spaceListWidget;
@@ -186,24 +192,25 @@ public class MessagingComponent extends Composite{
 	 */
 	private void initialize() {
 		baseVp = new VerticalPanel();
-		chatDisplayPanel = new DeckPanel();
 		chatTextArea = new TextArea();
 		setGrpMapEntityMap(new HashMap<String, ChatEntity>());
 		chatDisplayWidget = new ChatDisplayWidget();
+		chatDisplayWidget.setParentMessagingComponent(this);
+		AppUtils.EVENT_BUS.addHandler(MessengerEvent.TYPE, this);
 	}
 
 	/**
 	 * @return the userEntity
 	 */
-	public Entity getUserEntity() {
-		return userEntity;
+	public Entity getContactEntity() {
+		return contactEntity;
 	}
 
 	/**
 	 * @param userEntity the userEntity to set
 	 */
-	public void setUserEntity(Entity userEntity) {
-		this.userEntity = userEntity;
+	public void setContactEntity(Entity userEntity) {
+		this.contactEntity = userEntity;
 	}
 
 	/**
@@ -248,14 +255,128 @@ public class MessagingComponent extends Composite{
 					HashMap<Entity, Entity> tempMap = recordMap.get(counter);
 					Entity userEnt = tempMap.keySet().iterator().next();
 					Entity chatTextEntity = tempMap.get(userEnt);
-					chatDisplayWidget.refreshChatUi(userEnt,chatTextEntity);
+					chatDisplayWidget.refreshChatUi(userEnt,chatTextEntity,true);
 				}
 			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	
 	}
 
+	@Override
+	public void onMessengerEvent(MessengerEvent event) {
+		
+		if(event.getEventType() == MessengerEvent.CONTACTUSERFOUND){
+			Entity contactEntity = (Entity) event.getEventData();
+			setContactEntity(contactEntity);
+
+			AtmosphereGWTSerializer serializer = (AtmosphereGWTSerializer) GWT.create(RealTimeSyncEventSerializer.class);
+			Key<Long> value = contactEntity.getPropertyByName(ContactConstant.ID);
+			String val =  value.getKeyValue().toString();
+			
+			String url = GWT.getHostPageBaseURL() + "gwtComet?entity_id="+val;
+			AtmosphereClient client = new AtmosphereClient(url,serializer, this);
+			client.start();
+			
+			createUi();
+		}
+		
+	}
+
+	@Override
+	public void onConnected(int heartbeat, int connectionID) {
+		System.out.println("Connected....");
+	}
+
+	@Override
+	public void onBeforeDisconnected() {
+		System.out.println("Before disconnected....");
+	}
+
+
+	@Override
+	public void onDisconnected() {
+		System.out.println("DisConnected....");
+
+	}
+
+
+	@Override
+	public void onError(Throwable exception, boolean connected) {
+		System.out.println("Error...."+exception.getMessage());
+
+	}
+
+	@Override
+	public void onHeartbeat() {
+		System.out.println("heartbeat....");
+		
+	}
+
+	@Override
+	public void onRefresh() {
+		System.out.println("Refresh....");
+	}
+
+	@Override
+	public void onAfterRefresh() {
+		System.out.println("after Refresh....");
+	}
+
+	@Override
+	public void onMessage(List<?> messages) {
+		System.out.println("Message....");
+		try{
+			for(Object obj : messages) {
+				if(obj instanceof Serializable){
+					ChatEntity chatEntity = (ChatEntity) obj;
+					String title  = chatEntity.getHeaderTitle();
+
+					if(getGrpMapEntityMap().isEmpty()){
+						startNewChat(chatEntity);
+					}
+					else{
+						if(chatDisplayWidget.getChatEntity().getHeaderTitle().equals(title)){
+							HashMap<Long, HashMap<Entity, Entity>> recordMap = chatEntity.getChatRecordMap();
+							if(recordMap!=null){
+								Integer val = recordMap.size()-1;
+								Long counter = Long.parseLong(val.toString());
+								HashMap<Entity, Entity> tempMap = recordMap.get(counter);
+								
+								
+								String curUserEmail = contactEntity.getPropertyByName(ContactConstant.EMAILID).toString().trim();
+								
+								
+								
+								Entity userEnt = tempMap.keySet().iterator().next();
+								
+								String chtInitEmail = userEnt.getPropertyByName(ContactConstant.EMAILID).toString().trim();
+								
+								Entity chatTextEntity = tempMap.get(userEnt);
+								
+								if(!curUserEmail.equals(chtInitEmail))
+									chatDisplayWidget.refreshChatUi(userEnt,chatTextEntity,true);
+								/*else
+									chatDisplayWidget.refreshChatUi(userEnt,chatTextEntity,true);*/
+							}
+						}
+					}
+					getGrpMapEntityMap().put(title, chatEntity);
+					
+					MessengerEvent msgEvent;
+					if(chatEntity.getIsGroupChat()){
+						msgEvent = new MessengerEvent(MessengerEvent.ONSPACEMSGRECIEVED, chatEntity);
+					}
+					else{
+						msgEvent = new MessengerEvent(MessengerEvent.ONUSERMSGRECEIVED, chatEntity);
+					}
+					AppUtils.EVENT_BUS.fireEvent(msgEvent);
+				}
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
