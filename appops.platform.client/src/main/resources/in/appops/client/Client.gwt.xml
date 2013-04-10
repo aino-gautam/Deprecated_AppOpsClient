@@ -6,8 +6,8 @@
 	<inherits name='in.appops.platform.bindings.web.gwt.dispatch.Dispatch'/>
 	
 	<inherits name="com.google.gwt.inject.Inject"/>
-	<inherits name='com.googlecode.gwt.crypto.Crypto'/>
 	<inherits name="gwtupload.GWTUpload"/>
+	<inherits name="com.google.web.bindery.autobean.AutoBean"/>
 	<stylesheet src="Upload.css"/>
 	
 	<source path="client" />
@@ -15,5 +15,4 @@
 	<source path="common" />
 	<source path="gwt" />
 	<!-- <source path='server'/> -->
-	
 </module>
