@@ -42,7 +42,7 @@ public class SuggestionAction extends Composite{
 		basePanel.setStylePrimaryName("suggestionLabel");
 	}
 	
-	public void addSuggestionAction(ActionLabelImpl actionLabel){
+	public void addSuggestionAction(ActionLabel actionLabel){
 //		Label suggestionLabel = new Label(suggestionAction);
 		actionLabel.setStylePrimaryName("appops-intelliThought-Label");
 		actionLabel.addStyleName("fadeInLeft");
