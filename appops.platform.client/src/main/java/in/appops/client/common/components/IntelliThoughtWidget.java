@@ -38,7 +38,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class IntelliThoughtWidget extends Composite implements Configurable, ClickHandler, FieldEventHandler, AttachmentEventHandler{
 	private FlexTable basePanel;
 	private IntelliThoughtField intelliShareField;
-	private MediaField attachMediaField;
+	private MediaAttachWidget attachMediaField;
 	private SuggestionAction suggestionAction;
 	private HorizontalPanel mediaServicePanel;
 	private boolean isAttachedMediaField;
@@ -117,9 +117,9 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	}
 
 	private void createAttachMediaField() {
-		attachMediaField = new MediaField();
+		attachMediaField = new WebMediaAttachWidget();
 		attachMediaField.isFadeUpEffect(true);
-		attachMediaField.showMediaField();
+		attachMediaField.createUi();
 		
 		mediaServicePanel.add(attachMediaField);
 		attachMediaField.setVisible(false);
@@ -130,7 +130,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				attachMediaField.showMediaOption();
+				attachMediaField.createAttachmentUi();
 			}
 		});
 	}
@@ -162,7 +162,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	public void onClick(ClickEvent event) {
 		Widget source = (Widget) event.getSource();
 		if(source.equals(attachMediaField.getMedia())){
-			attachMediaField.showMediaOption();
+			//attachMediaField.showMediaOption();
 		}
 	}
 
