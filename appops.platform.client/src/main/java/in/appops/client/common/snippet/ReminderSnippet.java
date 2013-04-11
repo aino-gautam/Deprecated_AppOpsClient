@@ -63,7 +63,7 @@ public class ReminderSnippet extends Snippet implements ClickHandler{
 			reminderTitleLink.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_HYPERLINK, "postLink", "reminderTitleLabel", null));
 			reminderTitleLink.createField();
 						
-			reminderTitleLink.getWidget().addDomHandler(this, ClickEvent.getType());
+			//reminderTitleLink.getWidget().addDomHandler(this, ClickEvent.getType());
 			
 			
 			
