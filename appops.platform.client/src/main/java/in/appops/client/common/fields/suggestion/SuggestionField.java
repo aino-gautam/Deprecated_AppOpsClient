@@ -71,4 +71,8 @@ public class SuggestionField extends Composite implements SelectionHandler<Sugge
 	public void setMaxResult(int max) {
 		oracle.setMaxResult(max);
 	}
+
+	public void setPropertyToDisplay(String propertyByName) {
+		oracle.setDisplayText(propertyByName);
+	}
 }
