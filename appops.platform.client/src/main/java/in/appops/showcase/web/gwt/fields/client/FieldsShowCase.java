@@ -17,6 +17,7 @@ import in.appops.client.common.fields.slider.field.NumericRangeSliderField;
 import in.appops.client.common.fields.slider.field.StringRangeSliderField;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
+import in.appops.platform.server.core.services.spacemanagement.constants.SpaceTypeConstants;
 
 import com.google.code.gwt.geolocation.client.Coordinates;
 import com.google.code.gwt.geolocation.client.Geolocation;
@@ -81,7 +82,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 
 		StateField stateField = new StateField();
 		//stateField.setFieldValue("Suggestion");
-		Configuration stateFieldConfig = getStateFieldConfiguration(StateField.STATEFIELDMODE_SUGGESTIVE, "getSpaceTypesWithName", "spacemanagement.SpaceManagementService.getEntityList");
+		Configuration stateFieldConfig = getStateFieldConfiguration(StateField.STATEFIELDMODE_SUGGESTIVE, "getSpaceTypesWithName", "spacemanagement.SpaceManagementService.getEntityList", SpaceTypeConstants.NAME);
 		stateField.setConfiguration(stateFieldConfig);
 
 		LabelField CheckboxFieldLabel = new LabelField();
@@ -496,12 +497,13 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 		return configuration;
 	}
 	
-	private Configuration getStateFieldConfiguration(String stateFieldType, String qname, String operationName) {
+	private Configuration getStateFieldConfiguration(String stateFieldType, String qname, String operationName, String displayText) {
 
 		Configuration configuration = new Configuration();
 		configuration.setPropertyByName(StateField.STATEFIELD_MODE, stateFieldType);
 		configuration.setPropertyByName(StateField.STATEFIELD_QUERY, qname);
 		configuration.setPropertyByName(StateField.STATEFIELD_OPERATION, operationName);
+		configuration.setPropertyByName(StateField.STATEFIELD_PROPERTY_TO_DISPLAY, displayText);
 		return configuration;
 	}
 	
