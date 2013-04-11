@@ -198,7 +198,7 @@ public class MainUserListingComponent extends Composite implements MessengerEven
 	public void onMessengerEvent(MessengerEvent event) {
 		try{
 			if(event.getEventType() == MessengerEvent.ONUSERMSGRECEIVED){
-				Window.alert("User Message Received");
+				//Window.alert("User Message Received");
 			}
 		}
 		catch (Exception e) {
