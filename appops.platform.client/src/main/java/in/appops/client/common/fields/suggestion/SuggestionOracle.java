@@ -25,6 +25,7 @@ public class SuggestionOracle extends SuggestOracle {
 	private final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 	private int maxResult;
+	private String displayText;
 	
 	public void setQueryName(String queryName) {
 		this.queryName = queryName;
@@ -80,7 +81,7 @@ public class SuggestionOracle extends SuggestOracle {
 					if(entityList != null && !entityList.isEmpty()) {
 						for (Entity entity : entityList) {
 							AppopsSuggestion appopsSuggestion = new AppopsSuggestion(entity);
-							appopsSuggestion.initialize();
+							appopsSuggestion.initialize(displayText);
 							store.add(appopsSuggestion);
 						}
 					}
@@ -104,5 +105,9 @@ public class SuggestionOracle extends SuggestOracle {
 	
 	public void setMaxResult(int max) {
 		this.maxResult = max;
+	}
+
+	public void setDisplayText(String displayText) {
+		this.displayText = displayText;
 	}
 }
