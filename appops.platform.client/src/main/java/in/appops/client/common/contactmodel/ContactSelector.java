@@ -352,4 +352,10 @@ public class ContactSelector extends Composite implements SelectionEventHandler,
 		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
 		return config;
 	}
+
+	@Override
+	public void updateCurrentView(Entity entity) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -250,4 +250,10 @@ public class SpaceListWidget extends Composite implements EntityListReceiver,Mes
 		}
 	}
 
+	@Override
+	public void updateCurrentView(Entity entity) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
