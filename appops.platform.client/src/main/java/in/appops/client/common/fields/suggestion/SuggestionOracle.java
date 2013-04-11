@@ -26,6 +26,7 @@ public class SuggestionOracle extends SuggestOracle {
 	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 	private int maxResult;
 	private String displayText;
+	private HashMap<String, Object> restrictionMap;
 	
 	public void setQueryName(String queryName) {
 		this.queryName = queryName;
@@ -59,6 +60,12 @@ public class SuggestionOracle extends SuggestOracle {
 			queryObj.setQueryName(queryName);
 			queryObj.setListSize(maxResult);
 			HashMap map = new HashMap();
+			
+			if(restrictionMap != null && !restrictionMap.isEmpty()) {
+				for (String key : restrictionMap.keySet()) {
+					map.put(key, restrictionMap.get(key));
+				}
+			}
 			map.put("searchChar", "%" + search + "%");
 			//map.put("max", maxResult);
 			queryObj.setQueryParameterMap(map);
@@ -109,5 +116,9 @@ public class SuggestionOracle extends SuggestOracle {
 
 	public void setDisplayText(String displayText) {
 		this.displayText = displayText;
+	}
+
+	public void setRestriction(HashMap<String, Object> map) {
+		this.restrictionMap = map;
 	}
 }
