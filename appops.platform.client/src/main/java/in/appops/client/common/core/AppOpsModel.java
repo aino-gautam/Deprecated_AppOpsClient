@@ -22,5 +22,11 @@ public interface AppOpsModel {
 	public String getOperationNameToBind();
 	
 	public void setOperationNameToBind(String name);
+	
+	public void addInterestingType(Type type);
+	
+	public boolean isInterestingType(Type type);
+	
+	public void setBroadcastEntity(Entity entity);
 
 }
