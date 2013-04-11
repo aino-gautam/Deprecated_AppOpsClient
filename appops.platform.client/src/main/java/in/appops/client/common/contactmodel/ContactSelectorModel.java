@@ -30,7 +30,7 @@ public class ContactSelectorModel extends EntityListModel {
 		return entityList;
 	}
 
-	public void setEntityList(EntityList entityList) {
+	public void setCurrentEntityList(EntityList entityList) {
 		this.entityList = entityList;
 	}
 
@@ -81,7 +81,7 @@ public class ContactSelectorModel extends EntityListModel {
 			@Override
 			public void onSuccess(Result result) {
 				EntityList contactList = (EntityList) result.getOperationResult();
-				setEntityList(contactList);
+				setCurrentEntityList(contactList);
 				SelectionEvent selectionEvent = new SelectionEvent();
 				selectionEvent.setEventType(SelectionEvent.DATARECEIVED);
 				selectionEvent.setEventData(getEntityList());
