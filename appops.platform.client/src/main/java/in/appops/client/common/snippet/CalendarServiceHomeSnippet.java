@@ -5,6 +5,7 @@ import in.appops.client.common.core.EntityListReceiver;
 import in.appops.client.common.snippet.ListSnippet;
 import in.appops.client.common.snippet.Snippet;
 import in.appops.platform.core.constants.propertyconstants.UserConstants;
+import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.query.Query;
@@ -82,6 +83,12 @@ public class CalendarServiceHomeSnippet extends Snippet implements EntityListRec
 
 	@Override
 	public void onEntityListUpdated() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateCurrentView(Entity entity) {
 		// TODO Auto-generated method stub
 		
 	}
