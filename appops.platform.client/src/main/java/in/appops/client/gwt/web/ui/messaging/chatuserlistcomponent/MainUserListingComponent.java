@@ -168,6 +168,7 @@ public class MainUserListingComponent extends Composite implements MessengerEven
 	private void initialize() {
 		baseHp = new HorizontalPanel();
 		userSuggestionField = new SuggestionField();
+		userSuggestionField.setPropertyToDisplay(ContactConstant.NAME);
 		allSpecificBtn = new ToggleButton("All", "Specific");
 		AppUtils.EVENT_BUS.addHandler(MessengerEvent.TYPE, this);
 	}
@@ -198,7 +199,7 @@ public class MainUserListingComponent extends Composite implements MessengerEven
 	public void onMessengerEvent(MessengerEvent event) {
 		try{
 			if(event.getEventType() == MessengerEvent.ONUSERMSGRECEIVED){
-				Window.alert("User Message Received");
+				//Window.alert("User Message Received");
 			}
 		}
 		catch (Exception e) {
