@@ -4,13 +4,17 @@
 package in.appops.client.gwt.web.ui.messaging.spacelistcomponent;
 
 import in.appops.client.common.core.EntityListReceiver;
+import in.appops.client.common.event.AppUtils;
 import in.appops.client.gwt.web.ui.messaging.MessagingComponent;
-import in.appops.client.gwt.web.ui.messaging.datastructure.ChatEntity;
+import in.appops.client.gwt.web.ui.messaging.event.MessengerEvent;
+import in.appops.client.gwt.web.ui.messaging.event.MessengerEventHandler;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.broadcast.ChatEntity;
 import in.appops.platform.core.util.EntityList;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -22,7 +26,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author mahesh@ensarm.com
  * The Space listing will be done in this widget in the one below the other manner.
  */
-public class SpaceListWidget extends Composite implements EntityListReceiver {
+public class SpaceListWidget extends Composite implements EntityListReceiver,MessengerEventHandler {
 	
 	/**
 	 * This is the main panel that will contain the near by link and also the the space list along with 
@@ -93,16 +97,22 @@ public class SpaceListWidget extends Composite implements EntityListReceiver {
 				
 				@Override
 				public void onClick(ClickEvent event) {
-					//TODO : fetched Entity list of participants
-					EntityList participantList =null;
+					
+					//TODO : this should be passed nearby contact entity list
+					//and added them as participants
+					
 					ChatEntity entity = new ChatEntity();
 					String groupName = spaceNameAnchor.getHTML();
 					if(getParentMessagingComponent().getGrpMapEntityMap().get(groupName)==null){
+						EntityList participantList = new EntityList();
+						participantList.add(getParentMessagingComponent().getContactEntity());
+						
 						entity.setParticipantEntity(participantList);
 						entity.setHeaderTitle(groupName);
-						entity.setUserEntity(getParentMessagingComponent().getUserEntity());
+						
+						entity.setSpaceEntity(getParentMessagingComponent().getContactEntity());
 						entity.setIsGroupChat(true);
-
+						
 						getParentMessagingComponent().startNewChat(entity);
 					}
 					else{
@@ -173,6 +183,7 @@ public class SpaceListWidget extends Composite implements EntityListReceiver {
 	private void initialize() {
 		baseVp = new VerticalPanel();
 		centerBaseConatiner = new VerticalPanel();
+		AppUtils.EVENT_BUS.addHandler(MessengerEvent.TYPE, this);
 	}
 
 	@Override
@@ -225,6 +236,24 @@ public class SpaceListWidget extends Composite implements EntityListReceiver {
 	 */
 	public void setParentMessagingComponent(MessagingComponent parentMessagingComponent) {
 		this.parentMessagingComponent = parentMessagingComponent;
+	}
+
+	@Override
+	public void onMessengerEvent(MessengerEvent event) {
+		try{
+			if(event.getEventType() == MessengerEvent.ONSPACEMSGRECIEVED){
+				//Window.alert("Space Message Received");
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void updateCurrentView(Entity entity) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

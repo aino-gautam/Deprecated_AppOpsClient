@@ -1,14 +1,32 @@
 package in.appops.client.common.components;
 
+import in.appops.client.common.event.ActionEvent;
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.AttachmentEvent;
 import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.AttachmentEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.IntelliThoughtField;
+import in.appops.client.common.util.ActionUtils;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
+import in.appops.platform.core.util.EntityList;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -17,10 +35,10 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class IntelliThoughtWidget extends Composite implements Configurable, ClickHandler, FieldEventHandler{
+public class IntelliThoughtWidget extends Composite implements Configurable, ClickHandler, FieldEventHandler, AttachmentEventHandler{
 	private FlexTable basePanel;
 	private IntelliThoughtField intelliShareField;
-	private MediaField attachMediaField;
+	private MediaAttachWidget attachMediaField;
 	private SuggestionAction suggestionAction;
 	private HorizontalPanel mediaServicePanel;
 	private boolean isAttachedMediaField;
@@ -33,6 +51,8 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	public static String IS_ATTACHMEDIAFIELD = "isAttachMediaField";
 	public static String INTELLITHOUGHTOPTIONPANEL_PRIMARYSCSS = "intelliToughtOptionPanel";
 
+	private List<String> uploadedMediaId = null;
+	
 	public IntelliThoughtWidget(){
 		initialize();
 		initWidget(basePanel);
@@ -43,6 +63,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		mediaServicePanel = new HorizontalPanel();
 		intelliShareField = new IntelliThoughtField();
 		suggestionAction = new SuggestionAction();
+		uploadedMediaId = new ArrayList<String>();
 	}
 	
 	/**
@@ -64,7 +85,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 			basePanel.setWidget(5, 0, suggestionAction);
 			
 			intelliShareField.addFieldEventHandler(this);
-			
+			AppUtils.EVENT_BUS.addHandler(AttachmentEvent.TYPE, this);
 	}
 	
 	private void addPredefinedOptions() {
@@ -96,9 +117,9 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	}
 
 	private void createAttachMediaField() {
-		attachMediaField = new MediaField();
+		attachMediaField = new WebMediaAttachWidget();
 		attachMediaField.isFadeUpEffect(true);
-		attachMediaField.showMediaField();
+		attachMediaField.createUi();
 		
 		mediaServicePanel.add(attachMediaField);
 		attachMediaField.setVisible(false);
@@ -109,7 +130,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				attachMediaField.showMediaOption();
+				attachMediaField.createAttachmentUi();
 			}
 		});
 	}
@@ -121,8 +142,6 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		basePanel.setWidget(1, 0, intelliShareField);
 		basePanel.getFlexCellFormatter().setVerticalAlignment(1, 0, HasVerticalAlignment.ALIGN_TOP);
 		basePanel.getFlexCellFormatter().getElement(1, 0).setClassName("intelliThoughtFieldCol");
-		//fieldAndPredefineOptionPanel.add(intelliShareField);
-		//intelliShareField.addDomHandler(this, KeyUpEvent.getType());
 	}
 
 	public void setIntelliShareFieldConfiguration(Configuration conf){
@@ -143,32 +162,11 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	public void onClick(ClickEvent event) {
 		Widget source = (Widget) event.getSource();
 		if(source.equals(attachMediaField.getMedia())){
-			attachMediaField.showMediaOption();
+			//attachMediaField.showMediaOption();
 		}
 	}
 
-//	@Override
-//	public void onKeyUp(KeyUpEvent event) {
-//		char enteredChar = getCharCode(event.getNativeEvent()) ;
-//		if(event.getSource().equals(intelliShareField)){
-//			wordBuffer.append(Character.toString(enteredChar));
-//			
-//			if( !intelliShareField.getText().trim().equals("") && (enteredChar == ' ' || event.getNativeKeyCode() == KeyCodes.KEY_ENTER)){
-//				fireWordEnteredEvent(wordBuffer.toString());
-//				wordBuffer = new StringBuffer();
-//			}
-//			if(!intelliShareField.getText().trim().equals("") && !isAttachedMediaField){
-//				attachMediaField.setVisible(true);
-//				setAttachedMediaField(true);
-//			} else if(intelliShareField.getText().trim().equals("")){
-//				attachMediaField.setVisible(false);
-//				setAttachedMediaField(false);
-//			}
-//		}
-//	}
-
 	private void handleWordEnteredEvent(String string) {
-		
 		String intelliText  = intelliShareField.getText();
 		String[] words = intelliText.split("\\s+");
 		
@@ -178,19 +176,12 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 			messageButton.addStyleName("fadeInLeft");
 			messageButton.setVisible(true);
 		} 
-
 		
 		if(words.length == 2 && !postButton.isVisible()){
 			postButton.addStyleName("fadeInLeft");
 			postButton.setVisible(true);
 		}
-
-//		if(words.length == 5 && !messageButton.isVisible()){
-//
-//		}
-		
-		suggestionAction.showActionSuggestion(string);
-		
+		showActionSuggestion(string);
 	}
 
 	public boolean isAttachedMediaField() {
@@ -200,16 +191,6 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	public void setAttachedMediaField(boolean isAttachedMediaField) {
 		this.isAttachedMediaField = isAttachedMediaField;
 	}
-
-///*	private native char getCharCode(NativeEvent e)-{
-//	    var code = e.keyCode ? e.keyCode : e.charCode ? e.charCode : e.which ? e.which : void 0;
-//	    if( e.which ) {
-//	        if( code && ( ! ( e.ctrlKey || e.altKey ) ) ){
-//	            return code;
-//	        }
-//	    }
-//	    return void 0;
-//	}-;*/
 
 	@Override
 	public void onFieldEvent(FieldEvent event) {
@@ -226,5 +207,81 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		}
 	}
 
+	@Override
+	public void onAttachmentEvent(AttachmentEvent event) {
+		String blobId = (String) event.getEventData();
+		if(event.getEventType()==AttachmentEvent.ATTACHMENTINITIATED){
+
+		}else if(event.getEventType()==AttachmentEvent.ATTACHMENTCOMPLETED){
+			if(blobId!=null){
+				if(!uploadedMediaId.contains(blobId))
+					uploadedMediaId.add(blobId);
+			}
+		}else if(event.getEventType()==AttachmentEvent.ATTACHMENTCANCELLED){
+			if(blobId!=null){
+				if(uploadedMediaId.contains(blobId))
+					uploadedMediaId.remove(blobId);
+			}
+		}
+	}
 	
+	@SuppressWarnings("unchecked")
+	public void showActionSuggestion(String word){
+	
+		DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
+		DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
+
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("word", "%"+ word +"%");
+		
+		StandardAction action = new StandardAction(EntityList.class, "spacemanagement.SpaceManagementService.getSuggestionAction", paramMap);
+		dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
+			
+			public void onFailure(Throwable caught) {
+				Window.alert("operation failed ");
+				caught.printStackTrace();
+			}
+			
+			public void onSuccess(Result<EntityList> result) {
+				EntityList  entityList =  result.getOperationResult();
+				for(Entity entity : entityList ){
+					String widgetName = entity.getPropertyByName("widgetname");
+					final ActionLabel actionLabel = new ActionLabel(IActionLabel.WIDGET, widgetName);
+					actionLabel.setText(widgetName);
+					suggestionAction.addSuggestionAction(actionLabel);
+					
+					actionLabel.addClickHandler(new ClickHandler() {
+						
+						@Override
+						public void onClick(ClickEvent event) {
+							handleActionClick(actionLabel);
+						}
+					});
+				}
+			}
+		});
+	}
+	
+	private void handleActionClick(IActionLabel actionLabel) {
+		IActionContext context = new ActionContext();
+		context.setAction(ActionUtils.makeAction(actionLabel));
+		context.setSpaceId("4"); // Will be having the current space
+		context.setUploadedMedia(uploadedMediaId);
+		context.setIntelliThought(ActionUtils.makeIntelliThought(intelliShareField.getIntelliThought()));
+		
+		String token = ActionUtils.serializeToJson(ActionUtils.makeActionContext(context));
+		ActionEvent actionEvent = getActionEvent(ActionEvent.TRANSFORMWIDGET, token); 
+		fireActionEvent(actionEvent);
+	}
+	
+	private ActionEvent getActionEvent(int type, String data){
+		ActionEvent actionEvent = new ActionEvent();
+		actionEvent.setEventType(type);			
+		actionEvent.setEventData(data);
+		return actionEvent;
+	}
+	
+	private void fireActionEvent(ActionEvent actionEvent) {
+		AppUtils.EVENT_BUS.fireEvent(actionEvent);
+	}
 }
