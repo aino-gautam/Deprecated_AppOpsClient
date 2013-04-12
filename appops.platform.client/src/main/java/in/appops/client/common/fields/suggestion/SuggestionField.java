@@ -1,5 +1,7 @@
 package in.appops.client.common.fields.suggestion;
 
+import java.util.HashMap;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -74,5 +76,9 @@ public class SuggestionField extends Composite implements SelectionHandler<Sugge
 
 	public void setPropertyToDisplay(String propertyByName) {
 		oracle.setDisplayText(propertyByName);
+	}
+
+	public void setQueryRestrictions(HashMap<String, Object> map) {
+		oracle.setRestriction(map);
 	}
 }
