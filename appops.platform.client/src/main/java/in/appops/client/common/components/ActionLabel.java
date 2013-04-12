@@ -1,16 +1,51 @@
 package in.appops.client.common.components;
 
+import com.google.gwt.user.client.ui.Label;
+
 /**
+ * 
  * @author nitish@ensarm.com
+ * TODO - This will enhanced/changed as required.
  */
-public interface ActionLabel {
-	public static int WIDGET = 1;
-	public static int OPERATION = 2;
-	public static int QUERY = 3;
+public class ActionLabel extends Label implements IActionLabel{
+	private int bindType;
+	private String bindValue;
 	
-	public int getBindType();
-	public void setBindType(int bindType);
+	public static final int WIDGET = 1;
+	public static final int OPERATION = 2;
+	public static final int QUERY = 3;
 	
-	public String getBindValue();
-	public void setBindValue(String bindValue);
+//	public ActionLabelImpl(){ }
+	
+	public ActionLabel(int bindType, String bindValue){
+		this.bindType = bindType;
+		this.bindValue = bindValue;
+		
+		setText(bindValue);
+	}
+
+	@Override
+	public int getBindType() {
+		return bindType;
+	}
+
+	@Override
+	public void setBindType(int bindType) {
+		this.bindType = bindType;
+	}
+
+	@Override
+	public String getBindValue() {
+		return bindValue;
+	}
+
+	@Override
+	public void setBindValue(String bindValue) {
+		this.bindValue = bindValue;
+	}
+	
+	@Override
+	public void setText(String text) {
+		super.setText(text);
+	}
 }

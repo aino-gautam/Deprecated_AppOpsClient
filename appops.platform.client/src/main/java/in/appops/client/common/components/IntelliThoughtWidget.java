@@ -7,6 +7,7 @@ import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.AttachmentEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.IntelliThoughtField;
+import in.appops.client.common.util.ActionUtils;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -37,7 +38,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class IntelliThoughtWidget extends Composite implements Configurable, ClickHandler, FieldEventHandler, AttachmentEventHandler{
 	private FlexTable basePanel;
 	private IntelliThoughtField intelliShareField;
-	private MediaField attachMediaField;
+	private MediaAttachWidget attachMediaField;
 	private SuggestionAction suggestionAction;
 	private HorizontalPanel mediaServicePanel;
 	private boolean isAttachedMediaField;
@@ -116,9 +117,9 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	}
 
 	private void createAttachMediaField() {
-		attachMediaField = new MediaField();
+		attachMediaField = new WebMediaAttachWidget();
 		attachMediaField.isFadeUpEffect(true);
-		attachMediaField.showMediaField();
+		attachMediaField.createUi();
 		
 		mediaServicePanel.add(attachMediaField);
 		attachMediaField.setVisible(false);
@@ -129,7 +130,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				attachMediaField.showMediaOption();
+				attachMediaField.createAttachmentUi();
 			}
 		});
 	}
@@ -161,7 +162,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	public void onClick(ClickEvent event) {
 		Widget source = (Widget) event.getSource();
 		if(source.equals(attachMediaField.getMedia())){
-			attachMediaField.showMediaOption();
+			//attachMediaField.showMediaOption();
 		}
 	}
 
@@ -245,7 +246,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 				EntityList  entityList =  result.getOperationResult();
 				for(Entity entity : entityList ){
 					String widgetName = entity.getPropertyByName("widgetname");
-					final ActionLabelImpl actionLabel = new ActionLabelImpl(ActionLabel.WIDGET, widgetName);
+					final ActionLabel actionLabel = new ActionLabel(IActionLabel.WIDGET, widgetName);
 					actionLabel.setText(widgetName);
 					suggestionAction.addSuggestionAction(actionLabel);
 					
@@ -261,13 +262,14 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		});
 	}
 	
-	private void handleActionClick(ActionLabel actionLabel) {
-		ActionContext context = new ActionContextImpl();
-		context.setAction(AppUtils.makeAction(actionLabel));
+	private void handleActionClick(IActionLabel actionLabel) {
+		IActionContext context = new ActionContext();
+		context.setAction(ActionUtils.makeAction(actionLabel));
 		context.setSpaceId("4"); // Will be having the current space
 		context.setUploadedMedia(uploadedMediaId);
+		context.setIntelliThought(ActionUtils.makeIntelliThought(intelliShareField.getIntelliThought()));
 		
-		String token = AppUtils.serializeToJson(AppUtils.makeActionContext(context));
+		String token = ActionUtils.serializeToJson(ActionUtils.makeActionContext(context));
 		ActionEvent actionEvent = getActionEvent(ActionEvent.TRANSFORMWIDGET, token); 
 		fireActionEvent(actionEvent);
 	}
