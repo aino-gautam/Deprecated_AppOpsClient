@@ -11,6 +11,8 @@ import in.appops.platform.server.core.services.platform.coreplatformservice.cons
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -44,12 +46,18 @@ public class ServiceIconSnippet extends Snippet implements ClickHandler {
 	
 			e.printStackTrace();
 		}
-		serviceIcon.setStylePrimaryName("serviceEntityIcon");
+		//serviceIcon.setStylePrimaryName("serviceEntityIcon");
 		labelPanel.setStylePrimaryName("serviceEntityTitlePanel");
 		basePanel.setStylePrimaryName("serviceEntityBasePanel");
 		basePanel.add(serviceIcon);
 		labelPanel.add(serviceEntityTitle);
 		basePanel.add(labelPanel);
+		
+		labelPanel.setCellHorizontalAlignment(serviceEntityTitle, HasHorizontalAlignment.ALIGN_CENTER);
+		labelPanel.setCellVerticalAlignment(serviceEntityTitle, HasVerticalAlignment.ALIGN_TOP);
+		
+		basePanel.setCellHorizontalAlignment(serviceIcon, HasHorizontalAlignment.ALIGN_CENTER);
+		basePanel.setCellVerticalAlignment(serviceIcon,HasVerticalAlignment.ALIGN_TOP);
 		
 		basePanel.addDomHandler(this, ClickEvent.getType());
 	}
