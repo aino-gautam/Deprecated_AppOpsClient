@@ -242,12 +242,18 @@ public class SpaceListWidget extends Composite implements EntityListReceiver,Mes
 	public void onMessengerEvent(MessengerEvent event) {
 		try{
 			if(event.getEventType() == MessengerEvent.ONSPACEMSGRECIEVED){
-				Window.alert("Space Message Received");
+				//Window.alert("Space Message Received");
 			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void updateCurrentView(Entity entity) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
