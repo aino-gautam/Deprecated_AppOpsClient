@@ -127,8 +127,8 @@ public class EntityListModel implements AppOpsModel {
 	public void setBroadcastEntity(Entity entity) {
 		for(Entity ent : currentEntityList){
 			if(ent.getType() == entity.getType()){
-				long entId = ent.getPropertyByName("id");
-				long entityId = entity.getPropertyByName("id");
+				long entId = (Long)ent.getPropertyByName("id");
+				long entityId = (Long)entity.getPropertyByName("id");
 				
 				if(entId == entityId){
 					getEntityListReceiver().updateCurrentView(entity);

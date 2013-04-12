@@ -275,7 +275,12 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 			Key<Long> value = contactEntity.getPropertyByName(ContactConstant.ID);
 			String val =  value.getKeyValue().toString();
 			
-			String url = GWT.getHostPageBaseURL() + "gwtComet?entity_id="+val;
+			String typeName = contactEntity.getType().getTypeName();
+			typeName = typeName.replace(".", "#");
+			String[] splittedArray = typeName.split("#");
+			String type = splittedArray[splittedArray.length-1];
+			
+			String url = GWT.getHostPageBaseURL() + "gwtComet?entity_id="+val+"&entity_type="+type;
 			AtmosphereClient client = new AtmosphereClient(url,serializer, this);
 			client.start();
 			

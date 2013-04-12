@@ -5,29 +5,36 @@ import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
-public class HomeSnippet extends Composite {
+public class HomeSnippet extends Snippet {
 
-	private Entity entity;
 	private HorizontalPanel basePanel = new HorizontalPanel();
 
 	private LabelField titleLabel;
 
+	public HomeSnippet() {
+		initWidget(basePanel);
+	}
+	
 	public HomeSnippet(Entity entity) {
 
 		this.entity = entity;
 		initWidget(basePanel);
+		
+	}
+	
+	@Override 
+	public void initialize(){
 		createView();
 	}
 
 	public void createView() {
 
 		titleLabel = new LabelField();
-		titleLabel.setFieldValue("Appops Client");
-		titleLabel.setConfiguration(getLabelFieldConfiguration(true,
-				"homeSnippetTitleLabel", null, null));
+		//String name = entity.getProperty("name").getValue().toString();
+		titleLabel.setFieldValue("Default home for service");
+		titleLabel.setConfiguration(getLabelFieldConfiguration(true,"homeSnippetTitleLabel", null, null));
 		try {
 			titleLabel.createField();
 		} catch (AppOpsException e) {
