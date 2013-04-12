@@ -1,5 +1,7 @@
 package in.appops.client.common.fields;
 
+import java.util.HashMap;
+
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.fields.slider.field.NumericRangeSliderField;
 import in.appops.client.common.fields.slider.field.StringRangeSliderField;
@@ -39,6 +41,7 @@ public class StateField extends Composite implements Field, ChangeHandler{
 	public static final String PROPERTY_BY_FIELD_NAME = "propertyByFieldName";
 	public static final String STATEFIELD_QUERY_MAXRESULT = "stateFieldQueryMaxresult";
 	public static final String STATEFIELD_PROPERTY_TO_DISPLAY = "propertyToDisplay";
+	public static final String STATEFIELD_QUERY_RESTRICTION = "queryRestriction";
 	
 	public StateField(){
 	}
@@ -95,6 +98,9 @@ public class StateField extends Composite implements Field, ChangeHandler{
 			}
 			if(getConfiguration().getPropertyByName(STATEFIELD_PROPERTY_TO_DISPLAY) != null) {
 				appopsSuggestionBox.setPropertyToDisplay(getConfiguration().getPropertyByName(STATEFIELD_PROPERTY_TO_DISPLAY).toString());
+			}
+			if(getConfiguration().getPropertyByName(STATEFIELD_QUERY_RESTRICTION) != null) {
+				appopsSuggestionBox.setQueryRestrictions((HashMap<String, Object>) getConfiguration().getPropertyByName(STATEFIELD_QUERY_RESTRICTION));
 			}
 			
 			initWidget(appopsSuggestionBox);
