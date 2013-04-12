@@ -1,20 +1,10 @@
 package in.appops.client.common.components;
 
-import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
-import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
-import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
-import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
-import in.appops.platform.core.entity.Entity;
-import in.appops.platform.core.operation.Result;
-import in.appops.platform.core.util.EntityList;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -51,43 +41,13 @@ public class SuggestionAction extends Composite{
 	private void createUI() {
 		basePanel.setStylePrimaryName("suggestionLabel");
 	}
-
-	@SuppressWarnings("unchecked")
-	public void showActionSuggestion(String word){
 	
-		DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
-		DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
-
-		HashMap<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("word", "%"+ word +"%");
+	public void addSuggestionAction(ActionLabel actionLabel){
+//		Label suggestionLabel = new Label(suggestionAction);
+		actionLabel.setStylePrimaryName("appops-intelliThought-Label");
+		actionLabel.addStyleName("fadeInLeft");
 		
-		StandardAction action = new StandardAction(EntityList.class, "spacemanagement.SpaceManagementService.getSuggestionAction", paramMap);
-		dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
-			
-			
-			public void onFailure(Throwable caught) {
-				Window.alert("operation failed ");
-				caught.printStackTrace();
-			}
-			
-			
-			public void onSuccess(Result<EntityList> result) {
-				EntityList suggestionActionList = result.getOperationResult();
-				
-				for(Entity suggestionActionEntity : suggestionActionList){
-					String suggestion = suggestionActionEntity.getPropertyByName("widgetname");
-					addSuggestionAction(suggestion);
-				}
-			}
-		});
-	}
-	
-	private void addSuggestionAction(String suggestionAction){
-		Label suggestionLabel = new Label(suggestionAction);
-		suggestionLabel.setStylePrimaryName("appops-intelliThought-Label");
-		suggestionLabel.addStyleName("fadeInLeft");
-		
-		WidgetManagement widgetPlacement = new WidgetManagement(0, 0, suggestionLabel);
+		WidgetManagement widgetPlacement = new WidgetManagement(0, 0, actionLabel);
 
 		manageSuggestionActionPlacement();
 		placeWidget(widgetPlacement);

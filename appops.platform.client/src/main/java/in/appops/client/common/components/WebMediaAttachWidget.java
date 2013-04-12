@@ -1,5 +1,7 @@
 package in.appops.client.common.components;
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.AttachmentEvent;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.client.common.snippet.Snippet;
 import in.appops.client.common.snippet.SnippetFactory;
@@ -7,6 +9,8 @@ import in.appops.platform.core.entity.Entity;
 import in.appops.platform.server.core.services.media.constant.MediaConstant;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import gwtupload.client.IFileInput.FileInputType;
 import gwtupload.client.IUploadStatus.Status;
@@ -26,29 +30,32 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 	private VerticalPanel mainPanel = null;
 	private HorizontalPanel subPanel = null;
 	private HashMap<String, HorizontalPanel> uploadedBlobIdVsSnippetMap = null;
+	private List<String> uploadedMediaId = null;
 	
 	public WebMediaAttachWidget(){
+		initializeComponent();
 	}
 
-	@Override
-	void createUi() {
-		initializeComponent();
-		initWidget(mainPanel);
-		
-		mainPanel.setStylePrimaryName("appops-webMediaAttachment");
-		mainPanel.setSpacing(10);
-		
-		MultiUploader multiUploader = getMultiUploader();
-		mainPanel.add(multiUploader);
-		
-		subPanel.setSpacing(5);
-		mainPanel.add(subPanel);
-	}
+//	@Override
+//	public	void createUi() {
+//		initializeComponent();
+//		initWidget(mainPanel);
+//		
+//		mainPanel.setStylePrimaryName("appops-webMediaAttachment");
+//		mainPanel.setSpacing(10);
+//		
+//		MultiUploader multiUploader = getMultiUploader();
+//		mainPanel.add(multiUploader);
+//		
+//		subPanel.setSpacing(5);
+//		mainPanel.add(subPanel);
+//	}
 
 	public void initializeComponent(){
 		mainPanel = new VerticalPanel();
 		subPanel = new HorizontalPanel();
 		uploadedBlobIdVsSnippetMap = new HashMap<String, HorizontalPanel>();
+		uploadedMediaId = new LinkedList<String>();
 	}
 
 	public MultiUploader getMultiUploader(){
@@ -82,6 +89,8 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 					/** This is the saved blob Id */
 					String savedBlobId = info.message;
 					createSnippet(savedBlobId);
+					
+					AppUtils.EVENT_BUS.fireEvent(new AttachmentEvent(2, savedBlobId));
 				}
 			}
 		});
@@ -107,6 +116,9 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 		
 		subPanel.add(iconPanel);
 		uploadedBlobIdVsSnippetMap.put(blobId, iconPanel);
+		if(!uploadedMediaId.contains(blobId)){
+			uploadedMediaId.add(blobId);
+		}
 		
 		crossImage.addClickHandler(new ClickHandler() {
 			@Override
@@ -115,7 +127,10 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 				String blbId = crossImage.getBlobId();
 				if(uploadedBlobIdVsSnippetMap.containsKey(blbId)){
 					HorizontalPanel snippetPanel = uploadedBlobIdVsSnippetMap.get(blbId);
+					uploadedBlobIdVsSnippetMap.remove(blbId);
+					uploadedMediaId.remove(blbId);
 					subPanel.remove(snippetPanel);
+					AppUtils.EVENT_BUS.fireEvent(new AttachmentEvent(3, blbId));
 				}
 			}
 		});
@@ -129,7 +144,10 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 			String blobId = info.message;
 			if(uploadedBlobIdVsSnippetMap.containsKey(blobId)){
 				HorizontalPanel snippet = uploadedBlobIdVsSnippetMap.get(blobId);
+				uploadedMediaId.remove(blobId);
+				uploadedBlobIdVsSnippetMap.remove(blobId);
 				subPanel.remove(snippet);
+				AppUtils.EVENT_BUS.fireEvent(new AttachmentEvent(3, blobId));
 			}
 		}
 	};
@@ -140,6 +158,42 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 
 	public void setUploadedBlobIdVsSnippetMap(HashMap<String, HorizontalPanel> uploadedBlobIdVsSnippetMap) {
 		this.uploadedBlobIdVsSnippetMap = uploadedBlobIdVsSnippetMap;
+	}
+
+	public List<String> getUploadedMediaId() {
+		return uploadedMediaId;
+	}
+
+	public void setUploadedMediaId(List<String> uploadedMediaId) {
+		this.uploadedMediaId = uploadedMediaId;
+	}
+
+	@Override
+	public	void createAttachmentUi() {
+		basePanel.add(mainPanel);
+		mainPanel.setStylePrimaryName("appops-webMediaAttachment");
+		mainPanel.setSpacing(10);
+		
+		MultiUploader multiUploader = getMultiUploader();
+		mainPanel.add(multiUploader);
+		
+		subPanel.setSpacing(5);
+		mainPanel.add(subPanel);
+		
+		if(uploadedMediaId != null && !uploadedMediaId.isEmpty()){
+			addToAttachments();
+		}
+	}
+
+	private void addToAttachments() {
+		for(String blobId : uploadedMediaId ){
+			createSnippet(blobId);
+		}
+	}
+
+	@Override
+	public	void setMediaAttachments(List<String> media) {
+		this.uploadedMediaId = media;
 	}
 
 }

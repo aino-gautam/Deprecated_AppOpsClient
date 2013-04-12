@@ -3,11 +3,14 @@
  */
 package in.appops.client.gwt.web.ui.messaging.chatuserlistcomponent;
 
+import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.fields.suggestion.AppopsSuggestion;
 import in.appops.client.common.fields.suggestion.SuggestionField;
 import in.appops.client.gwt.web.ui.messaging.MessagingComponent;
-import in.appops.client.gwt.web.ui.messaging.datastructure.ChatEntity;
+import in.appops.client.gwt.web.ui.messaging.event.MessengerEvent;
+import in.appops.client.gwt.web.ui.messaging.event.MessengerEventHandler;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.broadcast.ChatEntity;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 
@@ -15,6 +18,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SuggestOracle;
@@ -26,7 +30,7 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
  * The actual bottom user listing widget that holds the user listing widget along with the 
  * user search widget and  toggle button to show specific and all users.
  */
-public class MainUserListingComponent extends Composite{
+public class MainUserListingComponent extends Composite implements MessengerEventHandler{
 
 	/**
 	 * main container to hold the user listing widget and the user suggestion widget and toggle button
@@ -93,6 +97,9 @@ public class MainUserListingComponent extends Composite{
 			baseHp.add(userSuggestionField);
 			baseHp.add(allSpecificBtn);
 			
+			baseHp.setCellHorizontalAlignment(userSuggestionField, HorizontalPanel.ALIGN_RIGHT);
+			baseHp.setCellHorizontalAlignment(allSpecificBtn, HorizontalPanel.ALIGN_RIGHT);
+			
 			userSuggestionField.getSuggestBox().addSelectionHandler(new SelectionHandler<SuggestOracle.Suggestion>() {
 				
 				@Override
@@ -107,18 +114,23 @@ public class MainUserListingComponent extends Composite{
 					EntityList participantList = new EntityList();
 					participantList.add(accountent);
 					
+					participantList.add(getParentMessagingComponent().getContactEntity());
+					participantList.add(accountent);
+					
 					ChatEntity entity = new ChatEntity();
+					String currenUserName = parentMessagingComponent.getContactEntity().getPropertyByName(ContactConstant.NAME).toString();
 					String aliasName = accountent.getPropertyByName(ContactConstant.NAME).toString();
-					if(getParentMessagingComponent().getGrpMapEntityMap().get(aliasName)==null){
+					
+					String headerTitle = currenUserName +"##"+ aliasName;
+					if(getParentMessagingComponent().getGrpMapEntityMap().get(headerTitle)==null){
 						entity.setParticipantEntity(participantList);
-						entity.setHeaderTitle(aliasName);
-						entity.setUserEntity(getParentMessagingComponent().getUserEntity());
+						entity.setHeaderTitle(headerTitle);
 						entity.setIsGroupChat(false);
 
 						getParentMessagingComponent().startNewChat(entity);
 					}
 					else{
-						ChatEntity chatEnt = getParentMessagingComponent().getGrpMapEntityMap().get(aliasName);
+						ChatEntity chatEnt = getParentMessagingComponent().getGrpMapEntityMap().get(headerTitle);
 						getParentMessagingComponent().startNewChat(chatEnt);
 					}
 				}
@@ -156,7 +168,9 @@ public class MainUserListingComponent extends Composite{
 	private void initialize() {
 		baseHp = new HorizontalPanel();
 		userSuggestionField = new SuggestionField();
+		userSuggestionField.setPropertyToDisplay(ContactConstant.NAME);
 		allSpecificBtn = new ToggleButton("All", "Specific");
+		AppUtils.EVENT_BUS.addHandler(MessengerEvent.TYPE, this);
 	}
 	
 	/**
@@ -179,5 +193,17 @@ public class MainUserListingComponent extends Composite{
 	 */
 	public void setParentMessagingComponent(MessagingComponent parentMessagingComponent) {
 		this.parentMessagingComponent = parentMessagingComponent;
+	}
+
+	@Override
+	public void onMessengerEvent(MessengerEvent event) {
+		try{
+			if(event.getEventType() == MessengerEvent.ONUSERMSGRECEIVED){
+				//Window.alert("User Message Received");
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

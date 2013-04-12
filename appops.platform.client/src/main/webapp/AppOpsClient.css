@@ -708,12 +708,6 @@ html .GWTUpld .prgbar-msg {
 	filter: alpha(opacity = 30);
 }
 
-.snippetPanel{
-	border:1px solid;
-	background-color: lavender;
-	width: 100%;
-	padding: 5px;
-}
 
 .reminderTitlePanel{
 	width: 100%;
@@ -734,7 +728,7 @@ color: blue;
 }
 
 .listComponentPanel{
-	width: 700px;
+	width: 600px;
 	height: 500px;
 }
 
@@ -746,4 +740,72 @@ color: blue;
 	z-index: 2;
 	bottom: 5px;
 	right: 10px;
+}
+
+.serviceEntityTitle {
+	
+	margin-left: 15px;
+	font-size: 13px;
+	margin-top: 2px;
+	font-weight: bold;
+	color: white;
+}
+
+.serviceEntityIcon {
+	/* opacity: 0.4;
+	filter: alpha(opacity = 50); */
+	width: 103px;
+	height: 102px;
+}
+
+.serviceEntityTitlePanel {
+	 width: 100px;
+	height: 20px;
+	border-style: ridge;
+	border-width: 2px;
+	border-color: black;2
+	color: white;
+	display: block;
+	line-height: 1.25em;
+	max-height: 2.5em;
+	overflow: hidden;
+	background-color: black;
+	opacity: 0.6;
+	margin-top: -23px;
+	border-radius: 2px;
+}
+
+.serviceEntityBasePanel {
+	margin-right: auto;
+	margin-left: auto;
+	border-color: grey;
+	border-style: ridge;
+	border-width: 3px;
+	width: 100px;
+	height: 100px;
+	border-radius: 5px;
+
+}
+
+@-webkit-keyframes fadeInRight {
+	0% {
+		opacity: 0;
+		-webkit-transform: translateX(60px);
+	}
+	100% {
+		opacity: 1;
+		-webkit-transform: translateX(0);
+	}
+}
+.fadeInRight {
+	-webkit-animation-duration: 2s;
+	-webkit-animation-name: fadeInRight;
+}
+
+.snippetPanel{
+   background-color: #f2f2f2;
+   border-top: 2px solid;
+   border-top-color: #d1d3d4;
+   width: 100%;
+	padding: 5px;
 }
