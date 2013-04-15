@@ -126,13 +126,13 @@ public class EntityListModel implements AppOpsModel {
 	@Override
 	public void setBroadcastEntity(Entity entity) {
 		for(Entity ent : currentEntityList){
-			if(ent.getType() == entity.getType()){
-				long entId = (Long)ent.getPropertyByName("id");
-				long entityId = (Long)entity.getPropertyByName("id");
+			if(ent.getType().getTypeName().equalsIgnoreCase(entity.getType().getTypeName())){
+				//long entId = (Long)ent.getPropertyByName("id");
+				//long entityId = (Long)entity.getPropertyByName("id");
 				
-				if(entId == entityId){
+				//if(entId == entityId){
 					getEntityListReceiver().updateCurrentView(entity);
-				}
+				//}
 			}
 		}
 	}
