@@ -15,6 +15,10 @@ import com.google.gwt.xml.client.XMLParser;
 public class PostContentParser {
 	
 	FlowPanel flowPanel ;
+	
+	public PostContentParser() {
+		// TODO Auto-generated constructor stub
+	}
 		
 	public FlowPanel getSelfMsgComponent(String xmlString){
 		Document document = XMLParser.parse(xmlString);

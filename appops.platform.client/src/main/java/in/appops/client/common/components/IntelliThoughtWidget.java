@@ -7,12 +7,17 @@ import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.AttachmentEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.IntelliThoughtField;
-import in.appops.client.common.util.ActionUtils;
+import in.appops.client.common.util.AppEnviornment;
+import in.appops.client.common.util.EntityToJsonClientConvertor;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.constants.propertyconstants.SpaceConstants;
+import in.appops.platform.core.constants.typeconstants.TypeConstants;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.type.MetaType;
+import in.appops.platform.core.operation.InitiateActionContext;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.shared.Configuration;
@@ -21,10 +26,10 @@ import in.appops.platform.core.util.EntityList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
@@ -51,7 +56,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	public static String IS_ATTACHMEDIAFIELD = "isAttachMediaField";
 	public static String INTELLITHOUGHTOPTIONPANEL_PRIMARYSCSS = "intelliToughtOptionPanel";
 
-	private List<String> uploadedMediaId = null;
+	private ArrayList<String> uploadedMediaId = null;
 	
 	public IntelliThoughtWidget(){
 		initialize();
@@ -246,7 +251,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 				EntityList  entityList =  result.getOperationResult();
 				for(Entity entity : entityList ){
 					String widgetName = entity.getPropertyByName("widgetname");
-					final ActionLabel actionLabel = new ActionLabel(IActionLabel.WIDGET, widgetName);
+					final ActionLabel actionLabel = new ActionLabel(IActionLabel.WIDGET, entity);
 					actionLabel.setText(widgetName);
 					suggestionAction.addSuggestionAction(actionLabel);
 					
@@ -262,15 +267,29 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		});
 	}
 	
-	private void handleActionClick(IActionLabel actionLabel) {
-		IActionContext context = new ActionContext();
-		context.setAction(ActionUtils.makeAction(actionLabel));
-		context.setSpaceId("4"); // Will be having the current space
-		context.setUploadedMedia(uploadedMediaId);
-		context.setIntelliThought(ActionUtils.makeIntelliThought(intelliShareField.getIntelliThought()));
+	private void handleActionClick(ActionLabel actionLabel) {
 		
-		String token = ActionUtils.serializeToJson(ActionUtils.makeActionContext(context));
-		ActionEvent actionEvent = getActionEvent(ActionEvent.TRANSFORMWIDGET, token); 
+		InitiateActionContext context = new InitiateActionContext();
+		context.setType(new MetaType("ActionContext"));
+		
+		Entity spaceEntity = new Entity();
+		spaceEntity.setType(new MetaType(TypeConstants.SPACE));
+		spaceEntity.setPropertyByName(SpaceConstants.ID, 3);
+		spaceEntity.setPropertyByName(SpaceConstants.NAME, "Pune");
+		
+		context.setSpace(AppEnviornment.getCurrentSpace());
+		context.setUploadedMedia(uploadedMediaId);
+		context.setIntelliThought(intelliShareField.getIntelliThought());
+		context.setIntelliThought(intelliShareField.getIntelliThought());
+		context.setAction(actionLabel.getText());
+		
+		JSONObject token = EntityToJsonClientConvertor.createJsonFromEntity(context);
+//		Entity ent = new JsonToEntityConverter().getConvertedEntity(token);
+//		InitiateActionContext cont = (InitiateActionContext)ent;
+//		String action = cont.getAction();
+//		ArrayList<String> media = cont.getUploadedMedia();
+//		Entity space = cont.getSpace();
+		ActionEvent actionEvent = getActionEvent(ActionEvent.TRANSFORMWIDGET, token.toString()); 
 		fireActionEvent(actionEvent);
 	}
 	
