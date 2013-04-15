@@ -164,16 +164,16 @@
 		<!-- <dependency> <groupId>appops_platform</groupId> <artifactId>appops_server</artifactId> 
 			<version>14.02.2013</version> </dependency> -->
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>komal_appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>11.04.2013</version>
+			<version>12.04.2013</version>
 		</dependency>
 
 		<!-- This should be used when using a final version of the jar -->
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>komal_appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>10.04.2013</version>
+			<version>12.04.2013</version>
 		</dependency>
 
 		<dependency>
