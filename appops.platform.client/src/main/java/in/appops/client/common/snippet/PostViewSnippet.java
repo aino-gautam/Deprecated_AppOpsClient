@@ -59,6 +59,7 @@ public class PostViewSnippet extends Snippet {
 	private final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 	private ArrayList<String> responseoptionList = null;
+	private Entity userEntity;
 	
 	public PostViewSnippet() {
 		initWidget(basePanel);
@@ -76,8 +77,9 @@ public class PostViewSnippet extends Snippet {
 	}
 	
 	public void createUi(){
-		
-		
+		userEntity = null;
+		String blobUrl = null;
+				
 		HorizontalPanel imagePanel = new HorizontalPanel();
 		 postContentPanel = new VerticalPanel();
 		 spaceIconPlusTimePanel = new HorizontalPanel();
@@ -86,8 +88,14 @@ public class PostViewSnippet extends Snippet {
 		BlobDownloader blobDownloader = new BlobDownloader();
 		//TODO currently all this values getting from dummy post entity need to modify it in future
 		Property<Serializable> property=(Property<Serializable>) entity.getProperty(PostConstant.CREATEDBY);
-		final Entity userEntity=(Entity) property.getValue();
-		String blobUrl=blobDownloader.getIconDownloadURL(userEntity.getPropertyByName("imgBlobId").toString());
+		if(property.getValue() instanceof Long){
+			blobUrl=blobDownloader.getIconDownloadURL("irqSN52SzHwHksn9NQFKxEIDYl0RWF3RJz6m45WSDzsafhuCSihRDg%3D%3D");
+		} else{
+			userEntity=(Entity) property.getValue();
+			blobUrl=blobDownloader.getIconDownloadURL(userEntity.getPropertyByName("imgBlobId").toString());
+		}
+		
+		
 		
 		imageField.setConfiguration(getImageFieldConfiguration(blobUrl));
 		try {
@@ -107,7 +115,11 @@ public class PostViewSnippet extends Snippet {
 			
 			@Override
 			public void onMouseOver(MouseOverEvent event) {
-				imageField.setAltText(userEntity.getPropertyByName("username").toString());
+				if(userEntity == null){
+					imageField.setAltText("Image not available");
+				} else{
+					imageField.setAltText(userEntity.getPropertyByName("username").toString());
+				}
 				
 			}
 		});
