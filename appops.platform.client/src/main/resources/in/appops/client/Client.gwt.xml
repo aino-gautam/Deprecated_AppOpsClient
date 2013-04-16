@@ -8,6 +8,7 @@
 	<inherits name="com.google.gwt.inject.Inject"/>
 	<inherits name="gwtupload.GWTUpload"/>
 	<inherits name="com.google.web.bindery.autobean.AutoBean"/>
+	<inherits name="com.google.gwt.json.JSON" />
 	<stylesheet src="Upload.css"/>
 	
 	<source path="client" />
