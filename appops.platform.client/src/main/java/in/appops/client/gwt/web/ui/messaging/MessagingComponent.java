@@ -20,6 +20,7 @@ import in.appops.client.gwt.web.ui.messaging.spacelistcomponent.SpaceListModel;
 import in.appops.client.gwt.web.ui.messaging.spacelistcomponent.SpaceListWidget;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
+import in.appops.platform.core.entity.broadcast.BroadcastEntity;
 import in.appops.platform.core.entity.broadcast.ChatEntity;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 
@@ -335,7 +336,8 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 		try{
 			for(Object obj : messages) {
 				if(obj instanceof Serializable){
-					ChatEntity chatEntity = (ChatEntity) obj;
+					BroadcastEntity broadcastEntity = (BroadcastEntity) obj;
+					ChatEntity chatEntity = (ChatEntity) broadcastEntity.getBroadcastEntity();
 					String title  = chatEntity.getHeaderTitle();
 
 					if(getGrpMapEntityMap().isEmpty()){
