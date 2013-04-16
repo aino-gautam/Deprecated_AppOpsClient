@@ -1,5 +1,7 @@
 package in.appops.client.common.components;
 
+import in.appops.platform.core.entity.Entity;
+
 /**
  * @author nitish@ensarm.com
  */
@@ -11,6 +13,6 @@ public interface IActionLabel {
 	int getBindType();
 	void setBindType(int bindType);
 	
-	String getBindValue();
-	void setBindValue(String bindValue);
+	Entity getBindValue();
+	void setBindValue(Entity bindValue);
 }
