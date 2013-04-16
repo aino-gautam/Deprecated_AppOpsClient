@@ -1,5 +1,7 @@
 package in.appops.client.common.components;
 
+import in.appops.platform.core.entity.Entity;
+
 import com.google.gwt.user.client.ui.Label;
 
 /**
@@ -9,7 +11,7 @@ import com.google.gwt.user.client.ui.Label;
  */
 public class ActionLabel extends Label implements IActionLabel{
 	private int bindType;
-	private String bindValue;
+	private Entity bindValue;
 	
 	public static final int WIDGET = 1;
 	public static final int OPERATION = 2;
@@ -17,11 +19,9 @@ public class ActionLabel extends Label implements IActionLabel{
 	
 //	public ActionLabelImpl(){ }
 	
-	public ActionLabel(int bindType, String bindValue){
+	public ActionLabel(int bindType, Entity bindValue){
 		this.bindType = bindType;
 		this.bindValue = bindValue;
-		
-		setText(bindValue);
 	}
 
 	@Override
@@ -35,17 +35,13 @@ public class ActionLabel extends Label implements IActionLabel{
 	}
 
 	@Override
-	public String getBindValue() {
+	public Entity getBindValue() {
 		return bindValue;
 	}
 
 	@Override
-	public void setBindValue(String bindValue) {
+	public void setBindValue(Entity bindValue) {
 		this.bindValue = bindValue;
 	}
 	
-	@Override
-	public void setText(String text) {
-		super.setText(text);
-	}
 }

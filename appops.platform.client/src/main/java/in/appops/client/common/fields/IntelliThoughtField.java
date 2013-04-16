@@ -1,6 +1,5 @@
 package in.appops.client.common.fields;
 
-import in.appops.client.common.components.IIntelliThought;
 import in.appops.client.common.components.LinkedSuggestion;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
@@ -9,6 +8,7 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.operation.IntelliThought;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -367,8 +367,8 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 		
 	}
 	
-	public IIntelliThought getIntelliThought(){
-		IIntelliThought intelliThought = new IIntelliThought.IntelliThought();
+	public IntelliThought getIntelliThought(){
+		IntelliThought intelliThought = new IntelliThought();
 		
 		intelliThought.setIntelliText(getText());
 		intelliThought.setIntelliHtml(getHTML());
