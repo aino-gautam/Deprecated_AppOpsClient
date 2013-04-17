@@ -209,12 +209,15 @@ public class JsonToEntityConverter {
 					Double lat,lng;
 					JSONObject intellitextJson = (JSONObject) geoLocJson.get("intellitext");
 					JSONObject intellihtmlJson = (JSONObject) geoLocJson.get("intellihtml");
+					JSONArray intelliLinkedEntities = (JSONArray) geoLocJson.get("linkedEntities");
 					
 					String intellitextStr = intellitextJson.get("String").toString();
 					String intellihtmlStr = intellihtmlJson.get("String").toString();
 					IntelliThought intelliThought = new IntelliThought();
 					intelliThought.setIntelliText(intellitextStr);
 					intelliThought.setIntelliHtml(intellihtmlStr);
+					
+					intelliThought.setLinkedEntities((ArrayList<Entity>)decodeJsonArray(intelliLinkedEntities));
 
 					entity.setPropertyByName(propName, intelliThought);
 				}
@@ -252,6 +255,25 @@ public class JsonToEntityConverter {
 
 		}
 		return entity;
+	}
+
+	private ArrayList<Entity> decodeJsonArray(JSONArray jsonArray){
+		ArrayList<Entity> list = null;
+		try{
+			list = new ArrayList<Entity>();
+			for (int i = 0; i < jsonArray.size(); i++) {
+				JSONValue v = jsonArray.get(i);
+				if(v.isObject() != null){
+					Entity entity =  getConvertedEntity(v.isObject());
+					list.add(entity);
+				}
+			}
+			
+		}
+		catch (Exception e) {
+		}
+		return list;
+		
 	}
 	
 	
