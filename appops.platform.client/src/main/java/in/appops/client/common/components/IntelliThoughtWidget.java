@@ -9,6 +9,7 @@ import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.IntelliThoughtField;
 import in.appops.client.common.util.AppEnviornment;
 import in.appops.client.common.util.EntityToJsonClientConvertor;
+import in.appops.client.common.util.JsonToEntityConverter;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -279,7 +280,6 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		
 		context.setSpace(AppEnviornment.getCurrentSpace());
 		context.setUploadedMedia(uploadedMediaId);
-		context.setIntelliThought(intelliShareField.getIntelliThought());
 		context.setIntelliThought(intelliShareField.getIntelliThought());
 		context.setAction(actionLabel.getText());
 		
