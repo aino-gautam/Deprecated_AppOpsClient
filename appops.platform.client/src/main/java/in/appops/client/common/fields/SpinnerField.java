@@ -152,7 +152,7 @@ public class SpinnerField extends Composite implements Field, ClickHandler{
 
 	private void decrementCount() {
 		int currentCount = Integer.valueOf(textbox.getText());
-		if(currentCount >= 0) {
+		if(currentCount > 0) {
 			currentCount = currentCount - 1;
 			textbox.setText(String.valueOf(currentCount));
 		}
@@ -180,5 +180,16 @@ public class SpinnerField extends Composite implements Field, ClickHandler{
 		} else {
 			textbox.setText("100%");
 		}
+	}
+	
+	public String getValue() {
+		if(fieldMode.equals(SPINNERFIELD_VALUESPINNER)) {
+			return textbox.getText();
+		} else if(fieldMode.equals(SPINNERFIELD_PERCENTSPINNER)) {
+			String value = textbox.getText();
+			String valueArr[] = value.split("%");
+			return valueArr[0];
+		}
+		return null;
 	}
 }
