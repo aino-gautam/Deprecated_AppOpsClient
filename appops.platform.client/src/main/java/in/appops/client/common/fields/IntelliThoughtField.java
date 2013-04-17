@@ -1,6 +1,6 @@
 package in.appops.client.common.fields;
 
-import in.appops.client.common.components.IIntelliThought;
+import in.appops.client.common.components.IntelliThoughtSuggestion;
 import in.appops.client.common.components.LinkedSuggestion;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
@@ -9,11 +9,15 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.constants.typeconstants.TypeConstants;
+import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.operation.IntelliThought;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +48,11 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 	private HorizontalPanel basePanel;
 	private Element intelliText;
 	private static int caretPosition;  
+	private ArrayList<Entity> linkedUsers;
+	private ArrayList<Entity> linkedSpaces;
+	private ArrayList<Entity> linkedEntities;
+
+	
 	
 	public static final String INTELLITEXTFIELD_VISIBLELINES = "intelliShareFieldVisibleLines";
 	public static final String INTELLITEXTFIELD_PRIMARYCSS = "intelliShareFieldPrimaryCss";
@@ -60,6 +69,9 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 	private void initialize() {
 		basePanel = new HorizontalPanel();
 		linkedSuggestion = new LinkedSuggestion(true);
+		linkedEntities = new ArrayList<Entity>();
+		linkedUsers = new ArrayList<Entity>();
+		linkedSpaces = new ArrayList<Entity>();
 	}
 	
 	@Override
@@ -242,8 +254,12 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 
 			if(linkedSuggestion.isShowing()){
 				event.preventDefault();
-				String text = linkedSuggestion.getCurrentSelection();
-				linkSuggestion(text);
+				
+				IntelliThoughtSuggestion suggestion = linkedSuggestion.getCurrentSelection();
+				Entity selectedEnt = suggestion.getEntity();
+				collectSelectedSuggestion(selectedEnt);
+
+				linkSuggestion(suggestion.getDisplayText());
 				linkedSuggestion.hide();
 			}
 			return;
@@ -268,6 +284,21 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 		
 	}
 	
+	private void collectSelectedSuggestion(Entity entity) {
+		String typeName = entity.getType().getTypeName();
+		typeName = typeName.replace(".", "#");
+		String[] splittedArray = typeName.split("#");
+		String actualTypeProp = splittedArray[splittedArray.length-1];
+		
+		linkedEntities.add(entity);
+		if(actualTypeProp.equals(TypeConstants.SPACETYPE)){
+			linkedSpaces.add(entity);
+		} else if(actualTypeProp.equals(TypeConstants.USER)){
+			linkedUsers.add(entity);
+		}
+		
+	}
+
 	private void linkSuggestion(String text) {
 		String elementValue = this.getText();
 		String textTillCaretPosition = elementValue.substring(0, caretPosition);
@@ -310,7 +341,7 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 				}
 			}
 		}
-		if(wordBeingTyped.length() >  2) {
+		if(wordBeingTyped.length() >  2 && Character.isUpperCase(wordBeingTyped.charAt(0))) {
 
 //TODO This is fire event to call the server			
 			FieldEvent threeCharEntered = getFieldEvent(FieldEvent.THREE_CHAR_ENTERED, wordBeingTyped);
@@ -367,11 +398,14 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 		
 	}
 	
-	public IIntelliThought getIntelliThought(){
-		IIntelliThought intelliThought = new IIntelliThought.IntelliThought();
+	public IntelliThought getIntelliThought(){
+		IntelliThought intelliThought = new IntelliThought();
 		
 		intelliThought.setIntelliText(getText());
 		intelliThought.setIntelliHtml(getHTML());
+		intelliThought.setLinkedEntities(linkedEntities);
+		intelliThought.setLinkedSpaces(linkedSpaces);
+		intelliThought.setLinkedUsers(linkedUsers);
 		
 		return intelliThought;
 	}
