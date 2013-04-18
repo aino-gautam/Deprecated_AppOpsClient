@@ -192,11 +192,13 @@ public class PostViewSnippet extends RowSnippet {
 	@SuppressWarnings("unchecked")
 	private void getResponsesForWidget(final int eventX, final int eventY) {
 		Query query = new Query();
-		query.setQueryName("getResponsesForWidgetId");
+		query.setQueryName("getResponsesForWidget");
 		//query.setListSize(4);
 		
+		String widgetName = getEntity().getPropertyByName(PostConstant.WIDGETNAME);
+		
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("widgetid", 5L);	//TODO hardcoded widget id..
+		paramMap.put("widgetname", widgetName);
 		query.setQueryParameterMap(paramMap);
 		
 		Map parameters = new HashMap();
