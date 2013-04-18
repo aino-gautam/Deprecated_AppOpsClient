@@ -60,8 +60,7 @@ public class PostViewSnippet extends RowSnippet {
 	private Entity userEntity;
 	
 	public PostViewSnippet() {
-		setHeight("100%");
-		setWidth("100%");
+		
 	}
 	
 	@Override
@@ -172,8 +171,8 @@ public class PostViewSnippet extends RowSnippet {
 			}
 		});
 		
-		postSnippetPanel.setHeight("100%");
-		postSnippetPanel.setWidth("100%");
+		/*postSnippetPanel.setHeight("100%");
+		postSnippetPanel.setWidth("100%");*/
 		
 		add(postSnippetPanel,DockPanel.CENTER);
 		
