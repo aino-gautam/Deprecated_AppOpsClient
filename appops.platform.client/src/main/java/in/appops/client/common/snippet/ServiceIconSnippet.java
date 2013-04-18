@@ -5,7 +5,6 @@ import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.util.BlobDownloader;
 import in.appops.platform.core.constants.typeconstants.TypeConstants;
-import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.server.core.services.platform.coreplatformservice.constant.ServiceConstant;
@@ -19,7 +18,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class ServiceIconSnippet extends CardSnippet implements ClickHandler {
+public class ServiceIconSnippet extends CardSnippet {
 
 	private VerticalPanel basePanel = new VerticalPanel();
 	private Image serviceIcon;
@@ -61,7 +60,17 @@ public class ServiceIconSnippet extends CardSnippet implements ClickHandler {
 		basePanel.setCellHorizontalAlignment(serviceIcon, HasHorizontalAlignment.ALIGN_CENTER);
 		basePanel.setCellVerticalAlignment(serviceIcon,HasVerticalAlignment.ALIGN_TOP);
 		
-		addDomHandler(this, ClickEvent.getType());
+		//addDomHandler(this, ClickEvent.getType());
+		
+		basePanel.addDomHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				serviceIconClickEvent(event);
+				
+			}
+		},  ClickEvent.getType());
+		
 		add(basePanel,DockPanel.CENTER);
 	}
 	
@@ -75,8 +84,8 @@ public class ServiceIconSnippet extends CardSnippet implements ClickHandler {
 		return configuration;
 	}
 
-	@Override
-	public void onClick(ClickEvent event) {
+	
+	public void serviceIconClickEvent(ClickEvent event) {
 		ActionEvent actionEvent  = new ActionEvent();
 		actionEvent.setEventType(ActionEvent.LOADENTITYHOME);
 		String servicename = getEntity().getProperty(ServiceConstant.NAME).getValue().toString();

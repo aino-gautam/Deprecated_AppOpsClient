@@ -22,7 +22,7 @@ public class CardSnippet extends DockPanel implements Snippet,ClickHandler,Mouse
 	private Entity entity;
 	private String type;
 	private Image checkMarkSelectedImage = new Image("images/checkMarkSelected.png");
-	private Image checkMarkImage = new Image("images/checkMarkNotSelected.png");
+	private Image checkMarkNotSelectedImage = new Image("images/checkMarkNotSelected.png");
 	VerticalPanel checkMarkPanel = new VerticalPanel();
 	private Configuration configuration;	
 	
@@ -64,20 +64,26 @@ public class CardSnippet extends DockPanel implements Snippet,ClickHandler,Mouse
 		addDomHandler(this, MouseOutEvent.getType());
 		addDomHandler(this, MouseOverEvent.getType());
 		
-		checkMarkPanel.add(checkMarkImage);
+		checkMarkPanel.add(checkMarkNotSelectedImage);
 		
-		checkMarkImage.setSize("12px", "12px");
-		checkMarkSelectedImage.setSize("12px", "12px");
+		checkMarkNotSelectedImage.setStylePrimaryName("checkMarkImageInGridPanel");
+		checkMarkSelectedImage.setStylePrimaryName("checkMarkImageInGridPanel");
 		
-		checkMarkPanel.setCellVerticalAlignment(checkMarkImage, ALIGN_TOP);
+		checkMarkPanel.setCellVerticalAlignment(checkMarkNotSelectedImage, ALIGN_TOP);
 		
-		checkMarkImage.addClickHandler(this);
+		checkMarkPanel.setWidth("12px");
+		
+		checkMarkNotSelectedImage.addClickHandler(this);
 		checkMarkSelectedImage.addClickHandler(this);
-		checkMarkImage.setVisible(false);
+		checkMarkNotSelectedImage.setVisible(false);
 		
 		if((Boolean)getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)){
 			add(checkMarkPanel,DockPanel.EAST);
 		}
+				
+		setSpacing(5);
+		
+		setStylePrimaryName("cardSnippetPanel");
 	}
 
 	@Override
@@ -87,8 +93,8 @@ public class CardSnippet extends DockPanel implements Snippet,ClickHandler,Mouse
 		SelectionEvent selectionEvent = new SelectionEvent();
 		
 		if(widget instanceof Image){
-			if(widget.equals(checkMarkImage)){
-				checkMarkPanel.remove(checkMarkImage);
+			if(widget.equals(checkMarkNotSelectedImage)){
+				checkMarkPanel.remove(checkMarkNotSelectedImage);
 				checkMarkPanel.add(checkMarkSelectedImage);
 				checkMarkPanel.setCellVerticalAlignment(checkMarkSelectedImage, ALIGN_TOP);
 				
@@ -98,8 +104,8 @@ public class CardSnippet extends DockPanel implements Snippet,ClickHandler,Mouse
 			}else if(widget.equals(checkMarkSelectedImage)){
 				
 				checkMarkPanel.remove(checkMarkSelectedImage);
-				checkMarkPanel.add(checkMarkImage);
-				checkMarkPanel.setCellVerticalAlignment(checkMarkImage, ALIGN_TOP);
+				checkMarkPanel.add(checkMarkNotSelectedImage);
+				checkMarkPanel.setCellVerticalAlignment(checkMarkNotSelectedImage, ALIGN_TOP);
 				selectionEvent.setEventType(SelectionEvent.DESELECTED);
 				selectionEvent.setEventData(entity);
 			}
@@ -125,14 +131,14 @@ public class CardSnippet extends DockPanel implements Snippet,ClickHandler,Mouse
 
 	@Override
 	public void onMouseOver(MouseOverEvent event) {
-		checkMarkImage.setVisible(true);
+		checkMarkNotSelectedImage.setVisible(true);
 	}
 
 
 
 	@Override
 	public void onMouseOut(MouseOutEvent event) {
-		checkMarkImage.setVisible(false);
+		checkMarkNotSelectedImage.setVisible(false);
 		
 	}
 
@@ -150,6 +156,23 @@ public class CardSnippet extends DockPanel implements Snippet,ClickHandler,Mouse
 	public void setActionContext(ActionContext actionContext) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void selectSnippet(){
+		//if(!checkMarkSelectedImage.isVisible()){
+			checkMarkPanel.remove(checkMarkNotSelectedImage);
+			checkMarkPanel.add(checkMarkSelectedImage);
+			checkMarkPanel.setCellVerticalAlignment(checkMarkSelectedImage, ALIGN_TOP);
+		//}
+		
+	}
+	
+	public void deSelectSnippet(){
+		//if(checkMarkSelectedImage.isVisible()){
+			checkMarkPanel.remove(checkMarkSelectedImage);
+			checkMarkPanel.add(checkMarkNotSelectedImage);
+			checkMarkPanel.setCellVerticalAlignment(checkMarkNotSelectedImage, ALIGN_TOP);
+		//}
 	}
 
 }
