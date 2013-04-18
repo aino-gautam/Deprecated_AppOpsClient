@@ -2,27 +2,24 @@ package in.appops.client.common.snippet;
 
 import in.appops.client.common.core.EntityListModel;
 import in.appops.client.common.core.EntityListReceiver;
-import in.appops.client.common.snippet.ListSnippet;
-import in.appops.client.common.snippet.Snippet;
-import in.appops.platform.core.constants.propertyconstants.UserConstants;
 import in.appops.platform.core.entity.Entity;
-import in.appops.platform.core.entity.Key;
-import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.query.Query;
+import in.appops.platform.core.operation.ActionContext;
+import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 
 import java.util.HashMap;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class CalendarServiceHomeSnippet extends Snippet implements EntityListReceiver {
+public class CalendarServiceHomeSnippet extends VerticalPanel implements Snippet,EntityListReceiver {
 	
-	private VerticalPanel basePanel = new VerticalPanel();
 	private ListSnippet listSnippet ;
+	private Entity entity;
+	private String type;
 	
 		
 	public CalendarServiceHomeSnippet() {
-		initWidget(basePanel);
 	}
 	
 	@Override
@@ -38,7 +35,7 @@ public class CalendarServiceHomeSnippet extends Snippet implements EntityListRec
 		
 		
 		listSnippet= new ListSnippet();
-		basePanel.add(listSnippet);
+		add(listSnippet);
 		
 		Query query = new Query();
 		query.setQueryName("getAllRemindersOfUser");
@@ -89,6 +86,52 @@ public class CalendarServiceHomeSnippet extends Snippet implements EntityListRec
 
 	@Override
 	public void updateCurrentView(Entity entity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Entity getEntity() {
+		return entity;
+	}
+
+	@Override
+	public void setEntity(Entity entity) {
+		this.entity = entity;
+		
+	}
+
+	@Override
+	public String getType() {
+		return type;
+	}
+
+	@Override
+	public void setType(String type) {
+		this.type = type;
+		
+	}
+
+	@Override
+	public void setConfiguration(Configuration configuration) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Configuration getConfiguration() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ActionContext getActionContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setActionContext(ActionContext actionContext) {
 		// TODO Auto-generated method stub
 		
 	}
