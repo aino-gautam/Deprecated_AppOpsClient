@@ -5,33 +5,35 @@ import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.util.BlobDownloader;
 import in.appops.platform.core.constants.typeconstants.TypeConstants;
+import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.server.core.services.platform.coreplatformservice.constant.ServiceConstant;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class ServiceIconSnippet extends Snippet implements ClickHandler {
+public class ServiceIconSnippet extends CardSnippet implements ClickHandler {
 
 	private VerticalPanel basePanel = new VerticalPanel();
 	private Image serviceIcon;
 	private LabelField serviceEntityTitle;
 	private HorizontalPanel labelPanel= new HorizontalPanel();
 	
-	
 	public ServiceIconSnippet() {
 		
-		initWidget(basePanel);
-
 	}
 	
+	@Override
 	public void initialize(){
+		
+		super.initialize();
 		
 		String blobId = getEntity().getProperty("blobId").getValue().toString();
 		BlobDownloader blobDownloader = new BlobDownloader();
@@ -59,7 +61,8 @@ public class ServiceIconSnippet extends Snippet implements ClickHandler {
 		basePanel.setCellHorizontalAlignment(serviceIcon, HasHorizontalAlignment.ALIGN_CENTER);
 		basePanel.setCellVerticalAlignment(serviceIcon,HasVerticalAlignment.ALIGN_TOP);
 		
-		basePanel.addDomHandler(this, ClickEvent.getType());
+		addDomHandler(this, ClickEvent.getType());
+		add(basePanel,DockPanel.CENTER);
 	}
 	
 	private Configuration getLabelFieldConfiguration(boolean allowWordWrap,
