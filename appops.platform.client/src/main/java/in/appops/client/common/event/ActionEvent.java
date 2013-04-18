@@ -20,6 +20,7 @@ public class ActionEvent extends GwtEvent<ActionEvent.ActionEventHandler> {
 	public static final int EXECUTEOPERATION = 2;
 	public static final int BINDQUERY = 3;
 	public static final int LOADENTITYHOME = 4;
+	public static final int IN = 5;
 	
 	public ActionEvent(){ }
 
