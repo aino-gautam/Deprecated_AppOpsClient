@@ -3,15 +3,28 @@
  */
 package in.appops.client.gwt.web.ui.messaging;
 
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import in.appops.client.gwt.web.ui.messaging.datastructure.ChatEntity;
+import org.atmosphere.gwt.client.AtmosphereClient;
+import org.atmosphere.gwt.client.AtmosphereListener;
+
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Property;
+import in.appops.platform.core.entity.broadcast.ChatEntity;
+import in.appops.platform.core.operation.Result;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
+import in.appops.platform.server.core.services.entitybroadcast.constant.BroadcastConstant;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -23,36 +36,34 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author mahesh@ensarm.com			
  * Actual chat display will be done here though this component.
  */
-public class ChatDisplayWidget extends ScrollPanel{
+public class ChatDisplayWidget extends VerticalPanel /*implements AtmosphereListener*/{
+
+	//private AtmosphereClient client;
+	private final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+	
+	private String CHATSTRING = "chatText";
 
 	/**
-	 * The header and the chat displayer will be present here.
-	 */
-	private VerticalPanel basePanel;
-	
-	/**
-	 * Cchat will be displayed her on this panel.
+	 * Chat will be displayed her on this panel.
 	 */
 	private VerticalPanel actualDisplayPanel;
-	
+	private ScrollPanel actualDisplayScrollPanel;
 	/**
 	 * The header panel which will contain the message/chat toggle button ,
 	 * chat title and cross image to close the chat.
 	 * 
 	 */
-	private HorizontalPanel headerConatiner;
+	private HorizontalPanel headerContainer;
 	
 	/**
 	 * At a particular time will have specific chat entity to maintain chat record
 	 */
 	private ChatEntity chatEntity;
 	
-	/**
-	 * This is maintain to have an unique id for chat record map, 
-	 * which is present in the chat entity.
-	 * 
-	 */
-	private Long counter = 0L;
+	
+	private MessagingComponent parentMessagingComponent;
+	
 	
 	public ChatDisplayWidget(){
 		initialize();
@@ -65,15 +76,13 @@ public class ChatDisplayWidget extends ScrollPanel{
 	 * @param entity
 	 */
 	public void createUi(ChatEntity entity) {
-		headerConatiner.clear();
+		headerContainer.clear();
 		actualDisplayPanel.clear();
 		
-		headerConatiner.setStylePrimaryName("fullWidth");
+		headerContainer.setStylePrimaryName("fullWidth");
 		try {
 			this.chatEntity = entity;
 			String headerText = entity.getHeaderTitle();
-			//	Image upImage = new Image("Message");
-			//	Image downImage = new Image("Chat");
 			final ToggleButton toggleBtn = new ToggleButton("Message", "Chat");
 			toggleBtn.setStylePrimaryName("messageChatToogle");
 			toggleBtn.addClickHandler(new ClickHandler() {
@@ -90,12 +99,12 @@ public class ChatDisplayWidget extends ScrollPanel{
 
 			});
 
-			headerConatiner.add(toggleBtn);
+			headerContainer.add(toggleBtn);
 			Label chatHeaderLabel = new Label();
 			chatHeaderLabel.setText(headerText);
 			chatHeaderLabel.setTitle(headerText);
 			chatHeaderLabel.setStylePrimaryName("chatHeaderLabel");
-			headerConatiner.add(chatHeaderLabel);
+			headerContainer.add(chatHeaderLabel);
 
 			Image crossImage = new Image("images/closeIconBlackNormal.png");
 			crossImage.setTitle("Close chat");
@@ -109,11 +118,11 @@ public class ChatDisplayWidget extends ScrollPanel{
 				}
 			});
 
-			headerConatiner.add(crossImage);
+			headerContainer.add(crossImage);
 
-			headerConatiner.setCellHorizontalAlignment(toggleBtn, HorizontalPanel.ALIGN_LEFT);
-			headerConatiner.setCellHorizontalAlignment(chatHeaderLabel, HorizontalPanel.ALIGN_LEFT);
-			headerConatiner.setCellHorizontalAlignment(crossImage, HorizontalPanel.ALIGN_RIGHT);
+			headerContainer.setCellHorizontalAlignment(toggleBtn, HorizontalPanel.ALIGN_LEFT);
+			headerContainer.setCellHorizontalAlignment(chatHeaderLabel, HorizontalPanel.ALIGN_LEFT);
+			headerContainer.setCellHorizontalAlignment(crossImage, HorizontalPanel.ALIGN_RIGHT);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -127,11 +136,12 @@ public class ChatDisplayWidget extends ScrollPanel{
 	 * @param text
 	 * @param chatInitialEnt
 	 */
+	@SuppressWarnings("unchecked")
 	public void addChatMessage(String text, Entity chatInitialEnt ){
 		try{
 			Entity chatTextEntity = new Entity();
 			Property<String> chatTextProp = new Property<String>(text);
-			chatTextEntity.setProperty("chatText", chatTextProp);
+			chatTextEntity.setProperty(CHATSTRING, chatTextProp);
 
 
 			HashMap<Long, HashMap<Entity, Entity>> chatMap = getChatEntity().getChatRecordMap();
@@ -141,11 +151,18 @@ public class ChatDisplayWidget extends ScrollPanel{
 			}
 
 			HashMap<Entity, Entity> tempMap =  new HashMap<Entity, Entity>();
+			Integer count =  chatMap.size();
+			Long counter = Long.parseLong(count.toString());
 			tempMap.put(chatInitialEnt, chatTextEntity);
 			chatMap.put(counter,tempMap);
-			counter++;
 			getChatEntity().setChatRecordMap(chatMap);
 
+			Entity broadcastEntity = new Entity();
+			broadcastEntity.setProperty("chat_initiated_user", chatInitialEnt);
+			broadcastEntity.setProperty("chat_text" , chatTextEntity);
+			
+			//client.broadcast(new RealTimeSyncEvent(broadcastEntity));
+			
 			HorizontalPanel horizontalPanel = new HorizontalPanel();
 
 			String name = chatInitialEnt.getPropertyByName(ContactConstant.NAME).toString();
@@ -157,6 +174,27 @@ public class ChatDisplayWidget extends ScrollPanel{
 			chatTextLbl.setStylePrimaryName("chatTextLbl");
 			horizontalPanel.add(chatTextLbl);
 			actualDisplayPanel.add(horizontalPanel);
+			
+			actualDisplayScrollPanel.setVerticalScrollPosition(actualDisplayScrollPanel.getMaximumVerticalScrollPosition());
+
+			
+			Map parameters = new HashMap();
+			parameters.put("chatEntity", getChatEntity());
+			
+			StandardAction action = new StandardAction(Entity.class, "messenger.MessengerService.saveChatEntity", parameters);
+			dispatch.execute(action, new AsyncCallback<Result>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(Result result) {
+					Entity savedEntity = (Entity) result.getOperationResult();
+					//TODO : need to update further					
+				}
+			});
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -191,19 +229,22 @@ public class ChatDisplayWidget extends ScrollPanel{
 	 * Any global variable must be initialised here.
 	 */
 	private void initialize() {
-		basePanel = new  VerticalPanel();
-		basePanel.setStylePrimaryName("fullWidth");
-
+		actualDisplayScrollPanel = new ScrollPanel();
 		actualDisplayPanel = new VerticalPanel();
-		headerConatiner = new HorizontalPanel();
+		headerContainer = new HorizontalPanel();
+		actualDisplayScrollPanel.setStylePrimaryName("fullWidth");
+		actualDisplayScrollPanel.addStyleName("scrollHeightForChat");
+		
 		setStylePrimaryName("fullWidth");
 		actualDisplayPanel.setStylePrimaryName("actualChatContainer");
 		actualDisplayPanel.addStyleName("fullWidth");
-		headerConatiner.setStylePrimaryName("fullWidth");
-		basePanel.add(headerConatiner);
+		
+		headerContainer.setStylePrimaryName("fullWidth");
+		add(headerContainer);
 
-		basePanel.add(actualDisplayPanel);
-		add(basePanel);
+		actualDisplayScrollPanel.add(actualDisplayPanel);
+		add(actualDisplayScrollPanel);
+	
 	}
 
 	/**
@@ -218,8 +259,9 @@ public class ChatDisplayWidget extends ScrollPanel{
 	 * on the actual display panel.
 	 * @param userEnt
 	 * @param chatTextEntity
+	 * @param isChatRecieved 
 	 */
-	public void refreshChatUi(Entity userEnt, Entity chatTextEntity) {
+	public void refreshChatUi(Entity userEnt, Entity chatTextEntity, boolean isChatRecieved) {
 		try{
 			HorizontalPanel horizontalPanel = new HorizontalPanel();
 			
@@ -228,9 +270,13 @@ public class ChatDisplayWidget extends ScrollPanel{
 			userNameLbl.setStylePrimaryName("userChattingLbl");
 			horizontalPanel.add(userNameLbl);
 
-			String text = chatTextEntity.getPropertyByName("chatText");
+			String text = chatTextEntity.getPropertyByName(CHATSTRING);
 			Label chatTextLbl = new  Label(text);
 			chatTextLbl.setStylePrimaryName("chatTextLbl");
+			
+			if(isChatRecieved)
+				chatTextLbl.addStyleName("chatRecievedLbl");
+			
 			horizontalPanel.add(chatTextLbl);
 			actualDisplayPanel.add(horizontalPanel);
 		}
@@ -239,4 +285,72 @@ public class ChatDisplayWidget extends ScrollPanel{
 		}
 	}
 
+//	@Override
+/*	public void onMessage(List<?> messages) {
+		System.out.println("Message....");
+
+			for(Object obj : messages) {
+				if(obj instanceof Serializable){
+					//RealTimeSyncEvent event = (RealTimeSyncEvent)obj;
+					
+					HashMap<Entity, Entity> recordMap = new HashMap<Entity, Entity>();
+					
+					Entity broadcastEntity = (Entity) obj;
+					
+					Entity userEnt = (Entity) broadcastEntity.getProperty(BroadcastConstant.CHATINITIATEDUSER);
+					Entity chatTextEntity = (Entity) broadcastEntity.getProperty(BroadcastConstant.CHATTEXTENTITY);
+					
+					recordMap.put(userEnt, chatTextEntity);
+					
+					Entity currentEntity = chatEntity.getUserEntity();
+					String curUserEmail = currentEntity.getPropertyByName(ContactConstant.EMAILID).toString().trim();
+					
+					String chtInitEmail = userEnt.getPropertyByName(ContactConstant.EMAILID).toString().trim();
+					
+					HashMap<Long, HashMap<Entity, Entity>> chatMap = getChatEntity().getChatRecordMap();
+					
+					if(chatMap == null){
+						chatMap = new HashMap<Long, HashMap<Entity, Entity>>();
+					}
+					
+					Integer count =  chatMap.size();
+					Long counter = Long.parseLong(count.toString());
+					
+					chatMap.put(counter,recordMap);
+					getChatEntity().setChatRecordMap(chatMap);
+					
+					if(!curUserEmail.equals(chtInitEmail)){
+						refreshChatUi(userEnt, chatTextEntity, true);
+					}
+				}
+			}
+	}*/
+
+	/**
+	 * @return the parentMessagingComponent
+	 */
+	public MessagingComponent getParentMessagingComponent() {
+		return parentMessagingComponent;
+	}
+
+	/**
+	 * @param parentMessagingComponent the parentMessagingComponent to set
+	 */
+	public void setParentMessagingComponent(MessagingComponent parentMessagingComponent) {
+		this.parentMessagingComponent = parentMessagingComponent;
+	}
+
+/*	*//**
+	 * @return the client
+	 *//*
+	public AtmosphereClient getClient() {
+		return client;
+	}
+
+	*//**
+	 * @param client the client to set
+	 *//*
+	public void setClient(AtmosphereClient client) {
+		this.client = client;
+	}*/
 }

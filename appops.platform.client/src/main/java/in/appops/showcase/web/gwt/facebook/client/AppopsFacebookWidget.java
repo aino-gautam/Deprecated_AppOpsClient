@@ -88,11 +88,11 @@ public class AppopsFacebookWidget extends Composite {
 				boolean isRegistered = Boolean.parseBoolean(val.toString());
 
 				if(isRegistered){
-					Window.alert("User Found");
+					//Window.alert("User Found");
 					//TODO : pass on this json for logged in event for further processing
 				}
 				else{
-					Window.alert("User Found but doesnt exist ::"+ userData.toString());
+					//Window.alert("User Found but doesnt exist ::"+ userData.toString());
 					//TODO : sent json for user regieration 
 				}
 			}

@@ -1,14 +1,21 @@
 package in.appops.client.common.fields;
 
+import in.appops.client.common.core.EntityReceiver;
+import in.appops.client.common.core.LocationProvider;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.GeoLocation;
 import in.appops.platform.core.shared.Configuration;
 
 import java.util.List;
 
 import com.google.code.gwt.geolocation.client.Coordinates;
+import com.google.code.gwt.geolocation.client.Geolocation;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.maps.client.base.HasLatLng;
 import com.google.gwt.maps.client.base.LatLng;
 import com.google.gwt.maps.client.event.Event;
@@ -32,8 +39,9 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 
-public class LocationSelector extends Composite implements Field {
+public class LocationSelector extends Composite implements Field,EntityReceiver, ClickHandler {
 
 	private Configuration configuration;
 	private String fieldValue;
@@ -49,7 +57,10 @@ public class LocationSelector extends Composite implements Field {
 	private Image searchIconImage ;
 	private Label currentLocationLabel ;
 	private Image doneBtn;
-	private Image chooseLocationBtn;;
+	private Image chooseLocationBtn;
+	private FlexTable  flexTable ;
+	private HorizontalPanel hpPanel ;
+	
 	public static final String LOCATION_SELECTOR_POPUPPANEL = "locationSelectorPopupPanel";
 	public static final String LOCATION_SELECTOR_CHOOSE_LOCATION_BTN = "chooseLocationBtn";
 	public static final String LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD = "currentLocationField";
@@ -63,6 +74,9 @@ public class LocationSelector extends Composite implements Field {
 	public static final String HAND_CURSOR = "appops-handCursor";
 	public static final String CHANGE_LOCATION_IMAGE_URL = "changelocationUrl";
 	public static final String DONE_SELECTION_IMAGE_URL = "doneSelctionUrl";
+	public static final String WEB_LOCATION_SELECTOR="webLocationSelector";
+	public static final String TOUCH_LOCATION_SELECTOR="touchLocationSelector";
+	
 	private String mapWidth;
 	private String mapHeight;
 	private boolean isMapMode = false;
@@ -85,7 +99,7 @@ public class LocationSelector extends Composite implements Field {
 		basePanel.clear();
 		
 	 if(!isMapMode){	
-		 FlexTable  flexTable = new FlexTable(); 
+		 flexTable = new FlexTable(); 
 		
 		currentLocationTextField = new TextField();
 		currentLocationTextField.setFieldValue("Current location");
@@ -132,34 +146,13 @@ public class LocationSelector extends Composite implements Field {
 			currentLocationHpPanel.setStylePrimaryName(getConfiguration().getPropertyByName(LOCATION_SELECTOR_POPUPPANEL).toString());
 		
 		try{
-			mapField = new MapField(latLng);
-			mapField.setMapHeight(mapHeight);
-			mapField.setMapWidth(mapWidth);
-			mapField.setMapZoomParameter(Integer.parseInt(getConfiguration().getPropertyByName(MAP_ZOOM).toString()));
-			mapField.createMapUi();
+			if (Geolocation.isSupported()) {
+				LocationProvider.getInstance().getLocation(LocationProvider.WEB, this);
+						
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
-		flexTable.setWidget(2, 0,mapField);
-		
-		
-		
-		
-		basePanel.add(flexTable);
-		basePanel.setCellHorizontalAlignment(flexTable, HasHorizontalAlignment.ALIGN_CENTER);
-		basePanel.setCellVerticalAlignment(flexTable, HasVerticalAlignment.ALIGN_MIDDLE);
-		mapField.getAddressAndSet(latLng);
-		
-		Timer timer = new Timer() {
-			
-			@Override
-			public void run() {
-				setSelectedLocation();
-				
-			}
-		};timer.schedule(2000);
-		
 		
 		
 		chooseLocationBtn.addClickHandler(new  ClickHandler() {
@@ -172,29 +165,7 @@ public class LocationSelector extends Composite implements Field {
 		});
 		
 		
-		MouseEventCallback mapClickCallback = new MouseEventCallback() {
-	          
-			@Override
-				public void callback(HasMouseEvent event) {
-					latLng =(LatLng) event.getLatLng();
-				mapField.getMarker().setPosition(event.getLatLng());
-				mapField.getMapWidget().getMap().panTo(event.getLatLng());
-				mapField.getAddressAndSet(event.getLatLng());
-				 
-				 Timer timer = new Timer() {
-						
-						@Override
-						public void run() {
-							setSelectedLocation();
-							
-						}
-					};timer.schedule(1000);
-				 
-				}
-
-			
-		};
-		Event.addListener(mapField.getMapWidget().getMap(), "click", mapClickCallback);
+		
 	 }else{
 		 
 		 HorizontalPanel horizontalPanel = new HorizontalPanel();
@@ -213,127 +184,85 @@ public class LocationSelector extends Composite implements Field {
 		 basePanel.add(horizontalPanel);
 		 
 		 try{
-				mapField = new MapField(latLng);
-				mapField.setMapHeight(getConfiguration().getPropertyByName(MAP_HEIGHT).toString());
-				mapField.setMapWidth(getConfiguration().getPropertyByName(MAP_WIDTH).toString());
-				mapField.setMapZoomParameter(Integer.parseInt(getConfiguration().getPropertyByName(MAP_ZOOM).toString()));
-				mapField.createMapUi();
-				mapField.getAddressAndSet(latLng);
-				Timer timer = new Timer() {
-					
-					@Override
-					public void run() {
-						currentLocationLabel.setText("");
-						currentLocationLabel.setText(mapField.getChoosenAddress());
-						setCurrentSelectedLocation(mapField.getChoosenAddress());
-						
-					}
-				};timer.schedule(2000);
+			 if (Geolocation.isSupported()) {
+					LocationProvider.getInstance().getLocation(LocationProvider.WEB, this);
+			 			
+			 }
 				
 			}catch(Exception e){
 				e.printStackTrace();
 			}
+		 image.addClickHandler(this);
 		 
-		 
-		 image.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				
-				
-				MouseEventCallback mapClickCallback = new MouseEventCallback() {
-			          
-					@Override
-						public void callback(HasMouseEvent event) {
-							
-						mapField.getMarker().setPosition(event.getLatLng());
-						mapField.getMapWidget().getMap().panTo(event.getLatLng());
-						mapField.getAddressAndSet(event.getLatLng());
-						 
-						 Timer timer = new Timer() {
-								
-								@Override
-								public void run() {
-									currentLocationLabel.setText("");
-									currentLocationLabel.setText(mapField.getChoosenAddress());
-									setCurrentSelectedLocation(mapField.getChoosenAddress());
-									
-								}
-							};timer.schedule(1000);
-						 
-						}
-
-					
-				};
-				Event.addListener(mapField.getMapWidget().getMap(), "click", mapClickCallback);
-				
-				
-				Timer timer = new Timer() {
-					
-					@Override
-					public void run() {
-						currentLocationLabel.setText("");
-						currentLocationLabel.setText(mapField.getChoosenAddress());
-						setCurrentSelectedLocation(mapField.getChoosenAddress());
-						
-					}
-				};timer.schedule(2000);
-				
-				final HorizontalPanel hpPanel = new HorizontalPanel(); 
-				popupPanelForMap = new PopupPanel();
-				
-				//searchIconImage = new Image("imgaes/search_off.png");
-				popupPanelForMap.setAutoHideEnabled(true);
-				hpPanel.add(mapField);
-				//hpPanel.add(searchIconImage);
-				//hpPanel.setCellVerticalAlignment(searchIconImage, HasVerticalAlignment.ALIGN_MIDDLE);
-				//hpPanel.setCellHorizontalAlignment(searchIconImage, HasHorizontalAlignment.ALIGN_RIGHT);
-				popupPanelForMap.add(hpPanel);
-				hpPanel.setBorderWidth(1);
-				
-				popupPanelForMap.setStylePrimaryName(FEAR_IN_DOWN);
-				mapField.getAddressAndSet(latLng);
-				popupPanelForMap.showRelativeTo(image);
-               
-				/*searchIconImage.addClickHandler(new ClickHandler() {
-					
-					@Override
-					public void onClick(ClickEvent event) {
-						popupPanelForMapSearch = new PopupPanel();
-						
-						popupPanelForMapSearch.setAutoHideEnabled(true);
-						popupPanelForMapSearch.setStylePrimaryName("slidingWindow");
-						ToggleButton toggler = new ToggleButton(searchIconImage,
-								searchIconImage);
-						PinnedPanel pinnedPanel = new PinnedPanel(200, toggler, popupPanelForMapSearch,popupPanelForMapSearch);
-						final TextBox textField = new TextBox();
-						
-						popupPanelForMapSearch.add(textField);
-						popupPanelForMapSearch.showRelativeTo(popupPanelForMap);
-						
-						
-						textField.addKeyDownHandler(new KeyDownHandler() {
-							
-							@Override
-							public void onKeyDown(KeyDownEvent event) {
-								switch (event.getNativeKeyCode()) {
-						        case KeyCodes.KEY_ENTER:
-						           displaySearchEdAddressIntoMapWidget(textField.getText());
-						           popupPanelForMapSearch.hide();
-								}
-								
-							}
-						});
-						
-						
-						
-					}
-				});*/
-				
-			}
-		});
 	 }
 
+	}
+	
+	
+	public MapField createMapField(){
+		
+		mapField = new MapField(latLng);
+		mapField.setMapHeight(getConfiguration().getPropertyByName(MAP_HEIGHT).toString());
+		mapField.setMapWidth(getConfiguration().getPropertyByName(MAP_WIDTH).toString());
+		mapField.setMapZoomParameter(Integer.parseInt(getConfiguration().getPropertyByName(MAP_ZOOM).toString()));
+		mapField.createMapUi();
+		mapField.getAddressAndSet(latLng);
+		
+		
+		if(!isMapMode){
+			
+			Timer timer = new Timer() {
+				
+				@Override
+				public void run() {
+					setSelectedLocation();
+					
+				}
+			};timer.schedule(2000);
+			flexTable.setWidget(2, 0,mapField);
+			basePanel.add(flexTable);
+			basePanel.setCellHorizontalAlignment(flexTable, HasHorizontalAlignment.ALIGN_CENTER);
+			basePanel.setCellVerticalAlignment(flexTable, HasVerticalAlignment.ALIGN_MIDDLE);
+			
+			MouseEventCallback mapClickCallback = new MouseEventCallback() {
+		          
+				@Override
+					public void callback(HasMouseEvent event) {
+						latLng =(LatLng) event.getLatLng();
+					mapField.getMarker().setPosition(event.getLatLng());
+					mapField.getMapWidget().getMap().panTo(event.getLatLng());
+					mapField.getAddressAndSet(event.getLatLng());
+					 
+					 Timer timer = new Timer() {
+							
+							@Override
+							public void run() {
+								setSelectedLocation();
+								
+							}
+						};timer.schedule(1000);
+					 
+					}
+
+				
+			};
+			Event.addListener(mapField.getMapWidget().getMap(), "click", mapClickCallback);
+		}else{
+			Timer timer = new Timer() {
+				
+				@Override
+				public void run() {
+					currentLocationLabel.setText("");
+					currentLocationLabel.setText(mapField.getChoosenAddress());
+					setCurrentSelectedLocation(mapField.getChoosenAddress());
+					
+				}
+			};timer.schedule(2000);
+			
+		}
+		
+		return mapField;
+		
 	}
 	
 	@Override
@@ -522,6 +451,136 @@ public class LocationSelector extends Composite implements Field {
 
 	public static void setCurrentSelectedLocation(String currentSelectedLocation) {
 		LocationSelector.currentSelectedLocation = currentSelectedLocation;
+	}
+
+	@Override
+	public void noMoreData() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEntityReceived(Entity entity) {
+		GeoLocation geolocation = (GeoLocation) entity.getPropertyByName("geolocation");
+		
+		if(geolocation != null){
+			LatLng latLng = new LatLng(geolocation.getLatitude(), geolocation.getLongitude());
+			this.latLng = latLng;
+			createMapField();
+		}
+		
+	}
+
+	@Override
+	public void onEntityUpdated(Entity entity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onClick(ClickEvent event) {
+		MouseEventCallback mapClickCallback = new MouseEventCallback() {
+	          
+			@Override
+				public void callback(HasMouseEvent event) {
+					
+				mapField.getMarker().setPosition(event.getLatLng());
+				mapField.getMapWidget().getMap().panTo(event.getLatLng());
+				mapField.getAddressAndSet(event.getLatLng());
+				 
+				 Timer timer = new Timer() {
+						
+						@Override
+						public void run() {
+							currentLocationLabel.setText("");
+							currentLocationLabel.setText(mapField.getChoosenAddress());
+							setCurrentSelectedLocation(mapField.getChoosenAddress());
+							
+						}
+					};timer.schedule(1000);
+				 
+				}
+
+			
+		};
+		Event.addListener(mapField.getMapWidget().getMap(), "click", mapClickCallback);
+		
+		
+		Timer timer = new Timer() {
+			
+			@Override
+			public void run() {
+				currentLocationLabel.setText("");
+				currentLocationLabel.setText(mapField.getChoosenAddress());
+				setCurrentSelectedLocation(mapField.getChoosenAddress());
+				
+			}
+		};timer.schedule(2000);
+		
+		hpPanel = new HorizontalPanel(); 
+		popupPanelForMap = new PopupPanel();
+		
+		searchIconImage = new Image("images/searchIconLight.png");
+		popupPanelForMap.setAutoHideEnabled(true);
+		hpPanel.add(searchIconImage);
+		hpPanel.add(mapField);
+		
+		searchIconImage.setStylePrimaryName("searchIconForMap");
+		//hpPanel.setCellVerticalAlignment(searchIconImage, HasVerticalAlignment.ALIGN_MIDDLE);
+		//hpPanel.setCellHorizontalAlignment(searchIconImage, HasHorizontalAlignment.ALIGN_RIGHT);
+		popupPanelForMap.add(hpPanel);
+		//hpPanel.setBorderWidth(1);
+		mapField.addStyleName("popupPanelForMap_false");
+		popupPanelForMap.setStylePrimaryName(FEAR_IN_DOWN);
+		//popupPanelForMap.addStyleName("popupPanelForMap_false");
+		mapField.getAddressAndSet(latLng);
+		popupPanelForMap.showRelativeTo(image);
+		//TODO the search box css remain
+		
+		//searchIconImage.setAltText("›");
+		//searchIconImage.setStylePrimaryName("button");
+		searchIconImage.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				popupPanelForMapSearch = new PopupPanel();
+				
+				popupPanelForMapSearch.setAutoHideEnabled(true);
+				//popupPanelForMapSearch.setStylePrimaryName("slidingWindow");
+				popupPanelForMapSearch.setStylePrimaryName("fadeInRight");
+				//popupPanelForMapSearch.addStyleName("searchBoxInMap");
+				/*ToggleButton toggler = new ToggleButton(searchIconImage,
+						searchIconImage);
+				PinnedPanel pinnedPanel = new PinnedPanel(200, toggler, popupPanelForMapSearch,popupPanelForMapSearch);*/
+				final TextBox textField = new TextBox();
+				
+				popupPanelForMapSearch.add(textField);
+				//popupPanelForMapSearch.show();
+				//popupPanelForMapSearch.center();
+				popupPanelForMapSearch.showRelativeTo(searchIconImage);
+				
+				
+				
+				//popupPanelForMapSearch.setPopupPosition(searchIconImage.getAbsoluteLeft()-190, mapField.getAbsoluteTop()+50);
+				
+				textField.addKeyDownHandler(new KeyDownHandler() {
+					
+					@Override
+					public void onKeyDown(KeyDownEvent event) {
+						switch (event.getNativeKeyCode()) {
+				        case KeyCodes.KEY_ENTER:
+				           displaySearchEdAddressIntoMapWidget(textField.getText());
+				           popupPanelForMapSearch.hide();
+						}
+						
+					}
+				});
+				
+				
+				
+			}
+		});
+		
 	}
 
 }

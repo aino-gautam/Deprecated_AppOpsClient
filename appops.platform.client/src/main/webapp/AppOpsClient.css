@@ -375,7 +375,7 @@ background-color: #AAAAAA;
 	-o-transform:scale(2,2); /* Opera */
 }
 .spinnerUpArrow {
-	background-image: url("image/spinnerArrowIcons.png");
+	background-image: url("images/spinnerArrowIcons.png");
 	width: 15px;
 	height: 13px;
 	background-position: -45px 0px;
@@ -383,7 +383,7 @@ background-color: #AAAAAA;
 	outline: none;
 }
 .spinnerUpArrow:HOVER {
-	background-image: url("image/spinnerArrowIcons.png");
+	background-image: url("images/spinnerArrowIcons.png");
 	width: 15px;
 	height: 13px;
 	background-position: -15px 0px;
@@ -391,7 +391,7 @@ background-color: #AAAAAA;
 	outline: none;
 }
 .spinnerDownArrow {
-	background: url("image/spinnerArrowIcons.png");
+	background: url("images/spinnerArrowIcons.png");
 	width: 15px;
 	height: 9px;
 	background-position: -105px 0px;
@@ -399,7 +399,7 @@ background-color: #AAAAAA;
 	outline: none;
 }
 .spinnerDownArrow:HOVER {
-	background: url("image/spinnerArrowIcons.png");
+	background: url("images/spinnerArrowIcons.png");
 	width: 15px;
 	height: 9px;
 	background-position: -75px 0px;
@@ -519,6 +519,20 @@ background-color: #AAAAAA;
 	font-size: 20px;
 	font-weight: bold;
 	margin-bottom: 20px;
+}
+.iconSnippetImage {
+	width: 45px;
+	height: 45px;
+}
+
+.iconSnippetPanel {
+	border-style: ridge;
+	margin-left: auto;
+	margin-right: auto;
+	border-color: black;
+	width: 38px;
+	height: 38px;
+	border-width: 2px;
 }
 
 /**** Multiuploader css *******/
@@ -693,3 +707,185 @@ html .GWTUpld .prgbar-msg {
 	opacity: 0.3;
 	filter: alpha(opacity = 30);
 }
+
+
+.reminderTitlePanel{
+	width: 100%;
+}
+
+.snippetLabel{
+font-family: sans-serif;
+display: inline;
+text-align: center;
+margin-right: 4px !important;
+color: blue;
+}
+
+.reminderTitleLabel{
+	font-weight: bold;
+	font-family:sans-serif;
+	
+}
+
+.listComponentPanel{
+	width: 600px;
+	height: 500px;
+}
+
+.crossIconSmall {
+	cursor: pointer;
+	width: 16px;
+	height: 16px;
+	position: relative;
+	z-index: 2;
+	bottom: 5px;
+	right: 10px;
+}
+
+.serviceEntityTitle {
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.serviceEntityIcon {
+	/* opacity: 0.4;
+	filter: alpha(opacity = 50); 
+	width: 103px;
+	height: 102px;*/
+}
+
+.serviceEntityTitlePanel {
+    background-color: #666666;
+    border-color: black;
+    border-radius: 2px 2px 2px 2px;
+    border-style: ridge;
+    border-width: 2px;
+    width: 100%;
+}
+
+ .serviceEntityBasePanel {
+    border-color: grey;
+    border-radius: 5px 5px 5px 5px;
+    border-style: ridge;
+    border-width: 3px;
+    width: 80px;
+}
+
+@-webkit-keyframes fadeInRight {
+	0% {
+		opacity: 0;
+		-webkit-transform: translateX(60px);
+	}
+	100% {
+		opacity: 1;
+		-webkit-transform: translateX(0);
+	}
+}
+.fadeInRight {
+	-webkit-animation-duration: 2s;
+	-webkit-animation-name: fadeInRight;
+}
+
+.snippetPanel{
+   background-color: #f2f2f2;
+   border-top: 2px solid;
+   border-top-color: #d1d3d4;
+   width: 100%;
+	padding: 5px;
+}
+
+.searchIconForMap {
+ position: relative;
+ top: 100px;
+ -left: 0px;
+ -float: right;
+ z-index: 1;
+ cursor: hand;
+ cursor: pointer;
+ right: -7px;
+ 
+ 
+}
+.searchBoxInMap{
+	-webkit-animation-duration: 3s;
+-webkit-animation-delay: 2s;
+}
+.popupPanelForMap_false{
+	border: 1px solid;
+}
+
+
+@-webkit-keyframes fadeInLeftBig {
+	0% {
+		opacity: 0;
+		-webkit-transform: translateX(-2000px);
+	}
+	100% {
+		opacity: 1;
+		-webkit-transform: translateX(0);
+	}
+}
+@-moz-keyframes fadeInLeftBig {
+	0% {
+		opacity: 0;
+		-moz-transform: translateX(-2000px);
+	}
+	100% {
+		opacity: 1;
+		-moz-transform: translateX(0);
+	}
+}
+.fadeInLeft {
+	-webkit-animation-name: fadeInLeftBig;
+	-moz-animation-name: fadeInLeftBig;
+	
+}
+
+.bounceInRight {
+	-webkit-animation-name: bounceInRight;
+	-moz-animation-name: bounceInRight;
+}
+
+.searchBtn{
+	border-radius: 4px 4px 4px 4px !important;
+	background: #DADADA;
+	cursor: pointer;
+}
+.searchSuggestionBox{
+	border-radius: 3px 3px 3px 3px !important;
+	height: 10px !important;
+	width: 200px !important;
+}
+
+@-webkit-keyframes bounceInRight {
+	0% {
+		opacity: 0;
+		-webkit-transform: translateX(2000px);
+	}
+	60% {
+		opacity: 1;
+		-webkit-transform: translateX(-30px);
+	}
+	80% {
+		-webkit-transform: translateX(10px);
+	}
+	100% {
+		-webkit-transform: translateX(0);
+	}
+}
+@-moz-keyframes bounceInRight {
+	0% {
+		opacity: 0;
+		-moz-transform: translateX(2000px);
+	}
+	60% {
+		opacity: 1;
+		-moz-transform: translateX(-30px);
+	}
+	80% {
+		-moz-transform: translateX(10px);
+	}
+	100% {
+		-moz-transform: translateX(0);
+	}

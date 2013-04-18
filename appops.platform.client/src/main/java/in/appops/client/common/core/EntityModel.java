@@ -1,5 +1,7 @@
 package in.appops.client.common.core;
 
+import java.util.ArrayList;
+
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.entity.type.Type;
@@ -9,6 +11,8 @@ public class EntityModel implements AppOpsModel{
 	
 	private Entity entity;
 	private Query query;
+	private ArrayList<Type> interestingTypesList;
+	private EntityReceiver entityReceiver;
 	
 	public EntityModel(){
 		
@@ -97,6 +101,41 @@ public class EntityModel implements AppOpsModel{
 	public void setOperationNameToBind(String name) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	@Override
+	public void addInterestingType(Type type) {
+		if(interestingTypesList == null)
+			interestingTypesList = new ArrayList<Type>();
+		
+		interestingTypesList.add(type);
+	}
+
+
+	@Override
+	public boolean isInterestingType(Type type) {
+		for(Type t : interestingTypesList){
+			if(t.getTypeId() == type.getTypeId())
+				return true;
+		}
+		return false;
+	}
+
+
+	@Override
+	public void setBroadcastEntity(Entity entity) {
+		// TODO
+	}
+
+
+	public EntityReceiver getEntityReceiver() {
+		return entityReceiver;
+	}
+
+
+	public void setEntityReceiver(EntityReceiver entityReceiver) {
+		this.entityReceiver = entityReceiver;
 	}
 
 }
