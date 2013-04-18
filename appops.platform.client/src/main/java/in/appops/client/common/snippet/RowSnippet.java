@@ -22,7 +22,7 @@ public class RowSnippet extends DockPanel implements Snippet,ClickHandler,MouseO
 	private Entity entity;
 	private String type;
 	private Image checkMarkSelectedImage = new Image("images/checkMarkSelected.png");
-	private Image checkMarkImage = new Image("images/checkMarkNotSelected.png");
+	private Image checkMarkNotSelectedImage = new Image("images/checkMarkNotSelected.png");
 	VerticalPanel checkMarkPanel = new VerticalPanel();
 	private Configuration configuration;	
 	
@@ -61,23 +61,38 @@ public class RowSnippet extends DockPanel implements Snippet,ClickHandler,MouseO
 
 	@Override
 	public void initialize() {
-		addDomHandler(this, MouseOutEvent.getType());
-		addDomHandler(this, MouseOverEvent.getType());
 		
-		checkMarkPanel.add(checkMarkImage);
-		
-		checkMarkPanel.setCellVerticalAlignment(checkMarkPanel, ALIGN_TOP);
-		
-		checkMarkImage.addClickHandler(this);
-		checkMarkSelectedImage.addClickHandler(this);
-		checkMarkImage.setVisible(false);
-		
-		if((Boolean)getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)){
-			add(checkMarkPanel,DockPanel.EAST);
-		}
+		checkMarkPanel.clear();
 		
 		setHeight("100%");
 		setWidth("100%");
+		
+		addDomHandler(this, MouseOutEvent.getType());
+		addDomHandler(this, MouseOverEvent.getType());
+		
+		checkMarkPanel.add(checkMarkNotSelectedImage);
+		
+		checkMarkNotSelectedImage.setStylePrimaryName("checkMarkImageInListPanel");
+		checkMarkSelectedImage.setStylePrimaryName("checkMarkImageInListPanel");
+		
+		checkMarkPanel.setCellVerticalAlignment(checkMarkPanel, ALIGN_TOP);
+		
+		checkMarkPanel.setWidth("15px");
+		
+		checkMarkNotSelectedImage.addClickHandler(this);
+		checkMarkSelectedImage.addClickHandler(this);
+		checkMarkNotSelectedImage.setVisible(false);
+		
+		if(getConfiguration()!=null){
+			if(getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)){
+				if((Boolean)getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)){
+					add(checkMarkPanel,DockPanel.EAST);
+				}
+			}
+		}
+		
+		
+		setStylePrimaryName("rowSnippetPanel");
 	}
 
 	@Override
@@ -87,17 +102,18 @@ public class RowSnippet extends DockPanel implements Snippet,ClickHandler,MouseO
 		SelectionEvent selectionEvent = new SelectionEvent();
 		
 		if(widget instanceof Image){
-			if(widget.equals(checkMarkImage)){
-				checkMarkPanel.remove(checkMarkImage);
+			if(widget.equals(checkMarkNotSelectedImage)){
+				checkMarkPanel.remove(checkMarkNotSelectedImage);
 				checkMarkPanel.add(checkMarkSelectedImage);
-				
+				checkMarkPanel.setCellVerticalAlignment(checkMarkSelectedImage, ALIGN_TOP);
 				selectionEvent.setEventType(SelectionEvent.SELECTED);
 				selectionEvent.setEventData(entity);
 				
 			}else if(widget.equals(checkMarkSelectedImage)){
 				
 				checkMarkPanel.remove(checkMarkSelectedImage);
-				checkMarkPanel.add(checkMarkImage);
+				checkMarkPanel.add(checkMarkNotSelectedImage);
+				checkMarkPanel.setCellVerticalAlignment(checkMarkNotSelectedImage, ALIGN_TOP);
 				selectionEvent.setEventType(SelectionEvent.DESELECTED);
 				selectionEvent.setEventData(entity);
 			}
@@ -123,14 +139,14 @@ public class RowSnippet extends DockPanel implements Snippet,ClickHandler,MouseO
 
 	@Override
 	public void onMouseOver(MouseOverEvent event) {
-		checkMarkImage.setVisible(true);
+		checkMarkNotSelectedImage.setVisible(true);
 	}
 
 
 
 	@Override
 	public void onMouseOut(MouseOutEvent event) {
-		checkMarkImage.setVisible(false);
+		checkMarkNotSelectedImage.setVisible(false);
 		
 	}
 
@@ -149,5 +165,23 @@ public class RowSnippet extends DockPanel implements Snippet,ClickHandler,MouseO
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void selectSnippet(){
+		//if(!checkMarkSelectedImage.isVisible()){
+			checkMarkPanel.remove(checkMarkNotSelectedImage);
+			checkMarkPanel.add(checkMarkSelectedImage);
+			checkMarkPanel.setCellVerticalAlignment(checkMarkSelectedImage, ALIGN_TOP);
+		//}
+		
+	}
+	
+	public void deSelectSnippet(){
+		//if(checkMarkSelectedImage.isVisible()){
+			checkMarkPanel.remove(checkMarkSelectedImage);
+			checkMarkPanel.add(checkMarkNotSelectedImage);
+			checkMarkPanel.setCellVerticalAlignment(checkMarkNotSelectedImage, ALIGN_TOP);
+		//}
+	}
+
 
 }
