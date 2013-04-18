@@ -5,7 +5,7 @@ package in.appops.client.gwt.web.ui.messaging.chatuserlistcomponent;
 
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.fields.suggestion.AppopsSuggestion;
-import in.appops.client.common.fields.suggestion.SuggestionField;
+import in.appops.client.common.fields.suggestion.AppopsSuggestionBox;
 import in.appops.client.gwt.web.ui.messaging.MessagingComponent;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEvent;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEventHandler;
@@ -40,7 +40,7 @@ public class MainUserListingComponent extends Composite implements MessengerEven
 	/**
 	 * User suggestion widget for suggesting the typed user.
 	 */
-	private SuggestionField userSuggestionField;
+	private AppopsSuggestionBox userSuggestionField;
 	
 	/**
 	 * user listing panel for listing the selected user for chat.
@@ -167,7 +167,7 @@ public class MainUserListingComponent extends Composite implements MessengerEven
 	 */
 	private void initialize() {
 		baseHp = new HorizontalPanel();
-		userSuggestionField = new SuggestionField();
+		userSuggestionField = new AppopsSuggestionBox();
 		userSuggestionField.setPropertyToDisplay(ContactConstant.NAME);
 		allSpecificBtn = new ToggleButton("All", "Specific");
 		AppUtils.EVENT_BUS.addHandler(MessengerEvent.TYPE, this);
