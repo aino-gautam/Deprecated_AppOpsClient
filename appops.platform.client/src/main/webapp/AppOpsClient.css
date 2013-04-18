@@ -847,6 +847,17 @@ color: blue;
 	-moz-animation-name: bounceInRight;
 }
 
+.searchBtn{
+	border-radius: 4px 4px 4px 4px !important;
+	background: #DADADA;
+	cursor: pointer;
+}
+.searchSuggestionBox{
+	border-radius: 3px 3px 3px 3px !important;
+	height: 10px !important;
+	width: 200px !important;
+}
+
 @-webkit-keyframes bounceInRight {
 	0% {
 		opacity: 0;
