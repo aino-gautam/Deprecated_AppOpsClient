@@ -199,9 +199,8 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 		int eventType = event.getEventType();
 		
 		if (getConfiguration() != null) {
-
-			
-			if ((Boolean) getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)) {
+			if(getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)!=null){
+				if((Boolean)getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)){
 
 				EntitySelectionModel entitySelectionModel = (EntitySelectionModel) entityListModel;
 				/*
@@ -226,6 +225,7 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 				}
 
 			}
+		}
 		}
 		
 	}

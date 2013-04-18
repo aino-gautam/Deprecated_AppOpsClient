@@ -204,6 +204,7 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 		SnippetFactory snippetFactory = injector.getSnippetFactory();
 		Snippet snippet = snippetFactory.getSnippetByEntityType(entity.getType(), null);
 		snippet.setEntity(entity);
+		snippet.setConfiguration(getConfiguration());
 		snippet.initialize();
 		listPanel.setWidget(0, 0,snippet);
 	}
@@ -212,6 +213,7 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 		SnippetFactory snippetFactory = injector.getSnippetFactory();
 		Snippet snippet = snippetFactory.getSnippetByEntityType(entity.getType(), null);
 		snippet.setEntity(entity);
+		snippet.setConfiguration(getConfiguration());
 		snippet.initialize();
 		listPanel.setWidget(row, col,snippet);
 	}

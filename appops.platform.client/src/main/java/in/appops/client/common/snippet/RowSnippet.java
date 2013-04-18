@@ -84,7 +84,7 @@ public class RowSnippet extends DockPanel implements Snippet,ClickHandler,MouseO
 		checkMarkNotSelectedImage.setVisible(false);
 		
 		if(getConfiguration()!=null){
-			if(getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)){
+			if(getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)!=null){
 				if((Boolean)getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)){
 					add(checkMarkPanel,DockPanel.EAST);
 				}
