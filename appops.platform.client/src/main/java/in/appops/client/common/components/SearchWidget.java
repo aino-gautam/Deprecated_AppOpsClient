@@ -4,6 +4,7 @@ import in.appops.client.common.fields.suggestion.AppopsSuggestionBox;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 
@@ -24,9 +25,13 @@ public class SearchWidget extends Composite{
 		searchBoxPanel = new HorizontalPanel();
 		searchBoxPanel.setSpacing(3);
 		searchBtn = new Button("Search");
+		searchBtn.setStylePrimaryName("searchBtn");
 		searchSuggestionBox = new AppopsSuggestionBox();
+		searchSuggestionBox.getSuggestBox().addStyleName("searchSuggestionBox");
 		searchBoxPanel.add(searchSuggestionBox);
 		searchBoxPanel.add(searchBtn);
+		searchBoxPanel.setCellHorizontalAlignment(searchSuggestionBox, HasHorizontalAlignment.ALIGN_CENTER);
+		searchBoxPanel.setCellHorizontalAlignment(searchBtn, HasHorizontalAlignment.ALIGN_CENTER);
 		initWidget(searchBoxPanel);
 	}
 
