@@ -375,7 +375,7 @@ background-color: #AAAAAA;
 	-o-transform:scale(2,2); /* Opera */
 }
 .spinnerUpArrow {
-	background-image: url("image/spinnerArrowIcons.png");
+	background-image: url("images/spinnerArrowIcons.png");
 	width: 15px;
 	height: 13px;
 	background-position: -45px 0px;
@@ -383,7 +383,7 @@ background-color: #AAAAAA;
 	outline: none;
 }
 .spinnerUpArrow:HOVER {
-	background-image: url("image/spinnerArrowIcons.png");
+	background-image: url("images/spinnerArrowIcons.png");
 	width: 15px;
 	height: 13px;
 	background-position: -15px 0px;
@@ -391,7 +391,7 @@ background-color: #AAAAAA;
 	outline: none;
 }
 .spinnerDownArrow {
-	background: url("image/spinnerArrowIcons.png");
+	background: url("images/spinnerArrowIcons.png");
 	width: 15px;
 	height: 9px;
 	background-position: -105px 0px;
@@ -399,7 +399,7 @@ background-color: #AAAAAA;
 	outline: none;
 }
 .spinnerDownArrow:HOVER {
-	background: url("image/spinnerArrowIcons.png");
+	background: url("images/spinnerArrowIcons.png");
 	width: 15px;
 	height: 9px;
 	background-position: -75px 0px;
@@ -845,6 +845,17 @@ color: blue;
 .bounceInRight {
 	-webkit-animation-name: bounceInRight;
 	-moz-animation-name: bounceInRight;
+}
+
+.searchBtn{
+	border-radius: 4px 4px 4px 4px !important;
+	background: #DADADA;
+	cursor: pointer;
+}
+.searchSuggestionBox{
+	border-radius: 3px 3px 3px 3px !important;
+	height: 10px !important;
+	width: 200px !important;
 }
 
 @-webkit-keyframes bounceInRight {
