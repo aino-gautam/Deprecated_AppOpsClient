@@ -2,40 +2,44 @@ package in.appops.client.common.snippet;
 
 import in.appops.client.common.fields.LabelField;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
-public class HomeSnippet extends Composite {
-
-	private Entity entity;
-	private HorizontalPanel basePanel = new HorizontalPanel();
+public class HomeSnippet extends HorizontalPanel implements Snippet {
 
 	private LabelField titleLabel;
+	private Entity entity;
+	private String type;
 
+	public HomeSnippet() {
+	}
+	
 	public HomeSnippet(Entity entity) {
-
 		this.entity = entity;
-		initWidget(basePanel);
+	}
+	
+	@Override 
+	public void initialize(){
 		createView();
 	}
 
 	public void createView() {
 
 		titleLabel = new LabelField();
-		titleLabel.setFieldValue("Appops Client");
-		titleLabel.setConfiguration(getLabelFieldConfiguration(true,
-				"homeSnippetTitleLabel", null, null));
+		//String name = entity.getProperty("name").getValue().toString();
+		titleLabel.setFieldValue("Default home for service");
+		titleLabel.setConfiguration(getLabelFieldConfiguration(true,"homeSnippetTitleLabel", null, null));
 		try {
 			titleLabel.createField();
 		} catch (AppOpsException e) {
 
 			e.printStackTrace();
 		}
-		basePanel.setStylePrimaryName("homeSnippetBasePanel");
-		basePanel.add(titleLabel);
+		setStylePrimaryName("homeSnippetBasePanel");
+		add(titleLabel);
 	}
 
 	private Configuration getLabelFieldConfiguration(boolean allowWordWrap,
@@ -48,21 +52,6 @@ public class HomeSnippet extends Composite {
 		return configuration;
 	}
 
-	public Entity getEntity() {
-		return entity;
-	}
-
-	public void setEntity(Entity entity) {
-		this.entity = entity;
-	}
-
-	public HorizontalPanel getBasePanel() {
-		return basePanel;
-	}
-
-	public void setBasePanel(HorizontalPanel basePanel) {
-		this.basePanel = basePanel;
-	}
 
 	public LabelField getTitleLabel() {
 		return titleLabel;
@@ -70,6 +59,52 @@ public class HomeSnippet extends Composite {
 
 	public void setTitleLabel(LabelField titleLabel) {
 		this.titleLabel = titleLabel;
+	}
+
+	@Override
+	public Entity getEntity() {
+		return entity;
+	}
+
+	@Override
+	public void setEntity(Entity entity) {
+		this.entity = entity;
+		
+	}
+
+	@Override
+	public String getType() {
+		return type;
+	}
+
+	@Override
+	public void setType(String type) {
+		this.type = type;
+		
+	}
+
+	@Override
+	public void setConfiguration(Configuration configuration) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Configuration getConfiguration() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ActionContext getActionContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setActionContext(ActionContext actionContext) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

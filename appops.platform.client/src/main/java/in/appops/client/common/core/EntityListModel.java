@@ -10,6 +10,7 @@ import in.appops.platform.core.entity.type.Type;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.util.EntityList;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,19 +18,23 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class EntityListModel implements AppOpsModel {
 	
-	private EntityList entityList;
+	private EntityList currentEntityList;
 	private Query query;
 	private String operationName;
 	private final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 	private int noOfEntities;
+	private ArrayList<Type> interestingTypesList;
+	private EntityListReceiver entityListReceiver;
+	private int startIndex = 0;
+	private int listSize = 10 ;
 	
 	public EntityListModel(){
 		
 	}
 
-	public void setEntityList(EntityList entityList) {
-		this.entityList = entityList;
+	public void setCurrentEntityList(EntityList currentEntityList) {
+		this.currentEntityList = currentEntityList;
 	}
 
 	@Override
@@ -57,9 +62,12 @@ public class EntityListModel implements AppOpsModel {
 	@SuppressWarnings("unchecked")
 	@Override
 	public EntityList getEntityList(int noOfEntities, final EntityListReceiver listReceiver) {
-		
 		Map parameterMap = new HashMap();
 		parameterMap.put("query", query);
+		if(query!=null){
+			query.setStartIndex(getStartIndex());
+			query.setListSize(getListSize());
+		}
 		
 		StandardAction action = new StandardAction(EntityList.class, operationName, parameterMap);
 		dispatch.execute(action, new AsyncCallback<Result>() {
@@ -72,6 +80,7 @@ public class EntityListModel implements AppOpsModel {
 			@Override
 			public void onSuccess(Result result) {
 				EntityList entityList = (EntityList) result.getOperationResult();
+				setCurrentEntityList(entityList);
 				listReceiver.onEntityListReceived(entityList);
 			}
 		});
@@ -100,5 +109,67 @@ public class EntityListModel implements AppOpsModel {
 
 	public void setNoOfEntities(int noOfEntities) {
 		this.noOfEntities = noOfEntities;
+	}
+
+	@Override
+	public void addInterestingType(Type type) {
+		if(interestingTypesList == null)
+			interestingTypesList = new ArrayList<Type>();
+		
+		interestingTypesList.add(type);
+		
+	}
+
+	@Override
+	public boolean isInterestingType(Type type) {
+		for(Type t : interestingTypesList){
+			if(t.getTypeId() == type.getTypeId())
+				return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void setBroadcastEntity(Entity entity) {
+		if (currentEntityList != null) {
+			for (Entity ent : currentEntityList) {
+				if (ent.getType().getTypeName().equalsIgnoreCase(entity.getType().getTypeName())) {
+					long entId = (Long) ent.getPropertyByName("id");
+					long entityId = (Long) entity.getPropertyByName("id");
+
+					if (entId == entityId) {
+						getEntityListReceiver().updateCurrentView(entity);
+					}
+				}
+			}
+		}
+	}
+
+	public EntityListReceiver getEntityListReceiver() {
+		return entityListReceiver;
+	}
+
+	public void setEntityListReceiver(EntityListReceiver entityListReceiver) {
+		this.entityListReceiver = entityListReceiver;
+	}
+
+	public int getStartIndex() {
+		return startIndex;
+	}
+
+	public void setStartIndex(int startIndex) {
+		this.startIndex = startIndex;
+	}
+
+	public EntityList getCurrentEntityList() {
+		return currentEntityList;
+	}
+
+	public int getListSize() {
+		return listSize;
+	}
+
+	public void setListSize(int listSize) {
+		this.listSize = listSize;
 	}
 }

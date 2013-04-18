@@ -1,5 +1,6 @@
 package in.appops.client.common.fields.slider.field;
 
+import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.fields.Field;
 import in.appops.client.common.fields.slider.NumericRangeSlider;
@@ -20,9 +21,9 @@ public class NumericRangeSliderField extends Composite implements Field{
 	private Configuration configuration;
 	private String fieldValue;
 	
-	private int maxValue = 0;
-	private int minValue = 0;
-	private int stepValue = 0;
+	private double maxValue = 0;
+	private double minValue = 0;
+	private double stepValue = 0;
 	public static final String NUMERIC_RANGESLIDER_MINVALUE = "minValue";
 	public static final String NUMERIC_RANGESLIDER_MAXVALUE = "maxValue";
 	public static final String NUMERIC_RANGESLIDER_STEPVALUE = "stepValue";
@@ -56,12 +57,19 @@ public class NumericRangeSliderField extends Composite implements Field{
 		final NumericRangeSlider numericRngeSlider = new NumericRangeSlider(minValue, maxValue);
 		numericRngeSlider.setStepSize(stepValue);
 		numericRngeSlider.setCurrentValue(minValue);
-		numericRngeSlider.setNumLabels(4);
+		int numLabels = (int)((maxValue-minValue)/stepValue);
+		numericRngeSlider.setNumLabels(numLabels);
 
 		numericRngeSlider.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent arg0) {
 				System.out.println("Selected Range: "+numericRngeSlider.getCurrentValue());
+				
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventType(FieldEvent.EDITINITIATED);
+				fieldEvent.setEventData(numericRngeSlider.getCurrentValue());
+				
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 			}
 		});
 		
@@ -69,6 +77,11 @@ public class NumericRangeSliderField extends Composite implements Field{
 			@Override
 			public void onMouseWheel(MouseWheelEvent arg0) {
 				System.out.println("Selected Range: "+numericRngeSlider.getCurrentValue());
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventType(FieldEvent.EDITINITIATED);
+				fieldEvent.setEventData(numericRngeSlider.getCurrentValue());
+				
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 			}
 		});
 
@@ -76,6 +89,11 @@ public class NumericRangeSliderField extends Composite implements Field{
 			@Override
 			public void onMouseUp(MouseUpEvent arg0) {
 				System.out.println("Selected Range: "+numericRngeSlider.getCurrentValue());
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventType(FieldEvent.EDITINITIATED);
+				fieldEvent.setEventData(numericRngeSlider.getCurrentValue());
+				
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 			}
 		});
 		
@@ -88,9 +106,9 @@ public class NumericRangeSliderField extends Composite implements Field{
 	}
 
 	private void initializeConfiguration() {
-		this.maxValue = (Integer)configuration.getPropertyByName(NUMERIC_RANGESLIDER_MAXVALUE);
-		this.minValue = (Integer)configuration.getPropertyByName(NUMERIC_RANGESLIDER_MINVALUE);
-		this.stepValue = (Integer)configuration.getPropertyByName(NUMERIC_RANGESLIDER_STEPVALUE);
+		this.maxValue = (Double)configuration.getPropertyByName(NUMERIC_RANGESLIDER_MAXVALUE);
+		this.minValue = (Double)configuration.getPropertyByName(NUMERIC_RANGESLIDER_MINVALUE);
+		this.stepValue = (Double)configuration.getPropertyByName(NUMERIC_RANGESLIDER_STEPVALUE);
 		//TODO more to come
 	}
 

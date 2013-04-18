@@ -1,26 +1,69 @@
 package in.appops.client.common.snippet;
 
+import in.appops.platform.core.constants.typeconstants.TypeConstants;
 import in.appops.platform.core.entity.type.Type;
 
 public class SnippetFactoryImpl implements SnippetFactory {
 
+	
 	@Override
 	public Snippet getSnippetByName(String snippetName) {
 		if (snippetName.equals("Book a table")) {
 			return null;// return a book a table widget.
+		}else if(snippetName.equals(SnippetConstant.MEDIASERVICEHOME)){
+			MediaServiceHomeSnippet mediaServiceHomeSnippet = new MediaServiceHomeSnippet();
+			return mediaServiceHomeSnippet;
+		}else if(snippetName.equals(SnippetConstant.POSTVIEWSNIPPET)){
+			PostViewSnippet postViewSnippet = new PostViewSnippet();
+			return postViewSnippet;
+		}else if(snippetName.equals(SnippetConstant.CALENDARSERVICEHOME)){
+			CalendarServiceHomeSnippet calendarServiceHomeSnippet = new CalendarServiceHomeSnippet();
+			return calendarServiceHomeSnippet;
+		}else{
+			HomeSnippet homeSnippet = new HomeSnippet();
+			return homeSnippet;
+		}
+	}
+
+	@Override
+	public Snippet getSnippetByType(String snippetType) {
+		if(snippetType.equals(SnippetConstant.LISTSNIPPET)){
+			ListSnippet listSnippet = new ListSnippet();
+			return listSnippet;
 		}
 		return null;
 	}
 
 	@Override
-	public Snippet getSnippetByType(String snippetType) {
-
-		return null;
-	}
-
-	@Override
 	public Snippet getSnippetByEntityType(Type entityType, String snippetType) {
-		// TODO Auto-generated method stub
+		if(entityType==null){
+			if(snippetType!=null){
+				if(snippetType.equals(SnippetConstant.IMAGEUPLOAD)){
+					IconSnippet iconSnippet = new IconSnippet();
+					return iconSnippet;
+				}
+
+			}else
+				return null;
+		}else{
+			String typename = entityType.getTypeName();
+			typename = typename.substring(typename.lastIndexOf('.')+1).trim();
+
+			if(typename.equals(TypeConstants.REMINDER)){
+				ReminderSnippet reminderSnippet = new ReminderSnippet();
+				return reminderSnippet;
+			}else if(typename.equals("SpaceserviceviewId")){
+				ServiceIconSnippet serviceIconSnippet = new ServiceIconSnippet();
+				return serviceIconSnippet;
+			}else if(typename.equals("Post")){
+				PostViewSnippet postViewSnippet = new PostViewSnippet();
+				return postViewSnippet;
+			}else{
+				HomeSnippet homeSnippet = new HomeSnippet();
+				return homeSnippet;
+			}
+		}
+		
 		return null;
 	}
 

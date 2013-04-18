@@ -5,12 +5,15 @@
 	<inherits name="in.appops.platform.core.Core" />
 	<inherits name='in.appops.platform.bindings.web.gwt.dispatch.Dispatch'/>
 	
+	<inherits name="com.google.gwt.inject.Inject"/>
 	<inherits name="gwtupload.GWTUpload"/>
+	<inherits name="com.google.web.bindery.autobean.AutoBean"/>
+	<inherits name="com.google.gwt.json.JSON" />
 	<stylesheet src="Upload.css"/>
+	
 	<source path="client" />
 	<source path="touch" />
 	<source path="common" />
 	<source path="gwt" />
 	<!-- <source path='server'/> -->
-	
 </module>
