@@ -77,7 +77,7 @@ public class RowSnippet extends DockPanel implements Snippet,ClickHandler,MouseO
 		
 		checkMarkPanel.setCellVerticalAlignment(checkMarkPanel, ALIGN_TOP);
 		
-		checkMarkPanel.setWidth("15px");
+		//checkMarkPanel.setWidth("15px");
 		
 		checkMarkNotSelectedImage.addClickHandler(this);
 		checkMarkSelectedImage.addClickHandler(this);
@@ -87,6 +87,7 @@ public class RowSnippet extends DockPanel implements Snippet,ClickHandler,MouseO
 			if(getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)!=null){
 				if((Boolean)getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)){
 					add(checkMarkPanel,DockPanel.EAST);
+					setCellWidth(checkMarkPanel, "7%");
 				}
 			}
 		}

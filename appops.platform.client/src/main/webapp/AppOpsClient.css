@@ -729,7 +729,7 @@ color: blue;
 
 .listComponentPanel{
 	width: 600px;
-	height: 500px;
+	height: 100%;
 }
 
 .crossIconSmall {
@@ -881,9 +881,9 @@ color: blue;
 }
 
 .checkMarkImageInListPanel{
-	width: 15px;
-	height: 15px;
-	
+	height: 20px;
+    margin: 25px 10px 0 8px;
+    width: 20px;
 }
 
 .postSnippet{

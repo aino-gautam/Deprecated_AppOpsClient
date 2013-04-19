@@ -102,7 +102,7 @@ public class PostViewSnippet extends RowSnippet {
 		imagePanel.add(imageField);
 		imagePanel.setBorderWidth(1);
 		postSnippetPanel.add(imagePanel, DockPanel.WEST);
-		postSnippetPanel.setCellWidth(imagePanel, "15%");
+		postSnippetPanel.setCellWidth(imagePanel, "10%");
 		
 		imagePanel.setCellVerticalAlignment(imageField, HasVerticalAlignment.ALIGN_MIDDLE);
 		
@@ -134,10 +134,10 @@ public class PostViewSnippet extends RowSnippet {
 		postContentPanel.setCellHorizontalAlignment(postContentFlowPanel, HasHorizontalAlignment.ALIGN_JUSTIFY);
 		//postContentPanel.setBorderWidth(1);
 		postContentPanel.setHeight("100%");
-		postContentPanel.setWidth("90%");
+		postContentPanel.setWidth("100%");
 		spaceIconPlusTimePanel.setWidth("100%");
 		postSnippetPanel.add(postContentPanel, DockPanel.CENTER);
-		postSnippetPanel.setCellWidth(postContentPanel, "90%");
+		postSnippetPanel.setCellWidth(postContentPanel, "100%");
 		
 		DOM.setStyleAttribute(postContentFlowPanel.getElement(), "margin", "5px");
 		DOM.setStyleAttribute(imagePanel.getElement(), "margin", "7px");
