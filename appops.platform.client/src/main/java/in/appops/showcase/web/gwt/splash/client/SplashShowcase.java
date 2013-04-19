@@ -21,7 +21,7 @@ public class SplashShowcase implements EntryPoint {
 			splash.addWidget(getWidgets("Security"), "Security", null);
 			splash.addWidget(getWidgets("Contacts"), "Contacts", null);
 			splash.addWidget(getWidgets("Widget settings"), "Widget settings", null);
-			splash.setMainImage("imgaes/opptin.png");
+			splash.setMainImage("images/opptin.png");
 			splash.initialize();
 			
 			RootPanel.get("nameFieldContainer").add(splash);

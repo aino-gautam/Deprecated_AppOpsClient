@@ -1,28 +1,24 @@
 package in.appops.client.common.snippet;
 
 import in.appops.client.common.core.EntityListModel;
-import in.appops.client.common.core.EntityListReceiver;
-import in.appops.client.common.snippet.ListSnippet;
-import in.appops.client.common.snippet.Snippet;
-import in.appops.platform.core.constants.propertyconstants.UserConstants;
 import in.appops.platform.core.entity.Entity;
-import in.appops.platform.core.entity.Key;
-import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.query.Query;
-import in.appops.platform.core.util.EntityList;
+import in.appops.platform.core.operation.ActionContext;
+import in.appops.platform.core.shared.Configuration;
 
 import java.util.HashMap;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class CalendarServiceHomeSnippet extends Snippet implements EntityListReceiver {
+public class CalendarServiceHomeSnippet extends VerticalPanel implements Snippet {
 	
-	private VerticalPanel basePanel = new VerticalPanel();
 	private ListSnippet listSnippet ;
+	private Entity entity;
+	private String type;
+	private Configuration configuration;
 	
 		
 	public CalendarServiceHomeSnippet() {
-		initWidget(basePanel);
 	}
 	
 	@Override
@@ -30,15 +26,15 @@ public class CalendarServiceHomeSnippet extends Snippet implements EntityListRec
 		//Property<Key<Long>> userIdProp = (Property<Key<Long>>) entity.getProperty(UserConstants.ID);
 		//initializeListForUser(userIdProp.getValue().getKeyValue());
 		
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(SnippetConstant.SELECTIONMODE, false);
+		setConfiguration(configuration);
+		
 		initializeListForUser(1L);
 	}
 	
 	
 	public void initializeListForUser(long userId) {
-		
-		
-		listSnippet= new ListSnippet();
-		basePanel.add(listSnippet);
 		
 		Query query = new Query();
 		query.setQueryName("getAllRemindersOfUser");
@@ -48,47 +44,63 @@ public class CalendarServiceHomeSnippet extends Snippet implements EntityListRec
 		queryParam.put("userId", userId);
 		query.setQueryParameterMap(queryParam);
 		
-		//ReminderListModel reminderListModel = new ReminderListModel(query, "calendar.CalendarService.getEntityList", 0);
 		
 		EntityListModel reminderListModel = new EntityListModel();
 		
 		reminderListModel.setOperationNameToBind("calendar.CalendarService.getEntityList");
 		reminderListModel.setQueryToBind(query);
 		reminderListModel.setNoOfEntities(0);
+						
+		listSnippet= new ListSnippet();
+		listSnippet.setEntityListModel(reminderListModel);
+		listSnippet.setConfiguration(getConfiguration());
+		listSnippet.initialize();
 		
-		reminderListModel.getEntityList(0, this);
+		add(listSnippet);
 		
 	}
 
+	@Override
+	public Entity getEntity() {
+		return entity;
+	}
 
 	@Override
-	public void noMoreData() {
+	public void setEntity(Entity entity) {
+		this.entity = entity;
+		
+	}
+
+	@Override
+	public String getType() {
+		return type;
+	}
+
+	@Override
+	public void setType(String type) {
+		this.type = type;
+		
+	}
+
+	@Override
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+		
+	}
+
+	@Override
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	@Override
+	public ActionContext getActionContext() {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public void onEntityListReceived(EntityList entityList) {
-		initializeListComponentWidget(entityList);
-		
-	}
-
-	private void initializeListComponentWidget(EntityList entityList) {
-		
-			listSnippet.setEntityList(entityList);
-			listSnippet.initialize();
-		
-		
-	}
-
-	@Override
-	public void onEntityListUpdated() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void updateCurrentView(Entity entity) {
+	public void setActionContext(ActionContext actionContext) {
 		// TODO Auto-generated method stub
 		
 	}

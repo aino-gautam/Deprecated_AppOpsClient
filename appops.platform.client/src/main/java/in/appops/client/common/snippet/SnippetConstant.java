@@ -10,7 +10,9 @@ public class SnippetConstant {
 	public static final String  CONTACTSERVICEHOME = "contactServiceHome";
 	public static final String  POSTSERVICEHOME = "postServiceHome";
 	public static final String  LISTSNIPPET = "listSnippet";
+	public static final String  GRIDSNIPPET = "gridSnippet";
 	public static final String  REMINDERSNIPPET = "reminderSnippet";
 	public static final String  POSTVIEWSNIPPET = "postViewSnippet";
 	public static final String  HOMESNIPPET = "homeSnippet";
+	public static final String  SELECTIONMODE = "selectionMode";
 }
