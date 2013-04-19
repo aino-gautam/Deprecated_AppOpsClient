@@ -373,8 +373,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 					//locationSelector.setLatLong(latLng);
 					locationSelector.setCoordinates(coords);
 					
-					
-					locationSelectorForFalseMode.setConfiguration(getLocationSelectorConf());
+					locationSelectorForFalseMode.setConfiguration(getLocationSelectorConfForFalse());
 					locationSelectorForFalseMode.setMapMode(false);
 					locationSelectorForFalseMode.setMapHeight("400px");
 					locationSelectorForFalseMode.setMapWidth("600px");
@@ -433,11 +432,28 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 		return configuration;
 	}
 	
+	private Configuration getLocationSelectorConfForFalse() {
+		Configuration configuration = new Configuration();
+		
+		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "images/locationMarker1.png");
+		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "images/locationMarker1.png");
+		configuration.setPropertyByName(TextField.TEXTFIELD_PRIMARYCSS, "appops-TextField");
+		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CHOOSE_LOCATION_BTN, "chooseLocationBtn");
+		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_POPUPPANEL, "currentLocationField");
+		configuration.setPropertyByName(LocationSelector.MAP_ZOOM, "8");
+		configuration.setPropertyByName(LocationSelector.CHANGE_LOCATION_IMAGE_URL, "images/iconEdit.png");
+		configuration.setPropertyByName(LocationSelector.DONE_SELECTION_IMAGE_URL, "images/iconTickBlackCircle.png");
+		configuration.setPropertyByName(LocationSelector.MAP_WIDTH, "600px");
+		configuration.setPropertyByName(LocationSelector.MAP_HEIGHT, "400px");
+		
+		return configuration;
+	}
+	
 	private Configuration getLocationSelectorConf() {
 		Configuration configuration = new Configuration();
 		
-		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "imgaes/locationMarker1.png");
-		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "imgaes/locationMarker1.png");
+		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "images/locationMarker1.png");
+		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "images/locationMarker1.png");
 		configuration.setPropertyByName(TextField.TEXTFIELD_PRIMARYCSS, "appops-TextField");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CHOOSE_LOCATION_BTN, "chooseLocationBtn");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_POPUPPANEL, "currentLocationField");

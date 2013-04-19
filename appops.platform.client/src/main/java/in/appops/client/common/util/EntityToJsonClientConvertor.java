@@ -24,13 +24,15 @@ public class EntityToJsonClientConvertor {
 	
 	// Need to clean up the code. Would review it later.
 	
-	protected static JSONArray encodeList(ArrayList<Object> data) {
+	protected static <T> JSONArray encodeList(ArrayList<T> data) {
 		JSONArray jsona = new JSONArray();
 		for (int i = 0; i < data.size(); i++) {
 			Object val = data.get(i);
 			if(val instanceof String || val instanceof Integer || val instanceof Long) {
 				jsona.set(i, new JSONString(val.toString()));
-			} 
+			} else if(val instanceof Entity){
+				jsona.set(i, createJsonFromEntity((Entity)val));
+			}
 		}
 		return jsona;
 	}
@@ -172,9 +174,21 @@ public class EntityToJsonClientConvertor {
 						JSONObject htmlJson = new JSONObject();
 						htmlJson.put("String", html);
 
+
 						JSONObject intelliThoughtJson = new JSONObject();
 						intelliThoughtJson.put("intellitext", textJson);
 						intelliThoughtJson.put("intellihtml", htmlJson);
+						
+						ArrayList<Entity> linkedEntities = intelliThought.getLinkedEntities();
+						ArrayList<Entity> linkedSpaces = intelliThought.getLinkedSpaces();
+						ArrayList<Entity> linkedUsers = intelliThought.getLinkedUsers();
+						
+						if(linkedEntities != null){
+							JSONArray ja = encodeList(linkedEntities);
+							intelliThoughtJson.put("linkedEntities", ja);
+						} 
+						
+						
 						
 						JSONObject j = new JSONObject();
 						j.put("intelliThought", intelliThoughtJson);
@@ -204,4 +218,3 @@ public class EntityToJsonClientConvertor {
 	}
 	
 }
-

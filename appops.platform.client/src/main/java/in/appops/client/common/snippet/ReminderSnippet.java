@@ -8,6 +8,7 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -30,24 +31,22 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ReminderSnippet extends Snippet implements ClickHandler{
+public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHandler{
 	
-	private VerticalPanel snippetPanel =new VerticalPanel();
 	private Image crossImg = new Image("images/crossImage.png");
 	private LinkField editLinkField = new LinkField();
 	private final DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
 	private final DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
-	private Anchor reminderTitleLink;
 	private Entity embededEntity;
+	private Entity entity;
+	private String type;
 		
 	public ReminderSnippet() {
-		initWidget(snippetPanel);
 	}
 	
 	
 	public ReminderSnippet(Entity reminder) {
 		this.entity = reminder;
-		initWidget(snippetPanel);
 	}
 	
 	@Override
@@ -81,7 +80,7 @@ public class ReminderSnippet extends Snippet implements ClickHandler{
 			reminderTitlePanel.setStylePrimaryName("reminderTitlePanel");
 			
 						
-			snippetPanel.add(reminderTitlePanel);
+			add(reminderTitlePanel);
 			
 			LabelField dateTimeLbl = getLabelField("Remind me on:","postLabel");
 			
@@ -97,14 +96,14 @@ public class ReminderSnippet extends Snippet implements ClickHandler{
 					
 			LabelField type = getLabelField(reminderType.getProperty(ReminderTypeConstant.TYPE).getValue().toString(),"postLabel");
 					
-			snippetPanel.add(typeLabel);
+			add(typeLabel);
 			
 			FlexTable flex = new FlexTable();
 			flex.setWidget(0, 0, dateTimeLbl);
 			flex.setWidget(0, 1, dateTime);
 			flex.setWidget(1, 0, typeLabel);
 			flex.setWidget(1, 1, type);
-			snippetPanel.add(flex);
+			add(flex);
 			
 			editLinkField.setFieldValue("Edit");
 			editLinkField.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_HYPERLINK, "postLink", null, null));
@@ -117,7 +116,7 @@ public class ReminderSnippet extends Snippet implements ClickHandler{
 			//addDomHandler(this,ClickEvent.getType());
 			
 					
-			snippetPanel.setStylePrimaryName("snippetPanel");
+			setStylePrimaryName("snippetPanel");
 		} catch (AppOpsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -191,6 +190,56 @@ public class ReminderSnippet extends Snippet implements ClickHandler{
 		String link = "serviceId="+serviceId+"typeId="+typeId+"instanceId="+instanceId+"WidgetName="+WidgetName;
 		
 		return link;
+		
+	}
+	
+	@Override
+	public Entity getEntity() {
+		return entity;
+	}
+
+	@Override
+	public void setEntity(Entity entity) {
+		this.entity = entity;
+		
+	}
+
+	@Override
+	public String getType() {
+		return type;
+	}
+
+	@Override
+	public void setType(String type) {
+		this.type = type;
+		
+	}
+
+
+	@Override
+	public void setConfiguration(Configuration configuration) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public Configuration getConfiguration() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public ActionContext getActionContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void setActionContext(ActionContext actionContext) {
+		// TODO Auto-generated method stub
 		
 	}
 	
