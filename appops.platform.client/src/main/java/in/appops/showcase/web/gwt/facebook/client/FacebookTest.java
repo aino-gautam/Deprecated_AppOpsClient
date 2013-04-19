@@ -5,19 +5,10 @@ package in.appops.showcase.web.gwt.facebook.client;
 
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.fields.suggestion.AppopsSuggestion;
-import in.appops.client.common.fields.suggestion.SuggestionField;
+import in.appops.client.common.fields.suggestion.AppopsSuggestionBox;
 import in.appops.client.gwt.web.ui.messaging.MessagingComponent;
-import in.appops.client.gwt.web.ui.messaging.chatuserlistcomponent.MainUserListingComponent;
-import in.appops.client.gwt.web.ui.messaging.chatuserlistcomponent.UserListWidget;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEvent;
-import in.appops.client.gwt.web.ui.messaging.spacelistcomponent.SpaceListModel;
-import in.appops.client.gwt.web.ui.messaging.spacelistcomponent.SpaceListWidget;
-import in.appops.platform.core.constants.typeconstants.TypeConstants;
 import in.appops.platform.core.entity.Entity;
-import in.appops.platform.core.entity.Key;
-import in.appops.platform.core.entity.Property;
-import in.appops.platform.core.entity.type.MetaType;
-import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -76,7 +67,7 @@ public class FacebookTest implements EntryPoint {
 			Label enterTxtLbl = new Label("Enter name to chat:");
 			enterTxtLbl.setStylePrimaryName("enterNameLbl");
 		
-			final SuggestionField userSuggestionField = new SuggestionField();
+			final AppopsSuggestionBox userSuggestionField = new AppopsSuggestionBox();
 			userSuggestionField.setQueryName("getContactListSuggestion");
 			userSuggestionField.setOperationName("contact.ContactService.getEntityList");
 		

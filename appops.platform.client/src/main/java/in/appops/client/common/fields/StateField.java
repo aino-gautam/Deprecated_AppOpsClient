@@ -6,7 +6,7 @@ import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.fields.slider.field.NumericRangeSliderField;
 import in.appops.client.common.fields.slider.field.StringRangeSliderField;
 import in.appops.client.common.fields.suggestion.AppopsSuggestion;
-import in.appops.client.common.fields.suggestion.SuggestionField;
+import in.appops.client.common.fields.suggestion.AppopsSuggestionBox;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -21,7 +21,7 @@ public class StateField extends Composite implements Field, ChangeHandler{
 	private Configuration configuration;
 	private String fieldValue;
 	private ListBox listBox;
-	private SuggestionField appopsSuggestionBox;
+	private AppopsSuggestionBox appopsSuggestionBox;
 	private String fieldType;
 	private String fieldMode ;
 	public static final String STATEFIELD_MODE ="stateFieldMode;";
@@ -42,6 +42,7 @@ public class StateField extends Composite implements Field, ChangeHandler{
 	public static final String STATEFIELD_QUERY_MAXRESULT = "stateFieldQueryMaxresult";
 	public static final String STATEFIELD_PROPERTY_TO_DISPLAY = "propertyToDisplay";
 	public static final String STATEFIELD_QUERY_RESTRICTION = "queryRestriction";
+	public static final String IS_SEARCH_QUERY = "isSearchQuery";
 	
 	public StateField(){
 	}
@@ -85,12 +86,15 @@ public class StateField extends Composite implements Field, ChangeHandler{
 					listBox.ensureDebugId(getConfiguration().getPropertyByName(STATEFIELD_DEBUGID).toString());
 			}
 		} else if(fieldMode.equalsIgnoreCase(STATEFIELDMODE_SUGGESTIVE)){
-			appopsSuggestionBox = new SuggestionField();
+			appopsSuggestionBox = new AppopsSuggestionBox();
 			if(getConfiguration().getPropertyByName(STATEFIELD_QUERY) != null)
 				appopsSuggestionBox.setQueryName(getConfiguration().getPropertyByName(STATEFIELD_QUERY).toString());
+			if(getConfiguration().getPropertyByName(IS_SEARCH_QUERY) != null){
+				Boolean val = getConfiguration().getPropertyByName(IS_SEARCH_QUERY);
+				appopsSuggestionBox.setIsSearchQuery(val);
+			}
 			if(getConfiguration().getPropertyByName(STATEFIELD_OPERATION) != null)
 				appopsSuggestionBox.setOperationName(getConfiguration().getPropertyByName(STATEFIELD_OPERATION).toString());
-			
 			if(getConfiguration().getPropertyByName(STATEFIELD_QUERY_MAXRESULT) != null) {
 				appopsSuggestionBox.setMaxResult((Integer)getConfiguration().getPropertyByName(STATEFIELD_QUERY_MAXRESULT));
 			} else {
@@ -184,11 +188,11 @@ public class StateField extends Composite implements Field, ChangeHandler{
 	}
 	
 	
-	public SuggestionField getAppopsSuggestionBox() {
+	public AppopsSuggestionBox getAppopsSuggestionBox() {
 		return appopsSuggestionBox;
 	}
 
-	public void setAppopsSuggestionBox(SuggestionField appopsSuggestionBox) {
+	public void setAppopsSuggestionBox(AppopsSuggestionBox appopsSuggestionBox) {
 		this.appopsSuggestionBox = appopsSuggestionBox;
 	}
 

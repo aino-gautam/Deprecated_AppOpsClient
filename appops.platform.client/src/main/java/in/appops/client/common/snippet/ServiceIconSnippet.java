@@ -11,27 +11,28 @@ import in.appops.platform.server.core.services.platform.coreplatformservice.cons
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class ServiceIconSnippet extends Snippet implements ClickHandler {
+public class ServiceIconSnippet extends CardSnippet {
 
 	private VerticalPanel basePanel = new VerticalPanel();
 	private Image serviceIcon;
 	private LabelField serviceEntityTitle;
 	private HorizontalPanel labelPanel= new HorizontalPanel();
 	
-	
 	public ServiceIconSnippet() {
 		
-		initWidget(basePanel);
-
 	}
 	
+	@Override
 	public void initialize(){
+		
+		super.initialize();
 		
 		String blobId = getEntity().getProperty("blobId").getValue().toString();
 		BlobDownloader blobDownloader = new BlobDownloader();
@@ -59,7 +60,18 @@ public class ServiceIconSnippet extends Snippet implements ClickHandler {
 		basePanel.setCellHorizontalAlignment(serviceIcon, HasHorizontalAlignment.ALIGN_CENTER);
 		basePanel.setCellVerticalAlignment(serviceIcon,HasVerticalAlignment.ALIGN_TOP);
 		
-		basePanel.addDomHandler(this, ClickEvent.getType());
+		//addDomHandler(this, ClickEvent.getType());
+		
+		basePanel.addDomHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				serviceIconClickEvent(event);
+				
+			}
+		},  ClickEvent.getType());
+		
+		add(basePanel,DockPanel.CENTER);
 	}
 	
 	private Configuration getLabelFieldConfiguration(boolean allowWordWrap,
@@ -72,8 +84,8 @@ public class ServiceIconSnippet extends Snippet implements ClickHandler {
 		return configuration;
 	}
 
-	@Override
-	public void onClick(ClickEvent event) {
+	
+	public void serviceIconClickEvent(ClickEvent event) {
 		ActionEvent actionEvent  = new ActionEvent();
 		actionEvent.setEventType(ActionEvent.LOADENTITYHOME);
 		String servicename = getEntity().getProperty(ServiceConstant.NAME).getValue().toString();
