@@ -22,10 +22,10 @@ public class NavigationMazeShowCase implements EntryPoint{
 		Maze maze = new Maze();
 		
 		
-		maze.addMazeImageWidget("image/test1.jpg", 5, 5);
-		maze.addMazeImageWidget("image/test2.jpg", 200, 50);
-		maze.addMazeImageWidget("image/test3.jpg", 500, 10);
-		maze.addMazeImageWidget("image/test4.jpg", 800, 100);
+		maze.addMazeImageWidget("images/test1.jpg", 5, 5);
+		maze.addMazeImageWidget("images/test2.jpg", 200, 50);
+		maze.addMazeImageWidget("images/test3.jpg", 500, 10);
+		maze.addMazeImageWidget("images/test4.jpg", 800, 100);
 		
 		maze.init();
 		
