@@ -3,6 +3,7 @@ package in.appops.client.common.snippet;
 import in.appops.client.common.core.EntityListModel;
 import in.appops.client.common.core.EntityListReceiver;
 import in.appops.client.common.core.EntitySelectionModel;
+import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.SelectionEvent;
 import in.appops.client.common.event.handlers.SelectionEventHandler;
 import in.appops.client.common.gin.AppOpsGinjector;
@@ -20,6 +21,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HasAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -58,10 +60,6 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 	@Override
 	public void initialize(){
 		
-		selectAllCheckboxField = new CheckBox("Select All");
-		selectAllCheckboxField.setChecked(true);
-		selectAllCheckboxField.addClickHandler(this);
-		
 		int height = Window.getClientHeight() - 120;
 		int width = Window.getClientWidth() - 100;
 		
@@ -72,19 +70,31 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 		}
 		
 		gridPanel = new FlexTable();
-		
-		//gridPanel.setSize("100%", "100%");
-
+				
 		gridPanel.setCellSpacing(10);
 		gridPanel.setCellPadding(2);
 
 		scrollPanel = new ScrollPanel(gridPanel);
+		
+		if (getConfiguration() != null && entityListModel instanceof EntitySelectionModel) {
+			if (getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE) != null) {
+				if ((Boolean) getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)) {
+					selectAllCheckboxField = new CheckBox("Select All");
+					selectAllCheckboxField.setChecked(false);
+					selectAllCheckboxField.addClickHandler(this);
+					basePanel.add(selectAllCheckboxField);
+					basePanel.setCellHorizontalAlignment(selectAllCheckboxField, HasAlignment.ALIGN_RIGHT);
+				}
+			}
+		}
 		
 		basePanel.add(scrollPanel);
 		
 		scrollPanel.addScrollHandler(this);
 		
 		basePanel.setStylePrimaryName("gridListPanel");
+		
+		AppUtils.EVENT_BUS.addHandler(SelectionEvent.TYPE, this);
 		
 		getEntityListModel().getEntityList(entityListModel.getNoOfEntities(), this);
 				
@@ -139,9 +149,10 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 		currentScrollPosition=scrollPanel.getVerticalScrollPosition();
 		lastScrollPosition = scrollPanel.getMaximumVerticalScrollPosition();
 		
-		currentStartIndex = currentStartIndex + entityListModel.getListSize();
-		
 		if(currentScrollPosition == lastScrollPosition){
+			
+			currentStartIndex = currentStartIndex + entityListModel.getQueryToBind().getListSize();
+			
 			fetchNextEntityList(currentStartIndex);
 		}
 		
@@ -172,7 +183,8 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 	}
 	
 	public void fetchNextEntityList(int startIndex){
-		getEntityListModel().setStartIndex(startIndex);
+		getEntityListModel().getQueryToBind().setStartIndex(startIndex);
+		getEntityListModel().getQueryToBind().setListSize(10);
 		getEntityListModel().getEntityList(getEntityListModel().getNoOfEntities(), this);
 		
 		calculateAndUpdateScrollPosition();
@@ -198,25 +210,27 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 		Entity entity = (Entity) event.getEventData();
 		int eventType = event.getEventType();
 		
+		boolean checked = selectAllCheckboxField.isChecked();
+		
 		if (getConfiguration() != null) {
 			if(getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)!=null){
 				if((Boolean)getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)){
 
 				EntitySelectionModel entitySelectionModel = (EntitySelectionModel) entityListModel;
-				/*
-				 * if(event.getEventType() == SelectionEvent.SELECTED){
-				 * entitySelectionModel.addSelectedEntity(entity); }else
-				 * if(event.getEventType() == SelectionEvent.DESELECTED){
-				 * entitySelectionModel.removeSelection(entity); }
-				 */
-
+				
 				switch (eventType) {
 				case SelectionEvent.SELECTED: {
 					entitySelectionModel.addSelectedEntity(entity);
+					if (entitySelectionModel.getSelectedList() == entitySelectionModel.getCurrentEntityList()) {
+						selectAllCheckboxField.setChecked(true);
+					}
 					break;
 				}
 				case SelectionEvent.DESELECTED: {
 					entitySelectionModel.removeSelection(entity);
+					if (checked)
+						selectAllCheckboxField.setChecked(false);
+
 					break;
 				}
 
@@ -275,7 +289,7 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 		
 	}
 	
-	private void selectAllList(boolean checked) {
+	private void selectAllSnippets(boolean checked) {
 		EntitySelectionModel entitySelectionModel = (EntitySelectionModel) entityListModel;
 		
 		if(checked){
@@ -302,7 +316,7 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 			if(widget.equals(selectAllCheckboxField)){
 				CheckBox selectAllChkBox = (CheckBox) widget;
 				boolean checked = selectAllChkBox.isChecked();
-				selectAllList(checked);
+				selectAllSnippets(checked);
 			}
 		}
 		
