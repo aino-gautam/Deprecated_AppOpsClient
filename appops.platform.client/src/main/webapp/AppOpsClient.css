@@ -858,6 +858,39 @@ color: blue;
 	width: 200px !important;
 }
 
+.cardSnippetPanel{
+	width: 100%;
+}
+
+.rowSnippetPanel{
+	background-color: #f2f2f2;
+	background-color: #f2f2f2;
+	border-top: 2px solid;
+	border-top-color: #d1d3d4;
+}
+
+.gridListPanel{
+	width: 100%;
+	height: 100%;
+	
+}
+.checkMarkImageInGridPanel{
+	width: 12px;
+	height: 12px;
+	
+}
+
+.checkMarkImageInListPanel{
+	width: 15px;
+	height: 15px;
+	
+}
+
+.postSnippet{
+	width: 100%%;
+	height: 100%;
+}
+
 @-webkit-keyframes bounceInRight {
 	0% {
 		opacity: 0;
@@ -889,3 +922,4 @@ color: blue;
 	100% {
 		-moz-transform: translateX(0);
 	}
+	

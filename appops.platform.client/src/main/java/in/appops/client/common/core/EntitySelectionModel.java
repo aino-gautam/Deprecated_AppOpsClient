@@ -21,7 +21,8 @@ public class EntitySelectionModel extends EntityListModel{
 	
 	public void selectCurrentEntityList(){
 		selectedEntityList.clear();
-		selectedEntityList = getCurrentEntityList();
+		selectedEntityList.addAll(getCurrentEntityList());
+		
 	}
 	
 	public void clearSelection(){
