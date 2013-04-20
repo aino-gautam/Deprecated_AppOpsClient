@@ -1,5 +1,8 @@
 package in.appops.client.common.snippet;
 
+import in.appops.client.common.components.ActionWidget;
+import in.appops.client.common.components.ActionWidget.ActionWidgetConfiguration;
+import in.appops.client.common.components.ActionWidget.ActionWidgetType;
 import in.appops.client.common.fields.ImageField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.util.BlobDownloader;
@@ -37,7 +40,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -233,18 +235,26 @@ public class PostViewSnippet extends RowSnippet {
 		mainPanel.setSpacing(5);
 		int size = responseoptionList.size();
 		for(String responseText : responseoptionList){
-			Label label = new Label(responseText);
-			if(size-1!=0)
-				label.setStylePrimaryName("responseLbl");
-			else
-				label.setStylePrimaryName("responseLblLast");
-			mainPanel.add(label);
+			ActionWidget actionWidget = new ActionWidget(ActionWidgetType.LINK);
+			actionWidget.setWidgetText(responseText);
+			// There ideally should be for each service its corresponding post snippet.
+			//actionWidget.setActionEvent(getResponseActionEvent(actionWidget));
+			
+			if(size-1 !=0){
+				actionWidget.setConfiguration(getActionLinkConfiguration("responseLbl", null));
+			} else {
+				actionWidget.setConfiguration(getActionLinkConfiguration("responseLblLast", null));
+			}
+			actionWidget.createUi();
+
+			mainPanel.add(actionWidget);
 			//mainPanel.add(new HTML("<hr style=\"color: #848181; background-color: #848181; width: 98%; height: 1px;\"></hr>"));
 			size--;
 		}
 		popupPanel.add(mainPanel);
 		popupPanel.show();
 	}
+	
 	private Configuration getImageFieldConfiguration(String url) {
 	    Configuration configuration = new Configuration();
 	    configuration.setPropertyByName(ImageField.IMAGEFIELD_BLOBID,url);
@@ -320,6 +330,12 @@ public class PostViewSnippet extends RowSnippet {
 		configuration.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, wordWrap);
 		return configuration;
 		
+	}
+	
+	private Configuration getActionLinkConfiguration(String primaryCss, String dependentCss) {
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(ActionWidgetConfiguration.PRIMARY_CSS.toString(), primaryCss);
+		return conf;
 	}
 
 }

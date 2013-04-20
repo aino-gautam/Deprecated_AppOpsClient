@@ -51,8 +51,6 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 	private ArrayList<Entity> linkedUsers;
 	private ArrayList<Entity> linkedSpaces;
 	private ArrayList<Entity> linkedEntities;
-
-	
 	
 	public static final String INTELLITEXTFIELD_VISIBLELINES = "intelliShareFieldVisibleLines";
 	public static final String INTELLITEXTFIELD_PRIMARYCSS = "intelliShareFieldPrimaryCss";
@@ -60,6 +58,13 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 	public static final String INTELLITEXTFIELD_MAXCHARLENGTH = "maxLength";
 	public static final String INTELLITEXTFIELD_CONTENTEDITABLE = "contenteditable";
 
+	public static final String FIRE_THREECHARENTERED_EVENT = "fireThreeCharEnteredEvent";
+	public static final String FIRE_WORDENTERED_EVENT = "fireWordEnteredEvent";
+	public static final String FIRE_EDITINITIATED_EVENT = "fireEditInitatedEvent";
+
+	private String isFireThreeCharEnteredEvent;
+	private String isFireWordEnteredEvent;
+	private String isFireEditInitatedEvent;
 
 	public IntelliThoughtField(){
 		initialize();
@@ -84,6 +89,10 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 			String dependentCss = configuration.getPropertyByName(INTELLITEXTFIELD_DEPENDENTCSS) != null ?  configuration.getPropertyByName(INTELLITEXTFIELD_DEPENDENTCSS).toString() : null;  
 			String maxCharLength = configuration.getPropertyByName(INTELLITEXTFIELD_MAXCHARLENGTH) != null ?  configuration.getPropertyByName(INTELLITEXTFIELD_MAXCHARLENGTH).toString() : null;  
 			
+			isFireThreeCharEnteredEvent = configuration.getPropertyByName(FIRE_THREECHARENTERED_EVENT);
+			isFireWordEnteredEvent = configuration.getPropertyByName(FIRE_WORDENTERED_EVENT);
+			isFireEditInitatedEvent = configuration.getPropertyByName(FIRE_EDITINITIATED_EVENT);
+			
 			if(primaryCss != null){
 				this.setStylePrimaryName("intelliShareField");
 			} 
@@ -103,6 +112,7 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 			this.setText("Any Thoughts");
 
 			basePanel.getElement().appendChild(intelliText);
+			basePanel.setStylePrimaryName("intelliThoughtFieldCol");
 			AppUtils.EVENT_BUS.addHandlerToSource(FieldEvent.TYPE, intelliText, this);
 			
 			Event.setEventListener(intelliText, this);
@@ -221,8 +231,10 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 		    	if(this.getText().equalsIgnoreCase("Any Thoughts")){
 					this.setText("");
 				}
-				FieldEvent focusEvent = getFieldEvent(FieldEvent.EDITINITIATED, null);
-				fireIntelliThoughtFieldEvent(focusEvent);
+		    	if(Boolean.valueOf(isFireEditInitatedEvent)){
+					FieldEvent focusEvent = getFieldEvent(FieldEvent.EDITINITIATED, null);
+					fireIntelliThoughtFieldEvent(focusEvent);
+		    	}
             break;
             
 	        case Event.ONKEYDOWN:
@@ -268,9 +280,11 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 			if(linkedSuggestion.isShowing()){
 				linkedSuggestion.hide();
 			}
-			if(!wordBeingTyped.trim().equals("")) { 
-				FieldEvent wordEntered = getFieldEvent(FieldEvent.WORDENTERED, wordBeingTyped.trim()); 
-				fireIntelliThoughtFieldEvent(wordEntered);
+			if(!wordBeingTyped.trim().equals("")) {
+				if(Boolean.valueOf(isFireWordEnteredEvent)){
+					FieldEvent wordEntered = getFieldEvent(FieldEvent.WORDENTERED, wordBeingTyped.trim()); 
+					fireIntelliThoughtFieldEvent(wordEntered);
+				}
 			}
 			return;
 		}
@@ -343,9 +357,11 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 		}
 		if(wordBeingTyped.length() >  2 && Character.isUpperCase(wordBeingTyped.charAt(0))) {
 
-//TODO This is fire event to call the server			
-			FieldEvent threeCharEntered = getFieldEvent(FieldEvent.THREE_CHAR_ENTERED, wordBeingTyped);
-			fireIntelliThoughtFieldEvent(threeCharEntered);
+			//	TODO This is fire event to call the server
+			if(Boolean.valueOf(isFireThreeCharEnteredEvent)){
+				FieldEvent threeCharEntered = getFieldEvent(FieldEvent.THREE_CHAR_ENTERED, wordBeingTyped);
+				fireIntelliThoughtFieldEvent(threeCharEntered);
+			}
 			
 		}
 	}
