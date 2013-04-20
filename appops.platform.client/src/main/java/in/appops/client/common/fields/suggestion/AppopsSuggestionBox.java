@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Composite;
@@ -12,12 +14,13 @@ import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class AppopsSuggestionBox extends Composite implements SelectionHandler<SuggestOracle.Suggestion>, ClickHandler{
+public class AppopsSuggestionBox extends Composite implements SelectionHandler<SuggestOracle.Suggestion>, ClickHandler, FocusHandler{
 	
 	private VerticalPanel basePanel;
 	private AppopsSuggestion selectedSuggestion;
 	private SuggestionOracle oracle = new SuggestionOracle();
 	private SuggestBox suggestBox = new SuggestBox(oracle);
+	private Boolean isAutoSuggestion = false;
 	
 	public AppopsSuggestionBox() {
 		basePanel = new VerticalPanel();
@@ -29,6 +32,7 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 		this.basePanel.add(suggestBox);
 		suggestBox.addSelectionHandler(this);
 		suggestBox.getTextBox().addClickHandler(this);
+		suggestBox.getTextBox().addFocusHandler(this);
 	}
 	
 	public void setQueryName(String queryName) {
@@ -84,6 +88,21 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 
 	public void setIsSearchQuery(Boolean val) {
 		oracle.IsSearchQuery(val);
+	}
+
+	public void setAutoSuggestion(Boolean val) {
+		isAutoSuggestion = val;
+	}
+	
+	@Override
+	public void onFocus(FocusEvent event) {
+		if(isAutoSuggestion){
+			if(getSuggestBox().getText().equals(""))
+				getSuggestBox().setText(" ");
+			getSuggestBox().showSuggestionList();
+			if(getSuggestBox().getText().equals(" "))
+				getSuggestBox().setText("");
+		}
 	}
 
 }

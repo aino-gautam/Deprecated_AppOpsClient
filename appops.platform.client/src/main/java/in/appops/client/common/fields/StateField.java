@@ -43,6 +43,7 @@ public class StateField extends Composite implements Field, ChangeHandler{
 	public static final String STATEFIELD_PROPERTY_TO_DISPLAY = "propertyToDisplay";
 	public static final String STATEFIELD_QUERY_RESTRICTION = "queryRestriction";
 	public static final String IS_SEARCH_QUERY = "isSearchQuery";
+	public static final String IS_AUTOSUGGESTION = "isAutoSuggestion";
 	
 	public StateField(){
 	}
@@ -92,14 +93,16 @@ public class StateField extends Composite implements Field, ChangeHandler{
 			if(getConfiguration().getPropertyByName(IS_SEARCH_QUERY) != null){
 				Boolean val = getConfiguration().getPropertyByName(IS_SEARCH_QUERY);
 				appopsSuggestionBox.setIsSearchQuery(val);
+			}if(getConfiguration().getPropertyByName(IS_AUTOSUGGESTION) != null){
+				Boolean val = getConfiguration().getPropertyByName(IS_AUTOSUGGESTION);
+				appopsSuggestionBox.setAutoSuggestion(val);
 			}
 			if(getConfiguration().getPropertyByName(STATEFIELD_OPERATION) != null)
 				appopsSuggestionBox.setOperationName(getConfiguration().getPropertyByName(STATEFIELD_OPERATION).toString());
-			if(getConfiguration().getPropertyByName(STATEFIELD_QUERY_MAXRESULT) != null) {
+			if(getConfiguration().getPropertyByName(STATEFIELD_QUERY_MAXRESULT) != null)
 				appopsSuggestionBox.setMaxResult((Integer)getConfiguration().getPropertyByName(STATEFIELD_QUERY_MAXRESULT));
-			} else {
+			else
 				appopsSuggestionBox.setMaxResult(25);
-			}
 			if(getConfiguration().getPropertyByName(STATEFIELD_PROPERTY_TO_DISPLAY) != null) {
 				appopsSuggestionBox.setPropertyToDisplay(getConfiguration().getPropertyByName(STATEFIELD_PROPERTY_TO_DISPLAY).toString());
 			}
