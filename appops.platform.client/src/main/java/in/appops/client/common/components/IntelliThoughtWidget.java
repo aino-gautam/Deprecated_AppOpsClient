@@ -4,6 +4,7 @@ import in.appops.client.common.event.ActionEvent;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.AttachmentEvent;
 import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.SearchEvent;
 import in.appops.client.common.event.handlers.AttachmentEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.IntelliThoughtField;
@@ -97,6 +98,8 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	private void addPredefinedOptions() {
 
 		searchButton = new Label("Search");
+		searchButton.addClickHandler(this);
+		
 		postButton = new Label("Post");
 		messageButton = new Label("Message");
 
@@ -169,6 +172,10 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		Widget source = (Widget) event.getSource();
 		if(source.equals(attachMediaField.getMedia())){
 			//attachMediaField.showMediaOption();
+		}else if(source.equals(searchButton)){
+			String text = intelliShareField.getText();
+			SearchEvent searchEvent = new SearchEvent(SearchEvent.SEARCHFIRED, text);
+			AppUtils.EVENT_BUS.fireEvent(searchEvent);
 		}
 	}
 
