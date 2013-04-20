@@ -17,6 +17,11 @@ public abstract class MediaAttachWidget extends Composite implements Configurabl
 	private Image media;
 	protected VerticalPanel basePanel;
 	private boolean isFadeUpEffect;
+	private boolean isExpand;
+	private boolean isCollapse;
+	protected VerticalPanel fileUploadPanel = null;
+	protected HorizontalPanel attachmentPanel = null;
+	
 	public MediaAttachWidget(){
 		initialize();
 		initWidget(basePanel);
@@ -29,12 +34,6 @@ public abstract class MediaAttachWidget extends Composite implements Configurabl
 	public void isFadeUpEffect(boolean isFadeUpEffect){
 		this.isFadeUpEffect = isFadeUpEffect;
 	}
-	
-//	public void showMediaOption() {
-//		mediaAttachWidget = new WebMediaAttachWidget();
-//		mediaAttachWidget.createUi();
-//		basePanel.add(mediaAttachWidget);
-//	}
 	
 	public Image getMedia() {
 		return media;
@@ -61,9 +60,6 @@ public abstract class MediaAttachWidget extends Composite implements Configurabl
 		mediaPanel.setCellVerticalAlignment(media, HasVerticalAlignment.ALIGN_MIDDLE);
 	}
 	
-	public abstract void createAttachmentUi();
-	public abstract void setMediaAttachments(List<String> media);
-	
 	@Override
 	public Configuration getConfiguration() {
 		return null;
@@ -74,6 +70,27 @@ public abstract class MediaAttachWidget extends Composite implements Configurabl
 		
 	}
 	
-	
+	public abstract void createAttachmentUi();
+	public abstract void setMediaAttachments(List<String> media);
 
+	public boolean isExpand() {
+		return isExpand;
+	}
+
+	public void expand() {
+		fileUploadPanel.setVisible(true);
+		this.isExpand = true;
+		this.isCollapse = false;
+	}
+
+	public boolean isCollapse() {
+		return isCollapse;
+	}
+
+	public void collapse() {
+		fileUploadPanel.setVisible(false);
+		this.isCollapse = true;
+		this.isExpand = false;
+	}
+	
 }
