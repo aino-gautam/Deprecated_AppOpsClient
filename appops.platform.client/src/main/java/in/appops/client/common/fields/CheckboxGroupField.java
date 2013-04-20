@@ -127,6 +127,12 @@ public class CheckboxGroupField extends Composite implements Field{
 		}
 	}
 	
+	public CheckBox getCheckBox(String text) {
+		if(groupMap.containsKey(text))
+			return groupMap.get(text);
+		return null;
+	}
+	
 	public HashMap<String, Boolean> getValue() {
 		HashMap<String, Boolean> map = new HashMap<String, Boolean>();
 		Set<String> keySet = groupMap.keySet();

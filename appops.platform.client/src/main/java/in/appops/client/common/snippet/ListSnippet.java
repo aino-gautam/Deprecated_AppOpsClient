@@ -68,9 +68,7 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 	@Override
 	public void initialize(){
 		
-		selectAllCheckboxField = new CheckBox("Select All");
-		selectAllCheckboxField.setChecked(false);
-		selectAllCheckboxField.addClickHandler(this);
+		
 		/*Configuration config = getCheckboxFieldConfiguration("Select All");
 		selectAllCheckboxField.setFieldValue("false");
 		selectAllCheckboxField.setConfiguration(config);*/
@@ -83,8 +81,17 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 		scrollPanel.setHeight(height + "px");
 		scrollPanel.setWidth(width + "px");
 		
-		basepanel.add(selectAllCheckboxField);
-		basepanel.setCellHorizontalAlignment(selectAllCheckboxField,HasAlignment.ALIGN_RIGHT);
+		if (getConfiguration() != null && entityListModel instanceof EntitySelectionModel) {
+			if (getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE) != null) {
+				if ((Boolean) getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)) {
+					selectAllCheckboxField = new CheckBox("Select All");
+					selectAllCheckboxField.setChecked(false);
+					selectAllCheckboxField.addClickHandler(this);
+					basepanel.add(selectAllCheckboxField);
+					basepanel.setCellHorizontalAlignment(selectAllCheckboxField, HasAlignment.ALIGN_RIGHT);
+				}
+			}
+		}
 		
 		basepanel.add(scrollPanel);
 		
@@ -119,11 +126,9 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 	
 	public void fetchNextEntityList(int startIndex){
 		
-		getEntityListModel().setStartIndex(startIndex);
-		
+		getEntityListModel().getQueryToBind().setStartIndex(startIndex);
+		getEntityListModel().getQueryToBind().setListSize(10);
 		getEntityListModel().getEntityList(getEntityListModel().getNoOfEntities(), this);
-		
-		
 		
 		calculateAndUpdateScrollPosition();
 	}
@@ -207,6 +212,9 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 		snippet.setConfiguration(getConfiguration());
 		snippet.initialize();
 		listPanel.setWidget(0, 0,snippet);
+		if(selectAllCheckboxField.isChecked()){
+			selectAllCheckboxField.setChecked(false);
+		}
 	}
 	
 	public void addToIndex(int row, int col, Entity entity){
@@ -224,9 +232,8 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 		currentScrollPosition=scrollPanel.getVerticalScrollPosition();
 		lastScrollPosition = scrollPanel.getMaximumVerticalScrollPosition();
 		
-		currentStartIndex = currentStartIndex + entityListModel.getListSize();
-		
 		if(currentScrollPosition == lastScrollPosition){
+			currentStartIndex = currentStartIndex + entityListModel.getQueryToBind().getListSize();
 			fetchNextEntityList(currentStartIndex);
 		}
 		
@@ -255,35 +262,34 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 		
 		boolean checked = selectAllCheckboxField.isChecked();
 		
-		if((Boolean)getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)){
-			
-			EntitySelectionModel entitySelectionModel = (EntitySelectionModel) entityListModel;
-			/*if(event.getEventType() == SelectionEvent.SELECTED){
-				entitySelectionModel.addSelectedEntity(entity);
-			}else if(event.getEventType() == SelectionEvent.DESELECTED){
-				entitySelectionModel.removeSelection(entity);
-			}*/
-			
-			switch (eventType) {
-			case SelectionEvent.SELECTED: {
-				entitySelectionModel.addSelectedEntity(entity);
-				if(entitySelectionModel.getSelectedList() == entitySelectionModel.getCurrentEntityList()){
-					selectAllCheckboxField.setChecked(true);
+		if (getConfiguration() != null) {
+			if (getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE) != null) {
+				if ((Boolean) getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)) {
+
+					EntitySelectionModel entitySelectionModel = (EntitySelectionModel) entityListModel;
+
+					switch (eventType) {
+					case SelectionEvent.SELECTED: {
+						entitySelectionModel.addSelectedEntity(entity);
+						if (entitySelectionModel.getSelectedList().size() == entitySelectionModel.getCurrentEntityList().size()) {
+							selectAllCheckboxField.setChecked(true);
+						}
+						break;
+					}
+					case SelectionEvent.DESELECTED: {
+						entitySelectionModel.removeSelection(entity);
+						if (checked)
+							selectAllCheckboxField.setChecked(false);
+
+						break;
+					}
+
+					default:
+						break;
+					}
+
 				}
-				break;
 			}
-			case SelectionEvent.DESELECTED: {
-				entitySelectionModel.removeSelection(entity);
-				if(checked)
-					selectAllCheckboxField.setChecked(false);
-				
-				break;
-			}
-			
-			default:
-				break;
-			}
-			
 		}
 		
 	}
@@ -301,14 +307,14 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 			if(widget.equals(selectAllCheckboxField)){
 				CheckBox selectAllChkBox = (CheckBox) widget;
 				boolean checked = selectAllChkBox.isChecked();
-				selectAllList(checked);
+				selectAllSnippets(checked);
 			}
 		}
 		
 		
 	}
 
-	private void selectAllList(boolean checked) {
+	private void selectAllSnippets(boolean checked) {
 		if(checked){
 			
 			EntitySelectionModel entitySelectionModel = (EntitySelectionModel) entityListModel;
