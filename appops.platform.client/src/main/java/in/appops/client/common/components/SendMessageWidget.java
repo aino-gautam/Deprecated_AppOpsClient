@@ -8,6 +8,7 @@ import in.appops.client.common.event.handlers.AttachmentEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.ContactBoxField;
 import in.appops.client.common.fields.IntelliThoughtField;
+import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.util.AppEnviornment;
 import in.appops.client.common.util.EntityToJsonClientConvertor;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
@@ -21,6 +22,7 @@ import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.InitiateActionContext;
+import in.appops.platform.core.operation.IntelliThought;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.shared.Configuration;
@@ -45,14 +47,15 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
-public class SendMessageWidget extends Composite implements Configurable, ClickHandler, FieldEventHandler, AttachmentEventHandler{
+public class SendMessageWidget extends Composite implements Configurable, ClickHandler, AttachmentEventHandler{
 
 	private FlexTable baseFlexTable;
 	private ContactBoxField contactBoxField;
-	private IntelliThoughtField intelliShareField;
+	private IntelliThoughtField intelliThoughtField;
 	private MediaAttachWidget attachMediaField;
 	private boolean isAttachedMediaField;
 	private HorizontalPanel mediaServicePanel;
@@ -61,6 +64,8 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 	public static String IS_ATTACHMEDIAFIELD = "isAttachMediaField";
 	private ArrayList<String> uploadedMediaId = null;
 	private SuggestionAction suggestionAction;
+	private InitiateActionContext actionContext;
+	
 	public SendMessageWidget() {
 		initialize();
 		initWidget(baseFlexTable);
@@ -69,7 +74,6 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 	private void initialize() {
 		baseFlexTable = new FlexTable();
 		contactBoxField = new ContactBoxField();
-		intelliShareField = new IntelliThoughtField();
 		mediaServicePanel = new HorizontalPanel();
 		sendMessageButton = new Button("Send Message");
 		uploadedMediaId = new ArrayList<String>();
@@ -123,9 +127,10 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		}
 		
 		
-		intelliShareField.addFieldEventHandler(this);
+		//intelliShareField.addFieldEventHandler(this);
 		AppUtils.EVENT_BUS.addHandler(AttachmentEvent.TYPE, this);
-	  
+
+		
 		baseFlexTable.setWidget(10, 5, sendMessageButton); 
 		baseFlexTable.getCellFormatter().setHeight(8, 0, "20px");
 		sendMessageButton.addClickHandler(this);
@@ -133,13 +138,44 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 	
 	
 	private void createIntelliShareField() throws AppOpsException {
-		intelliShareField.createField();
-		baseFlexTable.getFlexCellFormatter().setRowSpan(5, 0, 4);
+		Configuration intelliFieldConf = getIntelliFieldConfiguration("intelliShareField", null);
+		intelliThoughtField = new IntelliThoughtField();
 
-		baseFlexTable.setWidget(5, 0, intelliShareField);
+		try {
+			intelliThoughtField.setConfiguration(intelliFieldConf);
+			intelliThoughtField.createField();
+			
+			if(actionContext != null && actionContext.getIntelliThought() != null){
+				IntelliThought intelliThought = actionContext.getIntelliThought();
+				String intelliHtml = intelliThought.getIntelliHtml(); 
+				if( intelliHtml != null && !intelliHtml.equals("")){
+					intelliThoughtField.setHTML(intelliHtml);
+				}
+			}
+		} catch (AppOpsException e) {
+
+		}
+		baseFlexTable.getFlexCellFormatter().setRowSpan(5, 0, 4);
+		VerticalPanel vp = new VerticalPanel();
+		vp.add(intelliThoughtField);
+		baseFlexTable.setWidget(5, 0, vp);
 		baseFlexTable.getFlexCellFormatter().setVerticalAlignment(5, 0, HasVerticalAlignment.ALIGN_TOP);
-		baseFlexTable.getFlexCellFormatter().getElement(5, 0).setClassName("intelliThoughtFieldCol");
+		//baseFlexTable.getFlexCellFormatter().getElement(5, 0).setClassName("intelliThoughtFieldCol");
 	}
+	
+	private Configuration getIntelliFieldConfiguration(String primaryCss, String secondaryCss){
+		// Some configurations provided as of now. To be changed as required.
+
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
+		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
+		configuration.setPropertyByName(IntelliThoughtField.FIRE_EDITINITIATED_EVENT, "false");
+		configuration.setPropertyByName(IntelliThoughtField.FIRE_THREECHARENTERED_EVENT, "true");
+		configuration.setPropertyByName(IntelliThoughtField.FIRE_WORDENTERED_EVENT, "false");
+		return configuration;
+	}
+	
+	
 	@Override
 	public void onAttachmentEvent(AttachmentEvent event) {
 		String blobId = (String) event.getEventData();
@@ -159,29 +195,29 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		
 	}
 
-	@Override
-	public void onFieldEvent(FieldEvent event) {
-		int eventType = event.getEventType();
-		String eventData = (String) event.getEventData();
-		
-		if(eventType == FieldEvent.EDITINITIATED) {
-			if (!isAttachedMediaField) {
-				attachMediaField.setVisible(true);
-				setAttachedMediaField(true);
-			} 
-		} else if(eventType == FieldEvent.WORDENTERED) {
-			handleWordEnteredEvent(eventData);
-		}
-		
-	}
+//	@Override
+//	public void onFieldEvent(FieldEvent event) {
+//		int eventType = event.getEventType();
+//		String eventData = (String) event.getEventData();
+//		
+//		if(eventType == FieldEvent.EDITINITIATED) {
+//			if (!isAttachedMediaField) {
+//				attachMediaField.setVisible(true);
+//				setAttachedMediaField(true);
+//			} 
+//		} else if(eventType == FieldEvent.WORDENTERED) {
+//			handleWordEnteredEvent(eventData);
+//		}
+//		
+//	}
 
-	private void handleWordEnteredEvent(String string) {
-		String intelliText  = intelliShareField.getText();
-		String[] words = intelliText.split("\\s+");
-		
-		
-		showActionSuggestion(string);
-	}
+//	private void handleWordEnteredEvent(String string) {
+//		String intelliText  = intelliThoughtField.getText();
+//		String[] words = intelliText.split("\\s+");
+//		
+//		
+//		showActionSuggestion(string);
+//	}
 	
 	@SuppressWarnings("unchecked")
 	public void showActionSuggestion(String word){
@@ -232,7 +268,7 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		
 		context.setSpace(AppEnviornment.getCurrentSpace());
 		context.setUploadedMedia(uploadedMediaId);
-		context.setIntelliThought(intelliShareField.getIntelliThought());
+		context.setIntelliThought(intelliThoughtField.getIntelliThought());
 		context.setAction(actionLabel.getText());
 		
 		JSONObject token = EntityToJsonClientConvertor.createJsonFromEntity(context);
@@ -263,7 +299,7 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 				 Entity messageEntity = null;
 				 Entity messageParticipantsEntity ;
 				if(!contactBoxField.getText().equals("")){
-				  if(!intelliShareField.getText().equals("")){
+				  if(!intelliThoughtField.getText().equals("")){
 					   messageEntity=createMessageEntity();
 				  }
 					
@@ -375,7 +411,7 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		      Entity messageEntity = new Entity();
 		      messageEntity.setType(new MetaType(TypeConstants.MESSAGE));
 		       //TODO currently spaceId,FamilyId is 1
-		      messageEntity.setPropertyByName(MessageConstant.DESCRIPTION, intelliShareField.getText());
+		      messageEntity.setPropertyByName(MessageConstant.DESCRIPTION, intelliThoughtField.getText());
 		      messageEntity.setPropertyByName(MessageConstant.LEVEL, Long.valueOf(0));
 		      messageEntity.setPropertyByName(MessageConstant.FAMILYID, Long.valueOf(1));
 		      messageEntity.setPropertyByName(MessageConstant.SPACEID, Long.valueOf(1));
@@ -418,6 +454,14 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		this.isAttachedMediaField = isAttachedMediaField;
 	}
 	public void setIntelliShareFieldConfiguration(Configuration conf){
-		intelliShareField.setConfiguration(conf);
+		//intelliThoughtField.setConfiguration(conf);
+	}
+
+	public InitiateActionContext getActionContext() {
+		return actionContext;
+	}
+
+	public void setActionContext(InitiateActionContext actionContext) {
+		this.actionContext = actionContext;
 	}
 }
