@@ -27,8 +27,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class WebMediaAttachWidget extends MediaAttachWidget{
 
-	private VerticalPanel mainPanel = null;
-	private HorizontalPanel subPanel = null;
+
 	private HashMap<String, HorizontalPanel> uploadedBlobIdVsSnippetMap = null;
 	private List<String> uploadedMediaId = null;
 	
@@ -52,8 +51,8 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 //	}
 
 	public void initializeComponent(){
-		mainPanel = new VerticalPanel();
-		subPanel = new HorizontalPanel();
+		fileUploadPanel = new VerticalPanel();
+		attachmentPanel = new HorizontalPanel();
 		uploadedBlobIdVsSnippetMap = new HashMap<String, HorizontalPanel>();
 		uploadedMediaId = new LinkedList<String>();
 	}
@@ -114,7 +113,7 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 		IconWithCrossImage crossImage = new IconWithCrossImage(blobId, "images/crossIconSmall.png");
 		iconPanel.add(crossImage);
 		
-		subPanel.add(iconPanel);
+		attachmentPanel.add(iconPanel);
 		uploadedBlobIdVsSnippetMap.put(blobId, iconPanel);
 		if(!uploadedMediaId.contains(blobId)){
 			uploadedMediaId.add(blobId);
@@ -129,7 +128,7 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 					HorizontalPanel snippetPanel = uploadedBlobIdVsSnippetMap.get(blbId);
 					uploadedBlobIdVsSnippetMap.remove(blbId);
 					uploadedMediaId.remove(blbId);
-					subPanel.remove(snippetPanel);
+					attachmentPanel.remove(snippetPanel);
 					AppUtils.EVENT_BUS.fireEvent(new AttachmentEvent(3, blbId));
 				}
 			}
@@ -146,7 +145,7 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 				HorizontalPanel snippet = uploadedBlobIdVsSnippetMap.get(blobId);
 				uploadedMediaId.remove(blobId);
 				uploadedBlobIdVsSnippetMap.remove(blobId);
-				subPanel.remove(snippet);
+				attachmentPanel.remove(snippet);
 				AppUtils.EVENT_BUS.fireEvent(new AttachmentEvent(3, blobId));
 			}
 		}
@@ -170,19 +169,16 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 
 	@Override
 	public	void createAttachmentUi() {
-		basePanel.add(mainPanel);
-		mainPanel.setStylePrimaryName("appops-webMediaAttachment");
-		mainPanel.setSpacing(10);
+		basePanel.add(fileUploadPanel);
+		fileUploadPanel.setStylePrimaryName("appops-webMediaAttachment");
+		fileUploadPanel.setSpacing(10);
 		
 		MultiUploader multiUploader = getMultiUploader();
-		mainPanel.add(multiUploader);
+		fileUploadPanel.add(multiUploader);
 		
-		subPanel.setSpacing(5);
-		mainPanel.add(subPanel);
-		
-		if(uploadedMediaId != null && !uploadedMediaId.isEmpty()){
-			addToAttachments();
-		}
+		attachmentPanel.setSpacing(5);
+		fileUploadPanel.add(attachmentPanel);
+		fileUploadPanel.setVisible(false);
 	}
 
 	private void addToAttachments() {
@@ -194,6 +190,10 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 	@Override
 	public	void setMediaAttachments(List<String> media) {
 		this.uploadedMediaId = media;
+		if(uploadedMediaId != null && !uploadedMediaId.isEmpty()){
+			addToAttachments();
+		}
+		expand();
 	}
 
 }
