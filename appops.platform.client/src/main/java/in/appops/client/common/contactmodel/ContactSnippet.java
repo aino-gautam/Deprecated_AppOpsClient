@@ -27,10 +27,16 @@ public class ContactSnippet extends Composite implements ClickHandler {
 	private boolean isSelected;
 	private boolean isSelectionAllowed;
 	
+	public ContactSnippet() {
+		initialize();
+		initWidget(basePanel);
+	}
+	
 	public ContactSnippet(boolean isSelectionAllowed) {
 		this.isSelectionAllowed = isSelectionAllowed;
 		initialize();
 		initWidget(basePanel);
+		basePanel.setStylePrimaryName("contactSnippetBasePanel");
 	}
 
 	private void initialize() {
@@ -47,7 +53,6 @@ public class ContactSnippet extends Composite implements ClickHandler {
 		basePanel.add(userDetailsPanel);
 		userDetailsPanel.setWidth("100%");
 		basePanel.addClickHandler(this);
-		basePanel.setStylePrimaryName("contactSnippetBasePanel");
 	}
 	
 	public void initialize(Entity entity) {

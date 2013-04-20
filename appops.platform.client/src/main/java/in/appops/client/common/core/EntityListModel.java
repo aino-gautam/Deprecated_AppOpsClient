@@ -26,9 +26,7 @@ public class EntityListModel implements AppOpsModel {
 	private int noOfEntities;
 	private ArrayList<Type> interestingTypesList;
 	private EntityListReceiver entityListReceiver;
-	private int startIndex = 0;
-	private int listSize = 10 ;
-	
+		
 	public EntityListModel(){
 		
 	}
@@ -64,11 +62,7 @@ public class EntityListModel implements AppOpsModel {
 	public EntityList getEntityList(int noOfEntities, final EntityListReceiver listReceiver) {
 		Map parameterMap = new HashMap();
 		parameterMap.put("query", query);
-		if(query!=null){
-			query.setStartIndex(getStartIndex());
-			query.setListSize(getListSize());
-		}
-		
+				
 		StandardAction action = new StandardAction(EntityList.class, operationName, parameterMap);
 		dispatch.execute(action, new AsyncCallback<Result>() {
 
@@ -80,7 +74,11 @@ public class EntityListModel implements AppOpsModel {
 			@Override
 			public void onSuccess(Result result) {
 				EntityList entityList = (EntityList) result.getOperationResult();
-				setCurrentEntityList(entityList);
+				//setCurrentEntityList(entityList);
+				if(getCurrentEntityList()==null)
+					currentEntityList = new EntityList();
+				
+				getCurrentEntityList().addAll(entityList);
 				listReceiver.onEntityListReceived(entityList);
 			}
 		});
@@ -122,9 +120,11 @@ public class EntityListModel implements AppOpsModel {
 
 	@Override
 	public boolean isInterestingType(Type type) {
-		for(Type t : interestingTypesList){
-			if(t.getTypeId() == type.getTypeId())
-				return true;
+		if(interestingTypesList!=null){
+			for(Type t : interestingTypesList){
+				if(t.getTypeId() == type.getTypeId())
+					return true;
+			}
 		}
 		return false;
 	}
@@ -152,24 +152,8 @@ public class EntityListModel implements AppOpsModel {
 	public void setEntityListReceiver(EntityListReceiver entityListReceiver) {
 		this.entityListReceiver = entityListReceiver;
 	}
-
-	public int getStartIndex() {
-		return startIndex;
-	}
-
-	public void setStartIndex(int startIndex) {
-		this.startIndex = startIndex;
-	}
-
+	
 	public EntityList getCurrentEntityList() {
 		return currentEntityList;
-	}
-
-	public int getListSize() {
-		return listSize;
-	}
-
-	public void setListSize(int listSize) {
-		this.listSize = listSize;
 	}
 }
