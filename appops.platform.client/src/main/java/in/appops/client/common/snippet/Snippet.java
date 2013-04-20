@@ -4,7 +4,6 @@ import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.shared.Configuration;
 
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface Snippet extends IsWidget {
@@ -23,9 +22,9 @@ public interface Snippet extends IsWidget {
 	
 	public Configuration getConfiguration();
 
+	/**	Any Data to be passed to a Snippet will/could be taken from ActionContext **/
 	public ActionContext getActionContext() ;
 	
-	/**	Any Data to be passed to a Snippet will could be taken from ActionContext **/
 	public void setActionContext(ActionContext actionContext);
 	
 	 
