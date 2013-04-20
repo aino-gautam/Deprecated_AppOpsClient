@@ -166,14 +166,14 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>18.04.2013</version>
+			<version>20.04.2013</version>
 		</dependency>
 
 		<!-- This should be used when using a final version of the jar -->
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>18.04.2013</version>
+			<version>20.04.2013</version>
 		</dependency>
 
 		<dependency>
@@ -198,6 +198,16 @@
 			<groupId>com.googlecode.gwtphonegap</groupId>
 			<artifactId>gwtphonegap</artifactId>
 			<version>2.0.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mailapi</artifactId>
+			<version>1.4.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>smtp</artifactId>
+			<version>1.4.6-rc1</version>
 		</dependency>
 	</dependencies>
 
@@ -242,6 +252,7 @@
 						<module>in.appops.showcase.web.gwt.mediaupload.mediaupload</module>
 						<module>in.appops.showcase.web.gwt.navigationmaze.navigationmaze</module>
 						<module>in.appops.showcase.web.gwt.facebook.facebook</module>
+						<module>in.appops.showcase.web.gwt.contactbox.contactbox</module>
 					</modules>
 				</configuration>
 			</plugin>
