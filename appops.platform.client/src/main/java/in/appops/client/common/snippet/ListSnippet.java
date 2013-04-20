@@ -68,9 +68,7 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 	@Override
 	public void initialize(){
 		
-		selectAllCheckboxField = new CheckBox("Select All");
-		selectAllCheckboxField.setChecked(true);
-		selectAllCheckboxField.addClickHandler(this);
+		
 		/*Configuration config = getCheckboxFieldConfiguration("Select All");
 		selectAllCheckboxField.setFieldValue("false");
 		selectAllCheckboxField.setConfiguration(config);*/
@@ -82,6 +80,18 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 		int width = Window.getClientWidth() - 100;
 		scrollPanel.setHeight(height + "px");
 		scrollPanel.setWidth(width + "px");
+		
+		if (getConfiguration() != null && entityListModel instanceof EntitySelectionModel) {
+			if (getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE) != null) {
+				if ((Boolean) getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)) {
+					selectAllCheckboxField = new CheckBox("Select All");
+					selectAllCheckboxField.setChecked(false);
+					selectAllCheckboxField.addClickHandler(this);
+					basepanel.add(selectAllCheckboxField);
+					basepanel.setCellHorizontalAlignment(selectAllCheckboxField, HasAlignment.ALIGN_RIGHT);
+				}
+			}
+		}
 		
 		basepanel.add(scrollPanel);
 		
@@ -116,11 +126,9 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 	
 	public void fetchNextEntityList(int startIndex){
 		
-		getEntityListModel().setStartIndex(startIndex);
-		
+		getEntityListModel().getQueryToBind().setStartIndex(startIndex);
+		getEntityListModel().getQueryToBind().setListSize(10);
 		getEntityListModel().getEntityList(getEntityListModel().getNoOfEntities(), this);
-		
-		
 		
 		calculateAndUpdateScrollPosition();
 	}
@@ -198,18 +206,22 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 	
 	public void addToTop(Entity entity){
 		listPanel.insertRow(0);
-		
 		SnippetFactory snippetFactory = injector.getSnippetFactory();
 		Snippet snippet = snippetFactory.getSnippetByEntityType(entity.getType(), null);
 		snippet.setEntity(entity);
+		snippet.setConfiguration(getConfiguration());
 		snippet.initialize();
 		listPanel.setWidget(0, 0,snippet);
+		if(selectAllCheckboxField.isChecked()){
+			selectAllCheckboxField.setChecked(false);
+		}
 	}
 	
 	public void addToIndex(int row, int col, Entity entity){
 		SnippetFactory snippetFactory = injector.getSnippetFactory();
 		Snippet snippet = snippetFactory.getSnippetByEntityType(entity.getType(), null);
 		snippet.setEntity(entity);
+		snippet.setConfiguration(getConfiguration());
 		snippet.initialize();
 		listPanel.setWidget(row, col,snippet);
 	}
@@ -220,9 +232,8 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 		currentScrollPosition=scrollPanel.getVerticalScrollPosition();
 		lastScrollPosition = scrollPanel.getMaximumVerticalScrollPosition();
 		
-		currentStartIndex = currentStartIndex + entityListModel.getListSize();
-		
 		if(currentScrollPosition == lastScrollPosition){
+			currentStartIndex = currentStartIndex + entityListModel.getQueryToBind().getListSize();
 			fetchNextEntityList(currentStartIndex);
 		}
 		
@@ -249,29 +260,36 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 		Entity entity = (Entity) event.getEventData();
 		int eventType = event.getEventType();
 		
-		if((Boolean)getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)){
-			
-			EntitySelectionModel entitySelectionModel = (EntitySelectionModel) entityListModel;
-			/*if(event.getEventType() == SelectionEvent.SELECTED){
-				entitySelectionModel.addSelectedEntity(entity);
-			}else if(event.getEventType() == SelectionEvent.DESELECTED){
-				entitySelectionModel.removeSelection(entity);
-			}*/
-			
-			switch (eventType) {
-			case SelectionEvent.SELECTED: {
-				entitySelectionModel.addSelectedEntity(entity);
-				break;
+		boolean checked = selectAllCheckboxField.isChecked();
+		
+		if (getConfiguration() != null) {
+			if (getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE) != null) {
+				if ((Boolean) getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)) {
+
+					EntitySelectionModel entitySelectionModel = (EntitySelectionModel) entityListModel;
+
+					switch (eventType) {
+					case SelectionEvent.SELECTED: {
+						entitySelectionModel.addSelectedEntity(entity);
+						if (entitySelectionModel.getSelectedList().size() == entitySelectionModel.getCurrentEntityList().size()) {
+							selectAllCheckboxField.setChecked(true);
+						}
+						break;
+					}
+					case SelectionEvent.DESELECTED: {
+						entitySelectionModel.removeSelection(entity);
+						if (checked)
+							selectAllCheckboxField.setChecked(false);
+
+						break;
+					}
+
+					default:
+						break;
+					}
+
+				}
 			}
-			case SelectionEvent.DESELECTED: {
-				entitySelectionModel.removeSelection(entity);
-				break;
-			}
-			
-			default:
-				break;
-			}
-			
 		}
 		
 	}
@@ -289,24 +307,31 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 			if(widget.equals(selectAllCheckboxField)){
 				CheckBox selectAllChkBox = (CheckBox) widget;
 				boolean checked = selectAllChkBox.isChecked();
-				selectList(checked);
+				selectAllSnippets(checked);
 			}
 		}
 		
 		
 	}
 
-	private void selectList(boolean checked) {
+	private void selectAllSnippets(boolean checked) {
 		if(checked){
 			
 			EntitySelectionModel entitySelectionModel = (EntitySelectionModel) entityListModel;
 			entitySelectionModel.selectCurrentEntityList();
 			
 			for(int i=0;i<row ;i++){
-				Snippet snippet = (Snippet) listPanel.getWidget(i, 0);
+				RowSnippet snippet = (RowSnippet) listPanel.getWidget(i, 0);
+				snippet.selectSnippet();
 			}
 		}else{
+			EntitySelectionModel entitySelectionModel = (EntitySelectionModel) entityListModel;
+			entitySelectionModel.clearSelection();
 			
+			for(int i=0;i<row ;i++){
+				RowSnippet snippet = (RowSnippet) listPanel.getWidget(i, 0);
+				snippet.deSelectSnippet();
+			}
 		}
 	}
 
