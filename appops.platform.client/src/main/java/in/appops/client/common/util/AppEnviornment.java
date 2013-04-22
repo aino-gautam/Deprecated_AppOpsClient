@@ -10,6 +10,8 @@ public class AppEnviornment {
 	public static Entity CURRENTUSER = null;
 	
 	public static Entity CURRENTSPACE = null;
+	
+	public static boolean ISUSERLOGGEDIN = false;
 
 	public static Entity getCurrentUser() {
 		return CURRENTUSER;
@@ -27,6 +29,9 @@ public class AppEnviornment {
 		CURRENTSPACE = space;
 	}
 	
+	public static void setUserLoggedIn(boolean loggedIn) {
+		ISUSERLOGGEDIN = loggedIn;
+	}
 	
 	
 	
