@@ -276,5 +276,13 @@ public class JsonToEntityConverter {
 		
 	}
 	
+	public Entity convertjsonStringToEntity(String jsonObjectStr){
+		 JSONValue jsonVal = JSONParser.parseLenient(jsonObjectStr);
+         
+         JSONObject jsonObj = new JSONObject(jsonVal.isObject().getJavaScriptObject());
+         
+        return getConvertedEntity(jsonObj);
+	}
+	
 	
 }
