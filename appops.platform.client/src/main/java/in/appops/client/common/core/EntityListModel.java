@@ -26,7 +26,7 @@ public class EntityListModel implements AppOpsModel {
 	private int noOfEntities;
 	private ArrayList<Type> interestingTypesList;
 	private EntityListReceiver entityListReceiver;
-	
+		
 	public EntityListModel(){
 		
 	}
@@ -62,7 +62,7 @@ public class EntityListModel implements AppOpsModel {
 	public EntityList getEntityList(int noOfEntities, final EntityListReceiver listReceiver) {
 		Map parameterMap = new HashMap();
 		parameterMap.put("query", query);
-		
+				
 		StandardAction action = new StandardAction(EntityList.class, operationName, parameterMap);
 		dispatch.execute(action, new AsyncCallback<Result>() {
 
@@ -74,7 +74,11 @@ public class EntityListModel implements AppOpsModel {
 			@Override
 			public void onSuccess(Result result) {
 				EntityList entityList = (EntityList) result.getOperationResult();
-				setCurrentEntityList(entityList);
+				//setCurrentEntityList(entityList);
+				if(getCurrentEntityList()==null)
+					currentEntityList = new EntityList();
+				
+				getCurrentEntityList().addAll(entityList);
 				listReceiver.onEntityListReceived(entityList);
 			}
 		});
@@ -116,23 +120,27 @@ public class EntityListModel implements AppOpsModel {
 
 	@Override
 	public boolean isInterestingType(Type type) {
-		for(Type t : interestingTypesList){
-			if(t.getTypeId() == type.getTypeId())
-				return true;
+		if(interestingTypesList!=null){
+			for(Type t : interestingTypesList){
+				if(t.getTypeId() == type.getTypeId())
+					return true;
+			}
 		}
 		return false;
 	}
 
 	@Override
 	public void setBroadcastEntity(Entity entity) {
-		for(Entity ent : currentEntityList){
-			if(ent.getType().getTypeName().equalsIgnoreCase(entity.getType().getTypeName())){
-				//long entId = (Long)ent.getPropertyByName("id");
-				//long entityId = (Long)entity.getPropertyByName("id");
-				
-				//if(entId == entityId){
-					getEntityListReceiver().updateCurrentView(entity);
-				//}
+		if (currentEntityList != null) {
+			for (Entity ent : currentEntityList) {
+				if (ent.getType().getTypeName().equalsIgnoreCase(entity.getType().getTypeName())) {
+					long entId = (Long) ent.getPropertyByName("id");
+					long entityId = (Long) entity.getPropertyByName("id");
+
+					if (entId == entityId) {
+						getEntityListReceiver().updateCurrentView(entity);
+					}
+				}
 			}
 		}
 	}
@@ -143,5 +151,9 @@ public class EntityListModel implements AppOpsModel {
 
 	public void setEntityListReceiver(EntityListReceiver entityListReceiver) {
 		this.entityListReceiver = entityListReceiver;
+	}
+	
+	public EntityList getCurrentEntityList() {
+		return currentEntityList;
 	}
 }

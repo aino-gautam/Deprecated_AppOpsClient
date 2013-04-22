@@ -375,7 +375,7 @@ background-color: #AAAAAA;
 	-o-transform:scale(2,2); /* Opera */
 }
 .spinnerUpArrow {
-	background-image: url("image/spinnerArrowIcons.png");
+	background-image: url("images/spinnerArrowIcons.png");
 	width: 15px;
 	height: 13px;
 	background-position: -45px 0px;
@@ -383,7 +383,7 @@ background-color: #AAAAAA;
 	outline: none;
 }
 .spinnerUpArrow:HOVER {
-	background-image: url("image/spinnerArrowIcons.png");
+	background-image: url("images/spinnerArrowIcons.png");
 	width: 15px;
 	height: 13px;
 	background-position: -15px 0px;
@@ -391,7 +391,7 @@ background-color: #AAAAAA;
 	outline: none;
 }
 .spinnerDownArrow {
-	background: url("image/spinnerArrowIcons.png");
+	background: url("images/spinnerArrowIcons.png");
 	width: 15px;
 	height: 9px;
 	background-position: -105px 0px;
@@ -399,7 +399,7 @@ background-color: #AAAAAA;
 	outline: none;
 }
 .spinnerDownArrow:HOVER {
-	background: url("image/spinnerArrowIcons.png");
+	background: url("images/spinnerArrowIcons.png");
 	width: 15px;
 	height: 9px;
 	background-position: -75px 0px;
@@ -729,7 +729,7 @@ color: blue;
 
 .listComponentPanel{
 	width: 600px;
-	height: 500px;
+	height: 100%;
 }
 
 .crossIconSmall {
@@ -847,6 +847,50 @@ color: blue;
 	-moz-animation-name: bounceInRight;
 }
 
+.searchBtn{
+	border-radius: 4px 4px 4px 4px !important;
+	background: #DADADA;
+	cursor: pointer;
+}
+.searchSuggestionBox{
+	border-radius: 3px 3px 3px 3px !important;
+	height: 10px !important;
+	width: 200px !important;
+}
+
+.cardSnippetPanel{
+	width: 100%;
+}
+
+.rowSnippetPanel{
+	background-color: #f2f2f2;
+	background-color: #f2f2f2;
+	border-top: 2px solid;
+	border-top-color: #d1d3d4;
+}
+
+.gridListPanel{
+	width: 100%;
+	height: 100%;
+	
+}
+.checkMarkImageInGridPanel{
+	width: 12px;
+	height: 12px;
+	
+}
+
+.checkMarkImageInListPanel{
+	height: 20px;
+    margin: 25px 10px 0 8px;
+    width: 20px;
+}
+
+.postSnippet{
+	width: 100%%;
+	height: 100%;
+}
+
 @-webkit-keyframes bounceInRight {
 	0% {
 		opacity: 0;
@@ -878,3 +922,27 @@ color: blue;
 	100% {
 		-moz-transform: translateX(0);
 	}
+	
+.userSelectedWidget {
+	background: #e2e6f0;
+	border: 1px solid #9daccc;
+	-webkit-border-radius: 2px;
+	color: #1c2a47;
+	cursor: default;
+	display: block;
+	float: left;
+	height: 14px;
+	margin: 0 4px 4px 0;
+	padding: 0 3px;
+	position: relative;
+	white-space: nowrap;
+}
+.contactBoxField {	
+	width: 100%;
+	height:100px;
+    font-family: Ubuntu;
+    font-size: 12px;
+    color: black;
+    background: #FFF;
+    padding: 7px;
+	outline: 0;
