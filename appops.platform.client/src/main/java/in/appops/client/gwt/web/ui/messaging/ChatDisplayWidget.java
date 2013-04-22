@@ -3,14 +3,6 @@
  */
 package in.appops.client.gwt.web.ui.messaging;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.atmosphere.gwt.client.AtmosphereClient;
-import org.atmosphere.gwt.client.AtmosphereListener;
-
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -20,11 +12,14 @@ import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.broadcast.ChatEntity;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
-import in.appops.platform.server.core.services.entitybroadcast.constant.BroadcastConstant;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -61,6 +56,7 @@ public class ChatDisplayWidget extends VerticalPanel /*implements AtmosphereList
 	 */
 	private ChatEntity chatEntity;
 	
+	private Entity contactEntity;
 	
 	private MessagingComponent parentMessagingComponent;
 	
@@ -79,10 +75,10 @@ public class ChatDisplayWidget extends VerticalPanel /*implements AtmosphereList
 		headerContainer.clear();
 		actualDisplayPanel.clear();
 		
-		headerContainer.setStylePrimaryName("fullWidth");
 		try {
-			this.chatEntity = entity;
+			this.setChatEntity(entity);
 			String headerText = entity.getHeaderTitle();
+			String chatHeaderText = getChatHeaderText(headerText);
 			final ToggleButton toggleBtn = new ToggleButton("Message", "Chat");
 			toggleBtn.setStylePrimaryName("messageChatToogle");
 			toggleBtn.addClickHandler(new ClickHandler() {
@@ -101,8 +97,8 @@ public class ChatDisplayWidget extends VerticalPanel /*implements AtmosphereList
 
 			headerContainer.add(toggleBtn);
 			Label chatHeaderLabel = new Label();
-			chatHeaderLabel.setText(headerText);
-			chatHeaderLabel.setTitle(headerText);
+			chatHeaderLabel.setText(chatHeaderText);
+			chatHeaderLabel.setTitle(chatHeaderText);
 			chatHeaderLabel.setStylePrimaryName("chatHeaderLabel");
 			headerContainer.add(chatHeaderLabel);
 
@@ -113,8 +109,8 @@ public class ChatDisplayWidget extends VerticalPanel /*implements AtmosphereList
 
 				@Override
 				public void onClick(ClickEvent event) {
-					// TODO fire event to close chat
-
+					String header = chatEntity.getHeaderTitle();
+					parentMessagingComponent.removeFromDisplayList(header);
 				}
 			});
 
@@ -123,10 +119,30 @@ public class ChatDisplayWidget extends VerticalPanel /*implements AtmosphereList
 			headerContainer.setCellHorizontalAlignment(toggleBtn, HorizontalPanel.ALIGN_LEFT);
 			headerContainer.setCellHorizontalAlignment(chatHeaderLabel, HorizontalPanel.ALIGN_LEFT);
 			headerContainer.setCellHorizontalAlignment(crossImage, HorizontalPanel.ALIGN_RIGHT);
+			
+			headerContainer.setCellVerticalAlignment(chatHeaderLabel, HasVerticalAlignment.ALIGN_MIDDLE);
+			headerContainer.setCellVerticalAlignment(crossImage, HasVerticalAlignment.ALIGN_MIDDLE);
+			
+			headerContainer.addStyleName("chatHeaderPanel");
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private String getChatHeaderText(String headerText) {
+		if(headerText.contains("##")) {
+			String[] headerTextArr = headerText.split("##");
+			String contactName = contactEntity.getPropertyByName(ContactConstant.NAME).toString();
+			for(int i = 0;i < headerTextArr.length;i++) {
+				if(!contactName.equals(headerTextArr[i])) {
+					return headerTextArr[i];
+				}
+			}
+		} else {
+			return headerText;
+		}
+		return null;
 	}
 
 	/**
@@ -191,7 +207,7 @@ public class ChatDisplayWidget extends VerticalPanel /*implements AtmosphereList
 
 				@Override
 				public void onSuccess(Result result) {
-					Entity savedEntity = (Entity) result.getOperationResult();
+					//Entity savedEntity = (Entity) result.getOperationResult();
 					//TODO : need to update further					
 				}
 			});
@@ -228,23 +244,24 @@ public class ChatDisplayWidget extends VerticalPanel /*implements AtmosphereList
 	/**
 	 * Any global variable must be initialised here.
 	 */
-	private void initialize() {
+	public void initialize() {
+		clear();
 		actualDisplayScrollPanel = new ScrollPanel();
 		actualDisplayPanel = new VerticalPanel();
 		headerContainer = new HorizontalPanel();
 		actualDisplayScrollPanel.setStylePrimaryName("fullWidth");
 		actualDisplayScrollPanel.addStyleName("scrollHeightForChat");
 		
-		setStylePrimaryName("fullWidth");
 		actualDisplayPanel.setStylePrimaryName("actualChatContainer");
 		actualDisplayPanel.addStyleName("fullWidth");
 		
-		headerContainer.setStylePrimaryName("fullWidth");
+		//headerContainer.setStylePrimaryName("fullWidth");
 		add(headerContainer);
 
 		actualDisplayScrollPanel.add(actualDisplayPanel);
 		add(actualDisplayScrollPanel);
 	
+		setStylePrimaryName("chatDisplayerWidget");
 	}
 
 	/**
@@ -338,6 +355,14 @@ public class ChatDisplayWidget extends VerticalPanel /*implements AtmosphereList
 	 */
 	public void setParentMessagingComponent(MessagingComponent parentMessagingComponent) {
 		this.parentMessagingComponent = parentMessagingComponent;
+	}
+
+	public void setChatEntity(ChatEntity chatEntity) {
+		this.chatEntity = chatEntity;
+	}
+
+	public void setContactEntity(Entity contactEntity) {
+		this.contactEntity = contactEntity;
 	}
 
 /*	*//**

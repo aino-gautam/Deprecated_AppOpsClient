@@ -27,10 +27,8 @@ public class CardSnippet extends DockPanel implements Snippet,ClickHandler,Mouse
 	private Configuration configuration;	
 	
 	public CardSnippet() {
-		//initialize();
+		
 	}
-	
-			
 	
 	@Override
 	public Widget asWidget() {
@@ -77,8 +75,13 @@ public class CardSnippet extends DockPanel implements Snippet,ClickHandler,Mouse
 		checkMarkSelectedImage.addClickHandler(this);
 		checkMarkNotSelectedImage.setVisible(false);
 		
-		if((Boolean)getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)){
-			add(checkMarkPanel,DockPanel.EAST);
+		if(getConfiguration()!=null){
+			if(getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)!=null){
+				if((Boolean)getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)){
+					add(checkMarkPanel,DockPanel.EAST);
+					setCellWidth(checkMarkPanel, "7%");
+				}
+			}
 		}
 				
 		setSpacing(5);

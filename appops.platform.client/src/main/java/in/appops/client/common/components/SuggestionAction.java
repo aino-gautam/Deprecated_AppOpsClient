@@ -42,9 +42,9 @@ public class SuggestionAction extends Composite{
 		basePanel.setStylePrimaryName("suggestionLabel");
 	}
 	
-	public void addSuggestionAction(ActionLabel actionLabel){
+	public void addSuggestionAction(ActionWidget actionLabel){
 //		Label suggestionLabel = new Label(suggestionAction);
-		actionLabel.setStylePrimaryName("appops-intelliThought-Label");
+		//actionLabel.setStylePrimaryName("appops-intelliThought-Label");
 		actionLabel.addStyleName("fadeInLeft");
 		
 		WidgetManagement widgetPlacement = new WidgetManagement(0, 0, actionLabel);
@@ -73,7 +73,7 @@ public class SuggestionAction extends Composite{
 	}
 
 	private void placeWidget(WidgetManagement management) {
-		Label suggestionAction = (Label)management.getWidget();
+		ActionWidget suggestionAction = (ActionWidget)management.getWidget();
 		basePanel.setWidget(management.getRow(), management.getColumn(), suggestionAction);
 		basePanel.getCellFormatter().setHorizontalAlignment(management.getRow(), management.getColumn(), HasHorizontalAlignment.ALIGN_LEFT);
 	}
