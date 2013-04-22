@@ -85,6 +85,40 @@ public class EntityListModel implements AppOpsModel {
 		return null;
 	}
 
+	/**
+	 * This method just excepts the no. of entity thats needs to be brought from server and
+	 * pass the list to the pre-provided receiver. 
+	 * @param noOfEntities
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public EntityList getEntityList(int noOfEntities) {
+		Map parameterMap = new HashMap();
+		
+		if(noOfEntities != 0)
+			getQueryToBind().setListSize(noOfEntities);
+		
+		parameterMap.put("query", getQueryToBind());
+		
+		StandardAction action = new StandardAction(EntityList.class, getOperationNameToBind(), parameterMap);
+		dispatch.execute(action, new AsyncCallback<Result>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
+
+			@Override
+			public void onSuccess(Result result) {
+				EntityList entityList = (EntityList) result.getOperationResult();
+				setCurrentEntityList(entityList);
+				getEntityListReceiver().onEntityListReceived(entityList);
+			}
+		});
+		return null;
+	}
+	
+	
 	@Override
 	public Entity getEntity(Type type, int entityId, EntityReceiver entityReceiver) {
 		// TODO Auto-generated method stub
