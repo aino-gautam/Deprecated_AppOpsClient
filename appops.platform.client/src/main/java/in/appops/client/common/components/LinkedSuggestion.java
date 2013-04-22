@@ -151,9 +151,9 @@ public class LinkedSuggestion extends PopupPanel implements Configurable, Entity
 		this.setCurrentSelection(currentSelectedEntity);
 	}
 	
-	public String getCurrentSelection(){
+	public IntelliThoughtSuggestion getCurrentSelection(){
 		IntelliThoughtSuggestion suggestion = (IntelliThoughtSuggestion)basePanel.getWidget(currentSelectedEntity);
-		return suggestion.getDisplayText();
+		return suggestion;
 	}
 	
 	public void setFocus(){

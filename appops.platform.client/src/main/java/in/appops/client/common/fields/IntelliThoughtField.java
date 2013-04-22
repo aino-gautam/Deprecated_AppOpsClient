@@ -1,5 +1,6 @@
 package in.appops.client.common.fields;
 
+import in.appops.client.common.components.IntelliThoughtSuggestion;
 import in.appops.client.common.components.LinkedSuggestion;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
@@ -8,12 +9,15 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.constants.typeconstants.TypeConstants;
+import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.operation.IntelliThought;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +48,9 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 	private HorizontalPanel basePanel;
 	private Element intelliText;
 	private static int caretPosition;  
+	private ArrayList<Entity> linkedUsers;
+	private ArrayList<Entity> linkedSpaces;
+	private ArrayList<Entity> linkedEntities;
 	
 	public static final String INTELLITEXTFIELD_VISIBLELINES = "intelliShareFieldVisibleLines";
 	public static final String INTELLITEXTFIELD_PRIMARYCSS = "intelliShareFieldPrimaryCss";
@@ -51,6 +58,13 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 	public static final String INTELLITEXTFIELD_MAXCHARLENGTH = "maxLength";
 	public static final String INTELLITEXTFIELD_CONTENTEDITABLE = "contenteditable";
 
+	public static final String FIRE_THREECHARENTERED_EVENT = "fireThreeCharEnteredEvent";
+	public static final String FIRE_WORDENTERED_EVENT = "fireWordEnteredEvent";
+	public static final String FIRE_EDITINITIATED_EVENT = "fireEditInitatedEvent";
+
+	private String isFireThreeCharEnteredEvent;
+	private String isFireWordEnteredEvent;
+	private String isFireEditInitatedEvent;
 
 	public IntelliThoughtField(){
 		initialize();
@@ -60,6 +74,9 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 	private void initialize() {
 		basePanel = new HorizontalPanel();
 		linkedSuggestion = new LinkedSuggestion(true);
+		linkedEntities = new ArrayList<Entity>();
+		linkedUsers = new ArrayList<Entity>();
+		linkedSpaces = new ArrayList<Entity>();
 	}
 	
 	@Override
@@ -71,6 +88,10 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 			String primaryCss = configuration.getPropertyByName(INTELLITEXTFIELD_PRIMARYCSS) != null ?  configuration.getPropertyByName(INTELLITEXTFIELD_PRIMARYCSS).toString() : null;  
 			String dependentCss = configuration.getPropertyByName(INTELLITEXTFIELD_DEPENDENTCSS) != null ?  configuration.getPropertyByName(INTELLITEXTFIELD_DEPENDENTCSS).toString() : null;  
 			String maxCharLength = configuration.getPropertyByName(INTELLITEXTFIELD_MAXCHARLENGTH) != null ?  configuration.getPropertyByName(INTELLITEXTFIELD_MAXCHARLENGTH).toString() : null;  
+			
+			isFireThreeCharEnteredEvent = configuration.getPropertyByName(FIRE_THREECHARENTERED_EVENT);
+			isFireWordEnteredEvent = configuration.getPropertyByName(FIRE_WORDENTERED_EVENT);
+			isFireEditInitatedEvent = configuration.getPropertyByName(FIRE_EDITINITIATED_EVENT);
 			
 			if(primaryCss != null){
 				this.setStylePrimaryName("intelliShareField");
@@ -91,6 +112,7 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 			this.setText("Any Thoughts");
 
 			basePanel.getElement().appendChild(intelliText);
+			basePanel.setStylePrimaryName("intelliThoughtFieldCol");
 			AppUtils.EVENT_BUS.addHandlerToSource(FieldEvent.TYPE, intelliText, this);
 			
 			Event.setEventListener(intelliText, this);
@@ -209,8 +231,10 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 		    	if(this.getText().equalsIgnoreCase("Any Thoughts")){
 					this.setText("");
 				}
-				FieldEvent focusEvent = getFieldEvent(FieldEvent.EDITINITIATED, null);
-				fireIntelliThoughtFieldEvent(focusEvent);
+		    	if(Boolean.valueOf(isFireEditInitatedEvent)){
+					FieldEvent focusEvent = getFieldEvent(FieldEvent.EDITINITIATED, null);
+					fireIntelliThoughtFieldEvent(focusEvent);
+		    	}
             break;
             
 	        case Event.ONKEYDOWN:
@@ -242,8 +266,12 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 
 			if(linkedSuggestion.isShowing()){
 				event.preventDefault();
-				String text = linkedSuggestion.getCurrentSelection();
-				linkSuggestion(text);
+				
+				IntelliThoughtSuggestion suggestion = linkedSuggestion.getCurrentSelection();
+				Entity selectedEnt = suggestion.getEntity();
+				collectSelectedSuggestion(selectedEnt);
+
+				linkSuggestion(suggestion.getDisplayText());
 				linkedSuggestion.hide();
 			}
 			return;
@@ -252,9 +280,11 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 			if(linkedSuggestion.isShowing()){
 				linkedSuggestion.hide();
 			}
-			if(!wordBeingTyped.trim().equals("")) { 
-				FieldEvent wordEntered = getFieldEvent(FieldEvent.WORDENTERED, wordBeingTyped.trim()); 
-				fireIntelliThoughtFieldEvent(wordEntered);
+			if(!wordBeingTyped.trim().equals("")) {
+				if(Boolean.valueOf(isFireWordEnteredEvent)){
+					FieldEvent wordEntered = getFieldEvent(FieldEvent.WORDENTERED, wordBeingTyped.trim()); 
+					fireIntelliThoughtFieldEvent(wordEntered);
+				}
 			}
 			return;
 		}
@@ -268,6 +298,21 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 		
 	}
 	
+	private void collectSelectedSuggestion(Entity entity) {
+		String typeName = entity.getType().getTypeName();
+		typeName = typeName.replace(".", "#");
+		String[] splittedArray = typeName.split("#");
+		String actualTypeProp = splittedArray[splittedArray.length-1];
+		
+		linkedEntities.add(entity);
+		if(actualTypeProp.equals(TypeConstants.SPACETYPE)){
+			linkedSpaces.add(entity);
+		} else if(actualTypeProp.equals(TypeConstants.USER)){
+			linkedUsers.add(entity);
+		}
+		
+	}
+
 	private void linkSuggestion(String text) {
 		String elementValue = this.getText();
 		String textTillCaretPosition = elementValue.substring(0, caretPosition);
@@ -310,11 +355,13 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 				}
 			}
 		}
-		if(wordBeingTyped.length() >  2) {
+		if(wordBeingTyped.length() >  2 && Character.isUpperCase(wordBeingTyped.charAt(0))) {
 
-//TODO This is fire event to call the server			
-			FieldEvent threeCharEntered = getFieldEvent(FieldEvent.THREE_CHAR_ENTERED, wordBeingTyped);
-			fireIntelliThoughtFieldEvent(threeCharEntered);
+			//	TODO This is fire event to call the server
+			if(Boolean.valueOf(isFireThreeCharEnteredEvent)){
+				FieldEvent threeCharEntered = getFieldEvent(FieldEvent.THREE_CHAR_ENTERED, wordBeingTyped);
+				fireIntelliThoughtFieldEvent(threeCharEntered);
+			}
 			
 		}
 	}
@@ -372,6 +419,9 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 		
 		intelliThought.setIntelliText(getText());
 		intelliThought.setIntelliHtml(getHTML());
+		intelliThought.setLinkedEntities(linkedEntities);
+		intelliThought.setLinkedSpaces(linkedSpaces);
+		intelliThought.setLinkedUsers(linkedUsers);
 		
 		return intelliThought;
 	}

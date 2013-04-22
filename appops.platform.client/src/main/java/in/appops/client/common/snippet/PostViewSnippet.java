@@ -1,5 +1,8 @@
 package in.appops.client.common.snippet;
 
+import in.appops.client.common.components.ActionWidget;
+import in.appops.client.common.components.ActionWidget.ActionWidgetConfiguration;
+import in.appops.client.common.components.ActionWidget.ActionWidgetType;
 import in.appops.client.common.fields.ImageField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.util.BlobDownloader;
@@ -24,7 +27,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -38,14 +40,12 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class PostViewSnippet extends Snippet {
+public class PostViewSnippet extends RowSnippet {
 
-	private VerticalPanel basePanel = new VerticalPanel();
-	private DockPanel dockPanel;
+	private DockPanel postSnippetPanel;
 	private LabelField timeLbl;
 	private VerticalPanel postContentPanel;
 	private HorizontalPanel spaceIconPlusTimePanel ;
@@ -62,17 +62,14 @@ public class PostViewSnippet extends Snippet {
 	private Entity userEntity;
 	
 	public PostViewSnippet() {
-		initWidget(basePanel);
-		basePanel.setHeight("100%");
-		basePanel.setWidth("100%");
-		
 		
 	}
 	
 	@Override
 	public void initialize(){
+		super.initialize();
 		responseoptionList = new ArrayList<String>();
-		dockPanel = new DockPanel();
+		postSnippetPanel = new DockPanel();
 		createUi();
 	}
 	
@@ -87,8 +84,9 @@ public class PostViewSnippet extends Snippet {
 				
 		BlobDownloader blobDownloader = new BlobDownloader();
 		//TODO currently all this values getting from dummy post entity need to modify it in future
-		Property<Serializable> property=(Property<Serializable>) entity.getProperty(PostConstant.CREATEDBY);
+		Property<Serializable> property=(Property<Serializable>) getEntity().getProperty(PostConstant.CREATEDBY);
 		if(property.getValue() instanceof Long){
+			//blobUrl=blobDownloader.getIconDownloadURL(userEntity.getPropertyByName("imgBlobId").toString());
 			blobUrl=blobDownloader.getIconDownloadURL("irqSN52SzHwHksn9NQFKxEIDYl0RWF3RJz6m45WSDzsafhuCSihRDg%3D%3D");
 		} else{
 			userEntity=(Entity) property.getValue();
@@ -106,8 +104,8 @@ public class PostViewSnippet extends Snippet {
 		
 		imagePanel.add(imageField);
 		imagePanel.setBorderWidth(1);
-		dockPanel.add(imagePanel, DockPanel.WEST);
-		dockPanel.setCellWidth(imagePanel, "15%");
+		postSnippetPanel.add(imagePanel, DockPanel.WEST);
+		postSnippetPanel.setCellWidth(imagePanel, "10%");
 		
 		imagePanel.setCellVerticalAlignment(imageField, HasVerticalAlignment.ALIGN_MIDDLE);
 		
@@ -124,40 +122,12 @@ public class PostViewSnippet extends Snippet {
 			}
 		});
 		
-		
-		
-	/*	LabelField postContentLabel = new LabelField();
-		postContentLabel.setConfiguration(createConfiguration(true));
-		
-		
-		try {
-			postContentLabel.createField();
-		} catch (AppOpsException e) {
-			 e.printStackTrace();
-		}*/
-		
-		String xmlContent = entity.getPropertyByName(PostConstant.CONTENT).toString();
+				
+		String xmlContent = getEntity().getPropertyByName(PostConstant.CONTENT).toString();
 		PostContentParser postContentParser = new PostContentParser();
 		FlowPanel postContentFlowPanel = postContentParser.getGeneralMsgComponent(xmlContent);
 		
-		//ImageField spaceImageField = new ImageField();
 		
-		
-		//TODO currently all this values getting from dummy post entity need to modify it in future
-		/*Property<Serializable> property1=(Property<Serializable>) entity.getProperty("User");
-		Entity userEntity1=(Entity) property.getValue();
-		String blobUrl1=blobDownloader.getIconDownloadURL(userEntity.getPropertyByName(MediaConstant.BLOBID).toString());*/
-		
-		/*spaceImageField.setConfiguration(getImageFieldConfiguration(blobUrl1));
-		try {
-			spaceImageField.createField();
-		} catch (AppOpsException e) {
-			 e.printStackTrace();
-		}
-		
-		spaceImageField.setPixelSize(16,16);*/
-		
-		//spaceIconPlusTimePanel.add(spaceImageField);
 		postContentPanel.add(spaceIconPlusTimePanel);
 		postContentPanel.setCellWidth(spaceIconPlusTimePanel, "10%");
 		//spaceIconPlusTimePanel.setCellWidth(spaceImageField, "5%");
@@ -167,15 +137,15 @@ public class PostViewSnippet extends Snippet {
 		postContentPanel.setCellHorizontalAlignment(postContentFlowPanel, HasHorizontalAlignment.ALIGN_JUSTIFY);
 		//postContentPanel.setBorderWidth(1);
 		postContentPanel.setHeight("100%");
-		postContentPanel.setWidth("90%");
+		postContentPanel.setWidth("100%");
 		spaceIconPlusTimePanel.setWidth("100%");
-		dockPanel.add(postContentPanel, DockPanel.CENTER);
-		dockPanel.setCellWidth(postContentPanel, "90%");
+		postSnippetPanel.add(postContentPanel, DockPanel.CENTER);
+		postSnippetPanel.setCellWidth(postContentPanel, "100%");
 		
 		DOM.setStyleAttribute(postContentFlowPanel.getElement(), "margin", "5px");
 		DOM.setStyleAttribute(imagePanel.getElement(), "margin", "7px");
 		//DOM.setStyleAttribute(spaceImageField.getElement(), "margin", "5px");
-		setTime(entity);
+		setTime(getEntity());
 		
 		final ImageField responsesImageField = new ImageField();
 		responsesImageField.setConfiguration(getImageFieldConfiguration("images/dropDownIcon.png"));
@@ -204,14 +174,15 @@ public class PostViewSnippet extends Snippet {
 			}
 		});
 		
-		dockPanel.setHeight("100%");
-		dockPanel.setWidth("100%");
+		/*postSnippetPanel.setHeight("100%");
+		postSnippetPanel.setWidth("100%");*/
 		
-		basePanel.add(dockPanel);
-		basePanel.setCellHorizontalAlignment(dockPanel, HasHorizontalAlignment.ALIGN_CENTER);
-		basePanel.setCellVerticalAlignment(dockPanel, HasVerticalAlignment.ALIGN_MIDDLE);
+		add(postSnippetPanel,DockPanel.CENTER);
 		
-		dockPanel.setStylePrimaryName(POST_SNIPPET);
+		/*basePanel.setCellHorizontalAlignment(dockPanel, HasHorizontalAlignment.ALIGN_CENTER);
+		basePanel.setCellVerticalAlignment(dockPanel, HasVerticalAlignment.ALIGN_MIDDLE);*/
+		
+		postSnippetPanel.setStylePrimaryName(POST_SNIPPET);
 		imagePanel.setStylePrimaryName(POST_USER_IMAGE);
 		postContentFlowPanel.setStylePrimaryName(POST_CONTEXT_LABEL);
 		responsesImageField.setStylePrimaryName(HAND_CSS);
@@ -223,11 +194,13 @@ public class PostViewSnippet extends Snippet {
 	@SuppressWarnings("unchecked")
 	private void getResponsesForWidget(final int eventX, final int eventY) {
 		Query query = new Query();
-		query.setQueryName("getResponsesForWidgetId");
+		query.setQueryName("getResponsesForWidget");
 		//query.setListSize(4);
 		
+		String widgetName = getEntity().getPropertyByName(PostConstant.WIDGETNAME);
+		
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("widgetid", 5L);	//TODO hardcoded widget id..
+		paramMap.put("widgetname", widgetName);
 		query.setQueryParameterMap(paramMap);
 		
 		Map parameters = new HashMap();
@@ -262,18 +235,26 @@ public class PostViewSnippet extends Snippet {
 		mainPanel.setSpacing(5);
 		int size = responseoptionList.size();
 		for(String responseText : responseoptionList){
-			Label label = new Label(responseText);
-			if(size-1!=0)
-				label.setStylePrimaryName("responseLbl");
-			else
-				label.setStylePrimaryName("responseLblLast");
-			mainPanel.add(label);
+			ActionWidget actionWidget = new ActionWidget(ActionWidgetType.LINK);
+			actionWidget.setWidgetText(responseText);
+			// There ideally should be for each service its corresponding post snippet.
+			//actionWidget.setActionEvent(getResponseActionEvent(actionWidget));
+			
+			if(size-1 !=0){
+				actionWidget.setConfiguration(getActionLinkConfiguration("responseLbl", null));
+			} else {
+				actionWidget.setConfiguration(getActionLinkConfiguration("responseLblLast", null));
+			}
+			actionWidget.createUi();
+
+			mainPanel.add(actionWidget);
 			//mainPanel.add(new HTML("<hr style=\"color: #848181; background-color: #848181; width: 98%; height: 1px;\"></hr>"));
 			size--;
 		}
 		popupPanel.add(mainPanel);
 		popupPanel.show();
 	}
+	
 	private Configuration getImageFieldConfiguration(String url) {
 	    Configuration configuration = new Configuration();
 	    configuration.setPropertyByName(ImageField.IMAGEFIELD_BLOBID,url);
@@ -351,20 +332,10 @@ public class PostViewSnippet extends Snippet {
 		
 	}
 	
-	/*public void createDummyEntity(){
-		entity = new Entity();
-		entity.setPropertyByName(PostConstant.CONTENT, "Dinner tonight! at Malaka Spice :)");
-		Entity userEntity = new Entity();
-		userEntity.setPropertyByName(UserConstants.NAME, "Dhananjay Patil");
-		userEntity.setPropertyByName(MediaConstant.BLOBID, "irqSN52SzHwHksn9NQFKxNFAd%2BaWFzr54FsUNUp8GW35LpQdoFtM%2BQ%3D%3D");
-		Property<Serializable> property = new Property<Serializable>();
-		property.setName("User");
-		property.setValue(userEntity);
-		entity.setProperty("User",property);
-		Date date = new Date();
-		entity.setPropertyByName(PostConstant.CREATEDON, date);
-	
-		
-		
-	}*/
+	private Configuration getActionLinkConfiguration(String primaryCss, String dependentCss) {
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(ActionWidgetConfiguration.PRIMARY_CSS.toString(), primaryCss);
+		return conf;
+	}
+
 }
