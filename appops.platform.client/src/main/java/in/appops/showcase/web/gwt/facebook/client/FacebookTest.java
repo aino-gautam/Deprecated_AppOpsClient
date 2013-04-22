@@ -9,6 +9,7 @@ import in.appops.client.common.fields.suggestion.AppopsSuggestionBox;
 import in.appops.client.gwt.web.ui.messaging.MessagingComponent;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEvent;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -28,21 +29,22 @@ public class FacebookTest implements EntryPoint {
 
 	@Override
 	public void onModuleLoad() {
+		
 		try{
 			
-		/*	String clientId = "478704968863629";
+			/*String clientId = "478704968863629";
 			String serviceId = "11";
 			AppopsFacebookWidget widget = new AppopsFacebookWidget(clientId,serviceId);
-			RootPanel.get().add(widget);*/
+			RootPanel.get().add(widget);
 			
-	/*		SearchWidgetTest searchWidget = new SearchWidgetTest();
-			RootPanel.get().add(searchWidget);*/
+			SearchWidgetTest searchWidget = new SearchWidgetTest();
+			RootPanel.get().add(searchWidget);
 			
 			
 
-		/*	SpaceListModel spaceListModel  = new SpaceListModel();
-			SpaceListWidget spaceListWidget = new SpaceListWidget(spaceListModel);
-			*/
+			SpaceListModel spaceListModel  = new SpaceListModel();
+			SpaceListWidget spaceListWidget = new SpaceListWidget(spaceListModel);*/
+			
 			
 		//	Entity userEnt = createDummyEnt();
 			
@@ -60,6 +62,7 @@ public class FacebookTest implements EntryPoint {
 		}
 	}
 
+
 	private void createAndAddCgatEntryPoint() {
 		try{
 			HorizontalPanel mainHp = new HorizontalPanel();
@@ -70,7 +73,8 @@ public class FacebookTest implements EntryPoint {
 			final AppopsSuggestionBox userSuggestionField = new AppopsSuggestionBox();
 			userSuggestionField.setQueryName("getContactListSuggestion");
 			userSuggestionField.setOperationName("contact.ContactService.getEntityList");
-		
+			userSuggestionField.setPropertyToDisplay(ContactConstant.NAME);
+			
 			mainHp.add(enterTxtLbl);
 			mainHp.add(userSuggestionField);
 			

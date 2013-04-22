@@ -3,9 +3,6 @@
  */
 package in.appops.client.gwt.web.ui.messaging.spacelistcomponent;
 
-import org.atmosphere.gwt.client.AtmosphereClient;
-import org.atmosphere.gwt.client.AtmosphereGWTSerializer;
-
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.gwt.web.ui.messaging.atomosphereutil.RealTimeSyncEventSerializer;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEvent;
@@ -16,11 +13,12 @@ import in.appops.platform.core.entity.broadcast.ChatEntity;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.spacemanagement.constants.SpaceConstants;
 
+import org.atmosphere.gwt.client.AtmosphereClient;
+import org.atmosphere.gwt.client.AtmosphereGWTSerializer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -58,6 +56,7 @@ public class SpaceWidgetIcon extends VerticalPanel implements MessengerEventHand
 				@Override
 				public void onClick(ClickEvent event) {
 					
+					removeStyleName("hightlightSnippet");
 					EntityList participantList = new EntityList();
 					participantList.add(parentSpaceListWidget.getParentMessagingComponent().getContactEntity());
 					
@@ -70,7 +69,6 @@ public class SpaceWidgetIcon extends VerticalPanel implements MessengerEventHand
 						entity.setIsGroupChat(true);
 
 						getParentSpaceListWidget().getParentMessagingComponent().startNewChat(entity);
-						
 						
 						AtmosphereGWTSerializer serializer = (AtmosphereGWTSerializer) GWT.create(RealTimeSyncEventSerializer.class);
 						Key<Long> value = spaceEntity.getPropertyByName(SpaceConstants.ID);
@@ -127,5 +125,12 @@ public class SpaceWidgetIcon extends VerticalPanel implements MessengerEventHand
 			e.printStackTrace();
 		}
 	}
-	
+
+	public Entity getSpaceEntity() {
+		return spaceEntity;
+	}
+
+	public void highlightWidget() {
+		addStyleName("hightlightSnippet");
+	}
 }
