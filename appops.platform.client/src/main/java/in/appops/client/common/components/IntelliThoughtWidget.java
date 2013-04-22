@@ -118,6 +118,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		
 		postButton = new Label("Post");
 		messageButton = new Label("Message");
+		messageButton.addClickHandler(this);
 
 		searchButton.setStylePrimaryName("appops-intelliThought-Label");
 		postButton.setStylePrimaryName("appops-intelliThought-Label");
@@ -201,7 +202,27 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 			String text = intelliShareField.getText();
 			SearchEvent searchEvent = new SearchEvent(SearchEvent.SEARCHFIRED, text);
 			AppUtils.EVENT_BUS.fireEvent(searchEvent);
+		} else if(source.equals(messageButton)){
+			ActionEvent actionEvent = getMessageActionEvent();
+			AppUtils.EVENT_BUS.fireEvent(actionEvent);
+
 		}
+	}
+
+	private ActionEvent getMessageActionEvent() {
+		InitiateActionContext context = new InitiateActionContext();
+		context.setType(new MetaType("ActionContext"));
+		context.setSpace(AppEnviornment.getCurrentSpace());
+		context.setUploadedMedia(uploadedMediaId);
+		context.setIntelliThought(intelliShareField.getIntelliThought());
+		
+		ActionEvent actionEvent = new ActionEvent();
+		actionEvent.setEventType(ActionEvent.MESSAGE);			
+		actionEvent.setEventData(context);
+		
+//		ActionEvent actionEvent = getActionEvent(ActionEvent.TRANSFORMWIDGET, token.toString()); 
+//		fireActionEvent(actionEvent);
+		return actionEvent;
 	}
 
 	private void handleWordEnteredEvent(String string) {

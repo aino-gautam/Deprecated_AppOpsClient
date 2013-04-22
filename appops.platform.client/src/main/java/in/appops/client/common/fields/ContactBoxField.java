@@ -84,7 +84,7 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 		
 		userText = DOM.createDiv();
 		userText.setClassName("intelliTextField");
-		userText.setId("intelliTextField");
+		userText.setId("userTextField");
 		userText.setAttribute(USERBOXFIELD_CONTENTEDITABLE, "true");
 		this.setText("name");
 
@@ -271,7 +271,7 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 
 		String elementValue = this.getText();
 
-		caretPosition = IntelliThoughtUtil.getCaretPosition("intelliTextField");
+		caretPosition = IntelliThoughtUtil.getCaretPosition("userTextField");
 		String textTillCaretPosition = elementValue.substring(0, caretPosition);
 		String wordBeingTyped = IntelliThoughtUtil.getWordBeingTyped(textTillCaretPosition, caretPosition);
 		
