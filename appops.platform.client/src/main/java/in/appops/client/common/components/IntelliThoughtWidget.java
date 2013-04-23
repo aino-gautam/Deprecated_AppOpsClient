@@ -307,10 +307,18 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 					String widgetName = entity.getPropertyByName("widgetname");
 					final ActionWidget actionWidget = new ActionWidget(ActionWidgetType.LABEL);
 					actionWidget.setWidgetText(widgetName);
-					actionWidget.setActionEvent(getActionEvent(actionWidget));
+					//actionWidget.setActionEvent(getActionEvent(actionWidget));
 					actionWidget.setConfiguration(getActionConfiguration());
 					actionWidget.createUi();
 					suggestionAction.addSuggestionAction(actionWidget);
+					actionWidget.addClickHandler(new ClickHandler() {
+						
+						@Override
+						public void onClick(ClickEvent event) {
+							ActionEvent actionEvent = getActionEvent(actionWidget);
+							actionWidget.fireEvent(actionEvent);
+						}
+					});
 					
 				}
 			}
