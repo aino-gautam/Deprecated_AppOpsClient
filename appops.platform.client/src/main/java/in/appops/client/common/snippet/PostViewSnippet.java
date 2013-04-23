@@ -18,7 +18,7 @@ import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
-import in.appops.platform.server.core.services.platform.coreplatformservice.constant.WidgetResponseConstant;
+import in.appops.platform.server.core.services.platform.coreplatformservice.constant.ActionResponseViewConstant;
 import in.appops.platform.server.core.services.social.constant.PostConstant;
 
 import java.io.Serializable;
@@ -216,7 +216,7 @@ public class PostViewSnippet extends RowSnippet {
 			public void onSuccess(Result result) {
 				EntityList responseEntList = (EntityList) result.getOperationResult();
 				for (Entity entity : responseEntList) {
-					String option = entity.getPropertyByName(WidgetResponseConstant.WIDGETRESPONSE);
+					String option = entity.getPropertyByName(ActionResponseViewConstant.RESPONSE_NAME);
 					if(!responseoptionList.contains(option)){
 						responseoptionList.add(option);
 					}
