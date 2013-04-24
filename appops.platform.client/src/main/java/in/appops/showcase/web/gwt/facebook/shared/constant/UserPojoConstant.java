@@ -15,7 +15,7 @@ public class UserPojoConstant {
 	public static String DATEOFBIRTH = "dob";
 	public static String GENDER= "gender";
 	public static String LONGITUDE = "longitude";
-	public static String LATTITUDE = "latitude";
+	public static String LATITUDE = "latitude";
 	public static String CREATEDON = "createdOn";
 	public static String MODIFIEDON = "modifiedOn";
 	public static String ISDELETED = "isDeleted";
