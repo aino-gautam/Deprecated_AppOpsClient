@@ -15,6 +15,8 @@ import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 
 import java.util.HashMap;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -24,6 +26,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -164,9 +167,13 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 				key.getKeyValue();
 				
 				if(snippetEntity.getPropertyByName(ContactConstant.USERID)!=null){
-					thoseHaveContactIdUSerIdMap.put(snippetEntity.getPropertyByName(ContactConstant.NAME).toString(), snippetEntity);
+					String userName = snippetEntity.getPropertyByName(ContactConstant.NAME).toString();
+					userName = userName.replace(" ", "_");
+					thoseHaveContactIdUSerIdMap.put(userName, snippetEntity);
 				}else{
-					thoseHaveContactIdMap.put(snippetEntity.getPropertyByName(ContactConstant.NAME).toString(), snippetEntity);
+					String userName = snippetEntity.getPropertyByName(ContactConstant.NAME).toString();
+					userName = userName.replace(" ", "_");
+					thoseHaveContactIdMap.put(userName, snippetEntity);
 				}
 				
 				//userId null then add in null user map 
@@ -179,25 +186,45 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 		
 		String elementValue = this.getText();
 		String textTillCaretPosition = elementValue.substring(0, caretPosition);
-		
+		 textTillCaretPosition = textTillCaretPosition.trim();
 		if(contactWigetSuggestion.isShowing()){
-			HorizontalPanel horizontalPanel = new HorizontalPanel();
+			HorizontalPanel userNameHpPanel = new HorizontalPanel();
+			final HorizontalPanel horizontalPanel = new HorizontalPanel();
 			//horizontalPanel.setBorderWidth(1);
 			horizontalPanel.setStylePrimaryName("userSelectedWidget");
 			horizontalPanel.getElement().setAttribute(USERBOXFIELD_CONTENTEDITABLE, "false");
-			Label tag = new Label(snippetEntity.getPropertyByName(ContactConstant.NAME).toString());
-			Image image = new Image("images/cross8.png");
+			String userName=snippetEntity.getPropertyByName(ContactConstant.NAME).toString();
+			userName = userName.replace(" ", "_");
+			final Label tag = new Label(userName);
+			final Image crossImage = new Image("images/cross8.png");
 			
 			horizontalPanel.add(tag);
-			horizontalPanel.add(image);
+			horizontalPanel.setCellVerticalAlignment(tag, HasVerticalAlignment.ALIGN_TOP);
+			horizontalPanel.add(crossImage);
+			horizontalPanel.setCellVerticalAlignment(crossImage, HasVerticalAlignment.ALIGN_TOP);
+			horizontalPanel.setSpacing(2);
+			crossImage.setStylePrimaryName("crossImageCss");
+			crossImage.addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					horizontalPanel.remove(tag);
+					horizontalPanel.remove(crossImage);
+					horizontalPanel.removeFromParent();
+					
+					
+				}
+			});
+			Label commaLabel = new  Label(",");
+			userNameHpPanel.add(horizontalPanel);
+			userNameHpPanel.add(commaLabel);
 			
+			String tagHtml = userNameHpPanel.getElement().getString();
 			
-			String tagHtml = horizontalPanel.getElement().getString()+",";
-			
-			int start = IntelliThoughtUtil.checkPreviousWord(textTillCaretPosition, userText.getInnerText());
+			int start = IntelliThoughtUtil.checkPreviousWordForContactBoxField(textTillCaretPosition, userText.getInnerText());
 			
 			if(start == -1){
-				start = textTillCaretPosition.trim().lastIndexOf(" ") + 1;
+				start = textTillCaretPosition.trim().lastIndexOf(",") + 1;//
 			}
 			IntelliThoughtUtil.setCaretPosition(userText, start, caretPosition, false);
 			IntelliThoughtUtil.insertNodeAtCaret(tagHtml); 
@@ -255,6 +282,7 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 	public String getText() {
 		String innerHtml = userText.getInnerHTML();
 		innerHtml = innerHtml.replaceAll("&nbsp;", " ");
+		
 
 		HTML htmlEle = new HTML(innerHtml);
 		String text = htmlEle.getText();
@@ -273,7 +301,7 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 
 		caretPosition = IntelliThoughtUtil.getCaretPosition("userTextField");
 		String textTillCaretPosition = elementValue.substring(0, caretPosition);
-		String wordBeingTyped = IntelliThoughtUtil.getWordBeingTyped(textTillCaretPosition, caretPosition);
+		String wordBeingTyped = IntelliThoughtUtil.getWordBeingTypedForContextField(textTillCaretPosition, caretPosition);
 		
 		if(keyCode == KeyCodes.KEY_DOWN || keyCode == KeyCodes.KEY_UP || keyCode == KeyCodes.KEY_ENTER || keyCode == KeyCodes.KEY_ESCAPE || keyCode == KeyCodes.KEY_ENTER){
 			if(contactWigetSuggestion.isShowing() && keyCode == KeyCodes.KEY_ESCAPE){
@@ -300,6 +328,7 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 	
 	private void contactBoxFieldEvent(FieldEvent threeCharEntered) {
 		AppUtils.EVENT_BUS.fireEventFromSource(threeCharEntered, userText);
+		
 	}
 
 	private void handleOnKeyDownEvent(Event event) {
@@ -307,7 +336,7 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 		String elementValue = this.getText();
 		caretPosition = IntelliThoughtUtil.getCaretPosition("intelliTextField");
 		String textTillCaretPosition = elementValue.substring(0, caretPosition);
-		String wordBeingTyped = IntelliThoughtUtil.getWordBeingTyped(textTillCaretPosition, caretPosition);
+		String wordBeingTyped = IntelliThoughtUtil.getWordBeingTypedForContextField(textTillCaretPosition, caretPosition);
 		
 		if(keyCode == KeyCodes.KEY_DOWN || keyCode == KeyCodes.KEY_UP){
 			if(contactWigetSuggestion.isShowing()){
@@ -337,12 +366,15 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 			return;
 		}
     	if(keyCode == KeyCodes.KEY_BACKSPACE){
-			int start = textTillCaretPosition.trim().lastIndexOf(" ") + 1;
+			int start = textTillCaretPosition.trim().lastIndexOf(",") + 1;
 			String nodeType = IntelliThoughtUtil.getNodeType(userText, start, caretPosition);
 			if(nodeType.equalsIgnoreCase("a")){
 				IntelliThoughtUtil.setCaretPosition(userText, start+1, caretPosition, true);
 			}else if(nodeType.equalsIgnoreCase("div")){
 				IntelliThoughtUtil.setCaretPosition(userText, start+1, caretPosition, true);
+				//IntelliThoughtUtil.setCaretPositionForContactBoxField(userText, start+1, caretPosition, true);
+				
+				
 			}
     	}
 		
