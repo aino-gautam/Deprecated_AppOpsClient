@@ -47,6 +47,8 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -364,6 +366,17 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 			public void onSuccess(Result<Entity> result) {
 				if(result!=null){
 				 Entity entity=result.getOperationResult();
+				 intelliThoughtField.clearField();
+				 contactBoxField.clearField();
+				 PopupPanel popupPanel = new  PopupPanel();
+				 HorizontalPanel horizontalPanel = new HorizontalPanel();
+				 Label label = new Label("Your message send successfully..");
+				 horizontalPanel.add(label);
+				 horizontalPanel.setCellHorizontalAlignment(label, HasHorizontalAlignment.ALIGN_CENTER);
+				 popupPanel.add(horizontalPanel);
+				 popupPanel.show();
+				 popupPanel.center();
+				 popupPanel.setAutoHideEnabled(true);
 				}
 			}
 		});
@@ -377,10 +390,10 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		     
 		      
 		     if(!isPlainEmail){
-		    	 if(conatctEntity!=null){
+		      if(conatctEntity!=null){
 		    		 messageParticipantsEntity = new Entity();
 		    		 messageParticipantsEntity.setType(new MetaType(TypeConstants.MESSAGEPARTICIPANTS));
-		      Key key = (Key) conatctEntity.getProperty(ContactConstant.ID).getValue();
+		        Key key = (Key) conatctEntity.getProperty(ContactConstant.ID).getValue();
 		       long id =  (Long) key.getKeyValue();
 		      messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.CONTACTID , Long.valueOf((id)));
 		      if(conatctEntity.getPropertyByName(ContactConstant.USERID)!=null){
@@ -389,6 +402,9 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		      //messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.MESSAGE, messageEntity);
 		      if(conatctEntity.getPropertyByName(ContactConstant.NAME)!=null){
 		        messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.USERDISPLAYNAME, conatctEntity.getPropertyByName(ContactConstant.NAME).toString());
+		      }
+		      if(conatctEntity.getPropertyByName(ContactConstant.IMGBLOBID)!=null){
+		    	  messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.BLOBID, conatctEntity.getPropertyByName(ContactConstant.IMGBLOBID).toString()); 
 		      }
 		     }
 		    	 return messageParticipantsEntity;
