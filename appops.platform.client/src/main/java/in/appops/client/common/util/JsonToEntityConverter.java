@@ -185,7 +185,7 @@ public class JsonToEntityConverter {
 					
 					JSONObject geoLocJson = propValueJson.get(primitiveTypeName).isObject();
 					Double lat,lng;
-					JSONObject latJson = (JSONObject) geoLocJson.get("lattitude");
+					JSONObject latJson = (JSONObject) geoLocJson.get("latitude");
 					JSONObject lngJson = (JSONObject) geoLocJson.get("longitude");
 					
 					String latStr = latJson.get("Double").toString();
@@ -271,18 +271,29 @@ public class JsonToEntityConverter {
 			
 		}
 		catch (Exception e) {
+			logger.log(Level.SEVERE, "[JsonToEntityConverter] :: [decodeJsonArray] :: Exception", e);
 		}
 		return list;
 		
 	}
 	
 	public Entity convertjsonStringToEntity(String jsonObjectStr){
-		 JSONValue jsonVal = JSONParser.parseLenient(jsonObjectStr);
-         
-         JSONObject jsonObj = new JSONObject(jsonVal.isObject().getJavaScriptObject());
-         
-        return getConvertedEntity(jsonObj);
+		logger.log(Level.INFO,"[JsonToEntityConverter] :: In convertjsonStringToEntity() ");
+
+		Entity convertedEntity = null;
+		try {
+
+			JSONValue jsonVal = JSONParser.parseLenient(jsonObjectStr);
+
+			JSONObject jsonObj = new JSONObject(jsonVal.isObject().getJavaScriptObject());
+
+			convertedEntity = getConvertedEntity(jsonObj);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[JsonToEntityConverter] :: Exception in convertjsonStringToEntity()",e);
+		}
+
+		return convertedEntity;
 	}
-	
+
 	
 }
