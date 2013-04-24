@@ -278,16 +278,21 @@ public class JsonToEntityConverter {
 	}
 	
 	public Entity convertjsonStringToEntity(String jsonObjectStr){
-		try{
+		logger.log(Level.INFO,"[JsonToEntityConverter] :: In convertjsonStringToEntity() ");
+
+		Entity convertedEntity = null;
+		try {
+
 			JSONValue jsonVal = JSONParser.parseLenient(jsonObjectStr);
 
 			JSONObject jsonObj = new JSONObject(jsonVal.isObject().getJavaScriptObject());
 
-			return getConvertedEntity(jsonObj);}
-		catch (Exception e) {
-			logger.log(Level.SEVERE, "[JsonToEntityConverter] :: [convertjsonStringToEntity] :: Exception", e);
+			convertedEntity = getConvertedEntity(jsonObj);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[JsonToEntityConverter] :: Exception in convertjsonStringToEntity()",e);
 		}
-		return null;
+
+		return convertedEntity;
 	}
 
 	
