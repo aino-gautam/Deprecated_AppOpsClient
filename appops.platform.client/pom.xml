@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>appops.platform.client</groupId>
 	<artifactId>appops_client</artifactId>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>GWT Maven Archetype</name>
 
@@ -166,7 +166,7 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>22.04.2013</version>
+			<version>23.04.2013</version>
 		</dependency>
 
 		<!-- This should be used when using a final version of the jar -->

@@ -26,6 +26,7 @@ import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
+import in.appops.platform.server.core.services.platform.coreplatformservice.constant.ActionsConstant;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -293,7 +294,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("word", "%"+ word +"%");
 		
-		StandardAction action = new StandardAction(EntityList.class, "spacemanagement.SpaceManagementService.getSuggestionAction", paramMap);
+		StandardAction action = new StandardAction(EntityList.class, "coreplatform.CorePlatformService.getSuggestionAction", paramMap);
 		dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
 			
 			public void onFailure(Throwable caught) {
@@ -304,7 +305,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 			public void onSuccess(Result<EntityList> result) {
 				EntityList  entityList =  result.getOperationResult();
 				for(Entity entity : entityList ){
-					String widgetName = entity.getPropertyByName("widgetname");
+					String widgetName = entity.getPropertyByName(ActionsConstant.NAME);
 					final ActionWidget actionWidget = new ActionWidget(ActionWidgetType.LABEL);
 					actionWidget.setWidgetText(widgetName);
 					//actionWidget.setActionEvent(getActionEvent(actionWidget));
