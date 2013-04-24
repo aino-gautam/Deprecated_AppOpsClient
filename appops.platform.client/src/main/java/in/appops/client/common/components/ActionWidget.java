@@ -7,6 +7,7 @@ import in.appops.platform.core.shared.Configuration;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -17,23 +18,15 @@ import com.google.gwt.user.client.ui.Label;
  * @author nitish@ensarm.com
  * TODO - This will enhanced/changed as required.
  */
-public class ActionWidget extends Composite implements Configurable, ClickHandler{
-//	private Entity bindValue;
-	private Configuration configuration;
-	
+public class ActionWidget extends Composite implements Configurable{
 	private Label actionLabel;
 	private Anchor actionLink;
 	private Button actionButton;
 
-//	private ActionType actionType;
+	private Configuration configuration;
 	private ActionWidgetType widgetType;
-	private ActionEvent actionEvent;
 
 	/******** ActionWidget Related Constants **********/
-//	public enum ActionType{
-//		WIDGET, OPERATION, QUERY
-//	};
-	
 	public enum ActionWidgetType{
 		LABEL, LINK, BUTTON
 	};
@@ -55,35 +48,14 @@ public class ActionWidget extends Composite implements Configurable, ClickHandle
 	
 	/************ Constructors *************************/
 	
-//	/**
-//	 * Set the ActionType based on whether transformWidget, executeOperation or bindToQuery
-//	 * Set the bindValue, whether 
-//	 * @param actionType
-//	 * @param bindValue
-//	 */
-//	public ActionWidget(ActionType actionType, Entity bindValue){
-//		this.actionType = actionType;
-//		this.bindValue = bindValue;
-//	}
-	
 	public ActionWidget(ActionWidgetType widgetType) {
 		this.widgetType = widgetType;
 		
 		intializeWidget();
 		initWidget(widgetType == ActionWidgetType.LABEL ? actionLabel : (widgetType == ActionWidgetType.LINK ? actionLink : actionButton));
-		addClickHandler();
 	}
 
-	private void addClickHandler() {
-		if(widgetType == ActionWidgetType.LABEL){
-			actionLabel.addClickHandler(this);
-		} else if(widgetType == ActionWidgetType.LINK){
-			actionLink.addClickHandler(this);
-		} else if(widgetType == ActionWidgetType.BUTTON){
-			actionButton.addClickHandler(this);
-		}			
-	}
-
+	/*********** Member Methods  *************/
 	private void intializeWidget() {
 		if(widgetType == ActionWidgetType.LABEL){
 			actionLabel = new Label();
@@ -95,22 +67,6 @@ public class ActionWidget extends Composite implements Configurable, ClickHandle
 	}
 
 	public void createUi() {
-
-		
-		
-		/*************** Set the Action label text ***************/
-//		String labelText = null;
-//		if(getActionType() == ActionType.WIDGET){
-//			labelText = bindValue.getPropertyByName("widgetname");
-//		} else if(getActionType() == ActionType.OPERATION){
-//			labelText = bindValue.getPropertyByName(WidgetResponseConstant.WIDGETRESPONSE);
-//		} else if(getActionType() == ActionType.QUERY){
-//			
-//		}
-		
-//		if(labelText != null){
-//			setWigetText(labelText);
-//		}
 		
 		/********** You can set here any required things like CSS etc from Configuration ******/
 		if(configuration != null){
@@ -140,6 +96,16 @@ public class ActionWidget extends Composite implements Configurable, ClickHandle
 		return null;
 	}
 
+	public void addClickHandler(ClickHandler handler) {
+		if(widgetType == ActionWidgetType.LABEL){
+			actionLabel.addClickHandler(handler);
+		} else if(widgetType == ActionWidgetType.LINK){
+			actionLink.addClickHandler(handler);
+		} else if(widgetType == ActionWidgetType.BUTTON){
+			actionButton.addClickHandler(handler);
+		}			
+	}
+	
 	private void applyConfiguration() {
 		//TODO Apply Configurations here
 
@@ -163,21 +129,6 @@ public class ActionWidget extends Composite implements Configurable, ClickHandle
 
 
 	/********* Setters Getters *****************/
-//	public Entity getBindValue() {
-//		return bindValue;
-//	}
-//
-//	public void setBindValue(Entity bindValue) {
-//		this.bindValue = bindValue;
-//	}
-
-//	public ActionType getActionType() {
-//		return actionType;
-//	}
-//
-//	public void setActionType(ActionType actionType) {
-//		this.actionType = actionType;
-//	}
 
 	public ActionWidgetType getWidgetType() {
 		return widgetType;
@@ -186,15 +137,6 @@ public class ActionWidget extends Composite implements Configurable, ClickHandle
 	public void setWidgetType(ActionWidgetType widgetType) {
 		this.widgetType = widgetType;
 	}
-	
-	public ActionEvent getActionEvent() {
-		return actionEvent;
-	}
-
-	public void setActionEvent(ActionEvent actionEvent) {
-		this.actionEvent = actionEvent;
-	}
-
 
 	/************* Overridden method here ******************/
 	
@@ -209,11 +151,10 @@ public class ActionWidget extends Composite implements Configurable, ClickHandle
 	}
 
 	@Override
-	public void onClick(ClickEvent event) {
-		if(actionEvent != null){
-			AppUtils.EVENT_BUS.fireEvent(actionEvent);
+	public void fireEvent(GwtEvent<?> event) {
+		if(event != null){
+			AppUtils.EVENT_BUS.fireEvent(event);
 		}
 	}
-
 	
 }
