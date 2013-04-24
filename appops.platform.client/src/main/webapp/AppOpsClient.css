@@ -936,7 +936,7 @@ color: blue;
 	100% {
 		-moz-transform: translateX(0);
 	}
-	
+}
 .userSelectedWidget {
 	background: #e2e6f0;
 	border: 1px solid #9daccc;
@@ -950,6 +950,7 @@ color: blue;
 	padding: 0 3px;
 	position: relative;
 	white-space: nowrap;
+	height: 20px;
 }
 .contactBoxField {	
 	width: 100%;
@@ -960,3 +961,9 @@ color: blue;
     background: #FFF;
     padding: 7px;
 	outline: 0;
+}
+.crossImageCss{
+  cursor: pointer;
+  cursor: hand;
+  
+}
