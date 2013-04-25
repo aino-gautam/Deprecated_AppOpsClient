@@ -81,7 +81,7 @@ public class EntityToJsonClientConvertor {
 						actualLngJson.put("Double", longi);
 
 						JSONObject geoJson = new JSONObject();
-						geoJson.put("lattitude", actualLatJson);
+						geoJson.put("latitude", actualLatJson);
 						geoJson.put("longitude", actualLngJson);
 
 						JSONObject geoLocJson = new JSONObject();
