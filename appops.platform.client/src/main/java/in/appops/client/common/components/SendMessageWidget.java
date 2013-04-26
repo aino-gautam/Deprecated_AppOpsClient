@@ -3,19 +3,14 @@ package in.appops.client.common.components;
 import in.appops.client.common.event.ActionEvent;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.AttachmentEvent;
-import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.AttachmentEventHandler;
-import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.ContactBoxField;
 import in.appops.client.common.fields.IntelliThoughtField;
 import in.appops.client.common.fields.LabelField;
-import in.appops.client.common.util.AppEnviornment;
-import in.appops.client.common.util.EntityToJsonClientConvertor;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
-import in.appops.platform.core.constants.propertyconstants.SpaceConstants;
 import in.appops.platform.core.constants.typeconstants.TypeConstants;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
@@ -38,7 +33,6 @@ import java.util.HashMap;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -221,67 +215,9 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 //		showActionSuggestion(string);
 //	}
 	
-	@SuppressWarnings("unchecked")
-	public void showActionSuggestion(String word){
 	
-		DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
-		DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
+	
 
-		HashMap<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("word", "%"+ word +"%");
-		
-		StandardAction action = new StandardAction(EntityList.class, "spacemanagement.SpaceManagementService.getSuggestionAction", paramMap);
-		dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
-			
-			public void onFailure(Throwable caught) {
-				Window.alert("operation failed ");
-				caught.printStackTrace();
-			}
-			
-			public void onSuccess(Result<EntityList> result) {
-				EntityList  entityList =  result.getOperationResult();
-				for(Entity entity : entityList ){
-					String widgetName = entity.getPropertyByName("widgetname");
-					final ActionLabel actionLabel = new ActionLabel(IActionLabel.WIDGET, entity);
-					actionLabel.setText(widgetName);
-					//suggestionAction.addSuggestionAction(actionLabel);
-					
-					actionLabel.addClickHandler(new ClickHandler() {
-						
-						@Override
-						public void onClick(ClickEvent event) {
-							handleActionClick(actionLabel);
-						}
-					});
-				}
-			}
-		});
-	}
-	
-  private void handleActionClick(ActionLabel actionLabel) {
-		
-		InitiateActionContext context = new InitiateActionContext();
-		context.setType(new MetaType("ActionContext"));
-		
-		Entity spaceEntity = new Entity();
-		spaceEntity.setType(new MetaType(TypeConstants.SPACE));
-		spaceEntity.setPropertyByName(SpaceConstants.ID, 3);
-		spaceEntity.setPropertyByName(SpaceConstants.NAME, "Pune");
-		
-		context.setSpace(AppEnviornment.getCurrentSpace());
-		context.setUploadedMedia(uploadedMediaId);
-		context.setIntelliThought(intelliThoughtField.getIntelliThought());
-		context.setAction(actionLabel.getText());
-		
-		JSONObject token = EntityToJsonClientConvertor.createJsonFromEntity(context);
-//		Entity ent = new JsonToEntityConverter().getConvertedEntity(token);
-//		InitiateActionContext cont = (InitiateActionContext)ent;
-//		String action = cont.getAction();
-//		ArrayList<String> media = cont.getUploadedMedia();
-//		Entity space = cont.getSpace();
-		ActionEvent actionEvent = getActionEvent(ActionEvent.TRANSFORMWIDGET, token.toString()); 
-		fireActionEvent(actionEvent);
-	}
      private ActionEvent getActionEvent(int type, String data){
 		ActionEvent actionEvent = new ActionEvent();
 		actionEvent.setEventType(type);			
