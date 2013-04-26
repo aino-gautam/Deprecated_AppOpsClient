@@ -61,18 +61,18 @@ public class JsonToEntityConverter {
 			String[] splitter = mainKey.split("##");
 			
 			String mainType = splitter[0];
-			mainType = mainType.replace(".", "#");
-			String[] typeSplitter = mainType.split("#");
+		//	mainType = mainType.replace(".", "#");
+		//	String[] typeSplitter = mainType.split("#");
 			
-			String typeName = typeSplitter[typeSplitter.length-1];
+			//String typeName = typeSplitter[typeSplitter.length-1];
 			
-			if(typeName.equalsIgnoreCase("ActionContext")){
+			if(mainType.contains("ActionContext")){
 				entity = new InitiateActionContext();
 			} else {
 				entity = new Entity();
 			}
 			
-			Type type = new  MetaType(typeName);
+			Type type = new  MetaType(mainType);
 			
 			entity.setType(type);
 			
