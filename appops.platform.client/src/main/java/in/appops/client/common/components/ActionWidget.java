@@ -1,11 +1,10 @@
 package in.appops.client.common.components;
 
-import in.appops.client.common.event.ActionEvent;
 import in.appops.client.common.event.AppUtils;
+import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.shared.Configuration;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.ui.Anchor;
@@ -23,6 +22,8 @@ public class ActionWidget extends Composite implements Configurable{
 	private Anchor actionLink;
 	private Button actionButton;
 
+	private Entity actionEntity;
+	
 	private Configuration configuration;
 	private ActionWidgetType widgetType;
 
@@ -138,6 +139,14 @@ public class ActionWidget extends Composite implements Configurable{
 		this.widgetType = widgetType;
 	}
 
+	public Entity getActionEntity() {
+		return actionEntity;
+	}
+
+	public void setActionEntity(Entity actionEntity) {
+		this.actionEntity = actionEntity;
+	}
+	
 	/************* Overridden method here ******************/
 	
 	@Override

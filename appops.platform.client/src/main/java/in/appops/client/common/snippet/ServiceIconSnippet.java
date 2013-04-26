@@ -99,6 +99,8 @@ public class ServiceIconSnippet extends CardSnippet {
 			widgetName  = SnippetConstant.MEDIASERVICEHOME;
 		}else if(servicename.equalsIgnoreCase(TypeConstants.CONTACT)){
 			widgetName  = SnippetConstant.CONTACTSERVICEHOME;
+		}else if(servicename.equalsIgnoreCase("messenger")){
+			widgetName  = SnippetConstant.CHATSERVICEHOME;
 		}else{
 			widgetName  = SnippetConstant.HOMESNIPPET;
 		}
