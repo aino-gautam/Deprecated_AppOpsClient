@@ -12,6 +12,8 @@ import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 import in.appops.client.common.snippet.Snippet;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ErrorEvent;
+import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -96,6 +98,8 @@ public class ContactSnippet extends Composite implements Snippet, ClickHandler {
 			AppUtils.EVENT_BUS.fireEvent(selectionEvent);
 		}
 	}
+	
+	
 
 	public void setConfigurationForFields(Configuration labelConfig, Configuration imageConfig) {
 
@@ -103,7 +107,14 @@ public class ContactSnippet extends Composite implements Snippet, ClickHandler {
 			userName.setConfiguration(labelConfig);
 			userName.createField();
 			imageField.setConfiguration(imageConfig);
-			imageField.createField();
+            imageField.createField();
+            imageField.addErrorHandler(new ErrorHandler() {
+				
+				@Override
+				public void onError(ErrorEvent event) {
+					imageField.setUrl("images/default_Icon.png");
+				}
+			});
 		} catch (AppOpsException e) {
 			e.printStackTrace();
 		}
