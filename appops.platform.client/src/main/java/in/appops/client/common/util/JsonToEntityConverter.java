@@ -61,18 +61,18 @@ public class JsonToEntityConverter {
 			String[] splitter = mainKey.split("##");
 			
 			String mainType = splitter[0];
-			mainType = mainType.replace(".", "#");
-			String[] typeSplitter = mainType.split("#");
+		//	mainType = mainType.replace(".", "#");
+		//	String[] typeSplitter = mainType.split("#");
 			
-			String typeName = typeSplitter[typeSplitter.length-1];
+			//String typeName = typeSplitter[typeSplitter.length-1];
 			
-			if(typeName.equalsIgnoreCase("ActionContext")){
+			if(mainType.contains("ActionContext")){
 				entity = new InitiateActionContext();
 			} else {
 				entity = new Entity();
 			}
 			
-			Type type = new  MetaType(typeName);
+			Type type = new  MetaType(mainType);
 			
 			entity.setType(type);
 			
@@ -278,16 +278,21 @@ public class JsonToEntityConverter {
 	}
 	
 	public Entity convertjsonStringToEntity(String jsonObjectStr){
-		try{
+		logger.log(Level.INFO,"[JsonToEntityConverter] :: In convertjsonStringToEntity() ");
+
+		Entity convertedEntity = null;
+		try {
+
 			JSONValue jsonVal = JSONParser.parseLenient(jsonObjectStr);
 
 			JSONObject jsonObj = new JSONObject(jsonVal.isObject().getJavaScriptObject());
 
-			return getConvertedEntity(jsonObj);}
-		catch (Exception e) {
-			logger.log(Level.SEVERE, "[JsonToEntityConverter] :: [convertjsonStringToEntity] :: Exception", e);
+			convertedEntity = getConvertedEntity(jsonObj);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[JsonToEntityConverter] :: Exception in convertjsonStringToEntity()",e);
 		}
-		return null;
+
+		return convertedEntity;
 	}
 
 	

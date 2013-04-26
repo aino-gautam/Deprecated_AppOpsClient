@@ -93,4 +93,8 @@ public abstract class MediaAttachWidget extends Composite implements Configurabl
 		this.isExpand = false;
 	}
 	
+	public void isMediaImageVisible(boolean visible) {
+		media.setVisible(visible);
+	}
+	
 }
