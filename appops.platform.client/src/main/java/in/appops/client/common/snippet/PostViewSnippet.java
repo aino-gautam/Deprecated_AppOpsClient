@@ -3,6 +3,7 @@ package in.appops.client.common.snippet;
 import in.appops.client.common.components.ActionWidget;
 import in.appops.client.common.components.ActionWidget.ActionWidgetConfiguration;
 import in.appops.client.common.components.ActionWidget.ActionWidgetType;
+import in.appops.client.common.core.EntityReceiver;
 import in.appops.client.common.fields.ImageField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.handler.HandlerFactory;
@@ -42,6 +43,7 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -233,7 +235,7 @@ public class PostViewSnippet extends RowSnippet {
 	}
 	
 	private void createResponsePopup(int eventX, int eventY) {
-		PopupPanel popupPanel = new PopupPanel(true);
+		final PopupPanel popupPanel = new PopupPanel(true);
 		popupPanel.setPopupPosition(eventX, eventY);
 		popupPanel.setStylePrimaryName("responsePopupPanel");
 		
@@ -267,7 +269,23 @@ public class PostViewSnippet extends RowSnippet {
 					handler.setEmbeddedEntity(getEmbeddedEntity());
 					handler.setPostEntity(getEntity());
 					handler.setResponseEntity(responseEntity);
-					handler.executeResponse();
+					handler.executeResponse(new EntityReceiver() {
+						
+						@Override
+						public void onEntityUpdated(Entity entity) {
+							popupPanel.hide();
+						}
+						
+						@Override
+						public void onEntityReceived(Entity entity) {
+							
+						}
+						
+						@Override
+						public void noMoreData() {
+							
+						}
+					});
 				}
 			});
 		}

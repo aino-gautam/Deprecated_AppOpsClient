@@ -1,5 +1,6 @@
 package in.appops.client.common.handler;
 
+import in.appops.client.common.core.EntityReceiver;
 import in.appops.platform.core.entity.Entity;
 
 public interface ResponseActionHandler {
@@ -12,5 +13,5 @@ public interface ResponseActionHandler {
 	Entity getResponseEntity();
 	void setResponseEntity(Entity responseEntity);
 	
-	void executeResponse();
+	void executeResponse(EntityReceiver entityReceiver);
 }
