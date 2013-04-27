@@ -70,6 +70,9 @@ public class SnippetFactoryImpl implements SnippetFactory {
 			}else if(typename.equals("Message")){
 				MessageWithUserSnippet messageWithUserSnippet = new MessageWithUserSnippet();
 				return messageWithUserSnippet;
+			}else if(typename.equals("Space")){
+				BoxSnippet spaceSnippet = new BoxSnippet();
+				return spaceSnippet;
 			}else{
 				HomeSnippet homeSnippet = new HomeSnippet();
 				return homeSnippet;
