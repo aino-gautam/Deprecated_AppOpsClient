@@ -51,6 +51,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -386,6 +387,29 @@ public class PostViewSnippet extends RowSnippet {
 
 		Entity embeddedEntity = new JsonToEntityConverter().getConvertedEntity(jsonObj);
 		return embeddedEntity;
+	}
+	
+	private void showEmbededEntityDetailsInSnippet(Entity postEnt){
+		
+		String jsonEmbededString  = postEnt.getPropertyByName("embeddedEntity");
+		
+		JsonToEntityConverter jsonToEntityConverter = new JsonToEntityConverter();
+		
+		Entity embeddedEntity = jsonToEntityConverter.convertjsonStringToEntity(jsonEmbededString);
+		
+		Label detailLbl = new Label();
+		
+		if(embeddedEntity.getPropertyByName("title") != null){
+			detailLbl.setText(embeddedEntity.getPropertyByName("title").toString());
+		}else if(embeddedEntity.getPropertyByName("name") != null){
+			detailLbl.setText(embeddedEntity.getPropertyByName("name").toString());
+			
+		}
+		
+		detailLbl.setStylePrimaryName("blockquote");
+		
+		postSnippetPanel.add(detailLbl,DockPanel.SOUTH);
+		
 	}
 
 }
