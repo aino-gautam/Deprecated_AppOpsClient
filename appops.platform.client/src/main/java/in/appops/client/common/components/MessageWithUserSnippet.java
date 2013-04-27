@@ -25,8 +25,8 @@ public class MessageWithUserSnippet extends Composite implements Snippet{
 	private Entity entity;
 	public MessageWithUserSnippet() {
 		initialize();
-		mainPanel.setWidth("100%");
-        mainPanel.setHeight("100%");
+		/*mainPanel.setWidth("100%");
+        mainPanel.setHeight("100%");*/
 		initWidget(mainPanel);
 	}
 	
@@ -44,7 +44,9 @@ public class MessageWithUserSnippet extends Composite implements Snippet{
 		horizontalPanel.setBorderWidth(1);
 		horizontalPanel.add(flexTable);
 		mainPanel.add(horizontalPanel);
-		mainPanel.setStylePrimaryName("contactSnippetBasePanel");
+		horizontalPanel.setStylePrimaryName("contactSnippetBasePanel");
+		horizontalPanel.addStyleName("snippetPanel");
+		//mainPanel.setStyleName("messageWithUserSnippet");
 	}
 
 	private VerticalPanel createUserNameLabelField() {
@@ -62,12 +64,13 @@ public class MessageWithUserSnippet extends Composite implements Snippet{
 			labelField.setConfiguration(labelConfig);
 			labelField.createField();
 			vpPanel.add(labelField);
+			Configuration labelConfig1 = getLabelFieldConfiguration(true, "appops-LabelField", null, null);
 			LabelField messageLabelField = new LabelField();
 			if(entity.getPropertyByName(MessageConstant.DESCRIPTION)!=null){
 				String messageStr = entity.getPropertyByName(MessageConstant.DESCRIPTION);
 				
 				messageLabelField.setFieldValue(messageStr);
-				messageLabelField.setConfiguration(labelConfig);
+				messageLabelField.setConfiguration(labelConfig1);
 				messageLabelField.createField();
 			}
 			HorizontalPanel panel = new HorizontalPanel();
