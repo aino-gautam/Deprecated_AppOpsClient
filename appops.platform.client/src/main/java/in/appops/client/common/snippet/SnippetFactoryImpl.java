@@ -1,5 +1,6 @@
 package in.appops.client.common.snippet;
 
+import in.appops.client.common.components.MessageWithUserSnippet;
 import in.appops.client.common.contactmodel.ContactSnippet;
 import in.appops.platform.core.constants.typeconstants.TypeConstants;
 import in.appops.platform.core.entity.type.Type;
@@ -62,6 +63,9 @@ public class SnippetFactoryImpl implements SnippetFactory {
 			}else if(typename.equals("Contact")){
 				ContactSnippet contactSnippet = new ContactSnippet();
 				return contactSnippet;
+			}else if(typename.equals("Message")){
+				MessageWithUserSnippet messageWithUserSnippet = new MessageWithUserSnippet();
+				return messageWithUserSnippet;
 			}else{
 				HomeSnippet homeSnippet = new HomeSnippet();
 				return homeSnippet;
