@@ -56,7 +56,11 @@ public class SnippetFactoryImpl implements SnippetFactory {
 				return reminderSnippet;
 			}else if(typename.equals("SpaceserviceviewId")){
 				ServiceIconSnippet serviceIconSnippet = new ServiceIconSnippet();
+				serviceIconSnippet.setShowOnlyIcon(true);
 				return serviceIconSnippet;
+			}else if(typename.equals("SpaceactionsviewId")){
+				ActionBoxSnippet actionBoxSnippet = new ActionBoxSnippet();
+				return actionBoxSnippet;
 			}else if(typename.equals("Post")){
 				PostViewSnippet postViewSnippet = new PostViewSnippet();
 				return postViewSnippet;
@@ -66,6 +70,9 @@ public class SnippetFactoryImpl implements SnippetFactory {
 			}else if(typename.equals("Message")){
 				MessageWithUserSnippet messageWithUserSnippet = new MessageWithUserSnippet();
 				return messageWithUserSnippet;
+			}else if(typename.equals("Space")){
+				BoxSnippet spaceSnippet = new BoxSnippet();
+				return spaceSnippet;
 			}else{
 				HomeSnippet homeSnippet = new HomeSnippet();
 				return homeSnippet;
