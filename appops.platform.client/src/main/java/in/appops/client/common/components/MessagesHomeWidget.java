@@ -150,7 +150,9 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 		mainPanel.add(rightSidePanel);
 		mainPanel.setCellWidth(rightSidePanel, "50%");
 		mainPanel.setCellHorizontalAlignment(rightSidePanel, HasHorizontalAlignment.ALIGN_CENTER);
-		mainPanel.setBorderWidth(1);
+		mainPanel.setStylePrimaryName("messagesHomeWidget");
+		leftSidePanel.setStylePrimaryName("leftSidePanel");
+		
 	}
 
 	public Entity getUserEntity() {
