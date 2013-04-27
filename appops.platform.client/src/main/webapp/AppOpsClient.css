@@ -994,3 +994,9 @@ color: blue;
 	font-weight: bold;
 }
 
+.blockquote:first-letter {
+  padding-left: 18px;
+  font: italic 1.4em Georgia, "Times New Roman", Times, serif;
+  background-color: gray;
+}
+
