@@ -7,6 +7,7 @@ import in.appops.client.common.core.EntityReceiver;
 import in.appops.client.common.fields.ImageField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.handler.HandlerFactory;
+import in.appops.client.common.handler.HandlerFactoryImpl;
 import in.appops.client.common.handler.ResponseActionHandler;
 import in.appops.client.common.util.BlobDownloader;
 import in.appops.client.common.util.JsonToEntityConverter;
@@ -263,7 +264,7 @@ public class PostViewSnippet extends RowSnippet {
 				
 				@Override
 				public void onClick(ClickEvent event) {
-					HandlerFactory handFactory = GWT.create(HandlerFactory.class);
+					HandlerFactory handFactory = GWT.create(HandlerFactoryImpl.class);
 					
 					ResponseActionHandler handler = handFactory.getActionHandlerByName(responseText);
 					handler.setEmbeddedEntity(getEmbeddedEntity());

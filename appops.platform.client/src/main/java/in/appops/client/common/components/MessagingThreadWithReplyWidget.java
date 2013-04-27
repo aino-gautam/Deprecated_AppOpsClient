@@ -3,32 +3,36 @@ package in.appops.client.common.components;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.client.common.snippet.SnippetFactory;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.core.constants.typeconstants.TypeConstants;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.type.MetaType;
+import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
-import in.appops.platform.server.core.services.entitystore.typemapper.AppopsTypeMapperCollector;
-import in.appops.platform.server.core.services.entitystore.typemapper.ServiceTypeMap;
 import in.appops.platform.server.core.services.usermessage.constant.MessageConstant;
 import in.appops.platform.server.core.services.usermessage.constant.MessageParticipantsConstant;
-import in.appops.platform.server.core.services.usermessage.domain.MessageParticipants;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -43,7 +47,9 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 	private TextField textFieldTA ;
 	private Entity parentEntity;
 	private Entity contactEntity;
+	private Entity clickSnippetEntity;
 	private final AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
+	private SnippetFactory snippetFactory ;
 	public MessagingThreadWithReplyWidget() {
 		initialize();
 		initWidget(mainPanel);
@@ -61,7 +67,7 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 	
 	public void createComponent(EntityList list){
 		mainPanel.clear();
-		SnippetFactory snippetFactory = injector.getSnippetFactory();
+		snippetFactory = injector.getSnippetFactory();
 		parentEntity=list.get(0);
 		for(Entity entity:list){
 			entity.setType(new MetaType(TypeConstants.MESSAGE));
@@ -98,6 +104,7 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 		replyButton = new Button("Reply");
 		vpPanel.add(replyButton);
 		vpPanel.setCellHorizontalAlignment(replyButton, HasHorizontalAlignment.ALIGN_RIGHT);
+		replyButton.addClickHandler(this);
 		
 		return vpPanel;
 	}
@@ -118,12 +125,18 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 			
 			Entity messageParticipantsEntity = new Entity();
 			messageParticipantsEntity.setType(new MetaType(TypeConstants.MESSAGEPARTICIPANTS));
-			
-			messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.CONTACTID, Long.valueOf(62));
-			messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.USERID, Long.valueOf(9));
+			Property< Serializable> idProperty = (Property<Serializable>) clickSnippetEntity.getProperty("id");
+			Property< Serializable> idPrope =(Property< Serializable>) idProperty.getValue();
+			Key<Serializable>key = (Key<Serializable>) idPrope.getValue();
+			Long idValue=(Long) key.getKeyValue();
+			messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.CONTACTID, idValue);
+			//messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.USERID, Long.valueOf(16));
 						
 			//messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.MESSAGE, messageEntity);
-			messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.USERDISPLAYNAME, "Kiran Bhalerao");
+			String name=clickSnippetEntity.getPropertyByName("name");
+			String imgBlobId=clickSnippetEntity.getPropertyByName("imgBlobId");
+			messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.USERDISPLAYNAME, name);
+			messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.BLOBID, imgBlobId);
 		    list.add(messageParticipantsEntity);
 		    
 		    
@@ -185,7 +198,9 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 			messageEntity.setType(new MetaType(TypeConstants.MESSAGE));
 		    
 			Key<Serializable> key1=(Key<Serializable>) contactEntity.getProperty(ContactConstant.ID).getValue();
-			Long parentId=parentEntity.getPropertyByName(MessageConstant.PARENTID);
+			Key<Serializable> key = (Key<Serializable>) parentEntity.getProperty(MessageConstant.ID).getValue();
+			Long parentId=(Long) key.getKeyValue();
+			
 			String description = textFieldTA.getText();
 			Long senderd = (Long) key1.getKeyValue();
 			
@@ -226,12 +241,78 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 		Widget sender = (Widget) event.getSource();
 		if(sender instanceof Button){
 			if(sender.equals(replyButton)){
-				textFieldTA.getText();
+				//textFieldTA.getText();
+				Entity messageParentEntity=createMessageParentEntity();
 				Entity messageEntity = createMessageEntity();
-				createMessageParentEntity();
-				createMessageParticipantsEntity(messageEntity);
+				EntityList messageParticipantsList=createMessageParticipantsEntity(messageEntity);
+				
+				replyToMessage(messageEntity,messageParentEntity,messageParticipantsList);
+				
 			}
 		}
 		
+	}
+
+	@SuppressWarnings("unchecked")
+	private void replyToMessage(final Entity messageEntity, Entity messageParentEntity, EntityList messageParticipantsList) {
+		
+		DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
+		DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
+
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("messageEntity",messageEntity);
+		paramMap.put("messageParticipantsEntityList", messageParticipantsList);
+		paramMap.put("parentMessageEntity", messageParentEntity);
+		
+		StandardAction action = new StandardAction(EntityList.class, "usermessage.UserMessageService.sendMessage", paramMap);
+		dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
+			
+			public void onFailure(Throwable caught) {
+				Window.alert("operation failed ");
+				caught.printStackTrace();
+			}
+			
+			public void onSuccess(Result<Entity> result) {
+				if(result!=null){
+				 Entity messageParticipantEntity=result.getOperationResult();
+				 messageEntity.getPropertyByName(MessageConstant.DESCRIPTION);
+				  Entity embeddedEntity=createEmbeddedMessageContactEntity(messageEntity, messageParticipantEntity);
+				    embeddedEntity.setType(new MetaType(TypeConstants.MESSAGE));
+					MessageWithUserSnippet messageWithUserSnippet = (MessageWithUserSnippet) snippetFactory.getSnippetByEntityType(embeddedEntity.getType(), null);
+					messageWithUserSnippet.setEntity(embeddedEntity);
+					messageWithUserSnippet.createUi();
+					messageWithUserSnippet.setStylePrimaryName("flowPanelContent");
+					subVerticalPanel.add(messageWithUserSnippet);
+				}
+			}
+		});
+		
+	}
+	
+	private Entity createEmbeddedMessageContactEntity(Entity entity,
+			Entity messageParticipantEntity) {
+		Entity contactMessageEmbeddedEntity = new Entity();
+		
+		String description = entity.getPropertyByName(MessageConstant.DESCRIPTION);
+		String name = messageParticipantEntity.getPropertyByName(MessageParticipantsConstant.USERDISPLAYNAME);
+		
+		contactMessageEmbeddedEntity.setPropertyByName(MessageConstant.DESCRIPTION, description);
+		contactMessageEmbeddedEntity.setPropertyByName(ContactConstant.NAME, name);
+		if(messageParticipantEntity.getPropertyByName(MessageParticipantsConstant.BLOBID)!=null){
+			String blobId = messageParticipantEntity.getPropertyByName(MessageParticipantsConstant.BLOBID);
+		    contactMessageEmbeddedEntity.setPropertyByName(MessageParticipantsConstant.BLOBID, blobId);
+		}
+		
+		return contactMessageEmbeddedEntity;
+		
+		
+	}
+
+	public Entity getClickSnippetEntity() {
+		return clickSnippetEntity;
+	}
+
+	public void setClickSnippetEntity(Entity clickSnippetEntity) {
+		this.clickSnippetEntity = clickSnippetEntity;
 	}
 }
