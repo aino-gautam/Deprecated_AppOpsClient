@@ -967,3 +967,11 @@ color: blue;
   cursor: hand;
   
 }
+
+.currentLocationImagePrimaryCss{
+	width: 20px;
+	height: 25px;
+	cursor: pointer;
+	cursor: hand;
+	margin-top: 2px;
+}
