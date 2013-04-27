@@ -994,3 +994,38 @@ color: blue;
 	font-weight: bold;
 }
 
+.blockquote:first-letter {
+  padding-left: 18px;
+  font: italic 1.4em Georgia, "Times New Roman", Times, serif;
+  background-color: gray;
+}
+.messagesHomeWidget{
+	border: 1px solid;
+}
+/* .userThreadWidget{
+	border: 1px solid;
+} */
+.snippetPanel{
+	margin: 5px;
+	border-bottom: 1px solid; 
+}
+.messageWithUserSnippet{
+	width: 250px;
+}
+.messageWithUserSnippetPanel{
+	height: 300px;
+}
+.leftSidePanel{
+	border-right: 1px solid;
+}
+
+
+.boxSnippetEntityTitle {
+    color: black;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+ .boxSnippetEntityBasePanel {
+    box-shadow: 5px 5px 5px #B0B0B0;
+}
