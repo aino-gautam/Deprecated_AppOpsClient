@@ -56,7 +56,11 @@ public class SnippetFactoryImpl implements SnippetFactory {
 				return reminderSnippet;
 			}else if(typename.equals("SpaceserviceviewId")){
 				ServiceIconSnippet serviceIconSnippet = new ServiceIconSnippet();
+				serviceIconSnippet.setShowOnlyIcon(true);
 				return serviceIconSnippet;
+			}else if(typename.equals("SpaceactionsviewId")){
+				ActionBoxSnippet actionBoxSnippet = new ActionBoxSnippet();
+				return actionBoxSnippet;
 			}else if(typename.equals("Post")){
 				PostViewSnippet postViewSnippet = new PostViewSnippet();
 				return postViewSnippet;
