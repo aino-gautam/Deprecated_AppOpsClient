@@ -1018,3 +1018,14 @@ color: blue;
 .leftSidePanel{
 	border-right: 1px solid;
 }
+
+
+.boxSnippetEntityTitle {
+    color: black;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+ .boxSnippetEntityBasePanel {
+    box-shadow: 5px 5px 5px #B0B0B0;
+}
