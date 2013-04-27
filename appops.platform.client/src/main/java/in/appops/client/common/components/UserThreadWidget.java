@@ -27,6 +27,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -57,7 +58,7 @@ public class UserThreadWidget extends Composite implements EventListener,ClickHa
 		SnippetFactory snippetFactory = injector.getSnippetFactory();
 		for(final Entity entity:list){
 		   ContactSnippet snippet = (ContactSnippet)snippetFactory.getSnippetByEntityType(entity.getType(), null);
-		
+		    HorizontalPanel horizontalPanel = new HorizontalPanel();
 			snippet.setSelectionAllowed(false);
 			
 			snippet.setWidth("100%");
@@ -92,8 +93,11 @@ public class UserThreadWidget extends Composite implements EventListener,ClickHa
 			
 			snippet.addDomHandler(handler, ClickEvent.getType());
 			
-			mainPanel.setBorderWidth(1);
-			mainPanel.add(snippet);
+			//mainPanel.setStylePrimaryName("userThreadWidget");
+			horizontalPanel.add(snippet);
+			mainPanel.add(horizontalPanel);
+			horizontalPanel.setStylePrimaryName("snippetPanel");
+			
 		}
 	}
 	

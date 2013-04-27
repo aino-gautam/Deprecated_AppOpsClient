@@ -78,7 +78,7 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 			subVerticalPanel.add(messageWithUserSnippet);
 		}
 		scrollPanel = new ScrollPanel(subVerticalPanel);
-		scrollPanel.setHeight("150px;");
+		scrollPanel.setStylePrimaryName("messageWithUserSnippetPanel");
 		mainPanel.add(scrollPanel);
 		mainPanel.setCellHeight(scrollPanel, "75%");
 		replyBoxPanel = new VerticalPanel();
