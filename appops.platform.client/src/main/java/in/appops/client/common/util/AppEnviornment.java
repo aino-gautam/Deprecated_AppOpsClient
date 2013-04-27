@@ -1,5 +1,7 @@
 package in.appops.client.common.util;
 
+import com.mvp4g.client.event.EventBusWithLookup;
+
 import in.appops.platform.core.entity.Entity;
 
 /**
@@ -13,6 +15,11 @@ public class AppEnviornment {
 	
 	public static boolean ISUSERLOGGEDIN = false;
 
+	public static Entity CURRENTUSERHUBENTITY = null;
+	
+	public static EventBusWithLookup EVENTBUS = null;
+	
+	
 	public static Entity getCurrentUser() {
 		return CURRENTUSER;
 	}
@@ -33,6 +40,23 @@ public class AppEnviornment {
 		ISUSERLOGGEDIN = loggedIn;
 	}
 	
+	public static boolean getUserLoggedIn() {
+		return ISUSERLOGGEDIN;
+	}
 	
+	public static Entity getCurrentUserHubSpace() {
+		return CURRENTUSERHUBENTITY;
+	}
+
+	public static void setCurrentUserHubSpace(Entity userHubEnt) {
+		CURRENTUSERHUBENTITY = userHubEnt;
+	}
 	
+	public static EventBusWithLookup getEventBus() {
+		return EVENTBUS;
+	}
+
+	public static void setEventBus(EventBusWithLookup eventBus) {
+		EVENTBUS = eventBus;
+	}
 }
