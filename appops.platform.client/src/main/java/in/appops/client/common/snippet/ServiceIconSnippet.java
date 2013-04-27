@@ -101,10 +101,11 @@ public class ServiceIconSnippet extends CardSnippet {
 			widgetName  = SnippetConstant.CONTACTSERVICEHOME;
 		}else if(servicename.equalsIgnoreCase("messenger")){
 			widgetName  = SnippetConstant.CHATSERVICEHOME;
+		}else if(servicename.equalsIgnoreCase("thought")){
+			widgetName  = "IntelliThought";
 		}else if(servicename.equalsIgnoreCase("usermessage")){
 			widgetName  = SnippetConstant.USERMESSAGESERVICEHOME;
 		}else{
-		
 			widgetName  = SnippetConstant.HOMESNIPPET;
 		}
 		actionEvent.setEventData(widgetName);
