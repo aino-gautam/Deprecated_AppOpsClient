@@ -765,11 +765,12 @@ color: blue;
 }
 
  .serviceEntityBasePanel {
-    border-color: grey;
+    /* border-color: grey;
     border-radius: 5px 5px 5px 5px;
     border-style: ridge;
     border-width: 3px;
-    width: 80px;
+    width: 80px; */
+    box-shadow: 5px 5px 5px #B0B0B0;
 }
 
 @-webkit-keyframes fadeInRight {
@@ -975,3 +976,21 @@ color: blue;
 	cursor: hand;
 	margin-top: 2px;
 }
+.boxSnippetPanel{
+	width: 140px;
+	height: 50px;
+	border-bottom: 1px solid #e1e1e1;
+}
+.boxSnippetImage{
+	width: 48px;
+	height: 48px;
+}
+.boxSnippetLabel{
+	margin: 0px 0px 10px 5px; 
+	font-weight:bold; 
+	color:#666;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+}
+
