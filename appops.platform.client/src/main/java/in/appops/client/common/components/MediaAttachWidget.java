@@ -21,6 +21,7 @@ public abstract class MediaAttachWidget extends Composite implements Configurabl
 	private boolean isCollapse;
 	protected VerticalPanel fileUploadPanel = null;
 	protected HorizontalPanel attachmentPanel = null;
+	protected boolean isSingleUpload;
 	
 	public MediaAttachWidget(){
 		initialize();
@@ -97,4 +98,7 @@ public abstract class MediaAttachWidget extends Composite implements Configurabl
 		media.setVisible(visible);
 	}
 	
+	public void isSingleUpload(boolean isSingleUpload) {
+		this.isSingleUpload = isSingleUpload;
+	}
 }

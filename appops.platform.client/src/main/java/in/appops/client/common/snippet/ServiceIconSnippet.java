@@ -24,6 +24,7 @@ public class ServiceIconSnippet extends CardSnippet {
 	private Image serviceIcon;
 	private LabelField serviceEntityTitle;
 	private HorizontalPanel labelPanel= new HorizontalPanel();
+	private boolean showOnlyIcon = false;
 	
 	public ServiceIconSnippet() {
 		
@@ -33,34 +34,33 @@ public class ServiceIconSnippet extends CardSnippet {
 	public void initialize(){
 		
 		super.initialize();
+		basePanel.setStylePrimaryName("serviceEntityBasePanel");
 		
 		String blobId = getEntity().getProperty("blobId").getValue().toString();
 		BlobDownloader blobDownloader = new BlobDownloader();
 		serviceIcon = new Image(blobDownloader.getIconDownloadURL(blobId));
-		
-		serviceEntityTitle = new LabelField();
-		serviceEntityTitle.setFieldValue(getEntity().getProperty(ServiceConstant.NAME).getValue().toString());
-		serviceEntityTitle.setConfiguration(getLabelFieldConfiguration(true, "serviceEntityTitle", null, null));
-		try {
-			serviceEntityTitle.createField();
-		} catch (AppOpsException e) {
-	
-			e.printStackTrace();
-		}
-		//serviceIcon.setStylePrimaryName("serviceEntityIcon");
-		labelPanel.setStylePrimaryName("serviceEntityTitlePanel");
-		basePanel.setStylePrimaryName("serviceEntityBasePanel");
 		basePanel.add(serviceIcon);
-		labelPanel.add(serviceEntityTitle);
-		basePanel.add(labelPanel);
 		
-		labelPanel.setCellHorizontalAlignment(serviceEntityTitle, HasHorizontalAlignment.ALIGN_CENTER);
-		labelPanel.setCellVerticalAlignment(serviceEntityTitle, HasVerticalAlignment.ALIGN_TOP);
+		if(!showOnlyIcon){
+			serviceEntityTitle = new LabelField();
+			serviceEntityTitle.setFieldValue(getEntity().getProperty(ServiceConstant.NAME).getValue().toString());
+			serviceEntityTitle.setConfiguration(getLabelFieldConfiguration(true, "serviceEntityTitle", null, null));
+			try {
+				serviceEntityTitle.createField();
+			} catch (AppOpsException e) {
+		
+				e.printStackTrace();
+			}
+			labelPanel.setStylePrimaryName("serviceEntityTitlePanel");
+			labelPanel.add(serviceEntityTitle);
+	
+			labelPanel.setCellHorizontalAlignment(serviceEntityTitle, HasHorizontalAlignment.ALIGN_CENTER);
+			labelPanel.setCellVerticalAlignment(serviceEntityTitle, HasVerticalAlignment.ALIGN_TOP);
+			basePanel.add(labelPanel);
+		}
 		
 		basePanel.setCellHorizontalAlignment(serviceIcon, HasHorizontalAlignment.ALIGN_CENTER);
 		basePanel.setCellVerticalAlignment(serviceIcon,HasVerticalAlignment.ALIGN_TOP);
-		
-		//addDomHandler(this, ClickEvent.getType());
 		
 		basePanel.addDomHandler(new ClickHandler() {
 			
@@ -106,6 +106,14 @@ public class ServiceIconSnippet extends CardSnippet {
 		}
 		actionEvent.setEventData(widgetName);
 		AppUtils.EVENT_BUS.fireEvent(actionEvent);
+	}
+
+	public boolean isShowOnlyIcon() {
+		return showOnlyIcon;
+	}
+
+	public void setShowOnlyIcon(boolean showOnlyIcon) {
+		this.showOnlyIcon = showOnlyIcon;
 	}
 
 }
