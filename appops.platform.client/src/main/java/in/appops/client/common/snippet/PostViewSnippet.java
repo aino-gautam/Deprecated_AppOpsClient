@@ -3,15 +3,21 @@ package in.appops.client.common.snippet;
 import in.appops.client.common.components.ActionWidget;
 import in.appops.client.common.components.ActionWidget.ActionWidgetConfiguration;
 import in.appops.client.common.components.ActionWidget.ActionWidgetType;
+import in.appops.client.common.core.EntityReceiver;
 import in.appops.client.common.fields.ImageField;
 import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.handler.HandlerFactory;
+import in.appops.client.common.handler.HandlerFactoryImpl;
+import in.appops.client.common.handler.ResponseActionHandler;
 import in.appops.client.common.util.BlobDownloader;
+import in.appops.client.common.util.JsonToEntityConverter;
 import in.appops.client.common.util.PostContentParser;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.JsonProperty;
 import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.operation.Result;
@@ -27,19 +33,25 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -58,7 +70,7 @@ public class PostViewSnippet extends RowSnippet {
 	
 	private final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
-	private ArrayList<String> responseoptionList = null;
+	private ArrayList<Entity> responseoptionList = null;
 	private Entity userEntity;
 	
 	public PostViewSnippet() {
@@ -68,7 +80,7 @@ public class PostViewSnippet extends RowSnippet {
 	@Override
 	public void initialize(){
 		super.initialize();
-		responseoptionList = new ArrayList<String>();
+		responseoptionList = new ArrayList<Entity>();
 		postSnippetPanel = new DockPanel();
 		createUi();
 	}
@@ -194,13 +206,13 @@ public class PostViewSnippet extends RowSnippet {
 	@SuppressWarnings("unchecked")
 	private void getResponsesForWidget(final int eventX, final int eventY) {
 		Query query = new Query();
-		query.setQueryName("getResponsesForWidget");
+		query.setQueryName("getResponsesForWidgetId");
 		//query.setListSize(4);
 		
-		String widgetName = getEntity().getPropertyByName(PostConstant.WIDGETNAME);
+		String widgetId = getEntity().getPropertyByName(PostConstant.ACTION_ID).toString();
 		
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("widgetname", widgetName);
+		paramMap.put("widgetid", widgetId);
 		query.setQueryParameterMap(paramMap);
 		
 		Map parameters = new HashMap();
@@ -216,10 +228,8 @@ public class PostViewSnippet extends RowSnippet {
 			public void onSuccess(Result result) {
 				EntityList responseEntList = (EntityList) result.getOperationResult();
 				for (Entity entity : responseEntList) {
-					String option = entity.getPropertyByName(ActionResponseViewConstant.RESPONSE_NAME);
-					if(!responseoptionList.contains(option)){
-						responseoptionList.add(option);
-					}
+					/*** nitish@ensarm.com.. Adding entity to the list rather than the responsename**/
+					responseoptionList.add(entity);
 				}
 				createResponsePopup(eventX, eventY);
 			}
@@ -227,17 +237,17 @@ public class PostViewSnippet extends RowSnippet {
 	}
 	
 	private void createResponsePopup(int eventX, int eventY) {
-		PopupPanel popupPanel = new PopupPanel(true);
+		final PopupPanel popupPanel = new PopupPanel(true);
 		popupPanel.setPopupPosition(eventX, eventY);
 		popupPanel.setStylePrimaryName("responsePopupPanel");
 		
 		VerticalPanel mainPanel = new VerticalPanel();
 		mainPanel.setSpacing(5);
 		int size = responseoptionList.size();
-		for(String responseText : responseoptionList){
-			ActionWidget actionWidget = new ActionWidget(ActionWidgetType.LINK);
+		for(final Entity responseEntity : responseoptionList){
+			final String responseText = responseEntity.getPropertyByName(ActionResponseViewConstant.RESPONSE_NAME);
+			final ActionWidget actionWidget = new ActionWidget(ActionWidgetType.LINK);
 			actionWidget.setWidgetText(responseText);
-			// There ideally should be for each service its corresponding post snippet.
 			//actionWidget.setActionEvent(getResponseActionEvent(actionWidget));
 			
 			if(size-1 !=0){
@@ -250,6 +260,36 @@ public class PostViewSnippet extends RowSnippet {
 			mainPanel.add(actionWidget);
 			//mainPanel.add(new HTML("<hr style=\"color: #848181; background-color: #848181; width: 98%; height: 1px;\"></hr>"));
 			size--;
+			
+			actionWidget.addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					HandlerFactory handFactory = GWT.create(HandlerFactoryImpl.class);
+					
+					ResponseActionHandler handler = handFactory.getActionHandlerByName(responseText);
+					handler.setEmbeddedEntity(getEmbeddedEntity());
+					handler.setPostEntity(getEntity());
+					handler.setResponseEntity(responseEntity);
+					handler.executeResponse(new EntityReceiver() {
+						
+						@Override
+						public void onEntityUpdated(Entity entity) {
+							popupPanel.hide();
+						}
+						
+						@Override
+						public void onEntityReceived(Entity entity) {
+							
+						}
+						
+						@Override
+						public void noMoreData() {
+							
+						}
+					});
+				}
+			});
 		}
 		popupPanel.add(mainPanel);
 		popupPanel.show();
@@ -336,6 +376,40 @@ public class PostViewSnippet extends RowSnippet {
 		Configuration conf = new Configuration();
 		conf.setPropertyByName(ActionWidgetConfiguration.PRIMARY_CSS.toString(), primaryCss);
 		return conf;
+	}
+	
+	protected Entity getEmbeddedEntity() {
+		JsonProperty embeddedEntityJson = (JsonProperty) getEntity().getProperty("embeddedEntity");
+		String jsonString = embeddedEntityJson.getJsonString();
+
+		JSONValue jsonVal = JSONParser.parseLenient(jsonString);
+		JSONObject jsonObj = new JSONObject(jsonVal.isObject().getJavaScriptObject());
+
+		Entity embeddedEntity = new JsonToEntityConverter().getConvertedEntity(jsonObj);
+		return embeddedEntity;
+	}
+	
+	private void showEmbededEntityDetailsInSnippet(Entity postEnt){
+		
+		String jsonEmbededString  = postEnt.getPropertyByName("embeddedEntity");
+		
+		JsonToEntityConverter jsonToEntityConverter = new JsonToEntityConverter();
+		
+		Entity embeddedEntity = jsonToEntityConverter.convertjsonStringToEntity(jsonEmbededString);
+		
+		Label detailLbl = new Label();
+		
+		if(embeddedEntity.getPropertyByName("title") != null){
+			detailLbl.setText(embeddedEntity.getPropertyByName("title").toString());
+		}else if(embeddedEntity.getPropertyByName("name") != null){
+			detailLbl.setText(embeddedEntity.getPropertyByName("name").toString());
+			
+		}
+		
+		detailLbl.setStylePrimaryName("blockquote");
+		
+		postSnippetPanel.add(detailLbl,DockPanel.SOUTH);
+		
 	}
 
 }

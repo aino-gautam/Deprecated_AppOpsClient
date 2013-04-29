@@ -582,5 +582,8 @@ public class LocationSelector extends Composite implements Field,EntityReceiver,
 		});
 		
 	}
-
+	
+	public void isCurrLocationLabelVisible(boolean visible) {
+		currentLocationLabel.setVisible(visible);
+	}
 }

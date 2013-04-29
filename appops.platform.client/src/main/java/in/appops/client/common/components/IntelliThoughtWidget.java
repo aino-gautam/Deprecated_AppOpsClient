@@ -308,6 +308,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 					String widgetName = entity.getPropertyByName(ActionsConstant.NAME);
 					final ActionWidget actionWidget = new ActionWidget(ActionWidgetType.LABEL);
 					actionWidget.setWidgetText(widgetName);
+					actionWidget.setActionEntity(entity);
 					//actionWidget.setActionEvent(getActionEvent(actionWidget));
 					actionWidget.setConfiguration(getActionConfiguration());
 					actionWidget.createUi();
@@ -346,8 +347,8 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		context.setUploadedMedia(uploadedMediaId);
 		context.setIntelliThought(intelliShareField.getIntelliThought());
 		
-		if(actionWidget.getWidgetText() != null){
-			context.setAction(actionWidget.getWidgetText());
+		if(actionWidget.getActionEntity() != null){
+			context.setActionEntity(actionWidget.getActionEntity());
 		}
 		
 		JSONObject token = EntityToJsonClientConvertor.createJsonFromEntity(context);
