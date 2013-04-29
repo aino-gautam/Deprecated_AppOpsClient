@@ -199,7 +199,7 @@ public class PostViewSnippet extends RowSnippet {
 		postContentFlowPanel.setStylePrimaryName(POST_CONTEXT_LABEL);
 		responsesImageField.setStylePrimaryName(HAND_CSS);
 		//spaceImageField.setStylePrimaryName(HAND_CSS);
-		
+		showEmbededEntityDetailsInSnippet(getEntity());
 		
 	}
 	
@@ -391,7 +391,9 @@ public class PostViewSnippet extends RowSnippet {
 	
 	private void showEmbededEntityDetailsInSnippet(Entity postEnt){
 		
-		String jsonEmbededString  = postEnt.getPropertyByName("embeddedEntity");
+		JsonProperty jsonProp = (JsonProperty) postEnt.getProperty("embeddedEntity");
+		
+		String jsonEmbededString  = jsonProp.getJsonString();
 		
 		JsonToEntityConverter jsonToEntityConverter = new JsonToEntityConverter();
 		
