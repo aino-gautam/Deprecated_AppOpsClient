@@ -1,16 +1,14 @@
 package in.appops.client.common.fields;
 
 
-import com.google.gwt.event.shared.GwtEvent.Type;
-import com.google.gwt.event.shared.HandlerRegistration;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.AppOpsException;
+
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Hyperlink;
-
-import in.appops.client.common.event.FieldEvent;
-import in.appops.client.common.event.handlers.FieldEventHandler;
-import in.appops.platform.core.shared.Configuration;
-import in.appops.platform.core.util.AppOpsException;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Field class to represent a {@link Hyperlink} or {@link Anchor}
@@ -118,5 +116,14 @@ public class LinkField extends Composite implements Field {
 	public void onFieldEvent(FieldEvent event) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public Widget getWidget() {
+		if(getConfiguration().getPropertyByName(LINKFIELD_TYPE).toString().equalsIgnoreCase(LINKFIELDTYPE_HYPERLINK)) {
+			return hyperLink;
+		} else if(getConfiguration().getPropertyByName(LINKFIELD_TYPE).toString().equalsIgnoreCase(LINKFIELDTYPE_ANCHOR)) {
+			return anchor;
+		}
+		return null;
 	}
 }
