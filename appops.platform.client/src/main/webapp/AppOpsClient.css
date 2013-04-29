@@ -974,7 +974,7 @@ color: blue;
 	height: 25px;
 	cursor: pointer;
 	cursor: hand;
-	margin-top: 2px;
+	margin: 10px 10px 0px 0px;
 }
 .boxSnippetPanel{
 	width: 140px;
