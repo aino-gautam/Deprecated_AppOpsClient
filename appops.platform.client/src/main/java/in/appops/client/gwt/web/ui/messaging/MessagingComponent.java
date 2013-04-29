@@ -393,10 +393,7 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 								Long counter = Long.parseLong(val.toString());
 								HashMap<Entity, Entity> tempMap = recordMap.get(counter);
 								
-								
 								String curUserEmail = contactEntity.getPropertyByName(ContactConstant.EMAILID).toString().trim();
-								
-								
 								
 								Entity userEnt = tempMap.keySet().iterator().next();
 								
@@ -404,8 +401,9 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 								
 								Entity chatTextEntity = tempMap.get(userEnt);
 								
-								if(!curUserEmail.equals(chtInitEmail))
+								if(!curUserEmail.equals(chtInitEmail)) {
 									chatDisplayWidget.refreshChatUi(userEnt,chatTextEntity,true);
+								}
 								/*else
 									chatDisplayWidget.refreshChatUi(userEnt,chatTextEntity,true);*/
 							}
@@ -434,14 +432,17 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 					getGrpMapEntityMap().put(title, chatEntity);
 					chatDisplayWidget.setChatEntity(chatEntity);
 					
-					MessengerEvent msgEvent;
-					if(chatEntity.getIsGroupChat()){
-						msgEvent = new MessengerEvent(MessengerEvent.ONSPACEMSGRECIEVED, chatEntity);
+					boolean isCurrUserInitiator = checkChatInitiator(chatEntity.getChatRecordMap());
+					if(!isCurrUserInitiator) {
+						MessengerEvent msgEvent;
+						if(chatEntity.getIsGroupChat()){
+							msgEvent = new MessengerEvent(MessengerEvent.ONSPACEMSGRECIEVED, chatEntity);
+						}
+						else{
+							msgEvent = new MessengerEvent(MessengerEvent.ONUSERMSGRECEIVED, chatEntity);
+						}
+						AppUtils.EVENT_BUS.fireEvent(msgEvent);
 					}
-					else{
-						msgEvent = new MessengerEvent(MessengerEvent.ONUSERMSGRECEIVED, chatEntity);
-					}
-					AppUtils.EVENT_BUS.fireEvent(msgEvent);
 				}
 			}
 		}
@@ -459,7 +460,7 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 		} else if(event.getSource().equals(spaceMsgAlertPanel)) {
 			spaceMsgAlertPanel.removeStyleName("chatReceivedAlert");
 			spaceListPopup.show();
-			int left = Window.getClientWidth() - 200;
+			int left = Window.getClientWidth() - 198;
 			spaceListPopup.setPopupPosition(left, 45);
 		}
 	}
@@ -491,6 +492,22 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 					mainUserListPanel.createContactSnippet(contactEnt);
 				}
 			}
+		}
+	}
+	
+	private boolean checkChatInitiator(HashMap<Long, HashMap<Entity, Entity>> recordMap) {
+		Integer val = recordMap.size()-1;
+		Long counter = Long.parseLong(val.toString());
+		HashMap<Entity, Entity> tempMap = recordMap.get(counter);
+		
+		String curUserEmail = contactEntity.getPropertyByName(ContactConstant.EMAILID).toString().trim();
+		Entity userEnt = tempMap.keySet().iterator().next();
+		String chtInitEmail = userEnt.getPropertyByName(ContactConstant.EMAILID).toString().trim();
+		
+		if(!curUserEmail.equals(chtInitEmail)) {
+			return false;
+		} else {
+			return true;
 		}
 	}
 }

@@ -765,11 +765,12 @@ color: blue;
 }
 
  .serviceEntityBasePanel {
-    border-color: grey;
+    /* border-color: grey;
     border-radius: 5px 5px 5px 5px;
     border-style: ridge;
     border-width: 3px;
-    width: 80px;
+    width: 80px; */
+    box-shadow: 5px 5px 5px #B0B0B0;
 }
 
 @-webkit-keyframes fadeInRight {
@@ -966,4 +967,65 @@ color: blue;
   cursor: pointer;
   cursor: hand;
   
+}
+
+.currentLocationImagePrimaryCss{
+	width: 20px;
+	height: 25px;
+	cursor: pointer;
+	cursor: hand;
+	margin: 10px 10px 0px 0px;
+}
+.boxSnippetPanel{
+	width: 140px;
+	height: 50px;
+	border-bottom: 1px solid #e1e1e1;
+}
+.boxSnippetImage{
+	width: 48px;
+	height: 48px;
+}
+.boxSnippetLabel{
+	margin: 0px 0px 10px 5px; 
+	font-weight:bold; 
+	color:#666;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+}
+
+.blockquote:first-letter {
+  padding-left: 18px;
+  font: italic 1.4em Georgia, "Times New Roman", Times, serif;
+  background-color: gray;
+}
+.messagesHomeWidget{
+	border: 1px solid;
+}
+/* .userThreadWidget{
+	border: 1px solid;
+} */
+.snippetPanel{
+	margin: 5px;
+	border-bottom: 1px solid; 
+}
+.messageWithUserSnippet{
+	width: 250px;
+}
+.messageWithUserSnippetPanel{
+	height: 300px;
+}
+.leftSidePanel{
+	border-right: 1px solid;
+}
+
+
+.boxSnippetEntityTitle {
+    color: black;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+ .boxSnippetEntityBasePanel {
+    box-shadow: 5px 5px 5px #B0B0B0;
 }
