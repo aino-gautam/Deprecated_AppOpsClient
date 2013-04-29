@@ -7,14 +7,17 @@ import in.appops.client.common.event.handlers.AttachmentEventHandler;
 import in.appops.client.common.fields.ContactBoxField;
 import in.appops.client.common.fields.IntelliThoughtField;
 import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.constants.propertyconstants.UserConstants;
 import in.appops.platform.core.constants.typeconstants.TypeConstants;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.Property;
+import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.InitiateActionContext;
 import in.appops.platform.core.operation.IntelliThought;
@@ -27,6 +30,7 @@ import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 import in.appops.platform.server.core.services.usermessage.constant.MessageConstant;
 import in.appops.platform.server.core.services.usermessage.constant.MessageParticipantsConstant;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,10 +65,22 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 	private ArrayList<String> uploadedMediaId = null;
 	private SuggestionAction suggestionAction;
 	private InitiateActionContext actionContext;
+	private Entity userEntity;
+	private Entity contactEntity;
 	
 	public SendMessageWidget() {
 		initialize();
 		initWidget(baseFlexTable);
+		userEntity=AppEnviornment.getCurrentUser();
+		fetchContactOfLoggedUser(userEntity);
+	}
+	
+	public SendMessageWidget(InitiateActionContext actionContext) {
+		this.actionContext = actionContext;
+		initialize();
+		initWidget(baseFlexTable);
+		userEntity=AppEnviornment.getCurrentUser();
+		fetchContactOfLoggedUser(userEntity);
 	}
 	
 	private void initialize() {
@@ -157,6 +173,68 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		baseFlexTable.setWidget(5, 0, vp);
 		baseFlexTable.getFlexCellFormatter().setVerticalAlignment(5, 0, HasVerticalAlignment.ALIGN_TOP);
 		//baseFlexTable.getFlexCellFormatter().getElement(5, 0).setClassName("intelliThoughtFieldCol");
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void fetchContactOfLoggedUser(final Entity userEntity) {
+ 		Key<Serializable> key = (Key<Serializable>) userEntity.getProperty(UserConstants.ID).getValue();
+	    Long userId = (Long) key.getKeyValue();
+	    Query query = new Query();
+		query.setQueryName("getContactFromUser");
+		HashMap<String, Object> hashMap = new HashMap<String, Object>();
+		hashMap.put("userId", userId);
+		
+		query.setQueryParameterMap(hashMap);
+		
+		DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
+		DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
+
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("query",query);
+				
+		StandardAction action = new StandardAction(EntityList.class, "contact.ContactService.getEntityList", paramMap);
+		dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
+			
+			public void onFailure(Throwable caught) {
+				Window.alert("operation failed ");
+				caught.printStackTrace();
+			}
+			
+			public void onSuccess(Result<EntityList> result) {
+				if(result!=null){
+				  EntityList  list=result.getOperationResult();
+				  try {
+					   for(Entity conEntity : list){
+						   contactEntity = conEntity;
+						  
+					   }
+					   createComponent(getConfiguration(null, null));
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				    
+				}
+			}
+		});
+		
+		
+		
+		
+		
+		
+	    
+	    
+		
+	}
+	private Configuration getConfiguration(String primaryCss, String secondaryCss){
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
+		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
+		
+		configuration.setPropertyByName(IntelliThoughtWidget.IS_INTELLISHAREFIELD, true);
+		configuration.setPropertyByName(IntelliThoughtWidget.IS_ATTACHMEDIAFIELD, true);
+		return configuration;
 	}
 	
 	private Configuration getIntelliFieldConfiguration(String primaryCss, String secondaryCss){
@@ -290,6 +368,8 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("messageEntity",messageEntity);
 		paramMap.put("messageParticipantsEntityList", messageParticipantsEntityList);
+		paramMap.put("parentMessageEntity", null);
+		
 		
 		StandardAction action = new StandardAction(EntityList.class, "usermessage.UserMessageService.sendMessage", paramMap);
 		dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
@@ -360,6 +440,9 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 	
 	private Entity createMessageEntity() {
 		    try{
+		    	Property<Serializable>idProperty=(Property<Serializable>) contactEntity.getProperty(ContactConstant.ID);
+		    	Key<Serializable>key=(Key<Serializable>) idProperty.getValue();
+		    	Long id = (Long) key.getKeyValue();
 		      Entity messageEntity = new Entity();
 		      messageEntity.setType(new MetaType(TypeConstants.MESSAGE));
 		       //TODO currently spaceId,FamilyId is 1
@@ -367,7 +450,7 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		      messageEntity.setPropertyByName(MessageConstant.LEVEL, Long.valueOf(0));
 		      messageEntity.setPropertyByName(MessageConstant.FAMILYID, Long.valueOf(1));
 		      messageEntity.setPropertyByName(MessageConstant.SPACEID, Long.valueOf(1));
-		      messageEntity.setPropertyByName(MessageConstant.SENDERID, Long.valueOf(62));
+		      messageEntity.setPropertyByName(MessageConstant.SENDERID, id);
 		      Property<Date> createdOnProp = new Property<Date>(new Date());
 		      messageEntity.setProperty(MessageConstant.CREATEDON, createdOnProp);
 		      Property<Date> modifiedOnProp = new Property<Date>(new Date());
@@ -415,5 +498,21 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 
 	public void setActionContext(InitiateActionContext actionContext) {
 		this.actionContext = actionContext;
+	}
+
+	public Entity getUserEntity() {
+		return userEntity;
+	}
+
+	public void setUserEntity(Entity userEntity) {
+		this.userEntity = userEntity;
+	}
+
+	public Entity getContactEntity() {
+		return contactEntity;
+	}
+
+	public void setContactEntity(Entity contactEntity) {
+		this.contactEntity = contactEntity;
 	}
 }

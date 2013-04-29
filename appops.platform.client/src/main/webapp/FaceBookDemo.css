@@ -10,7 +10,7 @@
 
 .baseChatListContainer {
 	width: 200px;
-	background: none repeat scroll 1px center #CEECF5;
+	background: none repeat scroll 1px center #d3d3d3;
 	border: 3px double;
 	/* border-radius: 5px 5px 5px 5px; */
 	margin: 5px 0 5px 0;
@@ -49,7 +49,7 @@
 /* Chat widget list css */
 
 .chatUserListWidget{
-    background: none repeat scroll 1px center #CEECF5;
+    background: none repeat scroll 1px center #d3d3d3;
     border: 3px double;
    /*  border-radius: 5px 5px 5px 5px; 
     margin: 5px 0 0 10px;*/
@@ -265,13 +265,13 @@
 @keyframes spaceListPanelExpand
 {
 0%   {left:100%; top:45px;}
-100%  {left:85.5%; top:45px;}
+100%  {left:85.4%; top:45px;}
 }
 
 @-webkit-keyframes spaceListPanelExpand 
 {
 0%   {left:100%; top:45px;}
-100%  {left:85.5%; top:45px;}
+100%  {left:85.4%; top:45px;}
 }
 
 .contactDisplayerBasePanel{
@@ -281,7 +281,7 @@
 }
 
 .contactDisplayerBasePanel:HOVER {
-	background-color: #BEDBE4;
+	background-color: #C3C3C3;
 }
 
 .chatReceivedAlert{

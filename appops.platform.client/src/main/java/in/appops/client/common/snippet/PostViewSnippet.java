@@ -7,6 +7,7 @@ import in.appops.client.common.core.EntityReceiver;
 import in.appops.client.common.fields.ImageField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.handler.HandlerFactory;
+import in.appops.client.common.handler.HandlerFactoryImpl;
 import in.appops.client.common.handler.ResponseActionHandler;
 import in.appops.client.common.util.BlobDownloader;
 import in.appops.client.common.util.JsonToEntityConverter;
@@ -50,6 +51,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -197,7 +199,7 @@ public class PostViewSnippet extends RowSnippet {
 		postContentFlowPanel.setStylePrimaryName(POST_CONTEXT_LABEL);
 		responsesImageField.setStylePrimaryName(HAND_CSS);
 		//spaceImageField.setStylePrimaryName(HAND_CSS);
-		
+		showEmbededEntityDetailsInSnippet(getEntity());
 		
 	}
 	
@@ -263,7 +265,7 @@ public class PostViewSnippet extends RowSnippet {
 				
 				@Override
 				public void onClick(ClickEvent event) {
-					HandlerFactory handFactory = GWT.create(HandlerFactory.class);
+					HandlerFactory handFactory = GWT.create(HandlerFactoryImpl.class);
 					
 					ResponseActionHandler handler = handFactory.getActionHandlerByName(responseText);
 					handler.setEmbeddedEntity(getEmbeddedEntity());
@@ -385,6 +387,31 @@ public class PostViewSnippet extends RowSnippet {
 
 		Entity embeddedEntity = new JsonToEntityConverter().getConvertedEntity(jsonObj);
 		return embeddedEntity;
+	}
+	
+	private void showEmbededEntityDetailsInSnippet(Entity postEnt){
+		
+		JsonProperty jsonProp = (JsonProperty) postEnt.getProperty("embeddedEntity");
+		
+		String jsonEmbededString  = jsonProp.getJsonString();
+		
+		JsonToEntityConverter jsonToEntityConverter = new JsonToEntityConverter();
+		
+		Entity embeddedEntity = jsonToEntityConverter.convertjsonStringToEntity(jsonEmbededString);
+		
+		Label detailLbl = new Label();
+		
+		if(embeddedEntity.getPropertyByName("title") != null){
+			detailLbl.setText(embeddedEntity.getPropertyByName("title").toString());
+		}else if(embeddedEntity.getPropertyByName("name") != null){
+			detailLbl.setText(embeddedEntity.getPropertyByName("name").toString());
+			
+		}
+		
+		detailLbl.setStylePrimaryName("blockquote");
+		
+		postSnippetPanel.add(detailLbl,DockPanel.SOUTH);
+		
 	}
 
 }
