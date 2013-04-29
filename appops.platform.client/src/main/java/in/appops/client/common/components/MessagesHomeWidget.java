@@ -3,6 +3,7 @@ package in.appops.client.common.components;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -40,7 +41,8 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 	public MessagesHomeWidget() {
 		initialize();
 		fecthUser();
-		
+		//userEntity=AppEnviornment.getCurrentUser();
+		//fetchContactOfLoggedUser(userEntity);
 		initWidget(mainPanel);
 	}
 	
@@ -148,7 +150,9 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 		mainPanel.add(rightSidePanel);
 		mainPanel.setCellWidth(rightSidePanel, "50%");
 		mainPanel.setCellHorizontalAlignment(rightSidePanel, HasHorizontalAlignment.ALIGN_CENTER);
-		mainPanel.setBorderWidth(1);
+		mainPanel.setStylePrimaryName("messagesHomeWidget");
+		leftSidePanel.setStylePrimaryName("leftSidePanel");
+		
 	}
 
 	public Entity getUserEntity() {
@@ -170,7 +174,7 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 	}
 
 	@SuppressWarnings("unchecked")
-	private void fetchMessageConversationForContact(Entity snippetEntity) {
+	private void fetchMessageConversationForContact(final Entity snippetEntity) {
 		rightSidePanel.clear();
 		Long parentId = null;
 	     try{
@@ -204,6 +208,7 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 				    try {
 						MessagingThreadWithReplyWidget messagingThreadWithReplyWidget = new MessagingThreadWithReplyWidget();
 						messagingThreadWithReplyWidget.setContactEntity(contactEntity);
+						messagingThreadWithReplyWidget.setClickSnippetEntity(snippetEntity);
 						messagingThreadWithReplyWidget.createComponent(list);
 						rightSidePanel.add(messagingThreadWithReplyWidget);
 					} catch (Exception e) {
