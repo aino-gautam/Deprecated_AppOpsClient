@@ -88,6 +88,7 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		contactBoxField = new ContactBoxField();
 		mediaServicePanel = new HorizontalPanel();
 		sendMessageButton = new Button("Send Message");
+		sendMessageButton.setStylePrimaryName("appops-Button");
 		uploadedMediaId = new ArrayList<String>();
 		suggestionAction = new SuggestionAction();
 	}
