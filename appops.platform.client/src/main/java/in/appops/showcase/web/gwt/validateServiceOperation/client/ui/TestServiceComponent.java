@@ -122,6 +122,7 @@ public class TestServiceComponent extends Composite implements ClickHandler{
 			});
 			
 			goBtn = new Button("Go >>");
+			goBtn.setStylePrimaryName("appops-Button");
 			goBtn.addClickHandler(this);
 			paramMap = new HashMap<String, String>();
 			dataForTestMap = new HashMap<String, Object>();
