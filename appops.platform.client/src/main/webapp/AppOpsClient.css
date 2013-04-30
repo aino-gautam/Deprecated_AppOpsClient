@@ -1005,20 +1005,6 @@ html .GWTUpld .prgbar-msg {
 	border-right: 1px solid;
 }
 
-.boxSnippetEntityTitle {
-    color: black;
-    font-family: 'Ubuntu', sans-serif;
-    font-size: 13px;
-    font-weight: bold;
-     cursor: pointer;
-  	cursor: hand;
-}
-
-.boxSnippetEntityBasePanel {
-	box-shadow: 5px 5px 5px #B0B0B0;
-	border: 2px solid;
-}
-
 .crossImageCss {
 	cursor: pointer;
 	cursor: hand;
@@ -1054,3 +1040,29 @@ html .GWTUpld .prgbar-msg {
 	content: close-quote;
 	font-weight: bold;
 }
+
+.boxSnippetEntityTitle {
+color: #333333;
+font-size: 13px;
+font-weight: bold;
+cursor: pointer;
+cursor: hand;
+}
+
+ .boxSnippetEntityBasePanel {
+box-shadow: 5px 5px 5px rgb(211, 208, 208);
+border-radius: 5px;
+padding: 4px;
+border: 2px solid;
+border-color: lightgray;
+width: 100%;
+}
+
+.blockquoteOnInsWidget {
+ quotes: "\201C" "\201D";
+ color: #333;
+ font-size: 14px;
+ }
+ 
+.blockquoteOnInsWidget:before { content: open-quote; font-weight: bold; }
+.blockquoteOnInsWidget:after { content: close-quote; font-weight: bold; }
