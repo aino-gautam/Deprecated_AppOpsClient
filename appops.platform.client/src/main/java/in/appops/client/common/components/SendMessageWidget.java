@@ -67,7 +67,16 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 	private InitiateActionContext actionContext;
 	private Entity userEntity;
 	private Entity contactEntity;
+	
 	public SendMessageWidget() {
+		initialize();
+		initWidget(baseFlexTable);
+		userEntity=AppEnviornment.getCurrentUser();
+		fetchContactOfLoggedUser(userEntity);
+	}
+	
+	public SendMessageWidget(InitiateActionContext actionContext) {
+		this.actionContext = actionContext;
 		initialize();
 		initWidget(baseFlexTable);
 		userEntity=AppEnviornment.getCurrentUser();
