@@ -46,6 +46,7 @@ public class SearchWidgetTest extends Composite{
 		baseVp = new VerticalPanel();
 		resultDisplayVp = new VerticalPanel();
 		searchBtn = new Button("Test");
+		searchBtn.setStylePrimaryName("appops-Button");
 		createUi();
 		initWidget(baseVp);
 		
