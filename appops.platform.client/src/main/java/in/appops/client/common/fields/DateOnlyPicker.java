@@ -23,6 +23,7 @@ public class DateOnlyPicker extends Composite implements FocusHandler{
 	
 	public DateOnlyPicker(){
 		textbox=new TextBox();
+		textbox.setStylePrimaryName("appops-TextField");
 		textbox.addFocusHandler(this);
 		popupPanel=new PopupPanel(true);
 		popupPanel.setVisible(false);
@@ -32,15 +33,9 @@ public class DateOnlyPicker extends Composite implements FocusHandler{
 		popupPanel.addAutoHidePartner(textbox.getElement());
 		initWidget(textbox);
 	}
-	
-	
-	
-	public VerticalPanel createDateTimePicker(){
-		
-		
-		
-		datePicker.addValueChangeHandler(new ValueChangeHandler(){
 
+	public VerticalPanel createDateTimePicker(){
+		datePicker.addValueChangeHandler(new ValueChangeHandler(){
 			@Override
 			public void onValueChange(ValueChangeEvent event) {
 				java.util.Date date = (java.util.Date) event.getValue();
@@ -56,11 +51,6 @@ public class DateOnlyPicker extends Composite implements FocusHandler{
 		return vpPanel;
 	}
 	
-	
-	
-	
-
-		
 	public TextBox getTextbox() {
 		return textbox;
 	}
@@ -76,7 +66,5 @@ public class DateOnlyPicker extends Composite implements FocusHandler{
         textbox.setText(todayString);
 		//popupPanel.setVisible(true);
 		popupPanel.showRelativeTo(this);
-		
-		
 	}
 }
