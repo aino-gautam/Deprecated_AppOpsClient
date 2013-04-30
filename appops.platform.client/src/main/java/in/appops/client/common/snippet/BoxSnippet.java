@@ -47,7 +47,7 @@ public class BoxSnippet extends Composite implements Snippet,ClickHandler{
 		
 		entityTitle = new LabelField();
 		entityTitle.setFieldValue(getEntity().getProperty("name").getValue().toString());
-		entityTitle.setConfiguration(getLabelFieldConfiguration(true, "serviceEntityTitle", null, null));
+		entityTitle.setConfiguration(getLabelFieldConfiguration(true, "boxSnippetEntityTitle", null, null));
 		try {
 			entityTitle.createField();
 		} catch (AppOpsException e) {
@@ -63,7 +63,7 @@ public class BoxSnippet extends Composite implements Snippet,ClickHandler{
 		basePanel.setCellVerticalAlignment(entityTitle, HasVerticalAlignment.ALIGN_MIDDLE);
 		basePanel.setCellHorizontalAlignment(icon, HasHorizontalAlignment.ALIGN_LEFT);
 		
-		basePanel.setStylePrimaryName("serviceEntityBasePanel");
+		basePanel.setStylePrimaryName("boxSnippetEntityBasePanel");
 	}
 	
 	private Configuration getLabelFieldConfiguration(boolean allowWordWrap,
