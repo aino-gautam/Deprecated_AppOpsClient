@@ -4,12 +4,12 @@ import in.appops.client.common.event.ActionEvent;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.util.BlobDownloader;
-import in.appops.platform.core.constants.typeconstants.TypeConstants;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
-import in.appops.platform.server.core.services.platform.coreplatformservice.constant.ServiceConstant;
+import in.appops.platform.server.core.services.spacemanagement.constants.SpaceConstants;
+import in.appops.platform.server.core.services.spacemanagement.constants.SpaceTypeConstants;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class BoxSnippet extends Composite implements Snippet,ClickHandler{
@@ -55,12 +56,38 @@ public class BoxSnippet extends Composite implements Snippet,ClickHandler{
 			e.printStackTrace();
 		}
 		
-		basePanel.add(icon);
-		basePanel.add(entityTitle);
-		
 		entityTitle.addClickHandler(this);
 		
-		basePanel.setCellVerticalAlignment(entityTitle, HasVerticalAlignment.ALIGN_MIDDLE);
+		LabelField spaceTypeLbl = new LabelField();
+		
+		Entity spaceTypeEnt = getEntity().getPropertyByName(SpaceConstants.SPACETYPEID);
+		
+		String spaceType = spaceTypeEnt.getPropertyByName(SpaceTypeConstants.NAME).toString();
+		
+		
+		spaceTypeLbl.setFieldValue(spaceType);
+		spaceTypeLbl.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+		
+		try {
+			spaceTypeLbl.createField();
+		} catch (AppOpsException e) {
+	
+			e.printStackTrace();
+		}
+		
+		VerticalPanel spaceDetails = new VerticalPanel();
+		spaceDetails.add(entityTitle);
+		spaceDetails.add(spaceTypeLbl);
+		
+		
+		basePanel.add(icon);
+		basePanel.add(spaceDetails);
+		
+		basePanel.setSpacing(5);
+		
+		spaceTypeLbl.addClickHandler(this);
+		
+		basePanel.setCellVerticalAlignment(spaceTypeLbl, HasVerticalAlignment.ALIGN_MIDDLE);
 		basePanel.setCellHorizontalAlignment(icon, HasHorizontalAlignment.ALIGN_LEFT);
 		
 		basePanel.setStylePrimaryName("boxSnippetEntityBasePanel");
