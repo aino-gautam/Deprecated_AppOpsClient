@@ -21,7 +21,7 @@ public class MessageHomeEntry implements EntryPoint{
 		
 		RootPanel.get().add(homeWidget); 
 		RootPanel.get().setSize("100%","100%");
-		RootPanel.get().setWidgetPosition(homeWidget, 500, 50);
+		RootPanel.get().setWidgetPosition(homeWidget, 400, 50);
 		
 		
 	}
