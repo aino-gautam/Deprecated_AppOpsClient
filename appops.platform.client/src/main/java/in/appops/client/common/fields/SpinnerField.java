@@ -53,6 +53,7 @@ public class SpinnerField extends Composite implements Field, ClickHandler{
 			fieldMode = getConfiguration().getPropertyByName(SPINNERFIELDMODE).toString();
 			
 		textbox = new TextBox();
+		textbox.setStylePrimaryName("appops-SpinnerTextField");
 		imagePanel = new VerticalPanel();
 		
 		if(fieldMode.equals(SPINNERFIELD_VALUESPINNER)) {
