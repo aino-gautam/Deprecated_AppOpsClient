@@ -102,6 +102,7 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 		vpPanel.add(textFieldTA);
 		
 		replyButton = new Button("Reply");
+		replyButton.setStylePrimaryName("appops-Button");
 		vpPanel.add(replyButton);
 		vpPanel.setCellHorizontalAlignment(replyButton, HasHorizontalAlignment.ALIGN_RIGHT);
 		replyButton.addClickHandler(this);
