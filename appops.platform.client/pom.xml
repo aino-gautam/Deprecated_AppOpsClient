@@ -166,7 +166,7 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>27.04.2013</version>
+			<version>02.05.2013</version>
 		</dependency>
 
 		<!-- This should be used when using a final version of the jar -->
