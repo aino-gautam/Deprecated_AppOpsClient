@@ -1148,10 +1148,3 @@ td.datePickerMonth {
 	content: close-quote;
 	font-weight: bold;
 }
-
-.findDateLocationSelector{
-	width: 20px;
-	height: 25px;
-	cursor: pointer;
-	cursor: hand;
-}
