@@ -39,9 +39,11 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -54,8 +56,13 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	private boolean isAttachedMediaField;
 
 	private Label searchButton;
-	private Label postButton;
 	private Label messageButton;
+	
+	private HorizontalPanel searchPanel = new HorizontalPanel();
+	private HorizontalPanel messagePanel = new HorizontalPanel();
+
+	private FocusPanel searchBasePanel = new FocusPanel();
+	private FocusPanel messageBasePanel = new FocusPanel();
 	
 	public static final String IS_INTELLISHAREFIELD = "isIntelliShareField";
 	public static final String IS_ATTACHMEDIAFIELD = "isAttachMediaField";
@@ -113,34 +120,39 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	}
 
 	private void addPredefinedOptions() {
+		searchPanel = new HorizontalPanel();
+		messagePanel = new HorizontalPanel();
+		
+		searchBasePanel.add(searchPanel);
+		messageBasePanel.add(messagePanel);
 
+		Image searchImage = new Image("images/binocular.png");
+		searchImage.setStylePrimaryName("appops-intelliThoughtActionImage");
 		searchButton = new Label("Search");
-		searchButton.addClickHandler(this);
-		
-		postButton = new Label("Post");
+		searchPanel.add(searchImage);
+		searchPanel.add(searchButton);
+		searchPanel.setCellVerticalAlignment(searchButton, HasVerticalAlignment.ALIGN_MIDDLE);
+		searchBasePanel.addClickHandler(this);
+				
+		Image msgImage = new Image("images/message_email.png");
+		msgImage.setStylePrimaryName("appops-intelliThoughtActionImage");
 		messageButton = new Label("Message");
-		messageButton.addClickHandler(this);
+		messagePanel.add(msgImage);
+		messagePanel.add(messageButton);
+		messagePanel.setCellVerticalAlignment(messageButton, HasVerticalAlignment.ALIGN_MIDDLE);
+		messageBasePanel.addClickHandler(this);
 
-		searchButton.setStylePrimaryName("appops-intelliThought-Label");
-		postButton.setStylePrimaryName("appops-intelliThought-Label");
-		messageButton.setStylePrimaryName("appops-intelliThought-Label");
+		searchBasePanel.setStylePrimaryName("appops-intelliThoughtPredefinedOptionPanel");
+		messageBasePanel.setStylePrimaryName("appops-intelliThoughtPredefinedOptionPanel");
 		
-//		prominentOptionlPanel.add(searchButton);
-//		prominentOptionlPanel.add(postButton);
-//		prominentOptionlPanel.add(messageButton);
+		searchButton.setStylePrimaryName("appops-intelliThoughtActionLabel");
+		messageButton.setStylePrimaryName("appops-intelliThoughtActionLabel");
 
-		basePanel.setWidget(1, 1, searchButton);
-		basePanel.getCellFormatter().setHeight(1, 1, "10px");
-
-		basePanel.setWidget(2, 0, messageButton);
-		basePanel.getCellFormatter().setHeight(2, 0, "10px");
-
-		basePanel.setWidget(3, 0, postButton);
-		basePanel.getCellFormatter().setHeight(3, 0, "10px");
+		basePanel.setWidget(1, 1, searchBasePanel);
+		basePanel.setWidget(2, 0, messageBasePanel);
 		
-		searchButton.setVisible(false);
-		postButton.setVisible(false);
-		messageButton.setVisible(false);
+		searchBasePanel.setVisible(false);
+		messageBasePanel.setVisible(false);
 	}
 
 	private void createAttachMediaField() {
@@ -173,11 +185,11 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 
 	private void createIntelliShareField() throws AppOpsException {
 		intelliShareField.createField();
-		basePanel.getFlexCellFormatter().setRowSpan(1, 0, 4);
+		basePanel.getFlexCellFormatter().setRowSpan(1, 0, 3);
 
 		basePanel.setWidget(1, 0, intelliShareField);
 		basePanel.getFlexCellFormatter().setVerticalAlignment(1, 0, HasVerticalAlignment.ALIGN_TOP);
-		//basePanel.getFlexCellFormatter().getElement(1, 0).setClassName("intelliThoughtFieldCol");
+		basePanel.getFlexCellFormatter().getElement(1, 0).setClassName("appops-intelliThoughtHolder");
 	}
 
 	public void setIntelliShareFieldConfiguration(Configuration conf){
@@ -198,12 +210,11 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	public void onClick(ClickEvent event) {
 		Widget source = (Widget) event.getSource();
 		if(source.equals(attachMediaField.getMedia())){
-			//attachMediaField.showMediaOption();
-		} else if(source.equals(searchButton)){
+		} else if(source.equals(searchBasePanel)){
 			String text = intelliShareField.getText();
 			SearchEvent searchEvent = new SearchEvent(SearchEvent.SEARCHFIRED, text);
 			AppUtils.EVENT_BUS.fireEvent(searchEvent);
-		} else if(source.equals(messageButton)){
+		} else if(source.equals(messageBasePanel)){
 			ActionEvent actionEvent = getMessageActionEvent();
 			AppUtils.EVENT_BUS.fireEvent(actionEvent);
 
@@ -221,26 +232,17 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		actionEvent.setEventType(ActionEvent.MESSAGE);			
 		actionEvent.setEventData(context);
 		
-//		ActionEvent actionEvent = getActionEvent(ActionEvent.TRANSFORMWIDGET, token.toString()); 
-//		fireActionEvent(actionEvent);
 		return actionEvent;
 	}
 
 	private void handleWordEnteredEvent(String string) {
-		String intelliText  = intelliShareField.getText();
-		String[] words = intelliText.split("\\s+");
 		
-		if(!searchButton.isVisible()){
-			searchButton.addStyleName("fadeInLeft");
-			searchButton.setVisible(true);
-			messageButton.addStyleName("fadeInLeft");
-			messageButton.setVisible(true);
+		if(!searchBasePanel.isVisible()){
+			searchBasePanel.addStyleName("fadeInLeft");
+			searchBasePanel.setVisible(true);
+			messageBasePanel.addStyleName("fadeInLeft");
+			messageBasePanel.setVisible(true);
 		} 
-		
-		if(words.length == 2 && !postButton.isVisible()){
-			postButton.addStyleName("fadeInLeft");
-			postButton.setVisible(true);
-		}
 		showActionSuggestion(string);
 	}
 
@@ -309,7 +311,6 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 					final ActionWidget actionWidget = new ActionWidget(ActionWidgetType.LABEL);
 					actionWidget.setWidgetText(widgetName);
 					actionWidget.setActionEntity(entity);
-					//actionWidget.setActionEvent(getActionEvent(actionWidget));
 					actionWidget.setConfiguration(getActionConfiguration());
 					actionWidget.createUi();
 					suggestionAction.addSuggestionAction(actionWidget);
@@ -329,7 +330,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	
 	protected Configuration getActionConfiguration() {
 		Configuration conf = new Configuration();
-		conf.setPropertyByName(ActionWidgetConfiguration.PRIMARY_CSS.toString(), "appops-LabelField");
+		conf.setPropertyByName(ActionWidgetConfiguration.PRIMARY_CSS.toString(), "appops-intelliThoughtActionLabel");
 		return conf;
 	}
 
@@ -362,8 +363,6 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		actionEvent.setEventType(ActionEvent.TRANSFORMWIDGET);			
 		actionEvent.setEventData(token.toString());
 		
-//		ActionEvent actionEvent = getActionEvent(ActionEvent.TRANSFORMWIDGET, token.toString()); 
-//		fireActionEvent(actionEvent);
 		return actionEvent;
 	}
 	
@@ -372,15 +371,4 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		attachMediaField.setVisible(true);
 		setAttachedMediaField(true);
 	}
-	
-//	private ActionEvent getActionEvent(int type, String data){
-//		ActionEvent actionEvent = new ActionEvent();
-//		actionEvent.setEventType(type);			
-//		actionEvent.setEventData(data);
-//		return actionEvent;
-//	}
-//	
-//	private void fireActionEvent(ActionEvent actionEvent) {
-//		AppUtils.EVENT_BUS.fireEvent(actionEvent);
-//	}
 }
