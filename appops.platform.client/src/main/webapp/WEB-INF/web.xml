@@ -42,5 +42,9 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
   <listener>
   <listener-class> in.appops.platform.bindings.web.gwt.dispatch.server.guice.AppOpsGwtServletConfig</listener-class>
   </listener>
+  
+    <listener>
+		<listener-class>in.appops.platform.bindings.web.http.AppopsHttpSessionAttributeListener</listener-class>
+	</listener>
 
 </web-app>
