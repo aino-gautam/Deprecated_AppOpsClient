@@ -410,7 +410,9 @@ public class PostViewSnippet extends RowSnippet {
 		
 		detailLbl.setStylePrimaryName("blockquote");
 		
-		postSnippetPanel.add(detailLbl,DockPanel.SOUTH);
+		postContentPanel.add(detailLbl);
+		
+		postContentPanel.setCellHorizontalAlignment(detailLbl, HasHorizontalAlignment.ALIGN_LEFT);
 		
 	}
 
