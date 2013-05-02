@@ -173,7 +173,7 @@ public class LocationSelector extends Composite implements Field,EntityReceiver,
 		 if(getConfiguration().getPropertyByName(LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE)!=null)		 
 		    image.setUrl(getConfiguration().getPropertyByName(LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE).toString());
 		 if(getConfiguration().getPropertyByName(LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE_PRIMARYCSS)!=null)		 
-		    image.setStylePrimaryName(LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE_PRIMARYCSS);
+		    image.setStylePrimaryName(getConfiguration().getPropertyByName(LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE_PRIMARYCSS).toString());
 		 
 		 horizontalPanel.add(image);
 		 horizontalPanel.setCellWidth(image, "8%");
