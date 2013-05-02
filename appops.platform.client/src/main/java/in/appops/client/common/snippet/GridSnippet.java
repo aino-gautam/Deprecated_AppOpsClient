@@ -32,7 +32,6 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 	private FlexTable gridPanel;
 	private ScrollPanel scrollPanel ;
 	private EntityList entityList;
-	private final AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
 	private int noOfRows = 0;
 	private int noOfCols = 3;
 	private EntityListModel entityListModel;
@@ -103,7 +102,7 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 	@SuppressWarnings("unused")
 	private void initializeGridPanel(EntityList entityList){
 		
-		SnippetFactory snippetFactory = injector.getSnippetFactory();
+		SnippetFactory snippetFactory = getSnippetFactory();
 
 		noOfRows = (entityList.size() / noOfCols) + 1;
 		
@@ -124,6 +123,12 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 			}
 			currentRow++;
 		}
+	}
+	
+	public SnippetFactory getSnippetFactory(){
+		AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
+		SnippetFactory snippetFactory = injector.getSnippetFactory();
+		return snippetFactory;
 	}
 
 	public int getNoOfRows() {

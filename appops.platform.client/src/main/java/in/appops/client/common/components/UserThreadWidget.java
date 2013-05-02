@@ -16,6 +16,7 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.Defa
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 
@@ -27,6 +28,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -50,7 +53,7 @@ public class UserThreadWidget extends Composite implements EventListener,ClickHa
 	private void initialize() {
 		mainPanel = new VerticalPanel();
 		panel = new ScrollPanel(mainPanel);
-		
+		panel.setStylePrimaryName("userThreadScrollPanel");
 	}
 	
 		
@@ -67,16 +70,16 @@ public class UserThreadWidget extends Composite implements EventListener,ClickHa
 			if(entity.getPropertyByName(ContactConstant.IMGBLOBID)!=null){
 				String blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
 				String url = downloader.getIconDownloadURL(blobId);
-				imageConfig = getImageFieldConfiguration(url, "defaultIcon");
+				imageConfig = getImageFieldConfiguration(url, "defaultIcon","defaultIcon_Medium");
 			}else{
-				imageConfig = getImageFieldConfiguration("images/default_Icon.png", "defaultIcon");
+				imageConfig = getImageFieldConfiguration("images/default_Icon.png", "defaultIcon","defaultIcon_Medium");
 			}
 			
 			Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 			snippet.setConfigurationForFields(labelConfig, imageConfig);
 			snippet.initialize(entity);
 			snippet.setStylePrimaryName("flowPanelContent");
-			
+			snippet.setStyleName("crossImageCss");
 			
 			ClickHandler handler = new ClickHandler() {
 				
@@ -96,7 +99,8 @@ public class UserThreadWidget extends Composite implements EventListener,ClickHa
 			//mainPanel.setStylePrimaryName("userThreadWidget");
 			horizontalPanel.add(snippet);
 			mainPanel.add(horizontalPanel);
-			horizontalPanel.setStylePrimaryName("snippetPanel");
+			//horizontalPanel.setStylePrimaryName("snippetPanel");
+			horizontalPanel.setStylePrimaryName("snippetPanelForUser");
 			
 		}
 	}
@@ -104,6 +108,10 @@ public class UserThreadWidget extends Composite implements EventListener,ClickHa
 	@SuppressWarnings("unchecked")
 	public void fetchAllMessageUserParticipantsAndSender() {
 		mainPanel.clear();
+		HorizontalPanel horizontalPanel=createLoaderWithTextWidget();
+		mainPanel.add(horizontalPanel);
+		mainPanel.setCellVerticalAlignment(horizontalPanel, HasVerticalAlignment.ALIGN_MIDDLE);
+		mainPanel.setCellHorizontalAlignment(horizontalPanel, HasHorizontalAlignment.ALIGN_CENTER);
 		DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
 		DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
 
@@ -121,6 +129,7 @@ public class UserThreadWidget extends Composite implements EventListener,ClickHa
 				if(result!=null){
 				   EntityList  list=result.getOperationResult();
 				   if(list!=null){
+					   mainPanel.clear();
 					 createUserSnippet(list);  
 				   }
 				}
@@ -131,10 +140,39 @@ public class UserThreadWidget extends Composite implements EventListener,ClickHa
 		
 	}
 	
-	public Configuration getImageFieldConfiguration(String url, String primaryCSS) {
+	private HorizontalPanel createLoaderWithTextWidget() {
+		HorizontalPanel horizontalPanel = new HorizontalPanel();
+		/*Configuration imageConfig = getImageFieldConfiguration("images/loader.gif", "defaultIcon_Medium");
+		 ImageField imageField = new ImageField();*/
+			
+			////imageField.setConfiguration(imageConfig);
+	        try {
+				//imageField.createField();
+				
+				LabelField labelField = new LabelField();
+				Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
+								
+					labelField.setFieldValue("Loading contacts ...");
+				
+				labelField.setConfiguration(labelConfig);
+				labelField.createField();
+				
+			//	horizontalPanel.add(imageField);
+				horizontalPanel.add(labelField);
+				
+			} catch (AppOpsException e) {
+				
+				e.printStackTrace();
+			}
+		return horizontalPanel;
+		
+	}
+
+	public Configuration getImageFieldConfiguration(String url, String primaryCSS, String secondaryCss) {
 		Configuration config = new Configuration();
 		config.setPropertyByName(ImageField.IMAGEFIELD_BLOBID, url);
 		config.setPropertyByName(ImageField.IMAGEFIELD_PRIMARYCSS, primaryCSS);
+		config.setPropertyByName(ImageField.IMAGEFIELD_DEPENDENTCSS, secondaryCss);
 		return config;
 	}
 	
