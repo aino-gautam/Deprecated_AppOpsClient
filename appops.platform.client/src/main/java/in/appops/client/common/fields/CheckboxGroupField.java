@@ -60,6 +60,7 @@ public class CheckboxGroupField extends Composite implements Field{
 		if(checkboxBasepanel != null) {
 			if(checkboxBasepanel.equals(CHECKBOX_HORIZONTALBASEPANEL)) {
 				horizontalBasePanel = new HorizontalPanel();
+				horizontalBasePanel.setStylePrimaryName("gropuCheckBoxField");
 				initWidget(horizontalBasePanel);
 			} else if(checkboxBasepanel.equals(CHECKBOX_VERTICALBASEPANEL)) {
 				verticalBasePanel = new VerticalPanel();

@@ -32,6 +32,7 @@ public class UploadService implements EntryPoint {
 		fileUpload.setName("fileupload");
 		panel.add(fileUpload);
 		Button button = new Button("Done");
+		button.setStylePrimaryName("appops-Button");
 		panel.add(button);
 		
 		button.addClickHandler(new ClickHandler() {
