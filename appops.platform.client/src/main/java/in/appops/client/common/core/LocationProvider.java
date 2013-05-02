@@ -1,5 +1,6 @@
 package in.appops.client.common.core;
 
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.GeoLocation;
 
@@ -7,6 +8,7 @@ import com.google.code.gwt.geolocation.client.Coordinates;
 import com.google.code.gwt.geolocation.client.Geolocation;
 import com.google.code.gwt.geolocation.client.Position;
 import com.google.code.gwt.geolocation.client.PositionCallback;
+import com.google.code.gwt.geolocation.client.PositionOptions;
 
 public class LocationProvider {
 	
@@ -35,7 +37,10 @@ public class LocationProvider {
 	}
 	
 	private void getWebLocation(final EntityReceiver entityReceiver){
-			Geolocation.getGeolocation().getCurrentPosition(new PositionCallback() {
+			PositionOptions options = PositionOptions.create();
+			options.setEnableHighAccuracy(true);
+			options.setMaximumAge(10000);
+			Geolocation.getGeolocation().watchPosition(new PositionCallback() {
 				
 				public void onSuccess(Position position) {
 					
@@ -54,6 +59,7 @@ public class LocationProvider {
 					
 					
 					entity.setPropertyByName("geolocation",geoLocation);
+					AppEnviornment.setCurrentGeolocation(geoLocation);
 					
 					entityReceiver.onEntityReceived(entity);
 									
@@ -63,7 +69,7 @@ public class LocationProvider {
 				public void onFailure(com.google.code.gwt.geolocation.client.PositionError error) {
 					System.out.println(" "+error.getMessage());
 				}
-			});
+			}, options);
 	}
 	
 	private void getTouchLocation(EntityReceiver entityReceiver){

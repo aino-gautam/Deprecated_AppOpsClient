@@ -28,6 +28,7 @@ public class IntelliThoughtSuggestion extends Composite implements EntityBound, 
 		Label displayLabel = new Label(displayText);
 		displayLabel.addClickHandler(this);
 		displayLabel.setWidth("100%");
+		displayLabel.setStylePrimaryName("appops-intelliThoughtSuggestionLabel");
 		basePanel.add(displayLabel);
 	}
 
