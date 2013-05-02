@@ -181,8 +181,8 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 				messageParticipantsEntity = new Entity();
 				messageParticipantsEntity.setType(new MetaType(TypeConstants.MESSAGEPARTICIPANTS));
 				Property< Serializable> idProperty = (Property<Serializable>) clickSnippetEntity.getProperty("id");
-				Property< Serializable> idPrope =(Property< Serializable>) idProperty.getValue();
-				Key<Serializable>key = (Key<Serializable>) idPrope.getValue();
+				//Property< Serializable> idPrope =(Property< Serializable>) idProperty.getValue();
+				Key<Serializable>key = (Key<Serializable>) idProperty.getValue();
 				Long idValue=(Long) key.getKeyValue();
 				messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.CONTACTID, idValue);
 			
@@ -197,6 +197,7 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 				String imgBlobId=clickSnippetEntity.getPropertyByName("imgBlobId");
 				messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.USERDISPLAYNAME, name);
 				messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.BLOBID, imgBlobId);
+				list.add(messageParticipantsEntity);
 			}
 		    
 		    
@@ -264,11 +265,9 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 			Key<Serializable> key = (Key<Serializable>) parentEntity.getProperty(MessageConstant.ID).getValue();
 			Long parentId=(Long) key.getKeyValue();
 			 String description = null;
-			if(!textFieldTA.getText().equals("Write a reply..") || !textFieldTA.getText().equals("")){
-			   description = textFieldTA.getText();
-			}else{
-				textFieldTA.setFieldValue("Write a reply..");
-			}
+			
+			description = textFieldTA.getText();
+			
 			Long senderd = (Long) key1.getKeyValue();
 			
 			messageEntity.setPropertyByName(MessageConstant.DESCRIPTION, description);
@@ -309,12 +308,17 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 		if(sender instanceof Button){
 			if(sender.equals(replyButton)){
 				//textFieldTA.getText();
-				Entity messageParentEntity=createMessageParentEntity();
-				Entity messageEntity = createMessageEntity();
-				EntityList messageParticipantsList=createMessageParticipantsEntity(messageEntity);
-				
-				replyToMessage(messageEntity,messageParentEntity,messageParticipantsList);
-				
+				if((!textFieldTA.getText().equals("Write a reply..") || textFieldTA.getText().equals("")) && (textFieldTA.getText().equals("Write a reply..") || !textFieldTA.getText().equals(""))){	
+					Entity messageParentEntity=createMessageParentEntity();
+					Entity messageEntity = createMessageEntity();
+					EntityList messageParticipantsList=createMessageParticipantsEntity(messageEntity);
+					
+					replyToMessage(messageEntity,messageParentEntity,messageParticipantsList);
+				}else{
+					textFieldTA.setFieldValue("Write a reply..");
+					textFieldTA.resetField();
+					
+				}
 			}
 		}
 		

@@ -67,7 +67,7 @@ public class MessageWithUserSnippet extends Composite implements Snippet{
 			labelField.setConfiguration(labelConfig);
 			labelField.createField();
 			vpPanel.add(labelField);
-			Configuration labelConfig1 = getLabelFieldConfiguration(true, "appops-LabelField", null, null);
+			Configuration labelConfig1 = getLabelFieldConfiguration(true, "appops-LabelField", "userWithMessagePanelLabelContent", null);
 			LabelField messageLabelField = new LabelField();
 			if(entity.getPropertyByName(MessageConstant.DESCRIPTION)!=null){
 				String messageStr = entity.getPropertyByName(MessageConstant.DESCRIPTION);
