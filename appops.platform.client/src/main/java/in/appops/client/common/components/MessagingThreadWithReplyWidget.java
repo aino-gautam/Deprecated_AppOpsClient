@@ -23,10 +23,14 @@ import in.appops.platform.server.core.services.usermessage.constant.MessageParti
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -34,10 +38,11 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class MessagingThreadWithReplyWidget extends Composite implements ClickHandler{
+public class MessagingThreadWithReplyWidget extends Composite implements ClickHandler,FocusHandler{
 
 	private VerticalPanel mainPanel;
 	private VerticalPanel subVerticalPanel;
@@ -81,25 +86,32 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 		scrollPanel.setStylePrimaryName("messageWithUserSnippetPanel");
 		mainPanel.add(scrollPanel);
 		mainPanel.setCellHeight(scrollPanel, "75%");
+		
 		replyBoxPanel = new VerticalPanel();
 		replyBoxPanel = createMessageReplyBox();
 		mainPanel.add(replyBoxPanel);
 		mainPanel.setCellVerticalAlignment(replyBoxPanel, HasVerticalAlignment.ALIGN_BOTTOM);
 		mainPanel.setCellHeight(replyBoxPanel, "25%");
+		replyBoxPanel.setStylePrimaryName("replyBoxWidget");
 	}
-
+	
+	
 	private VerticalPanel createMessageReplyBox() {
 		VerticalPanel vpPanel = new VerticalPanel();
 		
 		textFieldTA = new TextField();
-		textFieldTA.setFieldValue("");
-		textFieldTA.setConfiguration(getTextFieldConfiguration(10, false, TextField.TEXTFIELDTYPE_TEXTAREA, "appops-TextField", null, null));
+		textFieldTA.setFieldValue("Write a reply..");
+		textFieldTA.setConfiguration(getTextFieldConfiguration(10, false, TextField.TEXTFIELDTYPE_TEXTAREA, "appops-TextField", "replyBoxField", null));
 		try {
 			textFieldTA.createField();
 		} catch (AppOpsException e) {
 			e.printStackTrace();
 		}
 		vpPanel.add(textFieldTA);
+		
+		((TextArea) textFieldTA.getWidget()).addFocusHandler(this);
+				
+		
 		
 		replyButton = new Button("Reply");
 		replyButton.setStylePrimaryName("appops-Button");
@@ -109,6 +121,10 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 		
 		return vpPanel;
 	}
+	
+	
+	
+	
 	private Configuration getTextFieldConfiguration(int visibleLines, boolean readOnly, String textFieldType, String primaryCss, String secondaryCss, String debugId){
 		Configuration configuration = new Configuration();
 		configuration.setPropertyByName(TextField.TEXTFIELD_VISIBLELINES, visibleLines);
@@ -120,26 +136,69 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 		return configuration;
 	}
 
+	
 	private EntityList createMessageParticipantsEntity(Entity messageEntity) {
 		try{
 			EntityList list = new EntityList();
 			
-			Entity messageParticipantsEntity = new Entity();
-			messageParticipantsEntity.setType(new MetaType(TypeConstants.MESSAGEPARTICIPANTS));
-			Property< Serializable> idProperty = (Property<Serializable>) clickSnippetEntity.getProperty("id");
-			Property< Serializable> idPrope =(Property< Serializable>) idProperty.getValue();
-			Key<Serializable>key = (Key<Serializable>) idPrope.getValue();
-			Long idValue=(Long) key.getKeyValue();
-			messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.CONTACTID, idValue);
-			//messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.USERID, Long.valueOf(16));
-						
-			//messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.MESSAGE, messageEntity);
-			String name=clickSnippetEntity.getPropertyByName("name");
-			String imgBlobId=clickSnippetEntity.getPropertyByName("imgBlobId");
-			messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.USERDISPLAYNAME, name);
-			messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.BLOBID, imgBlobId);
-		    list.add(messageParticipantsEntity);
-		    
+			Entity messageParticipantsEntity =null;
+			
+			
+			if(clickSnippetEntity.getPropertyByName("groupParticipants")!=null){
+				
+				HashMap<String, Object> hashMap = clickSnippetEntity.getPropertyByName("groupParticipants");
+				String conString = contactEntity.getPropertyByName(ContactConstant.NAME);
+				 hashMap.remove(conString);
+				Iterator iter = hashMap.entrySet().iterator();
+				
+				
+				while (iter.hasNext()) {
+					messageParticipantsEntity = new Entity();
+					messageParticipantsEntity.setType(new MetaType(TypeConstants.MESSAGEPARTICIPANTS));
+					Map.Entry mEntry = (Map.Entry) iter.next();
+					Entity contactEntity=(Entity) mEntry.getValue();
+					Property< Serializable> idProperty = (Property<Serializable>) contactEntity.getProperty("id");
+					Property< Serializable> idPrope =(Property< Serializable>) idProperty.getValue();
+					Key<Serializable>key = (Key<Serializable>) idPrope.getValue();
+					Long idValue=(Long) key.getKeyValue();
+					messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.CONTACTID, idValue);
+				
+								
+					//messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.MESSAGE, messageEntity);
+					if(contactEntity.getPropertyByName("userId")!=null){
+					  Long userId=contactEntity.getPropertyByName("userId");
+					  messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.USERID, userId);
+					}
+					String name=contactEntity.getPropertyByName("name");
+					name = name.trim();
+					String imgBlobId=contactEntity.getPropertyByName("imgBlobId");
+					messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.USERDISPLAYNAME, name);
+					messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.BLOBID, imgBlobId);
+					list.add(messageParticipantsEntity);
+				}
+				
+			}else{
+				messageParticipantsEntity = new Entity();
+				messageParticipantsEntity.setType(new MetaType(TypeConstants.MESSAGEPARTICIPANTS));
+				Property< Serializable> idProperty = (Property<Serializable>) clickSnippetEntity.getProperty("id");
+				//Property< Serializable> idPrope =(Property< Serializable>) idProperty.getValue();
+				Key<Serializable>key = (Key<Serializable>) idProperty.getValue();
+				Long idValue=(Long) key.getKeyValue();
+				messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.CONTACTID, idValue);
+			
+							
+				//messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.MESSAGE, messageEntity);
+				
+				Long userId=clickSnippetEntity.getPropertyByName("userId");
+				messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.USERID, userId);
+				
+				String name=clickSnippetEntity.getPropertyByName("name");
+				name = name.trim();
+				String imgBlobId=clickSnippetEntity.getPropertyByName("imgBlobId");
+				messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.USERDISPLAYNAME, name);
+				messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.BLOBID, imgBlobId);
+				list.add(messageParticipantsEntity);
+			}
 		    
 		    
 		    return list;
@@ -150,6 +209,7 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 		}
 		return null;
 	}
+	
 	
 	
 	private Entity createMessageParentEntity() {
@@ -193,6 +253,9 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 		}
 		return null;
 	}
+	
+	
+	
 	private Entity createMessageEntity() {
 		try{
 			Entity messageEntity = new Entity();
@@ -201,8 +264,10 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 			Key<Serializable> key1=(Key<Serializable>) contactEntity.getProperty(ContactConstant.ID).getValue();
 			Key<Serializable> key = (Key<Serializable>) parentEntity.getProperty(MessageConstant.ID).getValue();
 			Long parentId=(Long) key.getKeyValue();
+			 String description = null;
 			
-			String description = textFieldTA.getText();
+			description = textFieldTA.getText();
+			
 			Long senderd = (Long) key1.getKeyValue();
 			
 			messageEntity.setPropertyByName(MessageConstant.DESCRIPTION, description);
@@ -243,17 +308,23 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 		if(sender instanceof Button){
 			if(sender.equals(replyButton)){
 				//textFieldTA.getText();
-				Entity messageParentEntity=createMessageParentEntity();
-				Entity messageEntity = createMessageEntity();
-				EntityList messageParticipantsList=createMessageParticipantsEntity(messageEntity);
-				
-				replyToMessage(messageEntity,messageParentEntity,messageParticipantsList);
-				
+				if((!textFieldTA.getText().equals("Write a reply..") || textFieldTA.getText().equals("")) && (textFieldTA.getText().equals("Write a reply..") || !textFieldTA.getText().equals(""))){	
+					Entity messageParentEntity=createMessageParentEntity();
+					Entity messageEntity = createMessageEntity();
+					EntityList messageParticipantsList=createMessageParticipantsEntity(messageEntity);
+					
+					replyToMessage(messageEntity,messageParentEntity,messageParticipantsList);
+				}else{
+					textFieldTA.setFieldValue("Write a reply..");
+					textFieldTA.resetField();
+					
+				}
 			}
 		}
 		
 	}
 
+		
 	@SuppressWarnings("unchecked")
 	private void replyToMessage(final Entity messageEntity, Entity messageParentEntity, EntityList messageParticipantsList) {
 		
@@ -295,12 +366,14 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 		Entity contactMessageEmbeddedEntity = new Entity();
 		
 		String description = entity.getPropertyByName(MessageConstant.DESCRIPTION);
-		String name = messageParticipantEntity.getPropertyByName(MessageParticipantsConstant.USERDISPLAYNAME);
+		
+		
+		String name = contactEntity.getPropertyByName(ContactConstant.NAME);
 		
 		contactMessageEmbeddedEntity.setPropertyByName(MessageConstant.DESCRIPTION, description);
 		contactMessageEmbeddedEntity.setPropertyByName(ContactConstant.NAME, name);
-		if(messageParticipantEntity.getPropertyByName(MessageParticipantsConstant.BLOBID)!=null){
-			String blobId = messageParticipantEntity.getPropertyByName(MessageParticipantsConstant.BLOBID);
+		if(contactEntity.getPropertyByName(ContactConstant.IMGBLOBID)!=null){
+			String blobId = contactEntity.getPropertyByName(ContactConstant.IMGBLOBID);
 		    contactMessageEmbeddedEntity.setPropertyByName(MessageParticipantsConstant.BLOBID, blobId);
 		}
 		
@@ -308,12 +381,22 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 		
 		
 	}
-
+	
+	
 	public Entity getClickSnippetEntity() {
 		return clickSnippetEntity;
 	}
 
 	public void setClickSnippetEntity(Entity clickSnippetEntity) {
 		this.clickSnippetEntity = clickSnippetEntity;
+	}
+
+	@Override
+	public void onFocus(FocusEvent event) {
+		if(event.getSource().equals(textFieldTA.getWidget())) {
+			if(((TextArea) textFieldTA.getWidget()).getText().equals("Write a reply..")) {
+				textFieldTA.clearField();
+			} 
+		}
 	}
 }
