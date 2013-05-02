@@ -1040,10 +1040,19 @@ html .GWTUpld .prgbar-msg {
 	height: 50%;
 }
 
-.snippetPanelForMessage{
+.snippetPanelForUser{
 	margin: 5px;
 	border-bottom: 1px solid #e0e0e0; 
 	width: 280px;
+	/* background-color: #f2f2f2; */
+	padding: 5px;
+	
+}
+
+.snippetPanelForMessage{
+	margin: 5px;
+	border-bottom: 1px solid #e0e0e0; 
+	width: 350px;
 	/* background-color: #f2f2f2; */
 	padding: 5px;
 	
@@ -1188,4 +1197,7 @@ td.datePickerMonth {
 	height: 600px;
 	width: 320px;
 }
-
+.userWithMessagePanelLabelContent{
+	display: inline-block;
+	text-indent: 7px;
+}
