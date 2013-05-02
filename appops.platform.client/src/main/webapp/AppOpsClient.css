@@ -1035,21 +1035,37 @@ html .GWTUpld .prgbar-msg {
 	font-weight: bold;
 }
 .messagesHomeWidget{
-	border: 1px solid;
+	border: 1px solid #e0e0e0;
+	width: 50%;
+	height: 50%;
 }
 
-.snippetPanel{
+.snippetPanelForUser{
 	margin: 5px;
-	border-bottom: 1px solid; 
+	border-bottom: 1px solid #e0e0e0; 
+	width: 280px;
+	/* background-color: #f2f2f2; */
+	padding: 5px;
+	
+}
+
+.snippetPanelForMessage{
+	margin: 5px;
+	border-bottom: 1px solid #e0e0e0; 
+	width: 350px;
+	/* background-color: #f2f2f2; */
+	padding: 5px;
+	
 }
 .messageWithUserSnippet{
 	width: 250px;
 }
 .messageWithUserSnippetPanel{
-	height: 300px;
+	height: 420px;
+	width: 380px
 }
 .leftSidePanel{
-	border-right: 1px solid;
+	border-right: 1px solid #e0e0e0;
 }
 
 .crossImageCss {
@@ -1147,4 +1163,133 @@ td.datePickerMonth {
 .blockquoteOnInsWidget:after {
 	content: close-quote;
 	font-weight: bold;
+}
+
+.replyBoxWidget{
+   margin: 10px;
+   background-color: #f2f2f2;
+   /* border: 1px solid #cdcecf; */
+   padding: 10px;
+}
+.replyBoxField{
+ width: 350px;
+ height: 100px;	
+}
+.defaultIcon_Medium{
+	width: 36px;
+	/* background: #999999;
+	webkit-box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1);
+	moz-box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1);
+	box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1);
+	padding: 4px;
+	z-index: 0; */
+}
+.defaultIcon_Small{
+	width: 24px;
+	/* background: #999999;
+	webkit-box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1);
+	moz-box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1);
+	box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1);
+	padding: 4px;
+	z-index: 0; */
+}
+.userThreadScrollPanel{
+	height: 600px;
+	width: 320px;
+}
+.userWithMessagePanelLabelContent{
+	display: inline-block;
+	text-indent: 7px;
+}
+.appops-intelliThoughtLinkedSuggestionPopup {
+	border: 3px solid #E8E8E8;
+	padding: 3px;
+	background: #EBEBEB;
+	box-shadow: 5px 5px 5px #B0B0B0;
+}
+.appops-intelliThoughtSuggestionLabel{
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 12px;
+	padding: 3px 0px 3px 2px;
+	border-bottom: 1px solid #D1EEEE;
+}
+.appops-intelliThoughtSuggestionSelection {
+	background: white;
+}
+.appops-intelliThoughtSuggestionSelection1:HOVER {
+	background: white;
+	cursor: hand;
+ 	cursor: pointer;
+}
+.appops-intelliThoughtPredefinedOptionLabel {
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 12px;
+}
+.appops-intelliThoughtPredefinedOptionLabelPanel {
+	width: 65px;
+	background-color: #dcdcdc;
+	padding: 4px 3px 3px 8px;
+	border-radius: 2px;
+	margin-left: 20px;
+	box-shadow: 0px 1px 1px 0px #B0B0B0;
+	
+}
+.appops-intelliThoughtPredefinedOptionLabelPanel:HOVER {
+	cursor: hand;
+ 	cursor: pointer;
+}
+.appops-intelliThoughtActionImage{
+	width: 24px;
+	height: 24px;
+}
+.appops-intelliThoughtActionLabel{
+	margin: 0px 0px 10px 5px; 
+	font-weight:bold; 
+	color:#666;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	padding-top: 5px;
+}
+.appops-intelliThoughtActionPanel{
+	width: 110px;
+	margin: 0 8px 0px 0;
+}
+.appops-intelliThoughtActionPanel:HOVER{
+	cursor: hand;
+ 	cursor: pointer;
+}
+.appops-intelliThoughtPredefinedOptionPanel{
+	width: 80px;
+	margin: 0px 8px 0px 7px;
+}
+.appops-intelliThoughtPredefinedOptionPanel:HOVER{
+	cursor: hand;
+ 	cursor: pointer;
+}
+
+.appops-intelliThoughtField {	
+	width: 400px;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 12px;
+    color: black;
+    background: #FFF;
+    padding: 7px;
+	outline: 0;
+}
+.appops-intelliThoughtFieldPanel {	
+	border-left: 2px solid;
+	margin: 15px 7px 15px 5px;
+}
+.appops-intelliThoughtHolder {
+	background-color: #F2F2F2;
+	border-bottom: 1px solid #E0E0E0;
+	border-right: 1px solid #E0E0E0	
+}
+.appops-intelliThought-Label{
+	font-family: Verdana;
+    font-size: 12px;
+    font-style: italic;
+    color: #333;
+    margin-right: 5px;
 }

@@ -14,6 +14,7 @@ import com.google.gwt.event.dom.client.ErrorEvent;
 import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -40,13 +41,15 @@ public class MessageWithUserSnippet extends Composite implements Snippet{
 		FlexTable flexTable = new FlexTable();
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		flexTable.setWidget(0, 0, createUserImageField());
+		flexTable.getCellFormatter().setVerticalAlignment(0, 0, HasVerticalAlignment.ALIGN_TOP);
 		flexTable.setWidget(0, 3, createUserNameLabelField());
-		horizontalPanel.setBorderWidth(1);
+		//horizontalPanel.setBorderWidth(1);
 		horizontalPanel.add(flexTable);
 		mainPanel.add(horizontalPanel);
-		horizontalPanel.setStylePrimaryName("contactSnippetBasePanel");
-		horizontalPanel.addStyleName("snippetPanel");
-		//mainPanel.setStyleName("messageWithUserSnippet");
+		horizontalPanel.setStylePrimaryName("snippetPanelForMessage");
+		mainPanel.setStyleName("messageWithUserSnippet");
+		//horizontalPanel.addStyleName("snippetPanel");
+		
 	}
 
 	private VerticalPanel createUserNameLabelField() {
@@ -64,7 +67,7 @@ public class MessageWithUserSnippet extends Composite implements Snippet{
 			labelField.setConfiguration(labelConfig);
 			labelField.createField();
 			vpPanel.add(labelField);
-			Configuration labelConfig1 = getLabelFieldConfiguration(true, "appops-LabelField", null, null);
+			Configuration labelConfig1 = getLabelFieldConfiguration(true, "appops-LabelField", "userWithMessagePanelLabelContent", null);
 			LabelField messageLabelField = new LabelField();
 			if(entity.getPropertyByName(MessageConstant.DESCRIPTION)!=null){
 				String messageStr = entity.getPropertyByName(MessageConstant.DESCRIPTION);
@@ -75,7 +78,7 @@ public class MessageWithUserSnippet extends Composite implements Snippet{
 			}
 			HorizontalPanel panel = new HorizontalPanel();
 			panel.add(messageLabelField);
-			panel.setWidth("50%");
+			panel.setWidth("100%");
 			vpPanel.add(panel);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -100,9 +103,9 @@ public class MessageWithUserSnippet extends Composite implements Snippet{
 			if(entity.getPropertyByName(ContactConstant.IMGBLOBID)!=null){
 				String blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
 				String url = downloader.getIconDownloadURL(blobId);
-				imageConfig = getImageFieldConfiguration(url, "defaultIcon");
+				imageConfig = getImageFieldConfiguration(url, "defaultIcon","defaultIcon_Small");
 			}else{
-				imageConfig = getImageFieldConfiguration("images/default_Icon.png", "defaultIcon");
+				imageConfig = getImageFieldConfiguration("images/default_Icon.png", "defaultIcon","defaultIcon_Small");
 			}
 		
 		final ImageField imageField = new ImageField();
@@ -124,10 +127,11 @@ public class MessageWithUserSnippet extends Composite implements Snippet{
 		return horizontalPanel;
 	}
 
-	public Configuration getImageFieldConfiguration(String url, String primaryCSS) {
+	public Configuration getImageFieldConfiguration(String url, String primaryCSS, String secondaryCss) {
 		Configuration config = new Configuration();
 		config.setPropertyByName(ImageField.IMAGEFIELD_BLOBID, url);
 		config.setPropertyByName(ImageField.IMAGEFIELD_PRIMARYCSS, primaryCSS);
+		config.setPropertyByName(ImageField.IMAGEFIELD_DEPENDENTCSS, secondaryCss);
 		return config;
 	}
 	

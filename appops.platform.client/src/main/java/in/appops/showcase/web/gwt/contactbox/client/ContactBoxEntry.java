@@ -23,7 +23,7 @@ public class ContactBoxEntry implements EntryPoint{
 			e.printStackTrace();
 		}*/
 		Configuration intelliFieldConf = getIntelliFieldConfiguration("intelliShareField", null);
-		SendMessageWidget messageWidget = new  SendMessageWidget();
+		SendMessageWidget messageWidget = new  SendMessageWidget(null);
 		messageWidget.setIntelliShareFieldConfiguration(intelliFieldConf);
 		try {
 			messageWidget.createComponent(getConfiguration(null, null));
