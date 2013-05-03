@@ -250,7 +250,8 @@ public class PostViewSnippet extends RowSnippet {
 			final String responseText = responseEntity.getPropertyByName(ActionResponseViewConstant.RESPONSE_NAME);
 			final ActionWidget actionWidget = new ActionWidget(ActionWidgetType.LINK);
 			actionWidget.setWidgetText(responseText);
-		    
+			actionWidget.setActionEntity(responseEntity);
+			
 			if(size-1 !=0){
 				actionWidget.setConfiguration(getActionLinkConfiguration("responseLbl", null));
 			} else {
