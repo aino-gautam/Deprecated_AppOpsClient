@@ -40,9 +40,9 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 	
 	public MessagesHomeWidget() {
 		initialize();
-		fecthUser();
-		//userEntity=AppEnviornment.getCurrentUser();
-		//fetchContactOfLoggedUser(userEntity);
+		//fecthUser();
+		userEntity=AppEnviornment.getCurrentUser();
+		fetchContactOfLoggedUser(userEntity);
 		initWidget(mainPanel);
 	}
 	
@@ -52,13 +52,12 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 		DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
 
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("userId",Long.valueOf(4));
+		paramMap.put("userId",Long.valueOf(2));
 				
 		StandardAction action = new StandardAction(EntityList.class, "useraccount.UserAccountService.getUserFromId", paramMap);
 		dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
 			
 			public void onFailure(Throwable caught) {
-				Window.alert("operation failed ");
 				caught.printStackTrace();
 			}
 			
@@ -118,13 +117,6 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 		});
 		
 		
-		
-		
-		
-		
-	    
-	    
-		
 	}
 	
 	
@@ -144,11 +136,11 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 	    threadWidget.fetchAllMessageUserParticipantsAndSender();
 	    leftSidePanel.add(threadWidget);
 		mainPanel.add(leftSidePanel);
-		mainPanel.setCellWidth(leftSidePanel, "40%");
+		mainPanel.setCellWidth(leftSidePanel, "20%");
 		mainPanel.setCellHorizontalAlignment(leftSidePanel, HasHorizontalAlignment.ALIGN_CENTER);
 		
 		mainPanel.add(rightSidePanel);
-		mainPanel.setCellWidth(rightSidePanel, "50%");
+		mainPanel.setCellWidth(rightSidePanel, "80%");
 		mainPanel.setCellHorizontalAlignment(rightSidePanel, HasHorizontalAlignment.ALIGN_CENTER);
 		mainPanel.setStylePrimaryName("messagesHomeWidget");
 		leftSidePanel.setStylePrimaryName("leftSidePanel");
@@ -176,6 +168,7 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 	@SuppressWarnings("unchecked")
 	private void fetchMessageConversationForContact(final Entity snippetEntity) {
 		rightSidePanel.clear();
+		rightSidePanel.add(createLoaderWithTextWidget());
 		Long parentId = null;
 	     try{
 		    parentId=snippetEntity.getPropertyByName(MessageConstant.PARENTID);
@@ -197,7 +190,6 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 		dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
 			
 			public void onFailure(Throwable caught) {
-				Window.alert("operation failed ");
 				caught.printStackTrace();
 			}
 			
@@ -206,11 +198,13 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 				if(result!=null){
 				  EntityList  list=result.getOperationResult();
 				    try {
+				    	rightSidePanel.clear();
 						MessagingThreadWithReplyWidget messagingThreadWithReplyWidget = new MessagingThreadWithReplyWidget();
 						messagingThreadWithReplyWidget.setContactEntity(contactEntity);
 						messagingThreadWithReplyWidget.setClickSnippetEntity(snippetEntity);
 						messagingThreadWithReplyWidget.createComponent(list);
 						rightSidePanel.add(messagingThreadWithReplyWidget);
+						
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -220,6 +214,7 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 		});
 	 
 	    }catch(Exception e){
+	    	rightSidePanel.clear();
 			  LabelField labelField = new LabelField();
 				Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 				
@@ -244,5 +239,30 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
 		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
 		return config;
+	}
+	
+	private HorizontalPanel createLoaderWithTextWidget() {
+		HorizontalPanel horizontalPanel = new HorizontalPanel();
+		
+	        try {
+				
+				
+				LabelField labelField = new LabelField();
+				Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
+								
+					labelField.setFieldValue("Loading messages ...");
+				
+				labelField.setConfiguration(labelConfig);
+				labelField.createField();
+				
+			
+				horizontalPanel.add(labelField);
+				
+			} catch (AppOpsException e) {
+				
+				e.printStackTrace();
+			}
+		return horizontalPanel;
+		
 	}
 }
