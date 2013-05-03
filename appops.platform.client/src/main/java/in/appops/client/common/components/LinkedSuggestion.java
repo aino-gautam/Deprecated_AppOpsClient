@@ -17,6 +17,8 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -28,9 +30,15 @@ public class LinkedSuggestion extends PopupPanel implements Configurable, Entity
 	private EntityList entityList;
 	private int currentSelectedEntity;
 	private FieldEventHandler handler;
+	private Image loaderImage;
+
 	public LinkedSuggestion(boolean isAutoHide) {
 		super(isAutoHide);
 		initialize();
+		
+		loaderImage = new Image("images/opptinLoader.gif");
+		loaderImage.setStylePrimaryName("appops-intelliThoughtActionImage");
+		loaderImage.setVisible(false);
 		
 		basePanel.setWidth("100%");
 		focusPanel.setWidget(basePanel);
@@ -44,6 +52,8 @@ public class LinkedSuggestion extends PopupPanel implements Configurable, Entity
 	}
 	
 	public void populateSuggestions(){
+		basePanel.clear();
+
 		for(Entity linkedEntity : entityList){
 			IntelliThoughtSuggestion suggestion = new IntelliThoughtSuggestion();
 			suggestion.setEntity(linkedEntity);
@@ -108,10 +118,6 @@ public class LinkedSuggestion extends PopupPanel implements Configurable, Entity
 	public void removeFromList(Entity entity) {
 		// TODO Auto-generated method stub
 		
-	}
-	
-	public void clearList(){
-		basePanel.clear();
 	}
 	
 	public void clearSelection(int index) {
@@ -187,6 +193,13 @@ public class LinkedSuggestion extends PopupPanel implements Configurable, Entity
 
 	public void addHandle(FieldEventHandler handler) {
 		this.handler = handler;
+	}
+
+	public void createUi() {
+		basePanel.clear();
+		basePanel.add(loaderImage);
+		basePanel.setCellHorizontalAlignment(loaderImage,HorizontalPanel.ALIGN_CENTER);
+		loaderImage.setVisible(true);		
 	}
 
 }

@@ -210,10 +210,12 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 		int eventType = event.getEventType();
 		String eventData = (String) event.getEventData();
 		
-		if(eventType == FieldEvent.THREE_CHAR_ENTERED) {
-			handleThreeCharEnteredEvent(eventData);
-		} else if(eventType == FieldEvent.SUGGESTION_CLICKED ){
-			linkSuggestion(eventData);
+		if(this.isVisible()) {
+			if(eventType == FieldEvent.THREE_CHAR_ENTERED) {
+				handleThreeCharEnteredEvent(eventData);
+			} else if(eventType == FieldEvent.SUGGESTION_CLICKED ){
+				linkSuggestion(eventData);
+			}
 		}
 	}
 
@@ -381,6 +383,13 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 		final int posy = basePanel.getElement().getAbsoluteTop() + basePanel.getElement().getOffsetHeight();
 		final int posx = basePanel.getElement().getAbsoluteLeft();
 
+		linkedSuggestion.createUi();
+		if(!linkedSuggestion.isShowing()){
+			linkedSuggestion.show();
+			linkedSuggestion.setWidth(basePanel.getElement().getOffsetWidth() - 10 + "px");
+
+			linkedSuggestion.setPopupPosition(posx, posy);
+		}
 		
 		//This is the Server Call to fetch the suggestions		
 		StandardAction action = new StandardAction(EntityList.class, "spacemanagement.SpaceManagementService.getLinkSuggestions", map);
@@ -396,17 +405,9 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 			public void onSuccess(Result<EntityList> result) {
 				EntityList linkedSuggestionList = result.getOperationResult();
 				if(linkedSuggestionList != null && !linkedSuggestionList.isEmpty()) {
-					linkedSuggestion.clearList();
 					linkedSuggestion.setEntityList(linkedSuggestionList);
 					linkedSuggestion.populateSuggestions();
-					linkedSuggestion.setCurrentSelection(0);
-
-					if(!linkedSuggestion.isShowing()){
-						linkedSuggestion.show();
-						linkedSuggestion.setWidth(basePanel.getElement().getOffsetWidth() - 10 + "px");
-	
-						linkedSuggestion.setPopupPosition(posx, posy);
-					}
+					linkedSuggestion.setFirstSelection();
 				} else {
 					linkedSuggestion.hide();
 				}
