@@ -104,7 +104,7 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 			}
 			
 			if(getConfiguration().getPropertyByName(SCROLLPANELHEIGHT) != null)
-				scrollPanel.setWidth(getConfiguration().getPropertyByName(SCROLLPANELHEIGHT) + "px");
+				scrollPanel.setHeight(getConfiguration().getPropertyByName(SCROLLPANELHEIGHT) + "px");
 			else{
 				int height = Window.getClientHeight() - 120;
 				scrollPanel.setHeight(height + "px");
