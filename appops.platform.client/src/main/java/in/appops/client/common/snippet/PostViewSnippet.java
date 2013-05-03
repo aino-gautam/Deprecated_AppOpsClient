@@ -6,6 +6,7 @@ import in.appops.client.common.components.ActionWidget.ActionWidgetType;
 import in.appops.client.common.core.EntityReceiver;
 import in.appops.client.common.fields.ImageField;
 import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.fields.PostInButton;
 import in.appops.client.common.handler.HandlerFactory;
 import in.appops.client.common.handler.HandlerFactoryImpl;
 import in.appops.client.common.handler.ResponseActionHandler;
@@ -44,7 +45,6 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -53,6 +53,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class PostViewSnippet extends RowSnippet {
@@ -142,7 +143,6 @@ public class PostViewSnippet extends RowSnippet {
 		
 		postContentPanel.add(spaceIconPlusTimePanel);
 		postContentPanel.setCellWidth(spaceIconPlusTimePanel, "10%");
-		//spaceIconPlusTimePanel.setCellWidth(spaceImageField, "5%");
 		
 		postContentPanel.add(postContentFlowPanel);
 		postContentPanel.setCellVerticalAlignment(postContentFlowPanel, HasVerticalAlignment.ALIGN_MIDDLE);
@@ -156,7 +156,6 @@ public class PostViewSnippet extends RowSnippet {
 		
 		DOM.setStyleAttribute(postContentFlowPanel.getElement(), "margin", "5px");
 		DOM.setStyleAttribute(imagePanel.getElement(), "margin", "7px");
-		//DOM.setStyleAttribute(spaceImageField.getElement(), "margin", "5px");
 		setTime(getEntity());
 		
 		final ImageField responsesImageField = new ImageField();
@@ -186,13 +185,16 @@ public class PostViewSnippet extends RowSnippet {
 			}
 		});
 		
-		/*postSnippetPanel.setHeight("100%");
-		postSnippetPanel.setWidth("100%");*/
+		PostInButton postInButton = new PostInButton(getEntity());
+		
+		postInButton.createButton();
+		
+		postInButton.setStylePrimaryName("postInBtn");
+		
+		postSnippetPanel.add(postInButton,DockPanel.EAST);
+		postSnippetPanel.setCellVerticalAlignment(postInButton, ALIGN_TOP);
 		
 		add(postSnippetPanel,DockPanel.CENTER);
-		
-		/*basePanel.setCellHorizontalAlignment(dockPanel, HasHorizontalAlignment.ALIGN_CENTER);
-		basePanel.setCellVerticalAlignment(dockPanel, HasVerticalAlignment.ALIGN_MIDDLE);*/
 		
 		postSnippetPanel.setStylePrimaryName(POST_SNIPPET);
 		imagePanel.setStylePrimaryName(POST_USER_IMAGE);
@@ -415,5 +417,8 @@ public class PostViewSnippet extends RowSnippet {
 		postContentPanel.setCellHorizontalAlignment(detailLbl, HasHorizontalAlignment.ALIGN_LEFT);
 		
 	}
+	
+
+
 
 }
