@@ -164,7 +164,7 @@
 		<!-- <dependency> <groupId>appops_platform</groupId> <artifactId>appops_server</artifactId> 
 			<version>14.02.2013</version> </dependency> -->
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>pallavi_appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
 			<version>02.05.2013</version>
 		</dependency>
