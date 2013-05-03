@@ -253,6 +253,7 @@
 						<module>in.appops.showcase.web.gwt.navigationmaze.navigationmaze</module>
 						<module>in.appops.showcase.web.gwt.facebook.facebook</module>
 						<module>in.appops.showcase.web.gwt.contactbox.contactbox</module>
+						<module>in.appops.showcase.web.gwt.messagehome.messagehome</module>
 					</modules>
 				</configuration>
 			</plugin>

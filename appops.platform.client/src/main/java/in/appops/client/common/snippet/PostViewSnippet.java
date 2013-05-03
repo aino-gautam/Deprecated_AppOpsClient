@@ -67,6 +67,7 @@ public class PostViewSnippet extends RowSnippet {
 	public static final String POST_USER_IMAGE = "postUserImage";
 	public static final String POST_CONTEXT_LABEL = "postContextLabel";
 	public static final String HAND_CSS = "handCss";
+	public static final String POST_RESPONSE_IMAGE = "postResponseImage";
 	
 	private final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
@@ -146,10 +147,9 @@ public class PostViewSnippet extends RowSnippet {
 		postContentPanel.add(postContentFlowPanel);
 		postContentPanel.setCellVerticalAlignment(postContentFlowPanel, HasVerticalAlignment.ALIGN_MIDDLE);
 		postContentPanel.setCellHorizontalAlignment(postContentFlowPanel, HasHorizontalAlignment.ALIGN_JUSTIFY);
-		//postContentPanel.setBorderWidth(1);
 		postContentPanel.setHeight("100%");
 		postContentPanel.setWidth("100%");
-		spaceIconPlusTimePanel.setWidth("100%");
+		//spaceIconPlusTimePanel.setWidth("100%");
 		postSnippetPanel.add(postContentPanel, DockPanel.CENTER);
 		postSnippetPanel.setCellWidth(postContentPanel, "100%");
 		
@@ -165,10 +165,10 @@ public class PostViewSnippet extends RowSnippet {
 			 e.printStackTrace();
 		}
 		spaceIconPlusTimePanel.add(responsesImageField);
-		spaceIconPlusTimePanel.setCellWidth(responsesImageField, "40%");
+		//spaceIconPlusTimePanel.setCellWidth(responsesImageField, "40%");
 		spaceIconPlusTimePanel.setCellHorizontalAlignment(responsesImageField, HasHorizontalAlignment.ALIGN_RIGHT);
 		spaceIconPlusTimePanel.setCellVerticalAlignment(responsesImageField, HasVerticalAlignment.ALIGN_MIDDLE);
-		DOM.setStyleAttribute(responsesImageField.getElement(), "margin", "5px");
+		//DOM.setStyleAttribute(responsesImageField.getElement(), "margin", "5px");
 		
 		responsesImageField.addClickHandler(new ClickHandler() {
 			@Override
@@ -177,8 +177,8 @@ public class PostViewSnippet extends RowSnippet {
 				int eventY = event.getNativeEvent().getClientY();*/
 				ImageField img = (ImageField) event.getSource();
 				if(img.equals(responsesImageField)){
-					int eventX = img.getAbsoluteLeft();
-					int eventY = img.getAbsoluteTop();
+					int eventX = img.getAbsoluteLeft()+10;
+					int eventY = img.getAbsoluteTop()+5;
 					getResponsesForWidget(eventX, eventY);
 				}
 			}
@@ -198,7 +198,7 @@ public class PostViewSnippet extends RowSnippet {
 		postSnippetPanel.setStylePrimaryName(POST_SNIPPET);
 		imagePanel.setStylePrimaryName(POST_USER_IMAGE);
 		postContentFlowPanel.setStylePrimaryName(POST_CONTEXT_LABEL);
-		responsesImageField.setStylePrimaryName(HAND_CSS);
+		responsesImageField.setStylePrimaryName(POST_RESPONSE_IMAGE);
 		//spaceImageField.setStylePrimaryName(HAND_CSS);
 		showEmbededEntityDetailsInSnippet(getEntity());
 		
@@ -250,7 +250,7 @@ public class PostViewSnippet extends RowSnippet {
 			final String responseText = responseEntity.getPropertyByName(ActionResponseViewConstant.RESPONSE_NAME);
 			final ActionWidget actionWidget = new ActionWidget(ActionWidgetType.LINK);
 			actionWidget.setWidgetText(responseText);
-			
+		    
 			if(size-1 !=0){
 				actionWidget.setConfiguration(getActionLinkConfiguration("responseLbl", null));
 			} else {
@@ -332,7 +332,7 @@ public class PostViewSnippet extends RowSnippet {
 		timeLbl.setTitle(date);
 		spaceIconPlusTimePanel.add(timeLbl);
 		postContentPanel.add(spaceIconPlusTimePanel);
-		spaceIconPlusTimePanel.setCellWidth(timeLbl, "30%");
+		//spaceIconPlusTimePanel.setCellWidth(timeLbl, "30%");
 		
 		DOM.setStyleAttribute(timeLbl.getElement(), "margin", "5px");
 		timeLbl.setStylePrimaryName(POST_TIME_LABEL);
@@ -416,8 +416,4 @@ public class PostViewSnippet extends RowSnippet {
 		postContentPanel.setCellHorizontalAlignment(detailLbl, HasHorizontalAlignment.ALIGN_LEFT);
 		
 	}
-	
-
-
-
 }
