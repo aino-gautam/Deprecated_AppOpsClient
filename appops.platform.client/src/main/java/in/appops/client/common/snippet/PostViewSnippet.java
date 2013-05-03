@@ -53,7 +53,6 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class PostViewSnippet extends RowSnippet {
@@ -228,6 +227,7 @@ public class PostViewSnippet extends RowSnippet {
 			}
 			@Override
 			public void onSuccess(Result result) {
+				responseoptionList.clear();
 				EntityList responseEntList = (EntityList) result.getOperationResult();
 				for (Entity entity : responseEntList) {
 					/*** nitish@ensarm.com.. Adding entity to the list rather than the responsename**/
@@ -250,7 +250,6 @@ public class PostViewSnippet extends RowSnippet {
 			final String responseText = responseEntity.getPropertyByName(ActionResponseViewConstant.RESPONSE_NAME);
 			final ActionWidget actionWidget = new ActionWidget(ActionWidgetType.LINK);
 			actionWidget.setWidgetText(responseText);
-			//actionWidget.setActionEvent(getResponseActionEvent(actionWidget));
 			
 			if(size-1 !=0){
 				actionWidget.setConfiguration(getActionLinkConfiguration("responseLbl", null));
