@@ -52,6 +52,7 @@ public class Row extends AbsolutePanel implements MouseWheelHandler,ClickHandler
 	
 	public Row(String name){
 		this.name = name;
+		setTitle(name);
 		addDomHandler(this, MouseWheelEvent.getType());
 		setStylePrimaryName("rowPanel");
 	}
