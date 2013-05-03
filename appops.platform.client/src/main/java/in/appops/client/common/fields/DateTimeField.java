@@ -7,6 +7,7 @@ import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.user.datepicker.client.DatePicker;
 
@@ -32,7 +33,9 @@ public class DateTimeField extends Composite implements Field{
 	public static final String SHORT_MINUTE = "short_Minute";
 	public static final String SHORT_SECONDS = "short_Seconds";
 	public static final String Full_Time = "full_Time";
-			
+
+	private Widget currentField = null;
+	
 	public DateTimeField(){
 		
 	}
@@ -62,6 +65,7 @@ public class DateTimeField extends Composite implements Field{
 			if(fieldType.equalsIgnoreCase(DATETIMEFIELD_DATEONLY)){
 				DateOnlyPicker dateOnlyPicker = new  DateOnlyPicker();
 				initWidget(dateOnlyPicker);
+				setCurrentField(dateOnlyPicker);
 			}else if(fieldType.equalsIgnoreCase(DATETIMEFIELD_TIMEONLY)){
 				TimePicker timePicker = null ;
 				
@@ -79,9 +83,11 @@ public class DateTimeField extends Composite implements Field{
 					
 				}
 				initWidget(timePicker);
+				setCurrentField(timePicker);
 			}else if(fieldType.equalsIgnoreCase(DATETIMEFIELD_DATETIMEONLY)){
 				DateTimePicker dateTimePicker = new DateTimePicker();
 				initWidget(dateTimePicker);
+				setCurrentField(dateTimePicker);
 			}
 		}
 	}
@@ -112,5 +118,13 @@ public class DateTimeField extends Composite implements Field{
 	public void onFieldEvent(FieldEvent event) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public Widget getCurrentField() {
+		return currentField;
+	}
+
+	public void setCurrentField(Widget currentField) {
+		this.currentField = currentField;
 	}
 }
