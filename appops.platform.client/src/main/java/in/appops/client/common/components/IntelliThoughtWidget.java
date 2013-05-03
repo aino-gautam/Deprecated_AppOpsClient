@@ -209,8 +209,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	@Override
 	public void onClick(ClickEvent event) {
 		Widget source = (Widget) event.getSource();
-		if(source.equals(attachMediaField.getMedia())){
-		} else if(source.equals(searchBasePanel)){
+		if(source.equals(searchBasePanel)){
 			String text = intelliShareField.getText();
 			SearchEvent searchEvent = new SearchEvent(SearchEvent.SEARCHFIRED, text);
 			AppUtils.EVENT_BUS.fireEvent(searchEvent);
@@ -258,14 +257,15 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	public void onFieldEvent(FieldEvent event) {
 		int eventType = event.getEventType();
 		String eventData = (String) event.getEventData();
-		
-		if(eventType == FieldEvent.EDITINITIATED) {
-			if (!isAttachedMediaField) {
-				attachMediaField.setVisible(true);
-				setAttachedMediaField(true);
-			} 
-		} else if(eventType == FieldEvent.WORDENTERED) {
-			handleWordEnteredEvent(eventData);
+		if(this.isVisible()) {
+			if(eventType == FieldEvent.EDITINITIATED) {
+				if (!isAttachedMediaField) {
+					attachMediaField.setVisible(true);
+					setAttachedMediaField(true);
+				} 
+			} else if(eventType == FieldEvent.WORDENTERED) {
+				handleWordEnteredEvent(eventData);
+			}
 		}
 	}
 

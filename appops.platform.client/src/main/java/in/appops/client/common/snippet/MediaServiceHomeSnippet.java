@@ -6,6 +6,7 @@ import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.shared.Configuration;
 
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class MediaServiceHomeSnippet extends VerticalPanel implements Configurable,Snippet{
@@ -19,6 +20,10 @@ public class MediaServiceHomeSnippet extends VerticalPanel implements Configurab
 	
 	@Override
 	public void initialize(){
+		Label headingLbl = new Label(" Albums by year ");
+		headingLbl.setStylePrimaryName("serviceHomeHeadingLabel");
+		headingLbl.addStyleName("mediaHeadingLabel");
+		add(headingLbl);
 		MediaViewer mediaViewer = new MediaViewer();
 		add(mediaViewer);
 	}
