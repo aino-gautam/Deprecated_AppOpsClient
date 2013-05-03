@@ -87,7 +87,7 @@ public class RowSnippet extends DockPanel implements Snippet,ClickHandler,MouseO
 			if(getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)!=null){
 				if((Boolean)getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)){
 					add(checkMarkPanel,DockPanel.EAST);
-					setCellWidth(checkMarkPanel, "7%");
+					setCellWidth(checkMarkPanel, "38px");
 				}
 			}
 		}

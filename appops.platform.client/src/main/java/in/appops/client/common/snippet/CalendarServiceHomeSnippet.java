@@ -8,6 +8,8 @@ import in.appops.platform.core.shared.Configuration;
 
 import java.util.HashMap;
 
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class CalendarServiceHomeSnippet extends VerticalPanel implements Snippet {
@@ -56,6 +58,10 @@ public class CalendarServiceHomeSnippet extends VerticalPanel implements Snippet
 		listSnippet.setConfiguration(getConfiguration());
 		listSnippet.initialize();
 		
+		Label headingLbl = new Label(" Calendar reminders for you ");
+		headingLbl.setStylePrimaryName("serviceHomeHeadingLabel");
+		add(headingLbl);
+		setCellHorizontalAlignment(headingLbl, HasHorizontalAlignment.ALIGN_CENTER);
 		add(listSnippet);
 		
 	}
