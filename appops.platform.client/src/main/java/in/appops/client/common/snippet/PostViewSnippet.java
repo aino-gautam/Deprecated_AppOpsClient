@@ -184,14 +184,12 @@ public class PostViewSnippet extends RowSnippet {
 			}
 		});
 		
-		PostInButton postInButton = new PostInButton(getEntity());
+		PostInButton postButton = createPostButtonAndReturn();
 		
-		postInButton.createButton();
+		postButton.setStylePrimaryName("postInBtn");
 		
-		postInButton.setStylePrimaryName("postInBtn");
-		
-		postSnippetPanel.add(postInButton,DockPanel.EAST);
-		postSnippetPanel.setCellVerticalAlignment(postInButton, ALIGN_TOP);
+		postSnippetPanel.add(postButton,DockPanel.EAST);
+		postSnippetPanel.setCellVerticalAlignment(postButton, ALIGN_TOP);
 		
 		add(postSnippetPanel,DockPanel.CENTER);
 		
@@ -202,6 +200,22 @@ public class PostViewSnippet extends RowSnippet {
 		//spaceImageField.setStylePrimaryName(HAND_CSS);
 		showEmbededEntityDetailsInSnippet(getEntity());
 		
+	}
+	
+private PostInButton createPostButtonAndReturn() {
+		
+		PostInButton postInButton = new PostInButton(getEntity());
+		Entity postEntity = getEntity();
+		
+		Byte postAlreadyIn = postEntity.getPropertyByName(PostConstant.ALREADYIN);
+		
+		if(postAlreadyIn == 1){
+			postInButton.createOutButton();
+		}else{
+			postInButton.createInButton();
+		}
+		
+		return postInButton;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -412,9 +426,14 @@ public class PostViewSnippet extends RowSnippet {
 		
 		detailLbl.setStylePrimaryName("blockquote");
 		
-		postContentPanel.add(detailLbl);
+		if(detailLbl.getText().equals("") ||detailLbl.getText().equals(" ")){
+			
+		}else{
+			postContentPanel.add(detailLbl);
+			
+			postContentPanel.setCellHorizontalAlignment(detailLbl, HasHorizontalAlignment.ALIGN_LEFT);
+		}
 		
-		postContentPanel.setCellHorizontalAlignment(detailLbl, HasHorizontalAlignment.ALIGN_LEFT);
 		
 	}
 }
