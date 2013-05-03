@@ -60,6 +60,7 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 	private boolean isAttachedMediaField;
 	private HorizontalPanel mediaServicePanel;
 	private Button sendMessageButton;
+	private LabelField sendingMessageLabelField ;
 	public static final String IS_INTELLISHAREFIELD = "isIntelliShareField";
 	public static String IS_ATTACHMEDIAFIELD = "isAttachMediaField";
 	private ArrayList<String> uploadedMediaId = null;
@@ -91,6 +92,7 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		sendMessageButton.setStylePrimaryName("appops-Button");
 		uploadedMediaId = new ArrayList<String>();
 		suggestionAction = new SuggestionAction();
+		sendingMessageLabelField = new LabelField();
 	}
 	
 	
@@ -147,6 +149,7 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		baseFlexTable.setWidget(10, 5, sendMessageButton); 
 		baseFlexTable.getCellFormatter().setHeight(8, 0, "20px");
 		sendMessageButton.addClickHandler(this);
+		
    }
 	
 	
@@ -175,6 +178,35 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		baseFlexTable.getFlexCellFormatter().setVerticalAlignment(5, 0, HasVerticalAlignment.ALIGN_TOP);
 		//baseFlexTable.getFlexCellFormatter().getElement(5, 0).setClassName("intelliThoughtFieldCol");
 	}
+	
+	@SuppressWarnings("unchecked")
+	private void fecthUser() {
+		DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
+		DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
+
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("userId",Long.valueOf(9));
+				
+		StandardAction action = new StandardAction(EntityList.class, "useraccount.UserAccountService.getUserFromId", paramMap);
+		dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
+			
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
+			
+			public void onSuccess(Result<Entity> result) {
+				if(result!=null){
+				    userEntity=result.getOperationResult();
+				    fetchContactOfLoggedUser(userEntity);
+				    
+				}
+			}
+
+			
+		});
+		
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	private void fetchContactOfLoggedUser(final Entity userEntity) {
@@ -221,12 +253,15 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		
 		
 		
-		
-		
-		
-	    
-	    
-		
+	}
+	
+	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
+		Configuration config = new Configuration();
+		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
+		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
+		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
+		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
+		return config;
 	}
 	private Configuration getConfiguration(String primaryCss, String secondaryCss){
 		Configuration configuration = new Configuration();
@@ -372,6 +407,18 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		paramMap.put("parentMessageEntity", null);
 		
 		
+		try{
+			Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
+			sendingMessageLabelField.setFieldValue("Sending message ...");
+			sendingMessageLabelField.setConfiguration(labelConfig);
+			sendingMessageLabelField.createField();
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			
+		}
+		baseFlexTable.setWidget(13, 0, sendingMessageLabelField);
+		
 		StandardAction action = new StandardAction(EntityList.class, "usermessage.UserMessageService.sendMessage", paramMap);
 		dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
 			
@@ -382,6 +429,8 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 			
 			public void onSuccess(Result<Entity> result) {
 				if(result!=null){
+				 sendingMessageLabelField.setFieldValue("");
+				 sendingMessageLabelField.resetField();	
 				 Entity entity=result.getOperationResult();
 				 intelliThoughtField.clearField();
 				 contactBoxField.clearField();
