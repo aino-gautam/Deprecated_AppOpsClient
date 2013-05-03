@@ -397,7 +397,7 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 			
 			
 			public void onFailure(Throwable caught) {
-				Window.alert("operation failed ");
+				linkedSuggestion.hide();
 				caught.printStackTrace();
 			}
 			
