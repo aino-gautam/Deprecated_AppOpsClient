@@ -52,7 +52,8 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 	public static final String LISTPANELCSS = "listPanelCss";
 	public static final String SCROLLPANELWIDTH = "scrollPanelWidth";
 	public static final String SCROLLPANELHEIGHT = "scrollPanelHeight";
-	
+	public static final String SCROLLPANELCSS = "scrollPanelCss";
+
 	public ListSnippet() {
 		initWidget(basepanel);
 	}
@@ -84,8 +85,16 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 		
 		if(getConfiguration() != null){
 			String listPanelCss = getConfiguration().getPropertyByName(LISTPANELCSS);
-			listPanel.setStylePrimaryName(listPanelCss);
-			setStylePrimaryName(listPanelCss);
+			String scrollPanelCss = getConfiguration().getPropertyByName(SCROLLPANELCSS);
+			
+			if(listPanelCss != null) {
+				listPanel.setStylePrimaryName(listPanelCss);
+				setStylePrimaryName(listPanelCss);
+			}
+
+			if(scrollPanelCss != null) {
+				scrollPanel.setStylePrimaryName(scrollPanelCss);
+			}
 			
 			if(getConfiguration().getPropertyByName(SCROLLPANELWIDTH) != null)
 				scrollPanel.setWidth(getConfiguration().getPropertyByName(SCROLLPANELWIDTH) + "px");

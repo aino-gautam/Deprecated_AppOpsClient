@@ -41,7 +41,7 @@ public class DragonWheelShowCase implements EntryPoint{
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onModuleLoad() {
-		
+		btn.setStylePrimaryName("appops-Button");
 		MediaViewer mediaViewer = new MediaViewer();
 		RootPanel.get("wheelContainer").add(mediaViewer);
 		
