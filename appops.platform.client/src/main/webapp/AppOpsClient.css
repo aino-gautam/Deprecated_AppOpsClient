@@ -1085,13 +1085,10 @@ html .GWTUpld .prgbar-msg {
 }
 
 .blockquote {
-	border: 2px solid #000;
-	width: 200px;
-	float: right;
-	margin: 0px;
-	padding: 10px;
-	background-color: #ccc;
+	color: #333;
+	font-size: 15px;
 	quotes: "\201C" "\201D";
+	margin-bottom: 6px;
 }
 
 .blockquote:before {
@@ -1292,4 +1289,17 @@ td.datePickerMonth {
     font-style: italic;
     color: #333;
     margin-right: 5px;
+}
+
+.postInBtn{
+width: 15px;
+height: 15px;
+border-radius: 50% 50%;
+margin-top: 2px;
+margin-right: 2px;
+}
+
+.postInImage{
+width: 15px;
+height: 15px;
 }
