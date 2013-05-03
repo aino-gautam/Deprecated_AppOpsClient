@@ -100,7 +100,7 @@ public class UserThreadWidget extends Composite implements EventListener,ClickHa
 			horizontalPanel.add(snippet);
 			mainPanel.add(horizontalPanel);
 			//horizontalPanel.setStylePrimaryName("snippetPanel");
-			horizontalPanel.setStylePrimaryName("snippetPanelForMessage");
+			horizontalPanel.setStylePrimaryName("snippetPanelForUser");
 			
 		}
 	}

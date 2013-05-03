@@ -1,6 +1,8 @@
 package in.appops.client.common.components;
 
 import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.fields.ImageField;
+import in.appops.client.common.util.BlobDownloader;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.shared.Configuration;
@@ -10,7 +12,11 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
@@ -18,10 +24,12 @@ import com.google.gwt.user.client.ui.Label;
  * TODO - This will enhanced/changed as required.
  */
 public class ActionWidget extends Composite implements Configurable{
+	private FocusPanel basePanel;
+	private HorizontalPanel actionWidgetPanel;
 	private Label actionLabel;
 	private Anchor actionLink;
 	private Button actionButton;
-
+	private ImageField actionImage;
 	private Entity actionEntity;
 	
 	private Configuration configuration;
@@ -53,11 +61,14 @@ public class ActionWidget extends Composite implements Configurable{
 		this.widgetType = widgetType;
 		
 		intializeWidget();
-		initWidget(widgetType == ActionWidgetType.LABEL ? actionLabel : (widgetType == ActionWidgetType.LINK ? actionLink : actionButton));
+		initWidget(basePanel);
 	}
 
 	/*********** Member Methods  *************/
 	private void intializeWidget() {
+		basePanel = new FocusPanel();
+		actionWidgetPanel = new HorizontalPanel();
+		actionImage =  new ImageField();
 		if(widgetType == ActionWidgetType.LABEL){
 			actionLabel = new Label();
 		} else if(widgetType == ActionWidgetType.LINK){
@@ -68,10 +79,23 @@ public class ActionWidget extends Composite implements Configurable{
 	}
 
 	public void createUi() {
-		
-		/********** You can set here any required things like CSS etc from Configuration ******/
-		if(configuration != null){
-			applyConfiguration();
+		try{
+			basePanel.add(actionWidgetPanel);
+			
+			actionWidgetPanel.add(actionImage);
+			
+			Widget actionWidget = (widgetType == ActionWidgetType.LABEL ? actionLabel : (widgetType == ActionWidgetType.LINK ? actionLink : actionButton));
+			actionWidgetPanel.add(actionWidget);
+			actionWidgetPanel.setCellVerticalAlignment(actionWidget, HasVerticalAlignment.ALIGN_MIDDLE);
+
+			/********** You can set here any required things like CSS etc from Configuration ******/
+			if(configuration != null){
+				applyConfiguration();
+			}
+			actionImage.createField();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 	}
@@ -98,13 +122,7 @@ public class ActionWidget extends Composite implements Configurable{
 	}
 
 	public void addClickHandler(ClickHandler handler) {
-		if(widgetType == ActionWidgetType.LABEL){
-			actionLabel.addClickHandler(handler);
-		} else if(widgetType == ActionWidgetType.LINK){
-			actionLink.addClickHandler(handler);
-		} else if(widgetType == ActionWidgetType.BUTTON){
-			actionButton.addClickHandler(handler);
-		}			
+		basePanel.addClickHandler(handler);
 	}
 	
 	private void applyConfiguration() {
@@ -126,6 +144,17 @@ public class ActionWidget extends Composite implements Configurable{
 				actionButton.setStylePrimaryName(primaryCss);
 			}
 		}
+		
+		String url = "";
+		if(actionEntity.getProperty("blobId") != null ){
+			BlobDownloader blobDownloader = new BlobDownloader();
+			String blobId = actionEntity.getProperty("blobId").getValue().toString();
+			url = blobDownloader.getImageDownloadURL(blobId);
+		}
+		Configuration imageConfig = getImageFieldConfiguration(url, "appops-intelliThoughtActionImage");
+		actionImage.setConfiguration(imageConfig);
+		basePanel.setStylePrimaryName("appops-intelliThoughtActionPanel");
+
 	}
 
 
@@ -166,4 +195,10 @@ public class ActionWidget extends Composite implements Configurable{
 		}
 	}
 	
+	public Configuration getImageFieldConfiguration(String url, String primaryCSS) {
+		Configuration config = new Configuration();
+		config.setPropertyByName(ImageField.IMAGEFIELD_BLOBID, url);
+		config.setPropertyByName(ImageField.IMAGEFIELD_PRIMARYCSS, primaryCSS);
+		return config;
+	}
 }
