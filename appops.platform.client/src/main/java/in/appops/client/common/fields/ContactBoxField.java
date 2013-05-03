@@ -393,20 +393,23 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 
 	@Override
 	public void onEntityListReceived(EntityList entityList) {
-	 
+	 if(entityList.size()>0){
 		final int posy = basePanel.getElement().getAbsoluteTop() + basePanel.getElement().getOffsetHeight();
 		final int posx = basePanel.getElement().getAbsoluteLeft();
-		contactWigetSuggestion.clearList();
-		contactWigetSuggestion.setEntityList(entityList);
-		contactWigetSuggestion.populateSuggestions();
-		if(!contactWigetSuggestion.isShowing()){
-			contactWigetSuggestion.show();
-			contactWigetSuggestion.setWidth(basePanel.getElement().getOffsetWidth() - 10 + "px");
-
-			contactWigetSuggestion.setPopupPosition(posx, posy);
-			contactWigetSuggestion.setFirstSelection();
-		}
 		
+		 if(posy != 0 || posx !=0){
+			contactWigetSuggestion.clearList();
+			contactWigetSuggestion.setEntityList(entityList);
+			contactWigetSuggestion.populateSuggestions();
+			if(!contactWigetSuggestion.isShowing()){
+				contactWigetSuggestion.show();
+				contactWigetSuggestion.setWidth(basePanel.getElement().getOffsetWidth() - 10 + "px");
+	
+				contactWigetSuggestion.setPopupPosition(posx, posy);
+				contactWigetSuggestion.setFirstSelection();
+			}
+		 }
+	 }
 	}
 
 	@Override
