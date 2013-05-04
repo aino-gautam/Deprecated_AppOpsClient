@@ -294,7 +294,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
 
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("word", "%"+ word +"%");
+		paramMap.put("word", word);
 		
 		StandardAction action = new StandardAction(EntityList.class, "coreplatform.CorePlatformService.getSuggestionAction", paramMap);
 		dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
@@ -306,6 +306,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 			
 			public void onSuccess(Result<EntityList> result) {
 				EntityList  entityList =  result.getOperationResult();
+				suggestionAction.clearSuggestionPanel();
 				for(Entity entity : entityList ){
 					String widgetName = entity.getPropertyByName(ActionsConstant.NAME);
 					final ActionWidget actionWidget = new ActionWidget(ActionWidgetType.LABEL);
@@ -353,6 +354,8 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		}
 		
 		JSONObject token = EntityToJsonClientConvertor.createJsonFromEntity(context);
+		
+		/** For testing purpose.. not to be removed **/
 //		Entity ent = new JsonToEntityConverter().getConvertedEntity(token);
 //		InitiateActionContext cont = (InitiateActionContext)ent;
 //		String action = cont.getAction();
