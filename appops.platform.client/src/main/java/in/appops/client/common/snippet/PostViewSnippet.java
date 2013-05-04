@@ -98,7 +98,9 @@ public class PostViewSnippet extends RowSnippet {
 		BlobDownloader blobDownloader = new BlobDownloader();
 		//TODO currently all this values getting from dummy post entity need to modify it in future
 		Property<Serializable> property=(Property<Serializable>) getEntity().getProperty(PostConstant.CREATEDBY);
-		if(property.getValue() instanceof Long){
+		if(property==null)
+			blobUrl=blobDownloader.getIconDownloadURL("irqSN52SzHwHksn9NQFKxEIDYl0RWF3RJz6m45WSDzsafhuCSihRDg%3D%3D");
+		else if(property.getValue() instanceof Long){
 			//blobUrl=blobDownloader.getIconDownloadURL(userEntity.getPropertyByName("imgBlobId").toString());
 			blobUrl=blobDownloader.getIconDownloadURL("irqSN52SzHwHksn9NQFKxEIDYl0RWF3RJz6m45WSDzsafhuCSihRDg%3D%3D");
 		} else{
