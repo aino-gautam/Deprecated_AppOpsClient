@@ -209,19 +209,18 @@ public class PostViewSnippet extends RowSnippet {
 		
 	}
 	
-private PostInButton createPostButtonAndReturn() {
+	private PostInButton createPostButtonAndReturn() {
 		
 		PostInButton postInButton = new PostInButton(getEntity());
 		Entity postEntity = getEntity();
 		
 		Byte postAlreadyIn = postEntity.getPropertyByName(PostConstant.ALREADYIN);
-		
-		if(postAlreadyIn == 1){
+
+		if(postAlreadyIn !=null && postAlreadyIn == 1)
 			postInButton.createOutButton();
-		}else{
+		else
 			postInButton.createInButton();
-		}
-		
+
 		return postInButton;
 	}
 	
