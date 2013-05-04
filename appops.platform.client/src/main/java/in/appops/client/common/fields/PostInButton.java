@@ -1,5 +1,6 @@
 package in.appops.client.common.fields;
 
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -109,6 +110,8 @@ public class PostInButton extends Composite{
 		StandardAction action = new StandardAction(Entity.class, "in.InService.areYouInterestedIn", map);
 		ResponseActionContext actionContext = new ResponseActionContext();
 		actionContext.setEmbeddedAction(action);
+		actionContext.setSpace(AppEnviornment.getCurrentSpace());
+		
 		AsyncCallback<Result> callBack = new AsyncCallback<Result>() {
 			
 			public void onFailure(Throwable caught) {
@@ -134,6 +137,8 @@ public class PostInButton extends Composite{
 	StandardAction action = new StandardAction(Entity.class, "in.InService.deleteInRequest", map);
 	ResponseActionContext actionContext = new ResponseActionContext();
 	actionContext.setEmbeddedAction(action);
+	actionContext.setSpace(AppEnviornment.getCurrentSpace());
+	
 	AsyncCallback<Result> callBack = new AsyncCallback<Result>() {
 		
 		
