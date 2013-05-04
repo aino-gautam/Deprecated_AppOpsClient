@@ -1,10 +1,13 @@
 package in.appops.client.common.snippet;
 
 import in.appops.client.common.core.EntityListModel;
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.server.core.services.useraccount.constant.UserPojoConstant;
 
 import java.util.HashMap;
 
@@ -32,7 +35,9 @@ public class CalendarServiceHomeSnippet extends VerticalPanel implements Snippet
 		configuration.setPropertyByName(SnippetConstant.SELECTIONMODE, false);
 		setConfiguration(configuration);
 		
-		initializeListForUser(1L);
+		Entity usrEnt =  AppEnviornment.getCurrentUser();
+		Long userId = ((Key<Long>)usrEnt.getPropertyByName(UserPojoConstant.ID)).getKeyValue();
+		initializeListForUser(userId);
 	}
 	
 	
@@ -40,7 +45,7 @@ public class CalendarServiceHomeSnippet extends VerticalPanel implements Snippet
 		
 		Query query = new Query();
 		query.setQueryName("getAllRemindersOfUser");
-		query.setListSize(8);
+		query.setListSize(10);
 			
 		HashMap<String, Object> queryParam = new HashMap<String, Object>();
 		queryParam.put("userId", userId);
