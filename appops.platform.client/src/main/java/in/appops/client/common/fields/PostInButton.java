@@ -49,7 +49,7 @@ public class PostInButton extends Composite{
 	/**
 	 * creates the button
 	 */
-	public void createButton() {
+	public void createOutButton() {
 		
 		Image interestedInImage = new Image("images/opptinLogoInDarkGray.png");
 		
@@ -66,6 +66,32 @@ public class PostInButton extends Composite{
 							notInterestedIn();
 						} else {
 							interestedIn();
+						}
+					}
+				});
+		
+		toggleButton.setStylePrimaryName("postInBtn");
+
+		basePanel.add(toggleButton);
+	}
+	
+	public void createInButton() {
+		
+		Image interestedInImage = new Image("images/opptinLogoInDarkGray.png");
+		
+		Image notInterestedInImage = new Image("images/opptinLogoInLightGray.png");
+		
+		interestedInImage.setStylePrimaryName("postInImage");
+		notInterestedInImage.setStylePrimaryName("postInImage");
+
+		toggleButton = new ToggleButton(notInterestedInImage,interestedInImage, new ClickHandler() {
+
+					@Override
+					public void onClick(ClickEvent event) {
+						if (toggleButton.isDown()) {
+							interestedIn();
+						} else {
+							notInterestedIn();
 						}
 					}
 				});
