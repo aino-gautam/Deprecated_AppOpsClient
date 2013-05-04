@@ -495,7 +495,7 @@ public class LocationSelector extends Composite implements Field,EntityReceiver,
 	          
 			@Override
 				public void callback(HasMouseEvent event) {
-					
+				latLng =(LatLng) event.getLatLng();
 				mapField.getMarker().setPosition(event.getLatLng());
 				mapField.getMapWidget().getMap().panTo(event.getLatLng());
 				mapField.getAddressAndSet(event.getLatLng());

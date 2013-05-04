@@ -280,7 +280,7 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 			}
 			if(!wordBeingTyped.trim().equals("")) {
 				if(Boolean.valueOf(isFireWordEnteredEvent)){
-					FieldEvent wordEntered = getFieldEvent(FieldEvent.WORDENTERED, wordBeingTyped.trim()); 
+					FieldEvent wordEntered = getFieldEvent(FieldEvent.WORDENTERED, getText().trim());
 					fireIntelliThoughtFieldEvent(wordEntered);
 				}
 			}
