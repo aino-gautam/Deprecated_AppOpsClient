@@ -3,10 +3,12 @@ package in.appops.client.common.components;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.client.common.snippet.SnippetFactory;
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.constants.propertyconstants.SpaceConstants;
 import in.appops.platform.core.constants.typeconstants.TypeConstants;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
@@ -270,10 +272,14 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 			
 			Long senderd = (Long) key1.getKeyValue();
 			
+			Entity spaceEntity=AppEnviornment.getCurrentSpace();
+		      Key<Serializable> spaceKey=(Key<Serializable>) spaceEntity.getProperty(SpaceConstants.ID).getValue();
+		      
+		      Long spaceId=(Long) spaceKey.getKeyValue();
+			
 			messageEntity.setPropertyByName(MessageConstant.DESCRIPTION, description);
 			messageEntity.setPropertyByName(MessageConstant.LEVEL, Long.valueOf(0));
-			messageEntity.setPropertyByName(MessageConstant.FAMILYID, Long.valueOf(1));
-			messageEntity.setPropertyByName(MessageConstant.SPACEID, Long.valueOf(1));
+			messageEntity.setPropertyByName(MessageConstant.SPACEID, spaceId);
 			messageEntity.setPropertyByName(MessageConstant.SENDERID, senderd);
 			messageEntity.setPropertyByName(MessageConstant.PARENTID, parentId);
 			Property<Date> createdOnProp = new Property<Date>(new Date());

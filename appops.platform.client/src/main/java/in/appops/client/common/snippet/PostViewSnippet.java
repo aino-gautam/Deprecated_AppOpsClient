@@ -4,13 +4,16 @@ import in.appops.client.common.components.ActionWidget;
 import in.appops.client.common.components.ActionWidget.ActionWidgetConfiguration;
 import in.appops.client.common.components.ActionWidget.ActionWidgetType;
 import in.appops.client.common.core.EntityReceiver;
+import in.appops.client.common.event.ActionEvent;
 import in.appops.client.common.fields.ImageField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.PostInButton;
 import in.appops.client.common.handler.HandlerFactory;
 import in.appops.client.common.handler.HandlerFactoryImpl;
 import in.appops.client.common.handler.ResponseActionHandler;
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.client.common.util.BlobDownloader;
+import in.appops.client.common.util.EntityToJsonClientConvertor;
 import in.appops.client.common.util.JsonToEntityConverter;
 import in.appops.client.common.util.PostContentParser;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
@@ -21,6 +24,8 @@ import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.JsonProperty;
 import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.query.Query;
+import in.appops.platform.core.entity.type.MetaType;
+import in.appops.platform.core.operation.InitiateActionContext;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -283,29 +288,36 @@ private PostInButton createPostButtonAndReturn() {
 				
 				@Override
 				public void onClick(ClickEvent event) {
-					HandlerFactory handFactory = GWT.create(HandlerFactoryImpl.class);
-					
-					ResponseActionHandler handler = handFactory.getActionHandlerByName(responseText);
-					handler.setEmbeddedEntity(getEmbeddedEntity());
-					handler.setPostEntity(getEntity());
-					handler.setResponseEntity(responseEntity);
-					handler.executeResponse(new EntityReceiver() {
+					boolean isWidget = (Boolean) responseEntity.getProperty(ActionResponseViewConstant.IS_WIDGET).getValue();
+					if(isWidget) {
+						ActionEvent actionEvent = getActionEvent(actionWidget);
+						actionWidget.fireEvent(actionEvent);
+						popupPanel.hide();
+					} else {
+						HandlerFactory handFactory = GWT.create(HandlerFactoryImpl.class);
 						
-						@Override
-						public void onEntityUpdated(Entity entity) {
-							popupPanel.hide();
-						}
-						
-						@Override
-						public void onEntityReceived(Entity entity) {
+						ResponseActionHandler handler = handFactory.getActionHandlerByName(responseText);
+						handler.setEmbeddedEntity(getEmbeddedEntity());
+						handler.setPostEntity(getEntity());
+						handler.setResponseEntity(responseEntity);
+						handler.executeResponse(new EntityReceiver() {
 							
-						}
-						
-						@Override
-						public void noMoreData() {
+							@Override
+							public void onEntityUpdated(Entity entity) {
+								popupPanel.hide();
+							}
 							
-						}
-					});
+							@Override
+							public void onEntityReceived(Entity entity) {
+								
+							}
+							
+							@Override
+							public void noMoreData() {
+								
+							}
+						});
+					}
 				}
 			});
 		}
@@ -437,5 +449,25 @@ private PostInButton createPostButtonAndReturn() {
 		}
 		
 		
+	}
+	
+	private ActionEvent getActionEvent(ActionWidget actionWidget) {
+		
+		InitiateActionContext context = new InitiateActionContext();
+		context.setType(new MetaType("ActionContext"));
+		
+		context.setSpace(AppEnviornment.getCurrentSpace());
+		
+		if(actionWidget.getActionEntity() != null){
+			context.setActionEntity(actionWidget.getActionEntity());
+		}
+		
+		JSONObject token = EntityToJsonClientConvertor.createJsonFromEntity(context);
+		
+		ActionEvent actionEvent = new ActionEvent();
+		actionEvent.setEventType(ActionEvent.TRANSFORMWIDGET);			
+		actionEvent.setEventData(token.toString());
+		
+		return actionEvent;
 	}
 }
