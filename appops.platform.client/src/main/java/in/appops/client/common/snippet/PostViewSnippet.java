@@ -98,7 +98,9 @@ public class PostViewSnippet extends RowSnippet {
 		BlobDownloader blobDownloader = new BlobDownloader();
 		//TODO currently all this values getting from dummy post entity need to modify it in future
 		Property<Serializable> property=(Property<Serializable>) getEntity().getProperty(PostConstant.CREATEDBY);
-		if(property.getValue() instanceof Long){
+		if(property==null)
+			blobUrl=blobDownloader.getIconDownloadURL("irqSN52SzHwHksn9NQFKxEIDYl0RWF3RJz6m45WSDzsafhuCSihRDg%3D%3D");
+		else if(property.getValue() instanceof Long){
 			//blobUrl=blobDownloader.getIconDownloadURL(userEntity.getPropertyByName("imgBlobId").toString());
 			blobUrl=blobDownloader.getIconDownloadURL("irqSN52SzHwHksn9NQFKxEIDYl0RWF3RJz6m45WSDzsafhuCSihRDg%3D%3D");
 		} else{
@@ -184,14 +186,12 @@ public class PostViewSnippet extends RowSnippet {
 			}
 		});
 		
-		PostInButton postInButton = new PostInButton(getEntity());
+		PostInButton postButton = createPostButtonAndReturn();
 		
-		postInButton.createButton();
+		postButton.setStylePrimaryName("postInBtn");
 		
-		postInButton.setStylePrimaryName("postInBtn");
-		
-		postSnippetPanel.add(postInButton,DockPanel.EAST);
-		postSnippetPanel.setCellVerticalAlignment(postInButton, ALIGN_TOP);
+		postSnippetPanel.add(postButton,DockPanel.EAST);
+		postSnippetPanel.setCellVerticalAlignment(postButton, ALIGN_TOP);
 		
 		add(postSnippetPanel,DockPanel.CENTER);
 		
@@ -202,6 +202,22 @@ public class PostViewSnippet extends RowSnippet {
 		//spaceImageField.setStylePrimaryName(HAND_CSS);
 		showEmbededEntityDetailsInSnippet(getEntity());
 		
+	}
+	
+private PostInButton createPostButtonAndReturn() {
+		
+		PostInButton postInButton = new PostInButton(getEntity());
+		Entity postEntity = getEntity();
+		
+		Byte postAlreadyIn = postEntity.getPropertyByName(PostConstant.ALREADYIN);
+		
+		if(postAlreadyIn == 1){
+			postInButton.createOutButton();
+		}else{
+			postInButton.createInButton();
+		}
+		
+		return postInButton;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -250,7 +266,8 @@ public class PostViewSnippet extends RowSnippet {
 			final String responseText = responseEntity.getPropertyByName(ActionResponseViewConstant.RESPONSE_NAME);
 			final ActionWidget actionWidget = new ActionWidget(ActionWidgetType.LINK);
 			actionWidget.setWidgetText(responseText);
-		    
+			actionWidget.setActionEntity(responseEntity);
+			
 			if(size-1 !=0){
 				actionWidget.setConfiguration(getActionLinkConfiguration("responseLbl", null));
 			} else {
@@ -411,9 +428,14 @@ public class PostViewSnippet extends RowSnippet {
 		
 		detailLbl.setStylePrimaryName("blockquote");
 		
-		postContentPanel.add(detailLbl);
+		if(detailLbl.getText().equals("") ||detailLbl.getText().equals(" ")){
+			
+		}else{
+			postContentPanel.add(detailLbl);
+			
+			postContentPanel.setCellHorizontalAlignment(detailLbl, HasHorizontalAlignment.ALIGN_LEFT);
+		}
 		
-		postContentPanel.setCellHorizontalAlignment(detailLbl, HasHorizontalAlignment.ALIGN_LEFT);
 		
 	}
 }
