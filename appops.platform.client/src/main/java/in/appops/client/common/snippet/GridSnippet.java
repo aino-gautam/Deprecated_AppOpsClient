@@ -223,8 +223,6 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 		Entity entity = (Entity) event.getEventData();
 		int eventType = event.getEventType();
 		
-		boolean checked = selectAllCheckboxField.isChecked();
-		
 		if (getConfiguration() != null) {
 			if(getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)!=null){
 				if((Boolean)getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)){
@@ -241,6 +239,7 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 				}
 				case SelectionEvent.DESELECTED: {
 					entitySelectionModel.removeSelection(entity);
+					boolean checked = selectAllCheckboxField.isChecked();
 					if (checked)
 						selectAllCheckboxField.setChecked(false);
 
@@ -333,6 +332,10 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 			}
 		}
 		
+	}
+	
+	public void isSelectAllCheckboxVisible(boolean isVisible) {
+		selectAllCheckboxField.setVisible(isVisible);
 	}
 
 }
