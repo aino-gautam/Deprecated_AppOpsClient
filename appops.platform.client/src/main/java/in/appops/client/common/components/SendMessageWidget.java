@@ -12,6 +12,7 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.constants.propertyconstants.SpaceConstants;
 import in.appops.platform.core.constants.propertyconstants.UserConstants;
 import in.appops.platform.core.constants.typeconstants.TypeConstants;
 import in.appops.platform.core.entity.Entity;
@@ -495,11 +496,16 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		    	Long id = (Long) key.getKeyValue();
 		      Entity messageEntity = new Entity();
 		      messageEntity.setType(new MetaType(TypeConstants.MESSAGE));
-		       //TODO currently spaceId,FamilyId is 1
+		      
+		      Entity spaceEntity=AppEnviornment.getCurrentSpace();
+		      Key<Serializable> spaceKey=(Key<Serializable>) spaceEntity.getProperty(SpaceConstants.ID).getValue();
+		      
+		      Long spaceId=(Long) spaceKey.getKeyValue();
+		      
 		      messageEntity.setPropertyByName(MessageConstant.DESCRIPTION, intelliThoughtField.getText());
 		      messageEntity.setPropertyByName(MessageConstant.LEVEL, Long.valueOf(0));
 		      messageEntity.setPropertyByName(MessageConstant.FAMILYID, Long.valueOf(1));
-		      messageEntity.setPropertyByName(MessageConstant.SPACEID, Long.valueOf(1));
+		      messageEntity.setPropertyByName(MessageConstant.SPACEID, spaceId);
 		      messageEntity.setPropertyByName(MessageConstant.SENDERID, id);
 		      Property<Date> createdOnProp = new Property<Date>(new Date());
 		      messageEntity.setProperty(MessageConstant.CREATEDON, createdOnProp);
