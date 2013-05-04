@@ -41,11 +41,18 @@ public class BoxSnippet extends Composite implements Snippet,ClickHandler{
 	
 	@Override
 	public void initialize(){
-					
-		//String blobId = getEntity().getProperty("bannerBlobId").getValue().toString();
-		BlobDownloader blobDownloader = new BlobDownloader();
-		icon = new Image(blobDownloader.getIconDownloadURL("irqSN52SzHwHksn9NQFKxI4fFpnxXb3xG8L%2FWWvfrys%3D"));
+		String blobId = null;
 		
+		if(getEntity().getProperty(SpaceConstants.BANNERBLOBID) != null) {
+			blobId = getEntity().getProperty(SpaceConstants.BANNERBLOBID).getValue().toString();
+		}
+
+		BlobDownloader blobDownloader = new BlobDownloader();
+		if(blobId != null) {
+			icon = new Image(blobDownloader.getIconDownloadURL(blobId));
+		} else {
+			icon = new Image(blobDownloader.getIconDownloadURL("irqSN52SzHwHksn9NQFKxI4fFpnxXb3xG8L%2FWWvfrys%3D"));
+		}
 		entityTitle = new LabelField();
 		entityTitle.setFieldValue(getEntity().getProperty("name").getValue().toString());
 		entityTitle.setConfiguration(getLabelFieldConfiguration(true, "boxSnippetEntityTitle", null, null));
