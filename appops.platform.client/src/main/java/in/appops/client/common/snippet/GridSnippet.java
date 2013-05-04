@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -44,7 +45,7 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 	private Configuration configuration;
 	private static final String  NOOFCOLUMNS = "noOfColumns";
 	private CheckBox selectAllCheckboxField ;
-	
+	private Loader loader = null;
 	
 	public GridSnippet() {
 		initWidget(basePanel);
@@ -58,6 +59,12 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 
 	@Override
 	public void initialize(){
+		loader = new Loader();
+		loader.createLoader();
+		loader.setVisible(true);
+		basePanel.add(loader);
+		basePanel.setCellHorizontalAlignment(loader, HasAlignment.ALIGN_LEFT);
+		basePanel.setCellVerticalAlignment(loader, HasVerticalAlignment.ALIGN_TOP);
 		
 		int height = Window.getClientHeight() - 120;
 		int width = Window.getClientWidth() - 100;
@@ -171,6 +178,7 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 
 	@Override
 	public void onEntityListReceived(EntityList entityList) {
+		loader.setVisible(false);
 		initializeGridPanel(entityList);
 		
 	}
