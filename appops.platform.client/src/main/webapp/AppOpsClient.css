@@ -1325,3 +1325,6 @@ height: 15px;
 	 position: absolute;
     left: 315px;
 }
+.outlineCss{
+  outline: none;	
+}
