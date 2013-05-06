@@ -42,6 +42,8 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ErrorEvent;
+import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -101,27 +103,33 @@ public class PostViewSnippet extends RowSnippet {
 		final ImageField imageField = new ImageField();
 				
 		BlobDownloader blobDownloader = new BlobDownloader();
-		//TODO currently all this values getting from dummy post entity need to modify it in future
-		Property<Serializable> property=(Property<Serializable>) getEntity().getProperty(PostConstant.CREATEDBY);
-		if(property==null)
-			blobUrl=blobDownloader.getIconDownloadURL("irqSN52SzHwHksn9NQFKxEIDYl0RWF3RJz6m45WSDzsafhuCSihRDg%3D%3D");
+		Property<Serializable> property = (Property<Serializable>) getEntity().getProperty(PostConstant.CREATEDBY);
+		
+		String defaultImgUrl = "images/default_userIcon.png";
+		if(property == null)
+			blobUrl = defaultImgUrl;
 		else if(property.getValue() instanceof Long){
-			//blobUrl=blobDownloader.getIconDownloadURL(userEntity.getPropertyByName("imgBlobId").toString());
-			blobUrl=blobDownloader.getIconDownloadURL("irqSN52SzHwHksn9NQFKxEIDYl0RWF3RJz6m45WSDzsafhuCSihRDg%3D%3D");
+			blobUrl = defaultImgUrl;
 		} else{
 			userEntity=(Entity) property.getValue();
-			blobUrl=blobDownloader.getIconDownloadURL(userEntity.getPropertyByName("imgBlobId").toString());
+			if(userEntity.getPropertyByName("imgBlobId")!=null)
+				blobUrl = blobDownloader.getIconDownloadURL(userEntity.getPropertyByName("imgBlobId").toString());
+			else
+				blobUrl = defaultImgUrl;
 		}
-		
-		
-		
 		imageField.setConfiguration(getImageFieldConfiguration(blobUrl));
 		try {
 			imageField.createField();
 		} catch (AppOpsException e) {
 			 e.printStackTrace();
 		}
-		
+		imageField.addErrorHandler(new ErrorHandler() {
+			@Override
+			public void onError(ErrorEvent event) {
+				imageField.setUrl("images/default_userIcon.png");
+			}
+		});
+
 		imagePanel.add(imageField);
 		imagePanel.setBorderWidth(1);
 		postSnippetPanel.add(imagePanel, DockPanel.WEST);
@@ -138,7 +146,6 @@ public class PostViewSnippet extends RowSnippet {
 				} else{
 					imageField.setAltText(userEntity.getPropertyByName("username").toString());
 				}
-				
 			}
 		});
 		
@@ -172,16 +179,12 @@ public class PostViewSnippet extends RowSnippet {
 			 e.printStackTrace();
 		}
 		spaceIconPlusTimePanel.add(responsesImageField);
-		//spaceIconPlusTimePanel.setCellWidth(responsesImageField, "40%");
 		spaceIconPlusTimePanel.setCellHorizontalAlignment(responsesImageField, HasHorizontalAlignment.ALIGN_RIGHT);
 		spaceIconPlusTimePanel.setCellVerticalAlignment(responsesImageField, HasVerticalAlignment.ALIGN_MIDDLE);
-		//DOM.setStyleAttribute(responsesImageField.getElement(), "margin", "5px");
 		
 		responsesImageField.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				/*int eventX = event.getNativeEvent().getClientX();
-				int eventY = event.getNativeEvent().getClientY();*/
 				ImageField img = (ImageField) event.getSource();
 				if(img.equals(responsesImageField)){
 					int eventX = img.getAbsoluteLeft()+10;
@@ -250,7 +253,6 @@ public class PostViewSnippet extends RowSnippet {
 				responseoptionList.clear();
 				EntityList responseEntList = (EntityList) result.getOperationResult();
 				for (Entity entity : responseEntList) {
-					/*** nitish@ensarm.com.. Adding entity to the list rather than the responsename**/
 					responseoptionList.add(entity);
 				}
 				createResponsePopup(eventX, eventY);
@@ -280,7 +282,6 @@ public class PostViewSnippet extends RowSnippet {
 			actionWidget.createUi();
 
 			mainPanel.add(actionWidget);
-			//mainPanel.add(new HTML("<hr style=\"color: #848181; background-color: #848181; width: 98%; height: 1px;\"></hr>"));
 			size--;
 			
 			actionWidget.addClickHandler(new ClickHandler() {
@@ -326,7 +327,8 @@ public class PostViewSnippet extends RowSnippet {
 	
 	private Configuration getImageFieldConfiguration(String url) {
 	    Configuration configuration = new Configuration();
-	    configuration.setPropertyByName(ImageField.IMAGEFIELD_BLOBID,url);
+	    configuration.setPropertyByName(ImageField.IMAGEFIELD_BLOBID, url);
+	    configuration.setPropertyByName(ImageField.IMAGEFIELD_PRIMARYCSS, "userImageInPost");
 		return configuration;
 	}
 	
@@ -360,7 +362,6 @@ public class PostViewSnippet extends RowSnippet {
 		timeLbl.setTitle(date);
 		spaceIconPlusTimePanel.add(timeLbl);
 		postContentPanel.add(spaceIconPlusTimePanel);
-		//spaceIconPlusTimePanel.setCellWidth(timeLbl, "30%");
 		
 		DOM.setStyleAttribute(timeLbl.getElement(), "margin", "5px");
 		timeLbl.setStylePrimaryName(POST_TIME_LABEL);

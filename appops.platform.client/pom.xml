@@ -173,7 +173,7 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>26.04.2013</version>
+			<version>06.05.2013</version>
 		</dependency>
 
 		<dependency>
