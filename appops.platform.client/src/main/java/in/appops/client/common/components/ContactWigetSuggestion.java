@@ -54,8 +54,6 @@ public class ContactWigetSuggestion extends PopupPanel implements Configurable, 
 			boxSuggestion.setEntity(entity);
 			boxSuggestion.createSuggestionSnippet(snippetFactory);
 			boxSuggestion.addFieldEventHandler(handler);
-			//AppUtils.EVENT_BUS.addHandlerToSource(FieldEvent.TYPE, boxSuggestion, this);
-			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,  this);
 			basePanel.add(boxSuggestion);
 			
 		}
