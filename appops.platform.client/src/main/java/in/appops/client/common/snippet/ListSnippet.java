@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -53,7 +54,8 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 	public static final String SCROLLPANELWIDTH = "scrollPanelWidth";
 	public static final String SCROLLPANELHEIGHT = "scrollPanelHeight";
 	public static final String SCROLLPANELCSS = "scrollPanelCss";
-
+	private Loader loader = null;
+	
 	public ListSnippet() {
 		initWidget(basepanel);
 	}
@@ -66,6 +68,13 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 
 	@Override
 	public void initialize(){
+		loader = new Loader();
+		loader.createLoader();
+		loader.setVisible(true);
+		basepanel.add(loader);
+		basepanel.setCellHorizontalAlignment(loader, HasAlignment.ALIGN_LEFT);
+		basepanel.setCellVerticalAlignment(loader, HasVerticalAlignment.ALIGN_TOP);
+		
 		listPanel = new FlexTable();
 		scrollPanel = new ScrollPanel(listPanel);
 		
@@ -197,6 +206,7 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 
 	@Override
 	public void onEntityListReceived(EntityList entityList) {
+		loader.setVisible(false);
 		initializeListPanel(entityList);
 	}
 
@@ -280,8 +290,6 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 		Entity entity = (Entity) event.getEventData();
 		int eventType = event.getEventType();
 		
-		boolean checked = selectAllCheckboxField.isChecked();
-		
 		if (getConfiguration() != null) {
 			if (getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE) != null) {
 				if ((Boolean) getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)) {
@@ -298,6 +306,7 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 					}
 					case SelectionEvent.DESELECTED: {
 						entitySelectionModel.removeSelection(entity);
+						boolean checked = selectAllCheckboxField.isChecked();
 						if (checked)
 							selectAllCheckboxField.setChecked(false);
 
