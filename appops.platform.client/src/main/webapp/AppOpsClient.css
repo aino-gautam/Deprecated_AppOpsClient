@@ -1328,3 +1328,11 @@ height: 15px;
 .outlineCss{
   outline: none;	
 }
+
+.noMoreResultlabel {
+	margin-left: 5px;
+	margin-right: 5px;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 15px;
+	margin-top: 5px;
+}

@@ -6,10 +6,12 @@ import in.appops.client.common.core.EntitySelectionModel;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.SelectionEvent;
 import in.appops.client.common.event.handlers.SelectionEventHandler;
+import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
 
 import com.google.gwt.core.client.GWT;
@@ -46,6 +48,7 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 	private static final String  NOOFCOLUMNS = "noOfColumns";
 	private CheckBox selectAllCheckboxField ;
 	private Loader loader = null;
+	private LabelField noMoreResultLabel;
 	
 	public GridSnippet() {
 		initWidget(basePanel);
@@ -65,6 +68,20 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 		basePanel.add(loader);
 		basePanel.setCellHorizontalAlignment(loader, HasAlignment.ALIGN_LEFT);
 		basePanel.setCellVerticalAlignment(loader, HasVerticalAlignment.ALIGN_TOP);
+		
+		noMoreResultLabel = new LabelField();
+		Configuration labelConfig = getLabelFieldConfiguration(true, "noMoreResultlabel", null, null);
+		noMoreResultLabel.setConfiguration(labelConfig);
+		try {
+			noMoreResultLabel.createField();
+		} catch (AppOpsException e) {
+			e.printStackTrace();
+		}
+		
+		basePanel.add(noMoreResultLabel);
+		
+		basePanel.setCellHorizontalAlignment(noMoreResultLabel, HasAlignment.ALIGN_CENTER);
+		basePanel.setCellVerticalAlignment(noMoreResultLabel, HasVerticalAlignment.ALIGN_TOP);
 		
 		int height = Window.getClientHeight() - 120;
 		int width = Window.getClientWidth() - 100;
@@ -105,6 +122,16 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 		getEntityListModel().getEntityList(entityListModel.getNoOfEntities(), this);
 				
 	}
+	
+	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
+		Configuration config = new Configuration();
+		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
+		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
+		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
+		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
+		return config;
+	}
+	
 	
 	@SuppressWarnings("unused")
 	private void initializeGridPanel(EntityList entityList){
@@ -179,6 +206,9 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 	@Override
 	public void onEntityListReceived(EntityList entityList) {
 		loader.setVisible(false);
+		if(entityList.isEmpty())
+			noMoreResultLabel.setText("No more results found");
+		
 		initializeGridPanel(entityList);
 		
 	}
