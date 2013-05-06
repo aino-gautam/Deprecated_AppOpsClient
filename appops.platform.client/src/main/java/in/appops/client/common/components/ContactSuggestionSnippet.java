@@ -66,9 +66,7 @@ public class ContactSuggestionSnippet  extends Composite implements EntityBound,
 				FieldEvent fieldEvent = new FieldEvent();
 				fieldEvent.setEventType(FieldEvent.SUGGESTION_CLICKED);			
 				fieldEvent.setEventData(entity);	
-				//AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, this);
-				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
-				
+				AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, ContactSuggestionSnippet.this);
 			}
 		};
 		
@@ -114,7 +112,6 @@ public class ContactSuggestionSnippet  extends Composite implements EntityBound,
 		
 	}
 	public void addFieldEventHandler(FieldEventHandler handler){
-		//AppUtils.EVENT_BUS.addHandlerToSource(FieldEvent.TYPE, this, handler);
-		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,  handler);
+		AppUtils.EVENT_BUS.addHandlerToSource(FieldEvent.TYPE, this, handler);
 	}
 }
