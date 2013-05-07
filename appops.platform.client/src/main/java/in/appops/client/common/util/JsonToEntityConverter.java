@@ -168,6 +168,7 @@ public class JsonToEntityConverter {
 					Property<Byte> byteProp = new Property<Byte>();
 					byteProp.setName(propName);
 					String val = propValueJson.get(primitiveTypeName).toString();
+					val = val.replace("\"", "");
 					Byte byteVal = new Byte(val);
 					byteProp.setValue(byteVal);
 					entity.setProperty(propName, byteProp);
