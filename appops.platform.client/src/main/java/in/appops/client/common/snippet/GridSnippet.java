@@ -207,7 +207,7 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 	public void onEntityListReceived(EntityList entityList) {
 		loader.setVisible(false);
 		if(entityList.isEmpty())
-			noMoreResultLabel.setText("No more results found");
+			noMoreResultLabel.setText("No results found");
 		
 		initializeGridPanel(entityList);
 		
