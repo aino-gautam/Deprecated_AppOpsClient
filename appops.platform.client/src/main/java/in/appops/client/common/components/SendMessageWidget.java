@@ -437,7 +437,7 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 				 contactBoxField.clearField();
 				 PopupPanel popupPanel = new  PopupPanel();
 				 HorizontalPanel horizontalPanel = new HorizontalPanel();
-				 Label label = new Label("Your message send successfully..");
+				 Label label = new Label("Message sent successfully.");
 				 horizontalPanel.add(label);
 				 horizontalPanel.setCellHorizontalAlignment(label, HasHorizontalAlignment.ALIGN_CENTER);
 				 popupPanel.add(horizontalPanel);
