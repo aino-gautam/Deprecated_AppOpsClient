@@ -2,6 +2,7 @@ package in.appops.client.common.snippet;
 
 import in.appops.client.common.event.ActionEvent;
 import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.fields.ImageField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.util.BlobDownloader;
 import in.appops.platform.core.entity.Entity;
@@ -13,6 +14,8 @@ import in.appops.platform.server.core.services.spacemanagement.constants.SpaceTy
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ErrorEvent;
+import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -23,7 +26,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class BoxSnippet extends Composite implements Snippet,ClickHandler{
 	
-	private Image icon;
+	private ImageField icon;
 	private LabelField entityTitle;
 	private HorizontalPanel basePanel= new HorizontalPanel();
 	private Entity entity;
@@ -47,12 +50,24 @@ public class BoxSnippet extends Composite implements Snippet,ClickHandler{
 			blobId = getEntity().getProperty(SpaceConstants.BANNERBLOBID).getValue().toString();
 		}
 
+		icon = new ImageField();
+		
 		BlobDownloader blobDownloader = new BlobDownloader();
-		if(blobId != null) {
-			icon = new Image(blobDownloader.getIconDownloadURL(blobId));
-		} else {
-			icon = new Image(blobDownloader.getIconDownloadURL("irqSN52SzHwHksn9NQFKxI4fFpnxXb3xG8L%2FWWvfrys%3D"));
+		if(blobId != null)
+			icon.setConfiguration(getIconConfig(blobDownloader.getIconDownloadURL(blobId)));
+		else
+			icon.setConfiguration(getIconConfig("images/NoImage.gif"));
+		try {
+			icon.createField();
+		} catch (AppOpsException e1) {
+			e1.printStackTrace();
 		}
+		icon.addErrorHandler(new ErrorHandler() {
+			@Override
+			public void onError(ErrorEvent event) {
+				icon.setUrl("images/NoImage.gif");
+			}
+		});
 		entityTitle = new LabelField();
 		entityTitle.setFieldValue(getEntity().getProperty("name").getValue().toString());
 		entityTitle.setConfiguration(getLabelFieldConfiguration(true, "boxSnippetEntityTitle", null, null));
@@ -66,11 +81,8 @@ public class BoxSnippet extends Composite implements Snippet,ClickHandler{
 		entityTitle.addClickHandler(this);
 		
 		LabelField spaceTypeLbl = new LabelField();
-		
 		Entity spaceTypeEnt = getEntity().getPropertyByName(SpaceConstants.SPACETYPEID);
-		
 		String spaceType = spaceTypeEnt.getPropertyByName(SpaceTypeConstants.NAME).toString();
-		
 		
 		spaceTypeLbl.setFieldValue(spaceType);
 		spaceTypeLbl.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
@@ -100,6 +112,13 @@ public class BoxSnippet extends Composite implements Snippet,ClickHandler{
 		basePanel.setStylePrimaryName("boxSnippetEntityBasePanel");
 	}
 	
+	private Configuration getIconConfig(String url) {
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(ImageField.IMAGEFIELD_BLOBID, url);
+		configuration.setPropertyByName(ImageField.IMAGEFIELD_PRIMARYCSS, "noImageAvailable");
+		return configuration;
+	}
+
 	private Configuration getLabelFieldConfiguration(boolean allowWordWrap,
 		String primaryCss, String secondaryCss, String debugId) {
 		Configuration configuration = new Configuration();
