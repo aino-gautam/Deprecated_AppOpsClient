@@ -59,6 +59,7 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 	public static final String SCROLLPANELCSS = "scrollPanelCss";
 	private Loader loader = null;
 	private LabelField noMoreResultLabel;
+	private Long maxResult = 0L;
 	
 	public ListSnippet() {
 		initWidget(basepanel);
@@ -234,9 +235,14 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 	@Override
 	public void onEntityListReceived(EntityList entityList) {
 		loader.setVisible(false);
-		if(entityList.isEmpty())
-			noMoreResultLabel.setText("No results found");
-		initializeListPanel(entityList);
+		if (entityList != null) {
+			if (entityList.isEmpty()){
+				noMoreResultLabel.setText("No result(s)");
+			}else{
+				maxResult = entityList.getMaxResult();
+				initializeListPanel(entityList);
+			}
+		}
 	}
 
 
@@ -291,9 +297,11 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 		currentScrollPosition=scrollPanel.getVerticalScrollPosition();
 		lastScrollPosition = scrollPanel.getMaximumVerticalScrollPosition();
 		
-		if(currentScrollPosition == lastScrollPosition){
-			currentStartIndex = currentStartIndex + entityListModel.getQueryToBind().getListSize();
-			fetchNextEntityList(currentStartIndex);
+		if(currentStartIndex <= maxResult){
+			if(currentScrollPosition == lastScrollPosition){
+				currentStartIndex = currentStartIndex + entityListModel.getQueryToBind().getListSize();
+				fetchNextEntityList(currentStartIndex);
+			}
 		}
 		
 	}
