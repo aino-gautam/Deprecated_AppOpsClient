@@ -1152,7 +1152,8 @@ td.datePickerMonth {
 	padding: 4px;
 	border: 2px solid;
 	border-color: lightgray;
-	width: 100%;
+	/* width: 100%; */
+	width: 200px;
 }
 
 .blockquoteOnInsWidget {
@@ -1327,4 +1328,16 @@ height: 15px;
 }
 .outlineCss{
   outline: none;	
+}
+
+.noMoreResultlabel {
+	margin-left: 5px;
+	margin-right: 5px;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 15px;
+	margin-top: 5px;
+}
+.noImageAvailable{
+	width: 48px;
+	height: 48px;
 }
