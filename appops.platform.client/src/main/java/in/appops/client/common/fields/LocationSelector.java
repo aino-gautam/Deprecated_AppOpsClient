@@ -3,6 +3,7 @@ package in.appops.client.common.fields;
 import in.appops.client.common.core.EntityReceiver;
 import in.appops.client.common.core.LocationProvider;
 import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.GeoLocation;
 import in.appops.platform.core.shared.Configuration;
@@ -146,10 +147,16 @@ public class LocationSelector extends Composite implements Field,EntityReceiver,
 			currentLocationHpPanel.setStylePrimaryName(getConfiguration().getPropertyByName(LOCATION_SELECTOR_POPUPPANEL).toString());
 		
 		try{
-			if (Geolocation.isSupported()) {
-				LocationProvider.getInstance().getLocation(LocationProvider.WEB, this);
-						
-			}
+			 if (AppEnviornment.getCurrentGeolocation() != null) {
+//					LocationProvider.getInstance().getLocation(LocationProvider.WEB, this);
+				GeoLocation geolocation = AppEnviornment.getCurrentGeolocation();
+					
+				if(geolocation != null){
+					LatLng latLng = new LatLng(geolocation.getLatitude(), geolocation.getLongitude());
+					this.latLng = latLng;
+					createMapField();
+				}
+			 }
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -184,16 +191,21 @@ public class LocationSelector extends Composite implements Field,EntityReceiver,
 		 basePanel.add(horizontalPanel);
 		 
 		 try{
-			 if (Geolocation.isSupported()) {
-					LocationProvider.getInstance().getLocation(LocationProvider.WEB, this);
-			 			
+			 if (AppEnviornment.getCurrentGeolocation() != null) {
+//					LocationProvider.getInstance().getLocation(LocationProvider.WEB, this);
+				GeoLocation geolocation = AppEnviornment.getCurrentGeolocation();
+					
+				if(geolocation != null){
+					LatLng latLng = new LatLng(geolocation.getLatitude(), geolocation.getLongitude());
+					this.latLng = latLng;
+					createMapField();
+				}
 			 }
 				
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 		 image.addClickHandler(this);
-		 
 	 }
 
 	}
@@ -483,7 +495,7 @@ public class LocationSelector extends Composite implements Field,EntityReceiver,
 	          
 			@Override
 				public void callback(HasMouseEvent event) {
-					
+				latLng =(LatLng) event.getLatLng();
 				mapField.getMarker().setPosition(event.getLatLng());
 				mapField.getMapWidget().getMap().panTo(event.getLatLng());
 				mapField.getAddressAndSet(event.getLatLng());

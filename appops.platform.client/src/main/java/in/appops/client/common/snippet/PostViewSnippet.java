@@ -4,13 +4,16 @@ import in.appops.client.common.components.ActionWidget;
 import in.appops.client.common.components.ActionWidget.ActionWidgetConfiguration;
 import in.appops.client.common.components.ActionWidget.ActionWidgetType;
 import in.appops.client.common.core.EntityReceiver;
+import in.appops.client.common.event.ActionEvent;
 import in.appops.client.common.fields.ImageField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.PostInButton;
 import in.appops.client.common.handler.HandlerFactory;
 import in.appops.client.common.handler.HandlerFactoryImpl;
 import in.appops.client.common.handler.ResponseActionHandler;
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.client.common.util.BlobDownloader;
+import in.appops.client.common.util.EntityToJsonClientConvertor;
 import in.appops.client.common.util.JsonToEntityConverter;
 import in.appops.client.common.util.PostContentParser;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
@@ -21,6 +24,8 @@ import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.JsonProperty;
 import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.query.Query;
+import in.appops.platform.core.entity.type.MetaType;
+import in.appops.platform.core.operation.InitiateActionContext;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -37,6 +42,8 @@ import java.util.Map;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ErrorEvent;
+import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -53,7 +60,6 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class PostViewSnippet extends RowSnippet {
@@ -68,6 +74,7 @@ public class PostViewSnippet extends RowSnippet {
 	public static final String POST_USER_IMAGE = "postUserImage";
 	public static final String POST_CONTEXT_LABEL = "postContextLabel";
 	public static final String HAND_CSS = "handCss";
+	public static final String POST_RESPONSE_IMAGE = "postResponseImage";
 	
 	private final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
@@ -96,25 +103,33 @@ public class PostViewSnippet extends RowSnippet {
 		final ImageField imageField = new ImageField();
 				
 		BlobDownloader blobDownloader = new BlobDownloader();
-		//TODO currently all this values getting from dummy post entity need to modify it in future
-		Property<Serializable> property=(Property<Serializable>) getEntity().getProperty(PostConstant.CREATEDBY);
-		if(property.getValue() instanceof Long){
-			//blobUrl=blobDownloader.getIconDownloadURL(userEntity.getPropertyByName("imgBlobId").toString());
-			blobUrl=blobDownloader.getIconDownloadURL("irqSN52SzHwHksn9NQFKxEIDYl0RWF3RJz6m45WSDzsafhuCSihRDg%3D%3D");
+		Property<Serializable> property = (Property<Serializable>) getEntity().getProperty(PostConstant.CREATEDBY);
+		
+		String defaultImgUrl = "images/default_userIcon.png";
+		if(property == null)
+			blobUrl = defaultImgUrl;
+		else if(property.getValue() instanceof Long){
+			blobUrl = defaultImgUrl;
 		} else{
 			userEntity=(Entity) property.getValue();
-			blobUrl=blobDownloader.getIconDownloadURL(userEntity.getPropertyByName("imgBlobId").toString());
+			if(userEntity.getPropertyByName("imgBlobId")!=null)
+				blobUrl = blobDownloader.getIconDownloadURL(userEntity.getPropertyByName("imgBlobId").toString());
+			else
+				blobUrl = defaultImgUrl;
 		}
-		
-		
-		
 		imageField.setConfiguration(getImageFieldConfiguration(blobUrl));
 		try {
 			imageField.createField();
 		} catch (AppOpsException e) {
 			 e.printStackTrace();
 		}
-		
+		imageField.addErrorHandler(new ErrorHandler() {
+			@Override
+			public void onError(ErrorEvent event) {
+				imageField.setUrl("images/default_userIcon.png");
+			}
+		});
+
 		imagePanel.add(imageField);
 		imagePanel.setBorderWidth(1);
 		postSnippetPanel.add(imagePanel, DockPanel.WEST);
@@ -131,7 +146,6 @@ public class PostViewSnippet extends RowSnippet {
 				} else{
 					imageField.setAltText(userEntity.getPropertyByName("username").toString());
 				}
-				
 			}
 		});
 		
@@ -147,10 +161,9 @@ public class PostViewSnippet extends RowSnippet {
 		postContentPanel.add(postContentFlowPanel);
 		postContentPanel.setCellVerticalAlignment(postContentFlowPanel, HasVerticalAlignment.ALIGN_MIDDLE);
 		postContentPanel.setCellHorizontalAlignment(postContentFlowPanel, HasHorizontalAlignment.ALIGN_JUSTIFY);
-		//postContentPanel.setBorderWidth(1);
 		postContentPanel.setHeight("100%");
 		postContentPanel.setWidth("100%");
-		spaceIconPlusTimePanel.setWidth("100%");
+		//spaceIconPlusTimePanel.setWidth("100%");
 		postSnippetPanel.add(postContentPanel, DockPanel.CENTER);
 		postSnippetPanel.setCellWidth(postContentPanel, "100%");
 		
@@ -166,43 +179,52 @@ public class PostViewSnippet extends RowSnippet {
 			 e.printStackTrace();
 		}
 		spaceIconPlusTimePanel.add(responsesImageField);
-		spaceIconPlusTimePanel.setCellWidth(responsesImageField, "40%");
 		spaceIconPlusTimePanel.setCellHorizontalAlignment(responsesImageField, HasHorizontalAlignment.ALIGN_RIGHT);
 		spaceIconPlusTimePanel.setCellVerticalAlignment(responsesImageField, HasVerticalAlignment.ALIGN_MIDDLE);
-		DOM.setStyleAttribute(responsesImageField.getElement(), "margin", "5px");
 		
 		responsesImageField.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				/*int eventX = event.getNativeEvent().getClientX();
-				int eventY = event.getNativeEvent().getClientY();*/
 				ImageField img = (ImageField) event.getSource();
 				if(img.equals(responsesImageField)){
-					int eventX = img.getAbsoluteLeft();
-					int eventY = img.getAbsoluteTop();
+					int eventX = img.getAbsoluteLeft()+10;
+					int eventY = img.getAbsoluteTop()+5;
 					getResponsesForWidget(eventX, eventY);
 				}
 			}
 		});
 		
-		PostInButton postInButton = new PostInButton(getEntity());
+		PostInButton postButton = createPostButtonAndReturn();
 		
-		postInButton.createButton();
+		postButton.setStylePrimaryName("postInBtn");
 		
-		postInButton.setStylePrimaryName("postInBtn");
-		
-		postSnippetPanel.add(postInButton,DockPanel.EAST);
-		postSnippetPanel.setCellVerticalAlignment(postInButton, ALIGN_TOP);
+		postSnippetPanel.add(postButton,DockPanel.EAST);
+		postSnippetPanel.setCellVerticalAlignment(postButton, ALIGN_TOP);
 		
 		add(postSnippetPanel,DockPanel.CENTER);
 		
 		postSnippetPanel.setStylePrimaryName(POST_SNIPPET);
 		imagePanel.setStylePrimaryName(POST_USER_IMAGE);
 		postContentFlowPanel.setStylePrimaryName(POST_CONTEXT_LABEL);
-		responsesImageField.setStylePrimaryName(HAND_CSS);
+		responsesImageField.setStylePrimaryName(POST_RESPONSE_IMAGE);
 		//spaceImageField.setStylePrimaryName(HAND_CSS);
 		showEmbededEntityDetailsInSnippet(getEntity());
 		
+	}
+	
+	private PostInButton createPostButtonAndReturn() {
+		
+		PostInButton postInButton = new PostInButton(getEntity());
+		Entity postEntity = getEntity();
+		
+		Byte postAlreadyIn = postEntity.getPropertyByName(PostConstant.ALREADYIN);
+
+		if(postAlreadyIn !=null && postAlreadyIn == 1)
+			postInButton.createOutButton();
+		else
+			postInButton.createInButton();
+
+		return postInButton;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -228,9 +250,9 @@ public class PostViewSnippet extends RowSnippet {
 			}
 			@Override
 			public void onSuccess(Result result) {
+				responseoptionList.clear();
 				EntityList responseEntList = (EntityList) result.getOperationResult();
 				for (Entity entity : responseEntList) {
-					/*** nitish@ensarm.com.. Adding entity to the list rather than the responsename**/
 					responseoptionList.add(entity);
 				}
 				createResponsePopup(eventX, eventY);
@@ -250,7 +272,7 @@ public class PostViewSnippet extends RowSnippet {
 			final String responseText = responseEntity.getPropertyByName(ActionResponseViewConstant.RESPONSE_NAME);
 			final ActionWidget actionWidget = new ActionWidget(ActionWidgetType.LINK);
 			actionWidget.setWidgetText(responseText);
-			//actionWidget.setActionEvent(getResponseActionEvent(actionWidget));
+			actionWidget.setActionEntity(responseEntity);
 			
 			if(size-1 !=0){
 				actionWidget.setConfiguration(getActionLinkConfiguration("responseLbl", null));
@@ -260,36 +282,42 @@ public class PostViewSnippet extends RowSnippet {
 			actionWidget.createUi();
 
 			mainPanel.add(actionWidget);
-			//mainPanel.add(new HTML("<hr style=\"color: #848181; background-color: #848181; width: 98%; height: 1px;\"></hr>"));
 			size--;
 			
 			actionWidget.addClickHandler(new ClickHandler() {
 				
 				@Override
 				public void onClick(ClickEvent event) {
-					HandlerFactory handFactory = GWT.create(HandlerFactoryImpl.class);
-					
-					ResponseActionHandler handler = handFactory.getActionHandlerByName(responseText);
-					handler.setEmbeddedEntity(getEmbeddedEntity());
-					handler.setPostEntity(getEntity());
-					handler.setResponseEntity(responseEntity);
-					handler.executeResponse(new EntityReceiver() {
+					boolean isWidget = (Boolean) responseEntity.getProperty(ActionResponseViewConstant.IS_WIDGET).getValue();
+					if(isWidget) {
+						ActionEvent actionEvent = getActionEvent(actionWidget);
+						actionWidget.fireEvent(actionEvent);
+						popupPanel.hide();
+					} else {
+						HandlerFactory handFactory = GWT.create(HandlerFactoryImpl.class);
 						
-						@Override
-						public void onEntityUpdated(Entity entity) {
-							popupPanel.hide();
-						}
-						
-						@Override
-						public void onEntityReceived(Entity entity) {
+						ResponseActionHandler handler = handFactory.getActionHandlerByName(responseText);
+						handler.setEmbeddedEntity(getEmbeddedEntity());
+						handler.setPostEntity(getEntity());
+						handler.setResponseEntity(responseEntity);
+						handler.executeResponse(new EntityReceiver() {
 							
-						}
-						
-						@Override
-						public void noMoreData() {
+							@Override
+							public void onEntityUpdated(Entity entity) {
+								popupPanel.hide();
+							}
 							
-						}
-					});
+							@Override
+							public void onEntityReceived(Entity entity) {
+								
+							}
+							
+							@Override
+							public void noMoreData() {
+								
+							}
+						});
+					}
 				}
 			});
 		}
@@ -299,7 +327,8 @@ public class PostViewSnippet extends RowSnippet {
 	
 	private Configuration getImageFieldConfiguration(String url) {
 	    Configuration configuration = new Configuration();
-	    configuration.setPropertyByName(ImageField.IMAGEFIELD_BLOBID,url);
+	    configuration.setPropertyByName(ImageField.IMAGEFIELD_BLOBID, url);
+	    configuration.setPropertyByName(ImageField.IMAGEFIELD_PRIMARYCSS, "userImageInPost");
 		return configuration;
 	}
 	
@@ -333,7 +362,6 @@ public class PostViewSnippet extends RowSnippet {
 		timeLbl.setTitle(date);
 		spaceIconPlusTimePanel.add(timeLbl);
 		postContentPanel.add(spaceIconPlusTimePanel);
-		spaceIconPlusTimePanel.setCellWidth(timeLbl, "30%");
 		
 		DOM.setStyleAttribute(timeLbl.getElement(), "margin", "5px");
 		timeLbl.setStylePrimaryName(POST_TIME_LABEL);
@@ -412,13 +440,34 @@ public class PostViewSnippet extends RowSnippet {
 		
 		detailLbl.setStylePrimaryName("blockquote");
 		
-		postContentPanel.add(detailLbl);
+		if(detailLbl.getText().equals("") ||detailLbl.getText().equals(" ")){
+			
+		}else{
+			postContentPanel.add(detailLbl);
+			
+			postContentPanel.setCellHorizontalAlignment(detailLbl, HasHorizontalAlignment.ALIGN_LEFT);
+		}
 		
-		postContentPanel.setCellHorizontalAlignment(detailLbl, HasHorizontalAlignment.ALIGN_LEFT);
 		
 	}
 	
-
-
-
+	private ActionEvent getActionEvent(ActionWidget actionWidget) {
+		
+		InitiateActionContext context = new InitiateActionContext();
+		context.setType(new MetaType("ActionContext"));
+		
+		context.setSpace(AppEnviornment.getCurrentSpace());
+		
+		if(actionWidget.getActionEntity() != null){
+			context.setActionEntity(actionWidget.getActionEntity());
+		}
+		
+		JSONObject token = EntityToJsonClientConvertor.createJsonFromEntity(context);
+		
+		ActionEvent actionEvent = new ActionEvent();
+		actionEvent.setEventType(ActionEvent.TRANSFORMWIDGET);			
+		actionEvent.setEventData(token.toString());
+		
+		return actionEvent;
+	}
 }

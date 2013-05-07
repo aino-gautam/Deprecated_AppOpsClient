@@ -1,5 +1,6 @@
 package in.appops.client.common.fields;
 
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -49,7 +50,7 @@ public class PostInButton extends Composite{
 	/**
 	 * creates the button
 	 */
-	public void createButton() {
+	public void createOutButton() {
 		
 		Image interestedInImage = new Image("images/opptinLogoInDarkGray.png");
 		
@@ -75,6 +76,32 @@ public class PostInButton extends Composite{
 		basePanel.add(toggleButton);
 	}
 	
+	public void createInButton() {
+		
+		Image interestedInImage = new Image("images/opptinLogoInDarkGray.png");
+		
+		Image notInterestedInImage = new Image("images/opptinLogoInLightGray.png");
+		
+		interestedInImage.setStylePrimaryName("postInImage");
+		notInterestedInImage.setStylePrimaryName("postInImage");
+
+		toggleButton = new ToggleButton(notInterestedInImage,interestedInImage, new ClickHandler() {
+
+					@Override
+					public void onClick(ClickEvent event) {
+						if (toggleButton.isDown()) {
+							interestedIn();
+						} else {
+							notInterestedIn();
+						}
+					}
+				});
+		
+		toggleButton.setStylePrimaryName("postInBtn");
+
+		basePanel.add(toggleButton);
+	}
+	
 	
 	private void interestedIn(){
 		
@@ -83,6 +110,8 @@ public class PostInButton extends Composite{
 		StandardAction action = new StandardAction(Entity.class, "in.InService.areYouInterestedIn", map);
 		ResponseActionContext actionContext = new ResponseActionContext();
 		actionContext.setEmbeddedAction(action);
+		actionContext.setSpace(AppEnviornment.getCurrentSpace());
+		
 		AsyncCallback<Result> callBack = new AsyncCallback<Result>() {
 			
 			public void onFailure(Throwable caught) {
@@ -108,6 +137,8 @@ public class PostInButton extends Composite{
 	StandardAction action = new StandardAction(Entity.class, "in.InService.deleteInRequest", map);
 	ResponseActionContext actionContext = new ResponseActionContext();
 	actionContext.setEmbeddedAction(action);
+	actionContext.setSpace(AppEnviornment.getCurrentSpace());
+	
 	AsyncCallback<Result> callBack = new AsyncCallback<Result>() {
 		
 		

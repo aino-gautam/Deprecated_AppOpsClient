@@ -1,13 +1,18 @@
 package in.appops.client.common.snippet;
 
 import in.appops.client.common.core.EntityListModel;
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.server.core.services.useraccount.constant.UserPojoConstant;
 
 import java.util.HashMap;
 
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class CalendarServiceHomeSnippet extends VerticalPanel implements Snippet {
@@ -19,6 +24,10 @@ public class CalendarServiceHomeSnippet extends VerticalPanel implements Snippet
 	
 		
 	public CalendarServiceHomeSnippet() {
+		//clear this snippet and move the code to reminder list snippet 
+		//create ui as discussed for this snippet
+		//set configuration with reminder/event creation
+		
 	}
 	
 	@Override
@@ -30,7 +39,9 @@ public class CalendarServiceHomeSnippet extends VerticalPanel implements Snippet
 		configuration.setPropertyByName(SnippetConstant.SELECTIONMODE, false);
 		setConfiguration(configuration);
 		
-		initializeListForUser(1L);
+		Entity usrEnt =  AppEnviornment.getCurrentUser();
+		Long userId = ((Key<Long>)usrEnt.getPropertyByName(UserPojoConstant.ID)).getKeyValue();
+		initializeListForUser(userId);
 	}
 	
 	
@@ -38,7 +49,7 @@ public class CalendarServiceHomeSnippet extends VerticalPanel implements Snippet
 		
 		Query query = new Query();
 		query.setQueryName("getAllRemindersOfUser");
-		query.setListSize(8);
+		query.setListSize(10);
 			
 		HashMap<String, Object> queryParam = new HashMap<String, Object>();
 		queryParam.put("userId", userId);
@@ -56,6 +67,10 @@ public class CalendarServiceHomeSnippet extends VerticalPanel implements Snippet
 		listSnippet.setConfiguration(getConfiguration());
 		listSnippet.initialize();
 		
+		Label headingLbl = new Label(" Calendar reminders for you ");
+		headingLbl.setStylePrimaryName("serviceHomeHeadingLabel");
+		add(headingLbl);
+		setCellHorizontalAlignment(headingLbl, HasHorizontalAlignment.ALIGN_CENTER);
 		add(listSnippet);
 		
 	}
