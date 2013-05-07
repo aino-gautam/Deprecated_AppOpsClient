@@ -80,6 +80,7 @@ public class UserThreadWidget extends Composite implements EventListener,ClickHa
 			snippet.initialize(entity);
 			snippet.setStylePrimaryName("flowPanelContent");
 			snippet.setStyleName("crossImageCss");
+			snippet.addStyleName("outlineCss");
 			
 			ClickHandler handler = new ClickHandler() {
 				

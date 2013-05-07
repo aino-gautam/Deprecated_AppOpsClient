@@ -82,8 +82,9 @@ public class ActionWidget extends Composite implements Configurable{
 		try{
 			basePanel.add(actionWidgetPanel);
 			
-			actionWidgetPanel.add(actionImage);
-			
+			if(widgetType == ActionWidgetType.LABEL){
+				actionWidgetPanel.add(actionImage);
+			}
 			Widget actionWidget = (widgetType == ActionWidgetType.LABEL ? actionLabel : (widgetType == ActionWidgetType.LINK ? actionLink : actionButton));
 			actionWidgetPanel.add(actionWidget);
 			actionWidgetPanel.setCellVerticalAlignment(actionWidget, HasVerticalAlignment.ALIGN_MIDDLE);
@@ -92,7 +93,9 @@ public class ActionWidget extends Composite implements Configurable{
 			if(configuration != null){
 				applyConfiguration();
 			}
-			actionImage.createField();
+			if(widgetType == ActionWidgetType.LABEL){
+				actionImage.createField();
+			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -145,15 +148,17 @@ public class ActionWidget extends Composite implements Configurable{
 			}
 		}
 		
-		String url = "";
-		if(actionEntity.getProperty("blobId") != null ){
-			BlobDownloader blobDownloader = new BlobDownloader();
-			String blobId = actionEntity.getProperty("blobId").getValue().toString();
-			url = blobDownloader.getImageDownloadURL(blobId);
+		if(widgetType == ActionWidgetType.LABEL){
+			String url = "";
+			if(actionEntity.getProperty("blobId") != null ){
+				BlobDownloader blobDownloader = new BlobDownloader();
+				String blobId = actionEntity.getProperty("blobId").getValue().toString();
+				url = blobDownloader.getImageDownloadURL(blobId);
+			}
+			Configuration imageConfig = getImageFieldConfiguration(url, "appops-intelliThoughtActionImage");
+			actionImage.setConfiguration(imageConfig);
+			basePanel.setStylePrimaryName("appops-intelliThoughtActionPanel");
 		}
-		Configuration imageConfig = getImageFieldConfiguration(url, "appops-intelliThoughtActionImage");
-		actionImage.setConfiguration(imageConfig);
-		basePanel.setStylePrimaryName("appops-intelliThoughtActionPanel");
 
 	}
 

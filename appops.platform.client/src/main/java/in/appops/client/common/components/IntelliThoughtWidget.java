@@ -209,8 +209,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	@Override
 	public void onClick(ClickEvent event) {
 		Widget source = (Widget) event.getSource();
-		if(source.equals(attachMediaField.getMedia())){
-		} else if(source.equals(searchBasePanel)){
+		if(source.equals(searchBasePanel)){
 			String text = intelliShareField.getText();
 			SearchEvent searchEvent = new SearchEvent(SearchEvent.SEARCHFIRED, text);
 			AppUtils.EVENT_BUS.fireEvent(searchEvent);
@@ -258,14 +257,15 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	public void onFieldEvent(FieldEvent event) {
 		int eventType = event.getEventType();
 		String eventData = (String) event.getEventData();
-		
-		if(eventType == FieldEvent.EDITINITIATED) {
-			if (!isAttachedMediaField) {
-				attachMediaField.setVisible(true);
-				setAttachedMediaField(true);
-			} 
-		} else if(eventType == FieldEvent.WORDENTERED) {
-			handleWordEnteredEvent(eventData);
+		if(this.isVisible()) {
+			if(eventType == FieldEvent.EDITINITIATED) {
+				if (!isAttachedMediaField) {
+					attachMediaField.setVisible(true);
+					setAttachedMediaField(true);
+				} 
+			} else if(eventType == FieldEvent.WORDENTERED) {
+				handleWordEnteredEvent(eventData);
+			}
 		}
 	}
 
@@ -294,7 +294,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
 
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("word", "%"+ word +"%");
+		paramMap.put("word", word);
 		
 		StandardAction action = new StandardAction(EntityList.class, "coreplatform.CorePlatformService.getSuggestionAction", paramMap);
 		dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
@@ -306,6 +306,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 			
 			public void onSuccess(Result<EntityList> result) {
 				EntityList  entityList =  result.getOperationResult();
+				suggestionAction.clearSuggestionPanel();
 				for(Entity entity : entityList ){
 					String widgetName = entity.getPropertyByName(ActionsConstant.NAME);
 					final ActionWidget actionWidget = new ActionWidget(ActionWidgetType.LABEL);
@@ -353,6 +354,8 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		}
 		
 		JSONObject token = EntityToJsonClientConvertor.createJsonFromEntity(context);
+		
+		/** For testing purpose.. not to be removed **/
 //		Entity ent = new JsonToEntityConverter().getConvertedEntity(token);
 //		InitiateActionContext cont = (InitiateActionContext)ent;
 //		String action = cont.getAction();
