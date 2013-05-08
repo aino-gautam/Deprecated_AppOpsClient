@@ -17,6 +17,13 @@ public class IntelliThoughtUtil {
 		return word;
 	}
 	
+	public static String getWordBeingTypedForContextField(String textTillCaretPosition, int caretPosition){
+		String word = null;
+		word = textTillCaretPosition.substring(textTillCaretPosition.lastIndexOf(",") + 1, caretPosition);
+		word = word.trim();
+		return word;
+	}
+	
 	public static String getTextTillCaretPosition(String elementValue, int caretPosition){
 		return elementValue.substring(0, caretPosition);
 	}
@@ -159,6 +166,36 @@ public class IntelliThoughtUtil {
 		return start;
 	}
 
+	public static int  checkPreviousWordForContactBoxField(String textValue, String tagText){
+		int start = -1;
+		if(tagText.contains(",")){
+		int nextWord = tagText.lastIndexOf(",")+1;
+		
+		int lastindex = textValue.toLowerCase().lastIndexOf(tagText.substring(nextWord).toLowerCase());
+		if(lastindex != -1){
+			String strTillEnd = textValue.substring(lastindex, textValue.length());
+			strTillEnd=strTillEnd.trim();
+			boolean isStartWith = tagText.toLowerCase().startsWith(strTillEnd.toLowerCase());
+			if(isStartWith){
+				start = lastindex;
+			}
+		}
+		}else{
+			String firstWord = tagText.split("\\s+")[0];
+			
+			int lastindex = textValue.toLowerCase().lastIndexOf(firstWord.toLowerCase());
+			if(lastindex != -1){
+				String strTillEnd = textValue.substring(lastindex, textValue.length());
+				
+				boolean isStartWith = tagText.toLowerCase().startsWith(strTillEnd.toLowerCase());
+				if(isStartWith){
+					start = lastindex;
+				}
+			}
+		}
+		return start;
+	}
+	
 	/**
 	 * This would return the node at the specified range.
 	 * @param elementId
@@ -202,6 +239,8 @@ public class IntelliThoughtUtil {
 		    return textNodes;
 		}
 	}-*/;
+
+	
 
 
 }
