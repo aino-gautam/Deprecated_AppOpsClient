@@ -38,7 +38,7 @@ public class TimePicker extends Composite implements FocusHandler, BlurHandler, 
 	
 	public TimePicker(String timeMode) {
 		this.timeMode = timeMode;
-		
+		selectTimeButton.setStylePrimaryName("appops-Button");
 		popupPanel = new PopupPanel(true);
 		popupPanel.setWidget(createTimePickerPanel());
 		popupPanel.addAutoHidePartner(textBox.getElement());

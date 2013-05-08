@@ -1,5 +1,7 @@
 package in.appops.client.common.fields.suggestion;
 
+import java.util.HashMap;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -12,12 +14,13 @@ import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class AppopsSuggestionBox extends Composite implements SelectionHandler<SuggestOracle.Suggestion>, ClickHandler{
+public class AppopsSuggestionBox extends Composite implements SelectionHandler<SuggestOracle.Suggestion>, ClickHandler, FocusHandler{
 	
 	private VerticalPanel basePanel;
 	private AppopsSuggestion selectedSuggestion;
 	private SuggestionOracle oracle = new SuggestionOracle();
 	private SuggestBox suggestBox = new SuggestBox(oracle);
+	private Boolean isAutoSuggestion = false;
 	
 	public AppopsSuggestionBox() {
 		basePanel = new VerticalPanel();
@@ -29,6 +32,7 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 		this.basePanel.add(suggestBox);
 		suggestBox.addSelectionHandler(this);
 		suggestBox.getTextBox().addClickHandler(this);
+		suggestBox.getTextBox().addFocusHandler(this);
 	}
 	
 	public void setQueryName(String queryName) {
@@ -69,4 +73,36 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 			getSuggestBox().setText("");
 		}
 	}
+	
+	public void setMaxResult(int max) {
+		oracle.setMaxResult(max);
+	}
+
+	public void setPropertyToDisplay(String propertyByName) {
+		oracle.setDisplayText(propertyByName);
+	}
+
+	public void setQueryRestrictions(HashMap<String, Object> map) {
+		oracle.setRestriction(map);
+	}
+
+	public void setIsSearchQuery(Boolean val) {
+		oracle.IsSearchQuery(val);
+	}
+
+	public void setAutoSuggestion(Boolean val) {
+		isAutoSuggestion = val;
+	}
+	
+	@Override
+	public void onFocus(FocusEvent event) {
+		if(isAutoSuggestion){
+			if(getSuggestBox().getText().equals(""))
+				getSuggestBox().setText(" ");
+			getSuggestBox().showSuggestionList();
+			if(getSuggestBox().getText().equals(" "))
+				getSuggestBox().setText("");
+		}
+	}
+
 }

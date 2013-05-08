@@ -45,6 +45,7 @@ public class DateTimePicker extends Composite implements FocusHandler{
 	
 	public DateTimePicker(){
 		textbox=new TextBox();
+		textbox.setStylePrimaryName("appops-TextField");
 		textbox.addFocusHandler(this);
 		popupPanel=new PopupPanel(true);
 		popupPanel.setVisible(false);
@@ -56,12 +57,7 @@ public class DateTimePicker extends Composite implements FocusHandler{
 		DOM.setStyleAttribute(textbox.getElement(), "width", "215px");
 	}
 	
-	
-	
 	public VerticalPanel createDateTimePicker(){
-		
-		
-		
 		datePicker.addValueChangeHandler(new ValueChangeHandler(){
 
 			@Override
@@ -80,9 +76,7 @@ public class DateTimePicker extends Composite implements FocusHandler{
 		timePicker.add(createTimeComponent());
 		vpPanel.add(timePicker);
 		vpPanel.add(btDone);
-		//popupPanel.add(vpPanel);
-		//vpBase.add(popupPanel);
-		//popupPanel.show();
+		btDone.setStylePrimaryName("appops-Button");
 		btDone.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {

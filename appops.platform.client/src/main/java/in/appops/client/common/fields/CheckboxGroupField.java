@@ -1,5 +1,9 @@
 package in.appops.client.common.fields;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+
 import in.appops.client.common.event.FieldEvent;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -18,6 +22,7 @@ public class CheckboxGroupField extends Composite implements Field{
 	private VerticalPanel verticalBasePanel;
 	private HorizontalPanel horizontalBasePanel;
 	private String checkboxBasepanel;
+	private HashMap<String, CheckBox> groupMap = new HashMap<String, CheckBox>();
 	
 	public static final String CHECKBOX_SELECT_MODE = "checkboxSelectMode";
 	public static final String CHECKBOX_SINGLESELECT = "checkboxSingleSelect";
@@ -55,6 +60,7 @@ public class CheckboxGroupField extends Composite implements Field{
 		if(checkboxBasepanel != null) {
 			if(checkboxBasepanel.equals(CHECKBOX_HORIZONTALBASEPANEL)) {
 				horizontalBasePanel = new HorizontalPanel();
+				horizontalBasePanel.setStylePrimaryName("gropuCheckBoxField");
 				initWidget(horizontalBasePanel);
 			} else if(checkboxBasepanel.equals(CHECKBOX_VERTICALBASEPANEL)) {
 				verticalBasePanel = new VerticalPanel();
@@ -108,6 +114,7 @@ public class CheckboxGroupField extends Composite implements Field{
 			} else if(checkboxBasepanel.equals(CHECKBOX_VERTICALBASEPANEL)) {
 				verticalBasePanel.add(radioButton);
 			}
+			groupMap.put(value, radioButton);
 		}else if(checkboxSelectMode.equals(CHECKBOX_MULTISELECT)) {
 			
 			CheckBox checkBox = new CheckBox();
@@ -117,7 +124,30 @@ public class CheckboxGroupField extends Composite implements Field{
 			} else if(checkboxBasepanel.equals(CHECKBOX_VERTICALBASEPANEL)) {
 				verticalBasePanel.add(checkBox);
 			}
+			groupMap.put(value, checkBox);
 		}
 	}
 	
+	public CheckBox getCheckBox(String text) {
+		if(groupMap.containsKey(text))
+			return groupMap.get(text);
+		return null;
+	}
+	
+	public HashMap<String, Boolean> getValue() {
+		HashMap<String, Boolean> map = new HashMap<String, Boolean>();
+		Set<String> keySet = groupMap.keySet();
+		Iterator<String> iterator = keySet.iterator();
+		while(iterator.hasNext()) {
+			String key = iterator.next();
+			if(checkboxSelectMode.equals(CHECKBOX_SINGLESELECT)) {
+				RadioButton radioButton = (RadioButton) groupMap.get(key);
+				map.put(key, radioButton.getValue());
+			}else if(checkboxSelectMode.equals(CHECKBOX_MULTISELECT)) {
+				CheckBox checkBox = groupMap.get(key);
+				map.put(key, checkBox.getValue());
+			}
+		}
+		return map;
+	}
 }

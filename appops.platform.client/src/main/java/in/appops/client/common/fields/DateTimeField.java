@@ -3,14 +3,11 @@ package in.appops.client.common.fields;
 import java.util.Date;
 
 import in.appops.client.common.event.FieldEvent;
-import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 
-import com.google.gwt.event.shared.GwtEvent.Type;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.user.datepicker.client.DatePicker;
 
@@ -36,7 +33,9 @@ public class DateTimeField extends Composite implements Field{
 	public static final String SHORT_MINUTE = "short_Minute";
 	public static final String SHORT_SECONDS = "short_Seconds";
 	public static final String Full_Time = "full_Time";
-			
+
+	private Widget currentField = null;
+	
 	public DateTimeField(){
 		
 	}
@@ -65,13 +64,9 @@ public class DateTimeField extends Composite implements Field{
 		}else if(fieldMode.equalsIgnoreCase(MODE_SELECTION)){
 			if(fieldType.equalsIgnoreCase(DATETIMEFIELD_DATEONLY)){
 				DateOnlyPicker dateOnlyPicker = new  DateOnlyPicker();
-				//datePicker.setValue(value);
 				initWidget(dateOnlyPicker);
+				setCurrentField(dateOnlyPicker);
 			}else if(fieldType.equalsIgnoreCase(DATETIMEFIELD_TIMEONLY)){
-				/* datePicker = new DatePicker();
-				 long time=value.getTime();
-				 value.setTime(time);
-				 datePicker.setValue(value);*/
 				TimePicker timePicker = null ;
 				
 				if(getConfiguration().getPropertyByName(SHORT_HOURS)!=null){
@@ -87,16 +82,14 @@ public class DateTimeField extends Composite implements Field{
 					timePicker = new TimePicker(Full_Time);
 					
 				}
-				
 				initWidget(timePicker);
+				setCurrentField(timePicker);
 			}else if(fieldType.equalsIgnoreCase(DATETIMEFIELD_DATETIMEONLY)){
 				DateTimePicker dateTimePicker = new DateTimePicker();
 				initWidget(dateTimePicker);
+				setCurrentField(dateTimePicker);
 			}
 		}
-		
-		
-		
 	}
 
 	@Override
@@ -127,5 +120,11 @@ public class DateTimeField extends Composite implements Field{
 		
 	}
 
-	
+	public Widget getCurrentField() {
+		return currentField;
+	}
+
+	public void setCurrentField(Widget currentField) {
+		this.currentField = currentField;
+	}
 }
