@@ -24,6 +24,10 @@ public class CalendarServiceHomeSnippet extends VerticalPanel implements Snippet
 	
 		
 	public CalendarServiceHomeSnippet() {
+		//clear this snippet and move the code to reminder list snippet 
+		//create ui as discussed for this snippet
+		//set configuration with reminder/event creation
+		
 	}
 	
 	@Override
