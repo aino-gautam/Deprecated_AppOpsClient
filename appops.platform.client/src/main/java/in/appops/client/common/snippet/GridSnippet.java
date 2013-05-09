@@ -49,6 +49,7 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 	private CheckBox selectAllCheckboxField ;
 	private Loader loader = null;
 	private LabelField noMoreResultLabel;
+	private Long maxResult = 0L;
 	
 	public GridSnippet() {
 		initWidget(basePanel);
@@ -188,11 +189,13 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 		currentScrollPosition=scrollPanel.getVerticalScrollPosition();
 		lastScrollPosition = scrollPanel.getMaximumVerticalScrollPosition();
 		
-		if(currentScrollPosition == lastScrollPosition){
+		if(currentStartIndex <= maxResult){
+			if(currentScrollPosition == lastScrollPosition){
 			
-			currentStartIndex = currentStartIndex + entityListModel.getQueryToBind().getListSize();
+				currentStartIndex = currentStartIndex + entityListModel.getQueryToBind().getListSize();
 			
-			fetchNextEntityList(currentStartIndex);
+				fetchNextEntityList(currentStartIndex);
+			}
 		}
 		
 	}
@@ -206,10 +209,14 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 	@Override
 	public void onEntityListReceived(EntityList entityList) {
 		loader.setVisible(false);
-		if(entityList.isEmpty())
-			noMoreResultLabel.setText("No results found");
-		
-		initializeGridPanel(entityList);
+		if (entityList != null) {
+			if(entityList.isEmpty()){
+				noMoreResultLabel.setText("No result(s)");
+			}else{
+				maxResult = entityList.getMaxResult();
+				initializeGridPanel(entityList);
+			}
+		}
 		
 	}
 
