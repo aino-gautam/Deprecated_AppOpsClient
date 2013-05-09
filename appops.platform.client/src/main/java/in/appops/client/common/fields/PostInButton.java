@@ -29,7 +29,6 @@ public class PostInButton extends Composite{
 	private VerticalPanel basePanel;
 	private final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
-	private Entity savedInterestedEntity;
 
 	/**
 	 * constructor
@@ -110,7 +109,7 @@ public class PostInButton extends Composite{
 		
 		HashMap  map = new HashMap();
 		map.put("inRequestedOnEntity", interestedInEntity);
-		StandardAction action = new StandardAction(Entity.class, "in.InService.areYouInterestedIn", map);
+		StandardAction action = new StandardAction(Entity.class, "in.InService.areYouInterestedInPost", map);
 		ResponseActionContext actionContext = new ResponseActionContext();
 		actionContext.setEmbeddedAction(action);
 		actionContext.setSpace(AppEnviornment.getCurrentSpace());
@@ -131,7 +130,6 @@ public class PostInButton extends Composite{
 			
 			public void onSuccess(Result result) {
 				Entity inEntity = (Entity)result.getOperationResult();
-				savedInterestedEntity = inEntity;
 									
 			}
 		};
@@ -145,7 +143,7 @@ public class PostInButton extends Composite{
 		HashMap  map = new HashMap();
 		map.put("inEntity", interestedInEntity);
 		
-		StandardAction action = new StandardAction(Entity.class, "in.InService.deleteInRequest", map);
+		StandardAction action = new StandardAction(Entity.class, "in.InService.notInterestedIn", map);
 		ResponseActionContext actionContext = new ResponseActionContext();
 		actionContext.setEmbeddedAction(action);
 		actionContext.setSpace(AppEnviornment.getCurrentSpace());
@@ -167,12 +165,5 @@ public class PostInButton extends Composite{
 	
 }
 
-	public Entity getSavedInterestedEntity() {
-		return savedInterestedEntity;
-	}
-
-	public void setSavedInterestedEntity(Entity savedInterestedEntity) {
-		this.savedInterestedEntity = savedInterestedEntity;
-	}
 
 }
