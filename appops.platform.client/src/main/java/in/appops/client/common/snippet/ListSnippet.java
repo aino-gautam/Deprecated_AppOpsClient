@@ -7,10 +7,12 @@ import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.SelectionEvent;
 import in.appops.client.common.event.handlers.SelectionEventHandler;
 import in.appops.client.common.fields.CheckboxField;
+import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
 
 import com.google.gwt.core.client.GWT;
@@ -23,6 +25,8 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -47,14 +51,16 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 	private int row = 0;
 	private Entity entity;
 	private String type;
-	
-	//private CheckboxField selectAllCheckboxField ;
-	
 	private CheckBox selectAllCheckboxField ;
-	
 	public static final String SNIPPETTYPE = "snippetType";
-	//public static final String SELECTIONMODE = "selectionMode";
-
+	public static final String LISTPANELCSS = "listPanelCss";
+	public static final String SCROLLPANELWIDTH = "scrollPanelWidth";
+	public static final String SCROLLPANELHEIGHT = "scrollPanelHeight";
+	public static final String SCROLLPANELCSS = "scrollPanelCss";
+	private Loader loader = null;
+	private LabelField noMoreResultLabel;
+	private Long maxResult = 0L;
+	
 	public ListSnippet() {
 		initWidget(basepanel);
 	}
@@ -67,19 +73,29 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 
 	@Override
 	public void initialize(){
+		loader = new Loader();
+		loader.createLoader();
+		loader.setVisible(true);
+		basepanel.add(loader);
+		basepanel.setCellHorizontalAlignment(loader, HasAlignment.ALIGN_LEFT);
+		basepanel.setCellVerticalAlignment(loader, HasVerticalAlignment.ALIGN_TOP);
 		
+		noMoreResultLabel = new LabelField();
+		Configuration labelConfig = getLabelFieldConfiguration(true, "noMoreResultlabel", null, null);
+		noMoreResultLabel.setConfiguration(labelConfig);
+		try {
+			noMoreResultLabel.createField();
+		} catch (AppOpsException e) {
+			e.printStackTrace();
+		}
 		
-		/*Configuration config = getCheckboxFieldConfiguration("Select All");
-		selectAllCheckboxField.setFieldValue("false");
-		selectAllCheckboxField.setConfiguration(config);*/
+		basepanel.add(noMoreResultLabel);
+		
+		basepanel.setCellHorizontalAlignment(noMoreResultLabel, HasAlignment.ALIGN_CENTER);
+		basepanel.setCellVerticalAlignment(noMoreResultLabel, HasVerticalAlignment.ALIGN_TOP);
 		
 		listPanel = new FlexTable();
 		scrollPanel = new ScrollPanel(listPanel);
-		
-		int height = Window.getClientHeight() - 120;
-		int width = Window.getClientWidth() - 100;
-		scrollPanel.setHeight(height + "px");
-		scrollPanel.setWidth(width + "px");
 		
 		if (getConfiguration() != null && entityListModel instanceof EntitySelectionModel) {
 			if (getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE) != null) {
@@ -93,20 +109,61 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 			}
 		}
 		
+		
+		
+		if(getConfiguration() != null){
+			String listPanelCss = getConfiguration().getPropertyByName(LISTPANELCSS);
+			String scrollPanelCss = getConfiguration().getPropertyByName(SCROLLPANELCSS);
+			
+			if(listPanelCss != null) {
+				listPanel.setStylePrimaryName(listPanelCss);
+				setStylePrimaryName(listPanelCss);
+			}
+
+			if(scrollPanelCss != null) {
+				scrollPanel.setStylePrimaryName(scrollPanelCss);
+			}
+			
+			if(getConfiguration().getPropertyByName(SCROLLPANELWIDTH) != null)
+				scrollPanel.setWidth(getConfiguration().getPropertyByName(SCROLLPANELWIDTH) + "px");
+			else{
+				int width = Window.getClientWidth() - 100;
+				scrollPanel.setWidth(width + "px");
+			}
+			
+			if(getConfiguration().getPropertyByName(SCROLLPANELHEIGHT) != null)
+				scrollPanel.setHeight(getConfiguration().getPropertyByName(SCROLLPANELHEIGHT) + "px");
+			else{
+				int height = Window.getClientHeight() - 120;
+				scrollPanel.setHeight(height + "px");
+			}
+			
+		}else{
+			listPanel.setStylePrimaryName("listComponentPanel");
+			setStylePrimaryName("listComponentPanel");
+			int height = Window.getClientHeight() - 120;
+			int width = Window.getClientWidth() - 100;
+			scrollPanel.setHeight(height + "px");
+			scrollPanel.setWidth(width + "px");
+		}
+		
 		basepanel.add(scrollPanel);
-		
-		listPanel.setStylePrimaryName("listComponentPanel");
-		
 		basepanel.setCellHorizontalAlignment(scrollPanel, HasAlignment.ALIGN_CENTER);
-		
-		setStylePrimaryName("listComponentPanel");
-		
 		scrollPanel.addScrollHandler(this);
 		
 		AppUtils.EVENT_BUS.addHandler(SelectionEvent.TYPE, this);
 		
 		getEntityListModel().getEntityList(entityListModel.getNoOfEntities(), this);
 		
+	}
+	
+	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
+		Configuration config = new Configuration();
+		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
+		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
+		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
+		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
+		return config;
 	}
 	
 	@SuppressWarnings("unused")
@@ -177,7 +234,15 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 
 	@Override
 	public void onEntityListReceived(EntityList entityList) {
-		initializeListPanel(entityList);
+		loader.setVisible(false);
+		if (entityList != null) {
+			if (entityList.isEmpty()){
+				noMoreResultLabel.setText("No result(s)");
+			}else{
+				maxResult = entityList.getMaxResult();
+				initializeListPanel(entityList);
+			}
+		}
 	}
 
 
@@ -232,9 +297,11 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 		currentScrollPosition=scrollPanel.getVerticalScrollPosition();
 		lastScrollPosition = scrollPanel.getMaximumVerticalScrollPosition();
 		
-		if(currentScrollPosition == lastScrollPosition){
-			currentStartIndex = currentStartIndex + entityListModel.getQueryToBind().getListSize();
-			fetchNextEntityList(currentStartIndex);
+		if(currentStartIndex <= maxResult){
+			if(currentScrollPosition == lastScrollPosition){
+				currentStartIndex = currentStartIndex + entityListModel.getQueryToBind().getListSize();
+				fetchNextEntityList(currentStartIndex);
+			}
 		}
 		
 	}
@@ -260,8 +327,6 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 		Entity entity = (Entity) event.getEventData();
 		int eventType = event.getEventType();
 		
-		boolean checked = selectAllCheckboxField.isChecked();
-		
 		if (getConfiguration() != null) {
 			if (getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE) != null) {
 				if ((Boolean) getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)) {
@@ -278,6 +343,7 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 					}
 					case SelectionEvent.DESELECTED: {
 						entitySelectionModel.removeSelection(entity);
+						boolean checked = selectAllCheckboxField.isChecked();
 						if (checked)
 							selectAllCheckboxField.setChecked(false);
 

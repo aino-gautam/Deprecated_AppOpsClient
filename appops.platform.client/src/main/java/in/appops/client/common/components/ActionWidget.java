@@ -1,39 +1,41 @@
 package in.appops.client.common.components;
 
-import in.appops.client.common.event.ActionEvent;
 import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.fields.ImageField;
+import in.appops.client.common.util.BlobDownloader;
+import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.shared.Configuration;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
  * @author nitish@ensarm.com
  * TODO - This will enhanced/changed as required.
  */
-public class ActionWidget extends Composite implements Configurable, ClickHandler{
-//	private Entity bindValue;
-	private Configuration configuration;
-	
+public class ActionWidget extends Composite implements Configurable{
+	private FocusPanel basePanel;
+	private HorizontalPanel actionWidgetPanel;
 	private Label actionLabel;
 	private Anchor actionLink;
 	private Button actionButton;
-
-//	private ActionType actionType;
+	private ImageField actionImage;
+	private Entity actionEntity;
+	
+	private Configuration configuration;
 	private ActionWidgetType widgetType;
-	private ActionEvent actionEvent;
 
 	/******** ActionWidget Related Constants **********/
-//	public enum ActionType{
-//		WIDGET, OPERATION, QUERY
-//	};
-	
 	public enum ActionWidgetType{
 		LABEL, LINK, BUTTON
 	};
@@ -55,36 +57,18 @@ public class ActionWidget extends Composite implements Configurable, ClickHandle
 	
 	/************ Constructors *************************/
 	
-//	/**
-//	 * Set the ActionType based on whether transformWidget, executeOperation or bindToQuery
-//	 * Set the bindValue, whether 
-//	 * @param actionType
-//	 * @param bindValue
-//	 */
-//	public ActionWidget(ActionType actionType, Entity bindValue){
-//		this.actionType = actionType;
-//		this.bindValue = bindValue;
-//	}
-	
 	public ActionWidget(ActionWidgetType widgetType) {
 		this.widgetType = widgetType;
 		
 		intializeWidget();
-		initWidget(widgetType == ActionWidgetType.LABEL ? actionLabel : (widgetType == ActionWidgetType.LINK ? actionLink : actionButton));
-		addClickHandler();
+		initWidget(basePanel);
 	}
 
-	private void addClickHandler() {
-		if(widgetType == ActionWidgetType.LABEL){
-			actionLabel.addClickHandler(this);
-		} else if(widgetType == ActionWidgetType.LINK){
-			actionLink.addClickHandler(this);
-		} else if(widgetType == ActionWidgetType.BUTTON){
-			actionButton.addClickHandler(this);
-		}			
-	}
-
+	/*********** Member Methods  *************/
 	private void intializeWidget() {
+		basePanel = new FocusPanel();
+		actionWidgetPanel = new HorizontalPanel();
+		actionImage =  new ImageField();
 		if(widgetType == ActionWidgetType.LABEL){
 			actionLabel = new Label();
 		} else if(widgetType == ActionWidgetType.LINK){
@@ -95,26 +79,26 @@ public class ActionWidget extends Composite implements Configurable, ClickHandle
 	}
 
 	public void createUi() {
+		try{
+			basePanel.add(actionWidgetPanel);
+			
+			if(widgetType == ActionWidgetType.LABEL){
+				actionWidgetPanel.add(actionImage);
+			}
+			Widget actionWidget = (widgetType == ActionWidgetType.LABEL ? actionLabel : (widgetType == ActionWidgetType.LINK ? actionLink : actionButton));
+			actionWidgetPanel.add(actionWidget);
+			actionWidgetPanel.setCellVerticalAlignment(actionWidget, HasVerticalAlignment.ALIGN_MIDDLE);
 
-		
-		
-		/*************** Set the Action label text ***************/
-//		String labelText = null;
-//		if(getActionType() == ActionType.WIDGET){
-//			labelText = bindValue.getPropertyByName("widgetname");
-//		} else if(getActionType() == ActionType.OPERATION){
-//			labelText = bindValue.getPropertyByName(WidgetResponseConstant.WIDGETRESPONSE);
-//		} else if(getActionType() == ActionType.QUERY){
-//			
-//		}
-		
-//		if(labelText != null){
-//			setWigetText(labelText);
-//		}
-		
-		/********** You can set here any required things like CSS etc from Configuration ******/
-		if(configuration != null){
-			applyConfiguration();
+			/********** You can set here any required things like CSS etc from Configuration ******/
+			if(configuration != null){
+				applyConfiguration();
+			}
+			if(widgetType == ActionWidgetType.LABEL){
+				actionImage.createField();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 	}
@@ -140,6 +124,10 @@ public class ActionWidget extends Composite implements Configurable, ClickHandle
 		return null;
 	}
 
+	public void addClickHandler(ClickHandler handler) {
+		basePanel.addClickHandler(handler);
+	}
+	
 	private void applyConfiguration() {
 		//TODO Apply Configurations here
 
@@ -159,25 +147,23 @@ public class ActionWidget extends Composite implements Configurable, ClickHandle
 				actionButton.setStylePrimaryName(primaryCss);
 			}
 		}
+		
+		if(widgetType == ActionWidgetType.LABEL){
+			String url = "";
+			if(actionEntity.getProperty("blobId") != null ){
+				BlobDownloader blobDownloader = new BlobDownloader();
+				String blobId = actionEntity.getProperty("blobId").getValue().toString();
+				url = blobDownloader.getImageDownloadURL(blobId);
+			}
+			Configuration imageConfig = getImageFieldConfiguration(url, "appops-intelliThoughtActionImage");
+			actionImage.setConfiguration(imageConfig);
+			basePanel.setStylePrimaryName("appops-intelliThoughtActionPanel");
+		}
+
 	}
 
 
 	/********* Setters Getters *****************/
-//	public Entity getBindValue() {
-//		return bindValue;
-//	}
-//
-//	public void setBindValue(Entity bindValue) {
-//		this.bindValue = bindValue;
-//	}
-
-//	public ActionType getActionType() {
-//		return actionType;
-//	}
-//
-//	public void setActionType(ActionType actionType) {
-//		this.actionType = actionType;
-//	}
 
 	public ActionWidgetType getWidgetType() {
 		return widgetType;
@@ -186,16 +172,15 @@ public class ActionWidget extends Composite implements Configurable, ClickHandle
 	public void setWidgetType(ActionWidgetType widgetType) {
 		this.widgetType = widgetType;
 	}
+
+	public Entity getActionEntity() {
+		return actionEntity;
+	}
+
+	public void setActionEntity(Entity actionEntity) {
+		this.actionEntity = actionEntity;
+	}
 	
-	public ActionEvent getActionEvent() {
-		return actionEvent;
-	}
-
-	public void setActionEvent(ActionEvent actionEvent) {
-		this.actionEvent = actionEvent;
-	}
-
-
 	/************* Overridden method here ******************/
 	
 	@Override
@@ -209,11 +194,16 @@ public class ActionWidget extends Composite implements Configurable, ClickHandle
 	}
 
 	@Override
-	public void onClick(ClickEvent event) {
-		if(actionEvent != null){
-			AppUtils.EVENT_BUS.fireEvent(actionEvent);
+	public void fireEvent(GwtEvent<?> event) {
+		if(event != null){
+			AppUtils.EVENT_BUS.fireEvent(event);
 		}
 	}
-
 	
+	public Configuration getImageFieldConfiguration(String url, String primaryCSS) {
+		Configuration config = new Configuration();
+		config.setPropertyByName(ImageField.IMAGEFIELD_BLOBID, url);
+		config.setPropertyByName(ImageField.IMAGEFIELD_PRIMARYCSS, primaryCSS);
+		return config;
+	}
 }
