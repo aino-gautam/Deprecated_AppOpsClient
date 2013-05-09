@@ -379,69 +379,72 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 			for(Object obj : messages) {
 				if(obj instanceof Serializable){
 					BroadcastEntity broadcastEntity = (BroadcastEntity) obj;
-					ChatEntity chatEntity = (ChatEntity) broadcastEntity.getBroadcastEntity();
-					String title  = chatEntity.getHeaderTitle();
+					if(broadcastEntity.getBroadcastEntity() instanceof ChatEntity) {
+						ChatEntity chatEntity = (ChatEntity) broadcastEntity.getBroadcastEntity();
+						String title  = chatEntity.getHeaderTitle();
 
-					if(getGrpMapEntityMap().isEmpty()){
-						startNewChat(chatEntity);
-					}
-					else{
-						if(chatDisplayWidget.getChatEntity().getHeaderTitle().equals(title)){
-							HashMap<Long, HashMap<Entity, Entity>> recordMap = chatEntity.getChatRecordMap();
-							if(recordMap!=null){
-								Integer val = recordMap.size()-1;
-								Long counter = Long.parseLong(val.toString());
-								HashMap<Entity, Entity> tempMap = recordMap.get(counter);
-								
-								
-								String curUserEmail = contactEntity.getPropertyByName(ContactConstant.EMAILID).toString().trim();
-								
-								
-								
-								Entity userEnt = tempMap.keySet().iterator().next();
-								
-								String chtInitEmail = userEnt.getPropertyByName(ContactConstant.EMAILID).toString().trim();
-								
-								Entity chatTextEntity = tempMap.get(userEnt);
-								
-								if(!curUserEmail.equals(chtInitEmail))
-									chatDisplayWidget.refreshChatUi(userEnt,chatTextEntity,true);
-								/*else
-									chatDisplayWidget.refreshChatUi(userEnt,chatTextEntity,true);*/
-							}
-						} else {
-							ChatEntity chatEnt = getGrpMapEntityMap().get(title);
-							if(chatEnt != null) {
-								if(chatEnt.getIsGroupChat()) {
-									spaceListWidget.receivedChat(chatEnt);
-									spaceMsgAlertPanel.addStyleName("chatReceivedAlert");
-								} else {
-									mainUserListPanel.receivedChat(chatEnt);
-									userMsgAlertPanel.addStyleName("chatReceivedAlert");
+						if(getGrpMapEntityMap().isEmpty()){
+							startNewChat(chatEntity);
+						}
+						else{
+							if(chatDisplayWidget.getChatEntity().getHeaderTitle().equals(title)){
+								HashMap<Long, HashMap<Entity, Entity>> recordMap = chatEntity.getChatRecordMap();
+								if(recordMap!=null){
+									Integer val = recordMap.size()-1;
+									Long counter = Long.parseLong(val.toString());
+									HashMap<Entity, Entity> tempMap = recordMap.get(counter);
+									
+									String curUserEmail = contactEntity.getPropertyByName(ContactConstant.EMAILID).toString().trim();
+									
+									Entity userEnt = tempMap.keySet().iterator().next();
+									
+									String chtInitEmail = userEnt.getPropertyByName(ContactConstant.EMAILID).toString().trim();
+									
+									Entity chatTextEntity = tempMap.get(userEnt);
+									
+									if(!curUserEmail.equals(chtInitEmail)) {
+										chatDisplayWidget.refreshChatUi(userEnt,chatTextEntity,true);
+									}
+									/*else
+										chatDisplayWidget.refreshChatUi(userEnt,chatTextEntity,true);*/
 								}
 							} else {
-								if(chatEntity.getIsGroupChat()) {
-									spaceListWidget.receivedChat(chatEntity);
-									spaceMsgAlertPanel.addStyleName("chatReceivedAlert");
+								ChatEntity chatEnt = getGrpMapEntityMap().get(title);
+								if(chatEnt != null) {
+									if(chatEnt.getIsGroupChat()) {
+										spaceListWidget.receivedChat(chatEnt);
+										spaceMsgAlertPanel.addStyleName("chatReceivedAlert");
+									} else {
+										mainUserListPanel.receivedChat(chatEnt);
+										userMsgAlertPanel.addStyleName("chatReceivedAlert");
+									}
 								} else {
-									initializeContactSnippet(chatEntity);
-									mainUserListPanel.receivedChat(chatEntity);
-									userMsgAlertPanel.addStyleName("chatReceivedAlert");
+									if(chatEntity.getIsGroupChat()) {
+										spaceListWidget.receivedChat(chatEntity);
+										spaceMsgAlertPanel.addStyleName("chatReceivedAlert");
+									} else {
+										initializeContactSnippet(chatEntity);
+										mainUserListPanel.receivedChat(chatEntity);
+										userMsgAlertPanel.addStyleName("chatReceivedAlert");
+									}
 								}
 							}
 						}
+						getGrpMapEntityMap().put(title, chatEntity);
+						chatDisplayWidget.setChatEntity(chatEntity);
+						
+						boolean isCurrUserInitiator = checkChatInitiator(chatEntity.getChatRecordMap());
+						if(!isCurrUserInitiator) {
+							MessengerEvent msgEvent;
+							if(chatEntity.getIsGroupChat()){
+								msgEvent = new MessengerEvent(MessengerEvent.ONSPACEMSGRECIEVED, chatEntity);
+							}
+							else{
+								msgEvent = new MessengerEvent(MessengerEvent.ONUSERMSGRECEIVED, chatEntity);
+							}
+							AppUtils.EVENT_BUS.fireEvent(msgEvent);
+						}
 					}
-					getGrpMapEntityMap().put(title, chatEntity);
-					chatDisplayWidget.setChatEntity(chatEntity);
-					
-					MessengerEvent msgEvent;
-					if(chatEntity.getIsGroupChat()){
-						msgEvent = new MessengerEvent(MessengerEvent.ONSPACEMSGRECIEVED, chatEntity);
-					}
-					else{
-						msgEvent = new MessengerEvent(MessengerEvent.ONUSERMSGRECEIVED, chatEntity);
-					}
-					AppUtils.EVENT_BUS.fireEvent(msgEvent);
 				}
 			}
 		}
@@ -459,7 +462,7 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 		} else if(event.getSource().equals(spaceMsgAlertPanel)) {
 			spaceMsgAlertPanel.removeStyleName("chatReceivedAlert");
 			spaceListPopup.show();
-			int left = Window.getClientWidth() - 200;
+			int left = Window.getClientWidth() - 198;
 			spaceListPopup.setPopupPosition(left, 45);
 		}
 	}
@@ -491,6 +494,22 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 					mainUserListPanel.createContactSnippet(contactEnt);
 				}
 			}
+		}
+	}
+	
+	private boolean checkChatInitiator(HashMap<Long, HashMap<Entity, Entity>> recordMap) {
+		Integer val = recordMap.size()-1;
+		Long counter = Long.parseLong(val.toString());
+		HashMap<Entity, Entity> tempMap = recordMap.get(counter);
+		
+		String curUserEmail = contactEntity.getPropertyByName(ContactConstant.EMAILID).toString().trim();
+		Entity userEnt = tempMap.keySet().iterator().next();
+		String chtInitEmail = userEnt.getPropertyByName(ContactConstant.EMAILID).toString().trim();
+		
+		if(!curUserEmail.equals(chtInitEmail)) {
+			return false;
+		} else {
+			return true;
 		}
 	}
 }

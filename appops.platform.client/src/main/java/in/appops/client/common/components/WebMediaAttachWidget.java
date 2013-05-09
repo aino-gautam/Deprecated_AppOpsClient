@@ -30,6 +30,7 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 
 	private HashMap<String, HorizontalPanel> uploadedBlobIdVsSnippetMap = null;
 	private List<String> uploadedMediaId = null;
+	private MultiUploader multiUploader;
 	
 	public WebMediaAttachWidget(){
 		initializeComponent();
@@ -89,6 +90,10 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 					String savedBlobId = info.message;
 					createSnippet(savedBlobId);
 					
+					if(isSingleUpload) {
+						multiUploader.setVisible(false);
+					}
+					
 					AppUtils.EVENT_BUS.fireEvent(new AttachmentEvent(2, savedBlobId));
 				}
 			}
@@ -122,6 +127,11 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 		crossImage.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				
+				if(isSingleUpload) {
+					multiUploader.setVisible(true);
+				}
+				
 				IconWithCrossImage crossImage = (IconWithCrossImage) event.getSource();
 				String blbId = crossImage.getBlobId();
 				if(uploadedBlobIdVsSnippetMap.containsKey(blbId)){
@@ -173,7 +183,7 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 		fileUploadPanel.setStylePrimaryName("appops-webMediaAttachment");
 		fileUploadPanel.setSpacing(10);
 		
-		MultiUploader multiUploader = getMultiUploader();
+		multiUploader = getMultiUploader();
 		fileUploadPanel.add(multiUploader);
 		
 		attachmentPanel.setSpacing(5);
