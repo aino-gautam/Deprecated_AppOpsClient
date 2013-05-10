@@ -51,8 +51,6 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 	private ArrayList<Entity> linkedUsers;
 	private ArrayList<Entity> linkedSpaces;
 	private ArrayList<Entity> linkedEntities;
-
-	
 	
 	public static final String INTELLITEXTFIELD_VISIBLELINES = "intelliShareFieldVisibleLines";
 	public static final String INTELLITEXTFIELD_PRIMARYCSS = "intelliShareFieldPrimaryCss";
@@ -60,6 +58,13 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 	public static final String INTELLITEXTFIELD_MAXCHARLENGTH = "maxLength";
 	public static final String INTELLITEXTFIELD_CONTENTEDITABLE = "contenteditable";
 
+	public static final String FIRE_THREECHARENTERED_EVENT = "fireThreeCharEnteredEvent";
+	public static final String FIRE_WORDENTERED_EVENT = "fireWordEnteredEvent";
+	public static final String FIRE_EDITINITIATED_EVENT = "fireEditInitatedEvent";
+
+	private String isFireThreeCharEnteredEvent;
+	private String isFireWordEnteredEvent;
+	private String isFireEditInitatedEvent;
 
 	public IntelliThoughtField(){
 		initialize();
@@ -76,40 +81,41 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 	
 	@Override
 	public void createField() throws AppOpsException {
-		if(configuration == null){
-			throw new AppOpsException("No Configuration available");
-		} else{
-		
+		if(configuration != null) {
 			String primaryCss = configuration.getPropertyByName(INTELLITEXTFIELD_PRIMARYCSS) != null ?  configuration.getPropertyByName(INTELLITEXTFIELD_PRIMARYCSS).toString() : null;  
 			String dependentCss = configuration.getPropertyByName(INTELLITEXTFIELD_DEPENDENTCSS) != null ?  configuration.getPropertyByName(INTELLITEXTFIELD_DEPENDENTCSS).toString() : null;  
 			String maxCharLength = configuration.getPropertyByName(INTELLITEXTFIELD_MAXCHARLENGTH) != null ?  configuration.getPropertyByName(INTELLITEXTFIELD_MAXCHARLENGTH).toString() : null;  
 			
+			isFireThreeCharEnteredEvent = configuration.getPropertyByName(FIRE_THREECHARENTERED_EVENT);
+			isFireWordEnteredEvent = configuration.getPropertyByName(FIRE_WORDENTERED_EVENT);
+			isFireEditInitatedEvent = configuration.getPropertyByName(FIRE_EDITINITIATED_EVENT);
+			
 			if(primaryCss != null){
-				this.setStylePrimaryName("intelliShareField");
+				this.setStylePrimaryName(primaryCss);
 			} 
-
+	
 			if(dependentCss != null){
 				this.addStyleName(dependentCss);
 			} 
-
-			if(dependentCss != null){
+	
+			if(maxCharLength != null){
 				this.getElement().setAttribute(INTELLITEXTFIELD_MAXCHARLENGTH, maxCharLength);
 			}
 			
 			intelliText = DOM.createDiv();
-			intelliText.setClassName("intelliTextField");
+			intelliText.setClassName("appops-intelliThoughtField");
 			intelliText.setId("intelliTextField");
 			intelliText.setAttribute(INTELLITEXTFIELD_CONTENTEDITABLE, "true");
 			this.setText("Any Thoughts");
-
+	
 			basePanel.getElement().appendChild(intelliText);
+			basePanel.setStylePrimaryName("appops-intelliThoughtFieldPanel");
 			AppUtils.EVENT_BUS.addHandlerToSource(FieldEvent.TYPE, intelliText, this);
 			
 			Event.setEventListener(intelliText, this);
 			Event.sinkEvents(intelliText, Event.ONCLICK | Event.KEYEVENTS);
 			linkedSuggestion.addHandle(this);
 		}
-		
 	}
 
 	
@@ -204,10 +210,12 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 		int eventType = event.getEventType();
 		String eventData = (String) event.getEventData();
 		
-		if(eventType == FieldEvent.THREE_CHAR_ENTERED) {
-			handleThreeCharEnteredEvent(eventData);
-		} else if(eventType == FieldEvent.SUGGESTION_CLICKED ){
-			linkSuggestion(eventData);
+		if(this.isVisible()) {
+			if(eventType == FieldEvent.THREE_CHAR_ENTERED) {
+				handleThreeCharEnteredEvent(eventData);
+			} else if(eventType == FieldEvent.SUGGESTION_CLICKED ){
+				linkSuggestion(eventData);
+			}
 		}
 	}
 
@@ -221,8 +229,10 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 		    	if(this.getText().equalsIgnoreCase("Any Thoughts")){
 					this.setText("");
 				}
-				FieldEvent focusEvent = getFieldEvent(FieldEvent.EDITINITIATED, null);
-				fireIntelliThoughtFieldEvent(focusEvent);
+		    	if(Boolean.valueOf(isFireEditInitatedEvent)){
+					FieldEvent focusEvent = getFieldEvent(FieldEvent.EDITINITIATED, null);
+					fireIntelliThoughtFieldEvent(focusEvent);
+		    	}
             break;
             
 	        case Event.ONKEYDOWN:
@@ -268,9 +278,11 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 			if(linkedSuggestion.isShowing()){
 				linkedSuggestion.hide();
 			}
-			if(!wordBeingTyped.trim().equals("")) { 
-				FieldEvent wordEntered = getFieldEvent(FieldEvent.WORDENTERED, wordBeingTyped.trim()); 
-				fireIntelliThoughtFieldEvent(wordEntered);
+			if(!wordBeingTyped.trim().equals("")) {
+				if(Boolean.valueOf(isFireWordEnteredEvent)){
+					FieldEvent wordEntered = getFieldEvent(FieldEvent.WORDENTERED, getText().trim());
+					fireIntelliThoughtFieldEvent(wordEntered);
+				}
 			}
 			return;
 		}
@@ -306,6 +318,7 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 		if(linkedSuggestion.isShowing()){
 			
 			Anchor tag = new Anchor(text);
+			tag.setStylePrimaryName("appops-LinkField");
 			String tagHtml = tag.getElement().getString();
 			
 			int start = IntelliThoughtUtil.checkPreviousWord(textTillCaretPosition, text);
@@ -343,9 +356,11 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 		}
 		if(wordBeingTyped.length() >  2 && Character.isUpperCase(wordBeingTyped.charAt(0))) {
 
-//TODO This is fire event to call the server			
-			FieldEvent threeCharEntered = getFieldEvent(FieldEvent.THREE_CHAR_ENTERED, wordBeingTyped);
-			fireIntelliThoughtFieldEvent(threeCharEntered);
+			//	TODO This is fire event to call the server
+			if(Boolean.valueOf(isFireThreeCharEnteredEvent)){
+				FieldEvent threeCharEntered = getFieldEvent(FieldEvent.THREE_CHAR_ENTERED, wordBeingTyped);
+				fireIntelliThoughtFieldEvent(threeCharEntered);
+			}
 			
 		}
 	}
@@ -368,6 +383,13 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 		final int posy = basePanel.getElement().getAbsoluteTop() + basePanel.getElement().getOffsetHeight();
 		final int posx = basePanel.getElement().getAbsoluteLeft();
 
+		linkedSuggestion.createUi();
+		if(!linkedSuggestion.isShowing()){
+			linkedSuggestion.show();
+			linkedSuggestion.setWidth(basePanel.getElement().getOffsetWidth() - 10 + "px");
+
+			linkedSuggestion.setPopupPosition(posx, posy);
+		}
 		
 		//This is the Server Call to fetch the suggestions		
 		StandardAction action = new StandardAction(EntityList.class, "spacemanagement.SpaceManagementService.getLinkSuggestions", map);
@@ -375,23 +397,19 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 			
 			
 			public void onFailure(Throwable caught) {
-				Window.alert("operation failed ");
+				linkedSuggestion.hide();
 				caught.printStackTrace();
 			}
 			
 			
 			public void onSuccess(Result<EntityList> result) {
 				EntityList linkedSuggestionList = result.getOperationResult();
-				
-				linkedSuggestion.clearList();
-				linkedSuggestion.setEntityList(linkedSuggestionList);
-				linkedSuggestion.populateSuggestions();
-				if(!linkedSuggestion.isShowing()){
-					linkedSuggestion.show();
-					linkedSuggestion.setWidth(basePanel.getElement().getOffsetWidth() - 10 + "px");
-
-					linkedSuggestion.setPopupPosition(posx, posy);
+				if(linkedSuggestionList != null && !linkedSuggestionList.isEmpty()) {
+					linkedSuggestion.setEntityList(linkedSuggestionList);
+					linkedSuggestion.populateSuggestions();
 					linkedSuggestion.setFirstSelection();
+				} else {
+					linkedSuggestion.hide();
 				}
 			}
 		});

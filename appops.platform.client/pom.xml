@@ -166,14 +166,14 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>18.04.2013</version>
+			<version>10.05.2013</version>
 		</dependency>
 
 		<!-- This should be used when using a final version of the jar -->
 		<dependency>
-			<groupId>mahesh_appops_platform</groupId>
+			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>16.04.2013</version>
+			<version>09.05.2013</version>
 		</dependency>
 
 		<dependency>
@@ -199,6 +199,34 @@
 			<artifactId>gwtphonegap</artifactId>
 			<version>2.0.0.0</version>
 		</dependency>
+		<!-- Mail dependencies-->
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mailapi</artifactId>
+			<version>1.4.3</version>
+		</dependency>
+		<!-- <dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>smtp</artifactId>
+			<version>1.4.6-rc1</version>
+		</dependency> -->
+		<!-- <dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.5.0-b01</version>
+		</dependency> -->
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4</version>
+	    </dependency>
+    
+	    <dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<!-- Mail dependencies-->
 	</dependencies>
 
 	<build>
@@ -242,6 +270,8 @@
 						<module>in.appops.showcase.web.gwt.mediaupload.mediaupload</module>
 						<module>in.appops.showcase.web.gwt.navigationmaze.navigationmaze</module>
 						<module>in.appops.showcase.web.gwt.facebook.facebook</module>
+						<module>in.appops.showcase.web.gwt.contactbox.contactbox</module>
+						<module>in.appops.showcase.web.gwt.messagehome.messagehome</module>
 					</modules>
 				</configuration>
 			</plugin>
