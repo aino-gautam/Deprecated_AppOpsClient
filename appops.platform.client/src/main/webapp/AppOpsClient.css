@@ -1350,3 +1350,16 @@ height: 15px;
 .crossImageInPhotoviewer{
 	height: 30px;
 }
+.reminderDurationBox{
+	width: 25px;
+	height: 20px;
+	color: #333;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 12px;
+}
+.appops-comboBoxField{
+	height: 25px;
+	color: #333;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 12px;
+}
