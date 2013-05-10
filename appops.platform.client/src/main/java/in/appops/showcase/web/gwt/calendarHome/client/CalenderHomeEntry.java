@@ -1,5 +1,6 @@
 package in.appops.showcase.web.gwt.calendarHome.client;
 
+import in.appops.client.common.components.CreateCalendarEntryScreen;
 import in.appops.client.common.snippet.CalendarServiceHomeSnippet;
 import in.appops.platform.core.shared.Configuration;
 
