@@ -1,4 +1,4 @@
-package in.appops.showcase.web.gwt.calendarHome.client;
+package in.appops.client.common.components;
 
 import in.appops.client.common.components.WebMediaAttachWidget;
 import in.appops.client.common.event.AppUtils;
