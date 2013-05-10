@@ -6,6 +6,9 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
+import in.appops.platform.core.entity.Property;
+import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.ResponseActionContext;
 import in.appops.platform.core.operation.Result;
 
@@ -26,7 +29,6 @@ public class PostInButton extends Composite{
 	private VerticalPanel basePanel;
 	private final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
-	private Entity savedInterestedEntity;
 
 	/**
 	 * constructor
@@ -107,10 +109,18 @@ public class PostInButton extends Composite{
 		
 		HashMap  map = new HashMap();
 		map.put("inRequestedOnEntity", interestedInEntity);
-		StandardAction action = new StandardAction(Entity.class, "in.InService.areYouInterestedIn", map);
+		StandardAction action = new StandardAction(Entity.class, "in.InService.areYouInterestedInPost", map);
 		ResponseActionContext actionContext = new ResponseActionContext();
 		actionContext.setEmbeddedAction(action);
 		actionContext.setSpace(AppEnviornment.getCurrentSpace());
+		
+		Entity actionEntity = new Entity();
+		actionEntity.setType(new MetaType("Actions"));
+		Key<Long> key = new Key<Long>(20L);
+		Property<Key<Long>> actionKeyProp = new Property<Key<Long>>(key);
+		actionEntity.setProperty("id", actionKeyProp);
+		
+		actionContext.setActionEntity(actionEntity);
 		
 		AsyncCallback<Result> callBack = new AsyncCallback<Result>() {
 			
@@ -120,7 +130,6 @@ public class PostInButton extends Composite{
 			
 			public void onSuccess(Result result) {
 				Entity inEntity = (Entity)result.getOperationResult();
-				savedInterestedEntity = inEntity;
 									
 			}
 		};
@@ -131,37 +140,30 @@ public class PostInButton extends Composite{
 
 	private void notInterestedIn(){
 	
-	HashMap  map = new HashMap();
-	map.put("inEntity", interestedInEntity);
-	
-	StandardAction action = new StandardAction(Entity.class, "in.InService.deleteInRequest", map);
-	ResponseActionContext actionContext = new ResponseActionContext();
-	actionContext.setEmbeddedAction(action);
-	actionContext.setSpace(AppEnviornment.getCurrentSpace());
-	
-	AsyncCallback<Result> callBack = new AsyncCallback<Result>() {
+		HashMap  map = new HashMap();
+		map.put("inEntity", interestedInEntity);
 		
+		StandardAction action = new StandardAction(Entity.class, "in.InService.notInterestedIn", map);
+		ResponseActionContext actionContext = new ResponseActionContext();
+		actionContext.setEmbeddedAction(action);
+		actionContext.setSpace(AppEnviornment.getCurrentSpace());
 		
-		public void onFailure(Throwable caught) {
-			caught.printStackTrace();
-		}
-		
-		public void onSuccess(Result result) {
-			Entity inEntity = (Entity)result.getOperationResult();
-								
-		}
-	};
+		AsyncCallback<Result> callBack = new AsyncCallback<Result>() {
 			
-	dispatch.executeContextAction(actionContext, callBack);
+			
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
+			
+			public void onSuccess(Result result) {
+				Entity inEntity = (Entity)result.getOperationResult();
+									
+			}
+		};
+				
+		dispatch.executeContextAction(actionContext, callBack);
 	
 }
 
-	public Entity getSavedInterestedEntity() {
-		return savedInterestedEntity;
-	}
-
-	public void setSavedInterestedEntity(Entity savedInterestedEntity) {
-		this.savedInterestedEntity = savedInterestedEntity;
-	}
 
 }
