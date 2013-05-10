@@ -8,6 +8,7 @@ import com.google.code.gwt.geolocation.client.Coordinates;
 import com.google.code.gwt.geolocation.client.Geolocation;
 import com.google.code.gwt.geolocation.client.Position;
 import com.google.code.gwt.geolocation.client.PositionCallback;
+import com.google.code.gwt.geolocation.client.PositionError;
 import com.google.code.gwt.geolocation.client.PositionOptions;
 
 public class LocationProvider {
@@ -15,7 +16,8 @@ public class LocationProvider {
 	public static final String WEB = "Web";
 	public static final String TOUCH = "Touch";
 	private static LocationProvider locationProvider;
-	private Coordinates coords1 ;
+	private double latitude;
+	private double longitude;
 	
 	private LocationProvider(){
 		
@@ -37,42 +39,67 @@ public class LocationProvider {
 	}
 	
 	private void getWebLocation(final EntityReceiver entityReceiver){
+		try{
 			PositionOptions options = PositionOptions.create();
 			options.setEnableHighAccuracy(true);
-			options.setMaximumAge(10000);
+			//options.setMaximumAge(900000);
+			//options.setTimeout(10 * 1000 * 1000);
 			Geolocation.getGeolocation().watchPosition(new PositionCallback() {
 				
 				public void onSuccess(Position position) {
 					
 					Coordinates coords = position.getCoords();
-					coords1 = coords;
 					
-					Entity entity = new Entity();
+					double distance = calculateDistance(latitude, longitude, coords.getLatitude(), coords.getLongitude());
 					
-					GeoLocation geoLocation = new GeoLocation();
-					geoLocation.setName("latitude");
-					geoLocation.setLatitude(coords1.getLatitude());
-					
-					
-					geoLocation.setName("longitude");
-					geoLocation.setLongitude(coords1.getLongitude());
-					
-					
-					entity.setPropertyByName("geolocation",geoLocation);
-					AppEnviornment.setCurrentGeolocation(geoLocation);
-					
-					entityReceiver.onEntityReceived(entity);
-									
+					if(distance > 20.0) {
+						latitude = coords.getLatitude();
+						longitude = coords.getLongitude();
+						
+						Entity entity = new Entity();
+						
+						GeoLocation geoLocation = new GeoLocation();
+						geoLocation.setName("latitude");
+						geoLocation.setLatitude(latitude);
+						
+						
+						geoLocation.setName("longitude");
+						geoLocation.setLongitude(longitude);
+						
+						
+						entity.setPropertyByName("geolocation",geoLocation);
+						AppEnviornment.setCurrentGeolocation(geoLocation);
+						
+						entityReceiver.onEntityReceived(entity);
+										
+					}
 				}
 				
 				@Override
-				public void onFailure(com.google.code.gwt.geolocation.client.PositionError error) {
+				public void onFailure(PositionError error) {
 					System.out.println(" "+error.getMessage());
 				}
 			}, options);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void getTouchLocation(EntityReceiver entityReceiver){
 		//TODO make a call to fetch geo location and then call the onEntityReceived method on the entityReceiver
 	}
+
+	private double calculateDistance(double fromLat, double fromLon, double toLat, double toLon) {
+	  double R = 6371;
+	  double dLat = Math.toRadians(toLat - fromLat);
+	  double dLon = Math.toRadians(toLon - fromLon); 
+	  double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+	          Math.cos(Math.toRadians(fromLat)) * Math.cos(Math.toRadians(toLat)) * 
+	          Math.sin(dLon / 2) * Math.sin(dLon / 2); 
+	  double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
+	  double d = R * c;
+	  return d*1000;
+	}
+	
+	
 }
