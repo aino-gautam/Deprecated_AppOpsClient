@@ -148,7 +148,7 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 		}
 		
 		basepanel.add(scrollPanel);
-		basepanel.setCellHorizontalAlignment(scrollPanel, HasAlignment.ALIGN_CENTER);
+		basepanel.setCellHorizontalAlignment(scrollPanel, HasAlignment.ALIGN_LEFT);
 		scrollPanel.addScrollHandler(this);
 		
 		AppUtils.EVENT_BUS.addHandler(SelectionEvent.TYPE, this);
