@@ -1,5 +1,6 @@
 package in.appops.client.common.snippet;
 
+import in.appops.client.common.components.CreateCalendarEntryScreen;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.fields.Field;
 import in.appops.client.common.fields.LabelField;
@@ -22,11 +23,9 @@ import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.calendar.constant.CalendarConstant;
-import in.appops.showcase.web.gwt.calendarHome.client.CreateCalendarEntryScreen;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.TimeZone;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -62,13 +61,13 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 		//clear this snippet and move the code to reminder list snippet 
 		//create ui as discussed for this snippet
 		//set configuration with reminder/event creation
-		initialize();
+		mainPanel = new VerticalPanel();
 		initWidget(mainPanel);
 	}
 	
 	@Override
 	public void initialize(){
-		mainPanel = new VerticalPanel();
+		
 		tabPanel = new TabPanel();
 		childPanel = new VerticalPanel();
 		createEntityButton = new Button();
@@ -77,6 +76,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 		DOM.setStyleAttribute(childPanel.getElement(), "padding", "5px");
 		DOM.setStyleAttribute(createEntityButton.getElement(), "padding", "5px");
 		userEntity=AppEnviornment.getCurrentUser();
+		createUi();
 		//Property<Key<Long>> userIdProp = (Property<Key<Long>>) entity.getProperty(UserConstants.ID);
 		//initializeListForUser(userIdProp.getValue().getKeyValue());
 		
@@ -124,7 +124,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 		try{
 			
 			calendarEntryScreen = new CreateCalendarEntryScreen();
-			calendarEntryScreen.setConfiguration(getConfiguration());
+			calendarEntryScreen.setConfiguration(getConfigurationForCreateEvent());
 			calendarEntryScreen.createScreen();
 			calendarEntryScreen.addHandle(this);
 			createEntityButton.addClickHandler(this);
@@ -142,6 +142,15 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 			e.printStackTrace();
 		}
 		
+		
+	}
+
+	private Configuration getConfigurationForCreateEvent() {
+		
+			Configuration configuration = new Configuration();
+			//configuration.setPropertyByName(CreateCalendarEntryScreen.REMINDER_MODE, CreateCalendarEntryScreen.REMINDER_NEW);
+			configuration.setPropertyByName(CreateCalendarEntryScreen.SCREEN_TYPE, CreateCalendarEntryScreen.CREATE_EVENT);
+			return configuration;
 		
 	}
 
@@ -416,7 +425,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 		Long userId = (Long) key.getKeyValue();
 		
 		
-		TimeZone timeZone=TimeZone.getDefault();
+		/*TimeZone timeZone=TimeZone.getDefault();*/
 		 
 		String userFirstName = userEntity.getPropertyByName("firstname");
 		String userLastName = userEntity.getPropertyByName("lastname");
