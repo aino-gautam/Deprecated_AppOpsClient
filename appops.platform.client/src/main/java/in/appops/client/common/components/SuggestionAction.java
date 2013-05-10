@@ -1,20 +1,15 @@
 package in.appops.client.common.components;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class SuggestionAction extends Composite{
 	private FlexTable basePanel;
-	private List<String> suggestionList;
-	private Map<String, List> suggestionMap = new HashMap<String, List>();
 	private List<WidgetManagement> suggestionActionWidgetList = new LinkedList<WidgetManagement>();
 	
 	public SuggestionAction(){
@@ -25,26 +20,13 @@ public class SuggestionAction extends Composite{
 
 	private void initialize() {
 		basePanel = new FlexTable();
-		
-		suggestionList = new LinkedList<String>();
-		suggestionList.add("Find a saloon");
-		suggestionList.add("Fix An Appointment");
-		suggestionMap.put("haircut", suggestionList);
-		
-		suggestionList = new LinkedList<String>();
-		suggestionList.add("Book a table");
-		suggestionList.add("Find Restaurant");
-		suggestionMap.put("dinner", suggestionList);
-		
 	}
 
 	private void createUI() {
 		basePanel.setStylePrimaryName("suggestionLabel");
 	}
 	
-	public void addSuggestionAction(ActionLabel actionLabel){
-//		Label suggestionLabel = new Label(suggestionAction);
-		actionLabel.setStylePrimaryName("appops-intelliThought-Label");
+	public void addSuggestionAction(ActionWidget actionLabel){
 		actionLabel.addStyleName("fadeInLeft");
 		
 		WidgetManagement widgetPlacement = new WidgetManagement(0, 0, actionLabel);
@@ -73,7 +55,7 @@ public class SuggestionAction extends Composite{
 	}
 
 	private void placeWidget(WidgetManagement management) {
-		Label suggestionAction = (Label)management.getWidget();
+		ActionWidget suggestionAction = (ActionWidget)management.getWidget();
 		basePanel.setWidget(management.getRow(), management.getColumn(), suggestionAction);
 		basePanel.getCellFormatter().setHorizontalAlignment(management.getRow(), management.getColumn(), HasHorizontalAlignment.ALIGN_LEFT);
 	}
@@ -112,6 +94,11 @@ public class SuggestionAction extends Composite{
 		public void setWidget(Widget widget) {
 			this.widget = widget;
 		}
+	}
+
+	public void clearSuggestionPanel() {
+		suggestionActionWidgetList.clear();
+		basePanel.clear();
 	}
 	
 }

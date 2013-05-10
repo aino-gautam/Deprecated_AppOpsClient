@@ -1,5 +1,7 @@
 package in.appops.client.common.snippet;
 
+import in.appops.client.common.components.MessageWithUserSnippet;
+import in.appops.client.common.contactmodel.ContactSnippet;
 import in.appops.platform.core.constants.typeconstants.TypeConstants;
 import in.appops.platform.core.entity.type.Type;
 
@@ -47,22 +49,39 @@ public class SnippetFactoryImpl implements SnippetFactory {
 				return null;
 		}else{
 			String typename = entityType.getTypeName();
-			typename = typename.substring(typename.lastIndexOf('.')+1).trim();
+			if(typename.contains("."))
+				typename = typename.substring(typename.lastIndexOf('.')+1).trim();
 
-			if(typename.equals(TypeConstants.REMINDER)){
-				ReminderSnippet reminderSnippet = new ReminderSnippet();
-				return reminderSnippet;
-			}else if(typename.equals("SpaceserviceviewId")){
-				ServiceIconSnippet serviceIconSnippet = new ServiceIconSnippet();
-				return serviceIconSnippet;
-			}else if(typename.equals("Post")){
-				PostViewSnippet postViewSnippet = new PostViewSnippet();
-				return postViewSnippet;
-			}else{
-				HomeSnippet homeSnippet = new HomeSnippet();
-				return homeSnippet;
+			if(typename != null){
+				if(typename.equals(TypeConstants.REMINDER)){
+					ReminderSnippet reminderSnippet = new ReminderSnippet();
+					return reminderSnippet;
+				}else if(typename.equals("SpaceserviceviewId")){
+					ServiceIconSnippet serviceIconSnippet = new ServiceIconSnippet();
+					serviceIconSnippet.setShowOnlyIcon(true);
+					return serviceIconSnippet;
+				}else if(typename.equals("SpaceactionsviewId")){
+					ActionBoxSnippet actionBoxSnippet = new ActionBoxSnippet();
+					return actionBoxSnippet;
+				}else if(typename.equals("Post")){
+					PostViewSnippet postViewSnippet = new PostViewSnippet();
+					return postViewSnippet;
+				}else if(typename.equals("Contact")){
+					ContactSnippet contactSnippet = new ContactSnippet();
+					return contactSnippet;
+				}else if(typename.equals("Message")){
+					MessageWithUserSnippet messageWithUserSnippet = new MessageWithUserSnippet();
+					return messageWithUserSnippet;
+				}else if(typename.equals("Space")){
+					BoxSnippet spaceSnippet = new BoxSnippet();
+					return spaceSnippet;
+				}else{
+					HomeSnippet homeSnippet = new HomeSnippet();
+					return homeSnippet;
+				}
 			}
 		}
+			
 		
 		return null;
 	}

@@ -61,18 +61,18 @@ public class JsonToEntityConverter {
 			String[] splitter = mainKey.split("##");
 			
 			String mainType = splitter[0];
-			mainType = mainType.replace(".", "#");
-			String[] typeSplitter = mainType.split("#");
+		//	mainType = mainType.replace(".", "#");
+		//	String[] typeSplitter = mainType.split("#");
 			
-			String typeName = typeSplitter[typeSplitter.length-1];
+			//String typeName = typeSplitter[typeSplitter.length-1];
 			
-			if(typeName.equalsIgnoreCase("ActionContext")){
+			if(mainType.contains("ActionContext")){
 				entity = new InitiateActionContext();
 			} else {
 				entity = new Entity();
 			}
 			
-			Type type = new  MetaType(typeName);
+			Type type = new  MetaType(mainType);
 			
 			entity.setType(type);
 			
@@ -168,6 +168,7 @@ public class JsonToEntityConverter {
 					Property<Byte> byteProp = new Property<Byte>();
 					byteProp.setName(propName);
 					String val = propValueJson.get(primitiveTypeName).toString();
+					val = val.replace("\"", "");
 					Byte byteVal = new Byte(val);
 					byteProp.setValue(byteVal);
 					entity.setProperty(propName, byteProp);
@@ -185,7 +186,7 @@ public class JsonToEntityConverter {
 					
 					JSONObject geoLocJson = propValueJson.get(primitiveTypeName).isObject();
 					Double lat,lng;
-					JSONObject latJson = (JSONObject) geoLocJson.get("lattitude");
+					JSONObject latJson = (JSONObject) geoLocJson.get("latitude");
 					JSONObject lngJson = (JSONObject) geoLocJson.get("longitude");
 					
 					String latStr = latJson.get("Double").toString();
@@ -271,10 +272,29 @@ public class JsonToEntityConverter {
 			
 		}
 		catch (Exception e) {
+			logger.log(Level.SEVERE, "[JsonToEntityConverter] :: [decodeJsonArray] :: Exception", e);
 		}
 		return list;
 		
 	}
 	
+	public Entity convertjsonStringToEntity(String jsonObjectStr){
+		logger.log(Level.INFO,"[JsonToEntityConverter] :: In convertjsonStringToEntity() ");
+
+		Entity convertedEntity = null;
+		try {
+
+			JSONValue jsonVal = JSONParser.parseLenient(jsonObjectStr);
+
+			JSONObject jsonObj = new JSONObject(jsonVal.isObject().getJavaScriptObject());
+
+			convertedEntity = getConvertedEntity(jsonObj);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[JsonToEntityConverter] :: Exception in convertjsonStringToEntity()",e);
+		}
+
+		return convertedEntity;
+	}
+
 	
 }

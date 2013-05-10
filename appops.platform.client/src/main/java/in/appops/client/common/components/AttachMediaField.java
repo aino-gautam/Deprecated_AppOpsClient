@@ -47,6 +47,7 @@ public class AttachMediaField extends Composite implements ClickHandler, OnFinis
 		media.addStyleName("fadeInUp");
 
 		liveFeed = new Button("Live Feed");
+		liveFeed.setStylePrimaryName("appops-Button");
 	}
 
 	public void addHandler(ClickHandler handler) {

@@ -1,25 +1,33 @@
 package in.appops.client.common.snippet;
 
 import in.appops.client.common.core.EntityListModel;
-import in.appops.client.common.core.EntityListReceiver;
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.shared.Configuration;
-import in.appops.platform.core.util.EntityList;
+import in.appops.platform.server.core.services.useraccount.constant.UserPojoConstant;
 
 import java.util.HashMap;
 
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class CalendarServiceHomeSnippet extends VerticalPanel implements Snippet,EntityListReceiver {
+public class CalendarServiceHomeSnippet extends VerticalPanel implements Snippet {
 	
 	private ListSnippet listSnippet ;
 	private Entity entity;
 	private String type;
+	private Configuration configuration;
 	
 		
 	public CalendarServiceHomeSnippet() {
+		//clear this snippet and move the code to reminder list snippet 
+		//create ui as discussed for this snippet
+		//set configuration with reminder/event creation
+		
 	}
 	
 	@Override
@@ -27,66 +35,43 @@ public class CalendarServiceHomeSnippet extends VerticalPanel implements Snippet
 		//Property<Key<Long>> userIdProp = (Property<Key<Long>>) entity.getProperty(UserConstants.ID);
 		//initializeListForUser(userIdProp.getValue().getKeyValue());
 		
-		initializeListForUser(1L);
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(SnippetConstant.SELECTIONMODE, false);
+		setConfiguration(configuration);
+		
+		Entity usrEnt =  AppEnviornment.getCurrentUser();
+		Long userId = ((Key<Long>)usrEnt.getPropertyByName(UserPojoConstant.ID)).getKeyValue();
+		initializeListForUser(userId);
 	}
 	
 	
 	public void initializeListForUser(long userId) {
 		
-		
-		listSnippet= new ListSnippet();
-		add(listSnippet);
-		
 		Query query = new Query();
 		query.setQueryName("getAllRemindersOfUser");
-		query.setListSize(8);
+		query.setListSize(10);
 			
 		HashMap<String, Object> queryParam = new HashMap<String, Object>();
 		queryParam.put("userId", userId);
 		query.setQueryParameterMap(queryParam);
 		
-		//ReminderListModel reminderListModel = new ReminderListModel(query, "calendar.CalendarService.getEntityList", 0);
 		
 		EntityListModel reminderListModel = new EntityListModel();
 		
 		reminderListModel.setOperationNameToBind("calendar.CalendarService.getEntityList");
 		reminderListModel.setQueryToBind(query);
 		reminderListModel.setNoOfEntities(0);
+						
+		listSnippet= new ListSnippet();
+		listSnippet.setEntityListModel(reminderListModel);
+		listSnippet.setConfiguration(getConfiguration());
+		listSnippet.initialize();
 		
-		reminderListModel.getEntityList(0, this);
-		
-	}
-
-
-	@Override
-	public void noMoreData() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onEntityListReceived(EntityList entityList) {
-		initializeListComponentWidget(entityList);
-		
-	}
-
-	private void initializeListComponentWidget(EntityList entityList) {
-		
-			listSnippet.setEntityList(entityList);
-			listSnippet.initialize();
-		
-		
-	}
-
-	@Override
-	public void onEntityListUpdated() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void updateCurrentView(Entity entity) {
-		// TODO Auto-generated method stub
+		Label headingLbl = new Label(" Calendar reminders for you ");
+		headingLbl.setStylePrimaryName("serviceHomeHeadingLabel");
+		add(headingLbl);
+		setCellHorizontalAlignment(headingLbl, HasHorizontalAlignment.ALIGN_CENTER);
+		add(listSnippet);
 		
 	}
 
@@ -114,14 +99,13 @@ public class CalendarServiceHomeSnippet extends VerticalPanel implements Snippet
 
 	@Override
 	public void setConfiguration(Configuration configuration) {
-		// TODO Auto-generated method stub
+		this.configuration = configuration;
 		
 	}
 
 	@Override
 	public Configuration getConfiguration() {
-		// TODO Auto-generated method stub
-		return null;
+		return configuration;
 	}
 
 	@Override
