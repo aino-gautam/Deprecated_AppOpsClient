@@ -1,6 +1,9 @@
 package in.appops.client.gwt.web.ui;
 
+import in.appops.client.common.fields.ImageField;
 import in.appops.client.common.util.BlobDownloader;
+import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.server.core.services.media.constant.MediaConstant;
 
 import java.util.ArrayList;
@@ -17,9 +20,10 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ImagePopup extends PopupPanel implements ClickHandler {
 
-	private Image crossImg = new Image("images/cross.png");
-	private Image nextImg = new Image("images/next.png");
-	private Image prevImg = new Image("images/prev.png");
+	private ImageField crossImageField ;
+	private ImageField nextImageField ;
+	private ImageField prevImageField ;
+	
 	private VerticalPanel basePanel  = new VerticalPanel();
 	private HorizontalPanel imageWithSliderPanel;
 	private HorizontalPanel actualImagePanel;
@@ -40,12 +44,47 @@ public class ImagePopup extends PopupPanel implements ClickHandler {
 		actualImagePanel = new HorizontalPanel();
 		slider = new VerticalPanel();
 		widgetList = widgetSetForRow;
-			
-		crossImg.addClickHandler(this);
-		prevImg.addClickHandler(this);
-		nextImg.addClickHandler(this);
-		nextImagePanel.add(nextImg);
-		prevImagePanel.add(prevImg);
+		
+		/********************* cross image***********/
+		
+		crossImageField = new ImageField();
+		
+		crossImageField.setConfiguration(getImageFieldConfiguration("images/crossIconSmall.png", "crossImageInPhotoviewer"));
+		try {
+			crossImageField.createField();
+		} catch (AppOpsException e) {
+			e.printStackTrace();
+		}
+		
+		/**************************** next image********/
+		
+		nextImageField = new ImageField();
+		
+		nextImageField.setConfiguration(getImageFieldConfiguration("images/next.png", null));
+		try {
+			nextImageField.createField();
+		} catch (AppOpsException e) {
+			e.printStackTrace();
+		}
+		
+		/****************** prev image *********************/
+		
+		prevImageField = new ImageField();
+		
+		prevImageField.setConfiguration(getImageFieldConfiguration("images/prev.png", null));
+		try {
+			prevImageField.createField();
+		} catch (AppOpsException e) {
+			e.printStackTrace();
+		}
+				
+		crossImageField.addClickHandler(this);
+		prevImageField.addClickHandler(this);
+		nextImageField.addClickHandler(this);
+		
+		
+		nextImagePanel.add(nextImageField);
+		prevImagePanel.add(prevImageField);
 		
 		imageWithSliderPanel.add(prevImagePanel);
 		imageWithSliderPanel.add(actualImagePanel);
@@ -56,19 +95,19 @@ public class ImagePopup extends PopupPanel implements ClickHandler {
 		//imageWithSliderPanel.add(slider);
 		
 		imageWithSliderPanel.setCellVerticalAlignment(prevImagePanel, HasVerticalAlignment.ALIGN_MIDDLE);
-		prevImagePanel.setCellHorizontalAlignment(prevImg, HasHorizontalAlignment.ALIGN_CENTER);
+		prevImagePanel.setCellHorizontalAlignment(prevImageField, HasHorizontalAlignment.ALIGN_CENTER);
 		
 		actualImagePanel.setStylePrimaryName("actualImagePanel");
 		
 		imageWithSliderPanel.setCellVerticalAlignment(nextImagePanel, HasVerticalAlignment.ALIGN_MIDDLE);
-		nextImagePanel.setCellHorizontalAlignment(nextImg, HasHorizontalAlignment.ALIGN_CENTER);
+		nextImagePanel.setCellHorizontalAlignment(nextImageField, HasHorizontalAlignment.ALIGN_CENTER);
 		
 		slider.setStylePrimaryName("sliderPanel");
 		imageWithSliderPanel.setCellHorizontalAlignment(slider, HasHorizontalAlignment.ALIGN_RIGHT);
 		
 		
-		basePanel.add(crossImg);
-		basePanel.setCellHorizontalAlignment(crossImg, HasHorizontalAlignment.ALIGN_RIGHT);
+		basePanel.add(crossImageField);
+		basePanel.setCellHorizontalAlignment(crossImageField, HasHorizontalAlignment.ALIGN_RIGHT);
 		basePanel.add(imageWithSliderPanel);
 		
 		setStylePrimaryName("imagePopup");
@@ -81,6 +120,13 @@ public class ImagePopup extends PopupPanel implements ClickHandler {
 		basePanel.setStylePrimaryName("basePanelInPopup");
 		setWidget(basePanel);
 		
+	}
+	
+	public Configuration getImageFieldConfiguration(String url, String primaryCSS) {
+		Configuration config = new Configuration();
+		config.setPropertyByName(ImageField.IMAGEFIELD_BLOBID, url);
+		config.setPropertyByName(ImageField.IMAGEFIELD_PRIMARYCSS, primaryCSS);
+		return config;
 	}
 	
 	public void showImage(Widget widget){
@@ -105,10 +151,10 @@ public class ImagePopup extends PopupPanel implements ClickHandler {
 	public void onClick(ClickEvent event) {
 		
 		Widget widget = (Widget) event.getSource();
-		if(widget.equals(crossImg)){
+		if(widget.equals(crossImageField)){
 			hide();
 			return;
-		}else if(widget.equals(prevImg)){
+		}else if(widget.equals(prevImageField)){
 			if(index!=0){
 				index--;
 				actualImagePanel.clear();
@@ -126,7 +172,7 @@ public class ImagePopup extends PopupPanel implements ClickHandler {
 				actualImagePanel.add(image);
 				
 			}
-		}else if(widget.equals(nextImg)){
+		}else if(widget.equals(nextImageField)){
 			if(index<widgetList.size()-1){
 				index++;
 				actualImagePanel.clear();
@@ -139,10 +185,6 @@ public class ImagePopup extends PopupPanel implements ClickHandler {
 				index=0;
 			}
 				
-		}else{
-			/*ImageWidget imageWidget = (ImageWidget) widget;
-			
-			showImage(imageWidget);*/
 		}
 	}
 

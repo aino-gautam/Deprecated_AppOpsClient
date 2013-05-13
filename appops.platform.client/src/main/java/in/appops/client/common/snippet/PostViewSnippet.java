@@ -423,12 +423,13 @@ public class PostViewSnippet extends RowSnippet {
 		
 		String jsonEmbededString = null;
 		
-		if(postEnt.getProperty("embeddedEntity") instanceof Property){
-			jsonEmbededString =  postEnt.getPropertyByName("embeddedEntity");
-		}else if(postEnt.getProperty("embeddedEntity") instanceof JsonProperty){
+		if(postEnt.getProperty("embeddedEntity") instanceof JsonProperty){
 			JsonProperty jsonProp = (JsonProperty) postEnt.getProperty("embeddedEntity");
 			
 			jsonEmbededString = jsonProp.getJsonString();
+		}else if(postEnt.getProperty("embeddedEntity") instanceof Property){
+			
+			jsonEmbededString =  postEnt.getPropertyByName("embeddedEntity");
 		}
 		
 		

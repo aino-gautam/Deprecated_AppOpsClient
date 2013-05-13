@@ -25,6 +25,7 @@ public class MediaServiceHomeSnippet extends VerticalPanel implements Configurab
 		headingLbl.addStyleName("mediaHeadingLabel");
 		add(headingLbl);
 		MediaViewer mediaViewer = new MediaViewer();
+		mediaViewer.initialize();
 		add(mediaViewer);
 	}
 
