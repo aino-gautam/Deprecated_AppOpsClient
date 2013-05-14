@@ -13,7 +13,8 @@ public class CalenderHomeEntry implements EntryPoint{
 	public void onModuleLoad() {
 		CalendarServiceHomeSnippet calendarServiceHomeSnippet = new CalendarServiceHomeSnippet();
 		calendarServiceHomeSnippet.setConfiguration(getConfiguration());
-		calendarServiceHomeSnippet.createUi();
+		calendarServiceHomeSnippet.initialize();
+		//calendarServiceHomeSnippet.createUi();
 		RootPanel.get().add(calendarServiceHomeSnippet);
 		RootPanel.get().setWidgetPosition(calendarServiceHomeSnippet,300,50);
 	}

@@ -490,7 +490,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 			try{
 			LabelField errorLabelField = new LabelField();
 			Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
-			errorLabelField.setFieldValue("Please enter all data appropriately.");
+			errorLabelField.setFieldValue("*Please enter all data appropriately.");
 			errorLabelField.setConfiguration(labelConfig);
 			errorLabelField.createField();
 			mainPanel.add(errorLabelField);
