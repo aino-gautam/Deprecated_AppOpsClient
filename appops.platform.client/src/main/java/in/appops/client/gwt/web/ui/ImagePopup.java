@@ -141,7 +141,7 @@ public class ImagePopup extends PopupPanel implements ClickHandler {
 			blobDownloader = new BlobDownloader();
 		String bloId = imageWidget.getEntity().getProperty(MediaConstant.BLOBID).getValue().toString();
 		Image image = new Image(blobDownloader.getImageDownloadURL(bloId));
-		image.setSize("800px", "550px");
+		image.setStylePrimaryName("imageInImageViewer");
 		actualImagePanel.add(image);
 		
 		actualImagePanel.setCellHorizontalAlignment(image, HasHorizontalAlignment.ALIGN_CENTER);
@@ -160,7 +160,7 @@ public class ImagePopup extends PopupPanel implements ClickHandler {
 				actualImagePanel.clear();
 				String bloId = widgetList.get(index).getEntity().getProperty(MediaConstant.BLOBID).getValue().toString();
 				Image image = new Image(blobDownloader.getImageDownloadURL(bloId));
-				image.setSize("800px", "550px");
+				image.setStylePrimaryName("imageInImageViewer");
 				actualImagePanel.add(image);
 				
 			}else{
@@ -168,7 +168,7 @@ public class ImagePopup extends PopupPanel implements ClickHandler {
 				actualImagePanel.clear();
 				String bloId = widgetList.get(index).getEntity().getProperty(MediaConstant.BLOBID).getValue().toString();
 				Image image = new Image(blobDownloader.getImageDownloadURL(bloId));
-				image.setSize("800px", "550px");
+				image.setStylePrimaryName("imageInImageViewer");
 				actualImagePanel.add(image);
 				
 			}
@@ -178,7 +178,7 @@ public class ImagePopup extends PopupPanel implements ClickHandler {
 				actualImagePanel.clear();
 				String bloId = widgetList.get(index).getEntity().getProperty(MediaConstant.BLOBID).getValue().toString();
 				Image image = new Image(blobDownloader.getImageDownloadURL(bloId));
-				image.setSize("800px", "550px");
+				image.setStylePrimaryName("imageInImageViewer");
 				actualImagePanel.add(image);
 				
 			}else{

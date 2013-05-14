@@ -1363,3 +1363,7 @@ height: 15px;
 	font-family: 'Ubuntu', sans-serif;
 	font-size: 12px;
 }
+.imageInImageViewer{
+	width: 800px;
+	height: 550px;
+}
