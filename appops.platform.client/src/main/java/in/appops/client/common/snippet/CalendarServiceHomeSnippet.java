@@ -35,8 +35,11 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -63,6 +66,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 		//set configuration with reminder/event creation
 		mainPanel = new VerticalPanel();
 		initWidget(mainPanel);
+		mainPanel.setStylePrimaryName("calendarServiceHome");
 	}
 	
 	@Override
@@ -76,6 +80,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 		DOM.setStyleAttribute(childPanel.getElement(), "padding", "5px");
 		DOM.setStyleAttribute(createEntityButton.getElement(), "padding", "5px");
 		userEntity=AppEnviornment.getCurrentUser();
+		childPanel.setHeight("100%");
 		createUi();
 		//Property<Key<Long>> userIdProp = (Property<Key<Long>>) entity.getProperty(UserConstants.ID);
 		//initializeListForUser(userIdProp.getValue().getKeyValue());
@@ -135,7 +140,9 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 			mainPanel.add(createHeaderPanel());
 			
 			mainPanel.add(childPanel);
-			mainPanel.setCellVerticalAlignment(childPanel, HasVerticalAlignment.ALIGN_BOTTOM);
+			mainPanel.setCellVerticalAlignment(childPanel, HasVerticalAlignment.ALIGN_TOP);
+			mainPanel.setCellHorizontalAlignment(childPanel, HasHorizontalAlignment.ALIGN_CENTER);
+			
 			//tabPanel.getTabBar().setTabHTML(index, html)
 			//AppUtils.EVENT_BUS.addHandlerToSource(FieldEvent.TYPE, calendarEntryScreen, this);
 		}catch(Exception e){
@@ -158,7 +165,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 		childPanel.clear();
 		childPanel.add(calendarEntryScreen);
 		
-		if(getConfiguration().getPropertyByName(CreateCalendarEntryScreen.SCREEN_TYPE).equals(CreateCalendarEntryScreen.CREATE_EVENT)){
+		if(getConfigurationForCreateEvent().getPropertyByName(CreateCalendarEntryScreen.SCREEN_TYPE).equals(CreateCalendarEntryScreen.CREATE_EVENT)){
 			createEntityButton.setText("Create event");
 		}else{
 			createEntityButton.setText("Create reminder");
@@ -174,7 +181,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 		try{
 			quickEventLabelField = new LabelField();
 			Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", "crossImageCss", null);
-			if(getConfiguration().getPropertyByName(CreateCalendarEntryScreen.SCREEN_TYPE).equals(CreateCalendarEntryScreen.CREATE_EVENT)){
+			if(getConfigurationForCreateEvent().getPropertyByName(CreateCalendarEntryScreen.SCREEN_TYPE).equals(CreateCalendarEntryScreen.CREATE_EVENT)){
 				quickEventLabelField.setFieldValue("Quick event");
 			}else{
 				quickEventLabelField.setFieldValue("Create reminder");
@@ -406,12 +413,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 				}
 			 }
 
-			
-
-			
 			});
-		
-		
 		
 	}
 	
@@ -456,7 +458,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 		
 		Property<String> ownerProp = new Property<String>();
 		ownerProp.setName(CalendarConstant.OWNER);
-		ownerProp.setValue(String.valueOf(4));
+		ownerProp.setValue(String.valueOf(userId));
 		calendarEnt.setProperty(ownerProp);
 		
 		Entity spaceEntity=AppEnviornment.getCurrentSpace();
@@ -498,7 +500,15 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 				if(result!=null){
 					Entity calenderEntity=result.getOperationResult();
 				   if(calenderEntity!=null)	{
-						
+					     PopupPanel popupPanel = new  PopupPanel();
+						 HorizontalPanel horizontalPanel = new HorizontalPanel();
+						 Label label = new Label("Event created successfully.");
+						 horizontalPanel.add(label);
+						 horizontalPanel.setCellHorizontalAlignment(label, HasHorizontalAlignment.ALIGN_CENTER);
+						 popupPanel.add(horizontalPanel);
+						 popupPanel.show();
+						 popupPanel.center();
+						 popupPanel.setAutoHideEnabled(true);
 				   }else{
 					   
 				   }
