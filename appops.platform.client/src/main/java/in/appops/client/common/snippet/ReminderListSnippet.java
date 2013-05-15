@@ -1,11 +1,15 @@
 package in.appops.client.common.snippet;
 
 import in.appops.client.common.core.EntityListModel;
+import in.appops.client.common.util.AppEnviornment;
+import in.appops.platform.core.constants.propertyconstants.UserConstants;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.shared.Configuration;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -17,6 +21,8 @@ public class ReminderListSnippet extends VerticalPanel implements Snippet{
 
 	private ListSnippet listSnippet ;
 	private Entity entity;
+	private Configuration configuration;
+	private Entity userEntity;
 	@Override
 	public Entity getEntity() {
 		// TODO Auto-generated method stub
@@ -43,17 +49,22 @@ public class ReminderListSnippet extends VerticalPanel implements Snippet{
 
 	@Override
 	public void initialize() {
+		     userEntity=AppEnviornment.getCurrentUser();
 		      // Property<Key<Long>> userIdProp = (Property<Key<Long>>) entity.getProperty(UserConstants.ID);
 				//initializeListForUser(userIdProp.getValue().getKeyValue());
 				
 				Configuration configuration = new Configuration();
 				configuration.setPropertyByName(SnippetConstant.SELECTIONMODE, false);
+				configuration.setPropertyByName(ListSnippet.SCROLLPANELWIDTH, 650);
+				configuration.setPropertyByName(ListSnippet.SCROLLPANELHEIGHT, 500);
 				setConfiguration(configuration);
 				
 				/*Entity usrEnt =  AppEnviornment.getCurrentUser();
 				Long userId = ((Key<Long>)usrEnt.getPropertyByName(UserPojoConstant.ID)).getKeyValue();
 				initializeListForUser(userId);*/
-				initializeListForUser(1);
+				Key<Serializable> key=(Key<Serializable>) userEntity.getProperty(UserConstants.ID).getValue();
+				Long userId = (Long) key.getKeyValue();
+				initializeListForUser(userId);
 		
 	}
      public void initializeListForUser(long userId) {
@@ -81,22 +92,22 @@ public class ReminderListSnippet extends VerticalPanel implements Snippet{
 		Label headingLbl = new Label(" Calendar reminders for you ");
 		headingLbl.setStylePrimaryName("serviceHomeHeadingLabel");
 		add(headingLbl);
-		setCellHorizontalAlignment(headingLbl, HasHorizontalAlignment.ALIGN_LEFT);
+		setCellHorizontalAlignment(headingLbl, HasHorizontalAlignment.ALIGN_CENTER);
 		add(listSnippet);
-		setCellHorizontalAlignment(listSnippet, HasHorizontalAlignment.ALIGN_LEFT);
+		setCellHorizontalAlignment(listSnippet, HasHorizontalAlignment.ALIGN_CENTER);
 		
 		
 	}
 	@Override
 	public void setConfiguration(Configuration configuration) {
-		// TODO Auto-generated method stub
+		this.configuration = configuration;
 		
 	}
 
 	@Override
 	public Configuration getConfiguration() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return configuration;
 	}
 
 	@Override

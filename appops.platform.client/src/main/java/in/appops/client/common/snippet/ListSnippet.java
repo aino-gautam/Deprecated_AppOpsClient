@@ -77,7 +77,7 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 		loader.createLoader();
 		loader.setVisible(true);
 		basepanel.add(loader);
-		basepanel.setCellHorizontalAlignment(loader, HasAlignment.ALIGN_LEFT);
+		basepanel.setCellHorizontalAlignment(loader, HasAlignment.ALIGN_CENTER);
 		basepanel.setCellVerticalAlignment(loader, HasVerticalAlignment.ALIGN_TOP);
 		
 		noMoreResultLabel = new LabelField();
@@ -148,7 +148,7 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 		}
 		
 		basepanel.add(scrollPanel);
-		basepanel.setCellHorizontalAlignment(scrollPanel, HasAlignment.ALIGN_LEFT);
+		basepanel.setCellHorizontalAlignment(scrollPanel, HasAlignment.ALIGN_CENTER);
 		scrollPanel.addScrollHandler(this);
 		
 		AppUtils.EVENT_BUS.addHandler(SelectionEvent.TYPE, this);
