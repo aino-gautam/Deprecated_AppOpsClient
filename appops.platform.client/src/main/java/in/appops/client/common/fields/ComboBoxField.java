@@ -82,18 +82,20 @@ public class ComboBoxField extends Composite implements Field, ChangeHandler,Cli
 	 * @param entityList - list of entities
 	 */
 	public void populateList(EntityList entityList, ListBox listbox){
-		listbox.addItem("--"+getConfiguration().getPropertyByName(ComboBoxField_EntityPropertyName).toString()+"--");
-		fieldValue =getConfiguration().getPropertyByName(ComboBoxField_EntityPropertyName).toString(); 
+		//listbox.addItem("--"+getConfiguration().getPropertyByName(ComboBoxField_EntityPropertyName).toString()+"--");
+		//fieldValue =getConfiguration().getPropertyByName(ComboBoxField_EntityPropertyName).toString(); 
 		nameVsEntity = new HashMap<String, Object>();
 		for(Entity entity : entityList){
 		   if(getConfiguration().getPropertyByName(ComboBoxField_EntityPropertyName).equals(ReminderTypeConstant.TYPE)){	
 			String item = entity.getPropertyByName(ReminderTypeConstant.TYPE); // we need to figure out how this property name will be provided
 			nameVsEntity.put(item, entity);
 			listbox.addItem(item);
+			fieldValue = listbox.getItemText(listbox.getSelectedIndex());
 		   }else if(getConfiguration().getPropertyByName(ComboBoxField_EntityPropertyName).equals("unit")){
 			   String item = entity.getPropertyByName("unit"); // we need to figure out how this property name will be provided
 				nameVsEntity.put(item, entity);
 				listbox.addItem(item);
+				fieldValue = listbox.getItemText(listbox.getSelectedIndex());
 		   }
 		}
 
