@@ -1367,7 +1367,7 @@ height: 15px;
 	width: 800px;
 	height: 550px;
 }
-.calendarServiceHome{
+.calendarServiceHome {
 	border: 1px solid #E0E0E0;
 	width: 50%;
 	height: 60%;
@@ -1375,4 +1375,19 @@ height: 15px;
 	box-shadow: 5px 5px 5px #B0B0B0;
     border-radius: 5px;
     padding: 3px 3px;
+}
+.calendarHomeTab{
+	cursor: pointer;
+	cursor: hand;
+}
+.calendarHomeTabSelected {
+	text-decoration: underline;
+}
+.calendarHomeTextFields{
+	width: 215;
+}
+.appops-errorLabel {
+    color: red;
+    font-family: 'Ubuntu',sans-serif;
+    font-size: 12px;
 }
