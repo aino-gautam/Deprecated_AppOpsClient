@@ -1341,3 +1341,53 @@ height: 15px;
 	width: 48px;
 	height: 48px;
 }
+
+.rowName{
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 13px;
+}
+
+.crossImageInPhotoviewer{
+	height: 30px;
+}
+.reminderDurationBox{
+	width: 25px;
+	height: 20px;
+	color: #333;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 12px;
+}
+.appops-comboBoxField{
+	height: 25px;
+	color: #333;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 12px;
+}
+.imageInImageViewer{
+	width: 800px;
+	height: 550px;
+}
+.calendarServiceHome {
+	border: 1px solid #E0E0E0;
+	width: 50%;
+	height: 60%;
+	margin-top: 10px;
+	box-shadow: 5px 5px 5px #B0B0B0;
+    border-radius: 5px;
+    padding: 3px 3px;
+}
+.calendarHomeTab{
+	cursor: pointer;
+	cursor: hand;
+}
+.calendarHomeTabSelected {
+	text-decoration: underline;
+}
+.calendarHomeTextFields{
+	width: 215;
+}
+.appops-errorLabel {
+    color: red;
+    font-family: 'Ubuntu',sans-serif;
+    font-size: 12px;
+}
