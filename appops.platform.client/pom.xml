@@ -166,14 +166,14 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>10.05.2013</version>
+			<version>14.05.2013</version>
 		</dependency>
 
 		<!-- This should be used when using a final version of the jar -->
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>09.05.2013</version>
+			<version>13.05.2013</version>
 		</dependency>
 
 		<dependency>
@@ -272,6 +272,7 @@
 						<module>in.appops.showcase.web.gwt.facebook.facebook</module>
 						<module>in.appops.showcase.web.gwt.contactbox.contactbox</module>
 						<module>in.appops.showcase.web.gwt.messagehome.messagehome</module>
+						<module>in.appops.showcase.web.gwt.calendarHome.calendarHome</module>
 					</modules>
 				</configuration>
 			</plugin>
