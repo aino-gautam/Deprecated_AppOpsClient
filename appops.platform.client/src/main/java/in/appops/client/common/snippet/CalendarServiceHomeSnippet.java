@@ -23,6 +23,8 @@ import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.calendar.constant.CalendarConstant;
+import in.appops.platform.server.core.services.calendar.constant.ReminderConstant;
+import in.appops.platform.server.core.services.calendar.constant.UserCalendarEventConstant;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -82,48 +84,10 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 		userEntity=AppEnviornment.getCurrentUser();
 		childPanel.setHeight("100%");
 		createUi();
-		//Property<Key<Long>> userIdProp = (Property<Key<Long>>) entity.getProperty(UserConstants.ID);
-		//initializeListForUser(userIdProp.getValue().getKeyValue());
 		
-		/*Configuration configuration = new Configuration();
-		configuration.setPropertyByName(SnippetConstant.SELECTIONMODE, false);
-		setConfiguration(configuration);
-		
-		Entity usrEnt =  AppEnviornment.getCurrentUser();
-		Long userId = ((Key<Long>)usrEnt.getPropertyByName(UserPojoConstant.ID)).getKeyValue();
-		initializeListForUser(userId);*/
 	}
 	
 	
-	public void initializeListForUser(long userId) {
-		
-		/*Query query = new Query();
-		query.setQueryName("getAllRemindersOfUser");
-		query.setListSize(10);
-			
-		HashMap<String, Object> queryParam = new HashMap<String, Object>();
-		queryParam.put("userId", userId);
-		query.setQueryParameterMap(queryParam);
-		
-		
-		EntityListModel reminderListModel = new EntityListModel();
-		
-		reminderListModel.setOperationNameToBind("calendar.CalendarService.getEntityList");
-		reminderListModel.setQueryToBind(query);
-		reminderListModel.setNoOfEntities(0);
-						
-		listSnippet= new ListSnippet();
-		listSnippet.setEntityListModel(reminderListModel);
-		listSnippet.setConfiguration(getConfiguration());
-		listSnippet.initialize();
-		
-		Label headingLbl = new Label(" Calendar reminders for you ");
-		headingLbl.setStylePrimaryName("serviceHomeHeadingLabel");
-		add(headingLbl);
-		setCellHorizontalAlignment(headingLbl, HasHorizontalAlignment.ALIGN_CENTER);
-		add(listSnippet);*/
-		
-	}
 	
 	public void createUi(){
 		try{
@@ -143,8 +107,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 			mainPanel.setCellVerticalAlignment(childPanel, HasVerticalAlignment.ALIGN_TOP);
 			mainPanel.setCellHorizontalAlignment(childPanel, HasHorizontalAlignment.ALIGN_CENTER);
 			
-			//tabPanel.getTabBar().setTabHTML(index, html)
-			//AppUtils.EVENT_BUS.addHandlerToSource(FieldEvent.TYPE, calendarEntryScreen, this);
+			
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -180,7 +143,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 		
 		try{
 			quickEventLabelField = new LabelField();
-			Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", "crossImageCss", null);
+			Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", "calendarHomeTab", null);
 			if(getConfigurationForCreateEvent().getPropertyByName(CreateCalendarEntryScreen.SCREEN_TYPE).equals(CreateCalendarEntryScreen.CREATE_EVENT)){
 				quickEventLabelField.setFieldValue("Quick event");
 			}else{
@@ -190,8 +153,10 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 			quickEventLabelField.createField();
 			quickEventLabelField.addClickHandler(this);
 			
+			quickEventLabelField.addStyleName("calendarHomeTabSelected");
+			
 			reminderLabelField = new LabelField();
-			Configuration reminderLabelConfig = getLabelFieldConfiguration(true, "flowPanelContent", "crossImageCss", null);
+			Configuration reminderLabelConfig = getLabelFieldConfiguration(true, "flowPanelContent", "calendarHomeTab", null);
 			reminderLabelField.setFieldValue("Reminder");
 			reminderLabelField.setConfiguration(reminderLabelConfig);
 			reminderLabelField.createField();
@@ -322,10 +287,21 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 		Widget sender = (Widget) event.getSource();
 		if(sender instanceof LabelField){
 			if(sender.equals(quickEventLabelField)){
+				calendarEntryScreen.clearAllFields();
+				//DOM.removeElementAttribute(reminderLabelField.getElement(), "textDecoration");
 				
+				//DOM.setStyleAttribute(quickEventLabelField.getElement(), "textDecoration","underline");
+				reminderLabelField.removeStyleName("calendarHomeTabSelected");
+				quickEventLabelField.setStylePrimaryName("flowPanelContent");
+				quickEventLabelField.addStyleName("calendarHomeTabSelected");
 				preSelectedTab();
 			}else if(sender.equals(reminderLabelField)){
 				childPanel.clear();
+				//DOM.removeElementAttribute(quickEventLabelField.getElement(), "textDecoration");
+				//DOM.setStyleAttribute(reminderLabelField.getElement(), "textDecoration","underline");
+				quickEventLabelField.removeStyleName("calendarHomeTabSelected");
+				reminderLabelField.setStylePrimaryName("flowPanelContent");
+				reminderLabelField.addStyleName("calendarHomeTabSelected");
 				reminderListSnippet.initialize();
 				childPanel.add(reminderListSnippet);
 			}
@@ -498,8 +474,11 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 			
 			public void onSuccess(Result<Entity> result) {
 				if(result!=null){
-					Entity calenderEntity=result.getOperationResult();
-				   if(calenderEntity!=null)	{
+					Entity userCalendarEventEntity=result.getOperationResult();
+				   if(userCalendarEventEntity!=null)	{
+					 Entity calendarEntity=  userCalendarEventEntity.getPropertyByName(UserCalendarEventConstant.EVENT);
+					    
+					   if(!calendarEntryScreen.isAddMoreDetails()){
 					     PopupPanel popupPanel = new  PopupPanel();
 						 HorizontalPanel horizontalPanel = new HorizontalPanel();
 						 Label label = new Label("Event created successfully.");
@@ -509,6 +488,10 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 						 popupPanel.show();
 						 popupPanel.center();
 						 popupPanel.setAutoHideEnabled(true);
+						 calendarEntryScreen.clearAllFields();
+					   }else{
+						   addReminderForEvent(calendarEntity);
+					   }
 				   }else{
 					   
 				   }
@@ -517,7 +500,55 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 				}
 			 }
 
+			
+
 			});
 		
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void addReminderForEvent(Entity calendarEntity) {
+		DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
+		DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
+
+		Entity reminderEntity=calendarEntryScreen.getReminderEntity();
+		Key<Serializable> key =(Key<Serializable>) calendarEntity.getProperty(CalendarConstant.ID).getValue();
+		Long calendarId = (Long) key.getKeyValue();
+		reminderEntity.setPropertyByName(ReminderConstant.INSTANCEID, calendarId);
+		
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("reminder", reminderEntity);
+				
+		
+		StandardAction action = new StandardAction(EntityList.class, "calendar.CalendarService.addReminderToEvent", paramMap);
+		dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+				
+			}
+
+			@Override
+			public void onSuccess(Result<Entity> result) {
+			  if(result!=null){	
+				Entity entity = result.getOperationResult();
+				if(entity!=null){
+				     PopupPanel popupPanel = new  PopupPanel();
+					 HorizontalPanel horizontalPanel = new HorizontalPanel();
+					 Label label = new Label("Event created with remindar successfully.");
+					 horizontalPanel.add(label);
+					 horizontalPanel.setCellHorizontalAlignment(label, HasHorizontalAlignment.ALIGN_CENTER);
+					 popupPanel.add(horizontalPanel);
+					 popupPanel.show();
+					 popupPanel.center();
+					 popupPanel.setAutoHideEnabled(true);
+					 calendarEntryScreen.clearAllFields();
+				}
+				
+			  }
+			}
+		
+	  });
 	}
 }

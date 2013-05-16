@@ -8,12 +8,12 @@ import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.server.core.services.useraccount.constant.UserPojoConstant;
 
 import java.io.Serializable;
 import java.util.HashMap;
 
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -59,12 +59,13 @@ public class ReminderListSnippet extends VerticalPanel implements Snippet{
 				configuration.setPropertyByName(ListSnippet.SCROLLPANELHEIGHT, 500);
 				setConfiguration(configuration);
 				
-				/*Entity usrEnt =  AppEnviornment.getCurrentUser();
+				Entity usrEnt =  AppEnviornment.getCurrentUser();
 				Long userId = ((Key<Long>)usrEnt.getPropertyByName(UserPojoConstant.ID)).getKeyValue();
-				initializeListForUser(userId);*/
-				Key<Serializable> key=(Key<Serializable>) userEntity.getProperty(UserConstants.ID).getValue();
-				Long userId = (Long) key.getKeyValue();
 				initializeListForUser(userId);
+				
+				/*Key<Serializable> key=(Key<Serializable>) userEntity.getProperty(UserConstants.ID).getValue();
+				Long userId = (Long) key.getKeyValue();
+				initializeListForUser(4);*/
 		
 	}
      public void initializeListForUser(long userId) {
