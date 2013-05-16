@@ -1,23 +1,24 @@
 package in.appops.client.common.components;
 
-import in.appops.client.common.components.WebMediaAttachWidget;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.ComboBoxField;
-import in.appops.client.common.fields.DateOnlyPicker;
 import in.appops.client.common.fields.DateTimeField;
 import in.appops.client.common.fields.DateTimePicker;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.TextField;
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.client.touch.Screen;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.constants.propertyconstants.UserConstants;
 import in.appops.platform.core.constants.typeconstants.TypeConstants;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.GeoLocation;
+import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.entity.type.MetaType;
@@ -26,14 +27,17 @@ import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.calendar.constant.EventConstant;
+import in.appops.platform.server.core.services.calendar.constant.ReminderConstant;
 import in.appops.platform.server.core.services.calendar.constant.ReminderTypeConstant;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
@@ -69,6 +73,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 	private HorizontalPanel reminderFieldPanel;
 	private String createEntityType;
 	private boolean isAddMoreDetails = false;
+	private TextField remindarDurationTextFieldTB;
 	//private LatLng latLng ;
 	
 	public CreateCalendarEntryScreen() {
@@ -117,7 +122,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 						try{
 							EntityList reminderTypeEntityList=result.getOperationResult();
 							reminderTypeComboBoxField.setEntityList(reminderTypeEntityList);
-							reminderTypeComboBoxField.setFieldValue(ReminderTypeConstant.TYPE);
+							//reminderTypeComboBoxField.setFieldValue(ReminderTypeConstant.TYPE);
 							reminderTypeComboBoxField.setConfiguration(createComboboxConfig(null,ReminderTypeConstant.TYPE,"appops-comboBoxField",null,reminderTypeEntityList));
 							reminderTypeComboBoxField.createField();
 							fetchReminderUnits();
@@ -175,7 +180,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 						reminderFieldPanel.clear();
 						EntityList reminderUnitEntityList=result.getOperationResult();
 						reminderUnitComboBoxField.setEntityList(reminderUnitEntityList);
-						reminderUnitComboBoxField.setFieldValue("unit");
+						//reminderUnitComboBoxField.setFieldValue("unit");
 						reminderUnitComboBoxField.setConfiguration(createComboboxConfig(null,"unit","appops-comboBoxField",null,reminderUnitEntityList));
 						reminderUnitComboBoxField.createField();
 						reminderFieldPanel.add(createRemiderField());
@@ -297,6 +302,8 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 			textFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "appops-TextField", null, null));
 			textFieldTB.createField();
 			
+			DOM.setStyleAttribute(textFieldTB.getElement(), "width", "215px");
+			
 			LabelField labelWhenField = new LabelField();
 			Configuration labelWhenConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 			labelWhenField.setFieldValue("When :");
@@ -317,6 +324,8 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 			descriptionTextField.setFieldValue("");
 			descriptionTextField.setConfiguration(getTextFieldConfiguration(10, false, TextField.TEXTFIELDTYPE_TEXTAREA, "appops-TextField", null, null));
 			descriptionTextField.createField();
+			DOM.setStyleAttribute(descriptionTextField.getElement(), "width", "215px");
+			DOM.setStyleAttribute(descriptionTextField.getElement(), "height", "65px");
 			
 			final Anchor addMoreDetailsAnchor = new Anchor("Add more details");
 			addMoreDetailsAnchor.addClickHandler(new ClickHandler() {
@@ -396,16 +405,16 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 			horizontalPanel.add(reminderTypeComboBoxField);
 			horizontalPanel.setCellWidth(reminderTypeComboBoxField, "10%");
 			
-			TextField textFieldTB = new TextField();
-			textFieldTB.setFieldValue("");
+			remindarDurationTextFieldTB = new TextField();
+			remindarDurationTextFieldTB.setFieldValue("");
 			//textFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "appops-TextField", null, null));
-			textFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "reminderDurationBox", null, null));
-			textFieldTB.createField();
+			remindarDurationTextFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "reminderDurationBox", null, null));
+			remindarDurationTextFieldTB.createField();
 			
 			//TODO:ComboBox field will add
 			
-			horizontalPanel.add(textFieldTB);
-			horizontalPanel.setCellWidth(textFieldTB, "10%");
+			horizontalPanel.add(remindarDurationTextFieldTB);
+			horizontalPanel.setCellWidth(remindarDurationTextFieldTB, "10%");
 			horizontalPanel.add(reminderUnitComboBoxField);
 			horizontalPanel.setCellWidth(reminderUnitComboBoxField, "40%");
 		}catch(Exception e){
@@ -475,7 +484,10 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 								
 					throw new NullPointerException(); 
 				}
-			  if(isAddMoreDetails){	
+			  if(isAddMoreDetails){
+				  if(remindarDurationTextFieldTB.getText().equals("")){
+				      throw new NullPointerException(); 
+				  }
 				if(reminderTypeComboBoxField.getFieldValue().equals("--type--")){
 					throw new NullPointerException(); 
 				}
@@ -489,7 +501,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 		}catch(Exception e){
 			try{
 			LabelField errorLabelField = new LabelField();
-			Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
+			Configuration labelConfig = getLabelFieldConfiguration(true, "appops-errorLabel", null, null);
 			errorLabelField.setFieldValue("*Please enter all data appropriately.");
 			errorLabelField.setConfiguration(labelConfig);
 			errorLabelField.createField();
@@ -511,78 +523,18 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 				
 			}else if(createEntityType.equals("Create event")){
 			  if(isAddMoreDetails){	
-				  entity = new Entity(); 
+				  /*entity = new Entity(); 
 					String eventTitle = textFieldTB.getText();
 					String eventDescription = descriptionTextField.getText();
 					DateOnlyPicker dateOnlyPicker = (DateOnlyPicker) dateTimeOnlyField.getCurrentField();
-					String eventDateTime = dateOnlyPicker.getTextbox().getText();
+					String eventDateTime = dateOnlyPicker.getTextbox().getText();*/
+					
+					entity =  createEventEntity();
+					reminderEntity=createReminderEntity(entity);
 										
 			  }else{
-				    entity = new  Entity();
-				    entity.setType(new MetaType(TypeConstants.EVENT));
-				    
-				    String eventName = textFieldTB.getText();
-				    entity.setPropertyByName(EventConstant.NAME, eventName);
-				    
-				    String eventDescription = descriptionTextField.getText();
-				    entity.setPropertyByName(EventConstant.DESCRIPTION, eventDescription);
-				    
-				    DateTimePicker dateOnlyPicker = (DateTimePicker) dateTimeOnlyField.getCurrentField();
-					String eventDateTime = dateOnlyPicker.getTextbox().getText();
-					int indexOfSpace=eventDateTime.indexOf(" ");
-					
-					String dateStr= eventDateTime.substring(0,indexOfSpace);
-					String timeStr = eventDateTime.substring(indexOfSpace+1);
-					
-					DateTimeFormat fmt = DateTimeFormat.getFormat("dd-MM-yyyy hh:mm:ss");
-					Date date = fmt.parse(eventDateTime);
-					
-					/*DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss"); 
-					Date date = df.parse(eventDateTime);*/
-					
-					Property<Date> fromdateProp = new Property<Date>(date);
-					entity.setProperty(EventConstant.FROMDATE, fromdateProp);
-					
-					Property<Date> toDateProp = new Property<Date>(date);
-					entity.setProperty(EventConstant.TODATE, toDateProp);
-					
-					Property<String> fromTimeProp = new Property<String>();
-					fromTimeProp.setName(EventConstant.FROMTIME);
-					fromTimeProp.setValue(timeStr);
-					entity.setProperty(fromTimeProp);
-					
-					Property<String> toTimeProp = new Property<String>();
-					toTimeProp.setName(EventConstant.TOTIME);
-					toTimeProp.setValue(timeStr);
-					entity.setProperty(toTimeProp);
-					
-					
-					
-					 /*Entity userEntity=AppEnviornment.getCurrentUser();
-					  Key<Serializable> key=(Key<Serializable>) userEntity.getProperty(UserConstants.ID).getValue();
-					  Long userId = (Long) key.getKeyValue();
-					 entity.setPropertyByName(EventConstant.OWNER, userId);
-					 entity.setPropertyByName(EventConstant.CREATEDBY, userId);
-					 entity.setPropertyByName(EventConstant.MODIFIEDBY, userId);*/
-					 
-					 entity.setPropertyByName(EventConstant.OWNER, Long.valueOf(1));
-					 entity.setPropertyByName(EventConstant.CREATEDBY, Long.valueOf(1));
-					 entity.setPropertyByName(EventConstant.MODIFIEDBY, Long.valueOf(1));
-					 
-					 Property<Long> serviceProp = new Property<Long>();
-					 serviceProp.setName(EventConstant.SERVICEID);
-					 serviceProp.setValue(12L);
-					 entity.setProperty(serviceProp);
-					  
-					 //latLng.getLatitude();
-					 //latLng.getLongitude();
-					 //TODO:latitude and longitude are hard coded
-					 GeoLocation geoLocation = new GeoLocation();
-					 geoLocation.setLatitude(45.375334);
-					 geoLocation.setLongitude(21.5633);
-					 Property<GeoLocation> geoLocationProp = new Property<GeoLocation>(geoLocation);
-					 entity.setProperty("geolocation", geoLocationProp);
-					 
+				   
+				   entity =  createEventEntity();
 					
 					 
 					/* String[] zoneIds = TimeZone.getAvailableIDs();
@@ -599,6 +551,181 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 		}
 		return null;
 	}
+
+	private Entity createReminderEntity(Entity eventEntity) {
+		 Entity reminderEnt = new  Entity();
+		 reminderEnt.setType(new MetaType(TypeConstants.REMINDER));
+		 
+		 String eventTitle = eventEntity.getPropertyByName(EventConstant.NAME);
+		    Property<String> descProp = new Property<String>();
+			descProp.setName(ReminderConstant.TITLE);
+			descProp.setValue(eventTitle);
+			reminderEnt.setProperty(descProp);
+			
+			/*Entity userEntity=AppEnviornment.getCurrentUser();
+			  Key<Serializable> userKey=(Key<Serializable>) userEntity.getProperty(UserConstants.ID).getValue();
+			  Long userId = (Long) userKey.getKeyValue();*/
+			
+			reminderEnt.setPropertyByName(ReminderConstant.USERID, Long.valueOf(4));
+			
+			
+			
+			reminderEnt.setPropertyByName(ReminderConstant.TYPEID,Long.valueOf(52));
+			
+			/*Property<String> instanceIdProp = new Property<String>();
+			instanceIdProp.setName(ReminderConstant.INSTANCEID);
+			instanceIdProp.setValue(String.valueOf("2"));
+			reminderEnt.setProperty(instanceIdProp);*/
+			Long serviceId=Long.valueOf("12");
+						
+			reminderEnt.setPropertyByName(ReminderConstant.SERVICEID, serviceId);
+			
+			Property<Date> createdOnDateProp = new Property<Date>(new Date());
+			reminderEnt.setProperty(ReminderConstant.CREATEDON, createdOnDateProp);
+			
+			Property<Date> modifiedOnDateProp = new Property<Date>(new Date());
+			reminderEnt.setProperty(ReminderConstant.MODIFIEDON, modifiedOnDateProp);
+			
+			Byte b = 0;
+			Property<Byte> isDeletedProp = new Property<Byte>();
+			isDeletedProp.setValue(b);
+			isDeletedProp.setName(ReminderConstant.ISDELETED);
+			reminderEnt.setProperty(ReminderConstant.ISDELETED, isDeletedProp);
+			
+			/*Property<Key<Long>> keyProp = new Property<Key<Long>>();
+			Key<Long> key = new Key<Long>(2L);
+			keyProp.setValue(key);*/
+
+			
+			String reminderType=reminderTypeComboBoxField.getFieldValue();
+			Entity reminderTypeEntity=(Entity) reminderTypeComboBoxField.getNameVsEntity().get(reminderType);
+			
+			
+			/*Entity reminderTypeEnt = new Entity();
+			reminderTypeEnt.setType(new MetaType(TypeConstants.REMINDERTYPE));
+			reminderTypeEnt.setProperty("id", keyProp);*/
+			
+			reminderEnt.setProperty(ReminderConstant.REMINDERTYPE, reminderTypeEntity);
+			
+			DateTimePicker dateOnlyPicker = (DateTimePicker) dateTimeOnlyField.getCurrentField();
+			String eventDateTime = dateOnlyPicker.getTextbox().getText();
+			
+			int indexOfSpace=eventDateTime.indexOf(" ");
+			
+			String dateStr= eventDateTime.substring(0,indexOfSpace);
+			String timeStr = eventDateTime.substring(indexOfSpace+1);
+			
+			DateTimeFormat fmt = DateTimeFormat.getFormat("dd-MM-yyyy hh:mm:ss");
+			Date date = fmt.parse(eventDateTime);
+			
+			/*String reminderUnitStr= reminderUnitComboBoxField.getFieldValue();
+			Entity reminderUnitEntity=(Entity) reminderTypeComboBoxField.getNameVsEntity().get(reminderUnitStr);
+			Date newDate ;
+			
+			
+			if(reminderUnitStr.equals("weeks")){
+				
+				//Long.valueOf(eventDateTime);
+				int remindarDuration = Integer.parseInt(remindarDurationTextFieldTB.getText());
+				  int days = remindarDuration * 7;
+				   newDate = new Date(date.getTime()-days);
+				
+			}else if(reminderUnitStr.equals("minutes")){
+				int remindarDuration = Integer.parseInt(remindarDurationTextFieldTB.getText());
+			}else if(reminderUnitStr.equals("days")){
+				int remindarDuration = Integer.parseInt(remindarDurationTextFieldTB.getText());
+				CalendarUtil.addDaysToDate(date, 21);
+				 newDate = new Date(date.getTime()+remindarDuration);
+				
+			}else if(reminderUnitStr.equals("hours")){
+				int remindarDuration = Integer.parseInt(remindarDurationTextFieldTB.getText());
+			}*/
+				
+			
+			Property<Date> reminderTimeProp = new Property<Date>(new Date());
+			reminderEnt.setProperty(ReminderConstant.REMINDERTIME, reminderTimeProp);
+			
+			
+		 
+		 
+		return reminderEnt;
+	}
+
+
+
+	private Entity createEventEntity() {
+		
+		    Entity entity = new  Entity();
+		    entity.setType(new MetaType(TypeConstants.EVENT));
+		    
+		    String eventName = textFieldTB.getText();
+		    entity.setPropertyByName(EventConstant.NAME, eventName);
+		    
+		    String eventDescription = descriptionTextField.getText();
+		    entity.setPropertyByName(EventConstant.DESCRIPTION, eventDescription);
+		    
+		    DateTimePicker dateOnlyPicker = (DateTimePicker) dateTimeOnlyField.getCurrentField();
+			String eventDateTime = dateOnlyPicker.getTextbox().getText();
+			int indexOfSpace=eventDateTime.indexOf(" ");
+			
+			String dateStr= eventDateTime.substring(0,indexOfSpace);
+			String timeStr = eventDateTime.substring(indexOfSpace+1);
+			
+			DateTimeFormat fmt = DateTimeFormat.getFormat("dd-MM-yyyy hh:mm:ss");
+			Date date = fmt.parse(eventDateTime);
+			
+			/*DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss"); 
+			Date date = df.parse(eventDateTime);*/
+			
+			Property<Date> fromdateProp = new Property<Date>(date);
+			entity.setProperty(EventConstant.FROMDATE, fromdateProp);
+			
+			Property<Date> toDateProp = new Property<Date>(date);
+			entity.setProperty(EventConstant.TODATE, toDateProp);
+			
+			Property<String> fromTimeProp = new Property<String>();
+			fromTimeProp.setName(EventConstant.FROMTIME);
+			fromTimeProp.setValue(timeStr);
+			entity.setProperty(fromTimeProp);
+			
+			Property<String> toTimeProp = new Property<String>();
+			toTimeProp.setName(EventConstant.TOTIME);
+			toTimeProp.setValue(timeStr);
+			entity.setProperty(toTimeProp);
+			
+			
+			
+			 Entity userEntity=AppEnviornment.getCurrentUser();
+			  Key<Serializable> key=(Key<Serializable>) userEntity.getProperty(UserConstants.ID).getValue();
+			  Long userId = (Long) key.getKeyValue();
+			 entity.setPropertyByName(EventConstant.OWNER, userId);
+			 entity.setPropertyByName(EventConstant.CREATEDBY, userId);
+			 entity.setPropertyByName(EventConstant.MODIFIEDBY, userId);
+			 
+			/* entity.setPropertyByName(EventConstant.OWNER, Long.valueOf(1));
+			 entity.setPropertyByName(EventConstant.CREATEDBY, Long.valueOf(1));
+			 entity.setPropertyByName(EventConstant.MODIFIEDBY, Long.valueOf(1));*/
+			 
+			 Property<Long> serviceProp = new Property<Long>();
+			 serviceProp.setName(EventConstant.SERVICEID);
+			 serviceProp.setValue(12L);
+			 entity.setProperty(serviceProp);
+			  
+			 //latLng.getLatitude();
+			 //latLng.getLongitude();
+			 //TODO:latitude and longitude are hard coded
+			 GeoLocation geoLocation = new GeoLocation();
+			 geoLocation.setLatitude(45.375334);
+			 geoLocation.setLongitude(21.5633);
+			 Property<GeoLocation> geoLocationProp = new Property<GeoLocation>(geoLocation);
+			 entity.setProperty("geolocation", geoLocationProp);
+		 
+		
+		
+		return entity;
+	}
+
+
 
 	public Configuration getConfiguration() {
 		return configuration;
@@ -669,6 +796,18 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 
 	public void setCreateEntityType(String createEntityType) {
 		this.createEntityType = createEntityType;
+	}
+
+
+
+	public boolean isAddMoreDetails() {
+		return isAddMoreDetails;
+	}
+
+
+
+	public void setAddMoreDetails(boolean isAddMoreDetails) {
+		this.isAddMoreDetails = isAddMoreDetails;
 	}
 
 
