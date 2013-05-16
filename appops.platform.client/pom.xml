@@ -166,7 +166,7 @@
 		<dependency>
 			<groupId>milind_appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>15.05.2013</version>
+			<version>16.05.2013</version>
 		</dependency>
 
 		<!-- This should be used when using a final version of the jar -->
