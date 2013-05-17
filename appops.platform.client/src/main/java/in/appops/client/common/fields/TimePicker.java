@@ -206,5 +206,13 @@ public class TimePicker extends Composite implements FocusHandler, BlurHandler, 
 		// showDatePicker();
 		
 	}
+
+	public TextBox getTextBox() {
+		return textBox;
+	}
+
+	public void setTextBox(TextBox textBox) {
+		this.textBox = textBox;
+	}
 	
 }
