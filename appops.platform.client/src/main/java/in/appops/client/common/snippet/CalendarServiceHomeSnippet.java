@@ -287,6 +287,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 		Widget sender = (Widget) event.getSource();
 		if(sender instanceof LabelField){
 			if(sender.equals(quickEventLabelField)){
+				calendarEntryScreen.clearAllFields();
 				//DOM.removeElementAttribute(reminderLabelField.getElement(), "textDecoration");
 				
 				//DOM.setStyleAttribute(quickEventLabelField.getElement(), "textDecoration","underline");
@@ -487,6 +488,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 						 popupPanel.show();
 						 popupPanel.center();
 						 popupPanel.setAutoHideEnabled(true);
+						 calendarEntryScreen.clearAllFields();
 					   }else{
 						   addReminderForEvent(calendarEntity);
 					   }
@@ -541,6 +543,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 					 popupPanel.show();
 					 popupPanel.center();
 					 popupPanel.setAutoHideEnabled(true);
+					 calendarEntryScreen.clearAllFields();
 				}
 				
 			  }
