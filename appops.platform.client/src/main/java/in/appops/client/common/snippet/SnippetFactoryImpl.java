@@ -75,6 +75,9 @@ public class SnippetFactoryImpl implements SnippetFactory {
 				}else if(typename.equals("Space")){
 					BoxSnippet spaceSnippet = new BoxSnippet();
 					return spaceSnippet;
+				}else if(typename.equals(TypeConstants.EVENT)){
+					EventSnippet eventSnippet = new EventSnippet();
+					return eventSnippet;
 				}else{
 					HomeSnippet homeSnippet = new HomeSnippet();
 					return homeSnippet;
