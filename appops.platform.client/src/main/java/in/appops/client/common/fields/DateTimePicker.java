@@ -1,5 +1,9 @@
 package in.appops.client.common.fields;
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
+
 import java.sql.Time;
 import java.util.Date;
 
@@ -16,7 +20,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -87,6 +90,8 @@ public class DateTimePicker extends Composite implements FocusHandler{
 				currentDateTimeString = dateString;
 			    DomEvent.fireNativeEvent(Document.get().createChangeEvent(),textbox);
 			    popupPanel.hide();
+			    
+			   
 			    
 			 }
 			
@@ -168,5 +173,8 @@ public class DateTimePicker extends Composite implements FocusHandler{
 		
 		
 	}
-
+	public void addHandle(FieldEventHandler handler) {
+		AppUtils.EVENT_BUS.addHandlerToSource(FieldEvent.TYPE, this, handler);
+		
+	}
 }
