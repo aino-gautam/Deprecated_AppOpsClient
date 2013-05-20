@@ -263,13 +263,13 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 			e.printStackTrace();
 		}
 		
-		checkboxGroupField.addCheckItem("Red");
-		checkboxGroupField.addCheckItem("Green");
-		checkboxGroupField.addCheckItem("Blue");
+		checkboxGroupField.addCheckItem("Red",false);
+		checkboxGroupField.addCheckItem("Green",false);
+		checkboxGroupField.addCheckItem("Blue",false);
 
-		singleSelectCheckboxGroupField.addCheckItem("Red");
-		singleSelectCheckboxGroupField.addCheckItem("Green");
-		singleSelectCheckboxGroupField.addCheckItem("Blue");
+		singleSelectCheckboxGroupField.addCheckItem("Red",false);
+		singleSelectCheckboxGroupField.addCheckItem("Green",false);
+		singleSelectCheckboxGroupField.addCheckItem("Blue",false);
 		
 		Label numericRangeSliderLbl = new Label("NumericRangeSlider");
 		StateField numericRangeSlider = new StateField();
