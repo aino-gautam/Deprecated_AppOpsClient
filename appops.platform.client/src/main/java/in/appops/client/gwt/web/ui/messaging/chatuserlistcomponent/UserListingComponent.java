@@ -1,10 +1,7 @@
 package in.appops.client.gwt.web.ui.messaging.chatuserlistcomponent;
 
-import in.appops.client.gwt.web.ui.messaging.MessagingComponent;
-import in.appops.platform.core.entity.Entity;
+import in.appops.client.gwt.web.ui.messaging.ChatMessagingComponent;
 import in.appops.platform.core.entity.Key;
-import in.appops.platform.core.entity.broadcast.ChatEntity;
-import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 
 import java.util.ArrayList;
@@ -86,7 +83,7 @@ public class UserListingComponent extends Composite{
 		widgetList.add((ContactSnippetDisplayer) widget);
 	}
 	
-	public MessagingComponent getParentMessagingComponent() {
+	public ChatMessagingComponent getParentMessagingComponent() {
 		return chatUserListWidget.getParentMessagingComponent();
 	}
 
