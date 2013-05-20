@@ -11,7 +11,12 @@
 	font-family: 'Ubuntu', sans-serif;
 	font-size: 12px;
 }
-
+.appops-TextField-default {
+	height: 25px;
+	color: #333;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 12px;
+}
 .appops-SpinnerTextField{
 	color: #333;
 	font-family: 'Ubuntu', sans-serif;
@@ -1003,11 +1008,6 @@ html .GWTUpld .prgbar-msg {
     background: #FFF;
     padding: 7px;
 	outline: 0;
-}
-.crossImageCss{
-  cursor: pointer;
-  cursor: hand;
-  
 }
 
 .currentLocationImagePrimaryCss{
