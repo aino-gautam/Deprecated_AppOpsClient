@@ -10,7 +10,7 @@ import in.appops.client.common.fields.suggestion.AppopsSuggestion;
 import in.appops.client.common.fields.suggestion.AppopsSuggestionBox;
 import in.appops.client.common.util.AppEnviornment;
 import in.appops.client.common.util.BlobDownloader;
-import in.appops.client.gwt.web.ui.messaging.MessagingComponent;
+import in.appops.client.gwt.web.ui.messaging.ChatMessagingComponent;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEvent;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEventHandler;
 import in.appops.platform.core.constants.propertyconstants.SpaceConstants;
@@ -66,7 +66,7 @@ public class MainUserListingComponent extends Composite implements MessengerEven
 	/**
 	 * The reference to the parent to fire chat window chat event on click of nearby space.
 	 */
-	private MessagingComponent parentMessagingComponent;
+	private ChatMessagingComponent parentMessagingComponent;
 	
 
 	/**
@@ -181,7 +181,9 @@ public class MainUserListingComponent extends Composite implements MessengerEven
 	 * binding the query name and operation name for fetching the typed user in the suggestion box.
 	 */
 	private void createUserSuggestionWidget() {
-		userSuggestionField.setQueryName("getContactListSuggestion");
+		//userSuggestionField.setQueryName("getContactListSuggestion");
+		//TODO: changes made for spaceId not present
+		userSuggestionField.setQueryName("getContactForChat");
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
 		Long spaceId = null;
 		if(AppEnviornment.getCurrentSpace()!=null){
@@ -208,21 +210,21 @@ public class MainUserListingComponent extends Composite implements MessengerEven
 	 * Set the parent messaging component reference.
 	 * @param messagingComponent
 	 */
-	public void setParentMessagingWidget(MessagingComponent messagingComponent) {
+	public void setParentMessagingWidget(ChatMessagingComponent messagingComponent) {
 		setParentMessagingComponent(messagingComponent);
 	}
 
 	/**
 	 * @return the parentMessagingComponent
 	 */
-	public MessagingComponent getParentMessagingComponent() {
+	public ChatMessagingComponent getParentMessagingComponent() {
 		return parentMessagingComponent;
 	}
 
 	/**
 	 * @param parentMessagingComponent the parentMessagingComponent to set
 	 */
-	public void setParentMessagingComponent(MessagingComponent parentMessagingComponent) {
+	public void setParentMessagingComponent(ChatMessagingComponent parentMessagingComponent) {
 		this.parentMessagingComponent = parentMessagingComponent;
 	}
 
