@@ -39,6 +39,7 @@ public class ServiceIconSnippet extends CardSnippet {
 		String blobId = getEntity().getProperty("blobId").getValue().toString();
 		BlobDownloader blobDownloader = new BlobDownloader();
 		serviceIcon = new Image(blobDownloader.getIconDownloadURL(blobId));
+		serviceIcon.setStylePrimaryName("serviceIcon");
 		basePanel.add(serviceIcon);
 		
 		if(!showOnlyIcon){
