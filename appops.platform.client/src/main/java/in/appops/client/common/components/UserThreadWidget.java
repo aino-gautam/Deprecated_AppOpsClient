@@ -8,12 +8,15 @@ import in.appops.client.common.fields.ImageField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.client.common.snippet.SnippetFactory;
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.client.common.util.BlobDownloader;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.constants.propertyconstants.SpaceConstants;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -118,7 +121,13 @@ public class UserThreadWidget extends Composite implements EventListener,ClickHa
 
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("userEntity",userEntity);
-				
+		Long spaceId = null;
+		if(AppEnviornment.getCurrentSpace()!=null){
+			Entity spaceEnt = AppEnviornment.getCurrentSpace();
+			spaceId = ((Key<Long>)spaceEnt.getPropertyByName(SpaceConstants.ID)).getKeyValue();
+		}
+		paramMap.put("spaceId", spaceId);
+		
 		StandardAction action = new StandardAction(EntityList.class, "usermessage.UserMessageService.getMessageParticipantsWithSender", paramMap);
 		dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
 			

@@ -8,10 +8,12 @@ import in.appops.client.common.fields.ImageField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.suggestion.AppopsSuggestion;
 import in.appops.client.common.fields.suggestion.AppopsSuggestionBox;
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.client.common.util.BlobDownloader;
 import in.appops.client.gwt.web.ui.messaging.MessagingComponent;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEvent;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEventHandler;
+import in.appops.platform.core.constants.propertyconstants.SpaceConstants;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.broadcast.ChatEntity;
@@ -19,6 +21,7 @@ import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 
+import java.util.HashMap;
 import java.util.Iterator;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -179,6 +182,14 @@ public class MainUserListingComponent extends Composite implements MessengerEven
 	 */
 	private void createUserSuggestionWidget() {
 		userSuggestionField.setQueryName("getContactListSuggestion");
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		Long spaceId = null;
+		if(AppEnviornment.getCurrentSpace()!=null){
+			Entity spaceEnt = AppEnviornment.getCurrentSpace();
+			spaceId = ((Key<Long>)spaceEnt.getPropertyByName(SpaceConstants.ID)).getKeyValue();
+			paramMap.put("spaceId", spaceId);
+			userSuggestionField.setQueryRestrictions(paramMap);
+		}
 		userSuggestionField.setOperationName("contact.ContactService.getEntityList");
 	}
 
