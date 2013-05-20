@@ -1,5 +1,6 @@
 package in.appops.client.common.snippet;
 
+import in.appops.client.common.components.CalendarEvents;
 import in.appops.client.common.components.CreateCalendarEntryScreen;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.fields.Field;
@@ -61,6 +62,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 	private ReminderListSnippet reminderListSnippet;
 	private Button createEntityButton ;
 	private Entity userEntity;
+	private CalendarEvents calendarEvents ;
 	
 	public CalendarServiceHomeSnippet() {
 		//clear this snippet and move the code to reminder list snippet 
@@ -83,6 +85,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 		DOM.setStyleAttribute(createEntityButton.getElement(), "padding", "5px");
 		userEntity=AppEnviornment.getCurrentUser();
 		childPanel.setHeight("100%");
+		createEntityButton.addClickHandler(this);
 		createUi();
 		
 	}
@@ -92,11 +95,9 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 	public void createUi(){
 		try{
 			
-			calendarEntryScreen = new CreateCalendarEntryScreen();
-			calendarEntryScreen.setConfiguration(getConfigurationForCreateEvent());
-			calendarEntryScreen.createScreen();
-			calendarEntryScreen.addHandle(this);
-			createEntityButton.addClickHandler(this);
+			calendarEvents = new CalendarEvents();
+			calendarEvents.addHandle(this);
+			calendarEvents.createUi();
 			
 			reminderListSnippet = new ReminderListSnippet();
 			
@@ -126,7 +127,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 
 	private void preSelectedTab() {
 		childPanel.clear();
-		childPanel.add(calendarEntryScreen);
+		childPanel.add(calendarEvents);
 		
 		if(getConfigurationForCreateEvent().getPropertyByName(CreateCalendarEntryScreen.SCREEN_TYPE).equals(CreateCalendarEntryScreen.CREATE_EVENT)){
 			createEntityButton.setText("Create event");
@@ -134,7 +135,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 			createEntityButton.setText("Create reminder");
 		}
 		
-		childPanel.add(createEntityButton);
+		
 		
 	}
 
@@ -145,7 +146,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 			quickEventLabelField = new LabelField();
 			Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", "calendarHomeTab", null);
 			if(getConfigurationForCreateEvent().getPropertyByName(CreateCalendarEntryScreen.SCREEN_TYPE).equals(CreateCalendarEntryScreen.CREATE_EVENT)){
-				quickEventLabelField.setFieldValue("Quick event");
+				quickEventLabelField.setFieldValue("Events");
 			}else{
 				quickEventLabelField.setFieldValue("Create reminder");
 			}
@@ -157,7 +158,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 			
 			reminderLabelField = new LabelField();
 			Configuration reminderLabelConfig = getLabelFieldConfiguration(true, "flowPanelContent", "calendarHomeTab", null);
-			reminderLabelField.setFieldValue("Reminder");
+			reminderLabelField.setFieldValue("Reminders");
 			reminderLabelField.setConfiguration(reminderLabelConfig);
 			reminderLabelField.createField();
 			reminderLabelField.addClickHandler(this);
@@ -237,9 +238,35 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 		if(event.getEventData() instanceof String){
 			eventData = (String) event.getEventData();
 			
-			quickEventLabelField.clearField();
-			quickEventLabelField.setFieldValue(eventData);
-			quickEventLabelField.resetField();
+			if(eventData.equals("Create a event")){
+				quickEventLabelField.clearField();
+				quickEventLabelField.setFieldValue(eventData);
+				quickEventLabelField.resetField();
+			}else if(eventData.equals("Back")){
+				
+				quickEventLabelField.clearField();
+				quickEventLabelField.setFieldValue("Events");
+				quickEventLabelField.resetField();
+				
+				calendarEvents = new CalendarEvents();
+				calendarEvents.addHandle(this);
+				calendarEvents.createUi();
+				childPanel.clear();
+				childPanel.add(calendarEvents);
+			}else{
+				quickEventLabelField.clearField();
+				quickEventLabelField.setFieldValue(eventData);
+				quickEventLabelField.resetField();
+				
+				calendarEntryScreen = new CreateCalendarEntryScreen();
+				calendarEntryScreen.setConfiguration(getConfigurationForCreateEvent());
+				calendarEntryScreen.createScreen();
+				calendarEntryScreen.addHandle(this);
+				
+				childPanel.clear();
+				childPanel.add(calendarEntryScreen);
+				childPanel.add(createEntityButton);
+			}
 		}
 	}
 
@@ -287,7 +314,8 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 		Widget sender = (Widget) event.getSource();
 		if(sender instanceof LabelField){
 			if(sender.equals(quickEventLabelField)){
-				calendarEntryScreen.clearAllFields();
+				calendarEvents.createUi();
+				//calendarEntryScreen.clearAllFields();
 				//DOM.removeElementAttribute(reminderLabelField.getElement(), "textDecoration");
 				
 				//DOM.setStyleAttribute(quickEventLabelField.getElement(), "textDecoration","underline");
