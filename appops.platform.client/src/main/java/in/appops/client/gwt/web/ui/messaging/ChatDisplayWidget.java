@@ -58,7 +58,7 @@ public class ChatDisplayWidget extends VerticalPanel /*implements AtmosphereList
 	
 	private Entity contactEntity;
 	
-	private MessagingComponent parentMessagingComponent;
+	private ChatMessagingComponent parentMessagingComponent;
 	
 	
 	public ChatDisplayWidget(){
@@ -346,14 +346,14 @@ public class ChatDisplayWidget extends VerticalPanel /*implements AtmosphereList
 	/**
 	 * @return the parentMessagingComponent
 	 */
-	public MessagingComponent getParentMessagingComponent() {
+	public ChatMessagingComponent getParentMessagingComponent() {
 		return parentMessagingComponent;
 	}
 
 	/**
 	 * @param parentMessagingComponent the parentMessagingComponent to set
 	 */
-	public void setParentMessagingComponent(MessagingComponent parentMessagingComponent) {
+	public void setParentMessagingComponent(ChatMessagingComponent parentMessagingComponent) {
 		this.parentMessagingComponent = parentMessagingComponent;
 	}
 
