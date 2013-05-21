@@ -6,7 +6,6 @@ import in.appops.client.common.event.ActionEvent;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.AttachmentEvent;
 import in.appops.client.common.event.FieldEvent;
-import in.appops.client.common.event.SearchEvent;
 import in.appops.client.common.event.handlers.AttachmentEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.IntelliThoughtField;
@@ -218,7 +217,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 
 			/**** For Appops Showcase *****/
 			if(!text.trim().equals("")) {
-				Window.open( GWT.getHostPageBaseURL() + "SearchWidgetDemo.html?gwt.codesvr=127.0.0.1:9997&text="+text.trim(), "right_frame", "");
+				Window.open( GWT.getHostPageBaseURL() + "SearchWidgetDemo.html?text="+text.trim(), "right_frame", "");
 			}
 		} else if(source.equals(messageBasePanel)){
 //			ActionEvent actionEvent = getMessageActionEvent();
@@ -226,7 +225,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 
 			/**** For Appops Showcase *****/
 			if(!text.trim().equals("")) {
-				Window.open( GWT.getHostPageBaseURL() + "contactbox.html?gwt.codesvr=127.0.0.1:9997&text="+text.trim(), "right_frame", "");
+				Window.open( GWT.getHostPageBaseURL() + "contactbox.html?text="+text.trim(), "right_frame", "");
 			}
 		}
 	}
@@ -399,9 +398,9 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	private void appopsClientTransformWidget(String widgetName) {
 		Widget displayWidget = null;
 		if(widgetName.equalsIgnoreCase("Photos")) {
-			Window.open( GWT.getHostPageBaseURL() + "dragonwheel.html?gwt.codesvr=127.0.0.1:9997", "right_frame", "");
+			Window.open( GWT.getHostPageBaseURL() + "dragonwheel.html", "right_frame", "");
 		} else if(widgetName.equalsIgnoreCase("Contacts")) {
-			Window.open( GWT.getHostPageBaseURL() + "contactselector.html?gwt.codesvr=127.0.0.1:9997", "right_frame", "");
+			Window.open( GWT.getHostPageBaseURL() + "contactselector.html", "right_frame", "");
 		}
 	}
 }
