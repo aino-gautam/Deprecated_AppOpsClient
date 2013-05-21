@@ -361,6 +361,8 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 					messageWithUserSnippet.createUi();
 					messageWithUserSnippet.setStylePrimaryName("flowPanelContent");
 					subVerticalPanel.add(messageWithUserSnippet);
+					textFieldTA.setFieldValue("");
+					textFieldTA.resetField();
 				}
 			}
 		});
@@ -380,7 +382,7 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 		contactMessageEmbeddedEntity.setPropertyByName(ContactConstant.NAME, name);
 		if(contactEntity.getPropertyByName(ContactConstant.IMGBLOBID)!=null){
 			String blobId = contactEntity.getPropertyByName(ContactConstant.IMGBLOBID);
-		    contactMessageEmbeddedEntity.setPropertyByName(MessageParticipantsConstant.BLOBID, blobId);
+		    contactMessageEmbeddedEntity.setPropertyByName(ContactConstant.IMGBLOBID, blobId);
 		}
 		
 		return contactMessageEmbeddedEntity;

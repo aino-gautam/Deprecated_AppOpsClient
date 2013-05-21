@@ -168,9 +168,12 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 	@Override
 	public void onFieldEvent(FieldEvent event) {
 		int eventType = event.getEventType();
-		Entity snippetEntity = (Entity) event.getEventData();
-		 if(eventType == FieldEvent.SUGGESTION_CLICKED ){
-			fetchMessageConversationForContact(snippetEntity); 
+		Object object=event.getEventData();
+		if(object instanceof Entity){
+			Entity snippetEntity = (Entity) event.getEventData();
+			 if(eventType == FieldEvent.SUGGESTION_CLICKED ){
+				fetchMessageConversationForContact(snippetEntity); 
+			}
 		}
 		
 	}
