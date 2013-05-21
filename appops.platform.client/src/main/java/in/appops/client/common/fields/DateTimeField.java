@@ -3,6 +3,7 @@ package in.appops.client.common.fields;
 import java.util.Date;
 
 import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 
@@ -19,6 +20,8 @@ public class DateTimeField extends Composite implements Field{
 	private DateBox dateBox;
 	private String fieldType;
 	private Date value;
+	private FieldEventHandler handler;
+	
 	public static final String DATETIMEFIELD_DATEONLY = "dateTimeFieldDateOnly";
 	public static final String DATETIMEFIELD_TIMEONLY = "dateTimeFieldTimeOnly";
 	public static final String DATETIMEFIELD_DATETIMEONLY = "dateTimeFieldDateTimeOnly";
@@ -33,6 +36,7 @@ public class DateTimeField extends Composite implements Field{
 	public static final String SHORT_MINUTE = "short_Minute";
 	public static final String SHORT_SECONDS = "short_Seconds";
 	public static final String Full_Time = "full_Time";
+	public static final String EVENTTYPE = "eventType";
 
 	private Widget currentField = null;
 	
@@ -63,9 +67,18 @@ public class DateTimeField extends Composite implements Field{
 			
 		}else if(fieldMode.equalsIgnoreCase(MODE_SELECTION)){
 			if(fieldType.equalsIgnoreCase(DATETIMEFIELD_DATEONLY)){
-				DateOnlyPicker dateOnlyPicker = new  DateOnlyPicker();
-				initWidget(dateOnlyPicker);
-				setCurrentField(dateOnlyPicker);
+				if(getConfiguration().getPropertyByName(EVENTTYPE)!=null){
+					String eventType = getConfiguration().getPropertyByName(EVENTTYPE);
+					DateOnlyPicker dateOnlyPicker = new  DateOnlyPicker();
+					dateOnlyPicker.setEntityType(eventType);
+					dateOnlyPicker.addHandle(handler);
+					initWidget(dateOnlyPicker);
+					setCurrentField(dateOnlyPicker);
+				}else{
+					DateOnlyPicker dateOnlyPicker = new  DateOnlyPicker();
+					initWidget(dateOnlyPicker);
+					setCurrentField(dateOnlyPicker);
+				}
 			}else if(fieldType.equalsIgnoreCase(DATETIMEFIELD_TIMEONLY)){
 				TimePicker timePicker = null ;
 				
@@ -126,5 +139,13 @@ public class DateTimeField extends Composite implements Field{
 
 	public void setCurrentField(Widget currentField) {
 		this.currentField = currentField;
+	}
+
+	public FieldEventHandler getHandler() {
+		return handler;
+	}
+
+	public void setHandler(FieldEventHandler handler) {
+		this.handler = handler;
 	}
 }

@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * of appops chat widget.
  * 
  */
-public class MessagingComponent extends Composite implements MessengerEventHandler , AtmosphereListener, ClickHandler{
+public class ChatMessagingComponent extends Composite implements MessengerEventHandler , AtmosphereListener, ClickHandler{
 	
 	/**
 	 * Actual base container.
@@ -89,7 +89,7 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 	 * Constructor in which the global variable will be initialising and
 	 * the base ui is created. 
 	 */
-	public MessagingComponent(){
+	public ChatMessagingComponent(){
 		initialize();
 		initWidget(baseHp);
 	}
