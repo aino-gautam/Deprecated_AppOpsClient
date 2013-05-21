@@ -253,7 +253,7 @@
 				<version>2.4.0</version>
 
 				<configuration>
-					<runTarget>MasterShowcase.html</runTarget>
+					<runTarget>SearchWidgetDemo.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 
 					<!-- what ever is needed to complie we can add them as below here. When 
@@ -274,6 +274,7 @@
 						<module>in.appops.showcase.web.gwt.messagehome.messagehome</module>
 						<module>in.appops.showcase.web.gwt.calendarHome.calendarHome</module>
 						<module>in.appops.showcase.web.gwt.chat.chat</module>
+						<module>in.appops.showcase.web.gwt.search.search</module>
 					</modules>
 				</configuration>
 			</plugin>
