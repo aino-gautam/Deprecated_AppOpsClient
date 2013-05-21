@@ -1,5 +1,8 @@
 package in.appops.client.gwt.web.ui.search;
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.SearchEvent;
+
 import java.util.HashMap;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -77,6 +80,9 @@ public class SearchWidget extends Composite implements ClickHandler{
 					searchTxtBox.setText("");
 					HashMap<String, Object> paramMap = new HashMap<String, Object>();
 					paramMap.put("searchChar", searchText);
+					
+					SearchEvent searchInitaitedEvent = new SearchEvent(SearchEvent.SEARCHFIRED,null); 
+					AppUtils.EVENT_BUS.fireEvent(searchInitaitedEvent);
 					
 					searchListModel.getQueryToBind().setQueryParameterMap(paramMap);
 					searchListModel.getEntityList(0);

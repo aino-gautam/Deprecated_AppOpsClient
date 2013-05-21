@@ -1,5 +1,8 @@
 package in.appops.showcase.web.gwt.search.client;
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.SearchEvent;
+import in.appops.client.common.event.handlers.SearchEventHandler;
 import in.appops.client.gwt.web.ui.search.SearchListModel;
 import in.appops.client.gwt.web.ui.search.SearchListSnippet;
 import in.appops.client.gwt.web.ui.search.SearchWidget;
@@ -15,7 +18,23 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author mahesh@ensarm.com	
  *
  */
-public class SearchEntryPoint implements EntryPoint{
+public class SearchEntryPoint implements EntryPoint,SearchEventHandler{
+
+	private SearchListSnippet searchListSnippet;
+	
+	public SearchEntryPoint(){
+		initialize();
+	}
+	
+	private void initialize() {
+		try{
+			searchListSnippet = new SearchListSnippet();
+			AppUtils.EVENT_BUS.addHandler(SearchEvent.TYPE, this);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	@Override
 	public void onModuleLoad() {
@@ -32,15 +51,28 @@ public class SearchEntryPoint implements EntryPoint{
 			VerticalPanel basePanel = new VerticalPanel();
 			basePanel.setStylePrimaryName("fullWidth");
 			
-			SearchListSnippet searchListSnippet = new SearchListSnippet();
+			
 			searchListModel.setEntityListReceiver(searchListSnippet);
 			basePanel.add(searchWidget);
 			basePanel.add(searchListSnippet);
 			
 			basePanel.setCellHorizontalAlignment(searchWidget, HorizontalPanel.ALIGN_CENTER);
 			basePanel.setCellHorizontalAlignment(searchListSnippet, HorizontalPanel.ALIGN_CENTER);
-			
+			searchWidget.addStyleName("fadeInLeft");
 			RootPanel.get().add(basePanel);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onSearchEvent(SearchEvent event) {
+		try{
+			if(event.getEventType() == SearchEvent.SEARCHFIRED){
+				searchListSnippet.getResultDisplayer().clear();
+				searchListSnippet.getLoaderImage().setVisible(true);
+			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
