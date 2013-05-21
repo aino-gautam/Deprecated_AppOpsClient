@@ -5,7 +5,6 @@ import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.CheckboxField;
-import in.appops.client.common.fields.CheckboxGroupField;
 import in.appops.client.common.fields.DateTimeField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.LinkField;
@@ -16,8 +15,6 @@ import in.appops.client.common.fields.StateField;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.slider.field.NumericRangeSliderField;
 import in.appops.client.common.fields.slider.field.StringRangeSliderField;
-import in.appops.client.common.util.AppEnviornment;
-import in.appops.platform.core.entity.GeoLocation;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.server.core.services.spacemanagement.constants.SpaceTypeConstants;
@@ -92,27 +89,22 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 		CheckboxFieldLabel.setFieldValue("CheckboxField");
 		CheckboxFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
 
-		CheckboxField checkboxfield = new CheckboxField();
-		Configuration config = getCheckboxFieldConfiguration("Allow permissions");
-		checkboxfield.setFieldValue("true");
-		checkboxfield.setConfiguration(config);
-
+		CheckboxWidget checkbox = new CheckboxWidget();
+		
 		LabelField CheckboxGroupFieldLabel = new LabelField();
 		CheckboxGroupFieldLabel.setFieldValue("CheckboxGroupField - MultiSelect");
 		CheckboxGroupFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
 
-		CheckboxGroupField checkboxGroupField = new CheckboxGroupField();
-		Configuration configuration = getCheckboxGroupFieldConfiguration(CheckboxGroupField.CHECKBOX_MULTISELECT,CheckboxGroupField.CHECKBOX_VERTICALBASEPANEL);
-		checkboxGroupField.setConfiguration(configuration);
-
+		GroupCheckboxWidget multiSelectCheckbox = new GroupCheckboxWidget();
+		multiSelectCheckbox.createMultiSelectCheckbox();
+		
 		LabelField singleSelectCheckboxFieldLabel = new LabelField();
 		singleSelectCheckboxFieldLabel.setFieldValue("CheckboxGroupField - SingleSelect");
 		singleSelectCheckboxFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
 
-		CheckboxGroupField singleSelectCheckboxGroupField = new CheckboxGroupField();
-		Configuration singleSelectionConfiguration = getCheckboxGroupFieldConfiguration(CheckboxGroupField.CHECKBOX_SINGLESELECT,CheckboxGroupField.CHECKBOX_VERTICALBASEPANEL);
-		singleSelectCheckboxGroupField.setConfiguration(singleSelectionConfiguration);
-
+		GroupCheckboxWidget singleSelectCheckbox = new GroupCheckboxWidget();
+		singleSelectCheckbox.createSingleSelectCheckbox();
+		
 		LabelField labelFieldDT = new LabelField();
 		labelFieldDT.setFieldValue("Time Picker");
 		labelFieldDT.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
@@ -178,19 +170,15 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 		spinnerFieldLabel.setFieldValue("SpinnerField");
 		spinnerFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
 		
-		SpinnerField spinnerField = new SpinnerField();
-		spinnerField.setFieldValue("3");
-		Configuration spinnerConfig = getSpinnerFieldConfiguration(SpinnerField.SPINNERFIELD_VALUESPINNER);
-		spinnerField.setConfiguration(spinnerConfig);
-
+		SpinnerWidget valueSpinner = new SpinnerWidget();
+		valueSpinner.createValueSpinner();
+		
 		LabelField spinnerPercentLabel = new LabelField();
 		spinnerPercentLabel.setFieldValue("SpinnerField(Percent)");
 		spinnerPercentLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
 		
-		SpinnerField percentSpinnerField = new SpinnerField();
-		percentSpinnerField.setFieldValue("3");
-		Configuration percentSpinnerConfig = getSpinnerFieldConfiguration(SpinnerField.SPINNERFIELD_PERCENTSPINNER);
-		percentSpinnerField.setConfiguration(percentSpinnerConfig);
+		SpinnerWidget percentSpinner = new SpinnerWidget();
+		percentSpinner.createPercentSpinner();
 		
 		LabelField numberFieldLabel = new LabelField();
 		numberFieldLabel.setFieldValue("NumberField");
@@ -201,7 +189,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 		Configuration numberConfig = getNumberFieldConfiguration();
 		numberField.setConfiguration(numberConfig);
 		VerticalPanel numberFieldPanel = new VerticalPanel();
-		numberfieldErrorLabel = new Label("Can't contain characters");
+		numberfieldErrorLabel = new Label("Only Numbers and not the characters are allowed");
 		numberFieldPanel.add(numberField);
 		numberFieldPanel.add(numberfieldErrorLabel);
 		numberfieldErrorLabel.setVisible(false);
@@ -224,13 +212,10 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 			stateField.createField();
 
 			CheckboxFieldLabel.createField();
-			checkboxfield.createField();
 
 			CheckboxGroupFieldLabel.createField();
-			checkboxGroupField.createField();
 
 			singleSelectCheckboxFieldLabel.createField();
-			singleSelectCheckboxGroupField.createField();
 
 			labelFieldDT.createField();
 			dateTimeField.createField();
@@ -254,10 +239,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 			labelFieldLocationForFalseLabelField.createField();
 			
 			spinnerFieldLabel.createField();
-			spinnerField.createField();
 			
 			spinnerPercentLabel.createField();
-			percentSpinnerField.createField();
 			
 			numberFieldLabel.createField();
 			numberField.createField();
@@ -266,14 +249,6 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 		} catch (AppOpsException e) {
 			e.printStackTrace();
 		}
-		
-		checkboxGroupField.addCheckItem("Red",false);
-		checkboxGroupField.addCheckItem("Green",false);
-		checkboxGroupField.addCheckItem("Blue",false);
-
-		singleSelectCheckboxGroupField.addCheckItem("Red",false);
-		singleSelectCheckboxGroupField.addCheckItem("Green",false);
-		singleSelectCheckboxGroupField.addCheckItem("Blue",false);
 		
 		Label numericRangeSliderLbl = new Label("NumericRangeSlider");
 		StateField numericRangeSlider = new StateField();
@@ -311,13 +286,13 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 		//flex.setWidget(3, 1, anchor);
 
 		flex.setWidget(4, 0, CheckboxGroupFieldLabel);
-		flex.setWidget(4, 1, checkboxGroupField);
-
+		flex.setWidget(4, 1, multiSelectCheckbox);
+		
 		flex.setWidget(5, 0, singleSelectCheckboxFieldLabel);
-		flex.setWidget(5, 1, singleSelectCheckboxGroupField);
+		flex.setWidget(5, 1, singleSelectCheckbox);
 
 		flex.setWidget(6, 0, CheckboxFieldLabel);
-		flex.setWidget(6, 1, checkboxfield);
+		flex.setWidget(6, 1, checkbox);
 
 		flex.setWidget(7, 0, stateFieldLabel);
 		flex.setWidget(7, 1, stateField);
@@ -353,10 +328,10 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 		flex.setWidget(20, 1, stringRangeSlider);
 		
 		flex.setWidget(25, 0, spinnerFieldLabel);
-		flex.setWidget(25, 1, spinnerField);
+		flex.setWidget(25, 1, valueSpinner);
 		
 		flex.setWidget(26, 0, spinnerPercentLabel);
-		flex.setWidget(26, 1, percentSpinnerField);
+		flex.setWidget(26, 1, percentSpinner);
 		
 		flex.setWidget(27, 0, numberFieldLabel);
 		flex.setWidget(27, 1, numberFieldPanel);
@@ -536,13 +511,6 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 	public Configuration getCheckboxFieldConfiguration(String text) {
 		Configuration configuration = new Configuration();
 		configuration.setPropertyByName(CheckboxField.CHECKBOXFIELD_DISPLAYTEXT, text);
-		return configuration;
-	}
-	
-	private Configuration getCheckboxGroupFieldConfiguration(String selectMode, String basePanel) {
-		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(CheckboxGroupField.CHECKBOX_SELECT_MODE, selectMode);
-		configuration.setPropertyByName(CheckboxGroupField.CHECKBOX_BASEPANEL, basePanel);
 		return configuration;
 	}
 	
