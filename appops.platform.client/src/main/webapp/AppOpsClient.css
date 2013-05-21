@@ -195,68 +195,17 @@
 	padding: 2px;
 }
 
-.hdelim {
-background-color: #AAAAAA;
-}
-
-.gwtsliderbarlabel {
-    color: black;
-    font-family: 'Ubuntu', sans-serif;
-    font-size: 36px;
-    font-weight: bold		
-}
-
-.demobottompanel {
-	font-family: 'Ubuntu', sans-serif;
- 	font-size: x-small;
-}
-
-.interractivescalepanel {
-	border : 1px solid darkgrey;
-}
-
-.interractivepanel {
- background-color:  #E7E7E7;
-} 	
-
-.interractivetittle {
-	font-family: 'Ubuntu', sans-serif;
-	font-weight: bold;
-	font-size: large;
-}
-
-.demosettitle {
-	font-family: 'Ubuntu', sans-serif;
-	font-weight: bold;
-	font-size: large;
-}
-
-.descriptionpanel {
-	background-color: #eeeeCC;
-	/*border : 1px solid darkgrey;*/
-	border-width: 1px;
-	border-color: #AAAAAA;;
-	border-style: solid;
-}
-
-.demosetpanel {
-	background-color: #F8F8F8;
-	/* border : 1px solid darkgrey;*/
-	border-width: 1px;
-	border-color: #AAAAAA;;
-	border-style: solid;
-}
-
-.mailme {
-	color: #7F7F7F;
-	font-family: 'Ubuntu', sans-serif;
-	font-style: italic;
-	font-weight: bold;
-}
-
 /**
  * Applied to SliderBar.
  */
+ 
+.sliderbarHeaderlabel {
+    color: black;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 16px;
+    font-weight: bold		
+}
+
 .gwt-SliderBar-shell {
 	height: 25pt;
 	width: 100%;
@@ -282,6 +231,7 @@ background-color: #AAAAAA;
 	width: 95%;
 	top: 22pt;
 	overflow: hidden;
+	cursor: pointer;
 }
 
 .gwt-SliderBar-shell .gwt-SliderBar-line-disabled {
@@ -318,14 +268,6 @@ background-color: #AAAAAA;
 	cursor: pointer;
 }
 .mainPanel{
-	width: 100%;
-}
-
-.numericRangeSliderPanel{
-	width: 90%;
-}
-
-.stringRangeSliderPanel{
 	width: 100%;
 }
 
