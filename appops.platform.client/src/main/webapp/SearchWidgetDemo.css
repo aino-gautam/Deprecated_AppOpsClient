@@ -1,0 +1,39 @@
+
+
+.searchBtn {
+	background-color: #746;
+	color: white;
+	float: right;
+	height: 22px;
+	margin: 5px 0 0 -3px;
+	border: none;
+	cursor: pointer;
+	font-family: 'Ubuntu', sans-serif;
+}
+
+.searchSuggestionBox{
+	background-image: url("images/searchIconLight.png");
+    background-position: 2% center;
+    background-repeat: no-repeat;
+    border: 1px solid #764560;
+    color: gray;
+    font-family: 'Ubuntu',sans-serif;
+    font-size: 13px;
+    height: 16px;
+    margin: 5px 0;
+    padding: 5px;
+    text-indent: 22px;
+    width: 190px;
+}
+
+.fullWidth{
+	width: 98%;
+}
+
+.searchResultLbl {
+	color: #333;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 15px;
+	font-weight: bold;
+	margin-left: 150px;
+}

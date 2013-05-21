@@ -836,31 +836,6 @@ html .GWTUpld .prgbar-msg {
 	-moz-animation-name: bounceInRight;
 }
 
-.searchBtn {
-	background-color: #746;
-	color: white;
-	float: right;
-	height: 22px;
-	margin: 5px 0 0 -3px;
-	border: none;
-	cursor: pointer;
-}
-
-.searchSuggestionBox{
-	background-image: url("images/searchIconLight.png");
-    background-position: 2% center;
-    background-repeat: no-repeat;
-    border: 1px solid #764560;
-    color: gray;
-    font-family: 'Ubuntu',sans-serif;
-    font-size: 13px;
-    height: 16px;
-    margin: 5px 0;
-    padding: 5px;
-    text-indent: 22px;
-    width: 190px;
-}
-
 .cardSnippetPanel{
 	width: 100%;
 }
