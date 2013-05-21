@@ -1,5 +1,6 @@
 package in.appops.showcase.web.gwt.fields.client;
 
+import in.appops.client.common.components.LocationHomeSelector;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
@@ -15,6 +16,8 @@ import in.appops.client.common.fields.StateField;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.slider.field.NumericRangeSliderField;
 import in.appops.client.common.fields.slider.field.StringRangeSliderField;
+import in.appops.client.common.util.AppEnviornment;
+import in.appops.platform.core.entity.GeoLocation;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.server.core.services.spacemanagement.constants.SpaceTypeConstants;
@@ -162,7 +165,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 		dateTimeOnlyField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATETIMEONLY,null));
 
 		LabelField labelFieldLocation = new LabelField();
-		labelFieldLocation.setFieldValue("Location Selector(true)");
+		//labelFieldLocation.setFieldValue("Location Selector(true)");
+		labelFieldLocation.setFieldValue("Location Selector");
 		labelFieldLocation.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
 		
 		LabelField labelFieldLocationForFalseLabelField = new LabelField();
@@ -340,7 +344,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 
 		flex.setWidget(15, 0, labelFieldLocation);
 		
-		flex.setWidget(18, 0, labelFieldLocationForFalseLabelField);
+		//flex.setWidget(18, 0, labelFieldLocationForFalseLabelField);
 		
 		flex.setWidget(19, 0, numericRangeSliderLbl);
 		flex.setWidget(19, 1, numericRangeSlider);
@@ -365,11 +369,17 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 					
 					Coordinates coords = position.getCoords();
 					LatLng latLng = new LatLng(coords.getLatitude(), coords.getLongitude());
-														
+									
+					LocationHomeSelector homeSelector = new LocationHomeSelector();
+					homeSelector.setCoords(coords);
+					homeSelector.createUi();
 
-					locationSelector.setConfiguration(getLocationSelectorConf());
+					/*locationSelector.setConfiguration(getLocationSelectorConf());
 					locationSelector.setMapMode(true);
-					
+					GeoLocation geoLocation = new GeoLocation();
+					geoLocation.setLatitude(coords.getLatitude());
+					geoLocation.setLongitude(coords.getLongitude());
+					AppEnviornment.setCurrentGeolocation(geoLocation);
 					//locationSelector.setLatLong(latLng);
 					locationSelector.setCoordinates(coords);
 					
@@ -383,13 +393,13 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 					locationSelector.createField();
 					
 					
-					locationSelectorForFalseMode.createField();
+					locationSelectorForFalseMode.createField();*/
 
 					
-					flex.setWidget(15, 1, locationSelector);
+					flex.setWidget(15, 1, homeSelector);
 					
 					
-					flex.setWidget(18, 1, locationSelectorForFalseMode);
+					//flex.setWidget(18, 1, locationSelectorForFalseMode);
 					
 
 				}
