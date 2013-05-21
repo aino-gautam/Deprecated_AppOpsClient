@@ -35,16 +35,21 @@ public class SearchListSnippet extends Composite implements  Snippet, Configurab
 	private EntityList entityList;
 	private final AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
 	private Image loaderImage;
-
+	private VerticalPanel resultDisplayer = new VerticalPanel();
 
 	public SearchListSnippet() {
 		initWidget(mainPanel);
-		loaderImage = new Image("images/opptinLoader.gif");
-		loaderImage.setStylePrimaryName("appops-intelliThoughtActionImage");
-		loaderImage.setVisible(false);
-		mainPanel.add(loaderImage);
-		mainPanel.setCellHorizontalAlignment(loaderImage,HasHorizontalAlignment.ALIGN_CENTER);
-		mainPanel.setCellVerticalAlignment(loaderImage,HasVerticalAlignment.ALIGN_MIDDLE);
+		setLoaderImage(new Image("images/opptinLoader.gif"));
+		getLoaderImage().setStylePrimaryName("appops-intelliThoughtActionImage");
+		getLoaderImage().setVisible(false);
+		
+		mainPanel.add(getLoaderImage());
+		mainPanel.add(getResultDisplayer());
+		mainPanel.setCellHorizontalAlignment(getLoaderImage(),HasHorizontalAlignment.ALIGN_CENTER);
+		mainPanel.setCellVerticalAlignment(getLoaderImage(),HasVerticalAlignment.ALIGN_MIDDLE);
+		
+		mainPanel.setCellHorizontalAlignment(getResultDisplayer(),HasHorizontalAlignment.ALIGN_CENTER);
+		mainPanel.setCellVerticalAlignment(getResultDisplayer() ,HasVerticalAlignment.ALIGN_MIDDLE);
 	}
 	
 	public EntityList getEntityList() {
@@ -57,7 +62,7 @@ public class SearchListSnippet extends Composite implements  Snippet, Configurab
 
 	@Override
 	public void initialize(){
-		mainPanel.clear();
+		getResultDisplayer().clear();
 		try {
 			if(entityList!=null && !entityList.isEmpty()){
 				VerticalPanel headerPanel = new VerticalPanel();
@@ -67,8 +72,8 @@ public class SearchListSnippet extends Composite implements  Snippet, Configurab
 				headerPanel.add(searchHeaderLbl);
 				headerPanel.setCellHorizontalAlignment(searchHeaderLbl, HasHorizontalAlignment.ALIGN_RIGHT);
 
-				mainPanel.add(headerPanel);
-				mainPanel.setCellHorizontalAlignment(headerPanel, HasHorizontalAlignment.ALIGN_LEFT);
+				getResultDisplayer().add(headerPanel);
+				getResultDisplayer().setCellHorizontalAlignment(headerPanel, HasHorizontalAlignment.ALIGN_LEFT);
 				
 				SnippetFactory snippetFactory = injector.getSnippetFactory();
 
@@ -88,13 +93,13 @@ public class SearchListSnippet extends Composite implements  Snippet, Configurab
 					snippet.initialize();
 					listPanel.add(snippet);
 				}
-				mainPanel.add(scrollPanel);
-				mainPanel.setCellHorizontalAlignment(scrollPanel, HasAlignment.ALIGN_CENTER);
-				mainPanel.setStylePrimaryName("listComponentPanel");
+				getResultDisplayer().add(scrollPanel);
+				getResultDisplayer().setCellHorizontalAlignment(scrollPanel, HasAlignment.ALIGN_CENTER);
+				getResultDisplayer().setStylePrimaryName("listComponentPanel");
 			}else{
 				Label noResultLbl = new Label("No Search results....!!!");
 				noResultLbl.setStylePrimaryName("searchResultLbl");
-				mainPanel.add(noResultLbl);
+				getResultDisplayer().add(noResultLbl);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -118,7 +123,8 @@ public class SearchListSnippet extends Composite implements  Snippet, Configurab
 
 	@Override
 	public void onEntityListReceived(EntityList entityList) {
-		mainPanel.clear();
+		loaderImage.setVisible(false);
+		getResultDisplayer().clear();
 		this.entityList = entityList;
 		initialize();
 	}
@@ -166,5 +172,21 @@ public class SearchListSnippet extends Composite implements  Snippet, Configurab
 	@Override
 	public void setActionContext(ActionContext actionContext) {
 		
+	}
+
+	public Image getLoaderImage() {
+		return loaderImage;
+	}
+
+	public void setLoaderImage(Image loaderImage) {
+		this.loaderImage = loaderImage;
+	}
+
+	public VerticalPanel getResultDisplayer() {
+		return resultDisplayer;
+	}
+
+	public void setResultDisplayer(VerticalPanel resultDisplayer) {
+		this.resultDisplayer = resultDisplayer;
 	}
 }
