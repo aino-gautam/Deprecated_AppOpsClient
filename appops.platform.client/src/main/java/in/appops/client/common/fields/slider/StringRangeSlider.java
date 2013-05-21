@@ -246,7 +246,7 @@ public class StringRangeSlider extends FocusPanel implements ResizableWidget{
 	}
 
 	protected String formatLabel(double value) {
-		String str = listOfOption.get(((int)value)-1);
+		String str = listOfOption.get(((int)value)-1).trim();
 		if (labelFormatter != null)
 			return labelFormatter.formatLabel(this, value);
 		 else 
@@ -317,8 +317,10 @@ public class StringRangeSlider extends FocusPanel implements ResizableWidget{
 				double value = minValue + (getTotalRange() * i / numLabels);
 				DOM.setStyleAttribute(label, "visibility", "hidden");
 				DOM.setStyleAttribute(label, "display", "");
-				System.out.println("in drawLabl() lable: "+formatLabel(value));
-				DOM.setElementProperty(label, "innerHTML", formatLabel(value));
+				
+				String lblString = formatLabel(value);
+				System.out.println("in drawLabl() lable: "+lblString);
+				DOM.setElementProperty(label, "innerHTML", lblString);
 
 				DOM.setStyleAttribute(label, "left", "0px");
 
