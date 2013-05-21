@@ -1308,3 +1308,31 @@ height: 15px;
     font-family: 'Ubuntu',sans-serif;
     font-size: 12px;
 }
+.contactListAlignment{
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+.contactListPanel{
+	padding-left: 20px;
+}
+.groupCheckboxDisplayPanel{
+	padding: 10px;
+}
+.groupCheckboxTitle{
+	color: #333;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 14px;
+	margin-bottom: 5px;
+	font-weight: 700;
+}
+.viewTickCheckboxButtonAlignment{
+	margin-top: 15px;
+}
+.spinnerFieldValueLabel{
+	margin-top: 10px;
+	margin-bottom: 5px;
+}
+.CheckboxNotifyLabelAlignment{
+	margin-top: 5px;
+	margin-left: 5px;
+}
