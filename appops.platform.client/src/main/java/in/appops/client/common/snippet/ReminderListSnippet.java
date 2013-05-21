@@ -2,7 +2,6 @@ package in.appops.client.common.snippet;
 
 import in.appops.client.common.core.EntityListModel;
 import in.appops.client.common.util.AppEnviornment;
-import in.appops.platform.core.constants.propertyconstants.UserConstants;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.query.Query;
@@ -10,7 +9,6 @@ import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.server.core.services.useraccount.constant.UserPojoConstant;
 
-import java.io.Serializable;
 import java.util.HashMap;
 
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -50,22 +48,15 @@ public class ReminderListSnippet extends VerticalPanel implements Snippet{
 	@Override
 	public void initialize() {
 		     userEntity=AppEnviornment.getCurrentUser();
-		      // Property<Key<Long>> userIdProp = (Property<Key<Long>>) entity.getProperty(UserConstants.ID);
-				//initializeListForUser(userIdProp.getValue().getKeyValue());
+		     Configuration configuration = new Configuration();
+			 configuration.setPropertyByName(SnippetConstant.SELECTIONMODE, false);
+			 configuration.setPropertyByName(ListSnippet.SCROLLPANELWIDTH, 650);
+			 configuration.setPropertyByName(ListSnippet.SCROLLPANELHEIGHT, 500);
+			 setConfiguration(configuration);
+						
+			Long userId = ((Key<Long>)userEntity.getPropertyByName(UserPojoConstant.ID)).getKeyValue();
+			initializeListForUser(userId);
 				
-				Configuration configuration = new Configuration();
-				configuration.setPropertyByName(SnippetConstant.SELECTIONMODE, false);
-				configuration.setPropertyByName(ListSnippet.SCROLLPANELWIDTH, 650);
-				configuration.setPropertyByName(ListSnippet.SCROLLPANELHEIGHT, 500);
-				setConfiguration(configuration);
-				
-				Entity usrEnt =  AppEnviornment.getCurrentUser();
-				Long userId = ((Key<Long>)usrEnt.getPropertyByName(UserPojoConstant.ID)).getKeyValue();
-				initializeListForUser(userId);
-				
-				/*Key<Serializable> key=(Key<Serializable>) userEntity.getProperty(UserConstants.ID).getValue();
-				Long userId = (Long) key.getKeyValue();
-				initializeListForUser(4);*/
 		
 	}
      public void initializeListForUser(long userId) {
