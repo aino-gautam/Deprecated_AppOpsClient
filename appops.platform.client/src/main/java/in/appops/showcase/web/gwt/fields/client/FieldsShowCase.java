@@ -1,6 +1,8 @@
 package in.appops.showcase.web.gwt.fields.client;
 
 import in.appops.client.common.components.LocationHomeSelector;
+import in.appops.client.common.components.MediaAttachWidget;
+import in.appops.client.common.components.WebMediaAttachWidget;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
@@ -15,9 +17,19 @@ import in.appops.client.common.fields.StateField;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.slider.field.NumericRangeSliderField;
 import in.appops.client.common.fields.slider.field.StringRangeSliderField;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.operation.ResponseActionContext;
+import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
+import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.spacemanagement.constants.SpaceTypeConstants;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.code.gwt.geolocation.client.Coordinates;
 import com.google.code.gwt.geolocation.client.Geolocation;
@@ -25,6 +37,7 @@ import com.google.code.gwt.geolocation.client.Position;
 import com.google.code.gwt.geolocation.client.PositionCallback;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.maps.client.base.LatLng;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -335,6 +348,9 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 		
 		flex.setWidget(27, 0, numberFieldLabel);
 		flex.setWidget(27, 1, numberFieldPanel);
+		
+		addMediaUploaderField();
+		
 		RootPanel.get().add(flex);
 		
 		if (Geolocation.isSupported()) {
@@ -540,5 +556,52 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 		default:
 			break;
 		}
+	}
+	
+	
+	
+	public MediaAttachWidget createMediaField() {
+		MediaAttachWidget mediaWidget = new WebMediaAttachWidget();
+		mediaWidget.isFadeUpEffect(false);
+		mediaWidget.createUi();
+		mediaWidget.setVisible(true);
+		mediaWidget.setWidth("100%");
+		mediaWidget.createAttachmentUi();
+		mediaWidget.isMediaImageVisible(false);
+		mediaWidget.expand();
+		return mediaWidget;
+	}
+	
+	private void addMediaUploaderField() {
+		Map parameters = new HashMap();
+		parameters.put("emailId", "nitish@ensarm.com");
+		parameters.put("password", "nitish123");
+		
+		StandardAction action = new StandardAction(EntityList.class, "useraccount.LoginService.validateUser", parameters);
+		
+		DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+		DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+
+		ResponseActionContext actionContext = new ResponseActionContext();
+		actionContext.setEmbeddedAction(action);
+		
+		dispatch.executeContextAction(actionContext, new AsyncCallback<Result>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
+
+			@Override
+			public void onSuccess(Result result) {
+				Label mediaUploadLabel = new Label("Media Uploader");
+				MediaAttachWidget mediaAttachWidget = createMediaField();
+				flex.setWidget(28, 0, mediaUploadLabel);
+				flex.setWidget(28, 1, mediaAttachWidget);
+			}
+
+			
+		});
+				
 	}
 }
