@@ -398,7 +398,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	/**** For Appops Showcase *****/
 	private void appopsClientTransformWidget(String widgetName) {
 		Widget displayWidget = null;
-		if(widgetName.equalsIgnoreCase("Dragon Wheel")) {
+		if(widgetName.equalsIgnoreCase("Photos")) {
 			Window.open( GWT.getHostPageBaseURL() + "dragonwheel.html?gwt.codesvr=127.0.0.1:9997", "right_frame", "");
 		} else if(widgetName.equalsIgnoreCase("Contacts")) {
 			Window.open( GWT.getHostPageBaseURL() + "contactselector.html?gwt.codesvr=127.0.0.1:9997", "right_frame", "");
