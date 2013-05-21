@@ -261,7 +261,7 @@
 
 					<modules>
 						<module>in.appops.client.Client</module>
-						<module>in.appops.showcase.web.gwt.dragonwheel.dragonwheel</module>
+					<!-- 	<module>in.appops.showcase.web.gwt.dragonwheel.dragonwheel</module>
 						<module>in.appops.showcase.web.gwt.fields.fields</module>
 						<module>in.appops.showcase.web.gwt.intellithought.IntelliThought</module>
 						<module>in.appops.showcase.web.gwt.wizardform.wizardform</module>
@@ -272,8 +272,9 @@
 						<module>in.appops.showcase.web.gwt.facebook.facebook</module>
 			 			<module>in.appops.showcase.web.gwt.contactbox.contactbox</module>
 						<module>in.appops.showcase.web.gwt.messagehome.messagehome</module>
-						<module>in.appops.showcase.web.gwt.calendarHome.calendarHome</module>
-						<module>in.appops.showcase.web.gwt.chat.chat</module>
+						<module>in.appops.showcase.web.gwt.calendarHome.calendarHome</module>-->
+						<module>in.appops.showcase.web.gwt.chat.chat</module> -->
+						<module>in.appops.showcase.web.gwt.search.search</module>
 					</modules>
 				</configuration>
 			</plugin>
