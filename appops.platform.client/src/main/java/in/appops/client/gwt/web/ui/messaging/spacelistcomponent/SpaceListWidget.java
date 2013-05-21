@@ -9,7 +9,7 @@ import java.util.Iterator;
 import in.appops.client.common.core.EntityListReceiver;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.fields.LabelField;
-import in.appops.client.gwt.web.ui.messaging.MessagingComponent;
+import in.appops.client.gwt.web.ui.messaging.ChatMessagingComponent;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEvent;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEventHandler;
 import in.appops.platform.core.entity.Entity;
@@ -56,7 +56,7 @@ public class SpaceListWidget extends Composite implements EntityListReceiver,Mes
 	/**
 	 * The reference to the parent to fire chat window chat event on click of nearby space.
 	 */
-	private MessagingComponent parentMessagingComponent;
+	private ChatMessagingComponent parentMessagingComponent;
 	
 	private LabelField spaceTitle;
 	
@@ -251,21 +251,21 @@ public class SpaceListWidget extends Composite implements EntityListReceiver,Mes
 	 * Set the parent messaging component reference.
 	 * @param messagingComponent
 	 */
-	public void setParentMessagingWidget(MessagingComponent messagingComponent) {
+	public void setParentMessagingWidget(ChatMessagingComponent messagingComponent) {
 		setParentMessagingComponent(messagingComponent);
 	}
 
 	/**
 	 * @return the parentMessagingComponent
 	 */
-	public MessagingComponent getParentMessagingComponent() {
+	public ChatMessagingComponent getParentMessagingComponent() {
 		return parentMessagingComponent;
 	}
 
 	/**
 	 * @param parentMessagingComponent the parentMessagingComponent to set
 	 */
-	public void setParentMessagingComponent(MessagingComponent parentMessagingComponent) {
+	public void setParentMessagingComponent(ChatMessagingComponent parentMessagingComponent) {
 		this.parentMessagingComponent = parentMessagingComponent;
 	}
 

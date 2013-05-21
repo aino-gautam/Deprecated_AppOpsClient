@@ -8,6 +8,7 @@ import in.appops.client.common.fields.DateOnlyPicker;
 import in.appops.client.common.fields.DateTimeField;
 import in.appops.client.common.fields.DateTimePicker;
 import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.fields.LinkField;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TimePicker;
 import in.appops.client.common.util.AppEnviornment;
@@ -51,7 +52,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class CreateCalendarEntryScreen extends Composite implements Screen{
+public class CreateCalendarEntryScreen extends Composite implements Screen,ClickHandler{
 	
 	private VerticalPanel mainPanel ;
 	//private Button createEventButton = new Button("Create event");
@@ -70,8 +71,8 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 	private DateTimeField dateTimeOnlyField ;
 	private ComboBoxField reminderTypeComboBoxField;
 	private ComboBoxField reminderUnitComboBoxField;
-	private HashMap<String, Object> remindarTypeVsEntity ;
-	private HashMap<String, Object> remindarUnitVsEntity;
+	private LinkField backToEventsLinkField;
+	private HorizontalPanel errorHorizontalPanel ;
 	private HorizontalPanel reminderFieldPanel;
 	private String createEntityType;
 	private boolean isAddMoreDetails = false;
@@ -94,6 +95,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 	public CreateCalendarEntryScreen() {
 		mainPanel = new VerticalPanel();
 		reminderFieldPanel = new HorizontalPanel();
+		errorHorizontalPanel= new HorizontalPanel();
 		initWidget(mainPanel);
 		reminderFieldPanel.setWidth("100%");
 	    fetchReminderTypes();
@@ -407,6 +409,13 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 			});
 			
 			
+			backToEventsLinkField = new LinkField();
+			backToEventsLinkField.setFieldValue("Back");
+			backToEventsLinkField.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_ANCHOR, "crossImageCss", null, null));
+			backToEventsLinkField.createField();
+			
+			((Anchor) backToEventsLinkField.getWidget()).addClickHandler(this);
+			
 			flexTable.setWidget(1, 0, labelField);
 			flexTable.setWidget(1, 2, textFieldTB);
 			
@@ -418,7 +427,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 			flexTable.getCellFormatter().setVerticalAlignment(5, 0, HasVerticalAlignment.ALIGN_TOP);
 			
 			flexTable.setWidget(7, 2, addMoreDetailsAnchor);
-			//flexTable.setWidget(10, 0, createEventButton);
+			flexTable.setWidget(12, 2, backToEventsLinkField);
 			
 			mainPanel.add(flexTable);
 			mainPanel.setCellHorizontalAlignment(flexTable, HasHorizontalAlignment.ALIGN_CENTER);
@@ -429,6 +438,14 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 		}
 	}
 
+	private Configuration getLinkFieldConfiguration(String linkFieldType, String primaryCss, String secondaryCss, String debugId){
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(LinkField.LINKFIELD_TYPE, linkFieldType);
+		configuration.setPropertyByName(LinkField.LINKFIELD_PRIMARYCSS, primaryCss);
+		configuration.setPropertyByName(LinkField.LINKFIELD_DEPENDENTCSS, secondaryCss);
+		configuration.setPropertyByName(LinkField.LINKFIELD_DEBUGID, debugId);
+		return configuration;
+	}
 	
 	private HorizontalPanel createRemiderField() {
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
@@ -515,6 +532,8 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 
 	@Override
 	public boolean validate() {
+		errorHorizontalPanel.clear();
+		
 		try{
 			if(createEntityType.equals("Create reminder")){
 				
@@ -555,12 +574,14 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 			}
 		}catch(Exception e){
 			try{
-			LabelField errorLabelField = new LabelField();
-			Configuration labelConfig = getLabelFieldConfiguration(true, "appops-errorLabel", null, null);
-			errorLabelField.setFieldValue("*Please enter all data appropriately.");
-			errorLabelField.setConfiguration(labelConfig);
-			errorLabelField.createField();
-			mainPanel.add(errorLabelField);
+				
+				LabelField errorLabelField = new LabelField();
+				Configuration labelConfig = getLabelFieldConfiguration(true, "appops-errorLabel", null, null);
+				errorLabelField.setFieldValue("*Please enter all data appropriately.");
+				errorLabelField.setConfiguration(labelConfig);
+				errorLabelField.createField();
+				errorHorizontalPanel.add(errorLabelField);
+				mainPanel.add(errorHorizontalPanel);
 			}catch(Exception e1){
 				e1.printStackTrace();
 			}
@@ -664,7 +685,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 			  Key<Serializable> userKey=(Key<Serializable>) userEntity.getProperty(UserConstants.ID).getValue();
 			  Long userId = (Long) userKey.getKeyValue();
 			
-			reminderEnt.setPropertyByName(ReminderConstant.USERID, userId);
+			reminderEnt.setPropertyByName(ReminderConstant.USERID,userId);
 			
 			
 			
@@ -796,16 +817,16 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 			
 			
 			
-			/* Entity userEntity=AppEnviornment.getCurrentUser();
+			 Entity userEntity=AppEnviornment.getCurrentUser();
 			  Key<Serializable> key=(Key<Serializable>) userEntity.getProperty(UserConstants.ID).getValue();
 			  Long userId = (Long) key.getKeyValue();
 			 entity.setPropertyByName(EventConstant.OWNER, userId);
 			 entity.setPropertyByName(EventConstant.CREATEDBY, userId);
-			 entity.setPropertyByName(EventConstant.MODIFIEDBY, userId);*/
+			 entity.setPropertyByName(EventConstant.MODIFIEDBY, userId);
 			 
-			 entity.setPropertyByName(EventConstant.OWNER, Long.valueOf(1));
-			 entity.setPropertyByName(EventConstant.CREATEDBY, Long.valueOf(1));
-			 entity.setPropertyByName(EventConstant.MODIFIEDBY, Long.valueOf(1));
+			 /*entity.setPropertyByName(EventConstant.OWNER, Long.valueOf(5));
+			 entity.setPropertyByName(EventConstant.CREATEDBY, Long.valueOf(5));
+			 entity.setPropertyByName(EventConstant.MODIFIEDBY, Long.valueOf(5));*/
 			 
 			 Property<Long> serviceProp = new Property<Long>();
 			 serviceProp.setName(EventConstant.SERVICEID);
@@ -932,6 +953,20 @@ public class CreateCalendarEntryScreen extends Composite implements Screen{
 			timePicker.getTextBox().setText("");
 		}
 		
+	}
+
+
+
+	@Override
+	public void onClick(ClickEvent event) {
+		Widget sender = (Widget) event.getSource();
+		
+		if(sender instanceof Anchor){
+			FieldEvent fieldEvent = new FieldEvent();
+			fieldEvent.setEventType(FieldEvent.EDITINPROGRESS);
+			fieldEvent.setEventData("Back");	
+			AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, CreateCalendarEntryScreen.this);
+		}
 	}
 
 
