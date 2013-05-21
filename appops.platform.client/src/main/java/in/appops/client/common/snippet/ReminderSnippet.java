@@ -72,7 +72,7 @@ public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHan
 			
 			reminderTitleLink = new LinkField();
 			reminderTitleLink.setFieldValue(title);
-			reminderTitleLink.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_HYPERLINK, "postLink", "reminderTitleLabel", null));
+			reminderTitleLink.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_ANCHOR, "reminderTitleLabel", "crossImageCss", null));
 			reminderTitleLink.createField();
 						
 			//reminderTitleLink.getWidget().addDomHandler(this, ClickEvent.getType());
@@ -91,7 +91,7 @@ public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHan
 			crossImg.setHeight("14px");
 			reminderTitlePanel.setCellHorizontalAlignment(crossImg, HasHorizontalAlignment.ALIGN_RIGHT);
 			reminderTitlePanel.setStylePrimaryName("reminderTitlePanel");
-			
+			crossImg.setStylePrimaryName("crossImageCss");
 						
 			add(reminderTitlePanel);
 			
@@ -125,12 +125,12 @@ public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHan
 			editLinkField.createField();
 			
 			HorizontalPanel linkPanel = new HorizontalPanel();
-			linkPanel.add(editLinkField);
+			//linkPanel.add(editLinkField);
 			//snippetPanel.add(editLinkField);
 			add(linkPanel);
 			//addDomHandler(this,ClickEvent.getType());
-			((Anchor) editLinkField.getWidget()).addClickHandler(this);
-					
+			((Anchor) reminderTitleLink.getWidget()).addClickHandler(this);
+			crossImg.addClickHandler(this);		
 			setStylePrimaryName("snippetPanel");
 		} catch (AppOpsException e) {
 			 e.printStackTrace();
@@ -184,7 +184,7 @@ public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHan
 			childVerticalPanel.add(calendarEntryScreen);
 			childVerticalPanel.add(createReminderButton);
 			createReminderPopupPanel.add(childVerticalPanel);
-			createReminderPopupPanel.showRelativeTo(editLinkField);
+			createReminderPopupPanel.showRelativeTo(reminderTitleLink);
 			createReminderPopupPanel.setAutoHideEnabled(true);
 		}else if(widget instanceof Button){
 			
@@ -208,9 +208,61 @@ public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHan
 			 reminderEntity.setPropertyByName(ReminderConstant.SERVICEID, serviceId);
 			saveEditedReminderEntity(reminderEntity);
 		  }
+		}else if(widget instanceof Image){
+			 
+			Entity entity=getEntity();
+					
+			deleteReminderEntity(entity);
+			
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
+	private void deleteReminderEntity(Entity reminderEntity) {
+		DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
+		DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
+				
+		Byte b = 1;
+		Property<Byte> isDeletedProp = new Property<Byte>();
+		isDeletedProp.setValue(b);
+		isDeletedProp.setName(ReminderConstant.ISDELETED);
+		reminderEntity.setProperty(ReminderConstant.ISDELETED, isDeletedProp);
+		
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("reminder", reminderEntity);
+				
+		
+		StandardAction action = new StandardAction(EntityList.class, "calendar.CalendarService.addReminderToEvent", paramMap);
+		dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+				
+			}
+
+			@Override
+			public void onSuccess(Result<Entity> result) {
+			  if(result!=null){	
+				Entity entity = result.getOperationResult();
+				if(entity!=null){
+									
+					removeReminderSnippet();
+					 
+				}
+				
+			  }
+			}
+
+		
+	  });
+		
+	}
+
+	private void removeReminderSnippet() {
+	     this.removeFromParent();
+		
+	}
 	@SuppressWarnings("unchecked")
 	private void saveEditedReminderEntity(Entity reminderEntity) {
 		DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
