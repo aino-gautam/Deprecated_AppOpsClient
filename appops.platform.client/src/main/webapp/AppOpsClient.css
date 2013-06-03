@@ -836,31 +836,6 @@ html .GWTUpld .prgbar-msg {
 	-moz-animation-name: bounceInRight;
 }
 
-.searchBtn {
-	background-color: #746;
-	color: white;
-	float: right;
-	height: 22px;
-	margin: 5px 0 0 -3px;
-	border: none;
-	cursor: pointer;
-}
-
-.searchSuggestionBox{
-	background-image: url("images/searchIconLight.png");
-    background-position: 2% center;
-    background-repeat: no-repeat;
-    border: 1px solid #764560;
-    color: gray;
-    font-family: 'Ubuntu',sans-serif;
-    font-size: 13px;
-    height: 16px;
-    margin: 5px 0;
-    padding: 5px;
-    text-indent: 22px;
-    width: 190px;
-}
-
 .cardSnippetPanel{
 	width: 100%;
 }
@@ -1332,4 +1307,35 @@ height: 15px;
     color: red;
     font-family: 'Ubuntu',sans-serif;
     font-size: 12px;
+}
+.contactListAlignment{
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+.contactListPanel{
+	padding-left: 20px;
+}
+.groupCheckboxDisplayPanel{
+	padding: 10px;
+}
+.groupCheckboxTitle{
+	color: #333;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 14px;
+	margin-bottom: 5px;
+	font-weight: 700;
+}
+.viewTickCheckboxButtonAlignment{
+	margin-top: 15px;
+}
+.spinnerFieldValueLabel{
+	margin-top: 10px;
+	margin-bottom: 5px;
+}
+.CheckboxNotifyLabelAlignment{
+	margin-top: 5px;
+	margin-left: 5px;
+}
+.fieldShowcaseBasePanel{
+	margin-left: 20px;
 }
