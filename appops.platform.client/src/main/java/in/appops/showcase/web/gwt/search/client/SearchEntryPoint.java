@@ -67,7 +67,7 @@ public class SearchEntryPoint implements EntryPoint,SearchEventHandler{
 
 			String queryString = Window.Location.getQueryString();
 			
-			if(queryString != null) {
+			if(queryString != null  && queryString.contains("text=")) {
 				searchListSnippet.getResultDisplayer().clear();
 				searchListSnippet.getLoaderImage().setVisible(true);
 				String searchText = queryString.substring(queryString.indexOf("text=") + "text=".length() );

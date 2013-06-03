@@ -18,12 +18,21 @@ import java.util.Map;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public class IntelliThoughtShowCase implements EntryPoint{
-	
+	private Image loaderImage;
+	private HorizontalPanel basePanel;
 	public void onModuleLoad() {
-		
+		basePanel = new HorizontalPanel();
+		basePanel.setStylePrimaryName("fullWidth");
+		RootPanel.get().add(basePanel);
+
+		loaderImage = new Image("images/opptinLoader.gif");
+		loaderImage.setStylePrimaryName("appops-intelliThoughtActionImage");
+		loaderImage.setVisible(false);
 		final IntelliThoughtWidget shareComponent = new IntelliThoughtWidget();
 		
 		Configuration intelliFieldConf = getIntelliFieldConfiguration("intelliShareField", null);
@@ -52,7 +61,9 @@ public class IntelliThoughtShowCase implements EntryPoint{
 
 		ResponseActionContext actionContext = new ResponseActionContext();
 		actionContext.setEmbeddedAction(action);
-		
+		basePanel.add(loaderImage);
+		basePanel.setCellHorizontalAlignment(loaderImage,HorizontalPanel.ALIGN_CENTER);
+		loaderImage.setVisible(true);	
 		dispatch.executeContextAction(actionContext, new AsyncCallback<Result>() {
 
 			@Override
@@ -62,7 +73,9 @@ public class IntelliThoughtShowCase implements EntryPoint{
 
 			@Override
 			public void onSuccess(Result result) {
-				RootPanel.get().add(shareComponent);
+				loaderImage.setVisible(false);
+				basePanel.clear();
+				basePanel.add(shareComponent);
 			}
 
 			
