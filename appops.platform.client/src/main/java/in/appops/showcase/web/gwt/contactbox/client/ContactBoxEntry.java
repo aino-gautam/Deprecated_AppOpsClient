@@ -14,6 +14,9 @@ import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.type.MetaType;
+import in.appops.platform.core.operation.ActionContext;
+import in.appops.platform.core.operation.InitiateActionContext;
+import in.appops.platform.core.operation.IntelliThought;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
@@ -22,6 +25,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -95,7 +99,18 @@ public class ContactBoxEntry implements EntryPoint{
 					        AppEnviornment.setCurrentSpace(entity);
 					    }*/
 				        Configuration intelliFieldConf = getIntelliFieldConfiguration("intelliShareField", null);
-						SendMessageWidget messageWidget = new  SendMessageWidget(null);
+				        
+						/**** For Appops Showcase *****/
+				        String queryString = Window.Location.getQueryString();
+				        
+				        SendMessageWidget messageWidget = null;
+				        if(queryString != null) {
+				        	messageWidget = new  SendMessageWidget((InitiateActionContext)getActionContext());
+				        } else {
+				        	messageWidget = new  SendMessageWidget(null);
+				        }
+						/********************/
+
 						messageWidget.setIntelliShareFieldConfiguration(intelliFieldConf);
 						/*try {
 							messageWidget.createComponent(getConfiguration(null, null));
@@ -145,5 +160,19 @@ public class ContactBoxEntry implements EntryPoint{
 		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
 		configuration.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
 		return configuration;
+	}
+	
+	/**** For Appops Showcase *****/
+	public ActionContext getActionContext(){
+		String queryString = Window.Location.getQueryString();
+		String text = queryString.substring(queryString.indexOf("text=") + "text=".length() );
+		text = text.replaceAll("%20", " ");
+		IntelliThought intelliThought = new IntelliThought();
+		intelliThought.setIntelliHtml(text);
+		
+		InitiateActionContext context = new InitiateActionContext();
+		context.setType(new MetaType("ActionContext"));
+		context.setIntelliThought(intelliThought);
+		return context;
 	}
 }

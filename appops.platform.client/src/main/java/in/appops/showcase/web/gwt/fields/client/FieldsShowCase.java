@@ -1,6 +1,8 @@
 package in.appops.showcase.web.gwt.fields.client;
 
 import in.appops.client.common.components.LocationHomeSelector;
+import in.appops.client.common.components.MediaAttachWidget;
+import in.appops.client.common.components.WebMediaAttachWidget;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
@@ -15,378 +17,114 @@ import in.appops.client.common.fields.StateField;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.slider.field.NumericRangeSliderField;
 import in.appops.client.common.fields.slider.field.StringRangeSliderField;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.operation.ResponseActionContext;
+import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
+import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.spacemanagement.constants.SpaceTypeConstants;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.code.gwt.geolocation.client.Coordinates;
 import com.google.code.gwt.geolocation.client.Geolocation;
 import com.google.code.gwt.geolocation.client.Position;
 import com.google.code.gwt.geolocation.client.PositionCallback;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.maps.client.base.LatLng;
-import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class FieldsShowCase implements EntryPoint, FieldEventHandler {
+public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHandler {
 
-	private FlexTable flex = new FlexTable();
-	private LocationSelector locationSelector = new LocationSelector();
-	private LocationSelector locationSelectorForFalseMode = new LocationSelector();
 	private Label numberfieldErrorLabel;
+	private ListBox listBox;
+	private VerticalPanel innerPanel;
 	
+	public static final String TEXTBOX = "Text Box";
+	public static final String PASSWORDTEXTBOX = "Password Textbox";
+	public static final String TEXTAREA = "Text Area";
+	public static final String CHECKBOXGROUPMULTISELECT = "CheckboxGroupField - MultiSelect";
+	public static final String CHECKBOXGROUPSINGLESELECT = "CheckboxGroupField - SingleSelect";
+	public static final String CHECKBOXFIELD = "CheckboxField";
+	public static final String STATEFIELD = "StateField";
+	public static final String TIME_PICKER = "Time Picker";
+	public static final String TIME_PICKER_HOUR = "Time Picker(Short_Hours )";
+	public static final String TIME_PICKER_MINUTE = "Time Picker(Short_Minute )";
+	public static final String TIME_PICKER_SEC = "Time Picker(Short_Sec )";
+	public static final String DATE_PICKER = "Date Picker";
+	public static final String DATETIME_PICKER = "Date Time Picker";
+	public static final String LOCATIONSELECTOR = "Location Selector";
+	public static final String NUMBERRANGE_SLIDER = "NumericRangeSlider";
+	public static final String STRINGRANGE_SLIDER = "StringRangeSlider";
+	public static final String SPINNERFIELD = "SpinnerField";
+	public static final String SPINNERFIELD_PERCENT = "SpinnerField(Percent)";
+	public static final String NUMBERFIELD = "NumberField";
+	public static final String MEDIA_UPLOAD = "Media Uploader";
+	private Image loaderImage;
 	public FieldsShowCase() {
 		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 	}
 	
 	@Override
 	public void onModuleLoad() {
+		loaderImage = new Image("images/opptinLoader.gif");
+		loaderImage.setStylePrimaryName("appops-intelliThoughtActionImage");
+		loaderImage.setVisible(false);
 		
-		LabelField labelFieldTB = new LabelField();
-		labelFieldTB.setFieldValue("Text Box");
-		labelFieldTB.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+		VerticalPanel basePanel = new VerticalPanel();
+		innerPanel = new VerticalPanel();
+		innerPanel.setWidth("100%");
 
-		TextField textFieldTB = new TextField();
-		textFieldTB.setFieldValue("");
-		textFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "appops-TextField", null, null));
-
-		LabelField labelFieldPTB = new LabelField();
-		labelFieldPTB.setFieldValue("Password Textbox");
-		labelFieldPTB.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-
-		TextField textFieldPTB = new TextField();
-		textFieldPTB.setFieldValue("Password");
-		textFieldPTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_PASSWORDTEXTBOX, "appops-TextField", null, null));
-		VerticalPanel verticalPanel = new VerticalPanel();
-		LabelField labelFieldTA = new LabelField();
-		labelFieldTA.setFieldValue("Text Area");
-		labelFieldTA.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-
-		TextField textFieldTA = new TextField();
-		textFieldTA.setFieldValue("");
-		textFieldTA.setConfiguration(getTextFieldConfiguration(10, false, TextField.TEXTFIELDTYPE_TEXTAREA, "appops-TextField", null, null));
-
-		LinkField hyperlink = new LinkField();
-		hyperlink.setFieldValue("Hyperlink");
-		hyperlink.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_HYPERLINK, "appops-LinkField", null, null));
-
-		LinkField anchor = new LinkField();
-		anchor.setFieldValue("Anchor");
-		anchor.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_HYPERLINK, "appops-LinkField", null, null));
-
-		LabelField stateFieldLabel = new LabelField();
-		stateFieldLabel.setFieldValue("StateField");
-		stateFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-
-		StateField stateField = new StateField();
-		//stateField.setFieldValue("Suggestion");
-		Configuration stateFieldConfig = getStateFieldConfiguration(StateField.STATEFIELDMODE_SUGGESTIVE, "getSpaceTypesWithName", "spacemanagement.SpaceManagementService.getEntityList", SpaceTypeConstants.NAME);
-		stateField.setConfiguration(stateFieldConfig);
-
-		LabelField CheckboxFieldLabel = new LabelField();
-		CheckboxFieldLabel.setFieldValue("CheckboxField");
-		CheckboxFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-
-		CheckboxWidget checkbox = new CheckboxWidget();
+		HorizontalPanel listBoxPanel = new HorizontalPanel();
+		Label titleLabel = new Label("Select a field");
 		
-		LabelField CheckboxGroupFieldLabel = new LabelField();
-		CheckboxGroupFieldLabel.setFieldValue("CheckboxGroupField - MultiSelect");
-		CheckboxGroupFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-
-		GroupCheckboxWidget multiSelectCheckbox = new GroupCheckboxWidget();
-		multiSelectCheckbox.createMultiSelectCheckbox();
+		listBox = new ListBox();
+		listBox.addItem("--Select--");
+		listBox.addItem(TEXTBOX);
+		listBox.addItem(PASSWORDTEXTBOX);
+		listBox.addItem(TEXTAREA);
+		listBox.addItem(CHECKBOXGROUPMULTISELECT);
+		listBox.addItem(CHECKBOXGROUPSINGLESELECT);
+		listBox.addItem(CHECKBOXFIELD);
+		listBox.addItem(STATEFIELD);
+		listBox.addItem(TIME_PICKER);
+		listBox.addItem(TIME_PICKER_HOUR);
+		listBox.addItem(TIME_PICKER_MINUTE);
+		listBox.addItem(TIME_PICKER_SEC);
+		listBox.addItem(DATE_PICKER);
+		listBox.addItem(DATETIME_PICKER);
+		listBox.addItem(LOCATIONSELECTOR);
+		listBox.addItem(NUMBERRANGE_SLIDER);
+		listBox.addItem(STRINGRANGE_SLIDER);
+		listBox.addItem(SPINNERFIELD);
+		listBox.addItem(SPINNERFIELD_PERCENT);
+		listBox.addItem(NUMBERFIELD);
+		listBox.addItem(MEDIA_UPLOAD);
 		
-		LabelField singleSelectCheckboxFieldLabel = new LabelField();
-		singleSelectCheckboxFieldLabel.setFieldValue("CheckboxGroupField - SingleSelect");
-		singleSelectCheckboxFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-
-		GroupCheckboxWidget singleSelectCheckbox = new GroupCheckboxWidget();
-		singleSelectCheckbox.createSingleSelectCheckbox();
-		
-		LabelField labelFieldDT = new LabelField();
-		labelFieldDT.setFieldValue("Time Picker");
-		labelFieldDT.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-
-
-		DateTimeField dateTimeField = new DateTimeField();
-		dateTimeField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.Full_Time));
-		
-		LabelField labelFieldDT_ShortHours = new LabelField();
-		labelFieldDT_ShortHours.setFieldValue("Time Picker(Short_Hours )");
-		labelFieldDT_ShortHours.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-
-
-		DateTimeField dateTimeShortHoursField = new DateTimeField();
-		dateTimeShortHoursField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.SHORT_HOURS));
-		
-		
-		LabelField labelFieldDT_ShortMinute = new LabelField();
-		labelFieldDT_ShortMinute.setFieldValue("Time Picker(Short_Minute )");
-		labelFieldDT_ShortMinute.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-
-
-		DateTimeField dateTimeShortMinuteField = new DateTimeField();
-		dateTimeShortMinuteField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.SHORT_MINUTE));
-		
-		LabelField labelFieldDT_ShortSec = new LabelField();
-		labelFieldDT_ShortSec.setFieldValue("Time Picker(Short_Sec )");
-		labelFieldDT_ShortSec.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-
-
-		DateTimeField dateTimeShortSecField = new DateTimeField();
-		dateTimeShortSecField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.SHORT_SECONDS));
-		
-
-		LabelField labelFieldD = new LabelField();
-		labelFieldD.setFieldValue("Date Picker");
-		labelFieldD.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-
-
-		DateTimeField dateField = new DateTimeField();
-		dateField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATEONLY,null));
-
-
-		LabelField labelFieldDTF = new LabelField();
-		labelFieldDTF.setFieldValue("Date Time Picker");
-		labelFieldDTF.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-
-
-		DateTimeField dateTimeOnlyField = new DateTimeField();
-		dateTimeOnlyField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATETIMEONLY,null));
-
-		LabelField labelFieldLocation = new LabelField();
-		//labelFieldLocation.setFieldValue("Location Selector(true)");
-		labelFieldLocation.setFieldValue("Location Selector");
-		labelFieldLocation.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-		
-		LabelField labelFieldLocationForFalseLabelField = new LabelField();
-		labelFieldLocationForFalseLabelField.setFieldValue("Location Selector(false)");
-		labelFieldLocationForFalseLabelField.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-		
-
-		LabelField spinnerFieldLabel = new LabelField();
-		spinnerFieldLabel.setFieldValue("SpinnerField");
-		spinnerFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-		
-		SpinnerWidget valueSpinner = new SpinnerWidget();
-		valueSpinner.createValueSpinner();
-		
-		LabelField spinnerPercentLabel = new LabelField();
-		spinnerPercentLabel.setFieldValue("SpinnerField(Percent)");
-		spinnerPercentLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-		
-		SpinnerWidget percentSpinner = new SpinnerWidget();
-		percentSpinner.createPercentSpinner();
-		
-		LabelField numberFieldLabel = new LabelField();
-		numberFieldLabel.setFieldValue("NumberField");
-		numberFieldLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-		
-		NumberField numberField = new NumberField();
-		numberField.setFieldValue("3");
-		Configuration numberConfig = getNumberFieldConfiguration();
-		numberField.setConfiguration(numberConfig);
-		VerticalPanel numberFieldPanel = new VerticalPanel();
-		numberfieldErrorLabel = new Label("Only Numbers and not the characters are allowed");
-		numberFieldPanel.add(numberField);
-		numberFieldPanel.add(numberfieldErrorLabel);
-		numberfieldErrorLabel.setVisible(false);
-		numberfieldErrorLabel.setStylePrimaryName("errorLabel");
-		
-		try {
-			labelFieldTB.createField();
-			textFieldTB.createField();
-
-			labelFieldPTB.createField();
-			textFieldPTB.createField();
-
-			labelFieldTA.createField();
-			textFieldTA.createField();
-
-			hyperlink.createField();
-			anchor.createField();
-
-			stateFieldLabel.createField();
-			stateField.createField();
-
-			CheckboxFieldLabel.createField();
-
-			CheckboxGroupFieldLabel.createField();
-
-			singleSelectCheckboxFieldLabel.createField();
-
-			labelFieldDT.createField();
-			dateTimeField.createField();
-			
-			labelFieldDT_ShortHours.createField();
-			dateTimeShortHoursField.createField();
-			
-			labelFieldDT_ShortMinute.createField();
-			dateTimeShortMinuteField.createField();
-			
-			labelFieldDT_ShortSec.createField();
-			dateTimeShortSecField.createField();
-
-			labelFieldD.createField();
-			dateField.createField();
-
-			labelFieldDTF.createField();
-			dateTimeOnlyField.createField();
-
-			labelFieldLocation.createField();
-			labelFieldLocationForFalseLabelField.createField();
-			
-			spinnerFieldLabel.createField();
-			
-			spinnerPercentLabel.createField();
-			
-			numberFieldLabel.createField();
-			numberField.createField();
-
-
-		} catch (AppOpsException e) {
-			e.printStackTrace();
-		}
-		
-		Label numericRangeSliderLbl = new Label("NumericRangeSlider");
-		StateField numericRangeSlider = new StateField();
-		Configuration numericRangeSliderConfig = getNumericRangeSliderFieldConfiguration();
-		numericRangeSlider.setConfiguration(numericRangeSliderConfig);
-		try {
-			numericRangeSlider.createField();
-			numericRangeSlider.setStylePrimaryName("mainPanel");
-		} catch (AppOpsException e) {
-			e.printStackTrace();
-		}
-
-		Label stringRangeSliderLbl = new Label("StringRangeSlider");
-		StateField stringRangeSlider = new StateField();
-		Configuration stringRangeSliderConfig = getStringRangeSliderFieldConfiguration();
-		stringRangeSlider.setConfiguration(stringRangeSliderConfig);
-		try {
-			stringRangeSlider.createField();
-			stringRangeSlider.setStylePrimaryName("mainPanel");
-		} catch (AppOpsException e) {
-			e.printStackTrace();
-		}
-		
-		
-		flex.setWidget(0, 0, labelFieldTB);
-		flex.setWidget(0, 1, textFieldTB);
-
-		flex.setWidget(1, 0, labelFieldPTB);
-		flex.setWidget(1, 1, textFieldPTB);
-
-		flex.setWidget(2, 0, labelFieldTA);
-		flex.setWidget(2, 1, textFieldTA);
-
-		//flex.setWidget(3, 0, hyperlink);
-		//flex.setWidget(3, 1, anchor);
-
-		flex.setWidget(4, 0, CheckboxGroupFieldLabel);
-		flex.setWidget(4, 1, multiSelectCheckbox);
-		
-		flex.setWidget(5, 0, singleSelectCheckboxFieldLabel);
-		flex.setWidget(5, 1, singleSelectCheckbox);
-
-		flex.setWidget(6, 0, CheckboxFieldLabel);
-		flex.setWidget(6, 1, checkbox);
-
-		flex.setWidget(7, 0, stateFieldLabel);
-		flex.setWidget(7, 1, stateField);
-
-		flex.setWidget(8, 0, labelFieldDT);
-		flex.setWidget(8, 1, dateTimeField);
-		
-		flex.setWidget(9, 0, labelFieldDT_ShortHours);
-		flex.setWidget(9, 1, dateTimeShortHoursField);
-		
-		flex.setWidget(10, 0, labelFieldDT_ShortMinute);
-		flex.setWidget(10, 1, dateTimeShortMinuteField);
-		
-		flex.setWidget(11, 0, labelFieldDT_ShortSec);
-		flex.setWidget(11, 1, dateTimeShortSecField);
-		
-		
-
-		flex.setWidget(13, 0, labelFieldD);
-		flex.setWidget(13, 1, dateField);
-
-		flex.setWidget(14, 0, labelFieldDTF);
-		flex.setWidget(14, 1, dateTimeOnlyField);
-
-		flex.setWidget(15, 0, labelFieldLocation);
-		
-		//flex.setWidget(18, 0, labelFieldLocationForFalseLabelField);
-		
-		flex.setWidget(19, 0, numericRangeSliderLbl);
-		flex.setWidget(19, 1, numericRangeSlider);
-
-		flex.setWidget(20, 0, stringRangeSliderLbl);
-		flex.setWidget(20, 1, stringRangeSlider);
-		
-		flex.setWidget(25, 0, spinnerFieldLabel);
-		flex.setWidget(25, 1, valueSpinner);
-		
-		flex.setWidget(26, 0, spinnerPercentLabel);
-		flex.setWidget(26, 1, percentSpinner);
-		
-		flex.setWidget(27, 0, numberFieldLabel);
-		flex.setWidget(27, 1, numberFieldPanel);
-		RootPanel.get().add(flex);
-		
-		if (Geolocation.isSupported()) {
-			Geolocation.getGeolocation().getCurrentPosition(new PositionCallback() {
-				
-				public void onSuccess(Position position) {
-					
-					Coordinates coords = position.getCoords();
-					LatLng latLng = new LatLng(coords.getLatitude(), coords.getLongitude());
-									
-					LocationHomeSelector homeSelector = new LocationHomeSelector();
-					homeSelector.setCoords(coords);
-					homeSelector.createUi();
-
-					/*locationSelector.setConfiguration(getLocationSelectorConf());
-					locationSelector.setMapMode(true);
-					GeoLocation geoLocation = new GeoLocation();
-					geoLocation.setLatitude(coords.getLatitude());
-					geoLocation.setLongitude(coords.getLongitude());
-					AppEnviornment.setCurrentGeolocation(geoLocation);
-					//locationSelector.setLatLong(latLng);
-					locationSelector.setCoordinates(coords);
-					
-					locationSelectorForFalseMode.setConfiguration(getLocationSelectorConfForFalse());
-					locationSelectorForFalseMode.setMapMode(false);
-					locationSelectorForFalseMode.setMapHeight("400px");
-					locationSelectorForFalseMode.setMapWidth("600px");
-					//locationSelector.setLatLong(latLng);
-					locationSelectorForFalseMode.setCoordinates(coords);
-					
-					locationSelector.createField();
-					
-					
-					locationSelectorForFalseMode.createField();*/
-
-					
-					flex.setWidget(15, 1, homeSelector);
-					
-					
-					//flex.setWidget(18, 1, locationSelectorForFalseMode);
-					
-
-				}
-
-				@Override
-				public void onFailure(com.google.code.gwt.geolocation.client.PositionError error) {
-					System.out.println(" "+error.getMessage());
-
-				}
-			});
-		}
-
+		listBox.addChangeHandler(this);
+		listBox.setStylePrimaryName("fieldShowcaseBasePanel");
+		listBoxPanel.add(titleLabel);
+		listBoxPanel.add(listBox);
+		listBoxPanel.setCellVerticalAlignment(titleLabel, HasVerticalAlignment.ALIGN_MIDDLE);
+		basePanel.add(listBoxPanel);
+		basePanel.add(innerPanel);
+		basePanel.setSpacing(20);
+		basePanel.setStylePrimaryName("fieldShowcaseBasePanel");
+		RootPanel.get().add(basePanel);
 	}
 	
 	private Configuration getStringRangeSliderFieldConfiguration() {
@@ -540,5 +278,233 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler {
 		default:
 			break;
 		}
+	}
+
+	@Override
+	public void onChange(ChangeEvent event) {
+		int index = listBox.getSelectedIndex();
+		String fieldName = listBox.getValue(index);
+		initializeField(fieldName);
+	}
+
+	private void initializeField(String fieldName) {
+		try {
+			innerPanel.clear();
+			if(fieldName.equals(TEXTBOX)) {
+				TextField textFieldTB = new TextField();
+				textFieldTB.setFieldValue("");
+				textFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "appops-TextField", null, null));
+				textFieldTB.createField();
+				innerPanel.add(textFieldTB);
+				innerPanel.setCellHorizontalAlignment(textFieldTB,HorizontalPanel.ALIGN_CENTER);
+
+			} else if(fieldName.equals(PASSWORDTEXTBOX)) {
+				TextField textFieldPTB = new TextField();
+				textFieldPTB.setFieldValue("Password");
+				textFieldPTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_PASSWORDTEXTBOX, "appops-TextField", null, null));
+				textFieldPTB.createField();
+				innerPanel.add(textFieldPTB);
+				innerPanel.setCellHorizontalAlignment(textFieldPTB,HorizontalPanel.ALIGN_CENTER);
+
+			} else if(fieldName.equals(TEXTAREA)) {
+				TextField textFieldTA = new TextField();
+				textFieldTA.setFieldValue("");
+				textFieldTA.setConfiguration(getTextFieldConfiguration(10, false, TextField.TEXTFIELDTYPE_TEXTAREA, "appops-TextField", null, null));
+				textFieldTA.createField();
+				innerPanel.add(textFieldTA);
+				innerPanel.setCellHorizontalAlignment(textFieldTA,HorizontalPanel.ALIGN_CENTER);
+
+			} else if(fieldName.equals(CHECKBOXGROUPMULTISELECT)) {
+				GroupCheckboxWidget multiSelectCheckbox = new GroupCheckboxWidget();
+				multiSelectCheckbox.createMultiSelectCheckbox();
+				innerPanel.add(multiSelectCheckbox);
+				innerPanel.setCellHorizontalAlignment(multiSelectCheckbox,HorizontalPanel.ALIGN_CENTER);
+
+			} else if(fieldName.equals(CHECKBOXGROUPSINGLESELECT)) {
+				GroupCheckboxWidget singleSelectCheckbox = new GroupCheckboxWidget();
+				singleSelectCheckbox.createSingleSelectCheckbox();
+				innerPanel.add(singleSelectCheckbox);
+				innerPanel.setCellHorizontalAlignment(singleSelectCheckbox,HorizontalPanel.ALIGN_CENTER);
+
+			} else if(fieldName.equals(CHECKBOXFIELD)) {
+				CheckboxWidget checkbox = new CheckboxWidget();
+				innerPanel.add(checkbox);
+				innerPanel.setCellHorizontalAlignment(checkbox,HorizontalPanel.ALIGN_CENTER);
+
+			} else if(fieldName.equals(STATEFIELD)) {
+				StateField stateField = new StateField();
+				//stateField.setFieldValue("Suggestion");
+				Configuration stateFieldConfig = getStateFieldConfiguration(StateField.STATEFIELDMODE_SUGGESTIVE, "getSpaceTypesWithName", "spacemanagement.SpaceManagementService.getEntityList", SpaceTypeConstants.NAME);
+				stateField.setConfiguration(stateFieldConfig);
+				stateField.createField();
+				innerPanel.add(stateField);
+				innerPanel.setCellHorizontalAlignment(stateField,HorizontalPanel.ALIGN_CENTER);
+
+			} else if(fieldName.equals(TIME_PICKER)) {
+				DateTimeField dateTimeField = new DateTimeField();
+				dateTimeField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.Full_Time));
+				dateTimeField.createField();
+				innerPanel.add(dateTimeField);
+				innerPanel.setCellHorizontalAlignment(dateTimeField,HorizontalPanel.ALIGN_CENTER);
+
+			} else if(fieldName.equals(TIME_PICKER_HOUR)) {
+				DateTimeField dateTimeShortHoursField = new DateTimeField();
+				dateTimeShortHoursField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.SHORT_HOURS));
+				dateTimeShortHoursField.createField();
+				innerPanel.add(dateTimeShortHoursField);
+				innerPanel.setCellHorizontalAlignment(dateTimeShortHoursField,HorizontalPanel.ALIGN_CENTER);
+
+			} else if(fieldName.equals(TIME_PICKER_MINUTE)) {
+				DateTimeField dateTimeShortMinuteField = new DateTimeField();
+				dateTimeShortMinuteField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.SHORT_MINUTE));
+				dateTimeShortMinuteField.createField();
+				innerPanel.add(dateTimeShortMinuteField);
+				innerPanel.setCellHorizontalAlignment(dateTimeShortMinuteField,HorizontalPanel.ALIGN_CENTER);
+
+			} else if(fieldName.equals(TIME_PICKER_SEC)) {
+				DateTimeField dateTimeShortSecField = new DateTimeField();
+				dateTimeShortSecField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.SHORT_SECONDS));
+				dateTimeShortSecField.createField();
+				innerPanel.add(dateTimeShortSecField);
+				innerPanel.setCellHorizontalAlignment(dateTimeShortSecField,HorizontalPanel.ALIGN_CENTER);
+
+			} else if(fieldName.equals(DATE_PICKER)) {
+				DateTimeField dateField = new DateTimeField();
+				dateField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATEONLY,null));
+				dateField.createField();
+				innerPanel.add(dateField);
+				innerPanel.setCellHorizontalAlignment(dateField,HorizontalPanel.ALIGN_CENTER);
+
+			} else if(fieldName.equals(DATETIME_PICKER)) {
+				DateTimeField dateTimeOnlyField = new DateTimeField();
+				dateTimeOnlyField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATETIMEONLY,null));
+				dateTimeOnlyField.createField();
+				innerPanel.add(dateTimeOnlyField);
+				innerPanel.setCellHorizontalAlignment(dateTimeOnlyField,HorizontalPanel.ALIGN_CENTER);
+
+			} else if(fieldName.equals(LOCATIONSELECTOR)) {
+				if (Geolocation.isSupported()) {
+					Geolocation.getGeolocation().getCurrentPosition(new PositionCallback() {
+						
+						public void onSuccess(Position position) {
+							
+							Coordinates coords = position.getCoords();
+							LatLng latLng = new LatLng(coords.getLatitude(), coords.getLongitude());
+											
+							LocationHomeSelector homeSelector = new LocationHomeSelector();
+							homeSelector.setCoords(coords);
+							homeSelector.createUi();
+							innerPanel.add(homeSelector);
+							innerPanel.setCellHorizontalAlignment(homeSelector,HorizontalPanel.ALIGN_CENTER);
+
+						}
+
+						@Override
+						public void onFailure(com.google.code.gwt.geolocation.client.PositionError error) {
+							System.out.println(" "+error.getMessage());
+
+						}
+					});
+				}
+			} else if(fieldName.equals(NUMBERRANGE_SLIDER)) {
+				StateField numericRangeSlider = new StateField();
+				Configuration numericRangeSliderConfig = getNumericRangeSliderFieldConfiguration();
+				numericRangeSlider.setConfiguration(numericRangeSliderConfig);
+				numericRangeSlider.createField();
+				numericRangeSlider.setStylePrimaryName("mainPanel");
+				innerPanel.setWidth("100%");
+				innerPanel.add(numericRangeSlider);
+				innerPanel.setCellHorizontalAlignment(numericRangeSlider,HorizontalPanel.ALIGN_CENTER);
+
+			} else if(fieldName.equals(STRINGRANGE_SLIDER)) {
+				StateField stringRangeSlider = new StateField();
+				Configuration stringRangeSliderConfig = getStringRangeSliderFieldConfiguration();
+				stringRangeSlider.setConfiguration(stringRangeSliderConfig);
+				stringRangeSlider.createField();
+				stringRangeSlider.setStylePrimaryName("mainPanel");
+				innerPanel.setWidth("100%");
+				innerPanel.add(stringRangeSlider);
+				innerPanel.setCellHorizontalAlignment(stringRangeSlider,HorizontalPanel.ALIGN_CENTER);
+
+			} else if(fieldName.equals(SPINNERFIELD)) {
+				SpinnerWidget valueSpinner = new SpinnerWidget();
+				valueSpinner.createValueSpinner();
+				innerPanel.add(valueSpinner);
+				innerPanel.setCellHorizontalAlignment(valueSpinner,HorizontalPanel.ALIGN_CENTER);
+
+			} else if(fieldName.equals(SPINNERFIELD_PERCENT)) {
+				SpinnerWidget percentSpinner = new SpinnerWidget();
+				percentSpinner.createPercentSpinner();
+				innerPanel.add(percentSpinner);
+				innerPanel.setCellHorizontalAlignment(percentSpinner,HorizontalPanel.ALIGN_CENTER);
+
+			} else if(fieldName.equals(NUMBERFIELD)) {
+				NumberField numberField = new NumberField();
+				numberField.setFieldValue("3");
+				Configuration numberConfig = getNumberFieldConfiguration();
+				numberField.setConfiguration(numberConfig);
+				VerticalPanel numberFieldPanel = new VerticalPanel();
+				numberfieldErrorLabel = new Label("Only Numbers and not the characters are allowed");
+				numberFieldPanel.add(numberField);
+				numberFieldPanel.add(numberfieldErrorLabel);
+				numberfieldErrorLabel.setVisible(false);
+				numberfieldErrorLabel.setStylePrimaryName("errorLabel");
+				numberField.createField();
+				innerPanel.add(numberFieldPanel);
+				innerPanel.setCellHorizontalAlignment(numberFieldPanel,HorizontalPanel.ALIGN_CENTER);
+
+			} else if(fieldName.equals(MEDIA_UPLOAD)) {
+
+				innerPanel.add(loaderImage);
+				innerPanel.setCellHorizontalAlignment(loaderImage,HorizontalPanel.ALIGN_CENTER);
+				loaderImage.setVisible(true);	
+				addMediaUploaderField();
+			}
+		} catch (AppOpsException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public MediaAttachWidget createMediaField() {
+		MediaAttachWidget mediaWidget = new WebMediaAttachWidget();
+		mediaWidget.isFadeUpEffect(false);
+		mediaWidget.createUi();
+		mediaWidget.setVisible(true);
+		mediaWidget.setWidth("100%");
+		mediaWidget.createAttachmentUi();
+		mediaWidget.isMediaImageVisible(false);
+		mediaWidget.expand();
+		return mediaWidget;
+	}
+	
+	private void addMediaUploaderField() {
+		Map parameters = new HashMap();
+		parameters.put("emailId", "nitish@ensarm.com");
+		parameters.put("password", "nitish123");
+		
+		StandardAction action = new StandardAction(EntityList.class, "useraccount.LoginService.validateUser", parameters);
+		
+		DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+		DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+
+		ResponseActionContext actionContext = new ResponseActionContext();
+		actionContext.setEmbeddedAction(action);
+		
+		dispatch.executeContextAction(actionContext, new AsyncCallback<Result>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
+
+			@Override
+			public void onSuccess(Result result) {
+				innerPanel.clear();
+				Label mediaUploadLabel = new Label("Media Uploader");
+				MediaAttachWidget mediaAttachWidget = createMediaField();
+				innerPanel.add(mediaAttachWidget);
+				innerPanel.setCellHorizontalAlignment(mediaAttachWidget,HorizontalPanel.ALIGN_CENTER);
+			}
+		});
 	}
 }
