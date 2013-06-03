@@ -8,7 +8,10 @@ import in.appops.client.gwt.web.ui.search.SearchListSnippet;
 import in.appops.client.gwt.web.ui.search.SearchWidget;
 import in.appops.platform.core.entity.query.Query;
 
+import java.util.HashMap;
+
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -59,6 +62,24 @@ public class SearchEntryPoint implements EntryPoint,SearchEventHandler{
 			basePanel.setCellHorizontalAlignment(searchWidget, HorizontalPanel.ALIGN_CENTER);
 			basePanel.setCellHorizontalAlignment(searchListSnippet, HorizontalPanel.ALIGN_CENTER);
 			searchWidget.addStyleName("fadeInLeft");
+			
+			/**** For Appops Showcase *****/
+
+			String queryString = Window.Location.getQueryString();
+			
+			if(queryString != null  && queryString.contains("text=")) {
+				searchListSnippet.getResultDisplayer().clear();
+				searchListSnippet.getLoaderImage().setVisible(true);
+				String searchText = queryString.substring(queryString.indexOf("text=") + "text=".length() );
+				HashMap<String, Object> paramMap = new HashMap<String, Object>();
+				paramMap.put("searchChar", searchText);
+				
+				searchListModel.getQueryToBind().setQueryParameterMap(paramMap);
+				searchListModel.getEntityList(0);
+			}
+			/********************88*****/
+
+			
 			RootPanel.get().add(basePanel);
 		}
 		catch (Exception e) {
