@@ -58,6 +58,20 @@ public class DateTimePicker extends Composite implements FocusHandler{
 		popupPanel.addAutoHidePartner(textbox.getElement());
 		initWidget(textbox);
 		DOM.setStyleAttribute(textbox.getElement(), "width", "215px");
+		/*textbox.getElement().focus();*/
+		Date today = new Date();
+        String todayString  = DateTimeFormat.getFormat("dd-MM-yyyy").format(today);
+        //textbox.setText(todayString);
+        
+		String[] time=today.toString().split(" ");
+		String[] item=time[3].split(":");
+		lstHours.setSelectedIndex(Integer.parseInt(item[0]));
+		 lstMinutes.setSelectedIndex(Integer.parseInt(item[1]));
+		 lstSeconds.setSelectedIndex(Integer.parseInt(item[2]));
+		 String dateString = " "+lstHours.getValue(lstHours.getSelectedIndex())+":"+lstMinutes.getValue(lstMinutes.getSelectedIndex())+":"+lstSeconds.getValue(lstSeconds.getSelectedIndex());
+		 textbox.setText(todayString+dateString);
+		 currentDateTimeString = todayString+dateString;
+		 
 	}
 	
 	public VerticalPanel createDateTimePicker(){
