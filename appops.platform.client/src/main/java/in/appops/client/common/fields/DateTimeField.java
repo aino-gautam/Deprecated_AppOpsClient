@@ -76,6 +76,7 @@ public class DateTimeField extends Composite implements Field{
 					setCurrentField(dateOnlyPicker);
 				}else{
 					DateOnlyPicker dateOnlyPicker = new  DateOnlyPicker();
+					dateOnlyPicker.showPicker();
 					initWidget(dateOnlyPicker);
 					setCurrentField(dateOnlyPicker);
 				}

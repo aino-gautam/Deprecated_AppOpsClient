@@ -36,6 +36,8 @@ public class DateOnlyPicker extends Composite implements FocusHandler{
 		popupPanel.setWidget(createDateTimePicker());
 		popupPanel.addAutoHidePartner(textbox.getElement());
 		initWidget(textbox);
+		
+		
 	}
 
 	public VerticalPanel createDateTimePicker(){
@@ -93,5 +95,18 @@ public class DateOnlyPicker extends Composite implements FocusHandler{
 
 	public void setEntityType(String entityType) {
 		this.entityType = entityType;
+	}
+
+	public void showPicker() {
+		
+		Date today = new Date();
+        String todayString  = DateTimeFormat.getFormat("MM-dd-yyyy").format(today);
+        textbox.setText(todayString);
+       /* textbox.setCursorPos(todayString.length());
+        textbox.setFocus(true);
+		//popupPanel.setVisible(true);
+		popupPanel.showRelativeTo(textbox);
+		textbox.getElement().focus();*/
+		
 	}
 }
