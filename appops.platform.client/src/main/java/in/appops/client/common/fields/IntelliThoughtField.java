@@ -261,10 +261,9 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 			return;
     	}
     	if(keyCode == KeyCodes.KEY_ENTER){
-
+    		/** This needs to be removed and handling of enter needs to be fixed**/
+    		event.preventDefault();
 			if(linkedSuggestion.isShowing()){
-				event.preventDefault();
-				
 				IntelliThoughtSuggestion suggestion = linkedSuggestion.getCurrentSelection();
 				Entity selectedEnt = suggestion.getEntity();
 				collectSelectedSuggestion(selectedEnt);

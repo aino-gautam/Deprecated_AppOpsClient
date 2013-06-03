@@ -1,12 +1,16 @@
 package in.appops.client.common.fields;
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.CheckBoxSelectEvent;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 
-public class CheckboxField extends CheckBox implements Field{
+public class CheckboxField extends CheckBox implements Field,ClickHandler{
 
 	private Configuration configuration;
 	private String fieldValue;
@@ -17,6 +21,7 @@ public class CheckboxField extends CheckBox implements Field{
 	
 	public CheckboxField(){
 		super();
+		this.addClickHandler(this);
 	}
 	
 	@Override
@@ -71,5 +76,18 @@ public class CheckboxField extends CheckBox implements Field{
 	public void onFieldEvent(FieldEvent event) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void onClick(ClickEvent event) {
+		CheckBoxSelectEvent selectEvent = new CheckBoxSelectEvent();
+		selectEvent.setEventData(this);
+		boolean value = this.getValue();
+		if(value) {
+			selectEvent.setEventType(CheckBoxSelectEvent.SELECTED);
+		} else {
+			selectEvent.setEventType(CheckBoxSelectEvent.DESELECTED);
+		}
+		AppUtils.EVENT_BUS.fireEvent(selectEvent);
 	}
 }

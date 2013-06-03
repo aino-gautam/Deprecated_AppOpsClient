@@ -227,6 +227,13 @@
 			<version>1.1.1</version>
 		</dependency>
 		<!-- Mail dependencies-->
+		
+		<!-- Hibernate c3p0 connection pool -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>4.1.7.Final</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -262,7 +269,7 @@
 					<modules>
 						<module>in.appops.client.Client</module>
 						<module>in.appops.showcase.web.gwt.dragonwheel.dragonwheel</module>
-						<module>in.appops.showcase.web.gwt.fields.fields</module>
+						<module>in.appops.showcase.web.gwt.fields.fields</module> 
 						<module>in.appops.showcase.web.gwt.intellithought.IntelliThought</module>
 						<module>in.appops.showcase.web.gwt.wizardform.wizardform</module>
 						<module>in.appops.showcase.web.gwt.splash.splash</module>
@@ -274,6 +281,7 @@
 						<module>in.appops.showcase.web.gwt.messagehome.messagehome</module>
 						<module>in.appops.showcase.web.gwt.calendarHome.calendarHome</module>
 						<module>in.appops.showcase.web.gwt.chat.chat</module>
+						<module>in.appops.showcase.web.gwt.search.search</module>
 					</modules>
 				</configuration>
 			</plugin>
