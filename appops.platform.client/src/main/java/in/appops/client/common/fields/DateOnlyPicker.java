@@ -48,6 +48,8 @@ public class DateOnlyPicker extends Composite implements FocusHandler{
 		        String dateString = DateTimeFormat.getFormat("dd-MM-yyyy").format(date);
 		        textbox.setText(dateString);
 		        popupPanel.hide();
+		        
+		      if(entityType!=null){  
 		        if(entityType.equals("event")){
 			        FieldEvent fieldEvent = new FieldEvent();
 					fieldEvent.setEventType(FieldEvent.EVENTDATA);
@@ -59,6 +61,12 @@ public class DateOnlyPicker extends Composite implements FocusHandler{
 						fieldEvent.setEventData(date);	
 						AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, DateOnlyPicker.this);
 		        }
+		      }else{
+		    	  FieldEvent fieldEvent = new FieldEvent();
+					fieldEvent.setEventType(FieldEvent.DATEONLY);
+					fieldEvent.setEventData(date);	
+					AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, DateOnlyPicker.this);
+		      }
 		     }});
 		
 		vpBase.add(textbox);
@@ -102,11 +110,6 @@ public class DateOnlyPicker extends Composite implements FocusHandler{
 		Date today = new Date();
         String todayString  = DateTimeFormat.getFormat("MM-dd-yyyy").format(today);
         textbox.setText(todayString);
-       /* textbox.setCursorPos(todayString.length());
-        textbox.setFocus(true);
-		//popupPanel.setVisible(true);
-		popupPanel.showRelativeTo(textbox);
-		textbox.getElement().focus();*/
-		
+       
 	}
 }
