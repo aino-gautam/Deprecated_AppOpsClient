@@ -1,7 +1,6 @@
 package in.appops.client.common.fields;
 
 import in.appops.client.common.core.EntityReceiver;
-import in.appops.client.common.core.LocationProvider;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.core.entity.Entity;
@@ -11,7 +10,6 @@ import in.appops.platform.core.shared.Configuration;
 import java.util.List;
 
 import com.google.code.gwt.geolocation.client.Coordinates;
-import com.google.code.gwt.geolocation.client.Geolocation;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -40,7 +38,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.client.ui.Widget;
 
 public class LocationSelector extends Composite implements Field,EntityReceiver, ClickHandler {
@@ -218,6 +215,7 @@ public class LocationSelector extends Composite implements Field,EntityReceiver,
 		mapField.setMapHeight(getConfiguration().getPropertyByName(MAP_HEIGHT).toString());
 		mapField.setMapWidth(getConfiguration().getPropertyByName(MAP_WIDTH).toString());
 		mapField.setMapZoomParameter(Integer.parseInt(getConfiguration().getPropertyByName(MAP_ZOOM).toString()));
+		mapField.addHandle(this);
 		mapField.createMapUi();
 		mapField.getAddressAndSet(latLng);
 		
@@ -421,8 +419,10 @@ public class LocationSelector extends Composite implements Field,EntityReceiver,
 
 	@Override
 	public void onFieldEvent(FieldEvent event) {
-		// TODO Auto-generated method stub
-		
+		int eventType=event.getEventType();
+		if(eventType == FieldEvent.LOCATION_IN_MAP){
+			currentSelectedLocation=(String) event.getEventData();
+		}
 	}
 
 	public Entity getEntity() {
