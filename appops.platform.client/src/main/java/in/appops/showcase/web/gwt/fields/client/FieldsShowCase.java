@@ -15,8 +15,8 @@ import in.appops.client.common.fields.NumberField;
 import in.appops.client.common.fields.SpinnerField;
 import in.appops.client.common.fields.StateField;
 import in.appops.client.common.fields.TextField;
-import in.appops.client.common.fields.slider.field.NumericRangeSliderField;
-import in.appops.client.common.fields.slider.field.StringRangeSliderField;
+import in.appops.client.common.fields.slider.NumericRangeSliderFieldComponent;
+import in.appops.client.common.fields.slider.StringRangeSliderFieldComponent;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -125,24 +125,6 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		basePanel.setSpacing(20);
 		basePanel.setStylePrimaryName("fieldShowcaseBasePanel");
 		RootPanel.get().add(basePanel);
-	}
-	
-	private Configuration getStringRangeSliderFieldConfiguration() {
-		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(StateField.STATEFIELD_MODE, StateField.STATEFIELDMODE_ENUM);
-		configuration.setPropertyByName(StateField.STATEFIELD_TYPE, StateField.STATEFIELDTYPE_STRINGRANGE);
-		configuration.setPropertyByName(StringRangeSliderField.STRING_RANGESLIDER_OPTIONLIST, "Me,Private,Restricted,Public");
-		return configuration;
-	}
-	
-	private Configuration getNumericRangeSliderFieldConfiguration() {
-		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(StateField.STATEFIELD_MODE, StateField.STATEFIELDMODE_ENUM);
-		configuration.setPropertyByName(StateField.STATEFIELD_TYPE, StateField.STATEFIELDTYPE_NUMERICRANGE);
-		configuration.setPropertyByName(NumericRangeSliderField.NUMERIC_RANGESLIDER_MAXVALUE, 500d);
-		configuration.setPropertyByName(NumericRangeSliderField.NUMERIC_RANGESLIDER_MINVALUE, 100d);
-		configuration.setPropertyByName(NumericRangeSliderField.NUMERIC_RANGESLIDER_STEPVALUE, 100d);
-		return configuration;
 	}
 	
 	private Configuration getDateTimeFieldConfiguration(String modeSelection,String datetimefieldTimeonly, String modeTimeValue) {
@@ -407,24 +389,18 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 					});
 				}
 			} else if(fieldName.equals(NUMBERRANGE_SLIDER)) {
-				StateField numericRangeSlider = new StateField();
-				Configuration numericRangeSliderConfig = getNumericRangeSliderFieldConfiguration();
-				numericRangeSlider.setConfiguration(numericRangeSliderConfig);
-				numericRangeSlider.createField();
-				numericRangeSlider.setStylePrimaryName("mainPanel");
+				NumericRangeSliderFieldComponent numericRangeSliderFieldComponent = new NumericRangeSliderFieldComponent();
+				numericRangeSliderFieldComponent.creatUI();
 				innerPanel.setWidth("100%");
-				innerPanel.add(numericRangeSlider);
-				innerPanel.setCellHorizontalAlignment(numericRangeSlider,HorizontalPanel.ALIGN_CENTER);
+				innerPanel.add(numericRangeSliderFieldComponent);
+				innerPanel.setCellHorizontalAlignment(numericRangeSliderFieldComponent, HorizontalPanel.ALIGN_CENTER);
 
 			} else if(fieldName.equals(STRINGRANGE_SLIDER)) {
-				StateField stringRangeSlider = new StateField();
-				Configuration stringRangeSliderConfig = getStringRangeSliderFieldConfiguration();
-				stringRangeSlider.setConfiguration(stringRangeSliderConfig);
-				stringRangeSlider.createField();
-				stringRangeSlider.setStylePrimaryName("mainPanel");
+				StringRangeSliderFieldComponent stringRangeSliderFieldComponent = new StringRangeSliderFieldComponent();
+				stringRangeSliderFieldComponent.creatUI();
 				innerPanel.setWidth("100%");
-				innerPanel.add(stringRangeSlider);
-				innerPanel.setCellHorizontalAlignment(stringRangeSlider,HorizontalPanel.ALIGN_CENTER);
+				innerPanel.add(stringRangeSliderFieldComponent);
+				innerPanel.setCellHorizontalAlignment(stringRangeSliderFieldComponent, HorizontalPanel.ALIGN_CENTER);
 
 			} else if(fieldName.equals(SPINNERFIELD)) {
 				SpinnerWidget valueSpinner = new SpinnerWidget();

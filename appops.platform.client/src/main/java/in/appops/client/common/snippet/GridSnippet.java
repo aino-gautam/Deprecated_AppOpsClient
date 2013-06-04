@@ -51,6 +51,8 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 	private LabelField noMoreResultLabel;
 	private Long maxResult = 0L;
 	
+	private EntityList totalEntities = null;
+	
 	public GridSnippet() {
 		initWidget(basePanel);
 	}
@@ -63,6 +65,7 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 
 	@Override
 	public void initialize(){
+		basePanel.clear();
 		loader = new Loader();
 		loader.createLoader();
 		loader.setVisible(true);
@@ -136,6 +139,7 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 	
 	@SuppressWarnings("unused")
 	private void initializeGridPanel(EntityList entityList){
+		totalEntities = entityList;
 		
 		SnippetFactory snippetFactory = getSnippetFactory();
 
@@ -343,17 +347,30 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 		
 		if(checked){
 			entitySelectionModel.selectCurrentEntityList();
-			
-			for(int i=0;i<currentRow ;i++){
-				CardSnippet snippet = (CardSnippet) gridPanel.getWidget(i, 0);
-				snippet.selectSnippet();
+			int index = 0;
+			for (int row = 0; row < noOfRows; row++) {
+				for (int col = 0; col < noOfCols; col++) {
+					if (index < totalEntities.size()) {
+						CardSnippet snippet = (CardSnippet) gridPanel.getWidget(row, col);
+						snippet.selectSnippet();
+						index++;
+					}else
+						break;
+				}
 			}
 		}else{
 			entitySelectionModel.clearSelection();
-			
-			for(int i=0;i<currentRow ;i++){
-				CardSnippet snippet = (CardSnippet) gridPanel.getWidget(i, 0);
-				snippet.deSelectSnippet();
+			int index = 0;
+			for (int row = 0; row < noOfRows; row++) {
+				for (int col = 0; col < noOfCols; col++) {
+					if (index < totalEntities.size()) {
+						CardSnippet snippet = (CardSnippet) gridPanel.getWidget(row, col);
+						snippet.deSelectSnippet();
+						index++;
+					}else
+						break;
+										
+				}
 			}
 		}
 	}

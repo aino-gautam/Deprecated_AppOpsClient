@@ -90,19 +90,6 @@ public class StringRangeSliderField extends Composite implements Field{
 			}
 		});
 
-		stringRangeSlider.addMouseUpHandler(new MouseUpHandler() {
-			@Override
-			public void onMouseUp(MouseUpEvent arg0) {
-				String selectedSettingStr = listOfOption.get(((int)stringRangeSlider.getCurrentValue())-1);
-				System.out.println("Selected Mode: "+selectedSettingStr);
-				
-				FieldEvent fieldEvent = new FieldEvent();
-				fieldEvent.setEventType(FieldEvent.EDITINITIATED);
-				fieldEvent.setEventData(selectedSettingStr);
-				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
-			}
-		});
-
 		verticalPanel.setSpacing(10);
 		verticalPanel.add(stringRangeSlider);
 	}
