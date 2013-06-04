@@ -73,6 +73,7 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 
 	@Override
 	public void initialize(){
+		basepanel.clear();
 		loader = new Loader();
 		loader.createLoader();
 		loader.setVisible(true);
