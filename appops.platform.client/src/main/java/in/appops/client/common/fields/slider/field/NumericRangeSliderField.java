@@ -9,8 +9,6 @@ import in.appops.platform.core.util.AppOpsException;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.user.client.DOM;
@@ -95,18 +93,8 @@ public class NumericRangeSliderField extends Composite implements Field{
 				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 			}
 		});
-
-		numericRngeSlider.addMouseUpHandler(new MouseUpHandler() {
-			@Override
-			public void onMouseUp(MouseUpEvent arg0) {
-				System.out.println("Selected Range: "+numericRngeSlider.getCurrentValue());
-				FieldEvent fieldEvent = new FieldEvent();
-				fieldEvent.setEventType(FieldEvent.EDITINITIATED);
-				fieldEvent.setEventData(numericRngeSlider.getCurrentValue());
-				
-				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
-			}
-		});
+		
+		verticalPanel.setSpacing(10);
 		verticalPanel.add(numericRngeSlider);
 	}
 
