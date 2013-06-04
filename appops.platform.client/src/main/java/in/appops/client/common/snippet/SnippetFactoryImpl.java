@@ -67,7 +67,8 @@ public class SnippetFactoryImpl implements SnippetFactory {
 					PostViewSnippet postViewSnippet = new PostViewSnippet();
 					return postViewSnippet;
 				}else if(typename.equals("Contact")){
-					ContactSnippet contactSnippet = new ContactSnippet();
+					//ContactSnippet contactSnippet = new ContactSnippet();
+					UserListSnippet contactSnippet = new UserListSnippet();
 					return contactSnippet;
 				}else if(typename.equals("Message")){
 					MessageWithUserSnippet messageWithUserSnippet = new MessageWithUserSnippet();
