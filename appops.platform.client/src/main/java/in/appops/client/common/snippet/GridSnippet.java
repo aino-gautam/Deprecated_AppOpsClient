@@ -25,13 +25,13 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class GridSnippet extends Composite implements Snippet, EntityListReceiver,ScrollHandler,SelectionEventHandler,ClickHandler {
 
-	private HorizontalPanel basePanel = new HorizontalPanel();
+	private VerticalPanel basePanel = new VerticalPanel();
 	private FlexTable gridPanel;
 	private ScrollPanel scrollPanel ;
 	private EntityList entityList;
@@ -40,7 +40,6 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 	private EntityListModel entityListModel;
 	private int currentScrollPosition=0;
 	private int lastScrollPosition;
-	private int currentRow = 0;
 	private int currentStartIndex = 0;
 	private Entity entity;
 	private String type;
@@ -50,6 +49,11 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 	private Loader loader = null;
 	private LabelField noMoreResultLabel;
 	private Long maxResult = 0L;
+	public static final String SNIPPETTYPE = "snippetType";
+	public static final String GRIDPANELCSS = "gridPanelCss";
+	public static final String SCROLLPANELWIDTH = "scrollPanelWidth";
+	public static final String SCROLLPANELHEIGHT = "scrollPanelHeight";
+	public static final String SCROLLPANELCSS = "scrollPanelCss";
 	
 	private EntityList totalEntities = null;
 	
@@ -70,8 +74,69 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 		loader.createLoader();
 		loader.setVisible(true);
 		basePanel.add(loader);
-		basePanel.setCellHorizontalAlignment(loader, HasAlignment.ALIGN_LEFT);
+		basePanel.setCellHorizontalAlignment(loader, HasAlignment.ALIGN_CENTER);
 		basePanel.setCellVerticalAlignment(loader, HasVerticalAlignment.ALIGN_TOP);
+		
+		gridPanel = new FlexTable();
+		scrollPanel = new ScrollPanel(gridPanel);
+		gridPanel.setCellSpacing(10);
+		gridPanel.setCellPadding(2);
+				
+		if(getConfiguration()!=null){
+			if(getConfiguration().getPropertyByName(NOOFCOLUMNS)!=null){
+				noOfCols = (Integer)getConfiguration().getPropertyByName(NOOFCOLUMNS);
+			}
+			
+			String listPanelCss = getConfiguration().getPropertyByName(GRIDPANELCSS);
+			String scrollPanelCss = getConfiguration().getPropertyByName(SCROLLPANELCSS);
+			
+			if(listPanelCss != null) {
+				gridPanel.setStylePrimaryName(listPanelCss);
+				setStylePrimaryName(listPanelCss);
+			}
+
+			if(scrollPanelCss != null) {
+				scrollPanel.setStylePrimaryName(scrollPanelCss);
+			}
+			
+			if(getConfiguration().getPropertyByName(SCROLLPANELWIDTH) != null)
+				scrollPanel.setWidth(getConfiguration().getPropertyByName(SCROLLPANELWIDTH) + "px");
+			else{
+				int width = Window.getClientWidth() - 100;
+				scrollPanel.setWidth(width + "px");
+			}
+			
+			if(getConfiguration().getPropertyByName(SCROLLPANELHEIGHT) != null)
+				scrollPanel.setHeight(getConfiguration().getPropertyByName(SCROLLPANELHEIGHT) + "px");
+			else{
+				int height = Window.getClientHeight() - 120;
+				scrollPanel.setHeight(height + "px");
+			}
+		}else{
+			gridPanel.setStylePrimaryName("listComponentPanel");
+			setStylePrimaryName("listComponentPanel");
+			int height = Window.getClientHeight() - 160;
+			int width = Window.getClientWidth() - 100;
+			scrollPanel.setHeight(height + "px");
+			scrollPanel.setWidth(width + "px");
+		}
+		
+				
+		if (getConfiguration() != null && entityListModel instanceof EntitySelectionModel) {
+			if (getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE) != null) {
+				if ((Boolean) getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)) {
+					selectAllCheckboxField = new CheckBox("Select All");
+					selectAllCheckboxField.setChecked(false);
+					selectAllCheckboxField.addClickHandler(this);
+					basePanel.add(selectAllCheckboxField);
+					basePanel.setCellHorizontalAlignment(selectAllCheckboxField, HasAlignment.ALIGN_LEFT);
+				}
+			}
+		}
+		
+		basePanel.add(scrollPanel);
+		basePanel.setCellHorizontalAlignment(scrollPanel, HasAlignment.ALIGN_CENTER);
+		scrollPanel.addScrollHandler(this);
 		
 		noMoreResultLabel = new LabelField();
 		Configuration labelConfig = getLabelFieldConfiguration(true, "noMoreResultlabel", null, null);
@@ -85,39 +150,7 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 		basePanel.add(noMoreResultLabel);
 		
 		basePanel.setCellHorizontalAlignment(noMoreResultLabel, HasAlignment.ALIGN_CENTER);
-		basePanel.setCellVerticalAlignment(noMoreResultLabel, HasVerticalAlignment.ALIGN_TOP);
-		
-		int height = Window.getClientHeight() - 120;
-		int width = Window.getClientWidth() - 100;
-		
-		if(getConfiguration()!=null){
-			if(getConfiguration().getPropertyByName(NOOFCOLUMNS)!=null){
-				noOfCols = (Integer)getConfiguration().getPropertyByName(NOOFCOLUMNS);
-			}
-		}
-		
-		gridPanel = new FlexTable();
-				
-		gridPanel.setCellSpacing(10);
-		gridPanel.setCellPadding(2);
-
-		scrollPanel = new ScrollPanel(gridPanel);
-		
-		if (getConfiguration() != null && entityListModel instanceof EntitySelectionModel) {
-			if (getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE) != null) {
-				if ((Boolean) getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)) {
-					selectAllCheckboxField = new CheckBox("Select All");
-					selectAllCheckboxField.setChecked(false);
-					selectAllCheckboxField.addClickHandler(this);
-					basePanel.add(selectAllCheckboxField);
-					basePanel.setCellHorizontalAlignment(selectAllCheckboxField, HasAlignment.ALIGN_RIGHT);
-				}
-			}
-		}
-		
-		basePanel.add(scrollPanel);
-		
-		scrollPanel.addScrollHandler(this);
+		basePanel.setCellVerticalAlignment(noMoreResultLabel, HasVerticalAlignment.ALIGN_BOTTOM);
 		
 		basePanel.setStylePrimaryName("gridListPanel");
 		
@@ -160,7 +193,7 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 					break;
 				}
 			}
-			currentRow++;
+			
 		}
 	}
 	
@@ -217,7 +250,8 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 			if(entityList.isEmpty()){
 				noMoreResultLabel.setText("No result(s)");
 			}else{
-				maxResult = entityList.getMaxResult();
+				if(maxResult==0)
+					maxResult = entityList.getMaxResult();
 				initializeGridPanel(entityList);
 			}
 		}
