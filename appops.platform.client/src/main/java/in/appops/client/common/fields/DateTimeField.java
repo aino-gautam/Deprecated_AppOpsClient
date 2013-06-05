@@ -2,6 +2,7 @@ package in.appops.client.common.fields;
 
 import java.util.Date;
 
+import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
@@ -103,10 +104,20 @@ public class DateTimeField extends Composite implements Field{
 				initWidget(timePicker);
 				setCurrentField(timePicker);
 			}else if(fieldType.equalsIgnoreCase(DATETIMEFIELD_DATETIMEONLY)){
-				DateTimePicker dateTimePicker = new DateTimePicker();
-				dateTimePicker.addHandle(this);
-				initWidget(dateTimePicker);
-				setCurrentField(dateTimePicker);
+				if(getConfiguration().getPropertyByName(EVENTTYPE)!=null){
+					String entityType = getConfiguration().getPropertyByName(EVENTTYPE);
+					DateTimePicker dateTimePicker = new DateTimePicker();
+					dateTimePicker.setEntityType(entityType);
+					dateTimePicker.addHandle(handler);
+					initWidget(dateTimePicker);
+					setCurrentField(dateTimePicker);
+				}else{
+					DateTimePicker dateTimePicker = new DateTimePicker();
+					dateTimePicker.addHandle(this);
+					initWidget(dateTimePicker);
+					setCurrentField(dateTimePicker);
+					
+				}
 			}
 		}
 	}
@@ -140,6 +151,10 @@ public class DateTimeField extends Composite implements Field{
 			timeOnlyValue=(String) event.getEventData();
 		}else if(type == FieldEvent.DATETIMEONLY){
 			dateTimeOnlyValue = (String) event.getEventData();
+			FieldEvent fieldEvent = new FieldEvent();
+			fieldEvent.setEventType(FieldEvent.DATETIMEONLY);
+			fieldEvent.setEventData(dateTimeOnlyValue);	
+			AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, DateTimeField.this);
 		}else if(type == FieldEvent.DATEONLY){
 			dateOnlyValue = (Date) event.getEventData();
 		}
