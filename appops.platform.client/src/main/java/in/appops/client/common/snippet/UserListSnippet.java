@@ -49,16 +49,25 @@ public class UserListSnippet extends RowSnippet {
 		basePanel.addClickHandler(this);
 		
 		BlobDownloader downloader = new BlobDownloader();
-		String blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
-		String url = downloader.getIconDownloadURL(blobId);
+		
+		String url = null;
+		if(entity.getPropertyByName(ContactConstant.IMGBLOBID)!=null){
+			String blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
+			url = downloader.getIconDownloadURL(blobId);
+		}else{
+			url = "images/default_Icon.png";
+		}
+		
 		Configuration imageConfig = getImageFieldConfiguration(url, "defaultIcon");
 		Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 		setConfigurationForFields(labelConfig,imageConfig);
 		
 		if(entity!=null){
-			this.entity = entity;
-			String name = entity.getPropertyByName(ContactConstant.NAME).toString();
-			userName.setFieldValue(name);
+			if(entity.getPropertyByName(ContactConstant.NAME)!=null){
+				userName.setFieldValue(entity.getPropertyByName(ContactConstant.NAME).toString());
+			}else{
+				userName.setFieldValue(entity.getPropertyByName(ContactConstant.EMAILID).toString());
+			}
 			userName.resetField();
 		}
 		
