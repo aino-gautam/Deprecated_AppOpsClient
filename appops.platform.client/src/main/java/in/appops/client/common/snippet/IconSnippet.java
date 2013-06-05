@@ -23,7 +23,7 @@ public class IconSnippet extends HorizontalPanel implements Snippet {
 	public void initialize() {
 		String bloId = getEntity().getProperty(MediaConstant.BLOBID).getValue().toString();
 		BlobDownloader blobDownloader = new BlobDownloader();
-		iconImage = new Image(blobDownloader.getImageDownloadURL(bloId));
+		iconImage = new Image(blobDownloader.getIconDownloadURL(bloId));
 		iconImage.addStyleName("iconSnippetImage");
 		setStylePrimaryName("iconSnippetPanel");
 		add(iconImage);
