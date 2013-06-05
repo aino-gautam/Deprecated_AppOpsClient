@@ -13,7 +13,6 @@ import in.appops.platform.core.shared.Configuration;
 import java.util.Date;
 import java.util.HashMap;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
