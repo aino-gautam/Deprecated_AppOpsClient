@@ -120,6 +120,10 @@ public class DateTimePicker extends Composite implements FocusHandler{
 				 currentDateTimeString = dateString;
 				 DomEvent.fireNativeEvent(Document.get().createChangeEvent(),textbox);
 				 popupPanel.hide();
+				 FieldEvent fieldEvent = new FieldEvent();
+				 fieldEvent.setEventType(FieldEvent.DATETIMEONLY);
+				 fieldEvent.setEventData(dateString);	
+				 AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, DateTimePicker.this);
 			 }
 			    
 			 }
