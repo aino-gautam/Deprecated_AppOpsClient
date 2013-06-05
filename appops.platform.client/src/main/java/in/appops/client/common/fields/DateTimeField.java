@@ -2,6 +2,7 @@ package in.appops.client.common.fields;
 
 import java.util.Date;
 
+import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
@@ -39,6 +40,9 @@ public class DateTimeField extends Composite implements Field{
 	public static final String EVENTTYPE = "eventType";
 
 	private Widget currentField = null;
+	private String timeOnlyValue;
+	private String dateTimeOnlyValue;
+	private Date dateOnlyValue;
 	
 	public DateTimeField(){
 		
@@ -76,6 +80,7 @@ public class DateTimeField extends Composite implements Field{
 					setCurrentField(dateOnlyPicker);
 				}else{
 					DateOnlyPicker dateOnlyPicker = new  DateOnlyPicker();
+					dateOnlyPicker.addHandle(this);
 					dateOnlyPicker.showPicker();
 					initWidget(dateOnlyPicker);
 					setCurrentField(dateOnlyPicker);
@@ -85,23 +90,34 @@ public class DateTimeField extends Composite implements Field{
 				
 				if(getConfiguration().getPropertyByName(SHORT_HOURS)!=null){
 					timePicker = new TimePicker(SHORT_HOURS);
-					
+					timePicker.addHandle(this);
 				}else if(getConfiguration().getPropertyByName(SHORT_MINUTE)!=null){
 					timePicker = new TimePicker(SHORT_MINUTE);
-					
+					timePicker.addHandle(this);
 				}else if(getConfiguration().getPropertyByName(SHORT_SECONDS)!=null){
 					timePicker = new TimePicker(SHORT_SECONDS);
-					
+					timePicker.addHandle(this);
 				}else if(getConfiguration().getPropertyByName(Full_Time)!=null){
 					timePicker = new TimePicker(Full_Time);
-					
+					timePicker.addHandle(this);
 				}
 				initWidget(timePicker);
 				setCurrentField(timePicker);
 			}else if(fieldType.equalsIgnoreCase(DATETIMEFIELD_DATETIMEONLY)){
-				DateTimePicker dateTimePicker = new DateTimePicker();
-				initWidget(dateTimePicker);
-				setCurrentField(dateTimePicker);
+				if(getConfiguration().getPropertyByName(EVENTTYPE)!=null){
+					String entityType = getConfiguration().getPropertyByName(EVENTTYPE);
+					DateTimePicker dateTimePicker = new DateTimePicker();
+					dateTimePicker.setEntityType(entityType);
+					dateTimePicker.addHandle(handler);
+					initWidget(dateTimePicker);
+					setCurrentField(dateTimePicker);
+				}else{
+					DateTimePicker dateTimePicker = new DateTimePicker();
+					dateTimePicker.addHandle(this);
+					initWidget(dateTimePicker);
+					setCurrentField(dateTimePicker);
+					
+				}
 			}
 		}
 	}
@@ -130,8 +146,18 @@ public class DateTimeField extends Composite implements Field{
 
 	@Override
 	public void onFieldEvent(FieldEvent event) {
-		// TODO Auto-generated method stub
-		
+		int type = event.getEventType();
+		if(type == FieldEvent.TIMEONLY){
+			timeOnlyValue=(String) event.getEventData();
+		}else if(type == FieldEvent.DATETIMEONLY){
+			dateTimeOnlyValue = (String) event.getEventData();
+			FieldEvent fieldEvent = new FieldEvent();
+			fieldEvent.setEventType(FieldEvent.DATETIMEONLY);
+			fieldEvent.setEventData(dateTimeOnlyValue);	
+			AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, DateTimeField.this);
+		}else if(type == FieldEvent.DATEONLY){
+			dateOnlyValue = (Date) event.getEventData();
+		}
 	}
 
 	public Widget getCurrentField() {
@@ -148,5 +174,29 @@ public class DateTimeField extends Composite implements Field{
 
 	public void setHandler(FieldEventHandler handler) {
 		this.handler = handler;
+	}
+
+	public String getTimeOnlyValue() {
+		return timeOnlyValue;
+	}
+
+	public void setTimeOnlyValue(String timeOnlyValue) {
+		this.timeOnlyValue = timeOnlyValue;
+	}
+
+	public String getDateTimeOnlyValue() {
+		return dateTimeOnlyValue;
+	}
+
+	public void setDateTimeOnlyValue(String dateTimeOnlyValue) {
+		this.dateTimeOnlyValue = dateTimeOnlyValue;
+	}
+
+	public Date getDateOnlyValue() {
+		return dateOnlyValue;
+	}
+
+	public void setDateOnlyValue(Date dateOnlyValue) {
+		this.dateOnlyValue = dateOnlyValue;
 	}
 }
