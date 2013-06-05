@@ -52,7 +52,7 @@ public class DateTimePicker extends Composite implements FocusHandler{
 		textbox.addFocusHandler(this);
 		popupPanel=new PopupPanel(true);
 		popupPanel.setVisible(false);
-		popupPanel.setAnimationEnabled(true);
+
 		popupPanel.setAutoHideEnabled(true);
 		popupPanel.setWidget(createDateTimePicker());
 		popupPanel.addAutoHidePartner(textbox.getElement());
@@ -72,6 +72,8 @@ public class DateTimePicker extends Composite implements FocusHandler{
 		 textbox.setText(todayString+dateString);
 		 currentDateTimeString = todayString+dateString;
 		 
+		 
+		
 	}
 	
 	public VerticalPanel createDateTimePicker(){
@@ -104,7 +106,10 @@ public class DateTimePicker extends Composite implements FocusHandler{
 				currentDateTimeString = dateString;
 			    DomEvent.fireNativeEvent(Document.get().createChangeEvent(),textbox);
 			    popupPanel.hide();
-			    
+			    FieldEvent fieldEvent = new FieldEvent();
+				 fieldEvent.setEventType(FieldEvent.DATETIMEONLY);
+				 fieldEvent.setEventData(dateString);	
+				 AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, DateTimePicker.this);
 			   
 			    
 			 }
