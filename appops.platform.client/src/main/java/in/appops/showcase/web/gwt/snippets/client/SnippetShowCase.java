@@ -111,7 +111,7 @@ public class SnippetShowCase implements EntryPoint,ChangeHandler {
 
 		Query query = new Query();
 		query.setQueryName("getAllServices");
-		query.setListSize(15);
+		query.setListSize(9);
 					
 		final EntitySelectionModel entitySelectionModel = new EntitySelectionModel();
 		entitySelectionModel.setQueryToBind(query);
