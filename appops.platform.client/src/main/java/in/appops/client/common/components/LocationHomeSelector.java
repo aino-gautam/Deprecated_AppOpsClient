@@ -141,6 +141,7 @@ public class LocationHomeSelector extends Composite implements CheckBoxSelectEve
 			
 			doneButton = new Button("Apply");
 			doneButton.addClickHandler(this);
+			doneButton.setStylePrimaryName("appops-Button");
 			
 			mapModeTrueTable.setWidget(0, 0, mapWidthLabel);
 			mapModeTrueTable.setWidget(0, 2, widthMapTrueTextFieldTB);
@@ -196,6 +197,7 @@ public class LocationHomeSelector extends Composite implements CheckBoxSelectEve
 			
 			doneButton = new Button("Apply");
 			doneButton.addClickHandler(this);
+			doneButton.setStylePrimaryName("appops-Button");
 			
 			mapModeFalseTable.setWidget(0, 0, mapWidthLabel);
 			mapModeFalseTable.setWidget(0, 2, widthMapFalseTextFieldTB);
