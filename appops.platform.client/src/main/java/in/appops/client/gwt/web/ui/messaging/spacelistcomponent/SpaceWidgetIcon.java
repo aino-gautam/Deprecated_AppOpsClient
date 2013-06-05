@@ -3,20 +3,14 @@
  */
 package in.appops.client.gwt.web.ui.messaging.spacelistcomponent;
 
+import java.util.ArrayList;
+
 import in.appops.client.common.event.AppUtils;
-import in.appops.client.gwt.web.ui.messaging.atomosphereutil.RealTimeSyncEventSerializer;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEvent;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEventHandler;
 import in.appops.platform.core.entity.Entity;
-import in.appops.platform.core.entity.Key;
-import in.appops.platform.core.entity.broadcast.ChatEntity;
-import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.spacemanagement.constants.SpaceConstants;
 
-import org.atmosphere.gwt.client.AtmosphereClient;
-import org.atmosphere.gwt.client.AtmosphereGWTSerializer;
-
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
@@ -32,11 +26,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class SpaceWidgetIcon extends VerticalPanel implements MessengerEventHandler{
 	
 	private Entity spaceEntity;
-	
-	/**
-	 * parent reference to get to the messaging component and fire specific event.
-	 */
-	private SpaceListWidget parentSpaceListWidget;
 	
 	/**
 	 * The space entity is sent to it to create the space name and icon ui for 
@@ -57,31 +46,14 @@ public class SpaceWidgetIcon extends VerticalPanel implements MessengerEventHand
 				public void onClick(ClickEvent event) {
 					
 					removeStyleName("hightlightSnippet");
-					EntityList participantList = new EntityList();
-					participantList.add(parentSpaceListWidget.getParentMessagingComponent().getContactEntity());
-					
-					ChatEntity entity = new ChatEntity();
+				
 					String groupName = spaceNameAnchor.getHTML();
-					if(getParentSpaceListWidget().getParentMessagingComponent().getGrpMapEntityMap().get(groupName)==null){
-						entity.setParticipantEntity(participantList);
-						entity.setHeaderTitle(groupName);
-						entity.setSpaceEntity(spaceEntity);
-						entity.setIsGroupChat(true);
-
-						getParentSpaceListWidget().getParentMessagingComponent().startNewChat(entity);
-						
-						AtmosphereGWTSerializer serializer = (AtmosphereGWTSerializer) GWT.create(RealTimeSyncEventSerializer.class);
-						Key<Long> value = spaceEntity.getPropertyByName(SpaceConstants.ID);
-						String val =  value.getKeyValue().toString();
-						
-						String url = GWT.getHostPageBaseURL() + "gwtComet?entity_id="+val+"&is_space_type=true";
-						AtmosphereClient client = new AtmosphereClient(url,serializer, getParentSpaceListWidget().getParentMessagingComponent());
-						client.start();
-					}
-					else{
-						ChatEntity chatEnt = getParentSpaceListWidget().getParentMessagingComponent().getGrpMapEntityMap().get(groupName);
-						getParentSpaceListWidget().getParentMessagingComponent().startNewChat(chatEnt);
-					}
+					ArrayList<Object> dataMap = new ArrayList<Object>();
+					dataMap.add(groupName);
+					dataMap.add(spaceEntity);
+ 					MessengerEvent msgEvent = new MessengerEvent(MessengerEvent.STARTSPACECHAT, dataMap);
+					AppUtils.EVENT_BUS.fireEvent(msgEvent);
+					
 				}
 			});
 			
@@ -98,20 +70,6 @@ public class SpaceWidgetIcon extends VerticalPanel implements MessengerEventHand
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * @return the parentSpaceListWidget
-	 */
-	public SpaceListWidget getParentSpaceListWidget() {
-		return parentSpaceListWidget;
-	}
-
-	/**
-	 * @param parentSpaceListWidget the parentSpaceListWidget to set
-	 */
-	public void setParentSpaceListWidget(SpaceListWidget parentSpaceListWidget) {
-		this.parentSpaceListWidget = parentSpaceListWidget;
 	}
 
 	@Override

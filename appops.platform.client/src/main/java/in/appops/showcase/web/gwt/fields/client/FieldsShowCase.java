@@ -324,42 +324,42 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 
 			} else if(fieldName.equals(TIME_PICKER)) {
 				DateTimeField dateTimeField = new DateTimeField();
-				dateTimeField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.Full_Time));
+				dateTimeField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_VIEW,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.Full_Time));
 				dateTimeField.createField();
 				innerPanel.add(dateTimeField);
 				innerPanel.setCellHorizontalAlignment(dateTimeField,HorizontalPanel.ALIGN_CENTER);
 
 			} else if(fieldName.equals(TIME_PICKER_HOUR)) {
 				DateTimeField dateTimeShortHoursField = new DateTimeField();
-				dateTimeShortHoursField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.SHORT_HOURS));
+				dateTimeShortHoursField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_VIEW,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.SHORT_HOURS));
 				dateTimeShortHoursField.createField();
 				innerPanel.add(dateTimeShortHoursField);
 				innerPanel.setCellHorizontalAlignment(dateTimeShortHoursField,HorizontalPanel.ALIGN_CENTER);
 
 			} else if(fieldName.equals(TIME_PICKER_MINUTE)) {
 				DateTimeField dateTimeShortMinuteField = new DateTimeField();
-				dateTimeShortMinuteField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.SHORT_MINUTE));
+				dateTimeShortMinuteField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_VIEW,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.SHORT_MINUTE));
 				dateTimeShortMinuteField.createField();
 				innerPanel.add(dateTimeShortMinuteField);
 				innerPanel.setCellHorizontalAlignment(dateTimeShortMinuteField,HorizontalPanel.ALIGN_CENTER);
 
 			} else if(fieldName.equals(TIME_PICKER_SEC)) {
 				DateTimeField dateTimeShortSecField = new DateTimeField();
-				dateTimeShortSecField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.SHORT_SECONDS));
+				dateTimeShortSecField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_VIEW,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.SHORT_SECONDS));
 				dateTimeShortSecField.createField();
 				innerPanel.add(dateTimeShortSecField);
 				innerPanel.setCellHorizontalAlignment(dateTimeShortSecField,HorizontalPanel.ALIGN_CENTER);
 
 			} else if(fieldName.equals(DATE_PICKER)) {
 				DateTimeField dateField = new DateTimeField();
-				dateField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATEONLY,null));
+				dateField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_VIEW,DateTimeField.DATETIMEFIELD_DATEONLY,null));
 				dateField.createField();
 				innerPanel.add(dateField);
 				innerPanel.setCellHorizontalAlignment(dateField,HorizontalPanel.ALIGN_CENTER);
 
 			} else if(fieldName.equals(DATETIME_PICKER)) {
 				DateTimeField dateTimeOnlyField = new DateTimeField();
-				dateTimeOnlyField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATETIMEONLY,null));
+				dateTimeOnlyField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_VIEW,DateTimeField.DATETIMEFIELD_DATETIMEONLY,null));
 				dateTimeOnlyField.createField();
 				innerPanel.add(dateTimeOnlyField);
 				innerPanel.setCellHorizontalAlignment(dateTimeOnlyField,HorizontalPanel.ALIGN_CENTER);
