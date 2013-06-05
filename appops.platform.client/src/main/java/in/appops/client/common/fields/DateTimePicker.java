@@ -45,6 +45,7 @@ public class DateTimePicker extends Composite implements FocusHandler{
 	private Button btDone = new Button("Done");
 	private String currentDateTimeString;
 	private VerticalPanel   vpBase = new VerticalPanel();
+	private String entityType = null;
 	
 	public DateTimePicker(){
 		textbox=new TextBox();
@@ -99,6 +100,7 @@ public class DateTimePicker extends Composite implements FocusHandler{
 		btDone.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
+			 if(entityType!=null){  
 				String[] splitDate=textbox.getText().split(" ");
 				
 				String dateString = splitDate[0]+" "+lstHours.getValue(lstHours.getSelectedIndex())+":"+lstMinutes.getValue(lstMinutes.getSelectedIndex())+":"+lstSeconds.getValue(lstSeconds.getSelectedIndex());
@@ -107,10 +109,18 @@ public class DateTimePicker extends Composite implements FocusHandler{
 			    DomEvent.fireNativeEvent(Document.get().createChangeEvent(),textbox);
 			    popupPanel.hide();
 			    FieldEvent fieldEvent = new FieldEvent();
-				 fieldEvent.setEventType(FieldEvent.DATETIMEONLY);
-				 fieldEvent.setEventData(dateString);	
-				 AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, DateTimePicker.this);
-			   
+				fieldEvent.setEventType(FieldEvent.DATETIMEONLY);
+				fieldEvent.setEventData(dateString);	
+				AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, DateTimePicker.this);
+			 }else{
+				 String[] splitDate=textbox.getText().split(" ");
+					
+				 String dateString = splitDate[0]+" "+lstHours.getValue(lstHours.getSelectedIndex())+":"+lstMinutes.getValue(lstMinutes.getSelectedIndex())+":"+lstSeconds.getValue(lstSeconds.getSelectedIndex());
+				 textbox.setText(dateString);
+				 currentDateTimeString = dateString;
+				 DomEvent.fireNativeEvent(Document.get().createChangeEvent(),textbox);
+				 popupPanel.hide();
+			 }
 			    
 			 }
 			
@@ -176,6 +186,13 @@ public class DateTimePicker extends Composite implements FocusHandler{
 		this.textbox = textbox;
 	}
 
+	public String getEntityType() {
+		return entityType;
+	}
+
+	public void setEntityType(String entityType) {
+		this.entityType = entityType;
+	}
 	@Override
 	public void onFocus(FocusEvent event) {
 		Date today = new Date();

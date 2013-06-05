@@ -166,7 +166,7 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_server</artifactId>
-			<version>17.05.2013</version>
+			<version>05.06.2013</version>
 		</dependency>
 
 		<!-- This should be used when using a final version of the jar -->
@@ -281,7 +281,8 @@
 						<module>in.appops.showcase.web.gwt.messagehome.messagehome</module>
 						<module>in.appops.showcase.web.gwt.calendarHome.calendarHome</module>
 						<module>in.appops.showcase.web.gwt.chat.chat</module>
-						<module>in.appops.showcase.web.gwt.search.search</module>
+						<module>in.appops.showcase.web.gwt.search.search</module> 
+						<module>in.appops.showcase.web.gwt.snippets.snippets</module>
 					</modules>
 				</configuration>
 			</plugin>

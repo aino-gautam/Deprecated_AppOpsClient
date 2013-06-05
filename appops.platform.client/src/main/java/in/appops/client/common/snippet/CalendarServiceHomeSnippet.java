@@ -1,6 +1,7 @@
 package in.appops.client.common.snippet;
 
 import in.appops.client.common.components.CalendarEvents;
+import in.appops.client.common.components.CalendarReminders;
 import in.appops.client.common.components.CreateCalendarEntryScreen;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.fields.Field;
@@ -60,6 +61,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 	private LabelField reminderLabelField;
 	private CreateCalendarEntryScreen calendarEntryScreen ;
 	private ReminderListSnippet reminderListSnippet;
+	private CalendarReminders calendarReminders;
 	private Button createEntityButton ;
 	private Entity userEntity;
 	private CalendarEvents calendarEvents ;
@@ -99,8 +101,8 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 			calendarEvents.addHandle(this);
 			calendarEvents.createUi();
 			
-			reminderListSnippet = new ReminderListSnippet();
-			
+			//reminderListSnippet = new ReminderListSnippet();
+			calendarReminders = new CalendarReminders();
 			preSelectedTab();			
 			mainPanel.add(createHeaderPanel());
 			
@@ -330,8 +332,11 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 				quickEventLabelField.removeStyleName("calendarHomeTabSelected");
 				reminderLabelField.setStylePrimaryName("flowPanelContent");
 				reminderLabelField.addStyleName("calendarHomeTabSelected");
-				reminderListSnippet.initialize();
-				childPanel.add(reminderListSnippet);
+				calendarReminders.createUi();
+				
+				//reminderListSnippet.initialize();
+				//childPanel.add(reminderListSnippet);
+				childPanel.add(calendarReminders);
 			}
 		}else if(sender instanceof Button){
 			
