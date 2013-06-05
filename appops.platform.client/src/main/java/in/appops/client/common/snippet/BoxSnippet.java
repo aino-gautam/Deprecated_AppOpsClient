@@ -20,7 +20,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -80,24 +79,26 @@ public class BoxSnippet extends Composite implements Snippet,ClickHandler{
 		
 		entityTitle.addClickHandler(this);
 		
-		LabelField spaceTypeLbl = new LabelField();
-		Entity spaceTypeEnt = getEntity().getPropertyByName(SpaceConstants.SPACETYPEID);
-		String spaceType = spaceTypeEnt.getPropertyByName(SpaceTypeConstants.NAME).toString();
-		
-		spaceTypeLbl.setFieldValue(spaceType);
-		spaceTypeLbl.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-		
-		try {
-			spaceTypeLbl.createField();
-		} catch (AppOpsException e) {
-	
-			e.printStackTrace();
-		}
-		
 		VerticalPanel spaceDetails = new VerticalPanel();
 		spaceDetails.add(entityTitle);
-		spaceDetails.add(spaceTypeLbl);
 		
+		LabelField spaceTypeLbl = new LabelField();
+		Entity spaceTypeEnt = getEntity().getPropertyByName(SpaceConstants.SPACETYPEID);
+		if(spaceTypeEnt!=null){
+			String spaceType = spaceTypeEnt.getPropertyByName(SpaceTypeConstants.NAME).toString();
+			spaceTypeLbl.setFieldValue(spaceType);
+			spaceTypeLbl.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
+			
+			try {
+				spaceTypeLbl.createField();
+			} catch (AppOpsException e) {
+		
+				e.printStackTrace();
+			}
+			
+			
+			spaceDetails.add(spaceTypeLbl);
+		}
 		
 		basePanel.add(icon);
 		basePanel.add(spaceDetails);
