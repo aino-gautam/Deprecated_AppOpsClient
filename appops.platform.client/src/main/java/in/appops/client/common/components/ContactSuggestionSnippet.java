@@ -7,19 +7,16 @@ import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.ImageField;
 import in.appops.client.common.fields.LabelField;
-import in.appops.client.common.gin.AppOpsGinjector;
-import in.appops.client.common.snippet.Snippet;
+import in.appops.client.common.snippet.SnippetConstant;
 import in.appops.client.common.snippet.SnippetFactory;
 import in.appops.client.common.util.BlobDownloader;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class ContactSuggestionSnippet  extends Composite implements EntityBound, ClickHandler{
@@ -40,7 +37,7 @@ public class ContactSuggestionSnippet  extends Composite implements EntityBound,
 	
 	public void createSuggestionSnippet(SnippetFactory snippetFactory) {
 		
-		final ContactSnippet snippet = (ContactSnippet)snippetFactory.getSnippetByEntityType(entity.getType(), null);
+		final ContactSnippet snippet = (ContactSnippet)snippetFactory.getSnippetByEntityType(null, SnippetConstant.CONTACTSNIPPET);
 	//	snippet.setEntity(entity);
 		//snippet.initialize(entity);
 		snippet.setSelectionAllowed(false);
