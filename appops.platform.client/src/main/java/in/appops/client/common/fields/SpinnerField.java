@@ -2,7 +2,6 @@ package in.appops.client.common.fields;
 
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
-import in.appops.client.common.event.ValueChangeEvent;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 
@@ -132,9 +131,9 @@ public class SpinnerField extends Composite implements Field, ClickHandler{
 
 	@Override
 	public void onClick(ClickEvent event) {
-		ValueChangeEvent valueEvent = new ValueChangeEvent();
-		valueEvent.setEventData(getValue());
-		valueEvent.setEventType(ValueChangeEvent.VALUECHANGED);
+		FieldEvent fieldEvent = new FieldEvent();
+		fieldEvent.setEventData(getValue());
+		fieldEvent.setEventType(FieldEvent.VALUECHANGED);
 		
 		if(event.getSource().equals(upArrowPanel)) {
 			if(fieldMode.equals(SPINNERFIELD_VALUESPINNER)) {
@@ -150,7 +149,7 @@ public class SpinnerField extends Composite implements Field, ClickHandler{
 			}
 		}
 		
-		AppUtils.EVENT_BUS.fireEvent(valueEvent);
+		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 	}
 
 	private void incrementCount() {
