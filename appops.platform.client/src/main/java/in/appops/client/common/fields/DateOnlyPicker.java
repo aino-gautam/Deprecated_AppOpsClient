@@ -64,7 +64,7 @@ public class DateOnlyPicker extends Composite implements FocusHandler{
 		      }else{
 		    	  FieldEvent fieldEvent = new FieldEvent();
 					fieldEvent.setEventType(FieldEvent.DATEONLY);
-					fieldEvent.setEventData(date);	
+					fieldEvent.setEventData(dateString);	
 					AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, DateOnlyPicker.this);
 		      }
 		     }});
