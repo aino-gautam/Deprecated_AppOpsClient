@@ -48,9 +48,20 @@ public class ContactSuggestionSnippet  extends Composite implements EntityBound,
 		snippet.setWidth("100%");
 		BlobDownloader downloader = new BlobDownloader();
 		//ContactSnippet contactSnippet = new ContactSnippet(false);
-		String blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
-		String url = downloader.getIconDownloadURL(blobId);
-		Configuration imageConfig = getImageFieldConfiguration(url, "defaultIcon");
+		Configuration imageConfig =null;
+		if(entity.getPropertyByName(ContactConstant.IMGBLOBID)!=null){
+			String blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
+			String url = downloader.getIconDownloadURL(blobId);
+			imageConfig = getImageFieldConfiguration(url, "defaultIcon");
+		}else{
+			imageConfig = getImageFieldConfiguration("images/default_Icon.png", "defaultIcon");
+		}
+		//String blobId = null;
+		/*if(entity.getPropertyByName(ContactConstant.IMGBLOBID)!=null)
+		  blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
+		
+		 String url = downloader.getIconDownloadURL(blobId);
+		Configuration imageConfig = getImageFieldConfiguration(url, "defaultIcon");*/
 		Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 		snippet.setConfigurationForFields(labelConfig, imageConfig);
 		snippet.initialize(entity);
