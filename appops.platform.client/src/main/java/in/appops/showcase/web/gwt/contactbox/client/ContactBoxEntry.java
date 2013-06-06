@@ -80,7 +80,7 @@ public class ContactBoxEntry implements EntryPoint{
 						Entity entity = new Entity();
 					    entity.setType(new MetaType(TypeConstants.SPACE));
 				        Property<Serializable> property = new Property<Serializable>();
-				        Key<Serializable> key = new Key<Serializable>(5004L);
+				        Key<Serializable> key = new Key<Serializable>(5008L);
 				        property.setName(SpaceConstants.ID);
 				        property.setValue(key);
 				        entity.setProperty(property);
