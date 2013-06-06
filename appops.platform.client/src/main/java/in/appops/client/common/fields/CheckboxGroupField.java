@@ -1,7 +1,6 @@
 package in.appops.client.common.fields;
 
 import in.appops.client.common.event.AppUtils;
-import in.appops.client.common.event.CheckBoxSelectEvent;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -141,15 +140,15 @@ public class CheckboxGroupField extends Composite implements Field{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				CheckBoxSelectEvent selectEvent = new CheckBoxSelectEvent();
-				selectEvent.setEventData(checkBox);
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventData(checkBox);
 				boolean value = checkBox.getValue();
 				if(value) {
-					selectEvent.setEventType(CheckBoxSelectEvent.SELECTED);
+					fieldEvent.setEventType(FieldEvent.CHECKBOX_SELECT);
 				} else {
-					selectEvent.setEventType(CheckBoxSelectEvent.DESELECTED);
+					fieldEvent.setEventType(FieldEvent.CHECKBOX_DESELECT);
 				}
-				AppUtils.EVENT_BUS.fireEvent(selectEvent);
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 			}
 		});
 	}

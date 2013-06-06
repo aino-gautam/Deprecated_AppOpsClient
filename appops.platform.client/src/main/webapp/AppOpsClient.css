@@ -1340,3 +1340,10 @@ height: 15px;
 .fieldShowcaseBasePanel{
 	margin-left: 20px;
 }
+.selectModeListbox{
+	margin-left: 40px;
+	margin-bottom: 10px;
+}
+.previewButton{
+	margin-top: 10px;
+}

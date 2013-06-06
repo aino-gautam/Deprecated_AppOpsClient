@@ -1,8 +1,8 @@
 package in.appops.showcase.web.gwt.fields.client;
 
 import in.appops.client.common.event.AppUtils;
-import in.appops.client.common.event.CheckBoxSelectEvent;
-import in.appops.client.common.event.handlers.CheckBoxSelectEventHandler;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.CheckboxField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.platform.core.shared.Configuration;
@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
-public class CheckboxWidget extends Composite implements CheckBoxSelectEventHandler{
+public class CheckboxWidget extends Composite implements FieldEventHandler{
 
 	private HorizontalPanel basePanel;
 	private CheckboxField checkboxfield;
@@ -22,7 +22,7 @@ public class CheckboxWidget extends Composite implements CheckBoxSelectEventHand
 		initialize();
 		createUI();
 		initWidget(basePanel);
-		AppUtils.EVENT_BUS.addHandler(CheckBoxSelectEvent.TYPE, this);
+		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 	}
 
 	private void createUI() {
@@ -71,10 +71,10 @@ public class CheckboxWidget extends Composite implements CheckBoxSelectEventHand
 	}
 
 	@Override
-	public void onSelect(CheckBoxSelectEvent event) {
+	public void onFieldEvent(FieldEvent event) {
 		int eventType = event.getEventType();
 		switch (eventType) {
-		case CheckBoxSelectEvent.SELECTED: {
+		case FieldEvent.CHECKBOX_SELECT: {
 			CheckBox checkbox = (CheckBox) event.getEventData();
 			if(checkbox.equals(checkboxfield)) {
 				notifyLabel.setFieldValue("(Selected)");
@@ -82,7 +82,7 @@ public class CheckboxWidget extends Composite implements CheckBoxSelectEventHand
 			}
 			break;
 		}
-		case CheckBoxSelectEvent.DESELECTED: {
+		case FieldEvent.CHECKBOX_DESELECT: {
 			CheckBox checkbox = (CheckBox) event.getEventData();
 			if(checkbox.equals(checkboxfield)) {
 				notifyLabel.setFieldValue("(Not selected)");
