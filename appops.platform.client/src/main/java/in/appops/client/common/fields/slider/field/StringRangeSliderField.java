@@ -15,6 +15,7 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -45,6 +46,8 @@ public class StringRangeSliderField extends Composite implements Field{
 	public void createField() throws AppOpsException {
 		
 		final VerticalPanel verticalPanel = new VerticalPanel();
+		initWidget(verticalPanel);
+		
 		final ArrayList<String> listOfOption = getOptionListFromConfig();
 		
 		final StringRangeSlider stringRangeSlider = new StringRangeSlider(1, listOfOption.size());
@@ -54,6 +57,12 @@ public class StringRangeSliderField extends Composite implements Field{
 		stringRangeSlider.setCurrentValue(1);
 		stringRangeSlider.setNumLabels(listOfOption.size()-1);
 
+		int widhtMultiplier = listOfOption.size();
+		if(widhtMultiplier>5){
+			widhtMultiplier = 100 + (widhtMultiplier * 8);
+			DOM.setElementAttribute(getElement(), "width", widhtMultiplier+"%");
+		}else
+			setStylePrimaryName("mainPanel");
 		stringRangeSlider.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent arg0) {
@@ -81,23 +90,8 @@ public class StringRangeSliderField extends Composite implements Field{
 			}
 		});
 
-		stringRangeSlider.addMouseUpHandler(new MouseUpHandler() {
-			@Override
-			public void onMouseUp(MouseUpEvent arg0) {
-				String selectedSettingStr = listOfOption.get(((int)stringRangeSlider.getCurrentValue())-1);
-				System.out.println("Selected Mode: "+selectedSettingStr);
-				
-				FieldEvent fieldEvent = new FieldEvent();
-				fieldEvent.setEventType(FieldEvent.EDITINITIATED);
-				fieldEvent.setEventData(selectedSettingStr);
-				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
-			}
-		});
-
 		verticalPanel.setSpacing(10);
 		verticalPanel.add(stringRangeSlider);
-		verticalPanel.setStylePrimaryName("stringRangeSliderPanel");
-		initWidget(verticalPanel);
 	}
 
 	@Override

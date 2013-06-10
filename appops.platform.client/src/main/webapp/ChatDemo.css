@@ -1,0 +1,453 @@
+
+/* Space listing widget css */
+.a{
+	
+}
+
+.allSpacePanel{
+	margin: 0 25px 25px 0;
+}
+
+.baseChatListContainer {
+	width: 200px;
+	background: none repeat scroll 1px center #e7e7e7;
+	border: 1px solid #C0C0C0;
+	/* border-radius: 5px 0px 0px 5px; */
+	margin: 5px 0 5px 0;
+	height: 446px;
+}
+
+.enterNameLbl{
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 15px;
+	color: black;;
+	margin: 4px 10px;
+}
+
+.chatSpaceIcon{
+	width: 20px;
+	height: 20px;
+}
+
+.chatSpaceNameAnchor{
+	margin: 8px 0 0 16px !important;
+	color: #424242;
+	font-size: 14px;
+	font-family: 'Ubuntu', sans-serif;
+}
+
+.spaceWidgetIcon{
+	margin: 8px 0 0 16px;
+	padding: 5px;
+}
+
+.fullWidth{
+	width: 99%;	
+}
+
+.nearbyWidgetContainer{
+	margin: 8px 0 5px 21px;
+}
+
+/* Chat widget list css */
+
+.chatUserListWidget{
+   background: none repeat scroll 1px center #e7e7e7;
+	border: 1px solid #C0C0C0;
+	/* border-radius: 0px 5px 5px 0px; */
+}
+
+.chatUserSuggestionField{
+	margin: 10px;
+}
+
+.chatUserSuggestionBox {
+	background-image: url("images/searchIconLight.png");
+	background-position: 2% center;
+	background-repeat: no-repeat;
+	/* border: 1px solid #764560; */
+	border: 1px solid #DCDCDC;
+	color: gray;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 13px;
+	height: 16px;
+	margin: 5px 0;
+	padding: 5px;
+	text-indent: 18px;
+	width: 190px;
+}
+
+/* .allSpecificBtn {
+	background-image: url("images/buttonPupleBgNormal.png");
+	background-repeat: repeat;
+	border: 2px double white;
+	color: white;
+	height: 25px;
+	text-align: center;
+	width: 80px;
+	margin: 12px 20px 12px 0;
+	padding: 7px 0 0;
+	
+	border: 1px solid #DCDCDC;
+	border-radius: 3px;
+	box-shadow: 0px 1px 1px 0px #8F8C8C;
+	-webkit-box-shadow: 0px 1px 1px 0px #8F8C8C;
+	margin: 0px 20px 20px 0px;
+	padding: 7px 0 0;
+	width: 80px;
+	height: 21px;
+	color: #333;
+	font-family: 'Ubuntu', sans-serif;
+	text-align: center;
+	cursor: hand;
+	cursor: pointer;
+	
+	
+
+	background: rgb(237,237,237); Old browsers
+	background: -moz-linear-gradient(top,  rgba(237,237,237,1) 0%, rgba(229,229,229,1) 50%, rgba(206,206,206,1) 52%, rgba(178,178,178,1) 100%); FF3.6+
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(237,237,237,1)), color-stop(50%,rgba(229,229,229,1)), color-stop(52%,rgba(206,206,206,1)), color-stop(100%,rgba(178,178,178,1))); Chrome,Safari4+
+	background: -webkit-linear-gradient(top,  rgba(237,237,237,1) 0%,rgba(229,229,229,1) 50%,rgba(206,206,206,1) 52%,rgba(178,178,178,1) 100%); Chrome10+,Safari5.1+
+	background: -o-linear-gradient(top,  rgba(237,237,237,1) 0%,rgba(229,229,229,1) 50%,rgba(206,206,206,1) 52%,rgba(178,178,178,1) 100%); Opera 11.10+
+	background: -ms-linear-gradient(top,  rgba(237,237,237,1) 0%,rgba(229,229,229,1) 50%,rgba(206,206,206,1) 52%,rgba(178,178,178,1) 100%); IE10+
+	background: linear-gradient(to bottom,  rgba(237,237,237,1) 0%,rgba(229,229,229,1) 50%,rgba(206,206,206,1) 52%,rgba(178,178,178,1) 100%); W3C
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#b2b2b2',GradientType=0 ); IE6-9
+} */
+
+.chatUserListNxtPrevImg{
+	margin: 13px 10px;
+}
+
+/* chat textarea */
+.chatTextArea{
+    border: 2px groove #C0C0C0;
+    font-size: 14px;
+    margin: 10px 10px 0;
+    width:  94.5%;
+    height: 99%;
+    resize: none;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.chatDisplayerWidget{
+	border: 2px groove #C0C0C0;
+    margin: 5px 0 0 0px;
+    width: 95%;
+}
+
+.chatUserWidget {
+	border: 1px solid black;
+	background-color: #F5F6CE;
+	margin: 15px 10px;
+	padding: 5px;
+	border-radius: 4px;
+}
+
+.chatHeaderLabel{
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 20px;
+	/* color: #764560; */
+	color: #555;
+}
+
+.scrollHeightForChat{
+	height: 333px;
+}
+
+.messageChatToogle {
+	/* background-image: url("images/buttonPupleBgNormal.png");
+	background-repeat: repeat;
+	border: 2px double white;
+	color: white;
+	height: 25px;
+	text-align: center;
+	width: 80px;
+	padding: 8px 0 0;
+	border-radius: 5px; */
+	
+	border: 1px solid #DCDCDC;
+	border-radius: 3px;
+	box-shadow: 0px 1px 1px 0px #8F8C8C;
+	-webkit-box-shadow: 0px 1px 1px 0px #8F8C8C;
+	margin: 0px 0px 5px 0px;
+	padding: 8px 0 0;
+	width: 80px;
+	height: 21px;
+	color: #333;
+	font-family: 'Ubuntu', sans-serif;
+	text-align: center;
+	cursor: hand;
+	cursor: pointer;
+	
+	
+
+	background: rgb(237,237,237); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(237,237,237,1) 0%, rgba(229,229,229,1) 50%, rgba(206,206,206,1) 52%, rgba(178,178,178,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(237,237,237,1)), color-stop(50%,rgba(229,229,229,1)), color-stop(52%,rgba(206,206,206,1)), color-stop(100%,rgba(178,178,178,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(237,237,237,1) 0%,rgba(229,229,229,1) 50%,rgba(206,206,206,1) 52%,rgba(178,178,178,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(237,237,237,1) 0%,rgba(229,229,229,1) 50%,rgba(206,206,206,1) 52%,rgba(178,178,178,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(237,237,237,1) 0%,rgba(229,229,229,1) 50%,rgba(206,206,206,1) 52%,rgba(178,178,178,1) 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  rgba(237,237,237,1) 0%,rgba(229,229,229,1) 50%,rgba(206,206,206,1) 52%,rgba(178,178,178,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#b2b2b2',GradientType=0 ); /* IE6-9 */
+	
+}
+
+.actualChatContainer{
+	overflow:hidden;
+}
+
+.ScrollXAxis{
+	overflow: scroll; 
+}
+
+.closeChat{
+	cursor: pointer;
+	cursor: hand;
+}
+
+.userChattingLbl{
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 15px;
+	/* color: #764560; */
+	color: #555;
+	margin: 8px 20px;
+}
+
+.chatTextLbl{
+	border: 1px solid #dfdfdf;
+	border: 1px solid rgba(0, 0, 0, .18);
+	border-bottom-color: rgba(0, 0, 0, .29);
+	-webkit-border-radius: 4px;
+	-webkit-box-shadow: 0 1px 0 #dce0e6;
+	clear: both;
+	color: #3e454c;
+	float: right;
+	margin: 5px 5px 5px 0;
+	padding: 4px 5px 3px 6px;
+	position: relative;
+	text-shadow: rgba(255, 255, 255, .5) 0 1px 0;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 13px;
+}
+
+.chatRecievedLbl{
+	background-color: #DBEDFE;
+	background-image: -moz-linear-gradient(center bottom, #C7DEFE, #E7F1FE);
+}
+
+::-webkit-scrollbar { 
+	width: 7px; 
+	background-color: #FFFFFF; 
+} 
+ 
+::-webkit-scrollbar:HOVER { 
+	width: 7px; 
+	background-color: #FFFFFF; 
+} 
+ 
+/* Track */ 
+/*::-webkit-scrollbar-track { 
+    -webkit-box-shadow: inset 0 0 6px rgba (0,0,0,0.3); 
+}*/ 
+/* Handle */ 
+::-webkit-scrollbar-thumb { /*  background: rgba (153,153,153,1); */ 
+	background-color: grey; 
+	-moz-border-radius: 15px; 
+	-webkit-border-radius: 15px; 
+	border-radius: 15px; 
+} 
+ 
+::-webkit-scrollbar-thumb:window-inactive { 
+	/* background: rgba (153,153,153,0.1); */ 
+	background-color: #E6E6E6; 
+}
+
+.chatAlertPanel{
+	height:50px;
+	width:10px;
+	background-color:  gray;
+	z-index: 2;
+	margin-left: 1px;
+	outline: none;
+	cursor: pointer;
+	cursor: hand;
+}
+
+.mainUserListPanelExpand{
+	position:relative;
+	animation:mainUserListPanelExpand 2s;
+	-webkit-animation:mainUserListPanelExpand 2s; /* Safari and Chrome */
+}
+
+@keyframes mainUserListPanelExpand
+{
+0%   {left:-200px; top:61px;}
+100%  {left:0px; top:61px;}
+}
+
+@-webkit-keyframes mainUserListPanelExpand 
+{
+0%   {left:-200px; top:61px;}
+100%  {left:0px; top:61px;}
+}
+
+.flowPanelContent{
+	display: inline-block;
+	margin-top: 6px;
+}
+
+.contactIcon{
+	/* width: 28px;
+	background: #999999;
+	webkit-box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1);
+	moz-box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1);
+	box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1);
+	padding: 3px; */
+	border: 1px solid #A6A6A6;
+	border-radius: 2px 5px 2px 5px;
+	box-shadow: 3px 3px 3px #B0B0B0;
+	padding: 4px;
+	width: 28px;
+	z-index: 0;
+}
+
+.spaceListPanelExpand{
+	width: 200px;
+	position:relative;
+	animation:spaceListPanelExpand 2s;
+	-webkit-animation:spaceListPanelExpand 2s; /* Safari and Chrome */
+}
+
+@keyframes spaceListPanelExpand
+{
+0%   {left:100%; top:56px;}
+100%  {left:85.4%; top:56px;}
+}
+
+@-webkit-keyframes spaceListPanelExpand 
+{
+0%   {left:100%; top:56px;}
+100%  {left:85.4%; top:56px;}
+}
+
+.contactDisplayerBasePanel{
+    margin: 6px;
+    padding:8px 10px 4px 4px;
+}
+
+.contactDisplayerBasePanel:HOVER {
+	margin : 6px;
+	cursor:pointer;
+	padding:8px 10px 4px 4px;
+	border: 1px solid #dcdcdc;
+	box-shadow: 3px 3px 3px #c3c3c3;
+}
+
+
+.chatReceivedAlert{
+	animation:chatReceivedAlert 2s;
+	animation-iteration-count:infinite;
+	
+	-webkit-animation:chatReceivedAlert 2s; /* Safari and Chrome */
+	-webkit-animation-iteration-count:infinite; /*Safari and Chrome*/
+}
+
+@keyframes chatReceivedAlert
+{
+0%   {background:red;}
+50%  {background:#d3d3d3;}
+100% {background:gray;}
+}
+
+@-webkit-keyframes chatReceivedAlert /* Safari and Chrome */
+{
+0%   {background:red;}
+50%  {background:#d3d3d3;}
+100% {background:gray;}
+}
+
+.hightlightSnippet{
+	border: 1px solid red;
+}
+
+.chatHeaderPanel{
+	width: 100%;
+	background-color: #e7e7e7;
+	border-bottom: 1px solid #c0c0c0;
+	padding: 5px;
+}
+
+.spaceListTitle {
+	color: #333;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 18px;
+	margin-left: 8px;
+	margin-top: 5px;
+}
+
+/* login base ui */
+.mainChatLogin{
+	border: 1px solid #333;
+	background-color: #f2f2f2;
+	border-radius: 2px;
+	padding: 20px;
+}
+
+@-webkit-keyframes fadeInLeft {
+	0% {
+		opacity: 0;
+		-webkit-transform: translateX(-20px);
+	}
+	100% {
+		opacity: 1;
+		-webkit-transform: translateX(0);
+	}
+}
+@-moz-keyframes fadeInLeft {
+	0% {
+		opacity: 0;
+		-moz-transform: translateX(-20px);
+	}
+	100% {
+		opacity: 1;
+		-moz-transform: translateX(0);
+	}
+}
+@-ms-keyframes fadeInLeft {
+	0% {
+		opacity: 0;
+		-ms-transform: translateX(-20px);
+	}
+	100% {
+		opacity: 1;
+		-ms-transform: translateX(0);
+	}
+}
+@-o-keyframes fadeInLeft {
+	0% {
+		opacity: 0;
+		-o-transform: translateX(-20px);
+	}
+	100% {
+		opacity: 1;
+		-o-transform: translateX(0);
+	}
+}
+@keyframes fadeInLeft {
+	0% {
+		opacity: 0;
+		transform: translateX(-20px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+.fadeInLeft {
+	-webkit-animation-name: fadeInLeft;
+	-moz-animation-name: fadeInLeft;
+	-ms-animation-name: fadeInLeft;
+	-o-animation-name: fadeInLeft;
+	animation-name: fadeInLeft;
+}

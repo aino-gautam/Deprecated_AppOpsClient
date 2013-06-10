@@ -43,6 +43,9 @@ public class SnippetFactoryImpl implements SnippetFactory {
 				if(snippetType.equals(SnippetConstant.IMAGEUPLOAD)){
 					IconSnippet iconSnippet = new IconSnippet();
 					return iconSnippet;
+				}else if(snippetType.equals(SnippetConstant.CONTACTSNIPPET)){
+					ContactSnippet contactSnippet = new ContactSnippet();
+					return contactSnippet;
 				}
 
 			}else
@@ -67,7 +70,8 @@ public class SnippetFactoryImpl implements SnippetFactory {
 					PostViewSnippet postViewSnippet = new PostViewSnippet();
 					return postViewSnippet;
 				}else if(typename.equals("Contact")){
-					ContactSnippet contactSnippet = new ContactSnippet();
+					//ContactSnippet contactSnippet = new ContactSnippet();
+					UserListSnippet contactSnippet = new UserListSnippet();
 					return contactSnippet;
 				}else if(typename.equals("Message")){
 					MessageWithUserSnippet messageWithUserSnippet = new MessageWithUserSnippet();
@@ -75,6 +79,9 @@ public class SnippetFactoryImpl implements SnippetFactory {
 				}else if(typename.equals("Space")){
 					BoxSnippet spaceSnippet = new BoxSnippet();
 					return spaceSnippet;
+				}else if(typename.equals(TypeConstants.EVENT)){
+					EventSnippet eventSnippet = new EventSnippet();
+					return eventSnippet;
 				}else{
 					HomeSnippet homeSnippet = new HomeSnippet();
 					return homeSnippet;

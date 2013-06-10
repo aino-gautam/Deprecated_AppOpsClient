@@ -6,7 +6,6 @@ import in.appops.client.common.event.ActionEvent;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.AttachmentEvent;
 import in.appops.client.common.event.FieldEvent;
-import in.appops.client.common.event.SearchEvent;
 import in.appops.client.common.event.handlers.AttachmentEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.IntelliThoughtField;
@@ -32,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.json.client.JSONObject;
@@ -208,15 +208,25 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 
 	@Override
 	public void onClick(ClickEvent event) {
+		String text = intelliShareField.getText();
+
 		Widget source = (Widget) event.getSource();
 		if(source.equals(searchBasePanel)){
-			String text = intelliShareField.getText();
-			SearchEvent searchEvent = new SearchEvent(SearchEvent.SEARCHFIRED, text);
-			AppUtils.EVENT_BUS.fireEvent(searchEvent);
-		} else if(source.equals(messageBasePanel)){
-			ActionEvent actionEvent = getMessageActionEvent();
-			AppUtils.EVENT_BUS.fireEvent(actionEvent);
+/*			SearchEvent searchEvent = new SearchEvent(SearchEvent.SEARCHFIRED, text);
+			AppUtils.EVENT_BUS.fireEvent(searchEvent);*/
 
+			/**** For Appops Showcase *****/
+			if(!text.trim().equals("")) {
+				Window.open( GWT.getHostPageBaseURL() + "SearchWidgetDemo.html?text="+text.trim(), "right_frame", "");
+			}
+		} else if(source.equals(messageBasePanel)){
+//			ActionEvent actionEvent = getMessageActionEvent();
+//			AppUtils.EVENT_BUS.fireEvent(actionEvent);
+
+			/**** For Appops Showcase *****/
+			if(!text.trim().equals("")) {
+				Window.open( GWT.getHostPageBaseURL() + "contactbox.html?text="+text.trim(), "right_frame", "");
+			}
 		}
 	}
 
@@ -305,25 +315,33 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 			}
 			
 			public void onSuccess(Result<EntityList> result) {
-				EntityList  entityList =  result.getOperationResult();
-				suggestionAction.clearSuggestionPanel();
-				for(Entity entity : entityList ){
-					String widgetName = entity.getPropertyByName(ActionsConstant.NAME);
-					final ActionWidget actionWidget = new ActionWidget(ActionWidgetType.LABEL);
-					actionWidget.setWidgetText(widgetName);
-					actionWidget.setActionEntity(entity);
-					actionWidget.setConfiguration(getActionConfiguration());
-					actionWidget.createUi();
-					suggestionAction.addSuggestionAction(actionWidget);
-					actionWidget.addClickHandler(new ClickHandler() {
-						
-						@Override
-						public void onClick(ClickEvent event) {
-							ActionEvent actionEvent = getActionEvent(actionWidget);
-							actionWidget.fireEvent(actionEvent);
+				if(result != null) { 
+					EntityList  entityList =  result.getOperationResult();
+					suggestionAction.clearSuggestionPanel();
+					if(entityList != null && !entityList.isEmpty()) {
+						for(Entity entity : entityList ){
+							final String widgetName = entity.getPropertyByName(ActionsConstant.NAME);
+							final ActionWidget actionWidget = new ActionWidget(ActionWidgetType.LABEL);
+							actionWidget.setWidgetText(widgetName);
+							actionWidget.setActionEntity(entity);
+							actionWidget.setConfiguration(getActionConfiguration());
+							actionWidget.createUi();
+							suggestionAction.addSuggestionAction(actionWidget);
+							actionWidget.addClickHandler(new ClickHandler() {
+								
+								@Override
+								public void onClick(ClickEvent event) {
+	//								ActionEvent actionEvent = getActionEvent(actionWidget);
+	//								actionWidget.fireEvent(actionEvent);
+									
+									/**** For Appops Showcase *****/
+									appopsClientTransformWidget(widgetName);
+								}
+	
+							});
+							
 						}
-					});
-					
+					}
 				}
 			}
 		});
@@ -373,5 +391,16 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 		attachMediaField.setMediaAttachments(mediaList);
 		attachMediaField.setVisible(true);
 		setAttachedMediaField(true);
+	}
+	
+
+	/**** For Appops Showcase *****/
+	private void appopsClientTransformWidget(String widgetName) {
+		Widget displayWidget = null;
+		if(widgetName.equalsIgnoreCase("Photos")) {
+			Window.open( GWT.getHostPageBaseURL() + "dragonwheel.html", "right_frame", "");
+		} else if(widgetName.equalsIgnoreCase("Contacts")) {
+			Window.open( GWT.getHostPageBaseURL() + "contactselector.html", "right_frame", "");
+		}
 	}
 }

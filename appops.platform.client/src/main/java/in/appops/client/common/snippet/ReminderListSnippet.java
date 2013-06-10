@@ -2,7 +2,6 @@ package in.appops.client.common.snippet;
 
 import in.appops.client.common.core.EntityListModel;
 import in.appops.client.common.util.AppEnviornment;
-import in.appops.platform.core.constants.propertyconstants.UserConstants;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.query.Query;
@@ -10,7 +9,6 @@ import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.server.core.services.useraccount.constant.UserPojoConstant;
 
-import java.io.Serializable;
 import java.util.HashMap;
 
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -23,6 +21,10 @@ public class ReminderListSnippet extends VerticalPanel implements Snippet{
 	private Entity entity;
 	private Configuration configuration;
 	private Entity userEntity;
+	
+	public static String DEFAULT_LIST="defaultList";
+	public static String DATEBASED_LIST="dateBasedList";
+	public static String DATEBASED_LIST_VALUE="dateBasedListValue";
 	@Override
 	public Entity getEntity() {
 		// TODO Auto-generated method stub
@@ -50,25 +52,63 @@ public class ReminderListSnippet extends VerticalPanel implements Snippet{
 	@Override
 	public void initialize() {
 		     userEntity=AppEnviornment.getCurrentUser();
-		      // Property<Key<Long>> userIdProp = (Property<Key<Long>>) entity.getProperty(UserConstants.ID);
-				//initializeListForUser(userIdProp.getValue().getKeyValue());
-				
-				Configuration configuration = new Configuration();
-				configuration.setPropertyByName(SnippetConstant.SELECTIONMODE, false);
-				configuration.setPropertyByName(ListSnippet.SCROLLPANELWIDTH, 650);
-				configuration.setPropertyByName(ListSnippet.SCROLLPANELHEIGHT, 500);
-				setConfiguration(configuration);
-				
-				Entity usrEnt =  AppEnviornment.getCurrentUser();
-				Long userId = ((Key<Long>)usrEnt.getPropertyByName(UserPojoConstant.ID)).getKeyValue();
+		    /* Configuration configuration = new Configuration();
+			 configuration.setPropertyByName(SnippetConstant.SELECTIONMODE, false);
+			 configuration.setPropertyByName(ListSnippet.SCROLLPANELWIDTH, 650);
+			 configuration.setPropertyByName(ListSnippet.SCROLLPANELHEIGHT, 500);
+			 setConfiguration(configuration);*/
+						
+			Long userId = ((Key<Long>)userEntity.getPropertyByName(UserPojoConstant.ID)).getKeyValue();
+			
+			
+			if(getConfiguration().getPropertyByName(DEFAULT_LIST)!=null){
 				initializeListForUser(userId);
+			 }else if(getConfiguration().getPropertyByName(DATEBASED_LIST)!=null) {
+			    Object value = getConfiguration().getPropertyByName(DATEBASED_LIST_VALUE);
+			    initializeListForUserFromDate(userId,value);
+			 }
 				
-				/*Key<Serializable> key=(Key<Serializable>) userEntity.getProperty(UserConstants.ID).getValue();
-				Long userId = (Long) key.getKeyValue();
-				initializeListForUser(4);*/
 		
 	}
-     public void initializeListForUser(long userId) {
+     private void initializeListForUserFromDate(Long userId, Object value) {
+    	 clear();
+ 		Query query = new Query();
+ 		query.setQueryName("getAllReminderFromDate");
+ 		query.setListSize(10);
+ 			
+ 		HashMap<String, Object> queryParam = new HashMap<String, Object>();
+ 		queryParam.put("userId", userId);
+ 		queryParam.put("fromDate", value);
+ 		query.setQueryParameterMap(queryParam);
+ 		
+ 		
+ 		EntityListModel reminderListModel = new EntityListModel();
+ 		
+ 		reminderListModel.setOperationNameToBind("calendar.CalendarService.getEntityList");
+ 		reminderListModel.setQueryToBind(query);
+ 		reminderListModel.setNoOfEntities(0);
+ 						
+ 		listSnippet= new ListSnippet();
+ 		listSnippet.setEntityListModel(reminderListModel);
+ 		listSnippet.setConfiguration(getConfiguration());
+ 		listSnippet.initialize();
+ 		
+ 		Label headingLbl = new Label(" ______________________________________________________");
+ 		headingLbl.setStylePrimaryName("serviceHomeHeadingLabel");
+ 		add(headingLbl);
+ 		setCellHorizontalAlignment(headingLbl, HasHorizontalAlignment.ALIGN_CENTER);
+ 		
+ 		
+ 		/*Label headingLbl = new Label(" Calendar reminders for you ");
+ 		headingLbl.setStylePrimaryName("serviceHomeHeadingLabel");
+ 		add(headingLbl);
+ 		setCellHorizontalAlignment(headingLbl, HasHorizontalAlignment.ALIGN_CENTER);*/
+ 		add(listSnippet);
+ 		setCellHorizontalAlignment(listSnippet, HasHorizontalAlignment.ALIGN_CENTER);
+		
+	}
+
+	public void initializeListForUser(long userId) {
 		clear();
 		Query query = new Query();
 		query.setQueryName("getAllRemindersOfUser");
@@ -90,10 +130,16 @@ public class ReminderListSnippet extends VerticalPanel implements Snippet{
 		listSnippet.setConfiguration(getConfiguration());
 		listSnippet.initialize();
 		
-		Label headingLbl = new Label(" Calendar reminders for you ");
+		Label headingLbl = new Label(" ______________________________________________________");
 		headingLbl.setStylePrimaryName("serviceHomeHeadingLabel");
 		add(headingLbl);
 		setCellHorizontalAlignment(headingLbl, HasHorizontalAlignment.ALIGN_CENTER);
+		
+		
+		/*Label headingLbl = new Label(" Calendar reminders for you ");
+		headingLbl.setStylePrimaryName("serviceHomeHeadingLabel");
+		add(headingLbl);
+		setCellHorizontalAlignment(headingLbl, HasHorizontalAlignment.ALIGN_CENTER);*/
 		add(listSnippet);
 		setCellHorizontalAlignment(listSnippet, HasHorizontalAlignment.ALIGN_CENTER);
 		
