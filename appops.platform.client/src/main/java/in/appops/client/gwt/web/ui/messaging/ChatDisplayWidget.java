@@ -3,6 +3,8 @@
  */
 package in.appops.client.gwt.web.ui.messaging;
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.gwt.web.ui.messaging.event.MessengerEvent;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -33,7 +35,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class ChatDisplayWidget extends VerticalPanel /*implements AtmosphereListener*/{
 
-	//private AtmosphereClient client;
 	private final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 	
@@ -44,6 +45,7 @@ public class ChatDisplayWidget extends VerticalPanel /*implements AtmosphereList
 	 */
 	private VerticalPanel actualDisplayPanel;
 	private ScrollPanel actualDisplayScrollPanel;
+
 	/**
 	 * The header panel which will contain the message/chat toggle button ,
 	 * chat title and cross image to close the chat.
@@ -57,9 +59,6 @@ public class ChatDisplayWidget extends VerticalPanel /*implements AtmosphereList
 	private ChatEntity chatEntity;
 	
 	private Entity contactEntity;
-	
-	private MessagingComponent parentMessagingComponent;
-	
 	
 	public ChatDisplayWidget(){
 		initialize();
@@ -110,7 +109,8 @@ public class ChatDisplayWidget extends VerticalPanel /*implements AtmosphereList
 				@Override
 				public void onClick(ClickEvent event) {
 					String header = chatEntity.getHeaderTitle();
-					parentMessagingComponent.removeFromDisplayList(header);
+					MessengerEvent msgEvent = new MessengerEvent(MessengerEvent.ONCHATCLOSED, header);
+					AppUtils.EVENT_BUS.fireEvent(msgEvent);
 				}
 			});
 
@@ -302,61 +302,6 @@ public class ChatDisplayWidget extends VerticalPanel /*implements AtmosphereList
 		}
 	}
 
-//	@Override
-/*	public void onMessage(List<?> messages) {
-		System.out.println("Message....");
-
-			for(Object obj : messages) {
-				if(obj instanceof Serializable){
-					//RealTimeSyncEvent event = (RealTimeSyncEvent)obj;
-					
-					HashMap<Entity, Entity> recordMap = new HashMap<Entity, Entity>();
-					
-					Entity broadcastEntity = (Entity) obj;
-					
-					Entity userEnt = (Entity) broadcastEntity.getProperty(BroadcastConstant.CHATINITIATEDUSER);
-					Entity chatTextEntity = (Entity) broadcastEntity.getProperty(BroadcastConstant.CHATTEXTENTITY);
-					
-					recordMap.put(userEnt, chatTextEntity);
-					
-					Entity currentEntity = chatEntity.getUserEntity();
-					String curUserEmail = currentEntity.getPropertyByName(ContactConstant.EMAILID).toString().trim();
-					
-					String chtInitEmail = userEnt.getPropertyByName(ContactConstant.EMAILID).toString().trim();
-					
-					HashMap<Long, HashMap<Entity, Entity>> chatMap = getChatEntity().getChatRecordMap();
-					
-					if(chatMap == null){
-						chatMap = new HashMap<Long, HashMap<Entity, Entity>>();
-					}
-					
-					Integer count =  chatMap.size();
-					Long counter = Long.parseLong(count.toString());
-					
-					chatMap.put(counter,recordMap);
-					getChatEntity().setChatRecordMap(chatMap);
-					
-					if(!curUserEmail.equals(chtInitEmail)){
-						refreshChatUi(userEnt, chatTextEntity, true);
-					}
-				}
-			}
-	}*/
-
-	/**
-	 * @return the parentMessagingComponent
-	 */
-	public MessagingComponent getParentMessagingComponent() {
-		return parentMessagingComponent;
-	}
-
-	/**
-	 * @param parentMessagingComponent the parentMessagingComponent to set
-	 */
-	public void setParentMessagingComponent(MessagingComponent parentMessagingComponent) {
-		this.parentMessagingComponent = parentMessagingComponent;
-	}
-
 	public void setChatEntity(ChatEntity chatEntity) {
 		this.chatEntity = chatEntity;
 	}
@@ -364,18 +309,4 @@ public class ChatDisplayWidget extends VerticalPanel /*implements AtmosphereList
 	public void setContactEntity(Entity contactEntity) {
 		this.contactEntity = contactEntity;
 	}
-
-/*	*//**
-	 * @return the client
-	 *//*
-	public AtmosphereClient getClient() {
-		return client;
-	}
-
-	*//**
-	 * @param client the client to set
-	 *//*
-	public void setClient(AtmosphereClient client) {
-		this.client = client;
-	}*/
 }

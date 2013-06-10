@@ -1,5 +1,9 @@
 package in.appops.client.common.fields;
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
+
 import java.util.Date;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -34,7 +38,7 @@ public class TimePicker extends Composite implements FocusHandler, BlurHandler, 
 	private PopupPanel popupPanel;
 	private String value; 
 	private String timeMode;
-	
+	private FieldEventHandler handler;
 	
 	public TimePicker(String timeMode) {
 		this.timeMode = timeMode;
@@ -43,7 +47,7 @@ public class TimePicker extends Composite implements FocusHandler, BlurHandler, 
 		popupPanel.setWidget(createTimePickerPanel());
 		popupPanel.addAutoHidePartner(textBox.getElement());
 		initWidget(textBox);
-		
+		textBox.setStylePrimaryName("appops-TextField");
 		textBox.addFocusHandler(this);
 		textBox.addBlurHandler(this);
 		textBox.addClickHandler(this);
@@ -51,6 +55,21 @@ public class TimePicker extends Composite implements FocusHandler, BlurHandler, 
 		popupPanel.addCloseHandler(this);
 		
 		DOM.setStyleAttribute(textBox.getElement(), "width", "240px");
+		
+		if(timeMode.equals(DateTimeField.Full_Time)){
+			 value = hoursListBox.getItemText(hoursListBox.getSelectedIndex())+":"+ minListBox.getItemText(minListBox.getSelectedIndex())/*+":"+ secListBox.getItemText(secListBox.getSelectedIndex()*/;
+			 textBox.setText(value);
+			}else if(timeMode.equals(DateTimeField.SHORT_HOURS)){
+				 value = hoursListBox.getItemText(hoursListBox.getSelectedIndex());
+				 textBox.setText(value);
+			}else if(timeMode.equals(DateTimeField.SHORT_MINUTE)){
+				 value = minListBox.getItemText(minListBox.getSelectedIndex());
+				 textBox.setText(value);
+			}else if(timeMode.equals(DateTimeField.SHORT_SECONDS)){
+				value = secListBox.getItemText(secListBox.getSelectedIndex());
+				textBox.setText(value);
+			}
+		
 	}
 
 	private HorizontalPanel createTimePickerPanel() {
@@ -71,10 +90,10 @@ public class TimePicker extends Composite implements FocusHandler, BlurHandler, 
 			subHorizontalPanel.add(lblMinute);
 			lblMinute.setText("(mm):");
 			populateTimeListbox(minListBox,59,item[1]);
-			subHorizontalPanel.add(secListBox);
+			/*subHorizontalPanel.add(secListBox);
 			subHorizontalPanel.add(lblSecond);
 			lblSecond.setText("(ss)");
-			populateTimeListbox(secListBox,59,item[2]);
+			populateTimeListbox(secListBox,59,item[2]);*/
 		}else if(timeMode.equals(DateTimeField.SHORT_HOURS)){
 			subHorizontalPanel.add(hoursListBox);
 			subHorizontalPanel.add(lblHour);
@@ -102,17 +121,33 @@ public class TimePicker extends Composite implements FocusHandler, BlurHandler, 
 			@Override
 			public void onClick(ClickEvent event) {
 				if(timeMode.equals(DateTimeField.Full_Time)){
-				 value = hoursListBox.getItemText(hoursListBox.getSelectedIndex())+":"+ minListBox.getItemText(minListBox.getSelectedIndex())+":"+ secListBox.getItemText(secListBox.getSelectedIndex());
-				 textBox.setText(value);
+					 value = hoursListBox.getItemText(hoursListBox.getSelectedIndex())+":"+ minListBox.getItemText(minListBox.getSelectedIndex())/*+":"+ secListBox.getItemText(secListBox.getSelectedIndex())*/;
+					 textBox.setText(value);
+					 FieldEvent fieldEvent = new FieldEvent();
+					 fieldEvent.setEventType(FieldEvent.TIMEONLY);
+					 fieldEvent.setEventData(value);	
+					 AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, TimePicker.this);
 				}else if(timeMode.equals(DateTimeField.SHORT_HOURS)){
 					 value = hoursListBox.getItemText(hoursListBox.getSelectedIndex());
 					 textBox.setText(value);
+					 FieldEvent fieldEvent = new FieldEvent();
+					 fieldEvent.setEventType(FieldEvent.TIMEONLY);
+					 fieldEvent.setEventData(value);	
+					 AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, TimePicker.this);
 				}else if(timeMode.equals(DateTimeField.SHORT_MINUTE)){
 					 value = minListBox.getItemText(minListBox.getSelectedIndex());
 					 textBox.setText(value);
+					 FieldEvent fieldEvent = new FieldEvent();
+					 fieldEvent.setEventType(FieldEvent.TIMEONLY);
+					 fieldEvent.setEventData(value);	
+					 AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, TimePicker.this);
 				}else if(timeMode.equals(DateTimeField.SHORT_SECONDS)){
 					value = secListBox.getItemText(secListBox.getSelectedIndex());
 					textBox.setText(value);
+					FieldEvent fieldEvent = new FieldEvent();
+					 fieldEvent.setEventType(FieldEvent.TIMEONLY);
+					 fieldEvent.setEventData(value);	
+					 AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, TimePicker.this);
 				}
 				 hideTimePicker();
 			}
@@ -215,4 +250,8 @@ public class TimePicker extends Composite implements FocusHandler, BlurHandler, 
 		this.textBox = textBox;
 	}
 	
+	public void addHandle(FieldEventHandler handler) {
+		AppUtils.EVENT_BUS.addHandlerToSource(FieldEvent.TYPE, this, handler);
+		
+	}
 }

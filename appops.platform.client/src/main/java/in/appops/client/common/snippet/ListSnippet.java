@@ -26,7 +26,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -73,26 +72,13 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 
 	@Override
 	public void initialize(){
+		basepanel.clear();
 		loader = new Loader();
 		loader.createLoader();
 		loader.setVisible(true);
 		basepanel.add(loader);
 		basepanel.setCellHorizontalAlignment(loader, HasAlignment.ALIGN_CENTER);
 		basepanel.setCellVerticalAlignment(loader, HasVerticalAlignment.ALIGN_TOP);
-		
-		noMoreResultLabel = new LabelField();
-		Configuration labelConfig = getLabelFieldConfiguration(true, "noMoreResultlabel", null, null);
-		noMoreResultLabel.setConfiguration(labelConfig);
-		try {
-			noMoreResultLabel.createField();
-		} catch (AppOpsException e) {
-			e.printStackTrace();
-		}
-		
-		basepanel.add(noMoreResultLabel);
-		
-		basepanel.setCellHorizontalAlignment(noMoreResultLabel, HasAlignment.ALIGN_CENTER);
-		basepanel.setCellVerticalAlignment(noMoreResultLabel, HasVerticalAlignment.ALIGN_TOP);
 		
 		listPanel = new FlexTable();
 		scrollPanel = new ScrollPanel(listPanel);
@@ -108,8 +94,6 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 				}
 			}
 		}
-		
-		
 		
 		if(getConfiguration() != null){
 			String listPanelCss = getConfiguration().getPropertyByName(LISTPANELCSS);
@@ -150,6 +134,20 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 		basepanel.add(scrollPanel);
 		basepanel.setCellHorizontalAlignment(scrollPanel, HasAlignment.ALIGN_CENTER);
 		scrollPanel.addScrollHandler(this);
+		
+		noMoreResultLabel = new LabelField();
+		Configuration labelConfig = getLabelFieldConfiguration(true, "noMoreResultlabel", null, null);
+		noMoreResultLabel.setConfiguration(labelConfig);
+		try {
+			noMoreResultLabel.createField();
+		} catch (AppOpsException e) {
+			e.printStackTrace();
+		}
+		
+		basepanel.add(noMoreResultLabel);
+		
+		basepanel.setCellHorizontalAlignment(noMoreResultLabel, HasAlignment.ALIGN_CENTER);
+		basepanel.setCellVerticalAlignment(noMoreResultLabel, HasVerticalAlignment.ALIGN_BOTTOM);
 		
 		AppUtils.EVENT_BUS.addHandler(SelectionEvent.TYPE, this);
 		
@@ -239,7 +237,8 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 			if (entityList.isEmpty()){
 				noMoreResultLabel.setText("No result(s)");
 			}else{
-				maxResult = entityList.getMaxResult();
+				if(maxResult==0)
+					maxResult = entityList.getMaxResult();
 				initializeListPanel(entityList);
 			}
 		}
