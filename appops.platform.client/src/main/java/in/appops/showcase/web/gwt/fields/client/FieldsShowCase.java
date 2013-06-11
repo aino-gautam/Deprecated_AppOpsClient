@@ -57,8 +57,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	public static final String TEXTBOX = "Text Box";
 	public static final String PASSWORDTEXTBOX = "Password Textbox";
 	public static final String TEXTAREA = "Text Area";
-	public static final String CHECKBOXGROUPMULTISELECT = "CheckboxGroupField - MultiSelect";
-	public static final String CHECKBOXGROUPSINGLESELECT = "CheckboxGroupField - SingleSelect";
+	public static final String CHECKBOXGROUPMULTISELECT = "CheckboxGroupField";
 	public static final String CHECKBOXFIELD = "CheckboxField";
 	public static final String STATEFIELD = "StateField";
 	public static final String TIME_PICKER = "Time Picker";
@@ -71,7 +70,6 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	public static final String NUMBERRANGE_SLIDER = "NumericRangeSlider";
 	public static final String STRINGRANGE_SLIDER = "StringRangeSlider";
 	public static final String SPINNERFIELD = "SpinnerField";
-	public static final String SPINNERFIELD_PERCENT = "SpinnerField(Percent)";
 	public static final String NUMBERFIELD = "NumberField";
 	public static final String MEDIA_UPLOAD = "Media Uploader";
 	private Image loaderImage;
@@ -98,7 +96,6 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		listBox.addItem(PASSWORDTEXTBOX);
 		listBox.addItem(TEXTAREA);
 		listBox.addItem(CHECKBOXGROUPMULTISELECT);
-		listBox.addItem(CHECKBOXGROUPSINGLESELECT);
 		listBox.addItem(CHECKBOXFIELD);
 		listBox.addItem(STATEFIELD);
 		listBox.addItem(TIME_PICKER);
@@ -111,7 +108,6 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		listBox.addItem(NUMBERRANGE_SLIDER);
 		listBox.addItem(STRINGRANGE_SLIDER);
 		listBox.addItem(SPINNERFIELD);
-		listBox.addItem(SPINNERFIELD_PERCENT);
 		listBox.addItem(NUMBERFIELD);
 		listBox.addItem(MEDIA_UPLOAD);
 		
@@ -298,24 +294,13 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 
 			} else if(fieldName.equals(CHECKBOXGROUPMULTISELECT)) {
 				GroupCheckboxWidget multiSelectCheckbox = new GroupCheckboxWidget();
-				multiSelectCheckbox.createMultiSelectCheckbox();
 				innerPanel.add(multiSelectCheckbox);
 				innerPanel.setCellHorizontalAlignment(multiSelectCheckbox,HorizontalPanel.ALIGN_CENTER);
-
-			} else if(fieldName.equals(CHECKBOXGROUPSINGLESELECT)) {
-				GroupCheckboxWidget singleSelectCheckbox = new GroupCheckboxWidget();
-				singleSelectCheckbox.createSingleSelectCheckbox();
-				innerPanel.add(singleSelectCheckbox);
-				innerPanel.setCellHorizontalAlignment(singleSelectCheckbox,HorizontalPanel.ALIGN_CENTER);
-
 			} else if(fieldName.equals(CHECKBOXFIELD)) {
 				CheckboxWidget checkbox = new CheckboxWidget();
 				innerPanel.add(checkbox);
-				innerPanel.setCellHorizontalAlignment(checkbox,HorizontalPanel.ALIGN_CENTER);
-
 			} else if(fieldName.equals(STATEFIELD)) {
 				StateField stateField = new StateField();
-				//stateField.setFieldValue("Suggestion");
 				Configuration stateFieldConfig = getStateFieldConfiguration(StateField.STATEFIELDMODE_SUGGESTIVE, "getSpaceTypesWithName", "spacemanagement.SpaceManagementService.getEntityList", SpaceTypeConstants.NAME);
 				stateField.setConfiguration(stateFieldConfig);
 				stateField.createField();
@@ -404,16 +389,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 
 			} else if(fieldName.equals(SPINNERFIELD)) {
 				SpinnerWidget valueSpinner = new SpinnerWidget();
-				valueSpinner.createValueSpinner();
 				innerPanel.add(valueSpinner);
-				innerPanel.setCellHorizontalAlignment(valueSpinner,HorizontalPanel.ALIGN_CENTER);
-
-			} else if(fieldName.equals(SPINNERFIELD_PERCENT)) {
-				SpinnerWidget percentSpinner = new SpinnerWidget();
-				percentSpinner.createPercentSpinner();
-				innerPanel.add(percentSpinner);
-				innerPanel.setCellHorizontalAlignment(percentSpinner,HorizontalPanel.ALIGN_CENTER);
-
 			} else if(fieldName.equals(NUMBERFIELD)) {
 				NumberField numberField = new NumberField();
 				numberField.setFieldValue("3");
@@ -427,7 +403,6 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				numberfieldErrorLabel.setStylePrimaryName("errorLabel");
 				numberField.createField();
 				innerPanel.add(numberFieldPanel);
-				innerPanel.setCellHorizontalAlignment(numberFieldPanel,HorizontalPanel.ALIGN_CENTER);
 
 			} else if(fieldName.equals(MEDIA_UPLOAD)) {
 
