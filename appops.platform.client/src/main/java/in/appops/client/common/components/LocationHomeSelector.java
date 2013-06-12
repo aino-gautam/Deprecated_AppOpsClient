@@ -1,8 +1,8 @@
 package in.appops.client.common.components;
 
 import in.appops.client.common.event.AppUtils;
-import in.appops.client.common.event.CheckBoxSelectEvent;
-import in.appops.client.common.event.handlers.CheckBoxSelectEventHandler;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.CheckboxField;
 import in.appops.client.common.fields.CheckboxGroupField;
 import in.appops.client.common.fields.LabelField;
@@ -23,7 +23,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class LocationHomeSelector extends Composite implements CheckBoxSelectEventHandler,ClickHandler {
+public class LocationHomeSelector extends Composite implements FieldEventHandler,ClickHandler {
 
 	private VerticalPanel mainPanel;
 	private HorizontalPanel upperHorizontalPanel;
@@ -60,7 +60,7 @@ public class LocationHomeSelector extends Composite implements CheckBoxSelectEve
 		mapModeFalseTable = new FlexTable();
 		errorHorizontalPanel = new HorizontalPanel(); 
 		
-		AppUtils.EVENT_BUS.addHandler(CheckBoxSelectEvent.TYPE, this);
+		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 	}
 	
 	public void createUi(){
@@ -141,6 +141,7 @@ public class LocationHomeSelector extends Composite implements CheckBoxSelectEve
 			
 			doneButton = new Button("Apply");
 			doneButton.addClickHandler(this);
+			doneButton.setStylePrimaryName("appops-Button");
 			
 			mapModeTrueTable.setWidget(0, 0, mapWidthLabel);
 			mapModeTrueTable.setWidget(0, 2, widthMapTrueTextFieldTB);
@@ -196,6 +197,7 @@ public class LocationHomeSelector extends Composite implements CheckBoxSelectEve
 			
 			doneButton = new Button("Apply");
 			doneButton.addClickHandler(this);
+			doneButton.setStylePrimaryName("appops-Button");
 			
 			mapModeFalseTable.setWidget(0, 0, mapWidthLabel);
 			mapModeFalseTable.setWidget(0, 2, widthMapFalseTextFieldTB);
@@ -390,10 +392,10 @@ public class LocationHomeSelector extends Composite implements CheckBoxSelectEve
 	}
 
 	@Override
-	public void onSelect(CheckBoxSelectEvent event) {
+	public void onFieldEvent(FieldEvent event) {
 		int eventType = event.getEventType();
 		switch (eventType) {
-		case CheckBoxSelectEvent.SELECTED: {
+		case FieldEvent.CHECKBOX_SELECT: {
 			CheckBox checkbox = (CheckBox) event.getEventData();
 			 selectedFieldText = checkbox.getText();
 			if(selectedFieldText.equals("True map mode")) {
@@ -444,7 +446,7 @@ public class LocationHomeSelector extends Composite implements CheckBoxSelectEve
 			}
 			break;
 		}
-		case CheckBoxSelectEvent.DESELECTED: {
+		case FieldEvent.CHECKBOX_DESELECT: {
 			CheckBox checkbox = (CheckBox) event.getEventData();
 			String text = checkbox.getText();
 			if(text.equals("True map mode")) {
@@ -458,6 +460,5 @@ public class LocationHomeSelector extends Composite implements CheckBoxSelectEve
 		default:
 			break;
 		}
-		
 	}
 }
