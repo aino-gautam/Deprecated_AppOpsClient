@@ -7,6 +7,7 @@ import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.ImageField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.gin.AppOpsGinjector;
+import in.appops.client.common.snippet.SnippetConstant;
 import in.appops.client.common.snippet.SnippetFactory;
 import in.appops.client.common.util.AppEnviornment;
 import in.appops.client.common.util.BlobDownloader;
@@ -63,7 +64,7 @@ public class UserThreadWidget extends Composite implements EventListener,ClickHa
 	private void createUserSnippet(EntityList list) {
 		SnippetFactory snippetFactory = injector.getSnippetFactory();
 		for(final Entity entity:list){
-		   ContactSnippet snippet = (ContactSnippet)snippetFactory.getSnippetByEntityType(entity.getType(), null);
+		   ContactSnippet snippet = (ContactSnippet)snippetFactory.getSnippetByEntityType(null, SnippetConstant.CONTACTSNIPPET);
 		    HorizontalPanel horizontalPanel = new HorizontalPanel();
 			snippet.setSelectionAllowed(false);
 			

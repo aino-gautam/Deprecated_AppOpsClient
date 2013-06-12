@@ -35,7 +35,7 @@ public class UserListingComponent extends Composite{
 	}
 	
 	private void createUI() {
-		int height = Window.getClientHeight() - 361;
+		int height = Window.getClientHeight() - 200;
 		basePanel.setHeight(height + "px");
 		addScrollHandler();
 	}

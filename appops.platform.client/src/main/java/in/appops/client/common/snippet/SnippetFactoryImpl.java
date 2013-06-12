@@ -43,6 +43,9 @@ public class SnippetFactoryImpl implements SnippetFactory {
 				if(snippetType.equals(SnippetConstant.IMAGEUPLOAD)){
 					IconSnippet iconSnippet = new IconSnippet();
 					return iconSnippet;
+				}else if(snippetType.equals(SnippetConstant.CONTACTSNIPPET)){
+					ContactSnippet contactSnippet = new ContactSnippet();
+					return contactSnippet;
 				}
 
 			}else

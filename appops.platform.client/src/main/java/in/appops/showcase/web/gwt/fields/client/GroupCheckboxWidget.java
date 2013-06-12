@@ -13,6 +13,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class GroupCheckboxWidget extends Composite implements ClickHandler{
@@ -24,9 +26,17 @@ public class GroupCheckboxWidget extends Composite implements ClickHandler{
 	private Button viewRadiobuttonTicked;
 	private CheckboxGroupField singleSelectCheckboxGroupField;
 	private VerticalPanel radiobuttonDisplayPanel;
+	private ListBox modeListbox;
+	private ListBox basePanelListbox;
+	private String multiSelectMode = "CheckboxGroupField - MultiSelect";
+	private String singleSelectMode = "CheckboxGroupField - SingleSelect";
+	private String verticalBase = "Vertical Basepanel";
+	private String horizontalBase = "Horizontal Basepanel";
+	private Button preview;
 	
 	public GroupCheckboxWidget() {
 		initialize();
+		createUI();
 		initWidget(basePanel);
 	}
 	
@@ -34,12 +44,58 @@ public class GroupCheckboxWidget extends Composite implements ClickHandler{
 		basePanel = new VerticalPanel();
 		viewCheckboxticked = new Button("View tick items");
 		viewRadiobuttonTicked = new Button("View tick item");
+		modeListbox = new ListBox();
+		basePanelListbox = new ListBox();
+		preview = new Button("Preview");
 	}
 	
-	public void createMultiSelectCheckbox() {
+	public void createUI() {
 		try {
+			HorizontalPanel selectModePanel = new HorizontalPanel();
+			
+			LabelField modeLabel = new LabelField();
+			modeLabel.setFieldValue("Select mode");
+			modeLabel.setConfiguration(getLabelFieldConfiguration(true, "groupCheckboxTitle", null, null));
+			modeLabel.createField();
+			selectModePanel.add(modeLabel);
+			
+			modeListbox.addItem("--Select--");
+			modeListbox.addItem(multiSelectMode);
+			modeListbox.addItem(singleSelectMode);
+			selectModePanel.add(modeListbox);
+			modeListbox.setStylePrimaryName("selectModeListbox");
+			basePanel.add(selectModePanel);
+			selectModePanel.setWidth("100%");
+			
+			HorizontalPanel baseModePanel = new HorizontalPanel();
+			
+			LabelField selectBaseLabel = new LabelField();
+			selectBaseLabel.setFieldValue("Select base");
+			selectBaseLabel.setConfiguration(getLabelFieldConfiguration(true, "groupCheckboxTitle", null, null));
+			selectBaseLabel.createField();
+			baseModePanel.add(selectBaseLabel);
+			
+			basePanelListbox.addItem("--Select--");
+			basePanelListbox.addItem(verticalBase);
+			basePanelListbox.addItem(horizontalBase);
+			baseModePanel.add(basePanelListbox);
+			basePanel.add(baseModePanel);
+			baseModePanel.setWidth("100%");
+			
+			basePanel.add(preview);
+			preview.setStylePrimaryName("appops-Button");
+			preview.addStyleName("previewButton");
+			preview.addClickHandler(this);
+		} catch (AppOpsException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void createMultiSelectCheckbox(Configuration configuration) {
+		try {
+			basePanel.clear();
 			checkboxGroupField = new CheckboxGroupField();
-			Configuration configuration = getCheckboxGroupFieldConfiguration(CheckboxGroupField.CHECKBOX_MULTISELECT,CheckboxGroupField.CHECKBOX_VERTICALBASEPANEL);
+			//Configuration configuration = getCheckboxGroupFieldConfiguration(CheckboxGroupField.CHECKBOX_MULTISELECT,CheckboxGroupField.CHECKBOX_VERTICALBASEPANEL);
 			checkboxGroupField.setConfiguration(configuration);
 
 			groupCheckboxDisplayPanel = new VerticalPanel();
@@ -63,10 +119,11 @@ public class GroupCheckboxWidget extends Composite implements ClickHandler{
 		}
 	}
 	
-	public void createSingleSelectCheckbox() {
+	public void createSingleSelectCheckbox(Configuration singleSelectionConfiguration) {
 		try {
+			basePanel.clear();
 			singleSelectCheckboxGroupField = new CheckboxGroupField();
-			Configuration singleSelectionConfiguration = getCheckboxGroupFieldConfiguration(CheckboxGroupField.CHECKBOX_SINGLESELECT,CheckboxGroupField.CHECKBOX_VERTICALBASEPANEL);
+			//Configuration singleSelectionConfiguration = getCheckboxGroupFieldConfiguration(CheckboxGroupField.CHECKBOX_SINGLESELECT,CheckboxGroupField.CHECKBOX_VERTICALBASEPANEL);
 			singleSelectCheckboxGroupField.setConfiguration(singleSelectionConfiguration);
 
 			radiobuttonDisplayPanel = new VerticalPanel();
@@ -173,6 +230,28 @@ public class GroupCheckboxWidget extends Composite implements ClickHandler{
 				}
 			} catch (AppOpsException e) {
 				e.printStackTrace();
+			}
+		} else if(event.getSource().equals(preview)) {
+			int index = modeListbox.getSelectedIndex();
+			String mode = modeListbox.getValue(index);
+			
+			int count = basePanelListbox.getSelectedIndex();
+			String base = basePanelListbox.getValue(count);
+			String basePanel = null;
+			if(index > 0 && count > 0) {
+				if(base.equals(verticalBase)) {
+					basePanel = CheckboxGroupField.CHECKBOX_VERTICALBASEPANEL;
+				} else if(base.equals(horizontalBase)) {
+					basePanel = CheckboxGroupField.CHECKBOX_HORIZONTALBASEPANEL;
+				}
+				
+				if(mode.equals(multiSelectMode)) {
+					Configuration configuration = getCheckboxGroupFieldConfiguration(CheckboxGroupField.CHECKBOX_MULTISELECT, basePanel);
+					createMultiSelectCheckbox(configuration);
+				} else if(mode.equals(singleSelectMode)) {
+					Configuration configuration = getCheckboxGroupFieldConfiguration(CheckboxGroupField.CHECKBOX_SINGLESELECT, basePanel);
+					createSingleSelectCheckbox(configuration);
+				}
 			}
 		}
 	}

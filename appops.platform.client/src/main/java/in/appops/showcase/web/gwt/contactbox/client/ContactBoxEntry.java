@@ -80,7 +80,7 @@ public class ContactBoxEntry implements EntryPoint{
 						Entity entity = new Entity();
 					    entity.setType(new MetaType(TypeConstants.SPACE));
 				        Property<Serializable> property = new Property<Serializable>();
-				        Key<Serializable> key = new Key<Serializable>(5004L);
+				        Key<Serializable> key = new Key<Serializable>(5008L);
 				        property.setName(SpaceConstants.ID);
 				        property.setValue(key);
 				        entity.setProperty(property);
@@ -118,6 +118,7 @@ public class ContactBoxEntry implements EntryPoint{
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}*/
+						RootPanel.get().clear();
 						RootPanel.get().add(messageWidget);
 						RootPanel.get().setWidgetPosition(messageWidget, 200, 50);
 					}
