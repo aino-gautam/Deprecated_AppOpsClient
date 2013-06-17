@@ -17,6 +17,8 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -28,22 +30,30 @@ public class LinkedSuggestion extends PopupPanel implements Configurable, Entity
 	private EntityList entityList;
 	private int currentSelectedEntity;
 	private FieldEventHandler handler;
+	private Image loaderImage;
+
 	public LinkedSuggestion(boolean isAutoHide) {
 		super(isAutoHide);
 		initialize();
 		
+		loaderImage = new Image("images/opptinLoader.gif");
+		loaderImage.setStylePrimaryName("appops-intelliThoughtActionImage");
+		loaderImage.setVisible(false);
+		
 		basePanel.setWidth("100%");
 		focusPanel.setWidget(basePanel);
+		this.setStylePrimaryName("appops-intelliThoughtLinkedSuggestionPopup");
 		this.add(focusPanel);
 	}
 
 	private void initialize() {
 		focusPanel = new FocusPanel();
 		basePanel = new VerticalPanel();
-		basePanel.setBorderWidth(2);
 	}
 	
 	public void populateSuggestions(){
+		basePanel.clear();
+
 		for(Entity linkedEntity : entityList){
 			IntelliThoughtSuggestion suggestion = new IntelliThoughtSuggestion();
 			suggestion.setEntity(linkedEntity);
@@ -110,20 +120,16 @@ public class LinkedSuggestion extends PopupPanel implements Configurable, Entity
 		
 	}
 	
-	public void clearList(){
-		basePanel.clear();
-	}
-	
 	public void clearSelection(int index) {
 		if(index >= 0) {
 			Widget label = basePanel.getWidget(index);
-			label.removeStyleName("selectedItem");
+			label.removeStyleName("appops-intelliThoughtSuggestionSelection");
 		}
 	}
 	
 	public void setCurrentSelection(int index) {
 		Widget label = basePanel.getWidget(index);
-		label.setStylePrimaryName("selectedItem");
+		label.setStylePrimaryName("appops-intelliThoughtSuggestionSelection");
 	}
 	
 	public void doSelection(int keyCode){
@@ -151,9 +157,9 @@ public class LinkedSuggestion extends PopupPanel implements Configurable, Entity
 		this.setCurrentSelection(currentSelectedEntity);
 	}
 	
-	public String getCurrentSelection(){
+	public IntelliThoughtSuggestion getCurrentSelection(){
 		IntelliThoughtSuggestion suggestion = (IntelliThoughtSuggestion)basePanel.getWidget(currentSelectedEntity);
-		return suggestion.getDisplayText();
+		return suggestion;
 	}
 	
 	public void setFocus(){
@@ -163,14 +169,16 @@ public class LinkedSuggestion extends PopupPanel implements Configurable, Entity
 
 	@Override
 	public void onMouseOut(MouseOutEvent event) {
-		IntelliThoughtSuggestion sugg = (IntelliThoughtSuggestion)event.getSource(); 
-		sugg.removeStyleName("selectedItem");
+//		IntelliThoughtSuggestion sugg = (IntelliThoughtSuggestion)event.getSource(); 
+//		sugg.removeStyleName("appops-intelliThoughtSuggestionSelection");
 	}
 
 	@Override
 	public void onMouseOver(MouseOverEvent event) {
 		IntelliThoughtSuggestion sugg = (IntelliThoughtSuggestion)event.getSource(); 
-		sugg.addStyleName("selectedItem");		
+		clearSelection(currentSelectedEntity);
+		sugg.addStyleName("appops-intelliThoughtSuggestionSelection");
+		this.currentSelectedEntity = basePanel.getWidgetIndex(sugg);
 	}
 	
 	public void addFieldEventHandler(FieldEventHandler handler){
@@ -185,6 +193,13 @@ public class LinkedSuggestion extends PopupPanel implements Configurable, Entity
 
 	public void addHandle(FieldEventHandler handler) {
 		this.handler = handler;
+	}
+
+	public void createUi() {
+		basePanel.clear();
+		basePanel.add(loaderImage);
+		basePanel.setCellHorizontalAlignment(loaderImage,HorizontalPanel.ALIGN_CENTER);
+		loaderImage.setVisible(true);		
 	}
 
 }

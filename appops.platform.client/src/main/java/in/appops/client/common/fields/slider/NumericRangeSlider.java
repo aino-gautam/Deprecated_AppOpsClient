@@ -249,7 +249,7 @@ public class NumericRangeSlider extends FocusPanel implements ResizableWidget{
 		if (labelFormatter != null) {
 			return labelFormatter.formatLabel(this, value);
 		} else {
-			return (int) (10 * value) / 10 + "";
+			return ((10 * value) / 10) + "";
 		}
 	}
 
@@ -306,7 +306,9 @@ public class NumericRangeSlider extends FocusPanel implements ResizableWidget{
 					labelElements.add(label);
 				}
 
-				double value = minValue + (getTotalRange() * i / numLabels);
+				
+				double value = minValue + ((getTotalRange() * i) / numLabels);
+				value = Math.round(value * 100.0)/100.0;
 				DOM.setStyleAttribute(label, "visibility", "hidden");
 				DOM.setStyleAttribute(label, "display", "");
 				System.out.println("in drawLabl() lable: "+formatLabel(value));

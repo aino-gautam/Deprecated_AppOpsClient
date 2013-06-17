@@ -1,5 +1,6 @@
 package in.appops.client.common.fields;
 
+import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -53,6 +54,7 @@ public class SpinnerField extends Composite implements Field, ClickHandler{
 			fieldMode = getConfiguration().getPropertyByName(SPINNERFIELDMODE).toString();
 			
 		textbox = new TextBox();
+		textbox.setStylePrimaryName("appops-SpinnerTextField");
 		imagePanel = new VerticalPanel();
 		
 		if(fieldMode.equals(SPINNERFIELD_VALUESPINNER)) {
@@ -129,6 +131,10 @@ public class SpinnerField extends Composite implements Field, ClickHandler{
 
 	@Override
 	public void onClick(ClickEvent event) {
+		FieldEvent fieldEvent = new FieldEvent();
+		fieldEvent.setEventData(getValue());
+		fieldEvent.setEventType(FieldEvent.VALUECHANGED);
+		
 		if(event.getSource().equals(upArrowPanel)) {
 			if(fieldMode.equals(SPINNERFIELD_VALUESPINNER)) {
 				incrementCount();
@@ -142,6 +148,8 @@ public class SpinnerField extends Composite implements Field, ClickHandler{
 				decrementPercent();
 			}
 		}
+		
+		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 	}
 
 	private void incrementCount() {
@@ -152,7 +160,7 @@ public class SpinnerField extends Composite implements Field, ClickHandler{
 
 	private void decrementCount() {
 		int currentCount = Integer.valueOf(textbox.getText());
-		if(currentCount >= 0) {
+		if(currentCount > 0) {
 			currentCount = currentCount - 1;
 			textbox.setText(String.valueOf(currentCount));
 		}
@@ -180,5 +188,16 @@ public class SpinnerField extends Composite implements Field, ClickHandler{
 		} else {
 			textbox.setText("100%");
 		}
+	}
+	
+	public String getValue() {
+		if(fieldMode.equals(SPINNERFIELD_VALUESPINNER)) {
+			return textbox.getText();
+		} else if(fieldMode.equals(SPINNERFIELD_PERCENTSPINNER)) {
+			String value = textbox.getText();
+			String valueArr[] = value.split("%");
+			return valueArr[0];
+		}
+		return null;
 	}
 }
