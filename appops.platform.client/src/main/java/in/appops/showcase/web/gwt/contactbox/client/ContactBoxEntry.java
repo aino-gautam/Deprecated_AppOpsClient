@@ -118,6 +118,7 @@ public class ContactBoxEntry implements EntryPoint{
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}*/
+						RootPanel.get().clear();
 						RootPanel.get().add(messageWidget);
 						RootPanel.get().setWidgetPosition(messageWidget, 200, 50);
 					}

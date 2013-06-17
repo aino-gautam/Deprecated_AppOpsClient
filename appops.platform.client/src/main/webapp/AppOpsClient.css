@@ -1347,3 +1347,10 @@ height: 15px;
 .previewButton{
 	margin-top: 10px;
 }
+.messageNotificationLabel{
+	color: #333333;
+    font-family: 'Ubuntu',sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 5px;
+}

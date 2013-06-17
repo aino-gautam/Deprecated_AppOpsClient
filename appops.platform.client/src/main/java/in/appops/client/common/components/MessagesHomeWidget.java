@@ -113,11 +113,19 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 				if(result!=null){
 				  EntityList  list=result.getOperationResult();
 				  try {
+					  if(list.size()>0){
 					   for(Entity conEntity : list){
 						   contactEntity = conEntity;
 						   createComponent(userEntity,conEntity);
 					   }
-						
+					  }else{
+						  LabelField label = new LabelField();
+							label.setFieldValue("No contacts are available for current space..");
+							label.setConfiguration(getLabelFieldConfiguration(true, "messageNotificationLabel", null, null));
+							label.createField();
+							
+							mainPanel.add(label);
+					  }
 					} catch (AppOpsException e) {
 						e.printStackTrace();
 					}
