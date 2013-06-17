@@ -3,7 +3,10 @@
  */
 package in.appops.client.gwt.web.ui;
 
+import in.appops.client.common.fields.LabelField;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.AppOpsException;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -52,8 +55,33 @@ public class Row extends AbsolutePanel implements MouseWheelHandler,ClickHandler
 	
 	public Row(String name){
 		this.name = name;
+		setTitle(name);
 		addDomHandler(this, MouseWheelEvent.getType());
 		setStylePrimaryName("rowPanel");
+	}
+	
+	public void setRowName(String name,int left,int top){
+		this.name = name;
+		LabelField rowlabel = new LabelField();
+		Configuration labelConf =getLabelFieldConfiguration(true, "rowName", null, null);
+		rowlabel.setConfiguration(labelConf);
+		try {
+			rowlabel.createField();
+		} catch (AppOpsException e) {
+			e.printStackTrace();
+		}
+		rowlabel.setText(name);
+		add(rowlabel,left,top);
+	}
+
+
+	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
+		Configuration config = new Configuration();
+		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
+		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
+		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
+		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
+		return config;
 	}
 	
 	public int getRowPosition() {
@@ -176,6 +204,9 @@ public class Row extends AbsolutePanel implements MouseWheelHandler,ClickHandler
 
 			double scale = scalingConstant/ (scalingConstant + Math.sin(currentAngle + index * getWidgetSpacing() + getParentCylinder().getSpeed()) * getParentCylinder().getRadius() + zcenter);
 						
+			if(scale>=0.9)
+				setRowName(name, left+40, top-20);
+			
 			widget = scaleWheelWidget(widget, scale,0,index);
 						
 			widget.addDomHandler(this, ClickEvent.getType());

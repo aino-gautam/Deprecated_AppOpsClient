@@ -110,10 +110,10 @@ public class DragonWheelNew extends Composite {
 	 * Method used to spin the cylinder.
 	 */
 	public void spin(){
-		if(elevateAngle == 60)
-			elevateAngle = 80;
+		if(elevateAngle == 15)
+			elevateAngle = 25;
 		else
-			elevateAngle = 60;
+			elevateAngle = 15;
 		
 		for ( String cylinderName : cylinderMap.keySet()){
 			

@@ -3,57 +3,59 @@
  */
 package in.appops.client.gwt.web.ui.messaging.chatuserlistcomponent;
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.fields.ImageField;
+import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.suggestion.AppopsSuggestion;
-import in.appops.client.common.fields.suggestion.SuggestionField;
-import in.appops.client.gwt.web.ui.messaging.MessagingComponent;
-import in.appops.client.gwt.web.ui.messaging.datastructure.ChatEntity;
+import in.appops.client.common.fields.suggestion.AppopsSuggestionBox;
+import in.appops.client.common.util.AppEnviornment;
+import in.appops.client.common.util.BlobDownloader;
+import in.appops.client.gwt.web.ui.messaging.event.MessengerEvent;
+import in.appops.client.gwt.web.ui.messaging.event.MessengerEventHandler;
+import in.appops.platform.core.constants.propertyconstants.SpaceConstants;
 import in.appops.platform.core.entity.Entity;
-import in.appops.platform.core.util.EntityList;
+import in.appops.platform.core.entity.Key;
+import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import java.util.HashMap;
+
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SuggestOracle;
-import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * @author mahesh@ensarm.com	
  * The actual bottom user listing widget that holds the user listing widget along with the 
  * user search widget and  toggle button to show specific and all users.
  */
-public class MainUserListingComponent extends Composite{
+public class MainUserListingComponent extends Composite implements MessengerEventHandler{
 
 	/**
 	 * main container to hold the user listing widget and the user suggestion widget and toggle button
 	 */
-	private HorizontalPanel baseHp;
+	private VerticalPanel baseVp;
 	
 	/**
 	 * User suggestion widget for suggesting the typed user.
 	 */
-	private SuggestionField userSuggestionField;
+	private AppopsSuggestionBox userSuggestionField;
 	
 	/**
 	 * user listing panel for listing the selected user for chat.
 	 */
-	private UserListWidget userListWidget;
-	
-	/**
+	private UserListingComponent userListing;
+	/*
+	*//**
 	 * Button to toggle between the showing the all users or spcific users.
-	 */
-	private ToggleButton allSpecificBtn;
+	 *//*
+	private ToggleButton allSpecificBtn;*/
 	
-	/**
-	 * The reference to the parent to fire chat window chat event on click of nearby space.
-	 */
-	private MessagingComponent parentMessagingComponent;
-	
-
 	/**
 	 * Constructor in which the global variable will be initialising and
 	 * the base ui is created. 
@@ -61,7 +63,7 @@ public class MainUserListingComponent extends Composite{
 	public MainUserListingComponent(){
 		initialize();
 		createUi();
-		initWidget(baseHp);
+		initWidget(baseVp);
 	}
 
 	/**
@@ -71,8 +73,11 @@ public class MainUserListingComponent extends Composite{
 	 */
 	private void createUi() {
 		try{
-			baseHp.setStylePrimaryName("fullWidth");
-			baseHp.addStyleName("chatUserListWidget");
+			baseVp.setStylePrimaryName("fullWidth");
+			baseVp.addStyleName("chatUserListWidget");
+			
+			baseVp.add(userSuggestionField);
+			baseVp.setCellHorizontalAlignment(userSuggestionField, HorizontalPanel.ALIGN_RIGHT);
 			
 			createUserSelectionField();
 			
@@ -80,7 +85,7 @@ public class MainUserListingComponent extends Composite{
 			
 			userSuggestionField.setStylePrimaryName("chatUserSuggestionField");
 			userSuggestionField.getSuggestBox().setStylePrimaryName("chatUserSuggestionBox");
-			allSpecificBtn.setStylePrimaryName("allSpecificBtn");
+		/*	allSpecificBtn.setStylePrimaryName("allSpecificBtn");
 			
 			allSpecificBtn.addClickHandler(new ClickHandler() {
 				
@@ -90,8 +95,9 @@ public class MainUserListingComponent extends Composite{
 				}
 			});
 			
-			baseHp.add(userSuggestionField);
-			baseHp.add(allSpecificBtn);
+			
+			baseVp.add(allSpecificBtn);
+			baseVp.setCellHorizontalAlignment(allSpecificBtn, HorizontalPanel.ALIGN_RIGHT);*/
 			
 			userSuggestionField.getSuggestBox().addSelectionHandler(new SelectionHandler<SuggestOracle.Suggestion>() {
 				
@@ -99,30 +105,35 @@ public class MainUserListingComponent extends Composite{
 				public void onSelection(SelectionEvent<Suggestion> event) {
 			
 					AppopsSuggestion selectedSuggestion = userSuggestionField.getSelectedSuggestion();
-					Entity accountent = selectedSuggestion.getEntity();
-					userListWidget.addUserToList(accountent);
+					Entity contactEnt = selectedSuggestion.getEntity();
 					userSuggestionField.getSuggestBox().setText("");
 					
+					MessengerEvent msgEvent = new MessengerEvent(MessengerEvent.STARTUSERSELECTEDCHAT, contactEnt);
+					AppUtils.EVENT_BUS.fireEvent(msgEvent);
 					
-					EntityList participantList = new EntityList();
-					participantList.add(accountent);
-					
-					ChatEntity entity = new ChatEntity();
-					String aliasName = accountent.getPropertyByName(ContactConstant.NAME).toString();
-					if(getParentMessagingComponent().getGrpMapEntityMap().get(aliasName)==null){
-						entity.setParticipantEntity(participantList);
-						entity.setHeaderTitle(aliasName);
-						entity.setUserEntity(getParentMessagingComponent().getUserEntity());
-						entity.setIsGroupChat(false);
-
-						getParentMessagingComponent().startNewChat(entity);
-					}
-					else{
-						ChatEntity chatEnt = getParentMessagingComponent().getGrpMapEntityMap().get(aliasName);
-						getParentMessagingComponent().startNewChat(chatEnt);
-					}
 				}
 			});
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void createContactSnippet(Entity contactEnt) {
+		try{
+			ContactSnippetDisplayer contactDisplayer = new ContactSnippetDisplayer();
+			String blobId;
+			if(contactEnt.getPropertyByName(ContactConstant.IMGBLOBID) != null)
+				blobId = contactEnt.getPropertyByName(ContactConstant.IMGBLOBID).toString();
+			else
+				blobId = "images/default_userIcon.png";
+			BlobDownloader downloader = new BlobDownloader();
+			String url = downloader.getIconDownloadURL(blobId);
+			Configuration imageConfig = getImageFieldConfiguration(url, "contactIcon");
+			Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
+			contactDisplayer.setConfigurationForFields(labelConfig, imageConfig);
+			contactDisplayer.initialize(contactEnt);
+			userListing.addToDisplayContact(contactDisplayer);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -134,8 +145,9 @@ public class MainUserListingComponent extends Composite{
 	 */
 	private void createUserSelectionField() {
 		try{
-			userListWidget = new UserListWidget(this);
-			baseHp.add(userListWidget);
+			userListing = new UserListingComponent();
+			baseVp.add(userListing);
+			baseVp.setCellHorizontalAlignment(userListing, HasHorizontalAlignment.ALIGN_CENTER);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -146,7 +158,17 @@ public class MainUserListingComponent extends Composite{
 	 * binding the query name and operation name for fetching the typed user in the suggestion box.
 	 */
 	private void createUserSuggestionWidget() {
-		userSuggestionField.setQueryName("getContactListSuggestion");
+		//userSuggestionField.setQueryName("getContactListSuggestion");
+		//TODO: changes made for spaceId not present
+		userSuggestionField.setQueryName("getContactForChat");
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		Long spaceId = null;
+		if(AppEnviornment.getCurrentSpace()!=null){
+			Entity spaceEnt = AppEnviornment.getCurrentSpace();
+			spaceId = ((Key<Long>)spaceEnt.getPropertyByName(SpaceConstants.ID)).getKeyValue();
+			paramMap.put("spaceId", spaceId);
+			userSuggestionField.setQueryRestrictions(paramMap);
+		}
 		userSuggestionField.setOperationName("contact.ContactService.getEntityList");
 	}
 
@@ -154,30 +176,46 @@ public class MainUserListingComponent extends Composite{
 	 * Any global variable must be initialised here.
 	 */
 	private void initialize() {
-		baseHp = new HorizontalPanel();
-		userSuggestionField = new SuggestionField();
-		allSpecificBtn = new ToggleButton("All", "Specific");
+		baseVp = new VerticalPanel();
+		userSuggestionField = new AppopsSuggestionBox();
+		userSuggestionField.setPropertyToDisplay(ContactConstant.NAME);
+	/*	allSpecificBtn = new ToggleButton("All", "Specific");*/
+		AppUtils.EVENT_BUS.addHandler(MessengerEvent.TYPE, this);
 	}
 	
-	/**
-	 * Set the parent messaging component reference.
-	 * @param messagingComponent
-	 */
-	public void setParentMessagingWidget(MessagingComponent messagingComponent) {
-		setParentMessagingComponent(messagingComponent);
+	@Override
+	public void onMessengerEvent(MessengerEvent event) {
+		try{
+			if(event.getEventType() == MessengerEvent.ONUSERMSGRECEIVED){
+				//Window.alert("User Message Received");
+			}
+			else if(event.getEventType() == MessengerEvent.ONCHATRECEIVED){
+				String contactId = (String) event.getEventData();
+				userListing.highlightSnippet(contactId);
+			}
+			else if(event.getEventType() == MessengerEvent.ONCHATENTITYREMOVED){
+				String contactId = (String) event.getEventData();
+				userListing.removeContactSnippet(contactId);
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-
-	/**
-	 * @return the parentMessagingComponent
-	 */
-	public MessagingComponent getParentMessagingComponent() {
-		return parentMessagingComponent;
+	
+	public Configuration getImageFieldConfiguration(String url, String primaryCSS) {
+		Configuration config = new Configuration();
+		config.setPropertyByName(ImageField.IMAGEFIELD_BLOBID, url);
+		config.setPropertyByName(ImageField.IMAGEFIELD_PRIMARYCSS, primaryCSS);
+		return config;
 	}
-
-	/**
-	 * @param parentMessagingComponent the parentMessagingComponent to set
-	 */
-	public void setParentMessagingComponent(MessagingComponent parentMessagingComponent) {
-		this.parentMessagingComponent = parentMessagingComponent;
+	
+	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
+		Configuration config = new Configuration();
+		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
+		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
+		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
+		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
+		return config;
 	}
 }

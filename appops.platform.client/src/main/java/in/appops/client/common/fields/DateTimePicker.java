@@ -1,5 +1,9 @@
 package in.appops.client.common.fields;
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
+
 import java.sql.Time;
 import java.util.Date;
 
@@ -16,7 +20,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -42,26 +45,39 @@ public class DateTimePicker extends Composite implements FocusHandler{
 	private Button btDone = new Button("Done");
 	private String currentDateTimeString;
 	private VerticalPanel   vpBase = new VerticalPanel();
+	private String entityType = null;
 	
 	public DateTimePicker(){
 		textbox=new TextBox();
+		textbox.setStylePrimaryName("appops-TextField");
 		textbox.addFocusHandler(this);
 		popupPanel=new PopupPanel(true);
 		popupPanel.setVisible(false);
-		popupPanel.setAnimationEnabled(true);
+
 		popupPanel.setAutoHideEnabled(true);
 		popupPanel.setWidget(createDateTimePicker());
 		popupPanel.addAutoHidePartner(textbox.getElement());
 		initWidget(textbox);
 		DOM.setStyleAttribute(textbox.getElement(), "width", "215px");
+		/*textbox.getElement().focus();*/
+		Date today = new Date();
+        String todayString  = DateTimeFormat.getFormat("dd-MM-yyyy").format(today);
+        //textbox.setText(todayString);
+        
+		String[] time=today.toString().split(" ");
+		String[] item=time[3].split(":");
+		lstHours.setSelectedIndex(Integer.parseInt(item[0]));
+		 lstMinutes.setSelectedIndex(Integer.parseInt(item[1]));
+		 lstSeconds.setSelectedIndex(Integer.parseInt(item[2]));
+		 String dateString = " "+lstHours.getValue(lstHours.getSelectedIndex())+":"+lstMinutes.getValue(lstMinutes.getSelectedIndex())+":"+lstSeconds.getValue(lstSeconds.getSelectedIndex());
+		 textbox.setText(todayString+dateString);
+		 currentDateTimeString = todayString+dateString;
+		 
+		 
+		
 	}
 	
-	
-	
 	public VerticalPanel createDateTimePicker(){
-		
-		
-		
 		datePicker.addValueChangeHandler(new ValueChangeHandler(){
 
 			@Override
@@ -80,12 +96,11 @@ public class DateTimePicker extends Composite implements FocusHandler{
 		timePicker.add(createTimeComponent());
 		vpPanel.add(timePicker);
 		vpPanel.add(btDone);
-		//popupPanel.add(vpPanel);
-		//vpBase.add(popupPanel);
-		//popupPanel.show();
+		btDone.setStylePrimaryName("appops-Button");
 		btDone.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
+			 if(entityType!=null){  
 				String[] splitDate=textbox.getText().split(" ");
 				
 				String dateString = splitDate[0]+" "+lstHours.getValue(lstHours.getSelectedIndex())+":"+lstMinutes.getValue(lstMinutes.getSelectedIndex())+":"+lstSeconds.getValue(lstSeconds.getSelectedIndex());
@@ -93,6 +108,23 @@ public class DateTimePicker extends Composite implements FocusHandler{
 				currentDateTimeString = dateString;
 			    DomEvent.fireNativeEvent(Document.get().createChangeEvent(),textbox);
 			    popupPanel.hide();
+			    FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventType(FieldEvent.DATETIMEONLY);
+				fieldEvent.setEventData(dateString);	
+				AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, DateTimePicker.this);
+			 }else{
+				 String[] splitDate=textbox.getText().split(" ");
+					
+				 String dateString = splitDate[0]+" "+lstHours.getValue(lstHours.getSelectedIndex())+":"+lstMinutes.getValue(lstMinutes.getSelectedIndex())+":"+lstSeconds.getValue(lstSeconds.getSelectedIndex());
+				 textbox.setText(dateString);
+				 currentDateTimeString = dateString;
+				 DomEvent.fireNativeEvent(Document.get().createChangeEvent(),textbox);
+				 popupPanel.hide();
+				 FieldEvent fieldEvent = new FieldEvent();
+				 fieldEvent.setEventType(FieldEvent.DATETIMEONLY);
+				 fieldEvent.setEventData(dateString);	
+				 AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, DateTimePicker.this);
+			 }
 			    
 			 }
 			
@@ -158,6 +190,13 @@ public class DateTimePicker extends Composite implements FocusHandler{
 		this.textbox = textbox;
 	}
 
+	public String getEntityType() {
+		return entityType;
+	}
+
+	public void setEntityType(String entityType) {
+		this.entityType = entityType;
+	}
 	@Override
 	public void onFocus(FocusEvent event) {
 		Date today = new Date();
@@ -174,5 +213,8 @@ public class DateTimePicker extends Composite implements FocusHandler{
 		
 		
 	}
-
+	public void addHandle(FieldEventHandler handler) {
+		AppUtils.EVENT_BUS.addHandlerToSource(FieldEvent.TYPE, this, handler);
+		
+	}
 }
