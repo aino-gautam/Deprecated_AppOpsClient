@@ -62,7 +62,7 @@ public class PostContentParser {
 				    	  LinkField linkField = new LinkField();
 				    	  linkField.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_HYPERLINK, "postLink", null, null));
 				    	  linkField.setFieldValue(linkText);
-				    	  linkField.createField();
+				    	  linkField.create();
 				    	  flowPanel.add(linkField);
 				    	 
 				      } else if(tagName.equalsIgnoreCase("text")){
@@ -70,7 +70,7 @@ public class PostContentParser {
 				    	  LabelField labelField = new LabelField();
 				    	  labelField.setFieldValue(text);
 				    	  labelField.setConfiguration(getLabelFieldConfiguration(true, "postLabel", null, null));
-				    	  labelField.createField();
+				    	  labelField.create();
 				    	  flowPanel.add(labelField);
 				      }
 		    	}
