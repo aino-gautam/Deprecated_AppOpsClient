@@ -79,7 +79,7 @@ public class SpaceListWidget extends Composite implements EntityListReceiver,Mes
 			Configuration labelConfig = getLabelFieldConfiguration(true, "spaceListTitle", null, null);
 			spaceTitle.setFieldValue("Spaces");
 			spaceTitle.setConfiguration(labelConfig);
-			spaceTitle.createField();
+			spaceTitle.create();
 			basePanel.add(spaceTitle);
 			
 		//	int height = Window.getClientHeight() - 130;

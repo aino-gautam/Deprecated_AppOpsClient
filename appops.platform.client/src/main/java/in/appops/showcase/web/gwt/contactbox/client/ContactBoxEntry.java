@@ -54,7 +54,7 @@ public class ContactBoxEntry implements EntryPoint{
 			LabelField label = new LabelField();
 			label.setFieldValue("Loading..");
 			label.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-			label.createField();
+			label.create();
 			RootPanel.get().add(label); 
 			RootPanel.get().setWidgetPosition(label, 200, 50);
 			DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();

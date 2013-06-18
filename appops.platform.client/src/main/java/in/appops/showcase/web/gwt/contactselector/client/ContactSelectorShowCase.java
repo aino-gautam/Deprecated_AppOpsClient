@@ -74,7 +74,7 @@ public class ContactSelectorShowCase implements EntryPoint, ClickHandler {
 				LabelField titleLabel = new LabelField();
 				titleLabel.setFieldValue("List of selected contacts ");
 				titleLabel.setConfiguration(getLabelFieldConfiguration(true, "contactSelectortitleLabel", null, null));
-				titleLabel.createField();
+				titleLabel.create();
 				titleLabel.addStyleName("contactListAlignment");
 				contactListPanel.add(titleLabel);
 				
@@ -98,7 +98,7 @@ public class ContactSelectorShowCase implements EntryPoint, ClickHandler {
 				
 				if(list.isEmpty() || list == null) {
 					titleLabel.setFieldValue("No contacts selected");
-					titleLabel.resetField();
+					titleLabel.reset();
 				}
 			} catch (AppOpsException e) {
 				e.printStackTrace();

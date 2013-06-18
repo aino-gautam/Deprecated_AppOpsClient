@@ -31,7 +31,7 @@ public class CheckboxWidget extends Composite implements FieldEventHandler{
 			Configuration config = getCheckboxFieldConfiguration("Allow permissions");
 			checkboxfield.setFieldValue("true");
 			checkboxfield.setConfiguration(config);
-			checkboxfield.createField();
+			checkboxfield.create();
 			
 			notifyLabel = new LabelField();
 			boolean value = checkboxfield.getValue();
@@ -41,7 +41,7 @@ public class CheckboxWidget extends Composite implements FieldEventHandler{
 				notifyLabel.setFieldValue("(Not selected)");
 			}
 			notifyLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-			notifyLabel.createField();
+			notifyLabel.create();
 			notifyLabel.addStyleName("CheckboxNotifyLabelAlignment");
 			
 			basePanel.add(checkboxfield);
@@ -78,7 +78,7 @@ public class CheckboxWidget extends Composite implements FieldEventHandler{
 			CheckBox checkbox = (CheckBox) event.getEventData();
 			if(checkbox.equals(checkboxfield)) {
 				notifyLabel.setFieldValue("(Selected)");
-				notifyLabel.resetField();
+				notifyLabel.reset();
 			}
 			break;
 		}
@@ -86,7 +86,7 @@ public class CheckboxWidget extends Composite implements FieldEventHandler{
 			CheckBox checkbox = (CheckBox) event.getEventData();
 			if(checkbox.equals(checkboxfield)) {
 				notifyLabel.setFieldValue("(Not selected)");
-				notifyLabel.resetField();
+				notifyLabel.reset();
 			}
 			break;
 		}

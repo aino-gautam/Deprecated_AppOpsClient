@@ -56,7 +56,7 @@ public class GroupCheckboxWidget extends Composite implements ClickHandler{
 			LabelField modeLabel = new LabelField();
 			modeLabel.setFieldValue("Select mode");
 			modeLabel.setConfiguration(getLabelFieldConfiguration(true, "groupCheckboxTitle", null, null));
-			modeLabel.createField();
+			modeLabel.create();
 			selectModePanel.add(modeLabel);
 			
 			modeListbox.addItem("--Select--");
@@ -72,7 +72,7 @@ public class GroupCheckboxWidget extends Composite implements ClickHandler{
 			LabelField selectBaseLabel = new LabelField();
 			selectBaseLabel.setFieldValue("Select base");
 			selectBaseLabel.setConfiguration(getLabelFieldConfiguration(true, "groupCheckboxTitle", null, null));
-			selectBaseLabel.createField();
+			selectBaseLabel.create();
 			baseModePanel.add(selectBaseLabel);
 			
 			basePanelListbox.addItem("--Select--");
@@ -105,7 +105,7 @@ public class GroupCheckboxWidget extends Composite implements ClickHandler{
 			viewCheckboxticked.setStylePrimaryName("appops-Button");
 			viewCheckboxticked.addStyleName("viewTickCheckboxButtonAlignment");
 			
-			checkboxGroupField.createField();
+			checkboxGroupField.create();
 			
 			checkboxGroupField.addCheckItem("Red",false);
 			checkboxGroupField.addCheckItem("Green",false);
@@ -133,7 +133,7 @@ public class GroupCheckboxWidget extends Composite implements ClickHandler{
 			viewRadiobuttonTicked.setStylePrimaryName("appops-Button");
 			viewRadiobuttonTicked.addStyleName("viewTickCheckboxButtonAlignment");
 			
-			singleSelectCheckboxGroupField.createField();
+			singleSelectCheckboxGroupField.create();
 			
 			singleSelectCheckboxGroupField.addCheckItem("Red",false);
 			singleSelectCheckboxGroupField.addCheckItem("Green",false);
@@ -173,7 +173,7 @@ public class GroupCheckboxWidget extends Composite implements ClickHandler{
 				LabelField titleLabel = new LabelField();
 				titleLabel.setFieldValue("Tick items");
 				titleLabel.setConfiguration(getLabelFieldConfiguration(true, "groupCheckboxTitle", null, null));
-				titleLabel.createField();
+				titleLabel.create();
 				groupCheckboxDisplayPanel.add(titleLabel);
 				
 				HashMap<String, Boolean> map = checkboxGroupField.getValue();
@@ -187,13 +187,13 @@ public class GroupCheckboxWidget extends Composite implements ClickHandler{
 						LabelField displayLabel = new LabelField();
 						displayLabel.setFieldValue(key);
 						displayLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-						displayLabel.createField();
+						displayLabel.create();
 						groupCheckboxDisplayPanel.add(displayLabel);
 					}
 				}
 				if(!isAnyOneTick) {
 					titleLabel.setFieldValue("No tick items");
-					titleLabel.resetField();
+					titleLabel.reset();
 				}
 			} catch (AppOpsException e) {
 				e.printStackTrace();
@@ -206,7 +206,7 @@ public class GroupCheckboxWidget extends Composite implements ClickHandler{
 				LabelField titleLabel = new LabelField();
 				titleLabel.setFieldValue("Tick items");
 				titleLabel.setConfiguration(getLabelFieldConfiguration(true, "groupCheckboxTitle", null, null));
-				titleLabel.createField();
+				titleLabel.create();
 				radiobuttonDisplayPanel.add(titleLabel);
 				
 				HashMap<String, Boolean> map = singleSelectCheckboxGroupField.getValue();
@@ -220,13 +220,13 @@ public class GroupCheckboxWidget extends Composite implements ClickHandler{
 						LabelField displayLabel = new LabelField();
 						displayLabel.setFieldValue(key);
 						displayLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-						displayLabel.createField();
+						displayLabel.create();
 						radiobuttonDisplayPanel.add(displayLabel);
 					}
 				}
 				if(!isAnyOneTick) {
 					titleLabel.setFieldValue("No tick items");
-					titleLabel.resetField();
+					titleLabel.reset();
 				}
 			} catch (AppOpsException e) {
 				e.printStackTrace();
