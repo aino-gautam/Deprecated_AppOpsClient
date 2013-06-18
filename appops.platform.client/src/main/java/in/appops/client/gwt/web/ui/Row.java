@@ -66,7 +66,7 @@ public class Row extends AbsolutePanel implements MouseWheelHandler,ClickHandler
 		Configuration labelConf =getLabelFieldConfiguration(true, "rowName", null, null);
 		rowlabel.setConfiguration(labelConf);
 		try {
-			rowlabel.createField();
+			rowlabel.create();
 		} catch (AppOpsException e) {
 			e.printStackTrace();
 		}
