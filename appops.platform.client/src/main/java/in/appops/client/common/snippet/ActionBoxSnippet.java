@@ -63,8 +63,8 @@ public class ActionBoxSnippet extends Composite implements Snippet, ClickHandler
 		snippetLabel.setConfiguration(labelConfig);
 		snippetLabel.setFieldValue(getEntity().getProperty("name").getValue().toString());
 		try {
-			snippetImage.createField();
-			snippetLabel.createField();
+			snippetImage.create();
+			snippetLabel.create();
 		} catch (AppOpsException e) {
 			e.printStackTrace();
 		}

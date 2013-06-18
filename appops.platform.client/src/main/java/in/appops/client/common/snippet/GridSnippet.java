@@ -142,7 +142,7 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 		Configuration labelConfig = getLabelFieldConfiguration(true, "noMoreResultlabel", null, null);
 		noMoreResultLabel.setConfiguration(labelConfig);
 		try {
-			noMoreResultLabel.createField();
+			noMoreResultLabel.create();
 		} catch (AppOpsException e) {
 			e.printStackTrace();
 		}

@@ -57,7 +57,7 @@ public class BoxSnippet extends Composite implements Snippet,ClickHandler{
 		else
 			icon.setConfiguration(getIconConfig("images/NoImage.gif"));
 		try {
-			icon.createField();
+			icon.create();
 		} catch (AppOpsException e1) {
 			e1.printStackTrace();
 		}
@@ -71,7 +71,7 @@ public class BoxSnippet extends Composite implements Snippet,ClickHandler{
 		entityTitle.setFieldValue(getEntity().getProperty("name").getValue().toString());
 		entityTitle.setConfiguration(getLabelFieldConfiguration(true, "boxSnippetEntityTitle", null, null));
 		try {
-			entityTitle.createField();
+			entityTitle.create();
 		} catch (AppOpsException e) {
 	
 			e.printStackTrace();
@@ -90,7 +90,7 @@ public class BoxSnippet extends Composite implements Snippet,ClickHandler{
 			spaceTypeLbl.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
 			
 			try {
-				spaceTypeLbl.createField();
+				spaceTypeLbl.create();
 			} catch (AppOpsException e) {
 		
 				e.printStackTrace();

@@ -47,7 +47,7 @@ public class ServiceIconSnippet extends CardSnippet {
 			serviceEntityTitle.setFieldValue(getEntity().getProperty(ServiceConstant.NAME).getValue().toString());
 			serviceEntityTitle.setConfiguration(getLabelFieldConfiguration(true, "serviceEntityTitle", null, null));
 			try {
-				serviceEntityTitle.createField();
+				serviceEntityTitle.create();
 			} catch (AppOpsException e) {
 		
 				e.printStackTrace();

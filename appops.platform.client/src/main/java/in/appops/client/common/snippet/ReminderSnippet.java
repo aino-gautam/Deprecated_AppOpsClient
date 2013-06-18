@@ -73,7 +73,7 @@ public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHan
 			reminderTitleLink = new LinkField();
 			reminderTitleLink.setFieldValue(title);
 			reminderTitleLink.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_ANCHOR, "reminderTitleLabel", "crossImageCss", null));
-			reminderTitleLink.createField();
+			reminderTitleLink.create();
 						
 			//reminderTitleLink.getWidget().addDomHandler(this, ClickEvent.getType());
 			
@@ -122,7 +122,7 @@ public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHan
 			
 			editLinkField.setFieldValue("Edit");
 			editLinkField.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_ANCHOR, "postLink", "crossImageCss", null));
-			editLinkField.createField();
+			editLinkField.create();
 			
 			HorizontalPanel linkPanel = new HorizontalPanel();
 			//linkPanel.add(editLinkField);
@@ -151,7 +151,7 @@ public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHan
 		label.setFieldValue(lblText);
 		Configuration config = getLabelFieldConfiguration(true,primaryCss,null,null);
 		label.setConfiguration(config);
-		label.createField();
+		label.create();
 		return label;
 		
 	}
@@ -312,19 +312,19 @@ public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHan
 		try {
 			String title = editedReminderEntity.getProperty(ReminderConstant.TITLE).getValue().toString();
 			reminderTitleLink.setFieldValue(title);
-			reminderTitleLink.resetField();
+			reminderTitleLink.reset();
 			
 			Date date = (Date) editedReminderEntity.getProperty(ReminderConstant.REMINDERTIME).getValue();
 			
 			String dateTimeValue = DateTimeFormat.getLongDateFormat().format(date) +" at "+ DateTimeFormat.getShortTimeFormat().format(date);
 			dateTime.setFieldValue(dateTimeValue);
-			dateTime.resetField();
+			dateTime.reset();
 			
 			Entity reminderType = (Entity) entity.getProperty(ReminderConstant.REMINDERTYPE);
 			
 			
 			reminderTypeLabel.setFieldValue(reminderType.getProperty(ReminderTypeConstant.TYPE).getValue().toString());
-			reminderTypeLabel.resetField();
+			reminderTypeLabel.reset();
 			
 		} catch (Exception e) {
 			e.printStackTrace();

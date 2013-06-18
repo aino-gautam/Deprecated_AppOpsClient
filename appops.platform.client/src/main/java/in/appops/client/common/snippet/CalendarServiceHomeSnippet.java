@@ -153,7 +153,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 				quickEventLabelField.setFieldValue("Create reminder");
 			}
 			quickEventLabelField.setConfiguration(labelConfig);
-			quickEventLabelField.createField();
+			quickEventLabelField.create();
 			quickEventLabelField.addClickHandler(this);
 			
 			quickEventLabelField.addStyleName("calendarHomeTabSelected");
@@ -162,14 +162,14 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 			Configuration reminderLabelConfig = getLabelFieldConfiguration(true, "flowPanelContent", "calendarHomeTab", null);
 			reminderLabelField.setFieldValue("Reminders");
 			reminderLabelField.setConfiguration(reminderLabelConfig);
-			reminderLabelField.createField();
+			reminderLabelField.create();
 			reminderLabelField.addClickHandler(this);
 			
 			LabelField seperatorLabelField = new LabelField();
 			Configuration seperatorLabelFieldConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 			seperatorLabelField.setFieldValue("|");
 			seperatorLabelField.setConfiguration(seperatorLabelFieldConfig);
-			seperatorLabelField.createField();
+			seperatorLabelField.create();
 					
 			HorizontalPanel sepratorPanel = new HorizontalPanel();
 			
@@ -241,14 +241,14 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 			eventData = (String) event.getEventData();
 			
 			if(eventData.equals("Create a event")){
-				quickEventLabelField.clearField();
+				quickEventLabelField.clear();
 				quickEventLabelField.setFieldValue(eventData);
-				quickEventLabelField.resetField();
+				quickEventLabelField.reset();
 			}else if(eventData.equals("Back")){
 				
-				quickEventLabelField.clearField();
+				quickEventLabelField.clear();
 				quickEventLabelField.setFieldValue("Events");
-				quickEventLabelField.resetField();
+				quickEventLabelField.reset();
 				
 				calendarEvents = new CalendarEvents();
 				calendarEvents.addHandle(this);
@@ -256,9 +256,9 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 				childPanel.clear();
 				childPanel.add(calendarEvents);
 			}else{
-				quickEventLabelField.clearField();
+				quickEventLabelField.clear();
 				quickEventLabelField.setFieldValue(eventData);
-				quickEventLabelField.resetField();
+				quickEventLabelField.reset();
 				
 				calendarEntryScreen = new CreateCalendarEntryScreen();
 				calendarEntryScreen.setConfiguration(getConfigurationForCreateEvent());
@@ -273,19 +273,19 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 	}
 
 	@Override
-	public void createField() throws AppOpsException {
+	public void create() throws AppOpsException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void clearField() {
+	public void clear() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void resetField() {
+	public void reset() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -583,5 +583,11 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 			}
 		
 	  });
+	}
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
+		
 	}
 }

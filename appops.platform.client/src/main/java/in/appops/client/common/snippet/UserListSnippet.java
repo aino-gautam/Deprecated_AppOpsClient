@@ -68,7 +68,7 @@ public class UserListSnippet extends RowSnippet {
 			}else{
 				userName.setFieldValue(entity.getPropertyByName(ContactConstant.EMAILID).toString());
 			}
-			userName.resetField();
+			userName.reset();
 		}
 		
 		add(basePanel,DockPanel.CENTER);
@@ -95,9 +95,9 @@ public class UserListSnippet extends RowSnippet {
 
 		try {
 			userName.setConfiguration(labelConfig);
-			userName.createField();
+			userName.create();
 			imageField.setConfiguration(imageConfig);
-            imageField.createField();
+            imageField.create();
             imageField.addErrorHandler(new ErrorHandler() {
 				
 				@Override

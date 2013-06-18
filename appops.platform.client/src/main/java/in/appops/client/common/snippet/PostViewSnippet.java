@@ -119,7 +119,7 @@ public class PostViewSnippet extends RowSnippet {
 		}
 		imageField.setConfiguration(getImageFieldConfiguration(blobUrl));
 		try {
-			imageField.createField();
+			imageField.create();
 		} catch (AppOpsException e) {
 			 e.printStackTrace();
 		}
@@ -174,7 +174,7 @@ public class PostViewSnippet extends RowSnippet {
 		final ImageField responsesImageField = new ImageField();
 		responsesImageField.setConfiguration(getImageFieldConfiguration("images/dropDownIcon.png"));
 		try {
-			responsesImageField.createField();
+			responsesImageField.create();
 		} catch (AppOpsException e) {
 			 e.printStackTrace();
 		}
@@ -336,7 +336,7 @@ public class PostViewSnippet extends RowSnippet {
 		timeLbl = new LabelField();
 		timeLbl.setConfiguration(createConfiguration(true));
 		try {
-			timeLbl.createField();
+			timeLbl.create();
 		} catch (AppOpsException e) {
 			e.printStackTrace();
 		}

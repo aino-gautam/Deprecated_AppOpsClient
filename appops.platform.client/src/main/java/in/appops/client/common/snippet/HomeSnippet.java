@@ -33,7 +33,7 @@ public class HomeSnippet extends HorizontalPanel implements Snippet {
 		titleLabel.setFieldValue("Default home for service");
 		titleLabel.setConfiguration(getLabelFieldConfiguration(true,"homeSnippetTitleLabel", null, null));
 		try {
-			titleLabel.createField();
+			titleLabel.create();
 		} catch (AppOpsException e) {
 
 			e.printStackTrace();
