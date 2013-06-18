@@ -244,7 +244,7 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 		query.setQueryName("getMessageContact");
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("search", "%"+eventData+"%");
-		map.put("spaceId", spaceId);
+		//map.put("spaceId", spaceId);
 		query.setQueryParameterMap(map);
 		query.setListSize(8);
 		ContactSelectorModel contactSelectorModel = new ContactSelectorModel(query,"contact.ContactService.getEntityList",0);

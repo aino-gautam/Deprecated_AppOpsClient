@@ -40,23 +40,17 @@
 			<artifactId>json</artifactId>
 			<version>20090211</version>
 		</dependency>
-		
+
 		<!-- atmosphere jars -->
 		<dependency>
 			<groupId>org.atmosphere</groupId>
 			<artifactId>atmosphere-gwt-server</artifactId>
 			<version>1.0.1</version>
 		</dependency>
-		<!-- <dependency>
-			<groupId>org.atmosphere</groupId>
-			<artifactId>atmosphere-gwt-common</artifactId>
-			<version>1.0.9</version>
-		</dependency> -->
-		<!-- <dependency>
-			<groupId>org.atmosphere</groupId>
-			<artifactId>atmosphere-runtime</artifactId>
-			<version>1.0.9</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>org.atmosphere</groupId> <artifactId>atmosphere-gwt-common</artifactId> 
+			<version>1.0.9</version> </dependency> -->
+		<!-- <dependency> <groupId>org.atmosphere</groupId> <artifactId>atmosphere-runtime</artifactId> 
+			<version>1.0.9</version> </dependency> -->
 		<dependency>
 			<groupId>org.atmosphere</groupId>
 			<artifactId>atmosphere-gwt-client</artifactId>
@@ -154,20 +148,17 @@
 			<artifactId>mvp4g</artifactId>
 			<version>1.4.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>lienzo</groupId>
 			<artifactId>lienzo</artifactId>
 			<version>1.1</version>
 		</dependency>
-		
+
 		<!-- <dependency> <groupId>appops_platform</groupId> <artifactId>appops_server</artifactId> 
 			<version>14.02.2013</version> </dependency> -->
-		<dependency>
-			<groupId>appops_platform</groupId>
-			<artifactId>appops_server</artifactId>
-			<version>06.06.2013</version>
-		</dependency>
+		<!-- <dependency> <groupId>appops_platform</groupId> <artifactId>appops_server</artifactId> 
+			<version>05.06.2013</version> </dependency> -->
 
 		<!-- This should be used when using a final version of the jar -->
 		<dependency>
@@ -199,41 +190,176 @@
 			<artifactId>gwtphonegap</artifactId>
 			<version>2.0.0.0</version>
 		</dependency>
-		<!-- Mail dependencies-->
+		<!-- Mail dependencies -->
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mailapi</artifactId>
 			<version>1.4.3</version>
 		</dependency>
-		<!-- <dependency>
-			<groupId>com.sun.mail</groupId>
-			<artifactId>smtp</artifactId>
-			<version>1.4.6-rc1</version>
-		</dependency> -->
-		<!-- <dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>1.5.0-b01</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>com.sun.mail</groupId> <artifactId>smtp</artifactId> 
+			<version>1.4.6-rc1</version> </dependency> -->
+		<!-- <dependency> <groupId>javax.mail</groupId> <artifactId>mail</artifactId> 
+			<version>1.5.0-b01</version> </dependency> -->
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
 			<version>1.4</version>
-	    </dependency>
-    
-	    <dependency>
+		</dependency>
+
+		<dependency>
 			<groupId>javax.activation</groupId>
 			<artifactId>activation</artifactId>
 			<version>1.1.1</version>
 		</dependency>
-		<!-- Mail dependencies-->
-		
+		<!-- Mail dependencies -->
+
 		<!-- Hibernate c3p0 connection pool -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-c3p0</artifactId>
 			<version>4.1.7.Final</version>
 		</dependency>
+
+		<!-- Appops server jars -->
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>core</artifactId>
+			<version>13.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>entitystore</artifactId>
+			<version>13.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>entitycache</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>configuration</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>media</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>blobstore</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>spacemanagement</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>useraccount</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>searchservice</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>httpsessionservice</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>entitybroadcast</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>calendar</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>statics</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>contact</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>messenger</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>social</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>usermessage</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>inservice</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>restaurant</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>deal</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>dating</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>email</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>activity</artifactId>
+			<version>12.06.2013</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
