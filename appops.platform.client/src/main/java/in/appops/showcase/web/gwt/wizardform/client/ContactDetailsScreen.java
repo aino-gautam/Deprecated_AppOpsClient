@@ -2,6 +2,7 @@ package in.appops.showcase.web.gwt.wizardform.client;
 
 import in.appops.client.common.fields.Field;
 import in.appops.client.common.fields.TextField;
+import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.client.touch.Screen;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
@@ -34,16 +35,16 @@ public class ContactDetailsScreen extends Composite implements Screen {
 	@Override
 	public void createScreen() {
 		TextField tbAddress1 = new TextField();
-		tbAddress1.setConfiguration(getTextFieldConfiguration(3, false, TextField.TEXTFIELDTYPE_TEXTAREA, null, null, null));
+		tbAddress1.setConfiguration(getTextFieldConfiguration(3, false, TextFieldConstant.TFTTYPE_TXTAREA, null, null, null));
 		tbAddress1.setFieldValue("Address");
 		
 		TextField tbPhoneNo = new TextField();
-		tbPhoneNo.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, null, null, null));
+		tbPhoneNo.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, null, null, null));
 		tbPhoneNo.setFieldValue("Last Name");
 		
 		try {
-			tbAddress1.createField();
-			tbPhoneNo.createField();
+			tbAddress1.create();
+			tbPhoneNo.create();
 		} catch (AppOpsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -88,12 +89,12 @@ public class ContactDetailsScreen extends Composite implements Screen {
 	 */
 	private Configuration getTextFieldConfiguration(int visibleLines, boolean readOnly, String textFieldType, String primaryCss, String secondaryCss, String debugId){
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(TextField.TEXTFIELD_VISIBLELINES, visibleLines);
-		configuration.setPropertyByName(TextField.TEXTFIELD_READONLY, readOnly);
-		configuration.setPropertyByName(TextField.TEXTFIELD_TYPE, textFieldType);
-		configuration.setPropertyByName(TextField.TEXTFIELD_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(TextField.TEXTFIELD_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(TextField.TEXTFIELD_DEBUGID, debugId);
+		configuration.setPropertyByName(TextFieldConstant.TF_VISIBLELINES, visibleLines);
+		configuration.setPropertyByName(TextFieldConstant.TF_READONLY, readOnly);
+		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
+		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
+		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
+		configuration.setPropertyByName(TextFieldConstant.TF_DEBUGID, debugId);
 		return configuration;
 	}
 

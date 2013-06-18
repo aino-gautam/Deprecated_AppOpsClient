@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import in.appops.client.common.fields.Field;
 import in.appops.client.common.fields.TextField;
+import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.client.touch.Screen;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Property;
@@ -43,15 +44,15 @@ public class PersonalDetailsScreen extends Composite implements Screen{
 	public void createScreen() {
 		tbFName = new TextField();
 		tbFName.setFieldValue("First Name");
-		tbFName.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, null, null, null,"First Name"));
+		tbFName.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, null, null, null,"First Name"));
 		
 		tbLName = new TextField();
 		tbLName.setFieldValue("Last Name");
-		tbLName.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, null, null, null,"Last Name"));
+		tbLName.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, null, null, null,"Last Name"));
 		
 		try {
-			tbFName.createField();
-			tbLName.createField();
+			tbFName.create();
+			tbLName.create();
 		} catch (AppOpsException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -64,8 +65,8 @@ public class PersonalDetailsScreen extends Composite implements Screen{
 		flex.setWidget(2, 0, tbLName);
 		
 		vp.add(flex);
-		nameVsFieldHashMap.put(tbFName.getConfiguration().getPropertyByName(TextField.PROPERTY_BY_FIELD_NAME).toString(), tbFName);
-		nameVsFieldHashMap.put(tbLName.getConfiguration().getPropertyByName(TextField.PROPERTY_BY_FIELD_NAME).toString(), tbLName);
+		nameVsFieldHashMap.put(tbFName.getConfiguration().getPropertyByName(TextFieldConstant.PROPERTY_BY_FIELD_NAME).toString(), tbFName);
+		nameVsFieldHashMap.put(tbLName.getConfiguration().getPropertyByName(TextFieldConstant.PROPERTY_BY_FIELD_NAME).toString(), tbLName);
 		
 	}
 
@@ -84,14 +85,14 @@ public class PersonalDetailsScreen extends Composite implements Screen{
 		if(entity== null)
 			entity = new Entity();
 		Property<Serializable> prop = new Property<Serializable>();
-		prop.setName(tbFName.getConfiguration().getPropertyByName(TextField.PROPERTY_BY_FIELD_NAME).toString());
+		prop.setName(tbFName.getConfiguration().getPropertyByName(TextFieldConstant.PROPERTY_BY_FIELD_NAME).toString());
 		prop.setValue(tbFName.getFieldValue());
-		entity.setProperty(tbFName.getConfiguration().getPropertyByName(TextField.PROPERTY_BY_FIELD_NAME).toString(), prop);
+		entity.setProperty(tbFName.getConfiguration().getPropertyByName(TextFieldConstant.PROPERTY_BY_FIELD_NAME).toString(), prop);
 		
 		Property<Serializable> prop1 = new Property<Serializable>();
-		prop1.setName(tbLName.getConfiguration().getPropertyByName(TextField.PROPERTY_BY_FIELD_NAME).toString());
+		prop1.setName(tbLName.getConfiguration().getPropertyByName(TextFieldConstant.PROPERTY_BY_FIELD_NAME).toString());
 		prop1.setValue(tbLName.getFieldValue());
-		entity.setProperty(tbLName.getConfiguration().getPropertyByName(TextField.PROPERTY_BY_FIELD_NAME).toString(), prop1);
+		entity.setProperty(tbLName.getConfiguration().getPropertyByName(TextFieldConstant.PROPERTY_BY_FIELD_NAME).toString(), prop1);
 		
 		return entity;
 	}
@@ -110,13 +111,13 @@ public class PersonalDetailsScreen extends Composite implements Screen{
 	 */
 	private Configuration getTextFieldConfiguration(int visibleLines, boolean readOnly, String textFieldType, String primaryCss, String secondaryCss, String debugId, String propertyByName){
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(TextField.TEXTFIELD_VISIBLELINES, visibleLines);
-		configuration.setPropertyByName(TextField.TEXTFIELD_READONLY, readOnly);
-		configuration.setPropertyByName(TextField.TEXTFIELD_TYPE, textFieldType);
-		configuration.setPropertyByName(TextField.TEXTFIELD_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(TextField.TEXTFIELD_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(TextField.TEXTFIELD_DEBUGID, debugId);
-		configuration.setPropertyByName(TextField.PROPERTY_BY_FIELD_NAME, propertyByName);
+		configuration.setPropertyByName(TextFieldConstant.TF_VISIBLELINES, visibleLines);
+		configuration.setPropertyByName(TextFieldConstant.TF_READONLY, readOnly);
+		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
+		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
+		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
+		configuration.setPropertyByName(TextFieldConstant.TF_DEBUGID, debugId);
+		configuration.setPropertyByName(TextFieldConstant.PROPERTY_BY_FIELD_NAME, propertyByName);
 		return configuration;
 	}
 
