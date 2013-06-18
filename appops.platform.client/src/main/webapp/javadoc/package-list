@@ -6,6 +6,7 @@ in.appops.client.common.core
 in.appops.client.common.event
 in.appops.client.common.event.handlers
 in.appops.client.common.fields
+in.appops.client.common.fields.date
 in.appops.client.common.fields.slider
 in.appops.client.common.fields.slider.field
 in.appops.client.common.fields.suggestion
