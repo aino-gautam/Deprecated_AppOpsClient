@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
-Field class to represent a {@TextBox}, {@TextArea} or {@PasswordTextBox}
+Field class to represent a TextBox, TextArea or PasswordTextBox
 
 <h3>CSS Style Rules</h3>
 <ul class='css'>
