@@ -94,7 +94,7 @@ public class ActionWidget extends Composite implements Configurable{
 				applyConfiguration();
 			}
 			if(widgetType == ActionWidgetType.LABEL){
-				actionImage.createField();
+				actionImage.create();
 			}
 			
 		} catch (Exception e) {

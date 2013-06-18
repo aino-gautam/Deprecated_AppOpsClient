@@ -34,7 +34,7 @@ public class CheckboxField extends CheckBox implements Field,ClickHandler{
 	}
 
 	@Override
-	public void createField() throws AppOpsException {
+	public void create() throws AppOpsException {
 		
 		if(getConfiguration() == null)
 			throw new AppOpsException("CheckBox configuration unavailable");
@@ -51,12 +51,12 @@ public class CheckboxField extends CheckBox implements Field,ClickHandler{
 	}
 
 	@Override
-	public void clearField() {
+	public void clear() {
 		this.setValue(false);
 	}
 
 	@Override
-	public void resetField() {
+	public void reset() {
 		this.setValue(Boolean.valueOf(getFieldValue()));
 	}
 
@@ -88,5 +88,11 @@ public class CheckboxField extends CheckBox implements Field,ClickHandler{
 			fieldEvent.setEventType(FieldEvent.CHECKBOX_DESELECT);
 		}
 		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+	}
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
+		
 	}
 }

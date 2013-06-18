@@ -39,7 +39,7 @@ public class LinkField extends Composite implements Field {
 	 * @throws AppOpsException 
 	 */
 	@Override
-	public void createField() throws AppOpsException{
+	public void create() throws AppOpsException{
 		if(getConfiguration() == null)
 			throw new AppOpsException("LinkField configuration unavailable");
 		
@@ -73,7 +73,7 @@ public class LinkField extends Composite implements Field {
 	 * clears the field if it has any values
 	 */
 	@Override
-	public void clearField() {
+	public void clear() {
 		if(getConfiguration().getPropertyByName(LINKFIELD_TYPE).toString().equalsIgnoreCase(LINKFIELDTYPE_HYPERLINK))
 			hyperLink.setText("");
 		else if(getConfiguration().getPropertyByName(LINKFIELD_TYPE).toString().equalsIgnoreCase(LINKFIELDTYPE_ANCHOR))
@@ -84,7 +84,7 @@ public class LinkField extends Composite implements Field {
 	 * resets the field to the original value that has been set via setFieldValue()
 	 */
 	@Override
-	public void resetField() {
+	public void reset() {
 		if(getConfiguration().getPropertyByName(LINKFIELD_TYPE).toString().equalsIgnoreCase(LINKFIELDTYPE_HYPERLINK))
 			hyperLink.setText(getFieldValue());
 		else if(getConfiguration().getPropertyByName(LINKFIELD_TYPE).toString().equalsIgnoreCase(LINKFIELDTYPE_ANCHOR))
@@ -125,5 +125,11 @@ public class LinkField extends Composite implements Field {
 			return anchor;
 		}
 		return null;
+	}
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
+		
 	}
 }

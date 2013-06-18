@@ -122,7 +122,7 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 						  LabelField label = new LabelField();
 							label.setFieldValue("No contacts are available for current space..");
 							label.setConfiguration(getLabelFieldConfiguration(true, "messageNotificationLabel", null, null));
-							label.createField();
+							label.create();
 							
 							mainPanel.add(label);
 					  }
@@ -243,7 +243,7 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 				
 				labelField.setConfiguration(labelConfig);
 				try {
-					labelField.createField();
+					labelField.create();
 				} catch (AppOpsException e1) {
 					e1.printStackTrace();
 				}
@@ -274,7 +274,7 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 					labelField.setFieldValue("Loading messages ...");
 				
 				labelField.setConfiguration(labelConfig);
-				labelField.createField();
+				labelField.create();
 				
 			
 				horizontalPanel.add(labelField);

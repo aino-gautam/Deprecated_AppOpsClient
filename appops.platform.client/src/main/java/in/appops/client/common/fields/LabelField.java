@@ -33,7 +33,7 @@ public class LabelField extends Label  implements Field{
 	 * @throws AppOpsException 
 	 */
 	@Override
-	public void createField() throws AppOpsException{
+	public void create() throws AppOpsException{
 		if(getConfiguration() == null)
 			throw new AppOpsException(" LabelField configuration unavailable");
 		
@@ -51,7 +51,7 @@ public class LabelField extends Label  implements Field{
 	 * clears the field if it has any values
 	 */
 	@Override
-	public void clearField() {
+	public void clear() {
 		this.setText("");
 	}
 	
@@ -59,7 +59,7 @@ public class LabelField extends Label  implements Field{
 	 * resets the field to the original value that has been set via setFieldValue()
 	 */
 	@Override
-	public void resetField() {
+	public void reset() {
 		this.setText(getFieldValue());
 	}
 	
@@ -86,6 +86,12 @@ public class LabelField extends Label  implements Field{
 
 	@Override
 	public void onFieldEvent(FieldEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void configure() {
 		// TODO Auto-generated method stub
 		
 	}

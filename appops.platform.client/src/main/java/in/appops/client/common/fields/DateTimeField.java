@@ -65,7 +65,7 @@ public class DateTimeField extends Composite implements Field{
 	}
 
 	@Override
-	public void createField() throws AppOpsException {
+	public void create() throws AppOpsException {
 		if(getConfiguration() == null)
 			throw new AppOpsException("DateTimeField configuration unavailable");
 		fieldMode = getConfiguration().getPropertyByName(DATETIMEFIELD_MODE).toString();
@@ -187,13 +187,13 @@ public class DateTimeField extends Composite implements Field{
 	}
 
 	@Override
-	public void clearField() {
+	public void clear() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void resetField() {
+	public void reset() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -220,7 +220,7 @@ public class DateTimeField extends Composite implements Field{
 				LabelField label = new LabelField();
 				label.setFieldValue("Time: ");
 				label.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-				label.createField();
+				label.create();
 				
 				LabelField valueLabel = new LabelField();
 				
@@ -228,22 +228,22 @@ public class DateTimeField extends Composite implements Field{
 					
 					valueLabel.setFieldValue(" "+timeOnlyValue+" hours");
 					valueLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-					valueLabel.createField();
+					valueLabel.create();
 				}else if(getConfiguration().getPropertyByName(SHORT_MINUTE)!=null){
 					
 					valueLabel.setFieldValue(" "+timeOnlyValue+" minutes");
 					valueLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-					valueLabel.createField();
+					valueLabel.create();
 				}else if(getConfiguration().getPropertyByName(SHORT_SECONDS)!=null){
 					
 					valueLabel.setFieldValue(" "+timeOnlyValue+" secs.");
 					valueLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-					valueLabel.createField();
+					valueLabel.create();
 				}else if(getConfiguration().getPropertyByName(Full_Time)!=null){
 					
 					valueLabel.setFieldValue(" "+timeOnlyValue+" hh:mm");
 					valueLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-					valueLabel.createField();
+					valueLabel.create();
 				}
 				
 				
@@ -257,12 +257,12 @@ public class DateTimeField extends Composite implements Field{
 				LabelField label = new LabelField();
 				label.setFieldValue("Date Time: ");
 				label.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-				label.createField();
+				label.create();
 				
 				LabelField valueLabel = new LabelField();
 				valueLabel.setFieldValue(" "+dateTimeOnlyValue);
 				valueLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-				valueLabel.createField();
+				valueLabel.create();
 				
 				selectedFieldValuePanel.add(label);
 				selectedFieldValuePanel.add(valueLabel);
@@ -274,12 +274,12 @@ public class DateTimeField extends Composite implements Field{
 				LabelField label = new LabelField();
 				label.setFieldValue("Date: ");
 				label.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-				label.createField();
+				label.create();
 				
 				LabelField valueLabel = new LabelField();
 				valueLabel.setFieldValue(" "+dateOnlyValue);
 				valueLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-				valueLabel.createField();
+				valueLabel.create();
 				selectedFieldValuePanel.add(label);
 				selectedFieldValuePanel.add(valueLabel);
 				DOM.setStyleAttribute(selectedFieldValuePanel.getElement(), "padding", "10px");
@@ -352,5 +352,11 @@ public class DateTimeField extends Composite implements Field{
 		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
 		configuration.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
 		return configuration;
+	}
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
+		
 	}
 }

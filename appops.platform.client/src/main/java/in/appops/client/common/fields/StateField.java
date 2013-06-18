@@ -49,7 +49,7 @@ public class StateField extends Composite implements Field, ChangeHandler{
 	}
 	
 	@Override
-	public void createField() throws AppOpsException {
+	public void create() throws AppOpsException {
 		if(getConfiguration() == null)
 			throw new AppOpsException("Statefield configuration unavailable");
 		
@@ -62,22 +62,22 @@ public class StateField extends Composite implements Field, ChangeHandler{
 			if(fieldType.equalsIgnoreCase(STATEFIELDTYPE_NUMERICRANGE)){
 				NumericRangeSliderField numericRangeSliderField = new NumericRangeSliderField();
 				numericRangeSliderField.setConfiguration(getConfiguration());
-				numericRangeSliderField.createField();
+				numericRangeSliderField.create();
 				initWidget(numericRangeSliderField);
 			}else if(fieldType.equalsIgnoreCase(STATEFIELDTYPE_STRINGRANGE)){
 				StringRangeSliderField stringRangeSliderField = new StringRangeSliderField();
 				stringRangeSliderField.setConfiguration(getConfiguration());
-				stringRangeSliderField.createField();
+				stringRangeSliderField.create();
 				initWidget(stringRangeSliderField);
 			}else{
 				if(fieldType.equalsIgnoreCase(STATEFIELDTYPE_LIST)){
 					ListBoxField listBoxField = new ListBoxField();
 					listBoxField.setConfiguration(getConfiguration());
-					listBoxField.createField();
+					listBoxField.create();
 				}else if(fieldType.equalsIgnoreCase(STATEFIELDTYPE_COMBO)){
 					ComboBoxField comboBoxField = new ComboBoxField();
 					comboBoxField.setConfiguration(getConfiguration());
-					comboBoxField.createField();
+					comboBoxField.create();
 				}
 				if(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS) != null)
 					listBox.setStylePrimaryName(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS).toString());
@@ -121,12 +121,12 @@ public class StateField extends Composite implements Field, ChangeHandler{
 	}
 
 	@Override
-	public void clearField() {
+	public void clear() {
 		
 	}
 
 	@Override
-	public void resetField() {
+	public void reset() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -201,6 +201,12 @@ public class StateField extends Composite implements Field, ChangeHandler{
 
 	@Override
 	public void onFieldEvent(FieldEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void configure() {
 		// TODO Auto-generated method stub
 		
 	}

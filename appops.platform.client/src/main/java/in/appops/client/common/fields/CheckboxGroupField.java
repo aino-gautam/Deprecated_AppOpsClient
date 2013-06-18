@@ -49,7 +49,7 @@ public class CheckboxGroupField extends Composite implements Field{
 	}
 
 	@Override
-	public void createField() throws AppOpsException {
+	public void create() throws AppOpsException {
 		 
 		if(getConfiguration() == null)
 			throw new AppOpsException("CheckboxGroupField configuration unavailable");
@@ -73,7 +73,7 @@ public class CheckboxGroupField extends Composite implements Field{
 	}
 
 	@Override
-	public void clearField() {
+	public void clear() {
 		if(checkboxSelectMode.equals(CHECKBOX_SINGLESELECT)) {
 			
 		}else if(checkboxSelectMode.equals(CHECKBOX_MULTISELECT)) {
@@ -82,7 +82,7 @@ public class CheckboxGroupField extends Composite implements Field{
 	}
 
 	@Override
-	public void resetField() {
+	public void reset() {
 		if(checkboxSelectMode.equals(CHECKBOX_SINGLESELECT)) {
 			
 		}else if(checkboxSelectMode.equals(CHECKBOX_MULTISELECT)) {
@@ -174,5 +174,11 @@ public class CheckboxGroupField extends Composite implements Field{
 			}
 		}
 		return map;
+	}
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
+		
 	}
 }

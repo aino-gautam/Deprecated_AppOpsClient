@@ -86,7 +86,7 @@ public class ContactSelector extends Composite implements SelectionEventHandler,
 				nearByContact.setFieldValue("Contact Near You");
 				Configuration config = getLabelFieldConfiguration(true, "contactSelectortitleLabel", null, null);
 				nearByContact.setConfiguration(config);
-				nearByContact.createField();
+				nearByContact.create();
 				nearByContactFlowPanel = new FlowPanel();
 				nearByContactFlowPanel.setSize("100%", "100%");
 				innerHorizonPanel.add(nearByContactFlowPanel);
@@ -104,7 +104,7 @@ public class ContactSelector extends Composite implements SelectionEventHandler,
 				yourContact.setFieldValue("Your Contacts");
 				Configuration config = getLabelFieldConfiguration(true, "contactSelectortitleLabel", null, null);
 				yourContact.setConfiguration(config);
-				yourContact.createField();
+				yourContact.create();
 				yourContactFlowPanel = new FlowPanel();
 				yourContactFlowPanel.setSize("100%", "100%");
 				innerHorizonPanel.add(yourContactFlowPanel);
@@ -122,7 +122,7 @@ public class ContactSelector extends Composite implements SelectionEventHandler,
 				contactMayKnown.setFieldValue("Contacts you may known");
 				Configuration config = getLabelFieldConfiguration(true, "contactSelectortitleLabel", null, null);
 				contactMayKnown.setConfiguration(config);
-				contactMayKnown.createField();
+				contactMayKnown.create();
 				contactMayKnownFlowPanel = new FlowPanel();
 				contactMayKnownFlowPanel.setSize("100%", "100%");
 				innerHorizonPanel.add(contactMayKnownFlowPanel);

@@ -100,7 +100,7 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 	public void createContactBoxField(){
 		
 		try {
-			contactBoxField.createField();
+			contactBoxField.create();
 		} catch (AppOpsException e) {
 			e.printStackTrace();
 		}
@@ -160,7 +160,7 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 
 		try {
 			intelliThoughtField.setConfiguration(intelliFieldConf);
-			intelliThoughtField.createField();
+			intelliThoughtField.create();
 			
 			if(actionContext != null && actionContext.getIntelliThought() != null){
 				IntelliThought intelliThought = actionContext.getIntelliThought();
@@ -412,7 +412,7 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 			Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 			sendingMessageLabelField.setFieldValue("Sending message ...");
 			sendingMessageLabelField.setConfiguration(labelConfig);
-			sendingMessageLabelField.createField();
+			sendingMessageLabelField.create();
 			
 		}catch(Exception e){
 			e.printStackTrace();
@@ -431,10 +431,10 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 			public void onSuccess(Result<Entity> result) {
 				if(result!=null){
 				 sendingMessageLabelField.setFieldValue("");
-				 sendingMessageLabelField.resetField();	
+				 sendingMessageLabelField.reset();	
 				 Entity entity=result.getOperationResult();
-				 intelliThoughtField.clearField();
-				 contactBoxField.clearField();
+				 intelliThoughtField.clear();
+				 contactBoxField.clear();
 				 PopupPanel popupPanel = new  PopupPanel();
 				 HorizontalPanel horizontalPanel = new HorizontalPanel();
 				 Label label = new Label("Message sent successfully.");

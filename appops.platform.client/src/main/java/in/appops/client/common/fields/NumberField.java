@@ -35,7 +35,7 @@ public class NumberField extends TextBox implements Field, KeyUpHandler{
 	}
 
 	@Override
-	public void createField() throws AppOpsException {
+	public void create() throws AppOpsException {
 		if(getConfiguration() == null)
 			throw new AppOpsException("NumberField configuration unavailable");
 		
@@ -51,12 +51,12 @@ public class NumberField extends TextBox implements Field, KeyUpHandler{
 	}
 
 	@Override
-	public void clearField() {
+	public void clear() {
 		this.setText("");
 	}
 
 	@Override
-	public void resetField() {
+	public void reset() {
 		this.setText(getFieldValue());
 	}
 
@@ -90,5 +90,11 @@ public class NumberField extends TextBox implements Field, KeyUpHandler{
 	public void onKeyUp(KeyUpEvent event) {
 		String text = this.getText();
 		isValid(text);
+	}
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
+		
 	}
 }

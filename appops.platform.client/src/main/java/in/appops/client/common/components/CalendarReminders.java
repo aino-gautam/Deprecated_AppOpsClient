@@ -38,7 +38,7 @@ public class CalendarReminders extends VerticalPanel implements Field{
 			dateTimeOnlyField = new DateTimeField();
 			dateTimeOnlyField.setHandler(this);
 			dateTimeOnlyField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATETIMEONLY,null));
-			dateTimeOnlyField.createField();
+			dateTimeOnlyField.create();
 			
 			dateTimePickerPlus.add(dateTimeOnlyField);
 			
@@ -119,19 +119,19 @@ public class CalendarReminders extends VerticalPanel implements Field{
 	}
 
 	@Override
-	public void createField() throws AppOpsException {
+	public void create() throws AppOpsException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void clearField() {
+	public void clear() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void resetField() {
+	public void reset() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -144,6 +144,12 @@ public class CalendarReminders extends VerticalPanel implements Field{
 
 	@Override
 	public void setFieldValue(String fieldValue) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void configure() {
 		// TODO Auto-generated method stub
 		
 	}

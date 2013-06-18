@@ -65,7 +65,7 @@ public class MessageWithUserSnippet extends Composite implements Snippet{
 				labelField.setFieldValue("user");
 			}
 			labelField.setConfiguration(labelConfig);
-			labelField.createField();
+			labelField.create();
 			vpPanel.add(labelField);
 			Configuration labelConfig1 = getLabelFieldConfiguration(true, "appops-LabelField", "userWithMessagePanelLabelContent", null);
 			LabelField messageLabelField = new LabelField();
@@ -74,7 +74,7 @@ public class MessageWithUserSnippet extends Composite implements Snippet{
 				
 				messageLabelField.setFieldValue(messageStr);
 				messageLabelField.setConfiguration(labelConfig1);
-				messageLabelField.createField();
+				messageLabelField.create();
 			}
 			HorizontalPanel panel = new HorizontalPanel();
 			panel.add(messageLabelField);
@@ -111,7 +111,7 @@ public class MessageWithUserSnippet extends Composite implements Snippet{
 		final ImageField imageField = new ImageField();
 		
 		imageField.setConfiguration(imageConfig);
-        imageField.createField();
+        imageField.create();
         imageField.addErrorHandler(new ErrorHandler() {
 			
 			@Override

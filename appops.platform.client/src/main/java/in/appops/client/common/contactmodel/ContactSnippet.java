@@ -62,7 +62,7 @@ public class ContactSnippet extends Composite implements Snippet, ClickHandler {
 		this.entity = entity;
 		String name = entity.getPropertyByName(ContactConstant.NAME).toString();
 		userName.setFieldValue(name);
-		userName.resetField();
+		userName.reset();
 	}
 
 	public FocusPanel getBasePanel() {
@@ -105,9 +105,9 @@ public class ContactSnippet extends Composite implements Snippet, ClickHandler {
 
 		try {
 			userName.setConfiguration(labelConfig);
-			userName.createField();
+			userName.create();
 			imageField.setConfiguration(imageConfig);
-            imageField.createField();
+            imageField.create();
             imageField.addErrorHandler(new ErrorHandler() {
 				
 				@Override

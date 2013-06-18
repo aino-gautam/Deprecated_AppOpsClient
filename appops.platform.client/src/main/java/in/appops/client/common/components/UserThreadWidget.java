@@ -166,7 +166,7 @@ public class UserThreadWidget extends Composite implements EventListener,ClickHa
 					labelField.setFieldValue("Loading contacts ...");
 				
 				labelField.setConfiguration(labelConfig);
-				labelField.createField();
+				labelField.create();
 				
 			//	horizontalPanel.add(imageField);
 				horizontalPanel.add(labelField);

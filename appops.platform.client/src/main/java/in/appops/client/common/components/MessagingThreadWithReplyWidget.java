@@ -1,6 +1,7 @@
 package in.appops.client.common.components;
 
 import in.appops.client.common.fields.TextField;
+import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.client.common.snippet.SnippetFactory;
 import in.appops.client.common.util.AppEnviornment;
@@ -103,9 +104,9 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 		
 		textFieldTA = new TextField();
 		textFieldTA.setFieldValue("Write a reply..");
-		textFieldTA.setConfiguration(getTextFieldConfiguration(10, false, TextField.TEXTFIELDTYPE_TEXTAREA, "appops-TextField", "replyBoxField", null));
+		textFieldTA.setConfiguration(getTextFieldConfiguration(10, false, TextFieldConstant.TFTTYPE_TXTAREA, "appops-TextField", "replyBoxField", null));
 		try {
-			textFieldTA.createField();
+			textFieldTA.create();
 		} catch (AppOpsException e) {
 			e.printStackTrace();
 		}
@@ -129,12 +130,12 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 	
 	private Configuration getTextFieldConfiguration(int visibleLines, boolean readOnly, String textFieldType, String primaryCss, String secondaryCss, String debugId){
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(TextField.TEXTFIELD_VISIBLELINES, visibleLines);
-		configuration.setPropertyByName(TextField.TEXTFIELD_READONLY, readOnly);
-		configuration.setPropertyByName(TextField.TEXTFIELD_TYPE, textFieldType);
-		configuration.setPropertyByName(TextField.TEXTFIELD_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(TextField.TEXTFIELD_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(TextField.TEXTFIELD_DEBUGID, debugId);
+		configuration.setPropertyByName(TextFieldConstant.TF_VISIBLELINES, visibleLines);
+		configuration.setPropertyByName(TextFieldConstant.TF_READONLY, readOnly);
+		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
+		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
+		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
+		configuration.setPropertyByName(TextFieldConstant.TF_DEBUGID, debugId);
 		return configuration;
 	}
 
@@ -268,7 +269,7 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 			Long parentId=(Long) key.getKeyValue();
 			 String description = null;
 			
-			description = textFieldTA.getText();
+			description = textFieldTA.getFieldText();
 			
 			Long senderd = (Long) key1.getKeyValue();
 			
@@ -314,7 +315,7 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 		if(sender instanceof Button){
 			if(sender.equals(replyButton)){
 				//textFieldTA.getText();
-				if((!textFieldTA.getText().equals("Write a reply..") || textFieldTA.getText().equals("")) && (textFieldTA.getText().equals("Write a reply..") || !textFieldTA.getText().equals(""))){	
+				if((!textFieldTA.getFieldText().equals("Write a reply..") || textFieldTA.getFieldText().equals("")) && (textFieldTA.getFieldText().equals("Write a reply..") || !textFieldTA.getFieldText().equals(""))){	
 					Entity messageParentEntity=createMessageParentEntity();
 					Entity messageEntity = createMessageEntity();
 					EntityList messageParticipantsList=createMessageParticipantsEntity(messageEntity);
@@ -322,7 +323,7 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 					replyToMessage(messageEntity,messageParentEntity,messageParticipantsList);
 				}else{
 					textFieldTA.setFieldValue("Write a reply..");
-					textFieldTA.resetField();
+					textFieldTA.reset();
 					
 				}
 			}
@@ -362,7 +363,7 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 					messageWithUserSnippet.setStylePrimaryName("flowPanelContent");
 					subVerticalPanel.add(messageWithUserSnippet);
 					textFieldTA.setFieldValue("");
-					textFieldTA.resetField();
+					textFieldTA.reset();
 				}
 			}
 		});
@@ -403,7 +404,7 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 	public void onFocus(FocusEvent event) {
 		if(event.getSource().equals(textFieldTA.getWidget())) {
 			if(((TextArea) textFieldTA.getWidget()).getText().equals("Write a reply..")) {
-				textFieldTA.clearField();
+				textFieldTA.clear();
 			} 
 		}
 	}
