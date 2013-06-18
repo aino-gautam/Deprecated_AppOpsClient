@@ -227,15 +227,13 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
 		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
 		configuration.setPropertyByName(TextFieldConstant.TF_DEBUGID, debugId);
-		//configuration.setPropertyByName(TextFieldConstant.TEXTFIELD_SUGGESTION_STYLE, TextFieldConstant.INLINE_SUGGESTION);
+		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_STYLE, TextFieldConstant.SUGGESTION_ON_TOP);
 		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_TEXT, "Enter field value");
-		configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.INLINE_ICONIC_ERROR_STYLE);
-		//configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.OUTLINE_ICONIC_ERROR_STYLE);
-		//configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.ERROR_TITLE_STYLE);
-		//configuration.setPropertyByName(TextFieldConstant.ERROR_TITLE_STYLE, TextFieldConstant.ERROR_IN_BOTTOM);
+		configuration.setPropertyByName(TextFieldConstant.VALIDATION_STYLE, TextFieldConstant.ICONIC_STYLE);
+		configuration.setPropertyByName(TextFieldConstant.ICONIC_STYLE, TextFieldConstant.ICON_WITH_ERROR_MSG);
+		configuration.setPropertyByName(TextFieldConstant.VALIDATION_MSG_POSITION, TextFieldConstant.SIDE);
 		configuration.setPropertyByName(TextFieldConstant.TF_ERROR_TEXT, "Data entered is not valid..");
-		//configuration.setPropertyByName(TextFieldConstant.TEXTFIELD_MAXLENGTH, 10);
-		
+		configuration.setPropertyByName(TextFieldConstant.TF_MAXLENGTH, 10);
 		return configuration;
 	}
 	
@@ -249,10 +247,10 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		configuration.setPropertyByName(TextFieldConstant.TF_DEBUGID, debugId);
 		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_STYLE, TextFieldConstant.SUGGESTION_ON_TOP);
 		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_TEXT, "Enter number upto 4 decimal places");
-		configuration.setPropertyByName(TextFieldConstant.NUMFIELD_TYPE, TextFieldConstant.DEC_NUMFIELD);
-		configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.VALIDATION_MSG_TITLE_STYLE);
+		configuration.setPropertyByName(TextFieldConstant.NUMFIELD_TYPE, TextFieldConstant.NUMFIELD_DEC);
+		configuration.setPropertyByName(TextFieldConstant.VALIDATION_STYLE, TextFieldConstant.ONLY_MSG);
 		configuration.setPropertyByName(TextFieldConstant.TF_ERROR_TEXT, "Not a number");
-		configuration.setPropertyByName(TextFieldConstant.TF_CORRECTVALUE_TEXT, "OK");
+		configuration.setPropertyByName(TextFieldConstant.TF_VALIDVALUE_TEXT, "OK");
 		//configuration.setPropertyByName(TextFieldConstant.TEXTFIELD_MAXLENGTH, 10);
 		
 		return configuration;
@@ -268,7 +266,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		configuration.setPropertyByName(TextFieldConstant.TF_DEBUGID, debugId);
 		//configuration.setPropertyByName(TextFieldConstant.TEXTFIELD_SUGGESTION_STYLE, TextFieldConstant.INLINE_SUGGESTION);
 		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_TEXT, "Enter field value");
-		configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.INLINE_ICONIC_ERROR_STYLE);
+		configuration.setPropertyByName(TextFieldConstant.VALIDATION_STYLE, TextFieldConstant.ICONIC_STYLE);
 		//configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.OUTLINE_ICONIC_ERROR_STYLE);
 		//configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.ERROR_TITLE_STYLE);
 		//configuration.setPropertyByName(TextFieldConstant.ERROR_TITLE_STYLE, TextFieldConstant.ERROR_IN_BOTTOM);
@@ -287,10 +285,10 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
 		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
 		configuration.setPropertyByName(TextFieldConstant.TF_DEBUGID, debugId);
-		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_STYLE, TextFieldConstant.INLINE_SUGGESTION);
+		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_STYLE, TextFieldConstant.SUGGESTIONSTYLE_INLINE);
 		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_TEXT, "Enter email");
 		//configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.INLINE_ICONIC_ERROR_STYLE);
-		configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.OUTLINE_ICONIC_ERROR_STYLE);
+		configuration.setPropertyByName(TextFieldConstant.VALIDATION_STYLE, TextFieldConstant.ONLY_MSG);
 		//configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.ERROR_TITLE_STYLE);
 		//configuration.setPropertyByName(TextFieldConstant.ERROR_TITLE_STYLE, TextFieldConstant.ERROR_IN_BOTTOM);
 		configuration.setPropertyByName(TextFieldConstant.TF_ERROR_TEXT, "Data entered is not valid..");

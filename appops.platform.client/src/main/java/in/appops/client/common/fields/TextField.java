@@ -13,8 +13,6 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
@@ -24,7 +22,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -35,10 +32,46 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Field class to represent a {@TextBox}, {@TextArea} or {@PasswordTextBox}
- * @author nairutee
- * 
- */
+Field class to represent a {@TextBox}, {@TextArea} or {@PasswordTextBox}
+
+<h3>CSS Style Rules</h3>
+<ul class='css'>
+<li>.appops-TextField { primary style }</li>
+<li>.appops-Inline-Error-TextBox { style to show inline error icon }</li>
+<li>.appops-Validation-Correct-TextBox { style set when entered value in field is correct }</li>
+<li>.appops-Error-Text { style to show error text message }</li>
+<li>.appops-suggestionText { style to show suggestion text }</li>
+<li>.appops-Error-TextBox { style to show error with red border }</li>
+</ul>
+
+<p>
+<h3>Configuration</h3>
+<a href="TextField.TextFieldConstant.html">Available configurations</a>
+</p>
+
+<p>
+<h3>Example</h3>
+
+<p>Following code results in a emailbox with inline suggestion with text "Enter email" ,If data entered in a field is not valid then it will show iconic error style reprentation.  </p>
+
+TextField emailTextField = new TextField();<br>
+Configuration conf = new Configuration();
+conf.setPropertyByName(TextFieldConstant.TF_VISIBLELINES, 1);
+conf.setPropertyByName(TextFieldConstant.TF_READONLY, false);
+conf.setPropertyByName(TextFieldConstant.TF_TYPE, TFTYPE_EMAILBOX);
+conf.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, "appops-TextField");
+conf.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, null);
+conf.setPropertyByName(TextFieldConstant.TEXTFIELD_SUGGESTION_STYLE, TextFieldConstant.INLINE_SUGGESTION);
+conf.setPropertyByName(TextFieldConstant.TF_SUGGESTION_TEXT, "Enter email");
+conf.setPropertyByName(TextFieldConstant.VALIDATION_STYLE, TextFieldConstant.ICONIC_STYLE);
+conf.setPropertyByName(TextFieldConstant.ICONIC_STYLE, TextFieldConstant.ICON_WITH_ERROR_MSG);
+conf.setPropertyByName(TextFieldConstant.VALIDATION_MSG_POSITION, TextFieldConstant.SIDE);
+conf.setPropertyByName(TextFieldConstant.TF_ERROR_TEXT, "Data entered is not valid..");
+emailTextField.setConfiguration(conf);<br>
+emailTextField.configure();<br>
+emailTextField.create();
+</p>*/
+
 public class TextField extends Composite implements Field, FocusHandler, ValueChangeHandler, BlurHandler, KeyDownHandler, MouseWheelHandler,KeyUpHandler{
 
 	private Configuration configuration;
@@ -57,6 +90,15 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	
 	static EventBus eventBus = GWT.create(SimpleEventBus.class); 
 	
+	public static final String PLACEHOLDER_CSS = "errorPlaceHolder";
+	public static final String INLINE_ERROR_CSS = "appops-Inline-Error-TextBox";
+	public static final String VALIDATIONCORRECT_CSS = "appops-Validation_Correct-TextBox";
+	public static final String VALIDATION_TEXT_CSS = "appops-Validation-Text";
+	public static final String ERROR_TEXT_CSS = "appops-Error_Text";
+	public static final String SUGGESTION_TEXT_CSS = "appops-suggestionText";
+	public static final String ERROR_ICON = "images/validation_error_icon.jpg";
+	public static final String VALIATION_ICON = "images/validation_icon.png";
+	
 	public TextField(){
 		handlerManager = new HandlerManager(this);
 	}
@@ -73,12 +115,12 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		basepanel = new DockPanel();
 		
 		basepanel.add(topWidget,DockPanel.NORTH);
-		if(getConfiguration().getPropertyByName(TextFieldConstant.ERROR_STYLE) != null) {
+		if(getConfiguration().getPropertyByName(TextFieldConstant.VALIDATION_STYLE) != null) {
 			basepanel.add(rightWidget,DockPanel.EAST);
 		}
 		basepanel.add(bottomWidget,DockPanel.SOUTH);
 		
-		rightWidget.setStylePrimaryName("errorPlaceHolder");
+		rightWidget.setStylePrimaryName(TextField.PLACEHOLDER_CSS);
 		
 		if(selectedWidget!=null)
 			basepanel.add(selectedWidget,DockPanel.CENTER);
@@ -241,7 +283,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		} else if(event.getSource() instanceof TextArea){
 			fieldEvent.setEventData(textArea.getText());
 		} 
-		//AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 	}
 
 	@Override
@@ -286,10 +328,10 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 			if (!textBox.getText().equals("")) {
 				String regexExp = null;
 				String numericFieldType = getNumericFieldType();
-				if (numericFieldType.equals(TextFieldConstant.DEC_NUMFIELD)) {
-					regexExp = TextFieldConstant.DEC_REGEX_EXP;
-				} else if (numericFieldType.equals(TextFieldConstant.INT_NUMFIELD)) {
-					regexExp = TextFieldConstant.INT_REGEX_EXP;
+				if (numericFieldType.equals(TextFieldConstant.NUMFIELD_DEC)) {
+					regexExp = getDecimalRegexExp();
+				} else if (numericFieldType.equals(TextFieldConstant.NUMFIELD_INT)) {
+					regexExp = getIntegerRegexExp();
 				}
 				
 				if (!textBox.getText().matches(regexExp)) {
@@ -302,24 +344,75 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		}
 	}
 	
+	/**
+	 * Method read regex expression from configuration. if it is not in the configuration then it returns DEC_REGEX_EXP;
+	 * @return default regex expression.
+	 */
+	private String getDecimalRegexExp(){
+		if(getConfiguration()!=null){
+			
+			String regexExp =  getConfiguration().getPropertyByName(TextFieldConstant.DEC_REGEX_EXP);
+			if(regexExp !=null){
+				return regexExp; 
+			}else{
+				return TextFieldConstant.DEC_REGEX_EXP;
+			}
+		}
+		return null;
+		
+	}
+	
+	/**
+	 * Method read regex expression from configuration. if it is not in the configuration then it returns INT_REGEX_EXP;
+	 * @return default regex expression.
+	 */
+	private String getIntegerRegexExp(){
+		
+		if(getConfiguration()!=null){
+			
+			String regexExp =  getConfiguration().getPropertyByName(TextFieldConstant.INT_REGEX_EXP);
+			if(regexExp !=null){
+				return regexExp; 
+			}else{
+				return TextFieldConstant.INT_REGEX_EXP;
+			}
+		}
+		return null;
+	}
+	
+	
 	private void removeErrorMessagesIfPresent(){
 		if (getConfiguration() != null) {
-			String errorStyle = getConfiguration().getPropertyByName(TextFieldConstant.ERROR_STYLE);
+			String errorStyle = getConfiguration().getPropertyByName(TextFieldConstant.VALIDATION_STYLE);
 			if (errorStyle != null) {
 
-				if (errorStyle.equals(TextFieldConstant.INLINE_ICONIC_ERROR_STYLE)) {
-					getWidget().removeStyleName("appops-Inline-Error-TextBox");
-					getWidget().removeStyleName("appops-Validation_Correct-TextBox");
-					getWidget().getElement().getStyle().clearProperty("background");
-				} else if (errorStyle.equals(TextFieldConstant.OUTLINE_ICONIC_ERROR_STYLE)) {
-					rightWidget.clear();
-				} else if (errorStyle.equals(TextFieldConstant.VALIDATION_MSG_TITLE_STYLE)) {
-					String errorTitleStyle = getErrorTitleStyle();
-					if (errorTitleStyle.equals(TextFieldConstant.VALIDATION_MSG_IN_BOTTOM)) {
+				if (errorStyle.equals(TextFieldConstant.ICONIC_STYLE)) {
+					String iconicType = getValidationIconicType();
+					if(iconicType.equals(TextFieldConstant.INLINE_ICONIC)){
+						getWidget().removeStyleName(TextField.INLINE_ERROR_CSS);
+						getWidget().removeStyleName(VALIDATIONCORRECT_CSS);
+						getWidget().getElement().getStyle().clearProperty("background");
+					}else if(iconicType.equals(TextFieldConstant.ICON_WITH_ERROR_MSG)){
+						
+						String msgPosition = getErrorOrValidationMsgPosition();
+						if (msgPosition.equals(TextFieldConstant.UNDER)) {
+							bottomWidget.clear();
+							bottomWidget.add(getIconWithMsg(getFieldValidationIconBlobId(),null));
+						} else if (msgPosition.equals(TextFieldConstant.TOP)) {
+							topWidget.clear();
+							topWidget.add(getIconWithMsg(getFieldValidationIconBlobId(),null));
+						} else if (msgPosition.equals(TextFieldConstant.SIDE)) {
+							rightWidget.clear();
+							rightWidget.add(getIconWithMsg(getFieldValidationIconBlobId(),null));
+						}
+					}
+				}else if (errorStyle.equals(TextFieldConstant.ONLY_MSG)) {
+					String msgPosition = getErrorOrValidationMsgPosition();
+					if (msgPosition.equals(TextFieldConstant.UNDER)) {
 						bottomWidget.clear();
-					} else if (errorTitleStyle.equals(TextFieldConstant.VALIDATION_MSG_ON_TOP)) {
+					} else if (msgPosition.equals(TextFieldConstant.TOP)) {
 						topWidget.clear();
-					} else if (errorTitleStyle.equals(TextFieldConstant.VALIDATION_MSG_ON_RIGHT)) {
+					} else if (msgPosition.equals(TextFieldConstant.SIDE)) {
 						rightWidget.clear();
 					}
 				}
@@ -552,19 +645,19 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		
 			if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX)
 					|| fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC)){
-				if(textBox.getText().length() == 0 && getFieldSuggestionStyle().equals(TextFieldConstant.INLINE_SUGGESTION))
+				if(textBox.getText().length() == 0 && getFieldSuggestionStyle().equals(TextFieldConstant.SUGGESTIONSTYLE_INLINE))
 					setFieldSuggestionTitle();
 			}else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX)){
-				if(passwordTextBox.getText().length() == 0 && getFieldSuggestionStyle().equals(TextFieldConstant.INLINE_SUGGESTION))
+				if(passwordTextBox.getText().length() == 0 && getFieldSuggestionStyle().equals(TextFieldConstant.SUGGESTIONSTYLE_INLINE))
 					setFieldSuggestionTitle();
 			}else{
-				if(textArea.getText().length() == 0 && getFieldSuggestionStyle().equals(TextFieldConstant.INLINE_SUGGESTION))
+				if(textArea.getText().length() == 0 && getFieldSuggestionStyle().equals(TextFieldConstant.SUGGESTIONSTYLE_INLINE))
 					setFieldSuggestionTitle();
 			}
 	}
 	
 	/**
-	 * Method will show suggestion title based on the suggestion style i.e inline/top/bottom set in the configuration. 
+	 * Method will show suggestion title based on the suggestion style i.e inline/top/bottom which is set in the configuration. 
 	 */
 	public void setFieldSuggestionTitle(){
 		
@@ -577,7 +670,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 				if (suggestionTitle != null) {
 					Label suggestionLabel = new Label(suggestionTitle);
 					suggestionLabel.setStylePrimaryName(getFieldSuggestionTitleCss());
-					if (suggestionStyle.equals(TextFieldConstant.INLINE_SUGGESTION)) {
+					if (suggestionStyle.equals(TextFieldConstant.SUGGESTIONSTYLE_INLINE)) {
 						if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX)
 								|| fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC)){
 							textBox.setText(suggestionTitle);
@@ -614,7 +707,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 			if(validationIconBlobId !=null){
 				return validationIconBlobId;
 			}else{
-				return "images/validation_icon.png";
+				return TextField.VALIATION_ICON;
 			}
 		}
 		return null;
@@ -633,7 +726,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 			if(errorIconBlobId !=null){
 				return errorIconBlobId;
 			}else{
-				return "images/validation_error_icon.jpg";
+				return TextField.ERROR_ICON;
 			}
 		}
 		return null;
@@ -646,11 +739,11 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	private String getFieldSuggestionTitleCss() {
 		if (getConfiguration() != null) {
 
-			String suggestionTitleCss = getConfiguration().getPropertyByName(TextFieldConstant.SUGGESTION_TITLE_CSS);
+			String suggestionTitleCss = getConfiguration().getPropertyByName(TextFieldConstant.SUGGESTION_TEXT_CSS);
 			if (suggestionTitleCss != null) {
 				return suggestionTitleCss;
 			} else {
-				return "suggestionText";
+				return TextField.SUGGESTION_TEXT_CSS;
 			}
 		}
 		return null;
@@ -720,19 +813,29 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	 * Method will show error title based on the error style i.e iconic/title set in the configuration. 
 	 */
 	
-	private ImageField getImageField(String blobId,String displayText){
+	private HorizontalPanel getIconWithMsg(String blobId,String displayText){
+		
+		HorizontalPanel panel = new HorizontalPanel();
+		
 		Configuration conf = new Configuration();
 		conf.setPropertyByName(ImageField.IMAGEFIELD_BLOBID, blobId);
-		if(displayText!=null)
-			conf.setPropertyByName(ImageField.IMAGEFIELD_DISPLAYTEXT,displayText );
+		
 		ImageField imageField = new ImageField();
 		imageField.setConfiguration(conf);
+		
+		panel.add(imageField);
+		if(displayText!=null){
+			Label lbl = new Label(displayText);
+			lbl.setStylePrimaryName(TextField.ERROR_TEXT_CSS);
+			panel.add(lbl);
+		}
+		
 		try {
 			imageField.create();
 		} catch (AppOpsException e) {
 			
 		}
-		return imageField;
+		return panel;
 		
 	}
 	
@@ -743,30 +846,46 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	public void setFieldValidationMessage() {
 
 		if (getConfiguration() != null) {
-			String errorStyle = getConfiguration().getPropertyByName(TextFieldConstant.ERROR_STYLE);
+			String errorStyle = getConfiguration().getPropertyByName(TextFieldConstant.VALIDATION_STYLE);
 			if (errorStyle != null) {
 
-				if (errorStyle.equals(TextFieldConstant.INLINE_ICONIC_ERROR_STYLE)) {
-					getWidget().removeStyleName("appops-Inline-Error-TextBox");
-					getWidget().addStyleName("appops-Validation_Correct-TextBox");
-					getWidget().getElement().getStyle().setProperty("background", "white url("+ getFieldValidationIconBlobId()+") no-repeat right	center");
-				} else if (errorStyle.equals(TextFieldConstant.OUTLINE_ICONIC_ERROR_STYLE)) {
-					rightWidget.clear();
-					rightWidget.add(getImageField(getFieldValidationIconBlobId(),null));
-				} else if (errorStyle.equals(TextFieldConstant.VALIDATION_MSG_TITLE_STYLE)) {
+				if (errorStyle.equals(TextFieldConstant.ICONIC_STYLE)) {
+					
+					String iconicType = getValidationIconicType();
+					if(iconicType.equals(TextFieldConstant.INLINE_ICONIC)){
+						getWidget().removeStyleName(TextField.INLINE_ERROR_CSS);
+						getWidget().addStyleName(TextField.VALIDATIONCORRECT_CSS);
+						getWidget().getElement().getStyle().setProperty("background", "white url("+ getFieldValidationIconBlobId()+") no-repeat right	center");
+					
+					}else if(iconicType.equals(TextFieldConstant.ICON_WITH_ERROR_MSG)){
+						
+						String msgPosition = getErrorOrValidationMsgPosition();
+						if (msgPosition.equals(TextFieldConstant.UNDER)) {
+							bottomWidget.clear();
+							bottomWidget.add(getIconWithMsg(getFieldValidationIconBlobId(),null));
+						} else if (msgPosition.equals(TextFieldConstant.TOP)) {
+							topWidget.clear();
+							topWidget.add(getIconWithMsg(getFieldValidationIconBlobId(),null));
+						} else if (msgPosition.equals(TextFieldConstant.SIDE)) {
+							rightWidget.clear();
+							rightWidget.add(getIconWithMsg(getFieldValidationIconBlobId(),null));
+						}
+					}
+					
+				}  else if (errorStyle.equals(TextFieldConstant.ONLY_MSG)) {
 					
 					String correctValueText = getFieldCorrectValueText();
 					Label correctTextLbl = new Label(correctValueText);
-					correctTextLbl.setStylePrimaryName("appops-Validation_Text");
+					correctTextLbl.setStylePrimaryName(VALIDATION_TEXT_CSS);
 					
-					String errorTitleStyle = getErrorTitleStyle();
-					if (errorTitleStyle.equals(TextFieldConstant.VALIDATION_MSG_IN_BOTTOM)) {
+					String msgPosition = getErrorOrValidationMsgPosition();
+					if (msgPosition.equals(TextFieldConstant.UNDER)) {
 						bottomWidget.clear();
 						bottomWidget.add(correctTextLbl);
-					} else if (errorTitleStyle.equals(TextFieldConstant.VALIDATION_MSG_ON_TOP)) {
+					} else if (msgPosition.equals(TextFieldConstant.TOP)) {
 						topWidget.clear();
 						topWidget.add(correctTextLbl);
-					} else if (errorTitleStyle.equals(TextFieldConstant.VALIDATION_MSG_ON_RIGHT)) {
+					} else if (msgPosition.equals(TextFieldConstant.SIDE)) {
 						rightWidget.clear();
 						rightWidget.add(correctTextLbl);
 					}
@@ -797,12 +916,40 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	public String getFieldCorrectValueText(){
 		
 		if(getConfiguration()!=null){
-			String correctValueText = getConfiguration().getPropertyByName(TextFieldConstant.TF_CORRECTVALUE_TEXT);
+			String correctValueText = getConfiguration().getPropertyByName(TextFieldConstant.TF_VALIDVALUE_TEXT);
 			if(correctValueText !=null){
 				
 				return correctValueText;
 			}else{
 				return "OK";
+			}
+		}
+		return null;
+	}
+	
+	public String getValidationIconicType(){
+		
+		if(getConfiguration()!=null){
+			String iconicType = getConfiguration().getPropertyByName(TextFieldConstant.ICONIC_STYLE);
+			if(iconicType !=null){
+				
+				return iconicType;
+			}else{
+				return TextFieldConstant.SIDE;
+			}
+		}
+		return null;
+	}
+	
+	public String getValidationStyle(){
+		
+		if(getConfiguration()!=null){
+			String validationStyle = getConfiguration().getPropertyByName(TextFieldConstant.VALIDATION_STYLE);
+			if(validationStyle !=null){
+				
+				return validationStyle;
+			}else{
+				return TextFieldConstant.ICONIC_STYLE;
 			}
 		}
 		return null;
@@ -816,51 +963,62 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 
 		if (getConfiguration() != null) {
 
-			String errorStyle = getConfiguration().getPropertyByName(TextFieldConstant.ERROR_STYLE);
+			String errorStyle = getValidationStyle();
 
 			if (errorStyle != null) {
-				if (errorStyle.equals(TextFieldConstant.INLINE_ICONIC_ERROR_STYLE)) {
-					if (getFieldErrorIconBlobId() != null) {
-
-						getWidget().addStyleName("appops-Inline-Error-TextBox");
-						getWidget().getElement().getStyle().setProperty("background","white url(" + getFieldErrorIconBlobId()+ ") no-repeat right center");
+				if (errorStyle.equals(TextFieldConstant.ICONIC_STYLE)) {
+					String iconicType = getValidationIconicType();
+					if(iconicType.equals(TextFieldConstant.INLINE_ICONIC)){
+						if (getFieldErrorIconBlobId() != null) {
+							getWidget().addStyleName(TextField.INLINE_ERROR_CSS);
+							getWidget().getElement().getStyle().setProperty("background","white url(" + getFieldErrorIconBlobId()+ ") no-repeat right center");
+						}
+						getWidget().setTitle(getFieldErrorText());
+					}else if(iconicType.equals(TextFieldConstant.ICON_WITH_ERROR_MSG)){
+						
+						String errorText = getFieldErrorText();
+						String msgPosition = getErrorOrValidationMsgPosition();
+						if (msgPosition.equals(TextFieldConstant.UNDER)) {
+							bottomWidget.clear();
+							bottomWidget.add(getIconWithMsg(getFieldErrorIconBlobId(),errorText));
+						} else if (msgPosition.equals(TextFieldConstant.TOP)) {
+							topWidget.clear();
+							topWidget.add(getIconWithMsg(getFieldErrorIconBlobId(),errorText));
+						} else if (msgPosition.equals(TextFieldConstant.SIDE)) {
+							rightWidget.clear();
+							rightWidget.add(getIconWithMsg(getFieldErrorIconBlobId(),errorText));
+						}
 					}
-					getWidget().setTitle(getFieldErrorText());
-				} else if (errorStyle.equals(TextFieldConstant.OUTLINE_ICONIC_ERROR_STYLE)) {
-					rightWidget.clear();
-					if (getFieldErrorIconBlobId() != null) {
-						rightWidget.add(getImageField(getFieldErrorIconBlobId(),getFieldErrorText()));
-					}
-				} else if (errorStyle.equals(TextFieldConstant.VALIDATION_MSG_TITLE_STYLE)) {
-					String errorTitleStyle = getErrorTitleStyle();
+				} else if (errorStyle.equals(TextFieldConstant.ONLY_MSG)) {
+					String msgPosition = getErrorOrValidationMsgPosition();
 					String errorText = getFieldErrorText();
 					Label errorLabel = new Label(errorText);
 
-					if (errorTitleStyle.equals(TextFieldConstant.VALIDATION_MSG_IN_BOTTOM)) {
+					if (msgPosition.equals(TextFieldConstant.UNDER)) {
 						bottomWidget.clear();
 						bottomWidget.add(errorLabel);
-					} else if (errorTitleStyle.equals(TextFieldConstant.VALIDATION_MSG_ON_TOP)) {
+					} else if (msgPosition.equals(TextFieldConstant.TOP)) {
 						topWidget.clear();
 						topWidget.add(errorLabel);
-					} else if (errorTitleStyle.equals(TextFieldConstant.VALIDATION_MSG_ON_RIGHT)) {
+					} else if (msgPosition.equals(TextFieldConstant.SIDE)) {
 						rightWidget.clear();
 						rightWidget.add(errorLabel);
 					}
-					errorLabel.setStylePrimaryName("appops-Error_Text");
+					errorLabel.setStylePrimaryName(TextField.ERROR_TEXT_CSS);
 				}
 			}
 		}
 
 	}
 	
-	private String getErrorTitleStyle(){
+	private String getErrorOrValidationMsgPosition() {
 		
 		if(getConfiguration()!=null){
-			String errorTitleStyle = getConfiguration().getPropertyByName(TextFieldConstant.VALIDATION_MSG_TITLE_STYLE);
-			if(errorTitleStyle !=null){
-				return errorTitleStyle;
+			String msgPosition = getConfiguration().getPropertyByName(TextFieldConstant.VALIDATION_MSG_POSITION);
+			if(msgPosition !=null){
+				return msgPosition;
 			}else{
-				return TextFieldConstant.VALIDATION_MSG_ON_RIGHT;
+				return TextFieldConstant.SIDE;
 			}
 		}
 		return null;
@@ -873,13 +1031,14 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 			if(numFieldType !=null){
 				return numFieldType;
 			}else{
-				return TextFieldConstant.INT_NUMFIELD;
+				return TextFieldConstant.NUMFIELD_INT;
 			}
 		}
 		return null;
 	}
 	
 	public interface TextFieldConstant{
+		
 		public static final String TF_VISIBLELINES = "fieldVisibleLines";
 		public static final String TF_READONLY = "fieldReadOnly";
 		public static final String TF_PRIMARYCSS = "fieldPrimaryCss";
@@ -892,39 +1051,45 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		public static final String TFTTYPE_TXTAREA = "txtarea";
 		public static final String TFTYPE_EMAILBOX = "emailbox";
 		public static final String TFTYPE_NUMERIC = "numeric";
-		public static final String PROPERTY_BY_FIELD_NAME = "propertyByFieldName";
-		public static final String TF_MAXLENGTH = "fieldMaxlength";
-		public static final String TF_MINLENGTH = "fieldMinlength";
-		public static final String TF_CHARWIDTH = "fieldCharWidth";
 		
-		public static final String TF_SINGLELINE = "singleLineTextField";
-		public static final String TF_MULTILINE = "multilineTextField";
+		public static final String TF_MAXLENGTH = "maxlength";
+		public static final String TF_MINLENGTH = "minlength";
+		public static final String TF_CHARWIDTH = "charWidth";
 		
-		public static final String ERROR_STYLE = "errorStyle";
-		public static final String INLINE_ICONIC_ERROR_STYLE = "inlineIconicErrorStyle";
-		public static final String VALIDATION_ICON_BLOBID = "iconBlobId";
+		public static final String VALIDATION_STYLE = "validationStyle";
+		public static final String ICONIC_STYLE = "iconicStyle";
+		public static final String ONLY_MSG = "msgStyle";
+		
+		public static final String INLINE_ICONIC = "inlineIconic";
+		public static final String ICON_WITH_ERROR_MSG = "iconWithMsg";
+		
+		public static final String VALIDATION_MSG_POSITION = "msgPosition";
+		public static final String UNDER = "under";
+		public static final String TOP = "top";
+		public static final String SIDE = "side";
+		
+		public static final String TF_ERROR_TEXT = "fieldErrorText";
+		public static final String TF_VALIDVALUE_TEXT = "fieldValidValueText";
+		
 		public static final String ERROR_ICON_BLOBID = "errorIconBlobId";
-		public static final String OUTLINE_ICONIC_ERROR_STYLE = "outlineIconicErrorStyle";
-		public static final String VALIDATION_MSG_TITLE_STYLE = "validationMsgTitleStyle";
-		public static final String TF_ERROR_TEXT = "errorTitleText";
-		public static final String TF_CORRECTVALUE_TEXT = "correctValueText";
-		public static final String VALIDATION_MSG_IN_BOTTOM = "validationMsgInBottom";
-		public static final String VALIDATION_MSG_ON_TOP = "validationMsgOnTop";
-		public static final String VALIDATION_MSG_ON_RIGHT = "validationMsgOnRight";
+		public static final String VALIDATION_ICON_BLOBID = "iconBlobId";
 		
 		public static final String TF_SUGGESTION_STYLE = "suggestionStyle";
-		public static final String SUGGESTION_TITLE_CSS = "suggestionTitleCss";
-		public static final String INLINE_SUGGESTION = "inlineSuggestion";
+		public static final String SUGGESTIONSTYLE_INLINE = "inlineSuggestion";
 		public static final String SUGGESTION_ON_TOP = "suggestionOnTop";
 		public static final String SUGGESTION_IN_BOTTOM = "suggestionInBottom";
 		public static final String TF_SUGGESTION_TEXT = "suggestionText";
+		public static final String SUGGESTION_TEXT_CSS = "suggestionTitleCss";
 		
 		public static final String NUMFIELD_TYPE = "numFieldType";
-		public static final String DEC_NUMFIELD = "decNumField";
-		public static final String INT_NUMFIELD = "intNumField";
+		public static final String NUMFIELD_DEC = "decNumField";
+		public static final String NUMFIELD_INT = "intNumField";
+		
 		public static final String DEC_REGEX_EXP = "^[0-9]+(\\.[0-9]{1,4})?$";
 		public static final String INT_REGEX_EXP = "[\\d]*";
 		
+		//public static final String TF_SINGLELINE = "singleLineTextField";
+		//public static final String TF_MULTILINE = "multilineTextField";
 		
 	}
 
@@ -969,15 +1134,5 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		}
 		
 	}
-
-
-
-	/*@Override
-	public void onKeyPress(KeyPressEvent event) {
-		if(!Character.isDigit(event.getCharCode()) && Character.isLetter(event.getCharCode())){
-			validateField();
-		}
-		
-	}*/
 
 }
