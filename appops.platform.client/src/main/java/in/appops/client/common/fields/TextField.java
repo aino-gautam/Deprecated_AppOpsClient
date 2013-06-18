@@ -46,7 +46,7 @@ Field class to represent a TextBox, TextArea or PasswordTextBox
 
 <p>
 <h3>Configuration</h3>
-<a href="TextField.TextFieldConstant.html">Available configurations</a>
+<a href="TextFieldConstant.html">Available configurations</a>
 </p>
 
 <p>
@@ -120,7 +120,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		}
 		basepanel.add(bottomWidget,DockPanel.SOUTH);
 		
-		rightWidget.setStylePrimaryName(TextField.PLACEHOLDER_CSS);
+		rightWidget.setStylePrimaryName(PLACEHOLDER_CSS);
 		
 		if(selectedWidget!=null)
 			basepanel.add(selectedWidget,DockPanel.CENTER);
@@ -389,7 +389,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 				if (errorStyle.equals(TextFieldConstant.ICONIC_STYLE)) {
 					String iconicType = getValidationIconicType();
 					if(iconicType.equals(TextFieldConstant.INLINE_ICONIC)){
-						getWidget().removeStyleName(TextField.INLINE_ERROR_CSS);
+						getWidget().removeStyleName(INLINE_ERROR_CSS);
 						getWidget().removeStyleName(VALIDATIONCORRECT_CSS);
 						getWidget().getElement().getStyle().clearProperty("background");
 					}else if(iconicType.equals(TextFieldConstant.ICON_WITH_ERROR_MSG)){
@@ -707,7 +707,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 			if(validationIconBlobId !=null){
 				return validationIconBlobId;
 			}else{
-				return TextField.VALIATION_ICON;
+				return VALIATION_ICON;
 			}
 		}
 		return null;
@@ -726,7 +726,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 			if(errorIconBlobId !=null){
 				return errorIconBlobId;
 			}else{
-				return TextField.ERROR_ICON;
+				return ERROR_ICON;
 			}
 		}
 		return null;
@@ -743,7 +743,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 			if (suggestionTitleCss != null) {
 				return suggestionTitleCss;
 			} else {
-				return TextField.SUGGESTION_TEXT_CSS;
+				return SUGGESTION_TEXT_CSS;
 			}
 		}
 		return null;
@@ -826,7 +826,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		panel.add(imageField);
 		if(displayText!=null){
 			Label lbl = new Label(displayText);
-			lbl.setStylePrimaryName(TextField.ERROR_TEXT_CSS);
+			lbl.setStylePrimaryName(ERROR_TEXT_CSS);
 			panel.add(lbl);
 		}
 		
@@ -853,8 +853,8 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 					
 					String iconicType = getValidationIconicType();
 					if(iconicType.equals(TextFieldConstant.INLINE_ICONIC)){
-						getWidget().removeStyleName(TextField.INLINE_ERROR_CSS);
-						getWidget().addStyleName(TextField.VALIDATIONCORRECT_CSS);
+						getWidget().removeStyleName(INLINE_ERROR_CSS);
+						getWidget().addStyleName(VALIDATIONCORRECT_CSS);
 						getWidget().getElement().getStyle().setProperty("background", "white url("+ getFieldValidationIconBlobId()+") no-repeat right	center");
 					
 					}else if(iconicType.equals(TextFieldConstant.ICON_WITH_ERROR_MSG)){
@@ -970,7 +970,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 					String iconicType = getValidationIconicType();
 					if(iconicType.equals(TextFieldConstant.INLINE_ICONIC)){
 						if (getFieldErrorIconBlobId() != null) {
-							getWidget().addStyleName(TextField.INLINE_ERROR_CSS);
+							getWidget().addStyleName(INLINE_ERROR_CSS);
 							getWidget().getElement().getStyle().setProperty("background","white url(" + getFieldErrorIconBlobId()+ ") no-repeat right center");
 						}
 						getWidget().setTitle(getFieldErrorText());
@@ -1004,7 +1004,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 						rightWidget.clear();
 						rightWidget.add(errorLabel);
 					}
-					errorLabel.setStylePrimaryName(TextField.ERROR_TEXT_CSS);
+					errorLabel.setStylePrimaryName(ERROR_TEXT_CSS);
 				}
 			}
 		}
@@ -1084,6 +1084,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		public static final String NUMFIELD_TYPE = "numFieldType";
 		public static final String NUMFIELD_DEC = "decNumField";
 		public static final String NUMFIELD_INT = "intNumField";
+		public static final String PROPERTY_BY_FIELD_NAME = "propertyByFieldName";
 		
 		public static final String DEC_REGEX_EXP = "^[0-9]+(\\.[0-9]{1,4})?$";
 		public static final String INT_REGEX_EXP = "[\\d]*";

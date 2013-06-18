@@ -32,6 +32,7 @@ import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.spacemanagement.constants.SpaceTypeConstants;
+import in.appops.showcase.web.gwt.fields.client.GroupField.GroupFieldConstant;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,6 +86,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	public static final String LIST_SPINNER = "List Spinner";
 	public static final String NUMBERFIELD = "NumberField";
 	public static final String MEDIA_UPLOAD = "Media Uploader";
+	public static final String GROUPFIELD = "GroupField";
+	
 	private Image loaderImage;
 	public FieldsShowCase() {
 		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
@@ -133,6 +136,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		listBox.addItem(NUM_SPINNER);
 		listBox.addItem(LIST_SPINNER);
 		listBox.addItem(MEDIA_UPLOAD);
+		listBox.addItem(GROUPFIELD);
 		
 		listBox.addChangeHandler(this);
 		listBox.setStylePrimaryName("fieldShowcaseBasePanel");
@@ -252,6 +256,16 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		configuration.setPropertyByName(TextFieldConstant.TF_ERROR_TEXT, "Not a number");
 		configuration.setPropertyByName(TextFieldConstant.TF_VALIDVALUE_TEXT, "OK");
 		//configuration.setPropertyByName(TextFieldConstant.TEXTFIELD_MAXLENGTH, 10);
+		
+		return configuration;
+	}
+	
+	private Configuration getGroupFieldConfiguration(){
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_CHKBOXGROUP);
+		configuration.setPropertyByName(GroupFieldConstant.GF_ALIGNMENT,GroupFieldConstant.GF_ALIGN_HORIZONTAL);
+		configuration.setPropertyByName(GroupFieldConstant.GF_LIMIT,3);
+		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, "appops-CheckBoxField");
 		
 		return configuration;
 	}
@@ -415,6 +429,17 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				//VerticalPanel textFieldConfigurationPanel =getTextboxConfigurationPanel();
 				//innerPanel.add(textFieldConfigurationPanel);
 				
+			}else if(fieldName.equals(GROUPFIELD)) {
+				GroupField groupField = new GroupField();
+				groupField.setConfiguration(getGroupFieldConfiguration());
+				groupField.configure();
+				groupField.addItemToGroup("cssStyle", true);
+				groupField.addItemToGroup("configuration", false);
+				groupField.addItemToGroup("layout", false);
+				groupField.addItemToGroup("description", false);
+				groupField.create();
+				innerPanel.add(groupField);
+				innerPanel.setCellHorizontalAlignment(groupField,HorizontalPanel.ALIGN_CENTER);
 			}else if(fieldName.equals(CHECKBOXGROUPMULTISELECT)) {
 				GroupCheckboxWidget multiSelectCheckbox = new GroupCheckboxWidget();
 				innerPanel.add(multiSelectCheckbox);
