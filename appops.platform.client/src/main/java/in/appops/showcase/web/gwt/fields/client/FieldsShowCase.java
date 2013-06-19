@@ -86,7 +86,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	public static final String LIST_SPINNER = "List Spinner";
 	public static final String NUMBERFIELD = "NumberField";
 	public static final String MEDIA_UPLOAD = "Media Uploader";
-	public static final String GROUPFIELD = "GroupField";
+	public static final String GROUPFIELD = "Group Field (Check Box)";
+	public static final String GROUPFIELDRADIO = "Group Field (Radio Button)";
 	
 	private Image loaderImage;
 	public FieldsShowCase() {
@@ -121,22 +122,23 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		listBox.addItem(EMAILBOX);
 		listBox.addItem(TEXTAREA);
 		listBox.addItem(NUMERICBOX);
-		listBox.addItem(CHECKBOXGROUPMULTISELECT);
+		/*listBox.addItem(CHECKBOXGROUPMULTISELECT);
 		listBox.addItem(CHECKBOXFIELD);
 		listBox.addItem(STATEFIELD);
 		listBox.addItem(TIME_PICKER);
 		listBox.addItem(TIME_PICKER_HOUR);
 		listBox.addItem(TIME_PICKER_MINUTE);
-		listBox.addItem(TIME_PICKER_SEC);
+		listBox.addItem(TIME_PICKER_SEC); */
 		listBox.addItem(DATE_PICKER);
-		listBox.addItem(DATETIME_PICKER);
+		/*listBox.addItem(DATETIME_PICKER);
 		listBox.addItem(LOCATIONSELECTOR);
 		listBox.addItem(NUMBERRANGE_SLIDER);
-		listBox.addItem(STRINGRANGE_SLIDER);
+		listBox.addItem(STRINGRANGE_SLIDER); */
 		listBox.addItem(NUM_SPINNER);
 		listBox.addItem(LIST_SPINNER);
-		listBox.addItem(MEDIA_UPLOAD);
+		/*listBox.addItem(MEDIA_UPLOAD);*/
 		listBox.addItem(GROUPFIELD);
+		listBox.addItem(GROUPFIELDRADIO);
 		
 		listBox.addChangeHandler(this);
 		listBox.setStylePrimaryName("fieldShowcaseBasePanel");
@@ -264,6 +266,16 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		Configuration configuration = new Configuration();
 		configuration.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_CHKBOXGROUP);
 		configuration.setPropertyByName(GroupFieldConstant.GF_ALIGNMENT,GroupFieldConstant.GF_ALIGN_HORIZONTAL);
+		configuration.setPropertyByName(GroupFieldConstant.GF_LIMIT,3);
+		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, "appops-CheckBoxField");
+		
+		return configuration;
+	}
+
+	private Configuration getGroupFieldRadioConfiguration(){
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_RADIOGROUP);
+		configuration.setPropertyByName(GroupFieldConstant.GF_ALIGNMENT,GroupFieldConstant.GF_ALIGN_VERTICAL);
 		configuration.setPropertyByName(GroupFieldConstant.GF_LIMIT,3);
 		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, "appops-CheckBoxField");
 		
@@ -432,6 +444,17 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			}else if(fieldName.equals(GROUPFIELD)) {
 				GroupField groupField = new GroupField();
 				groupField.setConfiguration(getGroupFieldConfiguration());
+				groupField.configure();
+				groupField.addItemToGroup("cssStyle", true);
+				groupField.addItemToGroup("configuration", false);
+				groupField.addItemToGroup("layout", false);
+				groupField.addItemToGroup("description", false);
+				groupField.create();
+				innerPanel.add(groupField);
+				innerPanel.setCellHorizontalAlignment(groupField,HorizontalPanel.ALIGN_CENTER);
+			} else if(fieldName.equals(GROUPFIELDRADIO)) {
+				GroupField groupField = new GroupField();
+				groupField.setConfiguration(getGroupFieldRadioConfiguration());
 				groupField.configure();
 				groupField.addItemToGroup("cssStyle", true);
 				groupField.addItemToGroup("configuration", false);
