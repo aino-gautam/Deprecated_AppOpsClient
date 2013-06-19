@@ -7,6 +7,7 @@ import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.SelectionEvent;
 import in.appops.client.common.event.handlers.SelectionEventHandler;
 import in.appops.client.common.fields.CheckboxField;
+import in.appops.client.common.fields.CheckboxField.CheckBoxFieldConstant;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.platform.core.entity.Entity;
@@ -361,7 +362,7 @@ public class ListSnippet extends Composite implements Snippet, EntityListReceive
 	
 	public Configuration getCheckboxFieldConfiguration(String text) {
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(CheckboxField.CHECKBOXFIELD_DISPLAYTEXT, text);
+		configuration.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, text);
 		return configuration;
 	}
 

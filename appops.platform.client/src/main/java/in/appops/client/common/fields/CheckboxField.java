@@ -4,6 +4,7 @@ import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
+import in.appops.showcase.web.gwt.fields.client.GroupField.GroupFieldConstant;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -13,10 +14,6 @@ public class CheckboxField extends CheckBox implements Field,ClickHandler{
 
 	private Configuration configuration;
 	private String fieldValue;
-	
-	public static final String CHECKBOXFIELD_DISPLAYTEXT = "checkBoxFieldDisplayText";
-	public static final String CHECKBOXFIELD_PRIMARYCSS = "textFieldPrimaryCss";
-	public static final String CHECKBOXFIELD_DEPENDENTCSS = "textFieldDependentCss";
 	
 	public CheckboxField(){
 		super();
@@ -35,19 +32,98 @@ public class CheckboxField extends CheckBox implements Field,ClickHandler{
 
 	@Override
 	public void create() throws AppOpsException {
-		
 		if(getConfiguration() == null)
 			throw new AppOpsException("CheckBox configuration unavailable");
+	}
+	
+	/**
+	 * Method will return the primary css applied to field.
+	 * @return
+	 */
+	public String getPrimaryCss(){
 		
-		this.setValue(Boolean.valueOf(getFieldValue()));
+		if(getConfiguration()!=null){
 			
-		if(getConfiguration().getPropertyByName(CHECKBOXFIELD_DISPLAYTEXT) != null)
-			this.setText(getConfiguration().getPropertyByName(CHECKBOXFIELD_DISPLAYTEXT).toString());
+			String primaryCss = getConfiguration().getPropertyByName(GroupFieldConstant.GF_PRIMARYCSS);
+			if(primaryCss !=null){
+				return primaryCss;
+			}else{
+				return null;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Method will return the dependent css applied to field.
+	 * @return
+	 */
+	public String getDependentCss(){
 		
-		if(getConfiguration().getPropertyByName(CHECKBOXFIELD_PRIMARYCSS) != null)
-			this.setStylePrimaryName(getConfiguration().getPropertyByName(CHECKBOXFIELD_PRIMARYCSS).toString());
-		if(getConfiguration().getPropertyByName(CHECKBOXFIELD_DEPENDENTCSS) != null)
-			this.addStyleName(getConfiguration().getPropertyByName(CHECKBOXFIELD_DEPENDENTCSS).toString());
+		if(getConfiguration()!=null){
+			
+			String primaryCss = getConfiguration().getPropertyByName(GroupFieldConstant.GF_PRIMARYCSS);
+			if(primaryCss !=null){
+				return primaryCss;
+			}else{
+				return null;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Method will return the display text of checkbox.
+	 * @return
+	 */
+	public String getDisplayText(){
+		
+		if(getConfiguration()!=null){
+			
+			String displayText = getConfiguration().getPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT);
+			if(displayText !=null){
+				return displayText;
+			}else{
+				return "";
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Method will return the display text of checkbox.
+	 * @return
+	 */
+	public String getFieldId(){
+		
+		if(getConfiguration()!=null){
+			
+			String id = getConfiguration().getPropertyByName(CheckBoxFieldConstant.CF_ID);
+			if(id !=null){
+				return id;
+			}else{
+				return getDisplayText();
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Method will check whether checkbox is checked or not.
+	 * @return
+	 */
+	public Boolean isFieldChecked(){
+		
+		if(getConfiguration()!=null){
+			
+			Boolean isChecked = getConfiguration().getPropertyByName(CheckBoxFieldConstant.CF_CHECKED);
+			if(isChecked !=null){
+				return isChecked;
+			}else{
+				return false;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -92,7 +168,24 @@ public class CheckboxField extends CheckBox implements Field,ClickHandler{
 
 	@Override
 	public void configure() {
-		// TODO Auto-generated method stub
+		
+		this.setValue(isFieldChecked());
+			
+		this.setText(getDisplayText());
+		if(getPrimaryCss()!=null)
+			this.setStylePrimaryName(getPrimaryCss());
+		if(getDependentCss()!=null)
+			this.addStyleName(getDependentCss());
+	}
+	
+	
+	public interface CheckBoxFieldConstant{
+		
+		public static final String CF_DISPLAYTEXT = "fieldDisplayText";
+		public static final String CF_ID = "fieldId";
+		public static final String CF_CHECKED = "fieldChecked";
+		public static final String CF_PRIMARYCSS = "fieldPrimaryCss";
+		public static final String CF_DEPENDENTCSS = "fieldDependentCss";
 		
 	}
 }

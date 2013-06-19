@@ -8,6 +8,7 @@ import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.CheckboxField;
+import in.appops.client.common.fields.CheckboxField.CheckBoxFieldConstant;
 import in.appops.client.common.fields.DateTimeField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.LinkField;
@@ -262,24 +263,101 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		return configuration;
 	}
 	
-	private Configuration getGroupFieldConfiguration(){
-		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_CHKBOXGROUP);
-		configuration.setPropertyByName(GroupFieldConstant.GF_ALIGNMENT,GroupFieldConstant.GF_ALIGN_HORIZONTAL);
-		configuration.setPropertyByName(GroupFieldConstant.GF_LIMIT,3);
-		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, "appops-CheckBoxField");
+	private GroupField getCheckBoxGroupField(){
 		
-		return configuration;
+		GroupField groupField = new GroupField();
+		
+		Configuration groupFieldConfig = new Configuration();
+		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_CHKBOXGROUP);
+		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_ALIGNMENT,GroupFieldConstant.GF_ALIGN_HORIZONTAL);
+		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_LIMIT,3);
+		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_CHKBOXGROUP);
+		
+		ArrayList<String> listOfItems = new ArrayList<String>();
+		listOfItems.add("chk1");
+		listOfItems.add("chk2");
+		listOfItems.add("chk3");
+		listOfItems.add("chk4");
+		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_LIST_OF_ITEMS,listOfItems);
+		
+		Configuration childConfig1 = new Configuration();
+		childConfig1.setPropertyByName(CheckBoxFieldConstant.CF_PRIMARYCSS, "appops-CheckBoxField");
+		childConfig1.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, "cssStyle");
+		childConfig1.setPropertyByName(CheckBoxFieldConstant.CF_CHECKED, true);
+		
+		Configuration childConfig2 = new Configuration();
+		childConfig2.setPropertyByName(CheckBoxFieldConstant.CF_PRIMARYCSS, "appops-CheckBoxField");
+		childConfig2.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, "configuration");
+		
+		Configuration childConfig3 = new Configuration();
+		childConfig3.setPropertyByName(CheckBoxFieldConstant.CF_PRIMARYCSS, "appops-CheckBoxField");
+		childConfig3.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, "layout");
+		
+		Configuration childConfig4 = new Configuration();
+		childConfig4.setPropertyByName(CheckBoxFieldConstant.CF_PRIMARYCSS, "appops-CheckBoxField");
+		childConfig4.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, "description");
+		
+		groupFieldConfig.setPropertyByName("chk1",childConfig1);
+		groupFieldConfig.setPropertyByName("chk2",childConfig2);
+		groupFieldConfig.setPropertyByName("chk3",childConfig3);
+		groupFieldConfig.setPropertyByName("chk4",childConfig4);
+		
+		groupField.setConfiguration(groupFieldConfig);
+		groupField.configure();
+		try {
+			groupField.create();
+		} catch (AppOpsException e) {
+		}
+		
+		return groupField;
 	}
 
-	private Configuration getGroupFieldRadioConfiguration(){
-		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_RADIOGROUP);
-		configuration.setPropertyByName(GroupFieldConstant.GF_ALIGNMENT,GroupFieldConstant.GF_ALIGN_VERTICAL);
-		configuration.setPropertyByName(GroupFieldConstant.GF_LIMIT,3);
-		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, "appops-CheckBoxField");
+	private GroupField getRadioButtonGroupField(){
 		
-		return configuration;
+		GroupField groupField = new GroupField();
+		
+		Configuration groupFieldConfig = new Configuration();
+		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_RADIOGROUP);
+		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_ALIGNMENT,GroupFieldConstant.GF_ALIGN_VERTICAL);
+		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_LIMIT,3);
+		
+		ArrayList<String> listOfItems = new ArrayList<String>();
+		listOfItems.add("radio1");
+		listOfItems.add("radio2");
+		listOfItems.add("radio3");
+		listOfItems.add("radio4");
+		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_LIST_OF_ITEMS,listOfItems);
+		
+		Configuration childConfig1 = new Configuration();
+		childConfig1.setPropertyByName(CheckBoxFieldConstant.CF_PRIMARYCSS, "appops-CheckBoxField");
+		childConfig1.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, "cssStyle");
+		childConfig1.setPropertyByName(CheckBoxFieldConstant.CF_CHECKED, true);
+		
+		Configuration childConfig2 = new Configuration();
+		childConfig2.setPropertyByName(CheckBoxFieldConstant.CF_PRIMARYCSS, "appops-CheckBoxField");
+		childConfig2.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, "configuration");
+		
+		Configuration childConfig3 = new Configuration();
+		childConfig3.setPropertyByName(CheckBoxFieldConstant.CF_PRIMARYCSS, "appops-CheckBoxField");
+		childConfig3.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, "layout");
+		
+		Configuration childConfig4 = new Configuration();
+		childConfig4.setPropertyByName(CheckBoxFieldConstant.CF_PRIMARYCSS, "appops-CheckBoxField");
+		childConfig4.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, "description");
+		
+		groupFieldConfig.setPropertyByName("radio1",childConfig1);
+		groupFieldConfig.setPropertyByName("radio2",childConfig2);
+		groupFieldConfig.setPropertyByName("radio3",childConfig3);
+		groupFieldConfig.setPropertyByName("radio4",childConfig4);
+		
+		groupField.setConfiguration(groupFieldConfig);
+		groupField.configure();
+		try {
+			groupField.create();
+		} catch (AppOpsException e) {
+		}
+		
+		return groupField;
 	}
 	
 	private Configuration getTextAreaConfiguration(int visibleLines, boolean readOnly, String textFieldType, String primaryCss, String secondaryCss, String debugId){
@@ -344,7 +422,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	
 	public Configuration getCheckboxFieldConfiguration(String text) {
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(CheckboxField.CHECKBOXFIELD_DISPLAYTEXT, text);
+		configuration.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, text);
 		return configuration;
 	}
 	
@@ -442,25 +520,11 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				//innerPanel.add(textFieldConfigurationPanel);
 				
 			}else if(fieldName.equals(GROUPFIELD)) {
-				GroupField groupField = new GroupField();
-				groupField.setConfiguration(getGroupFieldConfiguration());
-				groupField.configure();
-				groupField.addItemToGroup("cssStyle", true);
-				groupField.addItemToGroup("configuration", false);
-				groupField.addItemToGroup("layout", false);
-				groupField.addItemToGroup("description", false);
-				groupField.create();
+				GroupField groupField = getCheckBoxGroupField();
 				innerPanel.add(groupField);
 				innerPanel.setCellHorizontalAlignment(groupField,HorizontalPanel.ALIGN_CENTER);
 			} else if(fieldName.equals(GROUPFIELDRADIO)) {
-				GroupField groupField = new GroupField();
-				groupField.setConfiguration(getGroupFieldRadioConfiguration());
-				groupField.configure();
-				groupField.addItemToGroup("cssStyle", true);
-				groupField.addItemToGroup("configuration", false);
-				groupField.addItemToGroup("layout", false);
-				groupField.addItemToGroup("description", false);
-				groupField.create();
+				GroupField groupField = getRadioButtonGroupField();
 				innerPanel.add(groupField);
 				innerPanel.setCellHorizontalAlignment(groupField,HorizontalPanel.ALIGN_CENTER);
 			}else if(fieldName.equals(CHECKBOXGROUPMULTISELECT)) {

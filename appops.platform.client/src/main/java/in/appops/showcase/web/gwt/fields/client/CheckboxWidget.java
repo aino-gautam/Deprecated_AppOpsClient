@@ -5,6 +5,7 @@ import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.CheckboxField;
 import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.fields.CheckboxField.CheckBoxFieldConstant;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 
@@ -57,7 +58,7 @@ public class CheckboxWidget extends Composite implements FieldEventHandler{
 	
 	public Configuration getCheckboxFieldConfiguration(String text) {
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(CheckboxField.CHECKBOXFIELD_DISPLAYTEXT, text);
+		configuration.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, text);
 		return configuration;
 	}
 	
