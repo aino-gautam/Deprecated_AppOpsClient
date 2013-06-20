@@ -56,7 +56,7 @@ public class GroupField extends Composite implements Field,Configurable{
 		String dependentCss = conf.getPropertyByName(CheckBoxFieldConstant.CF_DEPENDENTCSS);
 		String displayText = conf.getPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT);
 		
-		boolean isChecked = false;
+		Boolean isChecked = false;
 		
 		if(conf.getPropertyByName(CheckBoxFieldConstant.CF_CHECKED) !=null)
 			isChecked = conf.getPropertyByName(CheckBoxFieldConstant.CF_CHECKED);
