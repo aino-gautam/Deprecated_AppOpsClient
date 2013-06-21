@@ -53,6 +53,7 @@ public interface Field extends Configurable {
 	/**
 	 * Associate one or more validation error messages with this field.
 	 * Composite fields using this should would this method to update the component error displayer to display the messages.
+	 * Would be called internally by validate().
 	 */
 	void markInvalid(ArrayList<String> errors);
 	
