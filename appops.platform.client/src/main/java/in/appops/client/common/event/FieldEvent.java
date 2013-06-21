@@ -27,6 +27,9 @@ public class FieldEvent extends GwtEvent<FieldEventHandler> {
 	public static final int CHECKBOX_DESELECT = 16;
 	public static final int VALUECHANGED = 17;
 	public static final int SUGGESTION_SELECTED = 18;
+	public static final int SPN_SPINUP = 19;
+	public static final int SPN_SPINDOWN = 20;
+
 	
 	public static Type<FieldEventHandler> TYPE = new Type<FieldEventHandler>();
 	

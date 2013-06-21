@@ -1,27 +1,18 @@
 package in.appops.client.common.fields;
 
-import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.dom.client.MouseWheelEvent;
-import com.google.gwt.event.dom.client.MouseWheelHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -72,25 +63,20 @@ emailTextField.configure();<br>
 emailTextField.create();
 </p>*/
 
-public class TextField extends Composite implements Field, FocusHandler, ValueChangeHandler, BlurHandler, KeyDownHandler, MouseWheelHandler,KeyUpHandler{
+public class TextField extends Composite implements Field, BlurHandler, KeyUpHandler,KeyPressHandler{
 
 	private Configuration configuration;
 	private String fieldValue;
 	private TextBox textBox;
 	private PasswordTextBox passwordTextBox;
 	private TextArea textArea;
-	private String fieldType;
-	private String tempFieldValue;
-	private HandlerManager handlerManager;
 	private DockPanel basepanel ;
 	private Widget selectedWidget = null;
-	private HorizontalPanel topWidget = new HorizontalPanel();
-	private HorizontalPanel rightWidget = new HorizontalPanel();
-	private HorizontalPanel bottomWidget = new HorizontalPanel();
+	private HorizontalPanel topWidget = null;
+	private HorizontalPanel sideWidget = null;
+	private HorizontalPanel bottomWidget = null;
 	
-	static EventBus eventBus = GWT.create(SimpleEventBus.class); 
-	
-	public static final String PLACEHOLDER_CSS = "errorPlaceHolder";
+	public static final String ERROR_PANEL_CSS = "errorPlaceHolder";
 	public static final String INLINE_ERROR_CSS = "appops-Inline-Error-TextBox";
 	public static final String VALIDATIONCORRECT_CSS = "appops-Validation_Correct-TextBox";
 	public static final String VALIDATION_TEXT_CSS = "appops-Validation-Text";
@@ -99,10 +85,10 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	public static final String ERROR_ICON = "images/validation_error_icon.jpg";
 	public static final String VALIATION_ICON = "images/validation_icon.png";
 	
-	public TextField(){
-		handlerManager = new HandlerManager(this);
-	}
 	
+	public TextField(){
+		
+	}
 	
 	/**
 	 * creates the field UI according the configuration set to it;
@@ -112,18 +98,12 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		if(getConfiguration() == null)
 			throw new AppOpsException("TextField configuration unavailable");
 		
-		basepanel = new DockPanel();
-		
-		basepanel.add(topWidget,DockPanel.NORTH);
-		if(getConfiguration().getPropertyByName(TextFieldConstant.VALIDATION_STYLE) != null) {
-			basepanel.add(rightWidget,DockPanel.EAST);
-		}
-		basepanel.add(bottomWidget,DockPanel.SOUTH);
-		
-		rightWidget.setStylePrimaryName(PLACEHOLDER_CSS);
+		if(basepanel==null)
+			basepanel = new DockPanel();
 		
 		if(selectedWidget!=null)
 			basepanel.add(selectedWidget,DockPanel.CENTER);
+		
 		initWidget(basepanel);
 	}
 	
@@ -133,95 +113,110 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	 */
 	@Override
 	public void configure() {
-		Integer visibleLines = getNoOfVisibleLines();
-		fieldType = getTextFieldType();
 		
-			if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC) ){
-				textBox = new TextBox();
-				textBox.setText(getFieldValue());
-				textBox.setReadOnly(isFieldReadOnly());
-				if(getPrimaryCss() != null)
-					textBox.setStylePrimaryName(getPrimaryCss());
-				if(getDependentCss() != null)
-					textBox.addStyleName(getDependentCss());
-				if(getFieldDeugId() != null)
-					textBox.ensureDebugId(getFieldDeugId());
-				if(getFieldMaxLength()!=null)
-					textBox.setMaxLength(getFieldMaxLength());
-				
-				selectedWidget =textBox;
-				textBox.addFocusHandler(this);
-				textBox.addBlurHandler(this);
-				textBox.addValueChangeHandler(this);
-				textBox.addKeyDownHandler(this);
-				textBox.addMouseWheelHandler(this);
-				textBox.addKeyUpHandler(this);
-			}else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX)){
-				textBox = new TextBox();
-				textBox.setText(getFieldValue());
-				textBox.setReadOnly(isFieldReadOnly());
-				if(getPrimaryCss() != null)
-					textBox.setStylePrimaryName(getPrimaryCss());
-				if(getDependentCss() != null)
-					textBox.addStyleName(getDependentCss());
-				if(getFieldDeugId() != null)
-					textBox.ensureDebugId(getFieldDeugId());
-				if(getFieldMaxLength()!=null)
-					textBox.setMaxLength(getFieldMaxLength());
-								
-				selectedWidget =textBox;
-				textBox.addFocusHandler(this);
-				textBox.addBlurHandler(this);
-				textBox.addValueChangeHandler(this);
-			}else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX)){
-				passwordTextBox = new PasswordTextBox();
-				passwordTextBox.setText(getFieldValue());
-				passwordTextBox.setReadOnly(isFieldReadOnly());
-				if(getPrimaryCss() != null)
-					passwordTextBox.setStylePrimaryName(getPrimaryCss());
-				if(getDependentCss() != null)
-					passwordTextBox.addStyleName(getDependentCss());
-				if(getFieldDeugId() != null)
-					passwordTextBox.ensureDebugId(getFieldDeugId());
-				if(getFieldMaxLength()!=null)
-					passwordTextBox.setMaxLength(getFieldMaxLength());
-				
-				passwordTextBox.addFocusHandler(this);
-				passwordTextBox.addBlurHandler(this);
-				passwordTextBox.addValueChangeHandler(this);
-				
-				selectedWidget =passwordTextBox;
-			
-		}else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTTYPE_TXTAREA)){
-			textArea = new TextArea();
-			textArea.setVisibleLines(visibleLines);
-			textArea.setText(getFieldValue());
-			textArea.setReadOnly(isFieldReadOnly());
-			
-			if(getPrimaryCss() != null)
-				textArea.setStylePrimaryName(getPrimaryCss());
-			if(getDependentCss()!= null)
-				textArea.addStyleName(getDependentCss());
-			if(getFieldDeugId() != null)
-				textArea.ensureDebugId(getFieldDeugId());
-			if(getFieldCharWidth()!=null)
-				textArea.setCharacterWidth(getFieldCharWidth());
-			
-			selectedWidget =textArea;
-			
-			textArea.addFocusHandler(this);
-			textArea.addBlurHandler(this);
-			textArea.addValueChangeHandler(this);
-		}		
-		setFieldSuggestionTitle();
+		String fieldType = getTextFieldType();
+		
+		if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX)	|| fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC)
+				|| fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX)) {
+		
+			createTextBox();
+
+		} else if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX)) {
+			createPasswordBox();
+
+		} else if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTTYPE_TXTAREA)) {
+			createTextArea();
+		}
+		
 	}
 	
+	private void createTextBox(){
+		
+		textBox = new TextBox();
+		textBox.setReadOnly(isFieldReadOnly());
+		if(getPrimaryCss() != null)
+			textBox.setStylePrimaryName(getPrimaryCss());
+		if(getDependentCss() != null)
+			textBox.addStyleName(getDependentCss());
+		
+		textBox.setMaxLength(getFieldMaxLength());
+		textBox.setTabIndex(getTabIndex());
+		showSuggestionText(textBox);
+		
+		selectedWidget =textBox;
+		
+		/*** Events fired by textbox ****/
+		
+		textBox.addKeyPressHandler(this);
+		
+		if(getValidationEvent().equals(TextFieldConstant.VALIDATE_ON_BLUR)){
+			textBox.addBlurHandler(this);
+		}else{
+			textBox.addKeyUpHandler(this);
+		}
+	}
+	
+	private void createPasswordBox(){
+		passwordTextBox = new PasswordTextBox();
+		passwordTextBox.setReadOnly(isFieldReadOnly());
+		if(getPrimaryCss() != null)
+			passwordTextBox.setStylePrimaryName(getPrimaryCss());
+		if(getDependentCss() != null)
+			passwordTextBox.addStyleName(getDependentCss());
+		
+		passwordTextBox.setMaxLength(getFieldMaxLength());
+		passwordTextBox.setTabIndex(getTabIndex());
+		showSuggestionText(passwordTextBox);
+		
+		/*** Events fired by passwordTextBox ****/
+		
+		passwordTextBox.addKeyPressHandler(this);
+		
+		if(getValidationEvent().equals(TextFieldConstant.VALIDATE_ON_BLUR)){
+			passwordTextBox.addBlurHandler(this);
+		}else{
+			passwordTextBox.addKeyUpHandler(this);
+		}
+		selectedWidget =passwordTextBox;
+	}
+	
+	private void createTextArea(){
+		
+		textArea = new TextArea();
+		
+		Integer visibleLines = getNoOfVisibleLines();
+		textArea.setVisibleLines(visibleLines);
+		textArea.setReadOnly(isFieldReadOnly());
+		
+		if(getPrimaryCss() != null)
+			textArea.setStylePrimaryName(getPrimaryCss());
+		if(getDependentCss()!= null)
+			textArea.addStyleName(getDependentCss());
+		if(getFieldCharWidth()!=null)
+			textArea.setCharacterWidth(getFieldCharWidth());
+		
+		showSuggestionText(textArea);
+		
+		/*** Events fired by textArea ****/
+		
+		textArea.addKeyPressHandler(this);
+		
+		if(getValidationEvent().equals(TextFieldConstant.VALIDATE_ON_BLUR)){
+			textArea.addBlurHandler(this);
+		}else{
+			textArea.addKeyUpHandler(this);
+		}
+		
+		selectedWidget =textArea;
+	}
 	
 	/**
 	 * resets the field to the original value that has been set via setFieldValue()
 	 */
 	@Override
 	public void reset() {
+		
+		String fieldType = getTextFieldType();
 		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX))
 			textBox.setText(getFieldValue());
 		else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX))
@@ -242,11 +237,26 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 
 	@Override
 	public String getFieldValue() {
+		
+		String fieldType = getTextFieldType();
+		
+		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX))
+			textBox.setText(fieldValue);
+		else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX))
+			passwordTextBox.setText(fieldValue);
+		else
+			textArea.setText(fieldValue);
+		
 		return this.fieldValue;
 	}
 
 	@Override
 	public void setFieldValue(String fieldValue) {
+		
+		this.fieldValue = fieldValue;
+		
+		String fieldType = getTextFieldType();
+		
 		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX))
 			textBox.setText(fieldValue);
 		else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX))
@@ -261,6 +271,8 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	 */
 	@Override
 	public void clear() {
+		String fieldType = getTextFieldType();
+		
 		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX))
 			textBox.setText("");
 		else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX))
@@ -268,94 +280,136 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		else
 			textArea.setText("");
 	}
-
-	@Override
-	public void onFocus(FocusEvent event) {
-		
-		clearSuggestionText();
-		
-		FieldEvent fieldEvent = new FieldEvent();
-		fieldEvent.setEventType(FieldEvent.EDITINITIATED);
-		if(event.getSource() instanceof PasswordTextBox){
-			fieldEvent.setEventData(passwordTextBox.getText());
-		}else if(event.getSource() instanceof TextBox){
-			fieldEvent.setEventData(textBox.getText());
-		} else if(event.getSource() instanceof TextArea){
-			fieldEvent.setEventData(textArea.getText());
-		} 
-		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
-	}
-
-	@Override
-	public void onValueChange(ValueChangeEvent event) {
-		FieldEvent fieldEvent = new FieldEvent();
-		fieldEvent.setEventType(FieldEvent.EDITINPROGRESS);
-		if(event.getSource() instanceof PasswordTextBox){
-			fieldEvent.setEventData(passwordTextBox.getText());
-		}else if(event.getSource() instanceof TextBox){
-			fieldEvent.setEventData(textBox.getText());
-		} else if(event.getSource() instanceof TextArea){
-			fieldEvent.setEventData(textArea.getText());
-		}
-		validateField();
-		
-		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
-	}
 	
+	private void setSuggestionText(Widget widget, String suggestionText){
+		
+		widget.getElement().setPropertyString("placeholder", suggestionText);
+	}
+
 	/**
 	 * Method validate the field. and set validation message or error title according to it.
 	 */
 	private void validateField() {
 
-		if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX)) {
+		String fieldType = getTextFieldType();
+		
+		removeErrorText();
 
-			if (!textBox.getText().equals("") && !textBox.getText().equals(getFieldSuggestionTitle())) {
-				if (textBox.getText().matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")) {
-					setFieldValidationMessage();
-				} else {
-					setFieldErrorTitle();
-				}
-			}
+		if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX)) {
+			validateEmail();
 		} else if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX)) {
-			
-			if (!passwordTextBox.getText().equals("") && !passwordTextBox.getText().equals(getFieldSuggestionTitle())) {
-				if (passwordTextBox.getText().length() < getFieldMinimumLength())
-					setFieldErrorTitle();
-				else
-					setFieldValidationMessage();
-			}
-		} else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC)){
-			if (!textBox.getText().equals("")) {
-				String regexExp = null;
-				String numericFieldType = getNumericFieldType();
-				if (numericFieldType.equals(TextFieldConstant.NUMFIELD_DEC)) {
-					regexExp = getDecimalRegexExp();
-				} else if (numericFieldType.equals(TextFieldConstant.NUMFIELD_INT)) {
-					regexExp = getIntegerRegexExp();
+			validatePassword();
+		} else if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC)) {
+			if (textBox.getText().equals("")) {
+				if (!isFieldAllowBlank()) {
+					showError(getBlankFieldText());
 				}
-				
-				if (!textBox.getText().matches(regexExp)) {
-					setFieldErrorTitle();
-				} else
-					setFieldValidationMessage();
 			} else {
-				removeErrorMessagesIfPresent();
+				validateNumber();
 			}
 		}
 	}
 	
+	private void validateEmail() {
+		if (textBox.getText().equals("")) {
+			if (!isFieldAllowBlank()) {
+				showError(getBlankFieldText());
+			}
+		}else {
+			if (textBox.getText().matches(getEmailRegex())) {
+				showValidFieldMessage();
+			} else {
+				showError(getInvalidEmailText());
+			}
+		}
+	}
+	
+	private void validatePassword(){
+		
+		if (passwordTextBox.getText().equals("")) {
+			if (!isFieldAllowBlank()) {
+				showError(getBlankFieldText());
+			}
+		} else {
+			if (passwordTextBox.getText().length() < getMinLength())
+				showError(getMinLengthErrorText());
+			else
+				showValidFieldMessage();
+		}
+	}
+	
+	private void validateNumber(){
+		
+		String numericFieldType = getNumFieldType();
+		Integer maxValue = getMaxValue();
+				
+		if (numericFieldType.equals(TextFieldConstant.NUMFIELD_DEC)) {
+			
+			if(textBox.getText().matches(getDecimalRegex())){
+				Double fieldvalue = Double.parseDouble(textBox.getText());
+				
+				if(fieldvalue < getMinValue()){
+					showError(getMinValueErrorText());
+				}else if(maxValue!=null && fieldvalue > maxValue){
+					showError(getMaxValueErrorTxt());
+				}
+				Boolean allowNegative = isFieldAllowNegative();
+				if(!allowNegative && fieldvalue < 0 ){
+					showError(getNegativeValTxt());
+				}
+			}else{
+				showError(getErrorText());
+			}
+		} else if (numericFieldType.equals(TextFieldConstant.NUMFIELD_INT)) {
+			
+			if(textBox.getText().matches(getIntegerRegexExp())){
+				Integer fieldvalue = Integer.parseInt(textBox.getText());
+				
+				if(fieldvalue<getMinValue()){
+					showError(getMinValueErrorText());
+				}else if(maxValue!=null && fieldvalue>maxValue){
+					showError(getMaxValueErrorTxt());
+				}
+				
+				Boolean allowNegative = isFieldAllowNegative();
+				if(!allowNegative && fieldvalue < 0 ){
+					showError(getNegativeValTxt());
+				}
+			}else{
+				showError(getErrorText());
+			}
+		}
+		
+	}
+	
+		
 	/**
 	 * Method read regex expression from configuration. if it is not in the configuration then it returns DEC_REGEX_EXP;
 	 * @return default regex expression.
 	 */
-	private String getDecimalRegexExp(){
+	private String getDecimalRegex(){
 		if(getConfiguration()!=null){
 			
 			String regexExp =  getConfiguration().getPropertyByName(TextFieldConstant.DEC_REGEX_EXP);
+			Integer precision = getNoOfDecimalPrecision();
 			if(regexExp !=null){
 				return regexExp; 
 			}else{
-				return TextFieldConstant.DEC_REGEX_EXP;
+				return TextFieldConstant.DEC_REGEX_EXP.replaceAll("precision", precision.toString()); 
+			}
+		}
+		return null;
+		
+	}
+	
+	private String getEmailRegex(){
+		if(getConfiguration()!=null){
+			
+			String regexExp =  getConfiguration().getPropertyByName(TextFieldConstant.EMAIL_REGEX_EXP);
+			if(regexExp !=null){
+				return regexExp; 
+			}else{
+				return TextFieldConstant.EMAIL_REGEX_EXP;
 			}
 		}
 		return null;
@@ -381,69 +435,28 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	}
 	
 	
-	private void removeErrorMessagesIfPresent(){
+	private void removeErrorText(){
 		if (getConfiguration() != null) {
-			String errorStyle = getConfiguration().getPropertyByName(TextFieldConstant.VALIDATION_STYLE);
+			String errorStyle = getErrorStyle();
 			if (errorStyle != null) {
 
 				if (errorStyle.equals(TextFieldConstant.ICONIC_STYLE)) {
-					String iconicType = getValidationIconicType();
-					if(iconicType.equals(TextFieldConstant.INLINE_ICONIC)){
+					String iconicType = getIconicStyle();
+					if(iconicType.equals(TextFieldConstant.ICONICSTYLE_INLINE)){
 						getWidget().removeStyleName(INLINE_ERROR_CSS);
 						getWidget().removeStyleName(VALIDATIONCORRECT_CSS);
 						getWidget().getElement().getStyle().clearProperty("background");
-					}else if(iconicType.equals(TextFieldConstant.ICON_WITH_ERROR_MSG)){
+					}else if(iconicType.equals(TextFieldConstant.ICONICSTYLE_ICON_WITH_ERROR_MSG)){
 						
 						String msgPosition = getErrorOrValidationMsgPosition();
-						if (msgPosition.equals(TextFieldConstant.UNDER)) {
-							bottomWidget.clear();
-							bottomWidget.add(getIconWithMsg(getFieldValidationIconBlobId(),null));
-						} else if (msgPosition.equals(TextFieldConstant.TOP)) {
-							topWidget.clear();
-							topWidget.add(getIconWithMsg(getFieldValidationIconBlobId(),null));
-						} else if (msgPosition.equals(TextFieldConstant.SIDE)) {
-							rightWidget.clear();
-							rightWidget.add(getIconWithMsg(getFieldValidationIconBlobId(),null));
-						}
+						clearErrorOrValidationMsgText(msgPosition);
 					}
 				}else if (errorStyle.equals(TextFieldConstant.ONLY_MSG)) {
 					String msgPosition = getErrorOrValidationMsgPosition();
-					if (msgPosition.equals(TextFieldConstant.UNDER)) {
-						bottomWidget.clear();
-					} else if (msgPosition.equals(TextFieldConstant.TOP)) {
-						topWidget.clear();
-					} else if (msgPosition.equals(TextFieldConstant.SIDE)) {
-						rightWidget.clear();
-					}
+					clearErrorOrValidationMsgText(msgPosition);
 				}
 			}
 		}
-	}
-
-	@Override
-	public void onBlur(BlurEvent event) {
-		
-		checkFieldSuggestionTitleAndSet();
-		
-		FieldEvent fieldEvent = new FieldEvent();
-		fieldEvent.setEventType(FieldEvent.EDITCOMPLETED);
-		 if(event.getSource() instanceof PasswordTextBox){
-			fieldEvent.setEventData(passwordTextBox.getText());
-		}else if(event.getSource() instanceof TextBox){
-			fieldEvent.setEventData(textBox.getText());
-		} else if(event.getSource() instanceof TextArea){
-			fieldEvent.setEventData(textArea.getText());
-		} 
-		// validateField();
-		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
-	}
-	
-	public String getTempFieldValue() {
-		return tempFieldValue;
-	}
-
-	public void setTempFieldValue(String tempFieldValue) {
-		this.tempFieldValue = tempFieldValue;
 	}
 
 	@Override
@@ -452,20 +465,9 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		
 	}
 	
-	public String getFieldText() {
-		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX)) {
-			setTempFieldValue(textBox.getText());
-		} else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX)) {
-			setTempFieldValue(passwordTextBox.getText());
-		} else {
-			setTempFieldValue(textArea.getText());
-		}
-		
-		return getTempFieldValue();
-	}
-	
 	public Widget getWidget() {
 		
+		String fieldType = getTextFieldType();
 		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX) 
 				|| fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC)) {
 			return textBox;
@@ -480,7 +482,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	 * set in configuration then returns default value of it i.e 1
 	 * @return noOfVisibleLines
 	 */
-	public Integer getNoOfVisibleLines(){
+	private Integer getNoOfVisibleLines(){
 		
 		if(getConfiguration()!=null){
 			
@@ -498,7 +500,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	 * Method will return textfieldType whether its textbox/passwordbox/emailbox. Default value will be textbox.
 	 * @return
 	 */
-	public String getTextFieldType(){
+	private String getTextFieldType(){
 		
 		if(getConfiguration()!=null){
 			
@@ -517,7 +519,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	 * Method will return the primary css applied to field.
 	 * @return
 	 */
-	public String getPrimaryCss(){
+	private String getPrimaryCss(){
 		
 		if(getConfiguration()!=null){
 			
@@ -535,28 +537,13 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	 * Method will return the dependent css applied to field.
 	 * @return
 	 */
-	public String getDependentCss(){
+	private String getDependentCss(){
 		
 		if(getConfiguration()!=null){
 			
 			String dependentCss = getConfiguration().getPropertyByName(TextFieldConstant.TF_DEPENDENTCSS);
 			if(dependentCss !=null){
 				return dependentCss;
-			}else{
-				return null;
-			}
-		}
-		return null;
-		
-	}
-	
-	public String getFieldDeugId(){
-		
-		if(getConfiguration()!=null){
-			
-			String degugId = getConfiguration().getPropertyByName(TextFieldConstant.TF_DEBUGID);
-			if(degugId !=null){
-				return degugId;
 			}else{
 				return null;
 			}
@@ -588,9 +575,10 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	 * @return
 	 */
 	
-	private Integer getFieldMinimumLength(){
+	private Integer getMinLength(){
 		
 		if(getConfiguration()!=null){
+			
 			Integer minLength = (Integer) getConfiguration().getPropertyByName(TextFieldConstant.TF_MINLENGTH);
 			if(minLength !=null){
 				return minLength;
@@ -609,6 +597,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	private Integer getFieldCharWidth(){
 		
 		if(getConfiguration()!=null){
+			
 			Integer charWidth = (Integer) getConfiguration().getPropertyByName(TextFieldConstant.TF_CHARWIDTH);
 			if(charWidth !=null){
 				return charWidth;
@@ -624,7 +613,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	 * @return
 	 */
 	
-	public Boolean isFieldReadOnly(){
+	private Boolean isFieldReadOnly(){
 		
 		if(getConfiguration()!=null){
 			
@@ -638,55 +627,26 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		return null;
 	}
 	
-	/**
-	 * Method checks whether suggesion title is present if not set it to it. This is application only for inline suggestion. 
-	 */
-	private void checkFieldSuggestionTitleAndSet(){
-		
-			if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX)
-					|| fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC)){
-				if(textBox.getText().length() == 0 && getFieldSuggestionStyle().equals(TextFieldConstant.SUGGESTIONSTYLE_INLINE))
-					setFieldSuggestionTitle();
-			}else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX)){
-				if(passwordTextBox.getText().length() == 0 && getFieldSuggestionStyle().equals(TextFieldConstant.SUGGESTIONSTYLE_INLINE))
-					setFieldSuggestionTitle();
-			}else{
-				if(textArea.getText().length() == 0 && getFieldSuggestionStyle().equals(TextFieldConstant.SUGGESTIONSTYLE_INLINE))
-					setFieldSuggestionTitle();
-			}
-	}
 	
 	/**
 	 * Method will show suggestion title based on the suggestion style i.e inline/top/bottom which is set in the configuration. 
 	 */
-	public void setFieldSuggestionTitle(){
+	private void showSuggestionText(Widget widget){
 		
 		if(getConfiguration()!=null){
 			
-			String suggestionStyle =getFieldSuggestionStyle(); 
+			String suggestionStyle =getSuggestionStyle(); 
+			
 			if(suggestionStyle !=null){
 				
-				String suggestionTitle = getFieldSuggestionTitle();
-				if (suggestionTitle != null) {
-					Label suggestionLabel = new Label(suggestionTitle);
-					suggestionLabel.setStylePrimaryName(getFieldSuggestionTitleCss());
+				String suggestionText = getSuggestionText();
+				if (suggestionText != null) {
 					if (suggestionStyle.equals(TextFieldConstant.SUGGESTIONSTYLE_INLINE)) {
-						if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX)
-								|| fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC)){
-							textBox.setText(suggestionTitle);
-							textBox.addStyleName(getFieldSuggestionTitleCss());
-						}else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX)){
-							passwordTextBox.setText(suggestionTitle);
-							passwordTextBox.setStylePrimaryName(getFieldSuggestionTitleCss());
-						}else{
-							textArea.setText(suggestionTitle);
-							textArea.setStylePrimaryName(getFieldSuggestionTitleCss());
-						}
-						
-					} else if (suggestionStyle.equals(TextFieldConstant.SUGGESTION_ON_TOP)) {
-						topWidget.add(suggestionLabel);
-					} else if (suggestionStyle.equals(TextFieldConstant.SUGGESTION_IN_BOTTOM)) {
-						basepanel.add(suggestionLabel, DockPanel.SOUTH);
+							setSuggestionText(getWidget(), suggestionText);
+					}else{
+						Label suggestionLabel = new Label(suggestionText);
+						suggestionLabel.setStylePrimaryName(getSuggestionTextCss());
+						addWidgetToPosition(suggestionLabel,suggestionStyle);
 					}
 				}
 			}
@@ -699,7 +659,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	 * @return
 	 */
 	
-	private String getFieldValidationIconBlobId(){
+	private String getValidationIconBlobId(){
 		
 		if(getConfiguration()!=null){
 			
@@ -718,7 +678,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	 * @return
 	 */
 	
-	private String getFieldErrorIconBlobId(){
+	private String getErrorIconBlobId(){
 		
 		if(getConfiguration()!=null){
 			
@@ -736,7 +696,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	 * Method return the suggestion title css set in the configuration. o.w return default error blobId.
 	 * @return
 	 */
-	private String getFieldSuggestionTitleCss() {
+	private String getSuggestionTextCss() {
 		if (getConfiguration() != null) {
 
 			String suggestionTitleCss = getConfiguration().getPropertyByName(TextFieldConstant.SUGGESTION_TEXT_CSS);
@@ -750,37 +710,9 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	}
 	
 	/**
-	 * Method clear the suggestion text.
-	 */
-	
-	private void clearSuggestionText() {
-		
-		String suggestionTitle = getFieldSuggestionTitle();
-		if(suggestionTitle!=null){
-			if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX)
-					|| fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC)){
-				if(textBox.getText().equals(suggestionTitle)){
-					textBox.setText("");
-					textBox.removeStyleName(getFieldSuggestionTitleCss());
-				}
-			}else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX)){
-				if(passwordTextBox.getText().equals(suggestionTitle)){
-					passwordTextBox.setText("");
-					passwordTextBox.removeStyleName(getFieldSuggestionTitleCss());
-				}
-			}else{
-				if(textArea.getText().equals(suggestionTitle)){
-					textArea.setText("");
-					textArea.removeStyleName(getFieldSuggestionTitleCss());
-				}
-			}
-		}
-		
-	}
-	/**
 	 * Method will return the suggestion which is set in configuration o.w return default style i.e suggestion on top. 
 	 */
-	public String getFieldSuggestionStyle(){
+	private String getSuggestionStyle(){
 		
 		if(getConfiguration()!=null){
 			
@@ -797,7 +729,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	 * Method will return suggestion title.
 	 * @return
 	 */
-	public String getFieldSuggestionTitle() {
+	private String getSuggestionText() {
 
 		if (getConfiguration() != null) {
 
@@ -840,66 +772,46 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	}
 	
 	/** 
-	 * Method set validation message after field is validated.
+	 * Method shows the validation message after field is validated correctly.
 	 */
 	
-	public void setFieldValidationMessage() {
+	private void showValidFieldMessage() {
 
-		if (getConfiguration() != null) {
-			String errorStyle = getConfiguration().getPropertyByName(TextFieldConstant.VALIDATION_STYLE);
+			String errorStyle = getErrorStyle();
 			if (errorStyle != null) {
 
 				if (errorStyle.equals(TextFieldConstant.ICONIC_STYLE)) {
 					
-					String iconicType = getValidationIconicType();
-					if(iconicType.equals(TextFieldConstant.INLINE_ICONIC)){
+					String iconicType = getIconicStyle();
+					if(iconicType.equals(TextFieldConstant.ICONICSTYLE_INLINE)){
+						
 						getWidget().removeStyleName(INLINE_ERROR_CSS);
 						getWidget().addStyleName(VALIDATIONCORRECT_CSS);
-						getWidget().getElement().getStyle().setProperty("background", "white url("+ getFieldValidationIconBlobId()+") no-repeat right	center");
-					
-					}else if(iconicType.equals(TextFieldConstant.ICON_WITH_ERROR_MSG)){
+						getWidget().getElement().getStyle().setProperty("background", "white url("+ getValidationIconBlobId()+") no-repeat right	center");
+					    getWidget().setTitle("");
+					}else if(iconicType.equals(TextFieldConstant.ICONICSTYLE_ICON_WITH_ERROR_MSG)){
 						
 						String msgPosition = getErrorOrValidationMsgPosition();
-						if (msgPosition.equals(TextFieldConstant.UNDER)) {
-							bottomWidget.clear();
-							bottomWidget.add(getIconWithMsg(getFieldValidationIconBlobId(),null));
-						} else if (msgPosition.equals(TextFieldConstant.TOP)) {
-							topWidget.clear();
-							topWidget.add(getIconWithMsg(getFieldValidationIconBlobId(),null));
-						} else if (msgPosition.equals(TextFieldConstant.SIDE)) {
-							rightWidget.clear();
-							rightWidget.add(getIconWithMsg(getFieldValidationIconBlobId(),null));
-						}
+						addWidgetToPosition(getIconWithMsg(getValidationIconBlobId(),null), msgPosition);
 					}
 					
 				}  else if (errorStyle.equals(TextFieldConstant.ONLY_MSG)) {
 					
-					String correctValueText = getFieldCorrectValueText();
-					Label correctTextLbl = new Label(correctValueText);
+					String msgPosition = getErrorOrValidationMsgPosition();
+					
+					Label correctTextLbl = new Label(getValidValueText());
 					correctTextLbl.setStylePrimaryName(VALIDATION_TEXT_CSS);
 					
-					String msgPosition = getErrorOrValidationMsgPosition();
-					if (msgPosition.equals(TextFieldConstant.UNDER)) {
-						bottomWidget.clear();
-						bottomWidget.add(correctTextLbl);
-					} else if (msgPosition.equals(TextFieldConstant.TOP)) {
-						topWidget.clear();
-						topWidget.add(correctTextLbl);
-					} else if (msgPosition.equals(TextFieldConstant.SIDE)) {
-						rightWidget.clear();
-						rightWidget.add(correctTextLbl);
-					}
+					addWidgetToPosition(correctTextLbl, msgPosition);
 				}
 			}
-		}
-
 	}
 	
 	/** 
-	 * Method return error text from configuration o.w return default error text. "Field value is not correct or too small to fit..";
+	 * Method return error text from configuration o.w return default error text i.e "Invalid field value";
 	 */
 
-	public String getFieldErrorText(){
+	private String getErrorText(){
 		
 		if(getConfiguration()!=null){
 			String errorText = getConfiguration().getPropertyByName(TextFieldConstant.TF_ERROR_TEXT);
@@ -907,19 +819,19 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 				
 				return errorText;
 			}else{
-				return "Field value is not correct or too small to fit..";
+				return "Invalid field value";
 			}
 		}
 		return null;
 	}
 	
-	public String getFieldCorrectValueText(){
+	private String getValidValueText(){
 		
 		if(getConfiguration()!=null){
-			String correctValueText = getConfiguration().getPropertyByName(TextFieldConstant.TF_VALIDVALUE_TEXT);
-			if(correctValueText !=null){
+			String validValueText = getConfiguration().getPropertyByName(TextFieldConstant.TF_VALIDVALUE_TEXT);
+			if(validValueText !=null){
 				
-				return correctValueText;
+				return validValueText;
 			}else{
 				return "OK";
 			}
@@ -927,7 +839,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		return null;
 	}
 	
-	public String getValidationIconicType(){
+	private String getIconicStyle(){
 		
 		if(getConfiguration()!=null){
 			String iconicType = getConfiguration().getPropertyByName(TextFieldConstant.ICONIC_STYLE);
@@ -935,16 +847,16 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 				
 				return iconicType;
 			}else{
-				return TextFieldConstant.SIDE;
+				return TextFieldConstant.ICONICSTYLE_INLINE;
 			}
 		}
 		return null;
 	}
 	
-	public String getValidationStyle(){
+	private String getErrorStyle(){
 		
 		if(getConfiguration()!=null){
-			String validationStyle = getConfiguration().getPropertyByName(TextFieldConstant.VALIDATION_STYLE);
+			String validationStyle = getConfiguration().getPropertyByName(TextFieldConstant.ERROR_STYLE);
 			if(validationStyle !=null){
 				
 				return validationStyle;
@@ -959,62 +871,83 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 	 * Method set the error according to the error style i.e if its TextFieldConstant.INLINE_ICONIC_ERROR_STYLE or TextFieldConstant.OUTLINE_ICONIC_ERROR_STYLE then field will show error in the form of error icon. if 
 	 * its   TextFieldConstant.ERROR_TITLE_STYLE then according to the position it will set the error title.
 	 */
-	public void setFieldErrorTitle() {
+	private void showError(String errorText) {
 
 		if (getConfiguration() != null) {
 
-			String errorStyle = getValidationStyle();
+			String errorStyle = getErrorStyle();
 
 			if (errorStyle != null) {
 				if (errorStyle.equals(TextFieldConstant.ICONIC_STYLE)) {
-					String iconicType = getValidationIconicType();
-					if(iconicType.equals(TextFieldConstant.INLINE_ICONIC)){
-						if (getFieldErrorIconBlobId() != null) {
+					String iconicType = getIconicStyle();
+					if(iconicType.equals(TextFieldConstant.ICONICSTYLE_INLINE)){
+						if (getErrorIconBlobId() != null) {
+							
 							getWidget().addStyleName(INLINE_ERROR_CSS);
-							getWidget().getElement().getStyle().setProperty("background","white url(" + getFieldErrorIconBlobId()+ ") no-repeat right center");
+							getWidget().getElement().getStyle().setProperty("background","white url(" + getErrorIconBlobId()+ ") no-repeat right center");
 						}
-						getWidget().setTitle(getFieldErrorText());
-					}else if(iconicType.equals(TextFieldConstant.ICON_WITH_ERROR_MSG)){
+						getWidget().setTitle(errorText);
+					}else if(iconicType.equals(TextFieldConstant.ICONICSTYLE_ICON_WITH_ERROR_MSG)){
 						
-						String errorText = getFieldErrorText();
 						String msgPosition = getErrorOrValidationMsgPosition();
-						if (msgPosition.equals(TextFieldConstant.UNDER)) {
-							bottomWidget.clear();
-							bottomWidget.add(getIconWithMsg(getFieldErrorIconBlobId(),errorText));
-						} else if (msgPosition.equals(TextFieldConstant.TOP)) {
-							topWidget.clear();
-							topWidget.add(getIconWithMsg(getFieldErrorIconBlobId(),errorText));
-						} else if (msgPosition.equals(TextFieldConstant.SIDE)) {
-							rightWidget.clear();
-							rightWidget.add(getIconWithMsg(getFieldErrorIconBlobId(),errorText));
-						}
+						addWidgetToPosition(getIconWithMsg(getErrorIconBlobId(),errorText), msgPosition);
 					}
 				} else if (errorStyle.equals(TextFieldConstant.ONLY_MSG)) {
+					
 					String msgPosition = getErrorOrValidationMsgPosition();
-					String errorText = getFieldErrorText();
 					Label errorLabel = new Label(errorText);
-
-					if (msgPosition.equals(TextFieldConstant.UNDER)) {
-						bottomWidget.clear();
-						bottomWidget.add(errorLabel);
-					} else if (msgPosition.equals(TextFieldConstant.TOP)) {
-						topWidget.clear();
-						topWidget.add(errorLabel);
-					} else if (msgPosition.equals(TextFieldConstant.SIDE)) {
-						rightWidget.clear();
-						rightWidget.add(errorLabel);
-					}
 					errorLabel.setStylePrimaryName(ERROR_TEXT_CSS);
+					addWidgetToPosition(errorLabel, msgPosition);
+					
 				}
 			}
 		}
 
 	}
 	
+	private String getValidationEvent() {
+		
+		if(getConfiguration()!=null){
+			String validationStyle = getConfiguration().getPropertyByName(TextFieldConstant.VALIDATION_EVENT);
+			if(validationStyle !=null){
+				return validationStyle;
+			}else{
+				return TextFieldConstant.VALIDATE_ON_CHANGE;
+			}
+		}
+		return null;
+	}
+	
+	private Boolean isFieldAllowBlank() {
+		
+		if(getConfiguration()!=null){
+			Boolean allowBlank = getConfiguration().getPropertyByName(TextFieldConstant.TF_ALLOW_BLANK);
+			if(allowBlank !=null){
+				return allowBlank;
+			}else{
+				return true;
+			}
+		}
+		return null;
+	}
+	
+	private Integer getTabIndex() {
+		
+		if(getConfiguration()!=null){
+			Integer tabIndex = getConfiguration().getPropertyByName(TextFieldConstant.TF_TABINDEX);
+			if(tabIndex !=null){
+				return tabIndex;
+			}else{
+				return 1;
+			}
+		}
+		return null;
+	}
+	
 	private String getErrorOrValidationMsgPosition() {
 		
 		if(getConfiguration()!=null){
-			String msgPosition = getConfiguration().getPropertyByName(TextFieldConstant.VALIDATION_MSG_POSITION);
+			String msgPosition = getConfiguration().getPropertyByName(TextFieldConstant.ERROR_MSG_POSITION);
 			if(msgPosition !=null){
 				return msgPosition;
 			}else{
@@ -1024,7 +957,7 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		return null;
 	}
 	
-	private String getNumericFieldType(){
+	private String getNumFieldType(){
 		
 		if(getConfiguration()!=null){
 			String numFieldType = getConfiguration().getPropertyByName(TextFieldConstant.NUMFIELD_TYPE);
@@ -1037,13 +970,198 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		return null;
 	}
 	
+	private Integer getMinValue(){
+		
+		if(getConfiguration()!=null){
+			Integer numFieldType = getConfiguration().getPropertyByName(TextFieldConstant.TF_MINVALUE);
+			if(numFieldType !=null){
+				return numFieldType;
+			}else{
+				return 0;
+			}
+		}
+		return null;
+	}
+	
+	private Integer getMaxValue(){
+		
+		if(getConfiguration()!=null){
+			Integer numFieldType = getConfiguration().getPropertyByName(TextFieldConstant.TF_MAXVALUE);
+			if(numFieldType !=null){
+				return numFieldType;
+			}else{
+				return null;
+			}
+		}
+		return null;
+	}
+	
+	private Boolean isFieldAllowNegative(){
+		
+		if(getConfiguration()!=null){
+			Boolean isNegative = getConfiguration().getPropertyByName(TextFieldConstant.NUMFIELD_NEGATIVE);
+			if(isNegative !=null){
+				return isNegative;
+			}else{
+				return false;
+			}
+		}
+		return null;
+	}
+	
+	private void addWidgetToPosition(Widget widget,String position){
+		
+		if(basepanel==null)
+			basepanel = new DockPanel();
+		
+		if(position.equals(TextFieldConstant.UNDER) || position.equals(TextFieldConstant.SUGGESTION_IN_BOTTOM)){
+			if(bottomWidget ==null){
+				bottomWidget = new HorizontalPanel();
+				basepanel.add(bottomWidget,DockPanel.SOUTH);
+			}
+			
+			bottomWidget.clear();
+			bottomWidget.add(widget);
+		}else if(position.equals(TextFieldConstant.TOP) ||  position.equals(TextFieldConstant.SUGGESTION_ON_TOP)){
+			if(topWidget ==null){
+				topWidget = new HorizontalPanel();
+				basepanel.add(topWidget,DockPanel.NORTH);
+			}
+			
+			topWidget.clear();
+			topWidget.add(widget);
+		}else if(position.equals(TextFieldConstant.SIDE)){
+			if(sideWidget ==null){
+				sideWidget = new HorizontalPanel();
+				sideWidget.setStylePrimaryName(ERROR_PANEL_CSS);
+				basepanel.add(sideWidget,DockPanel.EAST);
+			}
+			
+			sideWidget.clear();
+			sideWidget.add(widget);
+		}
+	}
+	
+	private void clearErrorOrValidationMsgText(String position){
+		
+		if(position.equals(TextFieldConstant.UNDER)){
+			if(bottomWidget!=null)
+				bottomWidget.clear();
+		}else if(position.equals(TextFieldConstant.TOP)){
+			if(topWidget!=null)
+				topWidget.clear();
+		}else if(position.equals(TextFieldConstant.SIDE)){
+			if(sideWidget!=null)
+				sideWidget.clear();
+		}
+		
+	}
+	
+	private String getMaxValueErrorTxt(){
+		
+		if(getConfiguration()!=null){
+			String maxValueText = getConfiguration().getPropertyByName(TextFieldConstant.MAX_VALUE_TEXT);
+			if(maxValueText !=null){
+				return maxValueText;
+			}else{
+				return "The maximum value for this field is "+ getMaxValue();
+			}
+		}
+		return null;
+	}
+	
+	private String getMinValueErrorText(){
+		
+		if(getConfiguration()!=null){
+			String maxValueText = getConfiguration().getPropertyByName(TextFieldConstant.MIN_VALUE_TEXT);
+			if(maxValueText !=null){
+				return maxValueText;
+			}else{
+				return "The minimum value for this field is "+ getMinValue();
+			}
+		}
+		return null;
+	}
+	
+	private String getMinLengthErrorText(){
+		
+		if(getConfiguration()!=null){
+			String maxValueText = getConfiguration().getPropertyByName(TextFieldConstant.TF_MINLENGTH);
+			if(maxValueText !=null){
+				return maxValueText;
+			}else{
+				return "The minimum length for this field is "+ getMinLength();
+			}
+		}
+		return null;
+	}
+	
+	private String getInvalidEmailText(){
+		
+		if(getConfiguration()!=null){
+			String maxValueText = getConfiguration().getPropertyByName(TextFieldConstant.INVALID_EMAIL_TEXT);
+			if(maxValueText !=null){
+				return maxValueText;
+			}else{
+				return "Invalid email";
+			}
+		}
+		return null;
+	}
+	
+	private String getBlankFieldText(){
+				
+		if(getConfiguration()!=null){
+			String invalidFieldText = getConfiguration().getPropertyByName(TextFieldConstant.BLANK_FIELD_TXT);
+			if(invalidFieldText !=null){
+				return invalidFieldText;
+			}else{
+				return "Field is required";
+			}
+		}
+		return null;
+	}
+	
+	private String getNegativeValTxt(){
+		
+		
+		if(getConfiguration()!=null){
+			String negativeValueText = getConfiguration().getPropertyByName(TextFieldConstant.NEGATIVE_VALUE_TEXT);
+			if(negativeValueText !=null){
+				return negativeValueText;
+			}else{
+				return "Field value cannot be -ve";
+			}
+		}
+		return null;
+	}
+	
+	private Integer getNoOfDecimalPrecision(){
+		
+		
+		if(getConfiguration()!=null){
+			Integer decimalPrecision = getConfiguration().getPropertyByName(TextFieldConstant.DEC_PRECISION);
+			if(decimalPrecision !=null){
+				return decimalPrecision;
+			}else{
+				return 2;
+			}
+		}
+		return null;
+	}
+	
+
 	public interface TextFieldConstant{
 		
-		public static final String TF_VISIBLELINES = "fieldVisibleLines";
-		public static final String TF_READONLY = "fieldReadOnly";
-		public static final String TF_PRIMARYCSS = "fieldPrimaryCss";
-		public static final String TF_DEPENDENTCSS = "fieldDependentCss";
-		public static final String TF_DEBUGID = "fieldDebugId";
+		public static final String TF_VISIBLELINES = "visibleLines";
+		public static final String TF_READONLY = "readOnly";
+		public static final String TF_ALLOW_BLANK = "allowBlank";
+		public static final String TF_TABINDEX = "tabIndex";
+		public static final String TF_PRIMARYCSS = "primaryCss";
+		public static final String TF_DEPENDENTCSS = "dependentCss";
+		public static final String TF_MAXLENGTH = "maxlength";
+		public static final String TF_MINLENGTH = "minlength";
+		public static final String TF_CHARWIDTH = "charWidth";
 		public static final String TF_TYPE = "fieldType";
 		
 		public static final String TFTYPE_TXTBOX = "txtbox";
@@ -1052,24 +1170,25 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		public static final String TFTYPE_EMAILBOX = "emailbox";
 		public static final String TFTYPE_NUMERIC = "numeric";
 		
-		public static final String TF_MAXLENGTH = "maxlength";
-		public static final String TF_MINLENGTH = "minlength";
-		public static final String TF_CHARWIDTH = "charWidth";
+		public static final String ERROR_STYLE = "errorStyle";
+		public static final String ICONIC_STYLE = "iconic";
+		public static final String ONLY_MSG = "onlyMsg";
 		
-		public static final String VALIDATION_STYLE = "validationStyle";
-		public static final String ICONIC_STYLE = "iconicStyle";
-		public static final String ONLY_MSG = "msgStyle";
+		public static final String ICONICSTYLE_INLINE = "inlineIcon";
+		public static final String ICONICSTYLE_ICON_WITH_ERROR_MSG = "iconWithErrorMsg";
 		
-		public static final String INLINE_ICONIC = "inlineIconic";
-		public static final String ICON_WITH_ERROR_MSG = "iconWithMsg";
-		
-		public static final String VALIDATION_MSG_POSITION = "msgPosition";
+		public static final String ERROR_MSG_POSITION = "errorMsgPosition";
 		public static final String UNDER = "under";
 		public static final String TOP = "top";
 		public static final String SIDE = "side";
 		
-		public static final String TF_ERROR_TEXT = "fieldErrorText";
-		public static final String TF_VALIDVALUE_TEXT = "fieldValidValueText";
+		public static final String TF_ERROR_TEXT = "errorTxt";
+		public static final String TF_VALIDVALUE_TEXT = "validValueTxt";
+		public static final String BLANK_FIELD_TXT = "blankFieldTxt";
+		public static final String NEGATIVE_VALUE_TEXT = "negativeFieldTxt";
+		public static final String INVALID_EMAIL_TEXT = "invalidEmailText";
+		public static final String MAX_VALUE_TEXT = "maxValueText";
+		public static final String MIN_VALUE_TEXT = "minValueText";
 		
 		public static final String ERROR_ICON_BLOBID = "errorIconBlobId";
 		public static final String VALIDATION_ICON_BLOBID = "iconBlobId";
@@ -1081,59 +1200,95 @@ public class TextField extends Composite implements Field, FocusHandler, ValueCh
 		public static final String TF_SUGGESTION_TEXT = "suggestionText";
 		public static final String SUGGESTION_TEXT_CSS = "suggestionTitleCss";
 		
+		
 		public static final String NUMFIELD_TYPE = "numFieldType";
 		public static final String NUMFIELD_DEC = "decNumField";
 		public static final String NUMFIELD_INT = "intNumField";
+		public static final String NUMFIELD_NEGATIVE = "negativeNumField";
+		public static final String TF_MINVALUE = "minValue";
+		public static final String TF_MAXVALUE = "maxValue";
 		public static final String PROPERTY_BY_FIELD_NAME = "propertyByFieldName";
+		public static final String DEC_PRECISION = "decPrecision";
 		
-		public static final String DEC_REGEX_EXP = "^[0-9]+(\\.[0-9]{1,4})?$";
+		public static final String DEC_REGEX_EXP = "^[0-9]+(\\.[0-9]{1,precision})?$";
 		public static final String INT_REGEX_EXP = "[\\d]*";
+		public static final String EMAIL_REGEX_EXP = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 		
-		//public static final String TF_SINGLELINE = "singleLineTextField";
-		//public static final String TF_MULTILINE = "multilineTextField";
+		public static final String VALIDATION_EVENT = "validationEvent";
+		public static final String VALIDATE_ON_BLUR = "validationOnBlur";
+		public static final String VALIDATE_ON_CHANGE = "validationOnChange";
 		
 	}
-
-	@Override
-	public void onKeyDown(KeyDownEvent event) {
-		FieldEvent fieldEvent = new FieldEvent();
-		
-		int keyCode = event.getNativeKeyCode();
-		if(keyCode == KeyCodes.KEY_UP){
-			fieldEvent.setEventData("increment");
-		} else if((keyCode == KeyCodes.KEY_DOWN)) {
-			fieldEvent.setEventData("decrement");
-		}
-		fieldEvent.setEventType(FieldEvent.EDITINITIATED);
-		
-		
-		
-		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
-	}
-
-
-	@Override
-	public void onMouseWheel(MouseWheelEvent event) {
-		FieldEvent fieldEvent = new FieldEvent();
-
-		if(event.isNorth()){
-			fieldEvent.setEventData("increment");
-		} else if(event.isSouth()) {
-			fieldEvent.setEventData("decrement");
-		}
-		fieldEvent.setEventType(FieldEvent.EDITINITIATED);
-		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
-	}
-
 
 	@Override
 	public void onKeyUp(KeyUpEvent event) {
-		TextBox txt = (TextBox) event.getSource();
-		txt.getText();
-		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC)){
+		
+		Integer keycode= event.getNativeKeyCode();
+		if(keycode.equals(KeyCodes.KEY_BACKSPACE) || keycode.equals(KeyCodes.KEY_TAB)|| keycode.equals(KeyCodes.KEY_DELETE)){
 			validateField();
 		}
-		
+				
 	}
+
+
+	@Override
+	public void onKeyPress(KeyPressEvent event) {
+		String fieldType = getTextFieldType();
+		Character charCode = event.getCharCode();
+		final int unicharCode = event.getUnicodeCharCode();
+		if(fieldType.equals(TextFieldConstant.TFTYPE_NUMERIC)){
+			
+			if(!Character.isDigit(charCode)){
+				
+				String numFieldType = getNumFieldType();
+				
+				Boolean isNegative = isFieldAllowNegative();
+								
+				if(numFieldType.equals(TextFieldConstant.NUMFIELD_DEC)){
+					if(!(charCode.equals('.') || (charCode.equals('-') && isNegative))){
+						event.preventDefault();
+					}
+				}
+				
+				if(numFieldType.equals(TextFieldConstant.NUMFIELD_INT)){
+					if(!(charCode.equals('-') && isNegative)){
+						event.preventDefault();
+				}
+				
+		  }
+		}
+		}
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {    
+			  @Override
+			  public void execute() {
+				  String eventType = getValidationEvent();
+				  if(!eventType.equals(TextFieldConstant.VALIDATE_ON_BLUR)){
+					  validateField();
+				  }else if(eventType.equals(TextFieldConstant.VALIDATE_ON_BLUR) && unicharCode==KeyCodes.KEY_ENTER){
+					  validateField();
+				  }
+		}
+		});
+	}
+	
+	public String getFieldText() {
+		
+		String fieldType = getTextFieldType();
+		
+		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX)) {
+			return textBox.getText();
+		} else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX)) {
+			return passwordTextBox.getText();
+		} else {
+			return textArea.getText();
+		}
+	}
+	
+	@Override
+	public void onBlur(BlurEvent event) {
+		 validateField();
+	}
+	
+
 
 }

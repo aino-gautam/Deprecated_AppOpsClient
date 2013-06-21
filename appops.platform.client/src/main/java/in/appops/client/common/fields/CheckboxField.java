@@ -2,9 +2,9 @@ package in.appops.client.common.fields;
 
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.fields.GroupField.GroupFieldConstant;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
-import in.appops.showcase.web.gwt.fields.client.GroupField.GroupFieldConstant;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

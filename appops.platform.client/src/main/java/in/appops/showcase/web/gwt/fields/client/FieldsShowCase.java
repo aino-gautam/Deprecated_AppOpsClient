@@ -1,26 +1,27 @@
 package in.appops.showcase.web.gwt.fields.client;
 
-import in.appops.client.common.ShowcaseComponentHolder;
 import in.appops.client.common.components.LocationHomeSelector;
 import in.appops.client.common.components.MediaAttachWidget;
 import in.appops.client.common.components.WebMediaAttachWidget;
+import in.appops.client.common.config.field.BaseField.BaseFieldConstant;
+import in.appops.client.common.config.field.date.DatePickerField;
+import in.appops.client.common.config.field.spinner.ListSpinnerField;
+import in.appops.client.common.config.field.spinner.NumericSpinnerField;
+import in.appops.client.common.config.field.spinner.SpinnerField.SpinnerFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
-import in.appops.client.common.fields.CheckboxField;
 import in.appops.client.common.fields.CheckboxField.CheckBoxFieldConstant;
 import in.appops.client.common.fields.DateTimeField;
+import in.appops.client.common.fields.GroupField;
+import in.appops.client.common.fields.GroupField.GroupFieldConstant;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.LinkField;
-import in.appops.client.common.fields.ListSpinnerField;
 import in.appops.client.common.fields.LocationSelector;
 import in.appops.client.common.fields.NumberField;
-import in.appops.client.common.fields.NumericSpinnerField;
-import in.appops.client.common.fields.SpinnerConfigurationConstant;
 import in.appops.client.common.fields.StateField;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
-import in.appops.client.common.fields.date.DatePickerField;
 import in.appops.client.common.fields.slider.NumericRangeSliderFieldComponent;
 import in.appops.client.common.fields.slider.StringRangeSliderFieldComponent;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
@@ -33,7 +34,7 @@ import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.spacemanagement.constants.SpaceTypeConstants;
-import in.appops.showcase.web.gwt.fields.client.GroupField.GroupFieldConstant;
+import in.appops.showcase.web.gwt.holder.client.ShowcaseComponentHolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,8 +47,6 @@ import com.google.code.gwt.geolocation.client.PositionCallback;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.maps.client.base.LatLng;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -59,7 +58,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHandler,ClickHandler {
+public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHandler {
 
 	private Label numberfieldErrorLabel;
 	private ListBox listBox;
@@ -233,12 +232,11 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
 		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
 		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(TextFieldConstant.TF_DEBUGID, debugId);
-		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_STYLE, TextFieldConstant.SUGGESTION_ON_TOP);
+		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_STYLE, TextFieldConstant.SUGGESTIONSTYLE_INLINE);
 		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_TEXT, "Enter field value");
-		configuration.setPropertyByName(TextFieldConstant.VALIDATION_STYLE, TextFieldConstant.ICONIC_STYLE);
-		configuration.setPropertyByName(TextFieldConstant.ICONIC_STYLE, TextFieldConstant.ICON_WITH_ERROR_MSG);
-		configuration.setPropertyByName(TextFieldConstant.VALIDATION_MSG_POSITION, TextFieldConstant.SIDE);
+		configuration.setPropertyByName(TextFieldConstant.VALIDATION_EVENT, TextFieldConstant.ICONIC_STYLE);
+		configuration.setPropertyByName(TextFieldConstant.ICONIC_STYLE, TextFieldConstant.ICONICSTYLE_ICON_WITH_ERROR_MSG);
+		configuration.setPropertyByName(TextFieldConstant.ERROR_MSG_POSITION, TextFieldConstant.SIDE);
 		configuration.setPropertyByName(TextFieldConstant.TF_ERROR_TEXT, "Data entered is not valid..");
 		configuration.setPropertyByName(TextFieldConstant.TF_MAXLENGTH, 10);
 		return configuration;
@@ -251,12 +249,13 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
 		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
 		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(TextFieldConstant.TF_DEBUGID, debugId);
 		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_STYLE, TextFieldConstant.SUGGESTION_ON_TOP);
-		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_TEXT, "Enter number upto 4 decimal places");
-		configuration.setPropertyByName(TextFieldConstant.NUMFIELD_TYPE, TextFieldConstant.NUMFIELD_DEC);
-		configuration.setPropertyByName(TextFieldConstant.VALIDATION_STYLE, TextFieldConstant.ONLY_MSG);
-		configuration.setPropertyByName(TextFieldConstant.TF_ERROR_TEXT, "Not a number");
+		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_TEXT, "Enter decimal number");
+		configuration.setPropertyByName(TextFieldConstant.NUMFIELD_TYPE, TextFieldConstant.NUMFIELD_INT);
+		configuration.setPropertyByName(TextFieldConstant.NUMFIELD_NEGATIVE, false);
+		configuration.setPropertyByName(TextFieldConstant.DEC_PRECISION, 3);
+		configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.ONLY_MSG);
+		configuration.setPropertyByName(TextFieldConstant.TF_ERROR_TEXT, "Invalid value");
 		configuration.setPropertyByName(TextFieldConstant.TF_VALIDVALUE_TEXT, "OK");
 		//configuration.setPropertyByName(TextFieldConstant.TEXTFIELD_MAXLENGTH, 10);
 		
@@ -268,10 +267,10 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		GroupField groupField = new GroupField();
 		
 		Configuration groupFieldConfig = new Configuration();
-		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_CHKBOXGROUP);
+		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_SINGLE_SELECT);
 		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_ALIGNMENT,GroupFieldConstant.GF_ALIGN_HORIZONTAL);
 		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_LIMIT,3);
-		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_CHKBOXGROUP);
+		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_SINGLE_SELECT);
 		
 		ArrayList<String> listOfItems = new ArrayList<String>();
 		listOfItems.add("chk1");
@@ -317,7 +316,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		GroupField groupField = new GroupField();
 		
 		Configuration groupFieldConfig = new Configuration();
-		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_RADIOGROUP);
+		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_MULTISELECT);
 		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_ALIGNMENT,GroupFieldConstant.GF_ALIGN_VERTICAL);
 		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_LIMIT,3);
 		
@@ -367,10 +366,9 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
 		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
 		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(TextFieldConstant.TF_DEBUGID, debugId);
 		//configuration.setPropertyByName(TextFieldConstant.TEXTFIELD_SUGGESTION_STYLE, TextFieldConstant.INLINE_SUGGESTION);
 		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_TEXT, "Enter field value");
-		configuration.setPropertyByName(TextFieldConstant.VALIDATION_STYLE, TextFieldConstant.ICONIC_STYLE);
+		configuration.setPropertyByName(TextFieldConstant.VALIDATION_EVENT, TextFieldConstant.ICONIC_STYLE);
 		//configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.OUTLINE_ICONIC_ERROR_STYLE);
 		//configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.ERROR_TITLE_STYLE);
 		//configuration.setPropertyByName(TextFieldConstant.ERROR_TITLE_STYLE, TextFieldConstant.ERROR_IN_BOTTOM);
@@ -388,14 +386,14 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
 		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
 		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(TextFieldConstant.TF_DEBUGID, debugId);
-		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_STYLE, TextFieldConstant.SUGGESTIONSTYLE_INLINE);
+		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_STYLE, TextFieldConstant.SUGGESTION_IN_BOTTOM);
 		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_TEXT, "Enter email");
 		//configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.INLINE_ICONIC_ERROR_STYLE);
-		configuration.setPropertyByName(TextFieldConstant.VALIDATION_STYLE, TextFieldConstant.ONLY_MSG);
+		configuration.setPropertyByName(TextFieldConstant.VALIDATION_EVENT, TextFieldConstant.ONLY_MSG);
 		//configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.ERROR_TITLE_STYLE);
 		//configuration.setPropertyByName(TextFieldConstant.ERROR_TITLE_STYLE, TextFieldConstant.ERROR_IN_BOTTOM);
 		configuration.setPropertyByName(TextFieldConstant.TF_ERROR_TEXT, "Data entered is not valid..");
+		configuration.setPropertyByName(TextFieldConstant.VALIDATION_EVENT, TextFieldConstant.VALIDATE_ON_CHANGE);
 		
 		return configuration;
 	}
@@ -463,20 +461,15 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 
 	private void initializeField(String fieldName) {
 		
-		String selectedFieldHtml = null;
 		try {
 			innerPanel.clear();
 			if(fieldName.equals(TEXTBOX)) {
 				TextField textFieldTB = new TextField();
-				//textFieldTB.setFieldValue("");
 				textFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, "appops-TextField", null, null));
 				textFieldTB.configure();
 				textFieldTB.create();
 				innerPanel.add(textFieldTB);
 				innerPanel.setCellHorizontalAlignment(textFieldTB,HorizontalPanel.ALIGN_CENTER);
-				selectedFieldHtml =  "javadoc/in/appops/client/common/fields/TextField.html";
-				//VerticalPanel textFieldConfigurationPanel =getTextboxConfigurationPanel();
-				//innerPanel.add(textFieldConfigurationPanel);
 				
 			} else if(fieldName.equals(PASSWORDTEXTBOX)) {
 				TextField textFieldPTB = new TextField();
@@ -486,17 +479,14 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				textFieldPTB.create();
 				innerPanel.add(textFieldPTB);
 				innerPanel.setCellHorizontalAlignment(textFieldPTB,HorizontalPanel.ALIGN_CENTER);
-				selectedFieldHtml =  "javadoc/in/appops/client/common/fields/TextField.html";
 				
 			}else if(fieldName.equals(EMAILBOX)) {
 				TextField textFieldTB = new TextField();
-				//textFieldTB.setFieldValue("");
 				textFieldTB.setConfiguration(getEmailFieldConfiguration(1, false, TextFieldConstant.TFTYPE_EMAILBOX, "appops-TextField", null, null));
 				textFieldTB.configure();
 				textFieldTB.create();
 				innerPanel.add(textFieldTB);
 				innerPanel.setCellHorizontalAlignment(textFieldTB,HorizontalPanel.ALIGN_CENTER);
-				selectedFieldHtml =  "javadoc/in/appops/client/common/fields/TextField.html";
 				
 			} else if(fieldName.equals(TEXTAREA)) {
 				TextField textFieldTA = new TextField();
@@ -505,7 +495,6 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				textFieldTA.create();
 				innerPanel.add(textFieldTA);
 				innerPanel.setCellHorizontalAlignment(textFieldTA,HorizontalPanel.ALIGN_CENTER);
-				selectedFieldHtml =  "javadoc/in/appops/client/common/fields/TextField.html";
 
 			}else if(fieldName.equals(NUMERICBOX)) {
 				TextField textFieldTB = new TextField();
@@ -515,9 +504,6 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				textFieldTB.create();
 				innerPanel.add(textFieldTB);
 				innerPanel.setCellHorizontalAlignment(textFieldTB,HorizontalPanel.ALIGN_CENTER);
-				selectedFieldHtml =  "javadoc/in/appops/client/common/fields/TextField.html";
-				//VerticalPanel textFieldConfigurationPanel =getTextboxConfigurationPanel();
-				//innerPanel.add(textFieldConfigurationPanel);
 				
 			}else if(fieldName.equals(GROUPFIELD)) {
 				GroupField groupField = getCheckBoxGroupField();
@@ -623,12 +609,13 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 
 			} else if(fieldName.equals(NUM_SPINNER)) {
 				Configuration configuration = new Configuration();
-				configuration.setPropertyByName(SpinnerConfigurationConstant.STEP, 3);
-				configuration.setPropertyByName(SpinnerConfigurationConstant.UNIT, "%");
-				configuration.setPropertyByName(SpinnerConfigurationConstant.MAX, 23L);
-				configuration.setPropertyByName(SpinnerConfigurationConstant.MIN, -3L);
-				configuration.setPropertyByName(SpinnerConfigurationConstant.CIRCULAR, true);
-				configuration.setPropertyByName(SpinnerConfigurationConstant.DEFAULT_VALUE, 3L);
+				configuration.setPropertyByName(SpinnerFieldConstant.SP_STEP, 3);
+				configuration.setPropertyByName(SpinnerFieldConstant.SP_UNIT, "%");
+				configuration.setPropertyByName(SpinnerFieldConstant.SP_MAXVAL, 23D);
+				configuration.setPropertyByName(SpinnerFieldConstant.SP_MINVAL, 3D);
+				configuration.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, true);
+				configuration.setPropertyByName(BaseFieldConstant.BF_DEFVAL, 3D);
+				configuration.setPropertyByName(BaseFieldConstant.BF_ERRPOS, BaseFieldConstant.BF_ERRBOTTOM);
 				
 				NumericSpinnerField valueSpinner = new NumericSpinnerField();
 				valueSpinner.setConfiguration(configuration);
@@ -648,9 +635,9 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				days.add("Saturday");
 				
 				Configuration configuration = new Configuration();
-				configuration.setPropertyByName(SpinnerConfigurationConstant.VALUELIST, days);
-				configuration.setPropertyByName(SpinnerConfigurationConstant.DEFAULT_VALIND, 0);
-				configuration.setPropertyByName(SpinnerConfigurationConstant.CIRCULAR, false);
+				configuration.setPropertyByName(SpinnerFieldConstant.SP_VALUELIST, days);
+				configuration.setPropertyByName(SpinnerFieldConstant.SP_VALUEIDX, 0);
+				configuration.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, false);
 				
 				ListSpinnerField listSpinner = new ListSpinnerField();
 				listSpinner.setConfiguration(configuration);
@@ -681,7 +668,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				addMediaUploaderField();
 			}
 			
-			componentHolder.setJavaDocPath(selectedFieldHtml);
+			componentHolder.setPackageName(getPackageNameOfSelectedField(fieldName));
+			
 		} catch (AppOpsException e) {
 			e.printStackTrace();
 		}
@@ -729,16 +717,37 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			}
 		});
 	}
-
-	@Override
-	public void onClick(ClickEvent event) {
-		/*Widget widget = (Widget) event.getSource();
-		if(widget instanceof CheckBox){
-			CheckBox chkBox = (CheckBox) widget;
-			if(chkBox.equals(obj))
-			boolean checked = chkBox.isChecked();
+	
+	private String getPackageNameOfSelectedField(String fieldName){
+				
+			if(fieldName.equals(TEXTBOX) || fieldName.equals(PASSWORDTEXTBOX) || fieldName.equals(EMAILBOX) || 	fieldName.equals(TEXTAREA) || fieldName.equals(NUMERICBOX)	) {
+				return TextField.class.getName();
+			} else if(fieldName.equals(GROUPFIELD) || fieldName.equals(GROUPFIELDRADIO)) {
+				return GroupField.class.getName();
+			}else if(fieldName.equals(STATEFIELD)) {
+				return StateField.class.getName();
+			} else if(fieldName.equals(TIME_PICKER) || fieldName.equals(TIME_PICKER_HOUR) || fieldName.equals(TIME_PICKER_MINUTE) || fieldName.equals(TIME_PICKER_SEC) || fieldName.equals(DATETIME_PICKER)) {
+				return DateTimeField.class.getName();
+			} else if(fieldName.equals(DATE_PICKER)) {
+				return DatePickerField.class.getName();
+			} else if(fieldName.equals(LOCATIONSELECTOR)) {
+				return LocationHomeSelector.class.getName();
+			} else if(fieldName.equals(NUMBERRANGE_SLIDER)) {
+				return NumericRangeSliderFieldComponent.class.getName();
+			} else if(fieldName.equals(STRINGRANGE_SLIDER)) {
+				return StringRangeSliderFieldComponent.class.getName();
+			} else if(fieldName.equals(NUM_SPINNER)) {
+				return NumericSpinnerField.class.getName();
+			} else if(fieldName.equals(LIST_SPINNER)) {
+				return ListSpinnerField.class.getName();
+			} else if(fieldName.equals(NUMBERFIELD)) {
+				return NumberField.class.getName();
+			} else if(fieldName.equals(MEDIA_UPLOAD)) {
+				return MediaAttachWidget.class.getName();
+			}
 			
-		}*/
+		return null;
 		
 	}
+	
 }
