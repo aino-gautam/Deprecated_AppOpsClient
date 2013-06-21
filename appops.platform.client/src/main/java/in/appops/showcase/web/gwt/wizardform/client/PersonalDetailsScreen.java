@@ -116,7 +116,7 @@ public class PersonalDetailsScreen extends Composite implements Screen{
 		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
 		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
 		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(TextFieldConstant.TF_DEBUGID, debugId);
+		//configuration.setPropertyByName(TextFieldConstant.TF_DEBUGID, debugId);
 		configuration.setPropertyByName(TextFieldConstant.PROPERTY_BY_FIELD_NAME, propertyByName);
 		return configuration;
 	}

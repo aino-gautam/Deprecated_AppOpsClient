@@ -135,7 +135,6 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
 		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
 		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(TextFieldConstant.TF_DEBUGID, debugId);
 		return configuration;
 	}
 

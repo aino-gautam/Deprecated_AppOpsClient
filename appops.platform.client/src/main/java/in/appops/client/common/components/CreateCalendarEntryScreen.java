@@ -869,7 +869,6 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
 		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
 		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(TextFieldConstant.TF_DEBUGID, debugId);
 		return configuration;
 	}
 	private Configuration getDateTimeFieldConfiguration(String modeSelection,String datetimefieldTimeonly, String modeTimeValue) {
