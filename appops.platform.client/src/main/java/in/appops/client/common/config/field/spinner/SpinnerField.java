@@ -2,8 +2,14 @@ package in.appops.client.common.config.field.spinner;
 
 import in.appops.client.common.config.field.BaseField;
 
+import java.util.ArrayList;
+
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -19,6 +25,8 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
@@ -35,7 +43,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author nitish@ensarm.com
  *
  */
-public class SpinnerField extends BaseField implements KeyDownHandler, MouseWheelHandler, MouseDownHandler, MouseUpHandler, MouseOutHandler, KeyUpHandler, KeyPressHandler, EventListener {
+public class SpinnerField extends BaseField implements KeyDownHandler, MouseWheelHandler, MouseDownHandler, MouseUpHandler, MouseOutHandler, KeyUpHandler, KeyPressHandler, EventListener, BlurHandler {
 	
 	/**
 	 *	Spinner Configuration Property Constants 
@@ -51,10 +59,10 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		public static final String SP_TYPE = "spinnerType";
 		
 		/** Configure Spinner to be of type Numeric **/
-		public static final String SP_TYPENUMERIC = "spinnerNumeric";
+		public static final int SP_TYPENUMERIC = 1;
 		
 		/** Configure Spinner to be of type List **/
-		public static final String SP_TYPELIST = "spinnerList";
+		public static final int SP_TYPELIST = 2;
 		
 		/** Specifies a numeric interval by which the field's value will be incremented or decremented when the user invokes the spinner **/
 		public static final String SP_STEP = "step";
@@ -104,13 +112,19 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		/** Index of default value to be shown from the {@link SpinnerFieldConstant#SP_VALUELIST}.  **/
 		public static final String SP_VALUEIDX = "valueListIndex";
 
+		public static final String SP_DECPRECISION = "decimalPrecision";
+
+		public static final String SP_VALIDATEONCHANGE = "validateOnChange";
+
+		public static final String SP_VALIDATEONBLUR = "validateOnBlur";
 	}
+	
+	/************* Spinner Components & Members ************/
 	
 	protected HorizontalPanel fieldPanel;
 	protected TextBox spinnerBox;
 	protected HorizontalPanel fieldSideErrorPanel ;
 	
-	/********************* Spinner Arrow Components     ****************************/
 	protected VerticalPanel arrowPanel;
 	protected ToggleButton spinUpArrow;
 	protected ToggleButton spinDownArrow;
@@ -119,43 +133,26 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 	private int initialSpeed = 7;
 	private boolean enabled;
 	private boolean spinUp;
+	
+	private SpinnerModel model;
+	
+	/***************** Constructor ****************/
 
-	protected SpinnerField(){
+	public SpinnerField(){
 		super();
 	}
 
-	/**
-	 * Instantiates the member variables
-	 */
-	@Override
-	public void initialize() {
-		super.initialize();
-		spinnerBox = new TextBox();
-		arrowPanel = new VerticalPanel();
-		spinUpArrow = new ToggleButton();
-		spinDownArrow = new ToggleButton();
-		basePanel = new VerticalPanel();
-	    fieldSideErrorPanel = new HorizontalPanel();
-		fieldPanel = new HorizontalPanel();
-	}
 
-	@Override
-	public void configure() {
-		super.configure();
-		/** Apply Css to the spinner box, if not configured value default css applied **/
-		spinnerBox.setStylePrimaryName(getBoxPrimCss());
-		spinnerBox.addStyleName(getBoxDepCss());
-	}
-
+	/************************** All Configuration Methods here *****************************************/
 	/**
 	 * Returns the Spinner type. Defaults to {@link SpinnerFieldConstant#SP_TYPENUMERIC}
 	 * Values {@link SpinnerFieldConstant#SP_TYPENUMERIC}, {@link SpinnerFieldConstant#SP_TYPELIST}
 	 * @return
 	 */
-	protected String getSpinnerType() {
-		String type = SpinnerFieldConstant.SP_TYPENUMERIC;
+	protected int getSpinnerType() {
+		int type = SpinnerFieldConstant.SP_TYPENUMERIC;
 		if(getConfigurationValue(SpinnerFieldConstant.SP_TYPE) != null) {
-			type = getConfigurationValue(SpinnerFieldConstant.SP_TYPE).toString();
+			type = (Integer)getConfigurationValue(SpinnerFieldConstant.SP_TYPE);
 		}
 		return type;
 	}
@@ -178,8 +175,6 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		}	
 		return depCss;
 	}
-	
-	
 
 	/**
 	 * Returns the primary style to be applied to the textbox of the spinner field.
@@ -212,20 +207,175 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 	 * If max value is reached, restarts from the min value and vice versa. Defaults to false
 	 * @return
 	 */
-	protected boolean isCircular() {
+	private boolean isCircular() {
 		boolean circular = false;
 		if(getConfigurationValue(SpinnerFieldConstant.SP_CIRCULAR) != null) {
 			circular = (Boolean)getConfigurationValue(SpinnerFieldConstant.SP_CIRCULAR);
 		}
 		return circular;
 	}
+	
+	private String getUnit() {
+		String unit = "";
+		if(getConfigurationValue(SpinnerFieldConstant.SP_UNIT) != null) {
+			unit = getConfigurationValue(SpinnerFieldConstant.SP_UNIT).toString();
+		}
+		return unit;
+	}
+	
+	private String getBlankErrMsg() {
+		String blnkMsg = "This field is required";
+		if(getConfigurationValue(SpinnerFieldConstant.SP_ERRMSGBLNK) != null) {
+			blnkMsg = getConfigurationValue(SpinnerFieldConstant.SP_ERRMSGBLNK).toString();
+		}
+		return blnkMsg;
+	}
 
+	private String getInvalidErrMsg() {
+		String invalidMsg = "Invalid input - not a number";
+		if(getConfigurationValue(SpinnerFieldConstant.SP_ERRMSGINVLD) != null) {
+			invalidMsg = getConfigurationValue(SpinnerFieldConstant.SP_ERRMSGINVLD).toString();
+		}
+		return invalidMsg;
+	}
+
+	private String getMaxErrMsg() {
+		String maxMsg = "Maximum value for this field is " + ((NumericModel)getModel()).fixPrecision(getMax(), getPrecision());
+		if(getConfigurationValue(SpinnerFieldConstant.SP_ERRMSGMAX) != null) {
+			maxMsg = getConfigurationValue(SpinnerFieldConstant.SP_ERRMSGMAX).toString();
+		}
+		return maxMsg;
+	}
+
+	private String getMinErrMsg() {
+		String minMsg = "Minimum value for this field is " + ((NumericModel)getModel()).fixPrecision(getMin(), getPrecision());
+		if(getConfigurationValue(SpinnerFieldConstant.SP_ERRMSGMIN) != null) {
+			minMsg = getConfigurationValue(SpinnerFieldConstant.SP_ERRMSGMIN).toString();
+		}
+		return minMsg;
+	}
+	
+	private String getNegErrMsg() {
+		String negMsg = "The value cannot be negative";
+		if(getConfigurationValue(SpinnerFieldConstant.SP_ERRMSGNEG) != null) {
+			negMsg = getConfigurationValue(SpinnerFieldConstant.SP_ERRMSGNEG).toString();
+		}
+		return negMsg;
+	}
+	
+	private boolean isAllowBlank() {
+		boolean allowBlank = false;
+		if(getConfigurationValue(SpinnerFieldConstant.SP_ALLOWBLNK) != null) {
+			allowBlank = (Boolean)getConfigurationValue(SpinnerFieldConstant.SP_ALLOWBLNK);
+		}
+		return allowBlank;
+	}
+	
+	private boolean isValidateOnChange() {
+		boolean validateOnChng = true;
+		if(getConfigurationValue(SpinnerFieldConstant.SP_VALIDATEONCHANGE) != null) {
+			validateOnChng = (Boolean)getConfigurationValue(SpinnerFieldConstant.SP_VALIDATEONCHANGE);
+		}
+		return validateOnChng;
+	}
+	
+	private boolean isValidateOnBlur() {
+		boolean validateOnBlur = true;
+		if(getConfigurationValue(SpinnerFieldConstant.SP_VALIDATEONBLUR) != null) {
+			validateOnBlur = (Boolean)getConfigurationValue(SpinnerFieldConstant.SP_VALIDATEONBLUR);
+		}
+		return validateOnBlur;
+	}
+	
+	private Integer getStep() {
+		int step = 1;
+		try {
+			if(getConfigurationValue(SpinnerFieldConstant.SP_STEP) != null) {
+				step = (Integer) getConfigurationValue(SpinnerFieldConstant.SP_STEP);
+			}
+			return step;
+		} catch (Exception e) {
+			// CONFIG ERROR -- If step value is anything other than a numeric value. 
+			return null;
+		}
+	}
+	
+	private Float getMax() {
+		Float max = Float.MAX_VALUE;
+		try {
+			if(getConfigurationValue(SpinnerFieldConstant.SP_MAXVAL) != null) {
+				max = (Float) getConfigurationValue(SpinnerFieldConstant.SP_MAXVAL);
+			}
+		} catch (Exception e) {
+			// CONFIG ERROR -- If max value is anything other than a numeric value. 
+		}
+		return max;
+	}
+
+	private Float getMin() {
+		Float min = Float.MIN_VALUE;
+		try {
+			if(getConfigurationValue(SpinnerFieldConstant.SP_MINVAL) != null) {
+				min = (Float) getConfigurationValue(SpinnerFieldConstant.SP_MINVAL);
+			}
+		} catch (Exception e) {
+			// CONFIG ERROR -- If min value is anything other than a numeric value. 
+		}
+		return min;
+	}
+
+	private boolean isAllowDecimal() {
+		boolean allowDec = false;
+		if(getConfigurationValue(SpinnerFieldConstant.SP_ALLOWDEC) != null) {
+			allowDec = (Boolean)getConfigurationValue(SpinnerFieldConstant.SP_ALLOWDEC);
+		}
+		return allowDec;
+	}
+	
+	private Integer getPrecision() {
+		int precision = 0;
+		try {
+			if(getConfigurationValue(SpinnerFieldConstant.SP_DECPRECISION) != null) {
+				precision = (Integer) getConfigurationValue(SpinnerFieldConstant.SP_DECPRECISION);
+			}
+			if(precision < 0) {
+				precision = - precision;
+			}
+			return precision;
+		} catch (Exception e) {
+			return 0;
+		}
+	}
+	
+	private int getDefaultValueIndex() {
+		int index = 0;
+		if(getConfigurationValue(SpinnerFieldConstant.SP_VALUEIDX) != null) {
+			int val = (Integer)getConfigurationValue(SpinnerFieldConstant.SP_VALUEIDX);
+			if(val < getValueList().size()) {
+				index = val;
+			}
+		}
+		return index;
+	}
+	
+	private ArrayList getValueList() {
+		ArrayList valueList = null;
+		if(getConfigurationValue(SpinnerFieldConstant.SP_VALUELIST) != null) {
+			valueList = (ArrayList)getConfigurationValue(SpinnerFieldConstant.SP_VALUELIST);
+		}
+		return valueList;
+	}
+	
+	/******************************** -- End Configuration Methods -- ************************************/
+	
+	/******************************** BaseField Overriden methods ****************************************/
+	
 	@Override
 	protected void setErrorSide() {
 		fieldSideErrorPanel.add(errorLabel);
 		fieldSideErrorPanel.setCellVerticalAlignment(errorLabel, HasVerticalAlignment.ALIGN_MIDDLE);
-		errorLabel.setStylePrimaryName("appops-SpinnerErrorRightCls");
-		errorLabel.setVisible(false);
+		errorLabel.setStylePrimaryName(getErrorMsgCls());
+		errorLabel.setVisible(true);
 	}
 	
 	@Override
@@ -240,19 +390,87 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 	}
 	
 	@Override
+	public void setValue(Object value) {
+		if(value.toString() != null) {
+			spinnerBox.setText(value.toString());
+		}
+	}
+	
+	@Override
+	public Object getValue() {
+		String fieldValue = spinnerBox.getText().trim();
+		return fieldValue;
+	}
+	
+	@Override
+	public ArrayList<String> getErrors(Object value) {
+		ArrayList<String> errors = new ArrayList<String>();
+		boolean valid = true;
+		errors.clear();
+		if(value != null) {
+			if(!isAllowBlank() && value.toString().trim().equals("")) {
+				errors.add(getBlankErrMsg());
+				return errors;
+			}
+			if(!value.toString().matches("-?\\d+(\\.\\d+)?")) {
+				errors.add(getInvalidErrMsg());
+				return errors;
+			}
+			if(getMin() > 0 && Float.parseFloat(value.toString()) < 0) {
+				errors.add(getNegErrMsg());
+				valid = false;
+			}
+			if(getMax() != null && Float.parseFloat(value.toString()) > getMax()) {
+				errors.add(getMaxErrMsg());
+				valid = false;
+			} 
+			if(getMin() != null && Double.parseDouble(value.toString()) < getMin()) {
+				errors.add(getMinErrMsg());
+				valid = false;
+			}
+		}
+		return errors;
+	}
+	
+	/**
+	 * Instantiates the member variables
+	 */
+	@Override
+	public void initialize() {
+		super.initialize();
+		spinnerBox = new TextBox();
+		arrowPanel = new VerticalPanel();
+		spinUpArrow = new ToggleButton();
+		spinDownArrow = new ToggleButton();
+		basePanel = new VerticalPanel();
+	    fieldSideErrorPanel = new HorizontalPanel();
+		fieldPanel = new HorizontalPanel();
+	}
+
+	@Override
+	public void configure() {
+		super.configure();
+		/** Apply Css to the spinner box, if not configured value default css applied **/
+		spinnerBox.setStylePrimaryName(getBoxPrimCss());
+		spinnerBox.addStyleName(getBoxDepCss());
+		
+		
+		if(getSpinnerType() == SpinnerFieldConstant.SP_TYPENUMERIC) {
+			setModel(new NumericModel());
+			configureForNumber();
+		} else {
+			setModel(new ListModel());
+			configureForList();
+		}
+		configureModel();
+	}
+
+	@Override
 	public void create() {
 		super.create();
 		
 		fieldSideErrorPanel.add(fieldPanel);
 		basePanel.add(fieldSideErrorPanel);
-
-		if(getErrorPosition().equals(BaseFieldConstant.BF_ERRPOS)) {
-			setErrorTop();
-		} else if(getErrorPosition().equals(BaseFieldConstant.BF_ERRBOTTOM)) {
-			setErrorBottom();
-		} else if(getErrorPosition().equals(SpinnerFieldConstant.BF_ERRSIDE)) {
-			setErrorSide();
-		}
 
 		spinUpArrow.setStylePrimaryName("appops-SpinnerUpArrow");
 		spinDownArrow.setStylePrimaryName("appops-SpinnerDownArrow");
@@ -265,6 +483,7 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		spinnerBox.addKeyDownHandler(this);
 		spinnerBox.addKeyUpHandler(this);
 		spinnerBox.addKeyPressHandler(this);
+		spinnerBox.addBlurHandler(this);
 		
 		spinUpArrow.addMouseDownHandler(this);
 		spinUpArrow.addMouseUpHandler(this);
@@ -287,27 +506,189 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 	    Element td1Element = (Element) Element.as(td1Node);
 	    td1Element.setClassName("appops-spinner-border-box");
 
+	    if(!getUnit().equals("")) {
+	    	setUnit();
+	    }
+	    
 	    arrowPanel.setWidth("17px");
 	   // Event.setEventListener(spinnerBox.getElement(), this);
 	    sinkEvents(Event.ONPASTE);
 	}
 
+	/************************************* -- END --**************************************************/
+
+	private void configureForNumber() {
+		NumericModel numModel = (NumericModel)getModel();
+		if(getMin() > getMax()) {
+			// CONFIG EXCEPTION -- If min value is > than max value
+		}
+
+		if(getStep() < 1) {
+			// CONFIG EXCEPTION -- Step should be a +ve no. But can Step be -ve ????
+		}
+		
+		if(getStep() > (getMax() - getMin())) {
+			// CONFIG EXCEPTION -- Step should not be > than the difference of max and min.
+			// Shall exception be thrown in this case???
+		}
+		
+		if(getDefaultValue() == null || (numModel.parseValue(getDefaultValue().toString()) == null)){
+			setValue("");
+		} else {
+			String value = numModel.fixPrecision(numModel.parseValue(getDefaultValue().toString()), getPrecision());
+			setValue(value);
+		}
+	}
+	
+	private void configureForList() {
+		ListModel listModel = (ListModel)getModel();
+		listModel.setValueList(getValueList());
+		listModel.setCurrentIndex(getDefaultValueIndex());
+		listModel.setCircular(isCircular());
+		spinnerBox.setText(listModel.getValue().toString());
+		spinnerBox.setReadOnly(true);
+	}
+
+	private void configureModel() {
+		if(getModel() instanceof NumericModel) {
+			NumericModel numModel = (NumericModel)getModel();
+			numModel.setMax(getMax());
+			numModel.setMin(getMin());
+			numModel.setStep(getStep());
+			numModel.setValue(numModel.parseValue(getValue().toString()));
+		}
+	}
+
+	private void setUnit() {
+		NodeList<com.google.gwt.dom.client.Element> nodeList = fieldPanel.getElement().getElementsByTagName("td");
+	    Node td1Node = nodeList.getItem(0);
+	    Element td1Element = (Element) Element.as(td1Node);
+	    Element span = DOM.createSpan();
+	    span.setInnerText(getUnit());
+	    span.setClassName("appops-SpinnerUnit");
+	    td1Element.appendChild(span);
+	}
+	
+	public void setSpinnerValue() {
+		if(getModel() instanceof NumericModel) {
+			NumericModel numModel = (NumericModel)getModel();
+			setValue(numModel.fixPrecision(numModel.parseValue(getModel().getValue().toString()), getPrecision()));
+		} else if(getModel() instanceof ListModel) {
+			ListModel listModel = (ListModel)getModel();
+			setValue(listModel.getValue().toString());
+		}
+	}
+	private void onSpinUp() {
+		getModel().spinUp();
+		setSpinnerValue();
+
+		if(isValidateOnChange()) {
+			validate();
+		}
+	}
+	
+	private void onSpinDown() {
+		getModel().spinDown();
+		setSpinnerValue();
+
+		if(isValidateOnChange()) {
+			validate();
+		}
+	}
+	
+	@Override
+	public void onKeyUp(KeyUpEvent event) {
+		int keyCode = event.getNativeKeyCode();
+
+		switch (keyCode) {
+			case KeyCodes.KEY_LEFT:
+			case KeyCodes.KEY_RIGHT:
+			case KeyCodes.KEY_BACKSPACE:
+			case KeyCodes.KEY_DELETE:
+			case KeyCodes.KEY_TAB:
+				if(isValidateOnChange()) {
+					if(validate()) {
+						updateModel();
+					}
+				}
+				return;
+		}		
+	}
+	
 	@Override
 	public void onKeyDown(KeyDownEvent event) {
 		int keyCode = event.getNativeKeyCode();
-		if(keyCode == KeyCodes.KEY_UP){
-			spinUp();
+		if(keyCode == KeyCodes.KEY_UP) {
+			onSpinUp();
 		} else if((keyCode == KeyCodes.KEY_DOWN)) {
-			spinDown();
+			onSpinDown();
 		}
 	}
 
 	@Override
+	public void onKeyPress(KeyPressEvent event) {
+		
+		if(!Character.isDigit(event.getCharCode()) && event.getCharCode() != '-' && event.getCharCode() != '.') {
+			event.preventDefault();
+			return;
+		}
+		if(getMin() > 0 && event.getCharCode() == '-') {
+			event.preventDefault();
+			return;
+		}
+		if(!isAllowDecimal() && event.getCharCode() == '.') {
+			event.preventDefault();
+			return;
+		}
+		
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {
+            	if(isValidateOnChange()) {
+        			if(validate()) {
+        				updateModel();
+        			}
+            	}
+            }
+        });
+	}
+	
+	@Override
+	public void onBrowserEvent(Event event) { 
+	    super.onBrowserEvent(event); 
+	    switch (event.getTypeInt()) { 
+	    case Event.ONPASTE: 
+	    	Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+	            @Override
+	            public void execute() {
+	            	if(isValidateOnChange()) {
+	            		if(validate()) {
+	            			updateModel();
+	            		}
+	            	}
+	            }
+	        });
+	    } 
+	}
+	
+	public void updateModel() {
+		if(getModel() instanceof NumericModel) {
+			NumericModel numModel = (NumericModel)getModel();
+			getModel().setValue(numModel.parseValue(getValue().toString()));
+		} else if(getModel() instanceof ListModel) {
+			ListModel listModel = (ListModel)getModel();
+			int indx = listModel.getValueList().indexOf(getValue().toString());
+			listModel.setCurrentIndex(indx);
+		}
+	}
+
+
+	@Override
 	public void onMouseWheel(MouseWheelEvent event) {
 		if(event.isNorth()) {
-			spinUp();
+			onSpinUp();
 		} else if(event.isSouth()) {
-			spinDown();
+			onSpinDown();
 		}
 	}
 
@@ -316,11 +697,11 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 
 		if(event.getSource().equals(spinUpArrow)) {
 			spinUp = true;
-			spinUp();
+			onSpinUp();
 			setEnabled(true);
 		} else if(event.getSource().equals(spinDownArrow)) {
 			spinUp = false;
-			spinDown();
+			onSpinDown();
 			setEnabled(true);
 		}
 		if(enabled) {
@@ -337,7 +718,15 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		}
 	}
 	
-	public void setEnabled(boolean enabled) { 
+	@Override
+	public void onMouseOut(MouseOutEvent arg0) {
+		if(enabled) {
+			timer.cancel();
+			setEnabled(false);
+		}		
+	}
+	
+	private void setEnabled(boolean enabled) { 
 		this.enabled = enabled;
 		if(!enabled) {
 			timer.cancel();
@@ -362,9 +751,9 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 				speed--;
 				counter = 0;
 				if (spinUp) {
-					spinUp();
+					onSpinUp();
 				} else {
-					spinDown();
+					onSpinDown();
 				}
 			}
 
@@ -372,37 +761,23 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 	};
 
 	@Override
-	public void onMouseOut(MouseOutEvent arg0) {
-		if(enabled) {
-			timer.cancel();
-			setEnabled(false);
+	public void onBlur(BlurEvent event) {
+		if(isValidateOnBlur()) {
+			if(validate()) {
+				updateModel();
+				setSpinnerValue();
+			}
 		}		
 	}
 
-	@Override
-	public void onKeyUp(KeyUpEvent event) { }
 
-	@Override
-	public void onKeyPress(KeyPressEvent event) { }
-	
-
-	@Override 
-	public void onBrowserEvent(Event event) { }
-	
-	protected void spinUp() { }
-	
-	protected void spinDown() {	}
-
-	@Override
-	public void setValue(Object value) {
-		if(value.toString() != null) {
-			spinnerBox.setText(value.toString());
-		}
+	public SpinnerModel getModel() {
+		return model;
 	}
-	
-	@Override
-	public Object getValue() {
-		String fieldValue = spinnerBox.getText().trim();
-		return fieldValue;
+
+
+	public void setModel(SpinnerModel model) {
+		this.model = model;
 	}
+
 }
