@@ -13,6 +13,7 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -78,9 +79,9 @@ public class TextField extends Composite implements Field, BlurHandler, KeyUpHan
 	
 	public static final String ERROR_PANEL_CSS = "errorPlaceHolder";
 	public static final String INLINE_ERROR_CSS = "appops-Inline-Error-TextBox";
-	public static final String VALIDATIONCORRECT_CSS = "appops-Validation_Correct-TextBox";
+	public static final String VALIDATIONCORRECT_CSS = "appops-Validation-Correct-TextBox";
 	public static final String VALIDATION_TEXT_CSS = "appops-Validation-Text";
-	public static final String ERROR_TEXT_CSS = "appops-Error_Text";
+	public static final String ERROR_TEXT_CSS = "appops-Error-Text";
 	public static final String SUGGESTION_TEXT_CSS = "appops-suggestionText";
 	public static final String ERROR_ICON = "images/validation_error_icon.jpg";
 	public static final String VALIATION_ICON = "images/validation_icon.png";
@@ -141,7 +142,7 @@ public class TextField extends Composite implements Field, BlurHandler, KeyUpHan
 		
 		textBox.setMaxLength(getFieldMaxLength());
 		textBox.setTabIndex(getTabIndex());
-		showSuggestionText(textBox);
+		showSuggestion(textBox);
 		
 		selectedWidget =textBox;
 		
@@ -166,7 +167,7 @@ public class TextField extends Composite implements Field, BlurHandler, KeyUpHan
 		
 		passwordTextBox.setMaxLength(getFieldMaxLength());
 		passwordTextBox.setTabIndex(getTabIndex());
-		showSuggestionText(passwordTextBox);
+		showSuggestion(passwordTextBox);
 		
 		/*** Events fired by passwordTextBox ****/
 		
@@ -195,7 +196,7 @@ public class TextField extends Composite implements Field, BlurHandler, KeyUpHan
 		if(getFieldCharWidth()!=null)
 			textArea.setCharacterWidth(getFieldCharWidth());
 		
-		showSuggestionText(textArea);
+		showSuggestion(textArea);
 		
 		/*** Events fired by textArea ****/
 		
@@ -240,7 +241,7 @@ public class TextField extends Composite implements Field, BlurHandler, KeyUpHan
 		
 		String fieldType = getTextFieldType();
 		
-		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX))
+		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC))
 			textBox.setText(fieldValue);
 		else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX))
 			passwordTextBox.setText(fieldValue);
@@ -257,7 +258,7 @@ public class TextField extends Composite implements Field, BlurHandler, KeyUpHan
 		
 		String fieldType = getTextFieldType();
 		
-		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX))
+		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC))
 			textBox.setText(fieldValue);
 		else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX))
 			passwordTextBox.setText(fieldValue);
@@ -290,11 +291,10 @@ public class TextField extends Composite implements Field, BlurHandler, KeyUpHan
 	 * Method validate the field. and set validation message or error title according to it.
 	 */
 	private void validateField() {
-
+		
+		clearAllErrors();
 		String fieldType = getTextFieldType();
 		
-		removeErrorText();
-
 		if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX)) {
 			validateEmail();
 		} else if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX)) {
@@ -305,11 +305,17 @@ public class TextField extends Composite implements Field, BlurHandler, KeyUpHan
 					showError(getBlankFieldText());
 				}
 			} else {
-				validateNumber();
+				String errorText = validateNumber();
+				if(errorText!=null)
+					showError(errorText);
 			}
 		}
 	}
 	
+	
+	/** 
+	 * Method used to validate an email.
+	 */
 	private void validateEmail() {
 		if (textBox.getText().equals("")) {
 			if (!isFieldAllowBlank()) {
@@ -324,6 +330,9 @@ public class TextField extends Composite implements Field, BlurHandler, KeyUpHan
 		}
 	}
 	
+	/**
+	 * Method validates the password.
+	 */
 	private void validatePassword(){
 		
 		if (passwordTextBox.getText().equals("")) {
@@ -338,7 +347,11 @@ public class TextField extends Composite implements Field, BlurHandler, KeyUpHan
 		}
 	}
 	
-	private void validateNumber(){
+	/**
+	 * Method validates the number.
+	 * @return
+	 */
+	private String validateNumber(){
 		
 		String numericFieldType = getNumFieldType();
 		Integer maxValue = getMaxValue();
@@ -349,16 +362,20 @@ public class TextField extends Composite implements Field, BlurHandler, KeyUpHan
 				Double fieldvalue = Double.parseDouble(textBox.getText());
 				
 				if(fieldvalue < getMinValue()){
-					showError(getMinValueErrorText());
+					return getMinValueErrorText();
 				}else if(maxValue!=null && fieldvalue > maxValue){
-					showError(getMaxValueErrorTxt());
+					return getMaxValueErrorTxt();
 				}
 				Boolean allowNegative = isFieldAllowNegative();
 				if(!allowNegative && fieldvalue < 0 ){
-					showError(getNegativeValTxt());
+					return getNegativeValTxt();
 				}
+								
 			}else{
-				showError(getErrorText());
+				if(textBox.getText().matches("-?[0-9]\\d*(.\\d+)?")){
+					setFieldValue(formatNumber(".##", Double.parseDouble(textBox.getText())));
+				}else
+					return getErrorText();
 			}
 		} else if (numericFieldType.equals(TextFieldConstant.NUMFIELD_INT)) {
 			
@@ -366,20 +383,30 @@ public class TextField extends Composite implements Field, BlurHandler, KeyUpHan
 				Integer fieldvalue = Integer.parseInt(textBox.getText());
 				
 				if(fieldvalue<getMinValue()){
-					showError(getMinValueErrorText());
+					return getMinValueErrorText();
 				}else if(maxValue!=null && fieldvalue>maxValue){
-					showError(getMaxValueErrorTxt());
+					return getMaxValueErrorTxt();
 				}
 				
 				Boolean allowNegative = isFieldAllowNegative();
 				if(!allowNegative && fieldvalue < 0 ){
-					showError(getNegativeValTxt());
+					return getNegativeValTxt();
 				}
 			}else{
-				showError(getErrorText());
+				Boolean allowNegative = isFieldAllowNegative();
+				if(textBox.getText().matches("-?[0-9]\\d*(.\\d+)?") && allowNegative){
+					setFieldValue(formatNumber("###", Double.parseDouble(textBox.getText())));
+				}else
+				 return getErrorText();
 			}
 		}
+		return null;
 		
+	}
+	
+	private String formatNumber(String format , double value){
+		NumberFormat pattern = NumberFormat.getFormat(format);
+		return pattern.format(value);
 	}
 	
 		
@@ -435,7 +462,7 @@ public class TextField extends Composite implements Field, BlurHandler, KeyUpHan
 	}
 	
 	
-	private void removeErrorText(){
+	private void clearAllErrors(){
 		if (getConfiguration() != null) {
 			String errorStyle = getErrorStyle();
 			if (errorStyle != null) {
@@ -449,11 +476,11 @@ public class TextField extends Composite implements Field, BlurHandler, KeyUpHan
 					}else if(iconicType.equals(TextFieldConstant.ICONICSTYLE_ICON_WITH_ERROR_MSG)){
 						
 						String msgPosition = getErrorOrValidationMsgPosition();
-						clearErrorOrValidationMsgText(msgPosition);
+						clearError(msgPosition);
 					}
 				}else if (errorStyle.equals(TextFieldConstant.ONLY_MSG)) {
 					String msgPosition = getErrorOrValidationMsgPosition();
-					clearErrorOrValidationMsgText(msgPosition);
+					clearError(msgPosition);
 				}
 			}
 		}
@@ -631,7 +658,7 @@ public class TextField extends Composite implements Field, BlurHandler, KeyUpHan
 	/**
 	 * Method will show suggestion title based on the suggestion style i.e inline/top/bottom which is set in the configuration. 
 	 */
-	private void showSuggestionText(Widget widget){
+	private void showSuggestion(Widget widget){
 		
 		if(getConfiguration()!=null){
 			
@@ -1042,7 +1069,7 @@ public class TextField extends Composite implements Field, BlurHandler, KeyUpHan
 		}
 	}
 	
-	private void clearErrorOrValidationMsgText(String position){
+	private void clearError(String position){
 		
 		if(position.equals(TextFieldConstant.UNDER)){
 			if(bottomWidget!=null)
@@ -1151,6 +1178,77 @@ public class TextField extends Composite implements Field, BlurHandler, KeyUpHan
 	}
 	
 
+
+
+	@Override
+	public void onKeyUp(KeyUpEvent event) {
+		
+		Integer keycode= event.getNativeKeyCode();
+		if(keycode.equals(KeyCodes.KEY_BACKSPACE) || keycode.equals(KeyCodes.KEY_TAB)|| keycode.equals(KeyCodes.KEY_DELETE)){
+			validateField();
+		}
+				
+	}
+
+
+	@Override
+	public void onKeyPress(KeyPressEvent event) {
+		String fieldType = getTextFieldType();
+		Character charCode = event.getCharCode();
+		final int unicharCode = event.getUnicodeCharCode();
+		if(fieldType.equals(TextFieldConstant.TFTYPE_NUMERIC)){
+			
+			if(!Character.isDigit(charCode)){
+				
+				String numFieldType = getNumFieldType();
+				
+				Boolean isNegative = isFieldAllowNegative();
+								
+				if(numFieldType.equals(TextFieldConstant.NUMFIELD_DEC)){
+					if(!(charCode.equals('.') || (charCode.equals('-') && isNegative))){
+						event.preventDefault();
+					}
+				}
+				
+				if(numFieldType.equals(TextFieldConstant.NUMFIELD_INT)){
+					if(!(isNegative && charCode.equals('-'))){
+						event.preventDefault();
+				}
+				
+		  }
+		}
+	}
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {    
+			  @Override
+			  public void execute() {
+				  String eventType = getValidationEvent();
+				  if(!eventType.equals(TextFieldConstant.VALIDATE_ON_BLUR) || unicharCode==KeyCodes.KEY_ENTER){
+					  validateField();
+				  }else if(eventType.equals(TextFieldConstant.VALIDATE_ON_BLUR) && unicharCode==KeyCodes.KEY_ENTER){
+					  validateField();
+				  }
+		}
+		});
+	}
+	
+	public String getFieldText() {
+		
+		String fieldType = getTextFieldType();
+		
+		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX)) {
+			return textBox.getText();
+		} else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX)) {
+			return passwordTextBox.getText();
+		} else {
+			return textArea.getText();
+		}
+	}
+	
+	@Override
+	public void onBlur(BlurEvent event) {
+		 validateField();
+	}
+	
 	public interface TextFieldConstant{
 		
 		public static final String TF_VISIBLELINES = "visibleLines";
@@ -1210,7 +1308,7 @@ public class TextField extends Composite implements Field, BlurHandler, KeyUpHan
 		public static final String PROPERTY_BY_FIELD_NAME = "propertyByFieldName";
 		public static final String DEC_PRECISION = "decPrecision";
 		
-		public static final String DEC_REGEX_EXP = "^[0-9]+(\\.[0-9]{1,precision})?$";
+		public static final String DEC_REGEX_EXP = "^[+-]?[0-9]{1,9}(?:\\.[0-9]{1,precision})?$";
 		public static final String INT_REGEX_EXP = "[\\d]*";
 		public static final String EMAIL_REGEX_EXP = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 		
@@ -1219,76 +1317,5 @@ public class TextField extends Composite implements Field, BlurHandler, KeyUpHan
 		public static final String VALIDATE_ON_CHANGE = "validationOnChange";
 		
 	}
-
-	@Override
-	public void onKeyUp(KeyUpEvent event) {
-		
-		Integer keycode= event.getNativeKeyCode();
-		if(keycode.equals(KeyCodes.KEY_BACKSPACE) || keycode.equals(KeyCodes.KEY_TAB)|| keycode.equals(KeyCodes.KEY_DELETE)){
-			validateField();
-		}
-				
-	}
-
-
-	@Override
-	public void onKeyPress(KeyPressEvent event) {
-		String fieldType = getTextFieldType();
-		Character charCode = event.getCharCode();
-		final int unicharCode = event.getUnicodeCharCode();
-		if(fieldType.equals(TextFieldConstant.TFTYPE_NUMERIC)){
-			
-			if(!Character.isDigit(charCode)){
-				
-				String numFieldType = getNumFieldType();
-				
-				Boolean isNegative = isFieldAllowNegative();
-								
-				if(numFieldType.equals(TextFieldConstant.NUMFIELD_DEC)){
-					if(!(charCode.equals('.') || (charCode.equals('-') && isNegative))){
-						event.preventDefault();
-					}
-				}
-				
-				if(numFieldType.equals(TextFieldConstant.NUMFIELD_INT)){
-					if(!(charCode.equals('-') && isNegative)){
-						event.preventDefault();
-				}
-				
-		  }
-		}
-		}
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {    
-			  @Override
-			  public void execute() {
-				  String eventType = getValidationEvent();
-				  if(!eventType.equals(TextFieldConstant.VALIDATE_ON_BLUR)){
-					  validateField();
-				  }else if(eventType.equals(TextFieldConstant.VALIDATE_ON_BLUR) && unicharCode==KeyCodes.KEY_ENTER){
-					  validateField();
-				  }
-		}
-		});
-	}
-	
-	public String getFieldText() {
-		
-		String fieldType = getTextFieldType();
-		
-		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX)) {
-			return textBox.getText();
-		} else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX)) {
-			return passwordTextBox.getText();
-		} else {
-			return textArea.getText();
-		}
-	}
-	
-	@Override
-	public void onBlur(BlurEvent event) {
-		 validateField();
-	}
-	
-
 
 }
