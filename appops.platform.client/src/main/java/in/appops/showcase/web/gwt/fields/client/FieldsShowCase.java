@@ -5,8 +5,7 @@ import in.appops.client.common.components.MediaAttachWidget;
 import in.appops.client.common.components.WebMediaAttachWidget;
 import in.appops.client.common.config.field.BaseField.BaseFieldConstant;
 import in.appops.client.common.config.field.date.DatePickerField;
-import in.appops.client.common.config.field.spinner.ListSpinnerField;
-import in.appops.client.common.config.field.spinner.NumericSpinnerField;
+import in.appops.client.common.config.field.spinner.SpinnerField;
 import in.appops.client.common.config.field.spinner.SpinnerField.SpinnerFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
@@ -611,13 +610,17 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				Configuration configuration = new Configuration();
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_STEP, 3);
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_UNIT, "%");
-				configuration.setPropertyByName(SpinnerFieldConstant.SP_MAXVAL, 23D);
-				configuration.setPropertyByName(SpinnerFieldConstant.SP_MINVAL, 3D);
+				configuration.setPropertyByName(SpinnerFieldConstant.SP_MAXVAL, 23F);
+				configuration.setPropertyByName(SpinnerFieldConstant.SP_MINVAL, -3F);
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, true);
-				configuration.setPropertyByName(BaseFieldConstant.BF_DEFVAL, 3D);
-				configuration.setPropertyByName(BaseFieldConstant.BF_ERRPOS, BaseFieldConstant.BF_ERRBOTTOM);
+				configuration.setPropertyByName(SpinnerFieldConstant.BF_DEFVAL, 3F);
+				configuration.setPropertyByName(SpinnerFieldConstant.SP_TYPE, SpinnerFieldConstant.SP_TYPENUMERIC);
+				configuration.setPropertyByName(SpinnerFieldConstant.BF_ERRPOS, SpinnerFieldConstant.BF_ERRTOP);
+				configuration.setPropertyByName(SpinnerFieldConstant.SP_DECPRECISION, 0);
+				configuration.setPropertyByName(SpinnerFieldConstant.SP_ALLOWDEC, false);
+				configuration.setPropertyByName(SpinnerFieldConstant.SP_VALIDATEONCHANGE, false);
 				
-				NumericSpinnerField valueSpinner = new NumericSpinnerField();
+				SpinnerField valueSpinner = new SpinnerField();
 				valueSpinner.setConfiguration(configuration);
 				valueSpinner.configure();
 				valueSpinner.create();
@@ -635,11 +638,12 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				days.add("Saturday");
 				
 				Configuration configuration = new Configuration();
+				configuration.setPropertyByName(SpinnerFieldConstant.SP_TYPE, SpinnerFieldConstant.SP_TYPELIST);
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_VALUELIST, days);
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_VALUEIDX, 0);
-				configuration.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, false);
+				configuration.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, true);
 				
-				ListSpinnerField listSpinner = new ListSpinnerField();
+				SpinnerField listSpinner = new SpinnerField();
 				listSpinner.setConfiguration(configuration);
 				listSpinner.configure();
 				listSpinner.create();
@@ -729,7 +733,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			} else if(fieldName.equals(TIME_PICKER) || fieldName.equals(TIME_PICKER_HOUR) || fieldName.equals(TIME_PICKER_MINUTE) || fieldName.equals(TIME_PICKER_SEC) || fieldName.equals(DATETIME_PICKER)) {
 				return DateTimeField.class.getName();
 			} else if(fieldName.equals(DATE_PICKER)) {
-				return DatePickerField.class.getName();
+				//return DatePickerField.class.getName();
 			} else if(fieldName.equals(LOCATIONSELECTOR)) {
 				return LocationHomeSelector.class.getName();
 			} else if(fieldName.equals(NUMBERRANGE_SLIDER)) {
@@ -737,9 +741,9 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			} else if(fieldName.equals(STRINGRANGE_SLIDER)) {
 				return StringRangeSliderFieldComponent.class.getName();
 			} else if(fieldName.equals(NUM_SPINNER)) {
-				return NumericSpinnerField.class.getName();
+				return SpinnerField.class.getName();
 			} else if(fieldName.equals(LIST_SPINNER)) {
-				return ListSpinnerField.class.getName();
+				return SpinnerField.class.getName();
 			} else if(fieldName.equals(NUMBERFIELD)) {
 				return NumberField.class.getName();
 			} else if(fieldName.equals(MEDIA_UPLOAD)) {
