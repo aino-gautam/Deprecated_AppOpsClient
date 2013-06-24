@@ -1,7 +1,8 @@
 package in.appops.client.common.config.field.date;
 
-import in.appops.client.common.config.field.spinner.ListSpinnerField;
-import in.appops.client.common.config.field.spinner.NumericSpinnerField;
+import in.appops.client.common.config.field.spinner.ListModel;
+import in.appops.client.common.config.field.spinner.NumericModel;
+import in.appops.client.common.config.field.spinner.SpinnerField;
 import in.appops.client.common.config.field.spinner.SpinnerField.SpinnerFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
@@ -38,10 +39,10 @@ public class AppopsMonthSelector extends MonthSelector implements FieldEventHand
 	private CalendarModel model;
 	private AppopsDatePicker picker;
 
-	private ListSpinnerField monthSpinner;
+	private SpinnerField monthSpinner;
 	private ArrayList<String> monthAbbrList;
 	
-	private NumericSpinnerField yearSpinner;
+	private SpinnerField yearSpinner;
 
 	public void setModel(CalendarModel model) {
 		this.model = model;
@@ -54,18 +55,20 @@ public class AppopsMonthSelector extends MonthSelector implements FieldEventHand
 	@Override
 	protected void refresh() {
 		String formattedMonth =  DateTimeFormat.getFormat(PredefinedFormat.MONTH_ABBR).format(getModel().getCurrentMonth());
-		monthSpinner.changeValue(monthAbbrList.indexOf(formattedMonth));
+		ListModel listModel = (ListModel)monthSpinner.getModel();
+		listModel.setCurrentIndex(listModel.getValueList().indexOf(formattedMonth));
+		monthSpinner.setSpinnerValue();
 		
 		String formattedYear =  DateTimeFormat.getFormat(PredefinedFormat.YEAR).format(getModel().getCurrentMonth());
-		yearSpinner.changeValue(formattedYear);
-		
-		
+		NumericModel numericModel = (NumericModel)yearSpinner.getModel();
+		numericModel.setValue(numericModel.parseValue(formattedYear));
+		yearSpinner.setSpinnerValue();
 	}
 
 	@Override
 	protected void setup() {
 		
-	   monthSpinner = new ListSpinnerField();
+	   monthSpinner = new SpinnerField();
 	   monthAbbrList = new ArrayList<String>();
 	   
 	   DateTimeFormat dtf = DateTimeFormat.getFormat(PredefinedFormat.MONTH_ABBR);
@@ -80,23 +83,25 @@ public class AppopsMonthSelector extends MonthSelector implements FieldEventHand
 	   }
 
 	   Configuration configuration = new Configuration();
-    	configuration.setPropertyByName(SpinnerFieldConstant.SP_VALUELIST, monthAbbrList);
-		configuration.setPropertyByName(SpinnerFieldConstant.SP_VALUEIDX, 0);
-		configuration.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, true);
-		//configuration.setPropertyByName(SpinnerFieldConstant.SP_PCLS, "appops-DpMonYrSpin");
-		
+       configuration.setPropertyByName(SpinnerFieldConstant.SP_VALUELIST, monthAbbrList);
+	   configuration.setPropertyByName(SpinnerFieldConstant.SP_VALUEIDX, 0);
+	   configuration.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, true);
+	   configuration.setPropertyByName(SpinnerFieldConstant.SP_TYPE, SpinnerFieldConstant.SP_TYPELIST);
+	   configuration.setPropertyByName(SpinnerFieldConstant.BF_PCLS, "appops-DpMonYrSpin");
+	   
 		monthSpinner.setConfiguration(configuration);
 		monthSpinner.configure();
 		monthSpinner.create();
 		
-		yearSpinner = new NumericSpinnerField();
+		yearSpinner = new SpinnerField();
 		
 		 Configuration confNs = new Configuration();
 		 confNs.setPropertyByName(SpinnerFieldConstant.SP_STEP, 1);
 		 confNs.setPropertyByName(SpinnerFieldConstant.SP_MAXVAL, 2099L);
 		 confNs.setPropertyByName(SpinnerFieldConstant.SP_MINVAL, 1900L);
 		 confNs.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, true);
-		// confNs.setPropertyByName(SpinnerFieldConstant.SP_PCLS, "appops-DpMonYrSpin");
+		 confNs.setPropertyByName(SpinnerFieldConstant.BF_PCLS, "appops-DpMonYrSpin");
+		 configuration.setPropertyByName(SpinnerFieldConstant.SP_TYPE, SpinnerFieldConstant.SP_TYPENUMERIC);
 			
 			yearSpinner.setConfiguration(confNs);
 			yearSpinner.configure();
