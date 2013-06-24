@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 /**
  * This provides provides a common interface for the logical behaviour and state of fields + 
- * getting setting field values, validation triggering etc. These are configurable
- * .
+ * getting setting field values, validation triggering etc. Fields are configurable.
+ * 
  * // TODO Define local event handling mechanism 
  * 
  * @author nitish@ensarm.com
@@ -20,12 +20,12 @@ public interface Field extends Configurable {
 	void configure();
 	
 	/**
-	 *  Create a field.
+	 *  Create the field.
 	 */
 	void create();
 	
 	/**
-	 * Sets a data value into the field.
+	 * Sets data value to the field.
 	 */
 	void setValue(Object value);
 	
@@ -40,21 +40,36 @@ public interface Field extends Configurable {
 	void reset();
 	
 	/**
-	 * Will do the field validation and return a list of error messages for validation failed. Would be called internally 
+	 * Will do the field validation and return a list of error messages for validation failed. Would be called internally while by {@link #validate()}
 	 */
 	ArrayList<String> getErrors(Object fieldValue);
 	
 	
 	/**
-	 * Returns whether or not the field value is currently valid by calling internally {@link #getErrors}
+	 * Returns whether or not the field value is currently valid by calling internally {@link #getErrors}. Display invalid markers.
 	 */
 	boolean validate();
 	
 	/**
+	 * Returns whether or not the field value is currently valid by calling internally {@link #getErrors}. Does not display invalid markers
+	 */
+	boolean isValid();
+	
+	/**
 	 * Associate one or more validation error messages with this field.
-	 * Composite fields using this should would this method to update the component error displayer to display the messages.
-	 * Would be called internally by validate().
+	 * Fields using this would use the method to manage the error displayer to display the messages.
 	 */
 	void markInvalid(ArrayList<String> errors);
+	
+	/**
+	 * Returns true if the value of this field has been changed from its originalValue..
+	 * @return
+	 */
+	boolean isDirty();
+	
+	/**
+	 * Reset originalValue to the current value.
+	 */
+	void resetOriginalValue();
 	
 }

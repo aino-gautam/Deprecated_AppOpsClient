@@ -4,6 +4,8 @@ import in.appops.platform.core.shared.Configuration;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -22,32 +24,73 @@ public class BaseField extends Composite implements Field {
 		/** A value to initialize this field with. **/
 		public static final String BF_DEFVAL = "defaultValue";
 		
-		/** Prevents displaying error messages **/
+		/** Prevents displaying error marker **/
 		public static final String BF_PREVENTMARKERS = "preventInvalidMarker";
 		
-		/** Specifies where to place the error marker. viz. {@link BaseFieldConstant#SP_ERRSIDE}, {@link BaseFieldConstant#SP_ERRTOP}, {@link BaseFieldConstant#SP_ERRBOTTOM}
+		/** Specifies the position of the error marker. viz. {@link BaseFieldConstant#BF_ERRSIDE}, {@link BaseFieldConstant#BF_ERRTOP}, {@link BaseFieldConstant#BF_ERRBOTTOM}
 		 *  Defaults to {@link BaseFieldConstant#SP_ERRINLINE} **/
 		public static final String BF_ERRPOS = "errorPosition";
 		
-		/** Error marker to be shown above the field. {@link BaseFieldConstant#SP_ERRPOS} **/
+		/** Error marker to be shown above the field. {@link BaseFieldConstant#BF_ERRPOS} **/
 		public static final String BF_ERRTOP = "errorTop";
 		
-		/** Error marker to be shown right side of the field. {@link BaseFieldConstant#SP_ERRPOS} **/
+		/** Error marker to be shown right side of the field. {@link BaseFieldConstant#BF_ERRPOS} **/
 		public static final String BF_ERRSIDE = "errorSide";
 		
-		/** Error marker to be shown inline of field. {@link BaseFieldConstant#SP_ERRPOS} **/
+		/** Error marker to be shown inline of field. {@link BaseFieldConstant#BF_ERRPOS} **/
 		public static final String BF_ERRINLINE = "errorInline";
 		
-		/** Error marker to be shown below the field. {@link BaseFieldConstant#SP_ERRPOS} **/
-		public static final String BF_ERRBOTTOM = "errorBotton";
+		/** Error marker to be shown below the field. {@link BaseFieldConstant#BF_ERRPOS} **/
+		public static final String BF_ERRBOTTOM = "errorBottom";
+
+		/**
+		 * Specifies whether the field be disabled.
+		 * Defaults to <code>false</code>
+		 */
+		public static final String BF_DISABLED = "disabled";
+		
+		/** Specifies whether this field should be validated immediately whenever a change in its value is detected. 
+		 *  When set to true, it would allow the field to show feedback about the validity of its contents immediately as the user is typing.
+		 *  Default would be <code>true</code> otherwise specified.
+		 **/
+		public static final String BF_VALIDATEONCHANGE = "validateOnChange";
+		
+		/** Specifies whether this field should be validated when it looses focus. 
+		 *  Default would be <code>true</code> otherwise specified.
+		 **/
+		public static final String BF_VALIDATEONBLUR = "validateOnBlur";
+
+		/** Error msg to be shown when marking invalid if no message is provided. <br>
+		 *  Default is {@literal The value in this field is invalid}.
+		 **/
+		public static final String BF_INVLDMSG = "invalidMsg";
+
+		/** Set the fields readOnly **/
+		public static final String BF_READONLY = "readOnly";
+
+		/** Set the fields readOnly **/
+		public static final String BF_ERRMSGCLS = "errorMsgCls";
 
 	}
+	
+	/**************** Properties *******************/
+	
+	/** The original value of the field as configured in the value configuration **/
+	private Object originalValue;
+	
+	/** value of the field **/
+	private Object value;
+
+	/** List of current active error displayed **/
+	private ArrayList<String> activeErrors;
+	
 	
 	protected VerticalPanel basePanel;
 	protected HTML errorLabel;
 	protected Label fieldLabel;
 	
-	protected Configuration configuration;
+	protected Configuration configuration;	
+	
 	
 	public BaseField() {
 		initialize();
@@ -60,8 +103,12 @@ public class BaseField extends Composite implements Field {
 	protected void initialize() {
 		basePanel = new VerticalPanel();
 		errorLabel = new HTML();
+		activeErrors = new ArrayList<String>();
 	}
 
+	
+	/****************************** All Configurations methods here *********************************/
+	
 	/**
 	 * Returns configuration is present else creates a new one
 	 */
@@ -81,13 +128,6 @@ public class BaseField extends Composite implements Field {
 	@Override
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
-	}
-
-	@Override
-	public void configure() {
-		/** Apply Css to the spinner base container, if not configured value default css applied **/
-		basePanel.setStylePrimaryName(getBaseFieldPrimCss());
-		basePanel.addStyleName(getBaseFieldCss());
 	}
 
 	/**
@@ -146,7 +186,7 @@ public class BaseField extends Composite implements Field {
 	 * @return
 	 */
 	protected Object getDefaultValue() {
-		Object defaultValue = "";
+		Object defaultValue = null;
 		if(getConfigurationValue(BaseFieldConstant.BF_DEFVAL) != null) {
 			defaultValue = getConfigurationValue(BaseFieldConstant.BF_DEFVAL);
 		}
@@ -181,22 +221,67 @@ public class BaseField extends Composite implements Field {
 		return errPos;
 	}
 	
+	protected String getInvalidMsg() {
+		String invalidMsg = "The value in this field is invalid";
+		if(getConfigurationValue(BaseFieldConstant.BF_INVLDMSG) != null) {
+			invalidMsg = getConfigurationValue(BaseFieldConstant.BF_INVLDMSG).toString();
+		}
+		return invalidMsg;
+	}
+
+	protected boolean isReadOnly() {
+		boolean readOnly = false;
+		if(getConfigurationValue(BaseFieldConstant.BF_READONLY) != null) {
+			readOnly = (Boolean)getConfigurationValue(BaseFieldConstant.BF_READONLY);
+		}
+		return readOnly;
+	}
+
+	protected boolean isDisabled() {
+		boolean disabled = false;
+		if(getConfigurationValue(BaseFieldConstant.BF_DISABLED) != null) {
+			disabled = (Boolean)getConfigurationValue(BaseFieldConstant.BF_DISABLED);
+		}
+		return disabled;
+	}
+	
+	protected String getErrorMsgCls() {
+		String errorCss = getErrorPosition() == BaseFieldConstant.BF_ERRBOTTOM || getErrorPosition() == BaseFieldConstant.BF_ERRTOP ? "appops-errorTopBottomCls" :
+							getErrorPosition() == BaseFieldConstant.BF_ERRBOTTOM ? "appops-errorRightCls" : "appops-errorInvalidInline";
+		if(getConfigurationValue(BaseFieldConstant.BF_ERRMSGCLS) != null) {
+			errorCss = getConfigurationValue(BaseFieldConstant.BF_ERRMSGCLS).toString();
+		}
+		return errorCss;
+	}
+
+	/******************** End of Configuration Methods ***************************/
+	
+	
+	@Override
+	public void configure() {
+		/** Apply Css to the spinner base container, if not configured value default css applied **/
+		basePanel.setStylePrimaryName(getBaseFieldPrimCss());
+		basePanel.addStyleName(getBaseFieldCss());
+	}
+
 	/**
 	 * Added the error display to the top position
 	 */
 	protected void setErrorTop() {
+		basePanel.remove(errorLabel);
 		basePanel.insert(errorLabel, 0);
-		errorLabel.setStylePrimaryName("appops-SpinnerErrorTopBottomCls");
-		errorLabel.setVisible(false);
+		errorLabel.setStylePrimaryName(getErrorMsgCls());
+		errorLabel.setVisible(true);
 	}
 	
 	/**
 	 * Added the error display to the bottom position
 	 */
 	protected void setErrorBottom() {
+		basePanel.remove(errorLabel);
 		basePanel.add(errorLabel);
-		errorLabel.setVisible(false);
-		errorLabel.setStylePrimaryName("appops-SpinnerErrorTopBottomCls");
+		errorLabel.setStylePrimaryName(getErrorMsgCls());
+		errorLabel.setVisible(true);
 	}
 	
 	/**
@@ -211,34 +296,45 @@ public class BaseField extends Composite implements Field {
 
 	@Override
 	public boolean validate() {
-		boolean isValid = false;
 		ArrayList<String> errors = getErrors(getValue());
 		if(errors.isEmpty()) {
-			isValid = true;
+			clearInvalidMarkers();
+			return true;
 		}
-		if(!isPreventMarkers()) {
-			if(isValid) {
-				clearInvalidMarkers();
-			} else {
-				markInvalid(errors);
-			}
-		}
-		return isValid;
+		markInvalid(errors);
+		return true;
 	}
-
-	@Override
-	public void markInvalid(ArrayList<String> errors) {
+	
+	private String getErrorDisplayable(ArrayList<String> errors) {
 		String errorMsg = "";
 		for(String error : errors) {
 			errorMsg = errorMsg + error + "<br>";
 		}
-		if(getErrorPosition().equals(BaseFieldConstant.BF_ERRINLINE)) {
-			setErrorInline();
-		} else {
-			if(!getErrorPosition().equals(BaseFieldConstant.BF_ERRSIDE)) {
-				errorLabel.setHTML(errorMsg);
+		return errorMsg;
+	}
+
+	@Override
+	public void markInvalid(ArrayList<String> errors) {
+		
+		Set<String> set1 = new HashSet<String>();
+		set1.addAll(activeErrors);
+		Set<String> set2 = new HashSet<String>();
+		set2.addAll(errors);
+		
+		if(!set1.equals(set2)) {
+			setActiveErrors(errors);
+			if(getErrorPosition().equals(BaseFieldConstant.BF_ERRINLINE)) {
+				setErrorInline();
+			} else if(getErrorPosition().equals(BaseFieldConstant.BF_ERRBOTTOM)) {
+				errorLabel.setHTML(getErrorDisplayable(errors));
+				setErrorBottom();
+			} else if(getErrorPosition().equals(BaseFieldConstant.BF_ERRTOP)) {
+				errorLabel.setHTML(getErrorDisplayable(errors));
+				setErrorTop();
+			} else if(getErrorPosition().equals(BaseFieldConstant.BF_ERRSIDE)) {
+				setErrorSide();
 			}
-			errorLabel.setVisible(true);
+			// TODO Check how to use setError();
 		}
 	}
 	
@@ -246,6 +342,7 @@ public class BaseField extends Composite implements Field {
 	 * Removes the invalid markers
 	 */
 	protected void clearInvalidMarkers() {
+		getActiveErrors().clear();
 		errorLabel.setText("");
 		errorLabel.setVisible(false);
 	}
@@ -258,13 +355,12 @@ public class BaseField extends Composite implements Field {
 
 	@Override
 	public void setValue(Object value) {
-
+		this.value = value;
 	}
 
 	@Override
 	public Object getValue() {
-		// TODO Auto-generated method stub
-		return null;
+		return value;
 	}
 
 	@Override
@@ -277,4 +373,44 @@ public class BaseField extends Composite implements Field {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	/**
+	 * This would allow necessary modifications before the actual value is set.
+	 * @param value
+	 * @return
+	 */
+	protected Object transformValue(Object value) {
+		return null;
+	}
+
+	public ArrayList<String> getActiveErrors() {
+		return activeErrors;
+	}
+
+	public void setActiveErrors(ArrayList<String> activeErrors) {
+		this.activeErrors = activeErrors;
+	}
+
+	@Override
+	public boolean isValid() {
+		ArrayList<String> errors = getErrors(getValue());
+		if(errors.isEmpty()) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isDirty() {
+		if(!getValue().equals(originalValue)) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void resetOriginalValue() {
+		this.originalValue = getValue();
+	}
+	
 }
