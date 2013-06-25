@@ -3,7 +3,6 @@ package in.appops.showcase.web.gwt.fields.client;
 import in.appops.client.common.components.LocationHomeSelector;
 import in.appops.client.common.components.MediaAttachWidget;
 import in.appops.client.common.components.WebMediaAttachWidget;
-import in.appops.client.common.config.field.BaseField.BaseFieldConstant;
 import in.appops.client.common.config.field.date.DatePickerField;
 import in.appops.client.common.config.field.spinner.SpinnerField;
 import in.appops.client.common.config.field.spinner.SpinnerField.SpinnerFieldConstant;
@@ -168,7 +167,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "images/locationMarker1.png");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "images/locationMarker1.png");
-		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, "appops-TextField");
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, "appops-TextField");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CHOOSE_LOCATION_BTN, "chooseLocationBtn");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_POPUPPANEL, "currentLocationField");
 		configuration.setPropertyByName(LocationSelector.MAP_ZOOM, "8");
@@ -185,7 +184,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "images/locationMarker1.png");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "images/locationMarker1.png");
-		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, "appops-TextField");
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, "appops-TextField");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CHOOSE_LOCATION_BTN, "chooseLocationBtn");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_POPUPPANEL, "currentLocationField");
 		configuration.setPropertyByName(LocationSelector.MAP_ZOOM, "8");
@@ -227,16 +226,14 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	private Configuration getTextFieldConfiguration(int visibleLines, boolean readOnly, String textFieldType, String primaryCss, String secondaryCss, String debugId){
 		Configuration configuration = new Configuration();
 		configuration.setPropertyByName(TextFieldConstant.TF_VISIBLELINES, visibleLines);
-		configuration.setPropertyByName(TextFieldConstant.TF_READONLY, readOnly);
+		configuration.setPropertyByName(TextFieldConstant.BF_READONLY, readOnly);
 		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
-		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_STYLE, TextFieldConstant.SUGGESTIONSTYLE_INLINE);
-		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_TEXT, "Enter field value");
-		configuration.setPropertyByName(TextFieldConstant.VALIDATION_EVENT, TextFieldConstant.ICONIC_STYLE);
-		configuration.setPropertyByName(TextFieldConstant.ICONIC_STYLE, TextFieldConstant.ICONICSTYLE_ICON_WITH_ERROR_MSG);
-		configuration.setPropertyByName(TextFieldConstant.ERROR_MSG_POSITION, TextFieldConstant.SIDE);
-		configuration.setPropertyByName(TextFieldConstant.TF_ERROR_TEXT, "Data entered is not valid..");
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(TextFieldConstant.BF_DCLS, secondaryCss);
+		configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
+		configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter field value");
+		configuration.setPropertyByName(TextFieldConstant.BF_VALIDATEONCHANGE, true);
+		configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
 		configuration.setPropertyByName(TextFieldConstant.TF_MAXLENGTH, 10);
 		return configuration;
 	}
@@ -244,19 +241,15 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	private Configuration getNumericFieldConfiguration(int visibleLines, boolean readOnly, String textFieldType, String primaryCss, String secondaryCss, String debugId){
 		Configuration configuration = new Configuration();
 		configuration.setPropertyByName(TextFieldConstant.TF_VISIBLELINES, visibleLines);
-		configuration.setPropertyByName(TextFieldConstant.TF_READONLY, readOnly);
+		configuration.setPropertyByName(TextFieldConstant.BF_READONLY, readOnly);
 		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
-		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_STYLE, TextFieldConstant.SUGGESTION_ON_TOP);
-		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_TEXT, "Enter decimal number");
-		configuration.setPropertyByName(TextFieldConstant.NUMFIELD_TYPE, TextFieldConstant.NUMFIELD_INT);
-		configuration.setPropertyByName(TextFieldConstant.NUMFIELD_NEGATIVE, false);
-		configuration.setPropertyByName(TextFieldConstant.DEC_PRECISION, 3);
-		configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.ONLY_MSG);
-		configuration.setPropertyByName(TextFieldConstant.TF_ERROR_TEXT, "Invalid value");
-		configuration.setPropertyByName(TextFieldConstant.TF_VALIDVALUE_TEXT, "OK");
-		//configuration.setPropertyByName(TextFieldConstant.TEXTFIELD_MAXLENGTH, 10);
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(TextFieldConstant.BF_DCLS, secondaryCss);
+		//configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_TOP);
+		configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter Number");
+		configuration.setPropertyByName(TextFieldConstant.MINVALUE,0);
+		configuration.setPropertyByName(TextFieldConstant.ALLOWDEC,true);
+		configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
 		
 		return configuration;
 	}
@@ -361,17 +354,14 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	private Configuration getTextAreaConfiguration(int visibleLines, boolean readOnly, String textFieldType, String primaryCss, String secondaryCss, String debugId){
 		Configuration configuration = new Configuration();
 		configuration.setPropertyByName(TextFieldConstant.TF_VISIBLELINES, visibleLines);
-		configuration.setPropertyByName(TextFieldConstant.TF_READONLY, readOnly);
+		configuration.setPropertyByName(TextFieldConstant.BF_READONLY, readOnly);
 		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
-		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
-		//configuration.setPropertyByName(TextFieldConstant.TEXTFIELD_SUGGESTION_STYLE, TextFieldConstant.INLINE_SUGGESTION);
-		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_TEXT, "Enter field value");
-		configuration.setPropertyByName(TextFieldConstant.VALIDATION_EVENT, TextFieldConstant.ICONIC_STYLE);
-		//configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.OUTLINE_ICONIC_ERROR_STYLE);
-		//configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.ERROR_TITLE_STYLE);
-		//configuration.setPropertyByName(TextFieldConstant.ERROR_TITLE_STYLE, TextFieldConstant.ERROR_IN_BOTTOM);
-		configuration.setPropertyByName(TextFieldConstant.TF_ERROR_TEXT, "Data entered is not valid..");
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(TextFieldConstant.BF_DCLS, secondaryCss);
+		configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
+		configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter field value");
+		configuration.setPropertyByName(TextFieldConstant.BF_VALIDATEONCHANGE, true);
+		configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
 		configuration.setPropertyByName(TextFieldConstant.TF_MAXLENGTH, 10);
 		configuration.setPropertyByName(TextFieldConstant.TF_CHARWIDTH, 70);
 		
@@ -381,18 +371,14 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	private Configuration getEmailFieldConfiguration(int visibleLines, boolean readOnly, String textFieldType, String primaryCss, String secondaryCss, String debugId){
 		Configuration configuration = new Configuration();
 		configuration.setPropertyByName(TextFieldConstant.TF_VISIBLELINES, visibleLines);
-		configuration.setPropertyByName(TextFieldConstant.TF_READONLY, readOnly);
+		configuration.setPropertyByName(TextFieldConstant.BF_READONLY, readOnly);
 		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
-		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_STYLE, TextFieldConstant.SUGGESTION_IN_BOTTOM);
-		configuration.setPropertyByName(TextFieldConstant.TF_SUGGESTION_TEXT, "Enter email");
-		//configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.INLINE_ICONIC_ERROR_STYLE);
-		configuration.setPropertyByName(TextFieldConstant.VALIDATION_EVENT, TextFieldConstant.ONLY_MSG);
-		//configuration.setPropertyByName(TextFieldConstant.ERROR_STYLE, TextFieldConstant.ERROR_TITLE_STYLE);
-		//configuration.setPropertyByName(TextFieldConstant.ERROR_TITLE_STYLE, TextFieldConstant.ERROR_IN_BOTTOM);
-		configuration.setPropertyByName(TextFieldConstant.TF_ERROR_TEXT, "Data entered is not valid..");
-		configuration.setPropertyByName(TextFieldConstant.VALIDATION_EVENT, TextFieldConstant.VALIDATE_ON_CHANGE);
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(TextFieldConstant.BF_DCLS, secondaryCss);
+		configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
+		configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter email");
+		configuration.setPropertyByName(TextFieldConstant.BF_VALIDATEONCHANGE, true);
+		configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
 		
 		return configuration;
 	}
@@ -512,13 +498,6 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				GroupField groupField = getRadioButtonGroupField();
 				innerPanel.add(groupField);
 				innerPanel.setCellHorizontalAlignment(groupField,HorizontalPanel.ALIGN_CENTER);
-			}else if(fieldName.equals(CHECKBOXGROUPMULTISELECT)) {
-				GroupCheckboxWidget multiSelectCheckbox = new GroupCheckboxWidget();
-				innerPanel.add(multiSelectCheckbox);
-				innerPanel.setCellHorizontalAlignment(multiSelectCheckbox,HorizontalPanel.ALIGN_CENTER);
-			} else if(fieldName.equals(CHECKBOXFIELD)) {
-				CheckboxWidget checkbox = new CheckboxWidget();
-				innerPanel.add(checkbox);
 			} else if(fieldName.equals(STATEFIELD)) {
 				StateField stateField = new StateField();
 				Configuration stateFieldConfig = getStateFieldConfiguration(StateField.STATEFIELDMODE_SUGGESTIVE, "getSpaceTypesWithName", "spacemanagement.SpaceManagementService.getEntityList", SpaceTypeConstants.NAME);
@@ -615,7 +594,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, true);
 				configuration.setPropertyByName(SpinnerFieldConstant.BF_DEFVAL, 3F);
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_TYPE, SpinnerFieldConstant.SP_TYPENUMERIC);
-				configuration.setPropertyByName(SpinnerFieldConstant.BF_ERRPOS, SpinnerFieldConstant.BF_ERRTOP);
+				configuration.setPropertyByName(SpinnerFieldConstant.BF_ERRPOS, SpinnerFieldConstant.BF_TOP);
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_DECPRECISION, 0);
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_ALLOWDEC, false);
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_VALIDATEONCHANGE, false);

@@ -42,16 +42,12 @@ public class ContactDetailsScreen extends Composite implements Screen {
 		tbPhoneNo.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, null, null, null));
 		tbPhoneNo.setFieldValue("Last Name");
 		
-		try {
-			tbAddress1.create();
-			tbPhoneNo.create();
-		} catch (AppOpsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		tbAddress1.create();
+		tbPhoneNo.create();
 		
-		fieldMap.add(tbAddress1);
-		fieldMap.add(tbPhoneNo);
+
+		//fieldMap.add(tbAddress1);
+		//fieldMap.add(tbPhoneNo);
 		
 		flex.setWidget(0, 0, tbAddress1);
 		flex.setWidget(0, 2, tbPhoneNo);
@@ -90,10 +86,10 @@ public class ContactDetailsScreen extends Composite implements Screen {
 	private Configuration getTextFieldConfiguration(int visibleLines, boolean readOnly, String textFieldType, String primaryCss, String secondaryCss, String debugId){
 		Configuration configuration = new Configuration();
 		configuration.setPropertyByName(TextFieldConstant.TF_VISIBLELINES, visibleLines);
-		configuration.setPropertyByName(TextFieldConstant.TF_READONLY, readOnly);
+		configuration.setPropertyByName(TextFieldConstant.BF_READONLY, readOnly);
 		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
-		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(TextFieldConstant.BF_DCLS, secondaryCss);
 		//configuration.setPropertyByName(TextFieldConstant.TF_DEBUGID, debugId);
 		return configuration;
 	}
