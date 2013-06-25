@@ -10,6 +10,7 @@
 	color: #333;
 	font-family: 'Ubuntu', sans-serif;
 	font-size: 12px;
+	padding-left: 5px !important;
 	
 }
 .appops-TextField-default {
@@ -1409,30 +1410,6 @@ height: 15px;
 	width: 150px;	
 }
 
-.appops-errorRightCls{
-	width: 18px;
-	height: 14px;
-	background: no-repeat center center;
-	background-image: url("images/exclamation.gif");
-	overflow: hidden;
-
-}
-.appops-errorTopBottomCls{
-	padding: 2px 2px 2px 18px;
-	color: #C0272B;
-	font-family: 'Ubuntu',sans-serif;
-    font-size: 11px;
-	line-height: 16px;
-	background: no-repeat 0 2px;
-	background-image: url("images/exclamation.gif");
-}
-.appops-errorInvalidInline {
-	background-color: white;
-	background-image: url('images/invalid_line.gif');
-	background-repeat: repeat-x;
-	background-position: bottom;
-	border-color: #C30 !important;
-}
 .appops-SpinnerUnit{
 	position: absolute;
 	top: 4px;
