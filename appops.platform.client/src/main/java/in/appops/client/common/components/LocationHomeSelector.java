@@ -231,10 +231,10 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 	private Configuration getTextFieldConfiguration(int visibleLines, boolean readOnly, String textFieldType, String primaryCss, String secondaryCss, String debugId){
 		Configuration configuration = new Configuration();
 		configuration.setPropertyByName(TextFieldConstant.TF_VISIBLELINES, visibleLines);
-		configuration.setPropertyByName(TextFieldConstant.TF_READONLY, readOnly);
+		configuration.setPropertyByName(TextFieldConstant.BF_READONLY, readOnly);
 		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
-		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(TextFieldConstant.BF_DCLS, secondaryCss);
 		return configuration;
 	}
 	
@@ -257,7 +257,7 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 		
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "images/locationMarker1.png");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "images/locationMarker1.png");
-		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, "appops-TextField");
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, "appops-TextField");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CHOOSE_LOCATION_BTN, "chooseLocationBtn");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_POPUPPANEL, "currentLocationField");
 		configuration.setPropertyByName(LocationSelector.MAP_ZOOM, "8");
@@ -273,7 +273,7 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 		
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "images/locationMarker1.png");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "images/locationMarker1.png");
-		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, "appops-TextField");
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, "appops-TextField");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CHOOSE_LOCATION_BTN, "chooseLocationBtn");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_POPUPPANEL, "currentLocationField");
 		configuration.setPropertyByName(LocationSelector.MAP_ZOOM, "8");
@@ -362,7 +362,7 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 		
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "images/locationMarker1.png");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "images/locationMarker1.png");
-		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, "appops-TextField");
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, "appops-TextField");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CHOOSE_LOCATION_BTN, "chooseLocationBtn");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_POPUPPANEL, "currentLocationField");
 		configuration.setPropertyByName(LocationSelector.MAP_ZOOM, mapZoomLevel);
@@ -380,7 +380,7 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 		
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "images/locationMarker1.png");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "images/locationMarker1.png");
-		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, "appops-TextField");
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, "appops-TextField");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CHOOSE_LOCATION_BTN, "chooseLocationBtn");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_POPUPPANEL, "currentLocationField");
 		configuration.setPropertyByName(LocationSelector.MAP_ZOOM, mapZoomLevel);

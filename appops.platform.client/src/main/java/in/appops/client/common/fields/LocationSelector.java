@@ -103,7 +103,7 @@ public class LocationSelector extends Composite implements Field,EntityReceiver,
 		
 		currentLocationTextField = new TextField();
 		currentLocationTextField.setFieldValue("Current location");
-		currentLocationTextField.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, getConfiguration().getPropertyByName(TextFieldConstant.TF_PRIMARYCSS).toString(), null, null));
+		currentLocationTextField.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, getConfiguration().getPropertyByName(TextFieldConstant.BF_PCLS).toString(), null, null));
 	
 		try{
 			currentLocationTextField.create();
@@ -330,10 +330,10 @@ public class LocationSelector extends Composite implements Field,EntityReceiver,
 	private Configuration getTextFieldConfiguration(int visibleLines, boolean readOnly, String textFieldType, String primaryCss, String secondaryCss, String debugId){
 		Configuration configuration = new Configuration();
 		configuration.setPropertyByName(TextFieldConstant.TF_VISIBLELINES, visibleLines);
-		configuration.setPropertyByName(TextFieldConstant.TF_READONLY, readOnly);
+		configuration.setPropertyByName(TextFieldConstant.BF_READONLY, readOnly);
 		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
-		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(TextFieldConstant.BF_DCLS, secondaryCss);
 		return configuration;
 	}
 

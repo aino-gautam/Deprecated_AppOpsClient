@@ -61,6 +61,8 @@ public interface Field extends Configurable {
 	 */
 	void markInvalid(ArrayList<String> errors);
 	
+	void markValid();
+	
 	/**
 	 * Returns true if the value of this field has been changed from its originalValue..
 	 * @return
@@ -71,5 +73,9 @@ public interface Field extends Configurable {
 	 * Reset originalValue to the current value.
 	 */
 	void resetOriginalValue();
+	
+	 String getFieldValue();
+	
+	 void setFieldValue(String fieldValue);
 	
 }

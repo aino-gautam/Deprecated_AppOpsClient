@@ -105,11 +105,7 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 		textFieldTA = new TextField();
 		textFieldTA.setFieldValue("Write a reply..");
 		textFieldTA.setConfiguration(getTextFieldConfiguration(10, false, TextFieldConstant.TFTTYPE_TXTAREA, "appops-TextField", "replyBoxField", null));
-		try {
-			textFieldTA.create();
-		} catch (AppOpsException e) {
-			e.printStackTrace();
-		}
+		textFieldTA.create();
 		vpPanel.add(textFieldTA);
 		
 		((TextArea) textFieldTA.getWidget()).addFocusHandler(this);
@@ -131,10 +127,10 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 	private Configuration getTextFieldConfiguration(int visibleLines, boolean readOnly, String textFieldType, String primaryCss, String secondaryCss, String debugId){
 		Configuration configuration = new Configuration();
 		configuration.setPropertyByName(TextFieldConstant.TF_VISIBLELINES, visibleLines);
-		configuration.setPropertyByName(TextFieldConstant.TF_READONLY, readOnly);
+		configuration.setPropertyByName(TextFieldConstant.BF_READONLY, readOnly);
 		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
-		configuration.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, secondaryCss);
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(TextFieldConstant.BF_DCLS, secondaryCss);
 		return configuration;
 	}
 

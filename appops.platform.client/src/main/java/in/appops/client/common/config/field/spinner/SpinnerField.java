@@ -25,12 +25,12 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -263,30 +263,6 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		return negMsg;
 	}
 	
-	private boolean isAllowBlank() {
-		boolean allowBlank = false;
-		if(getConfigurationValue(SpinnerFieldConstant.SP_ALLOWBLNK) != null) {
-			allowBlank = (Boolean)getConfigurationValue(SpinnerFieldConstant.SP_ALLOWBLNK);
-		}
-		return allowBlank;
-	}
-	
-	private boolean isValidateOnChange() {
-		boolean validateOnChng = true;
-		if(getConfigurationValue(SpinnerFieldConstant.SP_VALIDATEONCHANGE) != null) {
-			validateOnChng = (Boolean)getConfigurationValue(SpinnerFieldConstant.SP_VALIDATEONCHANGE);
-		}
-		return validateOnChng;
-	}
-	
-	private boolean isValidateOnBlur() {
-		boolean validateOnBlur = true;
-		if(getConfigurationValue(SpinnerFieldConstant.SP_VALIDATEONBLUR) != null) {
-			validateOnBlur = (Boolean)getConfigurationValue(SpinnerFieldConstant.SP_VALIDATEONBLUR);
-		}
-		return validateOnBlur;
-	}
-	
 	private Integer getStep() {
 		int step = 1;
 		try {
@@ -371,14 +347,6 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 	/******************************** BaseField Overriden methods ****************************************/
 	
 	@Override
-	protected void setErrorSide() {
-		fieldSideErrorPanel.add(errorLabel);
-		fieldSideErrorPanel.setCellVerticalAlignment(errorLabel, HasVerticalAlignment.ALIGN_MIDDLE);
-		errorLabel.setStylePrimaryName(getErrorMsgCls());
-		errorLabel.setVisible(true);
-	}
-	
-	@Override
 	protected void setErrorInline () {
 		spinnerBox.addStyleName("appops-SpinnerFieldInvalidInline");
 	}
@@ -442,7 +410,6 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		arrowPanel = new VerticalPanel();
 		spinUpArrow = new ToggleButton();
 		spinDownArrow = new ToggleButton();
-		basePanel = new VerticalPanel();
 	    fieldSideErrorPanel = new HorizontalPanel();
 		fieldPanel = new HorizontalPanel();
 	}
@@ -470,7 +437,7 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		super.create();
 		
 		fieldSideErrorPanel.add(fieldPanel);
-		basePanel.add(fieldSideErrorPanel);
+		basePanel.add(fieldSideErrorPanel,DockPanel.CENTER);
 
 		spinUpArrow.setStylePrimaryName("appops-SpinnerUpArrow");
 		spinDownArrow.setStylePrimaryName("appops-SpinnerDownArrow");
