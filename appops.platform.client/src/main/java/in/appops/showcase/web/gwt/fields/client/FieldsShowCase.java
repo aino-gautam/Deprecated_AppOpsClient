@@ -3,6 +3,8 @@ package in.appops.showcase.web.gwt.fields.client;
 import in.appops.client.common.components.LocationHomeSelector;
 import in.appops.client.common.components.MediaAttachWidget;
 import in.appops.client.common.components.WebMediaAttachWidget;
+import in.appops.client.common.config.field.LinkField;
+import in.appops.client.common.config.field.LinkField.LinkFieldConstant;
 import in.appops.client.common.config.field.date.DatePickerField;
 import in.appops.client.common.config.field.spinner.SpinnerField;
 import in.appops.client.common.config.field.spinner.SpinnerField.SpinnerFieldConstant;
@@ -13,10 +15,9 @@ import in.appops.client.common.fields.CheckboxField.CheckBoxFieldConstant;
 import in.appops.client.common.fields.DateTimeField;
 import in.appops.client.common.fields.GroupField;
 import in.appops.client.common.fields.GroupField.GroupFieldConstant;
+import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.client.common.fields.LabelField;
-import in.appops.client.common.fields.LinkField;
 import in.appops.client.common.fields.LocationSelector;
-import in.appops.client.common.fields.NumberField;
 import in.appops.client.common.fields.RadioButtonField.RadionButtonFieldConstant;
 import in.appops.client.common.fields.StateField;
 import in.appops.client.common.fields.TextField;
@@ -48,9 +49,11 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.maps.client.base.LatLng;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -87,6 +90,10 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	public static final String MEDIA_UPLOAD = "Media Uploader";
 	public static final String GROUPFIELD = "Group Field (Check Box)";
 	public static final String GROUPFIELDRADIO = "Group Field (Radio Button)";
+	public static final String LABELFIELD = "LabelField";
+	public static final String LINKFIELDHYPERLINK = "LinkField(HyperLink)";
+	public static final String LINKFIELDANCHOR = "LinkField(Anchor)";
+	
 	
 	private Image loaderImage;
 	public FieldsShowCase() {
@@ -138,6 +145,9 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		/*listBox.addItem(MEDIA_UPLOAD);*/
 		listBox.addItem(GROUPFIELD);
 		listBox.addItem(GROUPFIELDRADIO);
+		listBox.addItem(LABELFIELD);
+		listBox.addItem(LINKFIELDHYPERLINK);
+		listBox.addItem(LINKFIELDANCHOR);
 		
 		listBox.addChangeHandler(this);
 		listBox.setStylePrimaryName("fieldShowcaseBasePanel");
@@ -205,13 +215,16 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	 * @param debugId (optional) String the debug id for the {@link}LabelField
 	 * @return
 	 */
-	private Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId){
-		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		configuration.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return configuration;
+	private Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String displayText){
+		
+		
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, allowWordWrap);
+		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_DISPLAYTXT, displayText);
+		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		
+		return conf;
 	}
 	
 	/**
@@ -380,14 +393,26 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	}
 	
 		
-	private Configuration getLinkFieldConfiguration(String linkFieldType, String primaryCss, String secondaryCss, String debugId){
+	private Configuration getHyperLinkConfiguration(){
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LinkField.LINKFIELD_TYPE, linkFieldType);
-		configuration.setPropertyByName(LinkField.LINKFIELD_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(LinkField.LINKFIELD_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(LinkField.LINKFIELD_DEBUGID, debugId);
+		configuration.setPropertyByName(LinkFieldConstant.LNK_TYPE, LinkFieldConstant.LNKTYPE_HYPERLINK);
+		configuration.setPropertyByName(LinkFieldConstant.BF_PCLS,"appops-LinkField");
+		configuration.setPropertyByName(LinkFieldConstant.LNK_DISPLAYTEXT, "Hyperlink");
+		configuration.setPropertyByName(LinkFieldConstant.LNK_HISTORYTOKEN, "historyToken");
 		return configuration;
 	}
+	
+	private Configuration getAnchorConfiguration(){
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(LinkFieldConstant.LNK_TYPE, LinkFieldConstant.LNKTYPE_ANCHOR);
+		configuration.setPropertyByName(LinkFieldConstant.BF_PCLS,"appops-LinkField");
+		configuration.setPropertyByName(LinkFieldConstant.LNK_DISPLAYTEXT, "Anchor");
+		configuration.setPropertyByName(LinkFieldConstant.LNK_TARGET_FRAME, "_self");
+		configuration.setPropertyByName(LinkFieldConstant.LNK_TITLE, "Anchor with configurations");
+		configuration.setPropertyByName(LinkFieldConstant.LNK_HREF, componentHolder.getHelpHtml(getPackageNameOfSelectedField(LINKFIELDANCHOR)));
+		return configuration;
+	}
+	
 	
 	private Configuration getStateFieldConfiguration(String stateFieldType, String qname, String operationName, String displayText) {
 
@@ -494,7 +519,28 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				GroupField groupField = getRadioButtonGroupField();
 				innerPanel.add(groupField);
 				innerPanel.setCellHorizontalAlignment(groupField,HorizontalPanel.ALIGN_CENTER);
-			} else if(fieldName.equals(STATEFIELD)) {
+			} else if(fieldName.equals(LABELFIELD)) {
+				LabelField labelField = new LabelField();
+				labelField.setConfiguration(getLabelFieldConfiguration(true,"appops-LabelField",null,"Label with configuration"));
+				labelField.configure();
+				labelField.create();
+				innerPanel.add(labelField);
+				innerPanel.setCellHorizontalAlignment(labelField,HorizontalPanel.ALIGN_CENTER);
+			} else if(fieldName.equals(LINKFIELDHYPERLINK)) {
+				LinkField hyperLinkField = new LinkField();
+				hyperLinkField.setConfiguration(getHyperLinkConfiguration());
+				hyperLinkField.configure();
+				hyperLinkField.create();
+				innerPanel.add(hyperLinkField);
+				innerPanel.setCellHorizontalAlignment(hyperLinkField,HorizontalPanel.ALIGN_CENTER);
+			}else if(fieldName.equals(LINKFIELDANCHOR)) {
+				LinkField anchorLinkField = new LinkField();
+				anchorLinkField.setConfiguration(getAnchorConfiguration());
+				anchorLinkField.configure();
+				anchorLinkField.create();
+				innerPanel.add(anchorLinkField);
+				innerPanel.setCellHorizontalAlignment(anchorLinkField,HorizontalPanel.ALIGN_CENTER);
+			}else if(fieldName.equals(STATEFIELD)) {
 				StateField stateField = new StateField();
 				Configuration stateFieldConfig = getStateFieldConfiguration(StateField.STATEFIELDMODE_SUGGESTIVE, "getSpaceTypesWithName", "spacemanagement.SpaceManagementService.getEntityList", SpaceTypeConstants.NAME);
 				stateField.setConfiguration(stateFieldConfig);
@@ -625,20 +671,6 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				innerPanel.add(listSpinner);
 				innerPanel.setCellHorizontalAlignment(listSpinner,HorizontalPanel.ALIGN_CENTER);
 
-			} else if(fieldName.equals(NUMBERFIELD)) {
-				NumberField numberField = new NumberField();
-				numberField.setFieldValue("3");
-				Configuration numberConfig = getNumberFieldConfiguration();
-				numberField.setConfiguration(numberConfig);
-				VerticalPanel numberFieldPanel = new VerticalPanel();
-				numberfieldErrorLabel = new Label("Only Numbers and not the characters are allowed");
-				numberFieldPanel.add(numberField);
-				numberFieldPanel.add(numberfieldErrorLabel);
-				numberfieldErrorLabel.setVisible(false);
-				numberfieldErrorLabel.setStylePrimaryName("errorLabel");
-				numberField.create();
-				innerPanel.add(numberFieldPanel);
-
 			} else if(fieldName.equals(MEDIA_UPLOAD)) {
 
 				innerPanel.add(loaderImage);
@@ -719,10 +751,12 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				return SpinnerField.class.getName();
 			} else if(fieldName.equals(LIST_SPINNER)) {
 				return SpinnerField.class.getName();
-			} else if(fieldName.equals(NUMBERFIELD)) {
-				return NumberField.class.getName();
 			} else if(fieldName.equals(MEDIA_UPLOAD)) {
 				return MediaAttachWidget.class.getName();
+			}else if(fieldName.equals(LABELFIELD)) {
+				return LabelField.class.getName();
+			}else if(fieldName.equals(LINKFIELDHYPERLINK) || fieldName.equals(LINKFIELDANCHOR)) {
+				return LinkField.class.getName();
 			}
 			
 		return null;

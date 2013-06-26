@@ -29,8 +29,9 @@ public class ShowcaseComponentHolder extends DockPanel implements EntryPoint{
 				
 				@Override
 				public void onClick(ClickEvent event) {
-					setHelpHtml(getPackageName());
-					
+				String helpHtml = getHelpHtml(getPackageName());
+				if(helpHtml!=null)
+					Window.open(helpHtml, "_blank", "");
 				}
 			}, ClickEvent.getType());
 			
@@ -42,14 +43,16 @@ public class ShowcaseComponentHolder extends DockPanel implements EntryPoint{
 		
 	}
 	
-	public void setHelpHtml(String name) {
+	public String getHelpHtml(String name) {
 		if (name != null) {
 			String docPathFromPackage = name.replace(".","/");
 			
 			String javaDocPath = GWT.getHostPageBaseURL() +javaDocPackage + docPathFromPackage +".html";
 			
-			Window.open(javaDocPath, "_blank", "");
+			return javaDocPath;
+			
 		}
+		return null;
 	}
 	
 	private Configuration getLinkFieldConfiguration(String linkFieldType, String primaryCss, String secondaryCss, String debugId){

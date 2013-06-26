@@ -9,6 +9,7 @@ import java.util.Iterator;
 import in.appops.client.common.core.EntityListReceiver;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEvent;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEventHandler;
 import in.appops.platform.core.entity.Entity;
@@ -238,12 +239,11 @@ public class SpaceListWidget extends Composite implements EntityListReceiver,Mes
 	}
 	
 	private Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId){
-		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		configuration.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return configuration;
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, allowWordWrap);
+		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return conf;
 	}
 
 	public void receivedChat(ChatEntity chatEntity) {
