@@ -1,71 +1,104 @@
 package in.appops.client.common.fields;
 
-import in.appops.client.common.event.FieldEvent;
-import in.appops.platform.core.shared.Configuration;
-import in.appops.platform.core.util.AppOpsException;
+import in.appops.client.common.config.field.BaseField;
 
+import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 
-public class RadioButtonField extends RadioButton implements Field {
+public class RadioButtonField extends BaseField{
 
-	public RadioButtonField(String name) {
-		super(name);
+	private RadioButton radioBtn;
+	
+	public RadioButtonField(){
+		radioBtn = new RadioButton("singleSelection");
 	}
-
+	
 	@Override
-	public Configuration getConfiguration() {
-		// TODO Auto-generated method stub
-		return null;
+	public void create() {
+		basePanel.add(radioBtn,DockPanel.CENTER);
 	}
-
-	@Override
-	public void setConfiguration(Configuration conf) {
-		// TODO Auto-generated method stub
+	
+	/**
+	 * Method will return the display text of checkbox.
+	 * @return
+	 */
+	public String getDisplayText(){
 		
+		String displayText = "";
+		if(getConfigurationValue(RadionButtonFieldConstant.RF_DISPLAYTEXT) != null) {
+			
+			displayText = (String) getConfigurationValue(RadionButtonFieldConstant.RF_DISPLAYTEXT);
+		}
+		return displayText;
+	}
+	
+	/**
+	 * Method will return the display text of checkbox.
+	 * @return
+	 */
+	public String getFieldId(){
+		
+		String  id = getDisplayText();
+		
+		if(getConfigurationValue(RadionButtonFieldConstant.RF_ID) != null) {
+			
+			id = (String) getConfigurationValue(RadionButtonFieldConstant.RF_ID);
+		}
+		return id;
+	}
+	
+	/**
+	 * Method will check whether checkbox is checked or not.
+	 * @return
+	 */
+	public Boolean isFieldChecked(){
+		
+		Boolean isChecked = false;
+		
+		if(getConfigurationValue(RadionButtonFieldConstant.RF_CHECKED) != null) {
+			
+			isChecked = (Boolean) getConfigurationValue(RadionButtonFieldConstant.RF_CHECKED);
+		}
+		return isChecked;
 	}
 
-	@Override
-	public void onFieldEvent(FieldEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void create() throws AppOpsException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void clear() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public void reset() {
-		// TODO Auto-generated method stub
-		
+		this.setValue(Boolean.valueOf(getFieldValue()));
 	}
 
+	@Override
+	public void setValue(Object value) {
+		super.setValue(value);
+		radioBtn.setValue((Boolean) value);
+	}
+	
+	@Override
+	public Object getValue() {
+		return radioBtn.getValue();
+	}
 	@Override
 	public void configure() {
-		// TODO Auto-generated method stub
+		
+		radioBtn.setValue(isFieldChecked());
+			
+		radioBtn.setText(getDisplayText());
+		
+		if(getBaseFieldPrimCss()!=null)
+			this.setStylePrimaryName(getBaseFieldPrimCss());
+		if(getBaseFieldCss()!=null)
+			this.addStyleName(getBaseFieldCss());
+	}
+	
+	
+	public interface RadionButtonFieldConstant extends BaseFieldConstant{
+		
+		public static final String RF_DISPLAYTEXT = "displayText";
+		
+		public static final String RF_ID = "id";
+		
+		public static final String RF_CHECKED = "isChecked";
 		
 	}
-
-	@Override
-	public String getFieldValue() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setFieldValue(String fieldValue) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
 }

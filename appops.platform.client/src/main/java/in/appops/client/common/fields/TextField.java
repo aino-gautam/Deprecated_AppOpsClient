@@ -273,6 +273,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 */
 	@Override
 	public void setFieldValue(String fieldValue) {
+		
 		String fieldType = getTextFieldType();
 		
 		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX))
@@ -283,6 +284,35 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			numericTextbox.setText(fieldValue);
 		}else
 			textArea.setText(fieldValue);
+		
+	}
+	
+	/**
+	 * Overriden method from BaseField returns the converted field value.
+	 */
+	@Override
+	public void setValue(Object value) {
+		
+		super.setValue(value);
+		setFieldValue(value.toString());
+		
+	}
+	
+	/**
+	 * Overriden method from BaseField returns the converted field value.
+	 */
+	@Override
+	public Object getValue() {
+		
+		String fieldType = getTextFieldType();
+		
+		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC)){
+			if(numericTextbox.isAllowDecimal())
+				return Double.parseDouble(numericTextbox.getText());
+			else
+				return Integer.parseInt(numericTextbox.getText());
+		}
+		return getFieldValue();
 		
 	}
 	

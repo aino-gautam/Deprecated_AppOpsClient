@@ -1,75 +1,23 @@
 package in.appops.client.common.fields;
 
-import in.appops.client.common.event.AppUtils;
-import in.appops.client.common.event.FieldEvent;
-import in.appops.client.common.fields.GroupField.GroupFieldConstant;
-import in.appops.platform.core.shared.Configuration;
-import in.appops.platform.core.util.AppOpsException;
+import in.appops.client.common.config.field.BaseField;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.DockPanel;
 
-public class CheckboxField extends CheckBox implements Field,ClickHandler{
+public class CheckboxField extends BaseField{
 
-	private Configuration configuration;
-	private String fieldValue;
+	private CheckBox checkBox;
 	
 	public CheckboxField(){
-		super();
-		this.addClickHandler(this);
+		checkBox = new CheckBox();
 	}
 	
 	@Override
-	public Configuration getConfiguration() {
-		return this.configuration;
-	}
-
-	@Override
-	public void setConfiguration(Configuration conf) {
-		this.configuration = conf;
-	}
-
-	@Override
-	public void create() throws AppOpsException {
-		if(getConfiguration() == null)
-			throw new AppOpsException("CheckBox configuration unavailable");
-	}
-	
-	/**
-	 * Method will return the primary css applied to field.
-	 * @return
-	 */
-	public String getPrimaryCss(){
+	public void create() {
 		
-		if(getConfiguration()!=null){
-			
-			String primaryCss = getConfiguration().getPropertyByName(GroupFieldConstant.GF_PRIMARYCSS);
-			if(primaryCss !=null){
-				return primaryCss;
-			}else{
-				return null;
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * Method will return the dependent css applied to field.
-	 * @return
-	 */
-	public String getDependentCss(){
+		basePanel.add(checkBox,DockPanel.CENTER);
 		
-		if(getConfiguration()!=null){
-			
-			String primaryCss = getConfiguration().getPropertyByName(GroupFieldConstant.GF_PRIMARYCSS);
-			if(primaryCss !=null){
-				return primaryCss;
-			}else{
-				return null;
-			}
-		}
-		return null;
 	}
 	
 	/**
@@ -78,16 +26,12 @@ public class CheckboxField extends CheckBox implements Field,ClickHandler{
 	 */
 	public String getDisplayText(){
 		
-		if(getConfiguration()!=null){
+		String displayText = "";
+		if(getConfigurationValue(CheckBoxFieldConstant.CF_DISPLAYTEXT) != null) {
 			
-			String displayText = getConfiguration().getPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT);
-			if(displayText !=null){
-				return displayText;
-			}else{
-				return "";
-			}
+			displayText = (String) getConfigurationValue(CheckBoxFieldConstant.CF_DISPLAYTEXT);
 		}
-		return null;
+		return displayText;
 	}
 	
 	/**
@@ -96,16 +40,13 @@ public class CheckboxField extends CheckBox implements Field,ClickHandler{
 	 */
 	public String getFieldId(){
 		
-		if(getConfiguration()!=null){
+		String  id = getDisplayText();
+		
+		if(getConfigurationValue(CheckBoxFieldConstant.CF_ID) != null) {
 			
-			String id = getConfiguration().getPropertyByName(CheckBoxFieldConstant.CF_ID);
-			if(id !=null){
-				return id;
-			}else{
-				return getDisplayText();
-			}
+			id = (String) getConfigurationValue(CheckBoxFieldConstant.CF_ID);
 		}
-		return null;
+		return id;
 	}
 	
 	/**
@@ -114,78 +55,54 @@ public class CheckboxField extends CheckBox implements Field,ClickHandler{
 	 */
 	public Boolean isFieldChecked(){
 		
-		if(getConfiguration()!=null){
+		Boolean isChecked = false;
+		
+		if(getConfigurationValue(CheckBoxFieldConstant.CF_CHECKED) != null) {
 			
-			Boolean isChecked = getConfiguration().getPropertyByName(CheckBoxFieldConstant.CF_CHECKED);
-			if(isChecked !=null){
-				return isChecked;
-			}else{
-				return false;
-			}
+			isChecked = (Boolean) getConfigurationValue(CheckBoxFieldConstant.CF_CHECKED);
 		}
-		return null;
+		return isChecked;
 	}
 
-	@Override
-	public void clear() {
-		this.setValue(false);
-	}
 
 	@Override
 	public void reset() {
 		this.setValue(Boolean.valueOf(getFieldValue()));
 	}
 
-	@Override
-	public String getFieldValue() {
-		return this.fieldValue;
-	}
 
 	@Override
-	public void setFieldValue(String fieldValue) {
-		this.fieldValue = fieldValue;
+	public void setValue(Object value) {
+		super.setValue(value);
+		checkBox.setValue((Boolean) value);
 	}
-
-
+	
 	@Override
-	public void onFieldEvent(FieldEvent event) {
-		// TODO Auto-generated method stub
-		
+	public Object getValue() {
+		return checkBox.getValue();
 	}
-
-	@Override
-	public void onClick(ClickEvent event) {
-		FieldEvent fieldEvent = new FieldEvent();
-		fieldEvent.setEventData(this);
-		boolean value = this.getValue();
-		if(value) {
-			fieldEvent.setEventType(FieldEvent.CHECKBOX_SELECT);
-		} else {
-			fieldEvent.setEventType(FieldEvent.CHECKBOX_DESELECT);
-		}
-		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
-	}
-
+	
 	@Override
 	public void configure() {
 		
-		this.setValue(isFieldChecked());
+		checkBox.setValue(isFieldChecked());
 			
-		this.setText(getDisplayText());
-		if(getPrimaryCss()!=null)
-			this.setStylePrimaryName(getPrimaryCss());
-		if(getDependentCss()!=null)
-			this.addStyleName(getDependentCss());
+		checkBox.setText(getDisplayText());
+		
+		if(getBaseFieldPrimCss()!=null)
+			this.setStylePrimaryName(getBaseFieldPrimCss());
+		if(getBaseFieldCss()!=null)
+			this.addStyleName(getBaseFieldCss());
 	}
 	
 	
-	public interface CheckBoxFieldConstant{
+	public interface CheckBoxFieldConstant extends BaseFieldConstant{
 		
-		public static final String CF_DISPLAYTEXT = "fieldDisplayText";
-		public static final String CF_ID = "fieldId";
-		public static final String CF_CHECKED = "fieldChecked";
-		public static final String CF_PRIMARYCSS = "fieldPrimaryCss";
-		public static final String CF_DEPENDENTCSS = "fieldDependentCss";
+		public static final String CF_DISPLAYTEXT = "displayText";
+		
+		public static final String CF_ID = "id";
+		
+		public static final String CF_CHECKED = "isChecked";
 		
 	}
 }

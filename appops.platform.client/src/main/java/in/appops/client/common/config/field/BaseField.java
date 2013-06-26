@@ -693,5 +693,13 @@ public class BaseField extends Composite implements Field {
 		// TODO Auto-generated method stub
 		
 	}
+
+	protected DockPanel getBasePanel() {
+		return basePanel;
+	}
+
+	public void setBasePanel(DockPanel basePanel) {
+		this.basePanel = basePanel;
+	}
 	
 }

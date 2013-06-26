@@ -17,6 +17,7 @@ import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.LinkField;
 import in.appops.client.common.fields.LocationSelector;
 import in.appops.client.common.fields.NumberField;
+import in.appops.client.common.fields.RadioButtonField.RadionButtonFieldConstant;
 import in.appops.client.common.fields.StateField;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
@@ -272,20 +273,20 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_LIST_OF_ITEMS,listOfItems);
 		
 		Configuration childConfig1 = new Configuration();
-		childConfig1.setPropertyByName(CheckBoxFieldConstant.CF_PRIMARYCSS, "appops-CheckBoxField");
+		childConfig1.setPropertyByName(CheckBoxFieldConstant.BF_PCLS, "appops-CheckBoxField");
 		childConfig1.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, "cssStyle");
 		childConfig1.setPropertyByName(CheckBoxFieldConstant.CF_CHECKED, true);
 		
 		Configuration childConfig2 = new Configuration();
-		childConfig2.setPropertyByName(CheckBoxFieldConstant.CF_PRIMARYCSS, "appops-CheckBoxField");
+		childConfig2.setPropertyByName(CheckBoxFieldConstant.BF_PCLS, "appops-CheckBoxField");
 		childConfig2.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, "configuration");
 		
 		Configuration childConfig3 = new Configuration();
-		childConfig3.setPropertyByName(CheckBoxFieldConstant.CF_PRIMARYCSS, "appops-CheckBoxField");
+		childConfig3.setPropertyByName(CheckBoxFieldConstant.BF_PCLS, "appops-CheckBoxField");
 		childConfig3.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, "layout");
 		
 		Configuration childConfig4 = new Configuration();
-		childConfig4.setPropertyByName(CheckBoxFieldConstant.CF_PRIMARYCSS, "appops-CheckBoxField");
+		childConfig4.setPropertyByName(CheckBoxFieldConstant.BF_PCLS, "appops-CheckBoxField");
 		childConfig4.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, "description");
 		
 		groupFieldConfig.setPropertyByName("chk1",childConfig1);
@@ -295,10 +296,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		
 		groupField.setConfiguration(groupFieldConfig);
 		groupField.configure();
-		try {
-			groupField.create();
-		} catch (AppOpsException e) {
-		}
+		groupField.create();
 		
 		return groupField;
 	}
@@ -320,21 +318,21 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_LIST_OF_ITEMS,listOfItems);
 		
 		Configuration childConfig1 = new Configuration();
-		childConfig1.setPropertyByName(CheckBoxFieldConstant.CF_PRIMARYCSS, "appops-CheckBoxField");
-		childConfig1.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, "cssStyle");
-		childConfig1.setPropertyByName(CheckBoxFieldConstant.CF_CHECKED, true);
+		childConfig1.setPropertyByName(RadionButtonFieldConstant.BF_PCLS, "appops-CheckBoxField");
+		childConfig1.setPropertyByName(RadionButtonFieldConstant.RF_DISPLAYTEXT, "cssStyle");
+		childConfig1.setPropertyByName(RadionButtonFieldConstant.RF_CHECKED, true);
 		
 		Configuration childConfig2 = new Configuration();
-		childConfig2.setPropertyByName(CheckBoxFieldConstant.CF_PRIMARYCSS, "appops-CheckBoxField");
-		childConfig2.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, "configuration");
+		childConfig2.setPropertyByName(RadionButtonFieldConstant.BF_PCLS, "appops-CheckBoxField");
+		childConfig2.setPropertyByName(RadionButtonFieldConstant.RF_DISPLAYTEXT, "configuration");
 		
 		Configuration childConfig3 = new Configuration();
-		childConfig3.setPropertyByName(CheckBoxFieldConstant.CF_PRIMARYCSS, "appops-CheckBoxField");
-		childConfig3.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, "layout");
+		childConfig3.setPropertyByName(RadionButtonFieldConstant.BF_PCLS, "appops-CheckBoxField");
+		childConfig3.setPropertyByName(RadionButtonFieldConstant.RF_DISPLAYTEXT, "layout");
 		
 		Configuration childConfig4 = new Configuration();
-		childConfig4.setPropertyByName(CheckBoxFieldConstant.CF_PRIMARYCSS, "appops-CheckBoxField");
-		childConfig4.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, "description");
+		childConfig4.setPropertyByName(RadionButtonFieldConstant.BF_PCLS, "appops-CheckBoxField");
+		childConfig4.setPropertyByName(RadionButtonFieldConstant.RF_DISPLAYTEXT, "description");
 		
 		groupFieldConfig.setPropertyByName("radio1",childConfig1);
 		groupFieldConfig.setPropertyByName("radio2",childConfig2);
@@ -343,10 +341,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		
 		groupField.setConfiguration(groupFieldConfig);
 		groupField.configure();
-		try {
-			groupField.create();
-		} catch (AppOpsException e) {
-		}
+		groupField.create();
 		
 		return groupField;
 	}

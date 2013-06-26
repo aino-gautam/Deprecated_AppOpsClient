@@ -1,44 +1,34 @@
 package in.appops.client.common.fields;
 
-import in.appops.client.common.event.AppUtils;
-import in.appops.client.common.event.FieldEvent;
-import in.appops.client.common.fields.CheckboxField;
+import in.appops.client.common.config.field.BaseField;
 import in.appops.client.common.fields.CheckboxField.CheckBoxFieldConstant;
-import in.appops.client.common.fields.Field;
-import in.appops.platform.core.shared.Configurable;
+import in.appops.client.common.fields.RadioButtonField.RadionButtonFieldConstant;
 import in.appops.platform.core.shared.Configuration;
-import in.appops.platform.core.util.AppOpsException;
 
 import java.util.ArrayList;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 
-public class GroupField extends Composite implements Field,Configurable{
+public class GroupField extends BaseField {
 
-	private Configuration configuration;
 	private String fieldValue;
-	private FlexTable basePanel;
+	private FlexTable flexTable;
 	private Integer row = 0;
 	private Integer column = 0;
 	private ArrayList<Widget> listOfItems ;
 	
 	public GroupField() {
-		// TODO Auto-generated constructor stub
+		 flexTable = new FlexTable();
 	}
 
 	@Override
-	public void create() throws AppOpsException {
+	public void create() {
+				
+		getBasePanel().add(flexTable,DockPanel.CENTER);
 		
-		if(getConfiguration() == null)
-			throw new AppOpsException("GroupField configuration unavailable");
-		
-		initWidget(basePanel);
 	}
 	
 	/**
@@ -47,34 +37,25 @@ public class GroupField extends Composite implements Field,Configurable{
 	 * @param value
 	 * @return RadioButton.
 	 */
-	private RadioButton getRadioButton(String name){
-		RadioButton radioButton = new RadioButton("singleSelection");
+	private RadioButtonField getRadioButtonField(String id){
 		
-		Configuration conf = getChildConfiguration(name);
+		RadioButtonField radioField = new RadioButtonField();
+		Configuration childConfig = getChildConfiguration(id);
 		
-		String primaryCss = conf.getPropertyByName(CheckBoxFieldConstant.CF_PRIMARYCSS);
-		String dependentCss = conf.getPropertyByName(CheckBoxFieldConstant.CF_DEPENDENTCSS);
-		String displayText = conf.getPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT);
+		if(childConfig!=null){
+			if(childConfig.getPropertyByName(RadionButtonFieldConstant.RF_ID) == null)
+				childConfig.setPropertyByName(RadionButtonFieldConstant.RF_ID, id);
+		}
 		
-		Boolean isChecked = false;
+		radioField.setConfiguration(childConfig);
+		radioField.configure();
+		radioField.create();
 		
-		if(conf.getPropertyByName(CheckBoxFieldConstant.CF_CHECKED) !=null)
-			isChecked = conf.getPropertyByName(CheckBoxFieldConstant.CF_CHECKED);
-		
-		if(primaryCss !=null)
-			radioButton.setStylePrimaryName(primaryCss);
-		
-		if(dependentCss !=null)
-			radioButton.addStyleName(dependentCss);
-		
-        radioButton.setText(name);
-        radioButton.setValue(isChecked);
 		if(listOfItems==null)
 			listOfItems = new ArrayList<Widget>();
-		
-		listOfItems.add(radioButton);
 
-		return radioButton;
+		listOfItems.add(radioField);
+		return radioField;
 	}
 	
 	/**
@@ -95,6 +76,7 @@ public class GroupField extends Composite implements Field,Configurable{
 		
 		checkBoxField.setConfiguration(childConfig);
 		checkBoxField.configure();
+		checkBoxField.create();
 		
 		if(listOfItems==null)
 			listOfItems = new ArrayList<Widget>();
@@ -140,12 +122,6 @@ public class GroupField extends Composite implements Field,Configurable{
 	}
 
 	@Override
-	public void clear() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
 		
@@ -156,7 +132,8 @@ public class GroupField extends Composite implements Field,Configurable{
 	 */
 	public void selectAllGroupItems(){
 		String groupFieldType = getGroupFieldType();
-		if(groupFieldType.equals(GroupFieldConstant.GFTYPE_SINGLE_SELECT)){
+		if(groupFieldType.equals(GroupFieldConstant.GFTYPE_MULTISELECT)){
+			
 			for(int i= 0;i<listOfItems.size();i++){
 				CheckboxField chkboxField = (CheckboxField) listOfItems.get(i);
 				chkboxField.setValue(true);
@@ -169,8 +146,10 @@ public class GroupField extends Composite implements Field,Configurable{
 	 * Method checks whether type is checkbox group and then deselect all the items in the group field .
 	 */
 	public void deselectAllGroupItems(){
+		
 		String groupFieldType = getGroupFieldType();
-		if(groupFieldType.equals(GroupFieldConstant.GFTYPE_SINGLE_SELECT)){
+		
+		if(groupFieldType.equals(GroupFieldConstant.GFTYPE_MULTISELECT)){
 			for(int i= 0;i<listOfItems.size();i++){
 				CheckboxField chkboxField = (CheckboxField) listOfItems.get(i);
 				chkboxField.setValue(false);
@@ -206,19 +185,15 @@ public class GroupField extends Composite implements Field,Configurable{
 		
 		ArrayList<String> listOfItemsInGroupField = getListOfItemsInGroupField();
 		
-		if(basePanel==null)
-			 basePanel = new FlexTable();
-		
-		
 		if (listOfItemsInGroupField!=null) {
-			if (groupFieldType.equals(GroupFieldConstant.GFTYPE_SINGLE_SELECT)) {
+			if (groupFieldType.equals(GroupFieldConstant.GFTYPE_MULTISELECT)) {
 
 				if (groupFieldAlignment.equals(GroupFieldConstant.GF_ALIGN_HORIZONTAL)) {
 
 					for (int item = 0; item < listOfItemsInGroupField.size(); item++) {
 						CheckboxField chkBoxField = getCheckBoxField(listOfItemsInGroupField.get(item));
-						basePanel.setWidget(row, column, chkBoxField);
-						addClickHandler(chkBoxField);
+						flexTable.setWidget(row, column, chkBoxField);
+						
 						if (column >= fieldLimit - 1) {
 							row++;
 							column = 0;
@@ -230,8 +205,8 @@ public class GroupField extends Composite implements Field,Configurable{
 				} else {
 					for (int item = 0; item < listOfItemsInGroupField.size(); item++) {
 						CheckboxField chkBoxField = getCheckBoxField(listOfItemsInGroupField.get(item));
-						basePanel.setWidget(row, column, chkBoxField);
-						addClickHandler(chkBoxField);
+						flexTable.setWidget(row, column, chkBoxField);
+						
 						if (row >= fieldLimit - 1) {
 							column++;
 							row = 0;
@@ -241,13 +216,13 @@ public class GroupField extends Composite implements Field,Configurable{
 					}
 				}
 
-			} else if (groupFieldType.equals(GroupFieldConstant.GFTYPE_MULTISELECT)) {
+			} else if (groupFieldType.equals(GroupFieldConstant.GFTYPE_SINGLE_SELECT)) {
 
 				if (groupFieldAlignment.equals(GroupFieldConstant.GF_ALIGN_HORIZONTAL)) {
 
 					for (int item = 0; item < listOfItemsInGroupField.size(); item++) {
-						RadioButton radioButton = getRadioButton(listOfItemsInGroupField.get(item));
-						basePanel.setWidget(row, column, radioButton);
+						RadioButtonField radioButton = getRadioButtonField(listOfItemsInGroupField.get(item));
+						flexTable.setWidget(row, column, radioButton);
 						if (column >= fieldLimit - 1) {
 							row++;
 							column = 0;
@@ -258,8 +233,8 @@ public class GroupField extends Composite implements Field,Configurable{
 				} else {
 
 					for (int item = 0; item < listOfItemsInGroupField.size(); item++) {
-						RadioButton radioButton = getRadioButton(listOfItemsInGroupField.get(item));
-						basePanel.setWidget(row, column, radioButton);
+						RadioButtonField radioButton = getRadioButtonField(listOfItemsInGroupField.get(item));
+						flexTable.setWidget(row, column, radioButton);
 						if (row >= fieldLimit - 1) {
 							column++;
 							row = 0;
@@ -300,40 +275,7 @@ public class GroupField extends Composite implements Field,Configurable{
 		this.fieldValue = fieldValue;
 	}
 	
-	@Override
-	public Configuration getConfiguration() {
-		return this.configuration;
-	}
 
-	@Override
-	public void setConfiguration(Configuration conf) {
-		this.configuration = conf;
-	}
-
-	@Override
-	public void onFieldEvent(FieldEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	/**
-	 * Method will return the primary css applied to field.
-	 * @return
-	 */
-	public String getPrimaryCss(){
-		
-		if(getConfiguration()!=null){
-			
-			String primaryCss = getConfiguration().getPropertyByName(GroupFieldConstant.GF_PRIMARYCSS);
-			if(primaryCss !=null){
-				return primaryCss;
-			}else{
-				return null;
-			}
-		}
-		return null;
-	}
-	
 	/**
 	 * Method will return the child configuration. 
 	 * @param displayText 
@@ -373,38 +315,23 @@ public class GroupField extends Composite implements Field,Configurable{
 		return null;
 	}
 
-	private void addClickHandler(final CheckBox checkBox) {
-		checkBox.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				FieldEvent fieldEvent = new FieldEvent();
-				fieldEvent.setEventData(checkBox);
-				boolean value = checkBox.getValue();
-				if(value) {
-					fieldEvent.setEventType(FieldEvent.CHECKBOX_SELECT);
-				} else {
-					fieldEvent.setEventType(FieldEvent.CHECKBOX_DESELECT);
-				}
-				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
-			}
-		});
-		
-	}
 
-	
 	public interface GroupFieldConstant{
 		
 		public static final String GF_TYPE = "fieldType";
+		
 		public static final String GFTYPE_SINGLE_SELECT = "singleSelect";
+		
 		public static final String GFTYPE_MULTISELECT = "multiselect";
+		
 		public static final String GF_ALIGNMENT = "alignment";
+		
 		public static final String GF_ALIGN_VERTICAL = "alignVertical";
+		
 		public static final String GF_ALIGN_HORIZONTAL = "alignHorizontal";
+		
 		public static final String GF_LIMIT = "limit";
 		
-		public static final String GF_PRIMARYCSS = "fieldPrimaryCss";
-		public static final String GF_DEPENDENTCSS = "fieldDependentCss";
 		public static final String GF_LIST_OF_ITEMS = "listOfItems";
 		
 	}

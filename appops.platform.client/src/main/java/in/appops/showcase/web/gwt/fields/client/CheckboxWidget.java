@@ -35,7 +35,7 @@ public class CheckboxWidget extends Composite implements FieldEventHandler{
 			checkboxfield.create();
 			
 			notifyLabel = new LabelField();
-			boolean value = checkboxfield.getValue();
+			Boolean value = (Boolean) checkboxfield.getValue();
 			if(value) {
 				notifyLabel.setFieldValue("(Selected)");
 			} else {
