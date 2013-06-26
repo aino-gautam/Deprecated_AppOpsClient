@@ -1,6 +1,7 @@
 package in.appops.client.common.snippet;
 
 import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.shared.Configuration;
@@ -32,12 +33,7 @@ public class HomeSnippet extends HorizontalPanel implements Snippet {
 		//String name = entity.getProperty("name").getValue().toString();
 		titleLabel.setFieldValue("Default home for service");
 		titleLabel.setConfiguration(getLabelFieldConfiguration(true,"homeSnippetTitleLabel", null, null));
-		try {
-			titleLabel.create();
-		} catch (AppOpsException e) {
-
-			e.printStackTrace();
-		}
+		titleLabel.create();
 		setStylePrimaryName("homeSnippetBasePanel");
 		add(titleLabel);
 	}
@@ -45,10 +41,9 @@ public class HomeSnippet extends HorizontalPanel implements Snippet {
 	private Configuration getLabelFieldConfiguration(boolean allowWordWrap,
 			String primaryCss, String secondaryCss, String debugId) {
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelField.LABELFIELD_WORDWRAP,allowWordWrap);
-		configuration.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS,primaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS,secondaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
+		configuration.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, allowWordWrap);
+		configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
 		return configuration;
 	}
 

@@ -3,6 +3,7 @@ package in.appops.client.common.snippet;
 import in.appops.client.common.event.ActionEvent;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.client.common.util.BlobDownloader;
 import in.appops.platform.core.constants.typeconstants.TypeConstants;
 import in.appops.platform.core.shared.Configuration;
@@ -46,12 +47,7 @@ public class ServiceIconSnippet extends CardSnippet {
 			serviceEntityTitle = new LabelField();
 			serviceEntityTitle.setFieldValue(getEntity().getProperty(ServiceConstant.NAME).getValue().toString());
 			serviceEntityTitle.setConfiguration(getLabelFieldConfiguration(true, "serviceEntityTitle", null, null));
-			try {
-				serviceEntityTitle.create();
-			} catch (AppOpsException e) {
-		
-				e.printStackTrace();
-			}
+			serviceEntityTitle.create();
 			labelPanel.setStylePrimaryName("serviceEntityTitlePanel");
 			labelPanel.add(serviceEntityTitle);
 	
@@ -78,10 +74,9 @@ public class ServiceIconSnippet extends CardSnippet {
 	private Configuration getLabelFieldConfiguration(boolean allowWordWrap,
 		String primaryCss, String secondaryCss, String debugId) {
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelField.LABELFIELD_WORDWRAP,allowWordWrap);
-		configuration.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS,primaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS,secondaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
+		configuration.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, allowWordWrap);
+		configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
 		return configuration;
 	}
 

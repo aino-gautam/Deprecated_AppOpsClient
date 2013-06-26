@@ -3,6 +3,7 @@ package in.appops.client.common.snippet;
 import in.appops.client.common.components.CreateCalendarEntryScreen;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.LinkField;
+import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -158,12 +159,11 @@ public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHan
 	
 
 	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
-		Configuration config = new Configuration();
-		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return config;
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, allowWordWrap);
+		configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return configuration;
 	}
 
 	@Override

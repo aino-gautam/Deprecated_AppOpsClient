@@ -8,6 +8,7 @@ import in.appops.client.common.event.ActionEvent;
 import in.appops.client.common.fields.ImageField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.PostInButton;
+import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.client.common.handler.HandlerFactory;
 import in.appops.client.common.handler.HandlerFactoryImpl;
 import in.appops.client.common.handler.ResponseActionHandler;
@@ -335,11 +336,7 @@ public class PostViewSnippet extends RowSnippet {
 	private void setTime(Entity ent) {
 		timeLbl = new LabelField();
 		timeLbl.setConfiguration(createConfiguration(true));
-		try {
-			timeLbl.create();
-		} catch (AppOpsException e) {
-			e.printStackTrace();
-		}
+		timeLbl.create();
 		final Date timeStamp = (Date) ent.getProperty(PostConstant.CREATEDON).getValue();
 		
 		Timer timer = new Timer() {
@@ -347,7 +344,7 @@ public class PostViewSnippet extends RowSnippet {
 			
 			public void run() {
 				String timeAgo = calculateTimeAgo(timeStamp);
-				timeLbl.setText(timeAgo);
+				timeLbl.setValue(timeAgo);
 				
 			}
 		};
@@ -397,7 +394,7 @@ public class PostViewSnippet extends RowSnippet {
 	
 	public Configuration createConfiguration(boolean wordWrap){
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, wordWrap);
+		configuration.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, wordWrap);
 		return configuration;
 		
 	}

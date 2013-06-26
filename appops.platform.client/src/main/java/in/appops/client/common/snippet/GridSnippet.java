@@ -7,6 +7,7 @@ import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.SelectionEvent;
 import in.appops.client.common.event.handlers.SelectionEventHandler;
 import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.operation.ActionContext;
@@ -141,11 +142,7 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 		noMoreResultLabel = new LabelField();
 		Configuration labelConfig = getLabelFieldConfiguration(true, "noMoreResultlabel", null, null);
 		noMoreResultLabel.setConfiguration(labelConfig);
-		try {
-			noMoreResultLabel.create();
-		} catch (AppOpsException e) {
-			e.printStackTrace();
-		}
+		noMoreResultLabel.create();
 		
 		basePanel.add(noMoreResultLabel);
 		
@@ -161,12 +158,11 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 	}
 	
 	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
-		Configuration config = new Configuration();
-		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return config;
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, allowWordWrap);
+		configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return configuration;
 	}
 	
 	
@@ -248,7 +244,7 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 		loader.setVisible(false);
 		if (entityList != null) {
 			if(entityList.isEmpty()){
-				noMoreResultLabel.setText("No result(s)");
+				noMoreResultLabel.setValue("No result(s)");
 			}else{
 				if(maxResult==0)
 					maxResult = entityList.getMaxResult();
