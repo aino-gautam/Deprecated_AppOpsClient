@@ -1,5 +1,6 @@
 package in.appops.client.common.config.field;
 
+import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.platform.core.shared.Configuration;
 
 import java.io.Serializable;
@@ -205,6 +206,12 @@ public class BaseField extends Composite implements Field {
 		}
 		return false;
 	}
+	
+	/**
+	 * clears the field .
+	 */
+	
+	protected void clear() { }
 	
 	/**
 	 * Returns the value of the configuration if the configuration is provided.

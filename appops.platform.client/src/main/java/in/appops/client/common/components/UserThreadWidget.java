@@ -6,6 +6,7 @@ import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.ImageField;
 import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.client.common.snippet.SnippetConstant;
 import in.appops.client.common.snippet.SnippetFactory;
@@ -156,25 +157,16 @@ public class UserThreadWidget extends Composite implements EventListener,ClickHa
 		/*Configuration imageConfig = getImageFieldConfiguration("images/loader.gif", "defaultIcon_Medium");
 		 ImageField imageField = new ImageField();*/
 			
-			////imageField.setConfiguration(imageConfig);
-	        try {
-				//imageField.createField();
-				
-				LabelField labelField = new LabelField();
-				Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
-								
-					labelField.setFieldValue("Loading contacts ...");
-				
-				labelField.setConfiguration(labelConfig);
-				labelField.create();
-				
-			//	horizontalPanel.add(imageField);
-				horizontalPanel.add(labelField);
-				
-			} catch (AppOpsException e) {
-				
-				e.printStackTrace();
-			}
+			LabelField labelField = new LabelField();
+			Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
+							
+				labelField.setFieldValue("Loading contacts ...");
+			
+			labelField.setConfiguration(labelConfig);
+			labelField.create();
+			
+//	horizontalPanel.add(imageField);
+			horizontalPanel.add(labelField);
 		return horizontalPanel;
 		
 	}
@@ -188,12 +180,11 @@ public class UserThreadWidget extends Composite implements EventListener,ClickHa
 	}
 	
 	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
-		Configuration config = new Configuration();
-		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return config;
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, allowWordWrap);
+		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return conf;
 	}
 
 	public Entity getUserEntity() {

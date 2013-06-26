@@ -10,6 +10,7 @@ import in.appops.client.common.fields.DateTimePicker;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.LinkField;
 import in.appops.client.common.fields.TextField;
+import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.client.common.fields.TimePicker;
 import in.appops.client.common.util.AppEnviornment;
@@ -854,12 +855,11 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 		return configuration;
 	}
 	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
-		Configuration config = new Configuration();
-		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return config;
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, allowWordWrap);
+		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return conf;
 	}
 	
 	private Configuration getTextFieldConfiguration(int visibleLines, boolean readOnly, String textFieldType, String primaryCss, String secondaryCss, String debugId){

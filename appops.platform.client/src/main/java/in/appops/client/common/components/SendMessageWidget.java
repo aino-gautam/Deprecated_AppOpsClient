@@ -7,6 +7,7 @@ import in.appops.client.common.event.handlers.AttachmentEventHandler;
 import in.appops.client.common.fields.ContactBoxField;
 import in.appops.client.common.fields.IntelliThoughtField;
 import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
@@ -257,29 +258,29 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 	}
 	
 	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
-		Configuration config = new Configuration();
-		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return config;
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, allowWordWrap);
+		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_DISPLAYTXT, "Config label");
+		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return conf;
 	}
 	private Configuration getConfiguration(String primaryCss, String secondaryCss){
-		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
 		
-		configuration.setPropertyByName(IntelliThoughtWidget.IS_INTELLISHAREFIELD, true);
-		configuration.setPropertyByName(IntelliThoughtWidget.IS_ATTACHMEDIAFIELD, true);
-		return configuration;
+		conf.setPropertyByName(IntelliThoughtWidget.IS_INTELLISHAREFIELD, true);
+		conf.setPropertyByName(IntelliThoughtWidget.IS_ATTACHMEDIAFIELD, true);
+		return conf;
 	}
 	
 	private Configuration getIntelliFieldConfiguration(String primaryCss, String secondaryCss){
 		// Some configurations provided as of now. To be changed as required.
 
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
+		configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
 		configuration.setPropertyByName(IntelliThoughtField.FIRE_EDITINITIATED_EVENT, "false");
 		configuration.setPropertyByName(IntelliThoughtField.FIRE_THREECHARENTERED_EVENT, "true");
 		configuration.setPropertyByName(IntelliThoughtField.FIRE_WORDENTERED_EVENT, "false");

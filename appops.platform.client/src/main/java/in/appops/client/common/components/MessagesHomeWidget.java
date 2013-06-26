@@ -3,6 +3,7 @@ package in.appops.client.common.components;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
@@ -242,11 +243,7 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 				labelField.setFieldValue("No messages available");
 				
 				labelField.setConfiguration(labelConfig);
-				try {
-					labelField.create();
-				} catch (AppOpsException e1) {
-					e1.printStackTrace();
-				}
+				labelField.create();
 				
 			  rightSidePanel.add(labelField);
 		  } 
@@ -254,35 +251,27 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 	 
 	}
 	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
-		Configuration config = new Configuration();
-		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return config;
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, allowWordWrap);
+		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_DISPLAYTXT, "Config label");
+		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return conf;
 	}
 	
 	private HorizontalPanel createLoaderWithTextWidget() {
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		
-	        try {
-				
-				
-				LabelField labelField = new LabelField();
-				Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
-								
-					labelField.setFieldValue("Loading messages ...");
-				
-				labelField.setConfiguration(labelConfig);
-				labelField.create();
-				
+	        LabelField labelField = new LabelField();
+			Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
+							
+				labelField.setFieldValue("Loading messages ...");
 			
-				horizontalPanel.add(labelField);
-				
-			} catch (AppOpsException e) {
-				
-				e.printStackTrace();
-			}
+			labelField.setConfiguration(labelConfig);
+			labelField.create();
+			
+
+			horizontalPanel.add(labelField);
 		return horizontalPanel;
 		
 	}

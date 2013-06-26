@@ -9,6 +9,7 @@ import in.appops.client.common.fields.CheckboxGroupField;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.LocationSelector;
 import in.appops.client.common.fields.TextField;
+import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.core.entity.GeoLocation;
@@ -239,12 +240,12 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 	}
 	
 	private Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId){
-		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		configuration.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return configuration;
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, allowWordWrap);
+		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_DISPLAYTXT, "Config label");
+		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return conf;
 	}
 	
 	public Configuration getCheckboxFieldConfiguration(String text) {

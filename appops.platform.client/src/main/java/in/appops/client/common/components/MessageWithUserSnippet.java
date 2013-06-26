@@ -2,6 +2,7 @@ package in.appops.client.common.components;
 
 import in.appops.client.common.fields.ImageField;
 import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.client.common.snippet.Snippet;
 import in.appops.client.common.util.BlobDownloader;
 import in.appops.platform.core.entity.Entity;
@@ -88,12 +89,12 @@ public class MessageWithUserSnippet extends Composite implements Snippet{
 		return vpPanel;
 	}
 	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
-		Configuration config = new Configuration();
-		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return config;
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, allowWordWrap);
+		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_DISPLAYTXT, "Config label");
+		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return conf;
 	}
 	private HorizontalPanel createUserImageField() {
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
