@@ -12,6 +12,48 @@ import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+Field class to represent group field with Checkbox or Radiobutton.
+
+<p>
+<h3>Configuration</h3>
+<a href="GroupField.GroupFieldConstant.html">Available configurations</a>
+</p>
+
+<p>
+<h3>Example</h3>
+
+<p>Following code results checkbox groupfield. </p>
+
+GroupField groupField = new GroupField();<br>
+		
+Configuration groupFieldConfig = new Configuration();<br>
+groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_SINGLE_SELECT);<br>
+groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_ALIGNMENT,GroupFieldConstant.GF_ALIGN_HORIZONTAL);<br>
+groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_LIMIT,3);<br>
+groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_MULTISELECT);<br>
+		
+ArrayList<String> listOfItems = new ArrayList<String>();<br>
+listOfItems.add("chk1");<br>
+listOfItems.add("chk2");<br>
+groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_LIST_OF_ITEMS,listOfItems);<br>
+		
+Configuration childConfig1 = new Configuration();<br>
+childConfig1.setPropertyByName(CheckBoxFieldConstant.BF_PCLS, "appops-CheckBoxField");<br>
+childConfig1.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, "cssStyle");<br>
+childConfig1.setPropertyByName(CheckBoxFieldConstant.CF_CHECKED, true);<br>
+		
+Configuration childConfig2 = new Configuration();<br>
+childConfig2.setPropertyByName(CheckBoxFieldConstant.BF_PCLS, "appops-CheckBoxField");<br>
+childConfig2.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, "configuration");<br>
+		
+groupFieldConfig.setPropertyByName("chk1",childConfig1);<br>
+groupFieldConfig.setPropertyByName("chk2",childConfig2);<br>
+groupField.setConfiguration(groupFieldConfig);<br>
+groupField.configure();<br>
+groupField.create()<br>
+</p>*/
+
 public class GroupField extends BaseField {
 
 	private String fieldValue;
@@ -315,6 +357,13 @@ public class GroupField extends BaseField {
 		return null;
 	}
 
+	public ArrayList<Widget> getListOfItems() {
+		return listOfItems;
+	}
+
+	public void setListOfItems(ArrayList<Widget> listOfItems) {
+		this.listOfItems = listOfItems;
+	}
 
 	public interface GroupFieldConstant{
 		
@@ -334,14 +383,6 @@ public class GroupField extends BaseField {
 		
 		public static final String GF_LIST_OF_ITEMS = "listOfItems";
 		
-	}
-
-	public ArrayList<Widget> getListOfItems() {
-		return listOfItems;
-	}
-
-	public void setListOfItems(ArrayList<Widget> listOfItems) {
-		this.listOfItems = listOfItems;
 	}
 
 

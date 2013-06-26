@@ -94,10 +94,13 @@ public class RadioButtonField extends BaseField{
 	
 	public interface RadionButtonFieldConstant extends BaseFieldConstant{
 		
+		/** Display text for radio button **/
 		public static final String RF_DISPLAYTEXT = "displayText";
 		
+		/** Specifies the id for radio button **/
 		public static final String RF_ID = "id";
 		
+		/** Specify isChecked property for radio button **/
 		public static final String RF_CHECKED = "isChecked";
 		
 	}
