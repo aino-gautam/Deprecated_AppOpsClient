@@ -21,41 +21,41 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
-Field class to represent a TextBox, TextArea or PasswordTextBox
+Field class to represent a TextBox, TextArea ,NumerixBox ,EmailBox or PasswordTextBox
 
 <h3>CSS Style Rules</h3>
 <ul class='css'>
 <li>.appops-TextField { primary style }</li>
-<li>.appops-Inline-Error-TextBox { style to show inline error icon }</li>
-<li>.appops-Validation-Correct-TextBox { style set when entered value in field is correct }</li>
-<li>.appops-Error-Text { style to show error text message }</li>
+<li>.appops-errorTopBottomCls { style to show errors outside the field }</li>
+<li>.appops-errorIconCls { class with error icon set in the background  }</li>
+<li>.appops-validFieldTopBottomCls { style to show valid messages outside the field }</li>
+<li>.appops-validFieldIconCls { style class with valid field icon set in the background }</li>
+<li>.appops-validFieldInline { style class to show valid field  }</li>
 <li>.appops-suggestionText { style to show suggestion text }</li>
-<li>.appops-Error-TextBox { style to show error with red border }</li>
 </ul>
 
 <p>
 <h3>Configuration</h3>
-<a href="TextFieldConstant.html">Available configurations</a>
+<a href="TextField.TextFieldConstant.html">Available configurations</a>
 </p>
 
 <p>
 <h3>Example</h3>
 
-<p>Following code results in a emailbox with inline suggestion with text "Enter email" ,If data entered in a field is not valid then it will show iconic error style reprentation.  </p>
+<p>Following code results in a emailbox with inline suggestion with text "Enter email" ,If data entered in a field is 
+not valid then it will show error on right side.  </p>
 
 TextField emailTextField = new TextField();<br>
-Configuration conf = new Configuration();
-conf.setPropertyByName(TextFieldConstant.TF_VISIBLELINES, 1);
-conf.setPropertyByName(TextFieldConstant.TF_READONLY, false);
-conf.setPropertyByName(TextFieldConstant.TF_TYPE, TFTYPE_EMAILBOX);
-conf.setPropertyByName(TextFieldConstant.TF_PRIMARYCSS, "appops-TextField");
-conf.setPropertyByName(TextFieldConstant.TF_DEPENDENTCSS, null);
-conf.setPropertyByName(TextFieldConstant.TEXTFIELD_SUGGESTION_STYLE, TextFieldConstant.INLINE_SUGGESTION);
-conf.setPropertyByName(TextFieldConstant.TF_SUGGESTION_TEXT, "Enter email");
-conf.setPropertyByName(TextFieldConstant.VALIDATION_STYLE, TextFieldConstant.ICONIC_STYLE);
-conf.setPropertyByName(TextFieldConstant.ICONIC_STYLE, TextFieldConstant.ICON_WITH_ERROR_MSG);
-conf.setPropertyByName(TextFieldConstant.VALIDATION_MSG_POSITION, TextFieldConstant.SIDE);
-conf.setPropertyByName(TextFieldConstant.TF_ERROR_TEXT, "Data entered is not valid..");
+Configuration conf = new Configuration();<br>
+conf.setPropertyByName(TextFieldConstant.TF_VISIBLELINES, visibleLines);<br>
+conf.setPropertyByName(TextFieldConstant.BF_READONLY, readOnly);<br>
+conf.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);<br>
+conf.setPropertyByName(TextFieldConstant.BF_PCLS, primaryCss);<br>
+conf.setPropertyByName(TextFieldConstant.BF_DCLS, secondaryCss);<br>
+conf.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);<br>
+conf.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter email");<br>
+conf.setPropertyByName(TextFieldConstant.BF_VALIDATEONCHANGE, true);<br>
+conf.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);<br>
 emailTextField.setConfiguration(conf);<br>
 emailTextField.configure();<br>
 emailTextField.create();
@@ -92,22 +92,26 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		String fieldType = getTextFieldType();
 		
 		if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX)	|| fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX)) {
-		
 			createTextBox();
-
+			
 		} else if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX)) {
 			createPasswordBox();
 
 		} else if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTTYPE_TXTAREA)) {
 			createTextArea();
+			
 		}else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC)){
 			createNumericTextBox();
+			
 		}
 		
 		setSuggestion();
 		
 	}
 	
+	/** 
+	 * Method creates the textbox.
+	 */
 	private void createTextBox(){
 		
 		textBox = new TextBox();
@@ -120,21 +124,33 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		textBox.setMaxLength(getFieldMaxLength());
 		textBox.setTabIndex(getTabIndex());
 		selectedWidget =textBox;
-		
-		/*** Events fired by textbox ****/
-		
-		textBox.addKeyPressHandler(this);
-		
-		if(isValidateOnChange()){
-			textBox.addKeyUpHandler(this);
-		}
-		
-		if(isValidateOnBlur()){
-			textBox.addBlurHandler(this);
-		}
-		
+				
 	}
 	
+	/** 
+	 * Method creates the textArea.
+	 */
+	private void createTextArea(){
+		
+		textArea = new TextArea();
+		
+		Integer visibleLines = getNoOfVisibleLines();
+		textArea.setVisibleLines(visibleLines);
+		textArea.setReadOnly(isReadOnly());
+		
+		if(getBaseFieldPrimCss() != null)
+			textArea.setStylePrimaryName(getBaseFieldPrimCss());
+		if(getBaseFieldCss()!= null)
+			textArea.addStyleName(getBaseFieldCss());
+		if(getFieldCharWidth()!=null)
+			textArea.setCharacterWidth(getFieldCharWidth());
+					
+		selectedWidget =textArea;
+	}
+	
+	/** 
+	 * Method creates the passwordbox also add keypress handler and add blur and keyup handler if its set true in the configuration.
+	 */
 	private void createPasswordBox(){
 		passwordTextBox = new PasswordTextBox();
 		passwordTextBox.setReadOnly(isReadOnly());
@@ -159,6 +175,10 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		selectedWidget =passwordTextBox;
 	}
 	
+	/**
+	 * Method creates the numericTextBox also add keypress and blur handler default and add keyup 
+	 * handler if isValidateOnChange is set as true in the configuration .
+	 */
 	private void createNumericTextBox(){
 		
 		numericTextbox = new NumericTextbox(this);
@@ -175,36 +195,14 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		/*** Events fired by passwordTextBox ****/
 		
 		numericTextbox.addKeyPressHandler(numericTextbox);
-		
-		if(isValidateOnChange()){
-			numericTextbox.addBlurHandler(this);
-		}
+				
 		if(isValidateOnChange()){
 			numericTextbox.addKeyUpHandler(this);
 		}
+		
+		numericTextbox.addBlurHandler(this);
+		
 		selectedWidget = numericTextbox;
-	}
-	
-	private void createTextArea(){
-		
-		textArea = new TextArea();
-		
-		Integer visibleLines = getNoOfVisibleLines();
-		textArea.setVisibleLines(visibleLines);
-		textArea.setReadOnly(isReadOnly());
-		
-		if(getBaseFieldPrimCss() != null)
-			textArea.setStylePrimaryName(getBaseFieldPrimCss());
-		if(getBaseFieldCss()!= null)
-			textArea.addStyleName(getBaseFieldCss());
-		if(getFieldCharWidth()!=null)
-			textArea.setCharacterWidth(getFieldCharWidth());
-					
-		/*** Events fired by textArea ****/
-		
-		textArea.addKeyPressHandler(this);
-			
-		selectedWidget =textArea;
 	}
 	
 	/**
@@ -225,10 +223,11 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	}
 	
 	/**
-	 * clears the field if it has any values
+	 * clears the field .
 	 */
 	
 	public void clear() {
+		
 		String fieldType = getTextFieldType();
 		
 		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX)  || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX))
@@ -242,7 +241,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	}
 	
 	/**
-	 * Returns the field value.
+	 * Overriden method from BaseField returns the field value.
 	 */
 	@Override
 	public String getFieldValue() {
@@ -260,6 +259,9 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		
 	}
 	
+	/**
+	 * Overriden method from BaseField sets the field value.
+	 */
 	@Override
 	public void setFieldValue(String fieldValue) {
 		String fieldType = getTextFieldType();
@@ -273,9 +275,11 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		}else
 			textArea.setText(fieldValue);
 		
-		
 	}
 	
+	/**
+	 * Overriden method from BaseField returns the list of errors.
+	 */
 	@Override
 	public ArrayList<String> getErrors(Object value) {
 		
@@ -299,6 +303,9 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		
 	}
 	
+	/**
+	 * Overriden method from BaseField to set inline error.
+	 */
 	@Override
 	protected void setErrorInline () {
 		getWidget().setStylePrimaryName(getErrorMsgCls());
@@ -308,6 +315,10 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			setCssPropertyToElement(getWidget(), getErrorIconBlobId());
 	}
 	
+	/**
+	 * Overriden method from BaseField to set inline msg for valid field.
+	 */
+	@Override
 	protected void setValidationMsgInline () {
 		getWidget().setStylePrimaryName(getValidFieldMsgCls());
 		getWidget().addStyleName(getValidFieldIconCls());
@@ -316,6 +327,9 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			setCssPropertyToElement(getWidget(), getValidIconBlobId());
 	}
 	
+	/**
+	 * Overriden method from BaseField to set inline suggestion for field.
+	 */
 	@Override
 	protected void setSuggestionInline () {
 		if(getSuggestionText()!=null)
@@ -377,7 +391,9 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		
 	}
 	
-
+	/**
+	 * Methos checks the field type and return that widget.
+	 */
 	public Widget getWidget() {
 		
 		String fieldType = getTextFieldType();
@@ -400,7 +416,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		
 		if(getConfiguration()!=null){
 			
-			Integer noOfVisibleLines =  (Integer) getConfiguration().getPropertyByName(TextFieldConstant.TF_VISIBLELINES);
+			Integer noOfVisibleLines =  (Integer) getConfiguration().getPropertyByName(TextFieldConstant.TF_VISLINES);
 			if(noOfVisibleLines !=null){
 				return noOfVisibleLines; 
 			}else{
@@ -538,7 +554,33 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		return null;
 	}
 
+	private void setFocus(){
+		
+		String fieldType = getTextFieldType();
+		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX)  ) {
+			textBox.setFocus(true);
+		}else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX))
+			passwordTextBox.setFocus(true);
+		else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC))
+			numericTextbox.setFocus(true);
+		else
+			textArea.setFocus(true);
+	}
 	
+	public String getFieldText() {
+		
+		String fieldType = getTextFieldType();
+		
+		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC) ) {
+			return textBox.getText();
+		} else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX)) {
+			return passwordTextBox.getText();
+		} else {
+			return textArea.getText();
+		}
+	}
+	
+	/************     Events in which field is interested ******************************/
 	@Override
 	public void onKeyUp(KeyUpEvent event) {
 		
@@ -578,36 +620,12 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		});
 	}
 	
-	private void setFocus(){
-		
-		String fieldType = getTextFieldType();
-		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX)  ) {
-			textBox.setFocus(true);
-		}else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX))
-			passwordTextBox.setFocus(true);
-		else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC))
-			numericTextbox.setFocus(true);
-		else
-			textArea.setFocus(true);
-	}
-	
-	public String getFieldText() {
-		
-		String fieldType = getTextFieldType();
-		
-		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC) ) {
-			return textBox.getText();
-		} else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX)) {
-			return passwordTextBox.getText();
-		} else {
-			return textArea.getText();
-		}
-	}
+	/****************** Textfield constants  *******************/
 	
 	public interface TextFieldConstant extends BaseFieldConstant {
 		
 		/** Specifies no of visible lines for textArea. **/
-		public static final String TF_VISIBLELINES = "visibleLines";
+		public static final String TF_VISLINES = "visibleLines";
 		
 		/** Specifies max length for the field**/
 		public static final String TF_MAXLENGTH = "maxlength";
@@ -639,7 +657,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		/** Specifies error text to be shown for invalid email**/
 		public static final String INVALID_EMAIL_TEXT = "invalidEmailText";
 		
-		/** Specifies email field validation regex**/
+		/** Specifies email field regex **/
 		public static final String EMAIL_REGEX_EXP = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 		
 		/** Specifies whether decimal to allow decimal value. Defaults to false **/

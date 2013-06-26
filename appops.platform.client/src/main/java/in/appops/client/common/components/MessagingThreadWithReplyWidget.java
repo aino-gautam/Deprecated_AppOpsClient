@@ -126,7 +126,7 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 	
 	private Configuration getTextFieldConfiguration(int visibleLines, boolean readOnly, String textFieldType, String primaryCss, String secondaryCss, String debugId){
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(TextFieldConstant.TF_VISIBLELINES, visibleLines);
+		configuration.setPropertyByName(TextFieldConstant.TF_VISLINES, visibleLines);
 		configuration.setPropertyByName(TextFieldConstant.BF_READONLY, readOnly);
 		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
 		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, primaryCss);
