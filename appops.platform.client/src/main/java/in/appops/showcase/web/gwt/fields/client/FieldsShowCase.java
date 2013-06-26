@@ -377,6 +377,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		configuration.setPropertyByName(TextFieldConstant.BF_DCLS, secondaryCss);
 		configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
 		configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter email");
+		configuration.setPropertyByName(TextFieldConstant.BF_SHOW_VALID_FIELD,true);
 		configuration.setPropertyByName(TextFieldConstant.BF_VALIDATEONCHANGE, true);
 		configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
 		

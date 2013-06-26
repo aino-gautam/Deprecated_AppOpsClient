@@ -317,7 +317,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 */
 	@Override
 	protected void setErrorInline () {
-		getWidget().setStylePrimaryName(getErrorMsgCls());
+		getWidget().addStyleName(getErrorMsgCls());
 		getWidget().addStyleName(getErrorIconCls());
 		
 		if(getErrorIconBlobId()!=null)
@@ -329,11 +329,25 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 */
 	@Override
 	protected void setValidationMsgInline () {
-		getWidget().setStylePrimaryName(getValidFieldMsgCls());
+		getWidget().addStyleName(getValidFieldMsgCls());
 		getWidget().addStyleName(getValidFieldIconCls());
 		
 		if(getValidIconBlobId()!=null)
 			setCssPropertyToElement(getWidget(), getValidIconBlobId());
+	}
+	
+	/**
+	 * Overriden method from BaseField to clear inline msg .
+	 */
+	protected void clearInlineMsg () {
+		getWidget().removeStyleName(getErrorMsgCls());
+		getWidget().removeStyleName(getErrorIconCls());
+		getWidget().removeStyleName(getValidFieldMsgCls());
+		getWidget().removeStyleName(getValidFieldIconCls());
+		
+		
+		if(getWidget().getElement().getStyle().getProperty("background")!=null)
+			getWidget().getElement().getStyle().clearProperty("background");
 	}
 	
 	/**

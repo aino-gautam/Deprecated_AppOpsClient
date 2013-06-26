@@ -14,15 +14,19 @@
 }
 
 .appops-validFieldTopBottomCls{
-	width: 18px;
-	height: 14px;
-	background: no-repeat center center;
+	padding: 2px 2px 2px 18px;
+	font-family: 'Ubuntu',sans-serif;
+    font-size: 11px;
 	overflow: hidden;
+	color: green;
+	margin-left: 5px;
+	margin-top: 5px;
+	background: no-repeat center center;
+	height: 14px;
 }
 
-
 .appops-validFieldIconCls{
-	background-image: url("images/validation_icon.png");
+	background: white url("images/validation_icon.png") no-repeat right center;
 }
 
 .appops-errorInvalidInline {
@@ -34,9 +38,8 @@
 }
 
 .appops-validFieldInline {
-	background-color: white;
-	background-repeat: repeat-x;
-	background-position: bottom;
+	font-family: 'Ubuntu',sans-serif;
+    font-size: 11px;
 }
 
 .appops-Warning-TextBox {

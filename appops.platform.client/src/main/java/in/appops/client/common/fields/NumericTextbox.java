@@ -23,7 +23,7 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 	private TextField textField ;
 	
 	public NumericTextbox() {
-		// TODO Auto-generated constructor stub
+		
 	}
 	
 	public NumericTextbox(TextField textField) {
@@ -32,32 +32,32 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 		
 	private String getNegErrMsg(){
 		
-			String negativeValueText = getConfiguration().getPropertyByName(TextFieldConstant.NEGATIVE_VALUE_TEXT);
-			if(negativeValueText !=null){
-				return negativeValueText;
-			}else{
-				return "Field value cannot be -ve";
+			String negativeValueText = "Field value cannot be -ve";
+			if(getConfigurationValue(TextFieldConstant.NEGATIVE_VALUE_TEXT) != null) {
+				
+				negativeValueText = (String) getConfigurationValue(TextFieldConstant.NEGATIVE_VALUE_TEXT);
 			}
+			return negativeValueText;
 	}
 
 	private String getMaxErrMsg(){
 		
-			String maxValueText = getConfiguration().getPropertyByName(TextFieldConstant.MAX_VALUE_TEXT);
-			if(maxValueText !=null){
-				return maxValueText;
-			}else{
-				return "The maximum value for this field is "+ getMax();
+			String maxErrMsg = "The maximum value for this field is "+ getMax();
+			if(getConfigurationValue(TextFieldConstant.MAX_VALUE_TEXT) != null) {
+				
+				maxErrMsg = (String) getConfigurationValue(TextFieldConstant.MAX_VALUE_TEXT);
 			}
+			return maxErrMsg;
 	}
 	
 	private String getMinErrMsg(){
 		
-			String maxValueText = getConfiguration().getPropertyByName(TextFieldConstant.MIN_VALUE_TEXT);
-			if(maxValueText !=null){
-				return maxValueText;
-			}else{
-				return "The minimum value for this field is "+ getMin();
+			String minErrMsg = "The minimum value for this field is "+ getMin();
+			if(getConfigurationValue(TextFieldConstant.MIN_VALUE_TEXT) != null) {
+				
+				minErrMsg = (String) getConfigurationValue(TextFieldConstant.MIN_VALUE_TEXT);
 			}
+			return minErrMsg;
 	}
 	
 	private Float getMax() {
@@ -108,23 +108,23 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 	}
 			
 	private String getBlankErrMsg(){
-			
-			String invalidFieldText = getConfiguration().getPropertyByName(TextFieldConstant.BF_BLANK_TEXT);
-			if(invalidFieldText !=null){
-				return invalidFieldText;
-			}else{
-				return "Field is required";
+		
+			String blankFieldText = "Field is required"; 
+			if(getConfigurationValue(TextFieldConstant.BF_BLANK_TEXT) != null) {
+				
+				blankFieldText = (String) getConfigurationValue(TextFieldConstant.BF_BLANK_TEXT);
 			}
+			return blankFieldText;
 	}
 	
 	private String getInvalidErrMsg() {
+						
+		String invalidMsg = "Invalid input - not a number";
+		if(getConfigurationValue(TextFieldConstant.BF_INVLDMSG) != null) {
 			
-		String invalidMsg = getConfiguration().getPropertyByName(TextFieldConstant.BF_INVLDMSG);
-		if(invalidMsg !=null){
-			return invalidMsg;
-		}else{
-			return "Invalid input - not a number";
+			invalidMsg = (String) getConfigurationValue(TextFieldConstant.BF_INVLDMSG);
 		}
+		return invalidMsg;
 	}
 	
 	

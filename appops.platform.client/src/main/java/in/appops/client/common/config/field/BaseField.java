@@ -477,6 +477,15 @@ public class BaseField extends Composite implements Field {
 	 */
 	protected void setSuggestionInline () { }
 	
+	
+	protected void clearInlineMsg () {
+		getWidget().addStyleName(getErrorMsgCls());
+		getWidget().addStyleName(getErrorIconCls());
+		
+		if(getErrorIconBlobId()!=null)
+			setCssPropertyToElement(getWidget(), getErrorIconBlobId());
+	}
+	
 	/**
 	 * This would be overridden to set the suggestion to the field.
 	 */
@@ -560,13 +569,11 @@ public class BaseField extends Composite implements Field {
 	
 	@Override
 	public void markValid() {
-				
+		    clearInvalidMarkers();
 			if(getErrorPosition().equals(BaseFieldConstant.BF_ERRINLINE)) {
 				setValidationMsgInline();
 			} else {
 				label = new HTML();
-				label.setHTML(getValidValueText());
-				//label.setHTML("");
 				label.setStylePrimaryName(getValidFieldMsgCls());
 				label.addStyleName(getValidFieldIconCls());
 				
@@ -603,6 +610,8 @@ public class BaseField extends Composite implements Field {
 		}else if(position.equals(BaseFieldConstant.BF_SIDE)){
 			if(sideWidget!=null)
 				sideWidget.clear();
+		}else{
+			clearInlineMsg();
 		}
 		
 	}
