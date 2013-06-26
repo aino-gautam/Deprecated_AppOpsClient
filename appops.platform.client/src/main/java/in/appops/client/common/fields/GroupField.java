@@ -56,7 +56,6 @@ groupField.create()<br>
 
 public class GroupField extends BaseField {
 
-	private String fieldValue;
 	private FlexTable flexTable;
 	private Integer row = 0;
 	private Integer column = 0;
@@ -68,7 +67,7 @@ public class GroupField extends BaseField {
 
 	@Override
 	public void create() {
-				
+		
 		getBasePanel().add(flexTable,DockPanel.CENTER);
 		
 	}
@@ -200,24 +199,13 @@ public class GroupField extends BaseField {
 		
 	}
 	
-	/**
-	 * Method returns selected items in the group field .
-	 */
-	public void getSelectedItemsFromGroup(){
-		
-		String groupFieldType = getGroupFieldType();
-		if(groupFieldType.equals(GroupFieldConstant.GFTYPE_SINGLE_SELECT)){
-			
-			for(int i= 0;i<listOfItems.size();i++){
-				CheckBox chk = (CheckBox) listOfItems.get(i);
-				chk.setValue(false);
-			}
-		}
-		
-	}
-
 	@Override
 	public void configure() {
+		
+		if(getBaseFieldPrimCss()!=null)
+			flexTable.setStylePrimaryName(getBaseFieldPrimCss());		
+		if(getBaseFieldCss()!=null)
+			flexTable.setStylePrimaryName(getBaseFieldCss());
 		
 		String groupFieldType = getGroupFieldType();
 		
@@ -307,17 +295,6 @@ public class GroupField extends BaseField {
 		return null;
 	}
 
-	@Override
-	public String getFieldValue() {
-		return this.fieldValue;
-	}
-
-	@Override
-	public void setFieldValue(String fieldValue) {
-		this.fieldValue = fieldValue;
-	}
-	
-
 	/**
 	 * Method will return the child configuration. 
 	 * @param displayText 
@@ -365,7 +342,7 @@ public class GroupField extends BaseField {
 		this.listOfItems = listOfItems;
 	}
 
-	public interface GroupFieldConstant{
+	public interface GroupFieldConstant extends BaseFieldConstant{
 		
 		public static final String GF_TYPE = "fieldType";
 		

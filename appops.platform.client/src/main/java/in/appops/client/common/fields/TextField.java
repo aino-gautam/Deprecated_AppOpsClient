@@ -67,7 +67,6 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	private PasswordTextBox passwordTextBox;
 	private TextArea textArea;
 	private NumericTextbox numericTextbox;
-	private Widget selectedWidget = null;
 		
 	public TextField(){
 		
@@ -78,9 +77,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 */
 	public void create() {
 		
-		if(selectedWidget!=null)
-			
-			basePanel.add(selectedWidget,DockPanel.CENTER);
+			basePanel.add(getWidget(),DockPanel.CENTER);
 	}
 	
 	/**
@@ -132,8 +129,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		if(isValidateOnChange()){
 			textBox.addKeyUpHandler(this);
 		}
-		selectedWidget =textBox;
-				
+						
 	}
 	
 	/** 
@@ -154,7 +150,6 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		if(getFieldCharWidth()!=null)
 			textArea.setCharacterWidth(getFieldCharWidth());
 					
-		selectedWidget =textArea;
 	}
 	
 	/** 
@@ -181,7 +176,6 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		if(isValidateOnChange()){
 			passwordTextBox.addKeyUpHandler(this);
 		}
-		selectedWidget =passwordTextBox;
 	}
 	
 	/**
@@ -211,7 +205,6 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		
 		numericTextbox.addBlurHandler(this);
 		
-		selectedWidget = numericTextbox;
 	}
 	
 	/**
@@ -234,7 +227,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	/**
 	 * clears the field .
 	 */
-	
+	@Override
 	public void clear() {
 		
 		String fieldType = getTextFieldType();
@@ -294,6 +287,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	public void setValue(Object value) {
 		
 		super.setValue(value);
+		clear();
 		setFieldValue(value.toString());
 		
 	}
