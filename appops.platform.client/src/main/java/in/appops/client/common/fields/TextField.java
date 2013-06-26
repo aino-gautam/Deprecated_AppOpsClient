@@ -123,6 +123,15 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		
 		textBox.setMaxLength(getFieldMaxLength());
 		textBox.setTabIndex(getTabIndex());
+		
+		textBox.addKeyPressHandler(this);
+		
+		if(isValidateOnBlur()){
+			textBox.addBlurHandler(this);
+		}
+		if(isValidateOnChange()){
+			textBox.addKeyUpHandler(this);
+		}
 		selectedWidget =textBox;
 				
 	}

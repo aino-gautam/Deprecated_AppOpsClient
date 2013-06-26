@@ -13,6 +13,26 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+
+/**
+Represents base class for all the fields.
+ 
+<h3>CSS Style Rules</h3>
+<ul class='css'>
+<li>.appops-errorTopBottomCls { style to show errors outside the field }</li>
+<li>.appops-errorIconCls { class with error icon set in the background  }</li>
+<li>.appops-validFieldTopBottomCls { style to show valid messages outside the field }</li>
+<li>.appops-validFieldIconCls { style class with valid field icon set in the background }</li>
+<li>.appops-validFieldInline { style class to show valid field  }</li>
+<li>.appops-suggestionText { style to show suggestion text }</li>
+</ul>
+
+<p>
+<h3>Configuration</h3>
+<a href="BaseField.BaseFieldConstant.html">Available configurations</a>
+</p>
+*/
+
 public class BaseField extends Composite implements Field {
 	
 	public interface BaseFieldConstant {
