@@ -1,13 +1,12 @@
 package in.appops.client.common.components;
 
 import in.appops.client.common.bound.EntityBound;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.contactmodel.ContactSnippet;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.ImageField;
-import in.appops.client.common.fields.LabelField;
-import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.client.common.snippet.SnippetConstant;
 import in.appops.client.common.snippet.SnippetFactory;
 import in.appops.client.common.util.BlobDownloader;
@@ -103,8 +102,7 @@ public class ContactSuggestionSnippet  extends Composite implements EntityBound,
 	
 	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
 		Configuration conf = new Configuration();
-		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, allowWordWrap);
-		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_DISPLAYTXT, "Config label");
+		conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
 		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
 		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
 		return conf;

@@ -1,5 +1,7 @@
 package in.appops.client.common.components;
 
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
@@ -7,10 +9,8 @@ import in.appops.client.common.fields.ComboBoxField;
 import in.appops.client.common.fields.DateOnlyPicker;
 import in.appops.client.common.fields.DateTimeField;
 import in.appops.client.common.fields.DateTimePicker;
-import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.LinkField;
 import in.appops.client.common.fields.TextField;
-import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.client.common.fields.TimePicker;
 import in.appops.client.common.util.AppEnviornment;
@@ -856,7 +856,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 	}
 	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
 		Configuration conf = new Configuration();
-		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, allowWordWrap);
+		conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
 		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
 		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
 		return conf;

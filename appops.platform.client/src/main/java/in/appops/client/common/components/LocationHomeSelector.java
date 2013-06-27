@@ -1,15 +1,15 @@
 package in.appops.client.common.components;
 
+import in.appops.client.common.config.field.CheckboxField;
+import in.appops.client.common.config.field.CheckboxField.CheckBoxFieldConstant;
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
-import in.appops.client.common.fields.CheckboxField;
-import in.appops.client.common.fields.CheckboxField.CheckBoxFieldConstant;
 import in.appops.client.common.fields.CheckboxGroupField;
-import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.LocationSelector;
 import in.appops.client.common.fields.TextField;
-import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.core.entity.GeoLocation;
@@ -241,8 +241,7 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 	
 	private Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId){
 		Configuration conf = new Configuration();
-		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, allowWordWrap);
-		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_DISPLAYTXT, "Config label");
+		conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
 		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
 		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
 		return conf;
