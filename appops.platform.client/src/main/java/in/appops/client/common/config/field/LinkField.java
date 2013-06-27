@@ -3,19 +3,35 @@ package in.appops.client.common.config.field;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Field class to represent a {@link Hyperlink} or {@link Anchor}
- * @author pallavi@ensarm.com
- *
- */
-public class LinkField extends BaseField implements ValueChangeHandler<String> ,ClickHandler{
+* Field class to represent a {@link Hyperlink} or {@link Anchor}
+* @author pallavi@ensarm.com
+*
+*<p>
+<h3>Configuration</h3>
+<a href="LinkField.LinkFieldConstant.html">Available configurations</a>
+</p>
+
+<p>
+<h3>Example</h3>
+LinkField hyperLinkField = new LinkField();<br>
+Configuration conf = new Configuration();<br>
+conf.setPropertyByName(LinkFieldConstant.LNK_TYPE, LinkFieldConstant.LNKTYPE_HYPERLINK);<br>
+conf.setPropertyByName(LinkFieldConstant.BF_PCLS,"appops-LinkField");<br>
+conf.setPropertyByName(LinkFieldConstant.LNK_DISPLAYTEXT, "Hyperlink");<br>
+conf.setPropertyByName(LinkFieldConstant.LNK_HISTORYTOKEN, "historyToken");<br>
+hyperLinkField.setConfiguration(conf);<br>
+hyperLinkField.configure();<br>
+hyperLinkField.create();<br>
+
+</p>*/
+public class LinkField extends BaseField implements ClickHandler{
 
 	private Anchor anchor;
 	private Hyperlink hyperLink;
@@ -24,6 +40,8 @@ public class LinkField extends BaseField implements ValueChangeHandler<String> ,
 
 	}
 	
+	
+	/******************************** BaseField Overriden methods ****************************************/
 	/**
 	 * creates the field UI
 	 */
@@ -51,21 +69,23 @@ public class LinkField extends BaseField implements ValueChangeHandler<String> ,
 		if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)){
 			hyperLink = new Hyperlink();
 			hyperLink.setText(getDisplayText());
+			
 			if(getTargetHistoryToken()!=null)
 				hyperLink.setTargetHistoryToken(getTargetHistoryToken());
-			
 		}else {
 			anchor = new Anchor();
 			anchor.setText(getDisplayText());
+			if(getHref()!=null)
 			anchor.setHref(getHref());
-			anchor.setTarget(getTargetFrame());
-			
+			if(getTargetFrame()!=null)
+				anchor.setTarget(getTargetFrame());
+			anchor.addClickHandler(this);
 		}
 		
 		if(getBaseFieldPrimCss()!= null)
-			getWidget().setStylePrimaryName(getBaseFieldPrimCss());
+			getBasePanel().setStylePrimaryName(getBaseFieldPrimCss());
 		if(getBaseFieldCss() != null)
-			getWidget().addStyleName(getBaseFieldCss());
+			getBasePanel().addStyleName(getBaseFieldCss());
 		if(getLinkTitle()!=null)
 			getWidget().setTitle(getLinkTitle());
 		
@@ -84,7 +104,7 @@ public class LinkField extends BaseField implements ValueChangeHandler<String> ,
 	}
 	
 	/**
-	 * Overriden method from BaseField returns the converted field value.
+	 * Overriden method from BaseField sets the converted value.
 	 */
 	@Override
 	public void setValue(Object value) {
@@ -106,7 +126,23 @@ public class LinkField extends BaseField implements ValueChangeHandler<String> ,
 			return anchor.getText();
 	}
 	
-	/**************** Configuration method **********************/
+	
+	/**
+	 * Overriden method from BaseField set the text to hyperlink or anchor.
+	 */
+	@Override
+	public void setFieldValue(String value) {
+		
+		clear();
+		if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)){
+			hyperLink.setText(value);
+		}else 
+			anchor.setText(value);
+		
+	}
+	
+	
+	/************************** Configuration method **********************/
 	/**
 	 * Method return the type of the link to use . Defaults to anchor.  
 	 * @return
@@ -124,11 +160,11 @@ public class LinkField extends BaseField implements ValueChangeHandler<String> ,
 	 * @return
 	 */
 	private String getDisplayText() {
-		String linkType = "";
+		String displayTxt = "";
 		if (getConfigurationValue(LinkFieldConstant.LNK_DISPLAYTEXT) != null) {
-			linkType = getConfigurationValue(LinkFieldConstant.LNK_DISPLAYTEXT).toString();
+			displayTxt = getConfigurationValue(LinkFieldConstant.LNK_DISPLAYTEXT).toString();
 		}
-		return linkType;
+		return displayTxt;
 	}
 	
 	/**
@@ -136,11 +172,11 @@ public class LinkField extends BaseField implements ValueChangeHandler<String> ,
 	 * @return
 	 */
 	private String getLinkTitle() {
-		String linkType = "";
-		if (getConfigurationValue(LinkFieldConstant.LNK_DISPLAYTEXT) != null) {
-			linkType = getConfigurationValue(LinkFieldConstant.LNK_DISPLAYTEXT).toString();
+		String linkTitle = null;
+		if (getConfigurationValue(LinkFieldConstant.LNK_TITLE) != null) {
+			linkTitle = getConfigurationValue(LinkFieldConstant.LNK_TITLE).toString();
 		}
-		return linkType;
+		return linkTitle;
 	}
 	
 	/**
@@ -172,13 +208,15 @@ public class LinkField extends BaseField implements ValueChangeHandler<String> ,
 	 * @return
 	 */
 	private String getTargetFrame() {
-		String targetFrm = "_blank";
+		String targetFrm = null;
 		if (getConfigurationValue(LinkFieldConstant.LNK_TARGET_FRAME) != null) {
 			targetFrm = getConfigurationValue(LinkFieldConstant.LNK_TARGET_FRAME).toString();
 		}
 		return targetFrm;
 	}
-	/**************************   *******************************/
+	
+	
+	/************************************** *******************************/
 	
 	public Widget getWidget() {
 		if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)) {
@@ -188,13 +226,9 @@ public class LinkField extends BaseField implements ValueChangeHandler<String> ,
 	}
 	
 	@Override
-	public void onValueChange(ValueChangeEvent<String> event) {
-		String historyToken = event.getValue();
-	}
-	
-	@Override
 	public void onClick(ClickEvent event) {
-		
+		//TODO fire events 
+		Window.alert("Anchor events");
 	}
 	
 	public interface LinkFieldConstant extends BaseFieldConstant{

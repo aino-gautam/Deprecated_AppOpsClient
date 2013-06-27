@@ -37,6 +37,10 @@ Represents base class for all the fields.
 public class BaseField extends Composite implements Field {
 	
 	public interface BaseFieldConstant {
+		
+		/** Style class primary for field. **/
+		public static final String BF_ID = "baseFieldId";
+		
 		/** Style class primary for field. **/
 		public static final String BF_PCLS = "baseFieldPrimaryCss";
 		
@@ -226,7 +230,19 @@ public class BaseField extends Composite implements Field {
 	}
 	
 	/**
-	 * Returns the primary style to be applied to the spinner field.
+	 * Returns the id of the field.
+	 * @return
+	 */
+	protected Integer getBaseFieldId() {
+		Integer fieldId = null;
+		if(getConfigurationValue(BaseFieldConstant.BF_ID) != null) {
+			fieldId = (Integer) getConfigurationValue(BaseFieldConstant.BF_ID);
+		}
+		return fieldId;
+	}
+	
+	/**
+	 * Returns the primary style to be applied to the base field.
 	 * If the style is not provided through configuration default is returned
 	 * @return
 	 */
@@ -237,6 +253,7 @@ public class BaseField extends Composite implements Field {
 		}
 		return primaryCss;
 	}
+	
 
 	/**
 	 * Returns the dependent style to be applied to the spinner field.
@@ -389,7 +406,7 @@ public class BaseField extends Composite implements Field {
 	
 	protected Integer getTabIndex() {
 		
-		Integer pos = 1;
+		Integer pos = null;
 		
 		if(getConfigurationValue(BaseFieldConstant.BF_TABINDEX) != null) {
 			pos = (Integer) getConfigurationValue(BaseFieldConstant.BF_TABINDEX);

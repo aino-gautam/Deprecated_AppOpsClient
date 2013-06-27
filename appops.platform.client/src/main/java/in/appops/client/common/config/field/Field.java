@@ -74,7 +74,7 @@ public interface Field extends Configurable {
 	 */
 	void resetOriginalValue();
 	
-	 String getFieldValue();
+	String getFieldValue();
 	
 	 void setFieldValue(String fieldValue);
 	
