@@ -1,6 +1,7 @@
 package in.appops.client.common.fields;
 
 import in.appops.client.common.config.field.BaseField;
+import in.appops.client.common.config.field.NumericTextbox;
 
 import java.util.ArrayList;
 
@@ -119,7 +120,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			textBox.addStyleName(getBaseFieldCss());
 		
 		textBox.setMaxLength(getFieldMaxLength());
-		textBox.setTabIndex(getTabIndex());
+		if(getTabIndex()!=null)
+			textBox.setTabIndex(getTabIndex());
 		
 		textBox.addKeyPressHandler(this);
 		
@@ -164,7 +166,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			passwordTextBox.addStyleName(getBaseFieldCss());
 		
 		passwordTextBox.setMaxLength(getFieldMaxLength());
-		passwordTextBox.setTabIndex(getTabIndex());
+		if(getTabIndex()!=null)
+			passwordTextBox.setTabIndex(getTabIndex());
 		
 		/*** Events fired by passwordTextBox ****/
 		
@@ -193,7 +196,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			numericTextbox.addStyleName(getBaseFieldCss());
 		
 		numericTextbox.setMaxLength(getFieldMaxLength());
-		numericTextbox.setTabIndex(getTabIndex());
+		if(getTabIndex()!=null)
+			numericTextbox.setTabIndex(getTabIndex());
 		
 		/*** Events fired by passwordTextBox ****/
 		

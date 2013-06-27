@@ -3,22 +3,28 @@ package in.appops.showcase.web.gwt.fields.client;
 import in.appops.client.common.components.LocationHomeSelector;
 import in.appops.client.common.components.MediaAttachWidget;
 import in.appops.client.common.components.WebMediaAttachWidget;
+import in.appops.client.common.config.field.ButtonField;
+import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
+import in.appops.client.common.config.field.CheckboxField.CheckBoxFieldConstant;
+import in.appops.client.common.config.field.GroupField;
+import in.appops.client.common.config.field.GroupField.GroupFieldConstant;
+import in.appops.client.common.config.field.ImageField;
+import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.config.field.LinkField;
 import in.appops.client.common.config.field.LinkField.LinkFieldConstant;
+import in.appops.client.common.config.field.ListBoxField;
+import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
+import in.appops.client.common.config.field.RadioButtonField.RadionButtonFieldConstant;
 import in.appops.client.common.config.field.date.DatePickerField;
 import in.appops.client.common.config.field.spinner.SpinnerField;
 import in.appops.client.common.config.field.spinner.SpinnerField.SpinnerFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
-import in.appops.client.common.fields.CheckboxField.CheckBoxFieldConstant;
 import in.appops.client.common.fields.DateTimeField;
-import in.appops.client.common.fields.GroupField;
-import in.appops.client.common.fields.GroupField.GroupFieldConstant;
-import in.appops.client.common.fields.LabelField.LabelFieldConstant;
-import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.LocationSelector;
-import in.appops.client.common.fields.RadioButtonField.RadionButtonFieldConstant;
 import in.appops.client.common.fields.StateField;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
@@ -49,11 +55,9 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.maps.client.base.LatLng;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -93,6 +97,9 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	public static final String LABELFIELD = "LabelField";
 	public static final String LINKFIELDHYPERLINK = "LinkField(HyperLink)";
 	public static final String LINKFIELDANCHOR = "LinkField(Anchor)";
+	public static final String BUTTONFIELD = "ButtonField";
+	public static final String IMAGEFIELD = "ImageField";
+	public static final String LISTBOX = "ListBox(Static list)";
 	
 	
 	private Image loaderImage;
@@ -128,6 +135,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		listBox.addItem(EMAILBOX);
 		listBox.addItem(TEXTAREA);
 		listBox.addItem(NUMERICBOX);
+		
 		/*listBox.addItem(CHECKBOXGROUPMULTISELECT);
 		listBox.addItem(CHECKBOXFIELD);
 		listBox.addItem(STATEFIELD);
@@ -148,6 +156,9 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		listBox.addItem(LABELFIELD);
 		listBox.addItem(LINKFIELDHYPERLINK);
 		listBox.addItem(LINKFIELDANCHOR);
+		listBox.addItem(BUTTONFIELD);
+		listBox.addItem(IMAGEFIELD);
+		listBox.addItem(LISTBOX);
 		
 		listBox.addChangeHandler(this);
 		listBox.setStylePrimaryName("fieldShowcaseBasePanel");
@@ -219,8 +230,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		
 		
 		Configuration conf = new Configuration();
-		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, allowWordWrap);
-		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_DISPLAYTXT, displayText);
+		conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
+		conf.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, displayText);
 		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
 		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
 		
@@ -273,10 +284,9 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		GroupField groupField = new GroupField();
 		
 		Configuration groupFieldConfig = new Configuration();
-		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_SINGLE_SELECT);
+		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_MULTISELECT);
 		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_ALIGNMENT,GroupFieldConstant.GF_ALIGN_HORIZONTAL);
 		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_LIMIT,3);
-		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_SINGLE_SELECT);
 		
 		ArrayList<String> listOfItems = new ArrayList<String>();
 		listOfItems.add("chk1");
@@ -319,7 +329,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		GroupField groupField = new GroupField();
 		
 		Configuration groupFieldConfig = new Configuration();
-		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_MULTISELECT);
+		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_SINGLE_SELECT);
 		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_ALIGNMENT,GroupFieldConstant.GF_ALIGN_VERTICAL);
 		groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_LIMIT,3);
 		
@@ -407,11 +417,42 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		configuration.setPropertyByName(LinkFieldConstant.LNK_TYPE, LinkFieldConstant.LNKTYPE_ANCHOR);
 		configuration.setPropertyByName(LinkFieldConstant.BF_PCLS,"appops-LinkField");
 		configuration.setPropertyByName(LinkFieldConstant.LNK_DISPLAYTEXT, "Anchor");
-		configuration.setPropertyByName(LinkFieldConstant.LNK_TARGET_FRAME, "_self");
+		//configuration.setPropertyByName(LinkFieldConstant.LNK_TARGET_FRAME, "_self");
 		configuration.setPropertyByName(LinkFieldConstant.LNK_TITLE, "Anchor with configurations");
-		configuration.setPropertyByName(LinkFieldConstant.LNK_HREF, componentHolder.getHelpHtml(getPackageNameOfSelectedField(LINKFIELDANCHOR)));
+		//configuration.setPropertyByName(LinkFieldConstant.LNK_HREF, componentHolder.getHelpHtml(getPackageNameOfSelectedField(LINKFIELDANCHOR)));
 		return configuration;
 	}
+	
+	private Configuration getButtonConfiguration(){
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(ButtonFieldConstant.BTNFIELD_DISPLAYTEXT, "Configure");
+		configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,"appops-Button");
+		configuration.setPropertyByName(ButtonFieldConstant.BTNFIELD_TITLE, "Configurable Button");
+		return configuration;
+	}
+	
+	private Configuration getImageConfiguration(){
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, "images/test2.jpg");
+		configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,"appops-imageField");
+		configuration.setPropertyByName(ButtonFieldConstant.BTNFIELD_TITLE, "Configurable Image");
+		return configuration;
+	}
+	
+	private Configuration getStaticListBoxConfiguration() {
+		Configuration configuration = new Configuration();
+		//configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_VISIBLE_ITEM_CNT, 3);
+		ArrayList<String> items = new ArrayList<String>();
+		items.add("Private access");
+		items.add("Public");
+		items.add("Restricted");
+		items.add("Me");
+		
+		configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,items);
+		
+		return configuration;
+	}
+
 	
 	
 	private Configuration getStateFieldConfiguration(String stateFieldType, String qname, String operationName, String displayText) {
@@ -476,10 +517,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				textFieldTB.create();
 				innerPanel.add(textFieldTB);
 				innerPanel.setCellHorizontalAlignment(textFieldTB,HorizontalPanel.ALIGN_CENTER);
-				
 			} else if(fieldName.equals(PASSWORDTEXTBOX)) {
 				TextField textFieldPTB = new TextField();
-				//textFieldPTB.setFieldValue("Password");
 				textFieldPTB.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_PSWBOX, "appops-TextField", null, null));
 				textFieldPTB.configure();
 				textFieldPTB.create();
@@ -504,13 +543,11 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 
 			}else if(fieldName.equals(NUMERICBOX)) {
 				TextField textFieldTB = new TextField();
-				//textFieldTB.setFieldValue("");
 				textFieldTB.setConfiguration(getNumericFieldConfiguration(1, false, TextFieldConstant.TFTYPE_NUMERIC, "appops-TextField", null, null));
 				textFieldTB.configure();
 				textFieldTB.create();
 				innerPanel.add(textFieldTB);
 				innerPanel.setCellHorizontalAlignment(textFieldTB,HorizontalPanel.ALIGN_CENTER);
-				
 			}else if(fieldName.equals(GROUPFIELD)) {
 				GroupField groupField = getCheckBoxGroupField();
 				innerPanel.add(groupField);
@@ -540,6 +577,27 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				anchorLinkField.create();
 				innerPanel.add(anchorLinkField);
 				innerPanel.setCellHorizontalAlignment(anchorLinkField,HorizontalPanel.ALIGN_CENTER);
+			}else if(fieldName.equals(BUTTONFIELD)) {
+				ButtonField btnField = new ButtonField();
+				btnField.setConfiguration(getButtonConfiguration());
+				btnField.configure();
+				btnField.create();
+				innerPanel.add(btnField);
+				innerPanel.setCellHorizontalAlignment(btnField,HorizontalPanel.ALIGN_CENTER);
+			}else if(fieldName.equals(IMAGEFIELD)) {
+				ImageField imageField = new ImageField();
+				imageField.setConfiguration(getImageConfiguration());
+				imageField.configure();
+				imageField.create();
+				innerPanel.add(imageField);
+				innerPanel.setCellHorizontalAlignment(imageField,HorizontalPanel.ALIGN_CENTER);
+			}else if(fieldName.equals(LISTBOX)) {
+				ListBoxField staticListBox = new ListBoxField();
+				staticListBox.setConfiguration(getStaticListBoxConfiguration());
+				staticListBox.configure();
+				staticListBox.create();
+				innerPanel.add(staticListBox);
+				innerPanel.setCellHorizontalAlignment(staticListBox,HorizontalPanel.ALIGN_CENTER);
 			}else if(fieldName.equals(STATEFIELD)) {
 				StateField stateField = new StateField();
 				Configuration stateFieldConfig = getStateFieldConfiguration(StateField.STATEFIELDMODE_SUGGESTIVE, "getSpaceTypesWithName", "spacemanagement.SpaceManagementService.getEntityList", SpaceTypeConstants.NAME);
@@ -757,6 +815,12 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				return LabelField.class.getName();
 			}else if(fieldName.equals(LINKFIELDHYPERLINK) || fieldName.equals(LINKFIELDANCHOR)) {
 				return LinkField.class.getName();
+			}else if(fieldName.equals(IMAGEFIELD)) {
+				return ImageField.class.getName();
+			}else if(fieldName.equals(LISTBOX)) {
+				return ListBoxField.class.getName();
+			}else if(fieldName.equals(BUTTONFIELD)) {
+				return ButtonField.class.getName();
 			}
 			
 		return null;

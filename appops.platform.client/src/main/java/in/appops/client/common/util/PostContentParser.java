@@ -1,8 +1,8 @@
 package in.appops.client.common.util;
 
-import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.fields.LinkField;
-import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.platform.core.shared.Configuration;
 
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -116,7 +116,7 @@ public class PostContentParser {
 	
 	private Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId){
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, allowWordWrap);
+		configuration.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
 		configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
 		configuration.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
 		return configuration;

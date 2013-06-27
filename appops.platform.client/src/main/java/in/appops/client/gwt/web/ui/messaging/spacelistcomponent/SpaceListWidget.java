@@ -3,13 +3,10 @@
  */
 package in.appops.client.gwt.web.ui.messaging.spacelistcomponent;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.core.EntityListReceiver;
 import in.appops.client.common.event.AppUtils;
-import in.appops.client.common.fields.LabelField;
-import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEvent;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEventHandler;
 import in.appops.platform.core.entity.Entity;
@@ -18,9 +15,11 @@ import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.spacemanagement.constants.SpaceConstants;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -240,7 +239,7 @@ public class SpaceListWidget extends Composite implements EntityListReceiver,Mes
 	
 	private Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId){
 		Configuration conf = new Configuration();
-		conf.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, allowWordWrap);
+		conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
 		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
 		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
 		return conf;

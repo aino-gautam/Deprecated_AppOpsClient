@@ -3,7 +3,7 @@
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
-import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.config.fields.LabelField;
 import in.appops.client.common.fields.SpinnerField;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;

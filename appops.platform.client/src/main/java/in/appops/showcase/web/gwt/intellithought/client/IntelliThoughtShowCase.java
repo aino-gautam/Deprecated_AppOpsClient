@@ -1,9 +1,8 @@
 package in.appops.showcase.web.gwt.intellithought.client;
 
 import in.appops.client.common.components.IntelliThoughtWidget;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.fields.IntelliThoughtField;
-import in.appops.client.common.fields.LabelField;
-import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;

@@ -3,12 +3,12 @@ package in.appops.client.common.snippet;
 import in.appops.client.common.components.ActionWidget;
 import in.appops.client.common.components.ActionWidget.ActionWidgetConfiguration;
 import in.appops.client.common.components.ActionWidget.ActionWidgetType;
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.core.EntityReceiver;
 import in.appops.client.common.event.ActionEvent;
 import in.appops.client.common.fields.ImageField;
-import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.PostInButton;
-import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.client.common.handler.HandlerFactory;
 import in.appops.client.common.handler.HandlerFactoryImpl;
 import in.appops.client.common.handler.ResponseActionHandler;
@@ -394,7 +394,7 @@ public class PostViewSnippet extends RowSnippet {
 	
 	public Configuration createConfiguration(boolean wordWrap){
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, wordWrap);
+		configuration.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, wordWrap);
 		return configuration;
 		
 	}

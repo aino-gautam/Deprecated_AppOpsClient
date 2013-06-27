@@ -3,10 +3,10 @@ package in.appops.client.common.snippet;
 import in.appops.client.common.components.CalendarEvents;
 import in.appops.client.common.components.CalendarReminders;
 import in.appops.client.common.components.CreateCalendarEntryScreen;
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.fields.Field;
-import in.appops.client.common.fields.LabelField;
-import in.appops.client.common.fields.LabelField.LabelFieldConstant;
 import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
@@ -302,7 +302,7 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 
 	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelFieldConstant.LBLFIELD_WORDWRAP, allowWordWrap);
+		configuration.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
 		configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
 		configuration.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
 		return configuration;
