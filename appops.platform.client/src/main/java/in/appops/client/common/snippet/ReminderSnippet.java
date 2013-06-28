@@ -1,20 +1,25 @@
 package in.appops.client.common.snippet;
 
+import in.appops.client.common.components.CreateCalendarEntryScreen;
 import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.LinkField;
-import in.appops.client.common.snippet.Snippet;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
+import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
+import in.appops.platform.core.util.EntityList;
+import in.appops.platform.server.core.services.calendar.constant.CalendarConstant;
 import in.appops.platform.server.core.services.calendar.constant.ReminderConstant;
 import in.appops.platform.server.core.services.calendar.constant.ReminderTypeConstant;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,23 +29,31 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHandler{
 	
 	private Image crossImg = new Image("images/crossImage.png");
-	private LinkField editLinkField = new LinkField();
 	private final DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
 	private final DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
 	private Entity embededEntity;
 	private Entity entity;
 	private String type;
-		
+	private Button createReminderButton;	
+	private LinkField editLinkField;
+	private CreateCalendarEntryScreen calendarEntryScreen;
+	private PopupPanel createReminderPopupPanel;
+	private LinkField reminderTitleLink;
+	private LabelField dateTime;
+	private LabelField reminderTypeLabel;
 	public ReminderSnippet() {
 	}
 	
@@ -57,9 +70,9 @@ public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHan
 		try {
 			String title = entity.getProperty(ReminderConstant.TITLE).getValue().toString();
 			
-			LinkField reminderTitleLink = new LinkField();
+			reminderTitleLink = new LinkField();
 			reminderTitleLink.setFieldValue(title);
-			reminderTitleLink.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_HYPERLINK, "postLink", "reminderTitleLabel", null));
+			reminderTitleLink.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_ANCHOR, "reminderTitleLabel", "crossImageCss", null));
 			reminderTitleLink.createField();
 						
 			//reminderTitleLink.getWidget().addDomHandler(this, ClickEvent.getType());
@@ -78,7 +91,7 @@ public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHan
 			crossImg.setHeight("14px");
 			reminderTitlePanel.setCellHorizontalAlignment(crossImg, HasHorizontalAlignment.ALIGN_RIGHT);
 			reminderTitlePanel.setStylePrimaryName("reminderTitlePanel");
-			
+			crossImg.setStylePrimaryName("crossImageCss");
 						
 			add(reminderTitlePanel);
 			
@@ -88,13 +101,13 @@ public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHan
 			
 			String dateTimeValue = DateTimeFormat.getLongDateFormat().format(date) +" at "+ DateTimeFormat.getShortTimeFormat().format(date);
 					
-			LabelField dateTime = getLabelField(dateTimeValue,"postLabel");
+			dateTime = getLabelField(dateTimeValue,"postLabel");
 			
 			LabelField typeLabel = getLabelField("Remind me via:","postLabel");
 					
 			Entity reminderType = (Entity) entity.getProperty(ReminderConstant.REMINDERTYPE);
 					
-			LabelField type = getLabelField(reminderType.getProperty(ReminderTypeConstant.TYPE).getValue().toString(),"postLabel");
+			reminderTypeLabel = getLabelField(reminderType.getProperty(ReminderTypeConstant.TYPE).getValue().toString(),"postLabel");
 					
 			add(typeLabel);
 			
@@ -102,24 +115,25 @@ public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHan
 			flex.setWidget(0, 0, dateTimeLbl);
 			flex.setWidget(0, 1, dateTime);
 			flex.setWidget(1, 0, typeLabel);
-			flex.setWidget(1, 1, type);
+			flex.setWidget(1, 1, reminderTypeLabel);
 			add(flex);
 			
+			editLinkField = new LinkField();
+			
 			editLinkField.setFieldValue("Edit");
-			editLinkField.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_HYPERLINK, "postLink", null, null));
+			editLinkField.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_ANCHOR, "postLink", "crossImageCss", null));
 			editLinkField.createField();
 			
 			HorizontalPanel linkPanel = new HorizontalPanel();
-			linkPanel.add(editLinkField);
+			//linkPanel.add(editLinkField);
 			//snippetPanel.add(editLinkField);
-			
+			add(linkPanel);
 			//addDomHandler(this,ClickEvent.getType());
-			
-					
+			((Anchor) reminderTitleLink.getWidget()).addClickHandler(this);
+			crossImg.addClickHandler(this);		
 			setStylePrimaryName("snippetPanel");
 		} catch (AppOpsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			 e.printStackTrace();
 		}
 	}
 	
@@ -155,9 +169,176 @@ public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHan
 	@Override
 	public void onClick(ClickEvent event) {
 		Widget widget = (Widget) event.getSource();
+		
+		if(widget instanceof Anchor){
+			createReminderPopupPanel = new PopupPanel();
+			VerticalPanel childVerticalPanel = new VerticalPanel();
+			Entity entity=getEntity();
+			calendarEntryScreen  = new CreateCalendarEntryScreen();
+			calendarEntryScreen.setReminderEntity(entity);
+			calendarEntryScreen.setConfiguration(getConfigurationForCreateReminder());
+			calendarEntryScreen.setCreateEntityType("Create reminder");
+			calendarEntryScreen.createScreen();
+			createReminderButton = new Button("Create Reminder");
+			createReminderButton.addClickHandler(this);
+			childVerticalPanel.add(calendarEntryScreen);
+			childVerticalPanel.add(createReminderButton);
+			createReminderPopupPanel.add(childVerticalPanel);
+			createReminderPopupPanel.showRelativeTo(reminderTitleLink);
+			createReminderPopupPanel.setAutoHideEnabled(true);
+		}else if(widget instanceof Button){
+			
+		  if(calendarEntryScreen.validate()){	
+			Entity reminderEntity=calendarEntryScreen.populateEntity();
+			Entity entity=getEntity();
+			Property<Serializable>reminderIdProperty=(Property<Serializable>) entity.getProperty(ReminderConstant.ID);
+			reminderEntity.setProperty(ReminderConstant.ID, reminderIdProperty);
+			Date createdOn = entity.getPropertyByName(ReminderConstant.CREATEDON);
+			 Property<Date> modifiedOnDateProp = new Property<Date>(createdOn);
+			 reminderEntity.setProperty(ReminderConstant.CREATEDON, modifiedOnDateProp);
+			 Long instanceId=entity.getPropertyByName(ReminderConstant.INSTANCEID);
+			 Long typeId = entity.getPropertyByName(ReminderConstant.TYPEID);
+			 Long serviceId =entity.getPropertyByName(ReminderConstant.SERVICEID);
+			 Long userId =entity.getPropertyByName(ReminderConstant.USERID);
+			 
+			 reminderEntity.setPropertyByName(ReminderConstant.TYPEID,typeId);
+			 reminderEntity.setPropertyByName(ReminderConstant.INSTANCEID,instanceId);
+			 reminderEntity.setPropertyByName(ReminderConstant.USERID, userId);
+			 
+			 reminderEntity.setPropertyByName(ReminderConstant.SERVICEID, serviceId);
+			saveEditedReminderEntity(reminderEntity);
+		  }
+		}else if(widget instanceof Image){
+			 
+			Entity entity=getEntity();
 					
+			deleteReminderEntity(entity);
+			
+		}
 	}
 	
+	@SuppressWarnings("unchecked")
+	private void deleteReminderEntity(Entity reminderEntity) {
+		DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
+		DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
+				
+		Byte b = 1;
+		Property<Byte> isDeletedProp = new Property<Byte>();
+		isDeletedProp.setValue(b);
+		isDeletedProp.setName(ReminderConstant.ISDELETED);
+		reminderEntity.setProperty(ReminderConstant.ISDELETED, isDeletedProp);
+		
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("reminder", reminderEntity);
+				
+		
+		StandardAction action = new StandardAction(EntityList.class, "calendar.CalendarService.addReminderToEvent", paramMap);
+		dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+				
+			}
+
+			@Override
+			public void onSuccess(Result<Entity> result) {
+			  if(result!=null){	
+				Entity entity = result.getOperationResult();
+				if(entity!=null){
+									
+					removeReminderSnippet();
+					 
+				}
+				
+			  }
+			}
+
+		
+	  });
+		
+	}
+
+	private void removeReminderSnippet() {
+	     this.removeFromParent();
+		
+	}
+	@SuppressWarnings("unchecked")
+	private void saveEditedReminderEntity(Entity reminderEntity) {
+		DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
+		DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
+				
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("reminder", reminderEntity);
+				
+		
+		StandardAction action = new StandardAction(EntityList.class, "calendar.CalendarService.addReminderToEvent", paramMap);
+		dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+				
+			}
+
+			@Override
+			public void onSuccess(Result<Entity> result) {
+			  if(result!=null){	
+				Entity entity = result.getOperationResult();
+				if(entity!=null){
+					 createReminderPopupPanel.hide();
+					 updateSnippetWithNewValue(entity);
+				     PopupPanel popupPanel = new  PopupPanel();
+					 HorizontalPanel horizontalPanel = new HorizontalPanel();
+					 Label label = new Label("Remindar edit successfully.");
+					 horizontalPanel.add(label);
+					 horizontalPanel.setCellHorizontalAlignment(label, HasHorizontalAlignment.ALIGN_CENTER);
+					 popupPanel.add(horizontalPanel);
+					 popupPanel.show();
+					 popupPanel.center();
+					 popupPanel.setAutoHideEnabled(true);
+					 calendarEntryScreen.clearAllFields();
+				}
+				
+			  }
+			}
+
+			
+		
+	  });
+	}
+
+	private void updateSnippetWithNewValue(Entity editedReminderEntity) {
+		try {
+			String title = editedReminderEntity.getProperty(ReminderConstant.TITLE).getValue().toString();
+			reminderTitleLink.setFieldValue(title);
+			reminderTitleLink.resetField();
+			
+			Date date = (Date) editedReminderEntity.getProperty(ReminderConstant.REMINDERTIME).getValue();
+			
+			String dateTimeValue = DateTimeFormat.getLongDateFormat().format(date) +" at "+ DateTimeFormat.getShortTimeFormat().format(date);
+			dateTime.setFieldValue(dateTimeValue);
+			dateTime.resetField();
+			
+			Entity reminderType = (Entity) entity.getProperty(ReminderConstant.REMINDERTYPE);
+			
+			
+			reminderTypeLabel.setFieldValue(reminderType.getProperty(ReminderTypeConstant.TYPE).getValue().toString());
+			reminderTypeLabel.resetField();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	private Configuration getConfigurationForCreateReminder() {
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(CreateCalendarEntryScreen.REMINDER_MODE, CreateCalendarEntryScreen.REMINDER_EDIT);
+		configuration.setPropertyByName(CreateCalendarEntryScreen.SCREEN_TYPE, CreateCalendarEntryScreen.REMINDER);
+		return configuration;
+	}
+
+
 	@SuppressWarnings("unchecked")
 	private Entity getEmbededEntity(Entity reminderEntity){
 			

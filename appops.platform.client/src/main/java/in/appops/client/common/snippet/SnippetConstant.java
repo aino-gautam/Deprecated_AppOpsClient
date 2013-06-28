@@ -18,5 +18,6 @@ public class SnippetConstant {
 	public static final String  CHATSERVICEHOME = "chatServiceHome";
 	public static final String  ACTIONBOXSNIPPET = "ActionBoxSnippet";
 	public static final String  USERMESSAGESERVICEHOME = "userMessageServiceHome";
+	public static final String  CONTACTSNIPPET = "ContactSnippet";
 
 }

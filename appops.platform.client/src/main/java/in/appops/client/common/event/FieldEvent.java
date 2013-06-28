@@ -17,6 +17,16 @@ public class FieldEvent extends GwtEvent<FieldEventHandler> {
 	public static final int THREE_CHAR_ENTERED = 6;
 	public static final int SUGGESTION_CLICKED = 7;
 	public static final int EDITSUCCESS = 8;
+	public static final int EVENTDATA = 9;
+	public static final int REMINDERDATA = 10;
+	public static final int TIMEONLY = 11;
+	public static final int DATETIMEONLY = 12;
+	public static final int DATEONLY = 13;
+	public static final int LOCATION_IN_MAP = 14;
+	public static final int CHECKBOX_SELECT = 15;
+	public static final int CHECKBOX_DESELECT = 16;
+	public static final int VALUECHANGED = 17;
+	public static final int SUGGESTION_SELECTED = 18;
 	
 	public static Type<FieldEventHandler> TYPE = new Type<FieldEventHandler>();
 	

@@ -6,6 +6,7 @@
 	<inherits name='in.appops.platform.bindings.web.gwt.dispatch.Dispatch'/>
 	
 	<inherits name="com.google.gwt.inject.Inject"/>
+	<inherits name="com.mvp4g.Mvp4gModule" />
 	<inherits name="gwtupload.GWTUpload"/>
 	<inherits name="com.google.web.bindery.autobean.AutoBean"/>
 	<inherits name="com.google.gwt.json.JSON" />

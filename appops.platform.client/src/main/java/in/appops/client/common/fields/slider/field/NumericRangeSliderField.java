@@ -9,10 +9,9 @@ import in.appops.platform.core.util.AppOpsException;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.dom.client.MouseWheelHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -54,12 +53,22 @@ public class NumericRangeSliderField extends Composite implements Field{
 		
 		initializeConfiguration();
 		
+		VerticalPanel verticalPanel = new VerticalPanel();
+		verticalPanel.setSpacing(10);
+		initWidget(verticalPanel);
+		
 		final NumericRangeSlider numericRngeSlider = new NumericRangeSlider(minValue, maxValue);
 		numericRngeSlider.setStepSize(stepValue);
 		numericRngeSlider.setCurrentValue(minValue);
 		int numLabels = (int)((maxValue-minValue)/stepValue);
 		numericRngeSlider.setNumLabels(numLabels);
 
+		int widhtMultiplier = (int) (maxValue * 3)/( (int) (stepValue/5));
+		if(widhtMultiplier>100)
+			DOM.setElementAttribute(getElement(), "width", widhtMultiplier+"%");
+		else
+			setStylePrimaryName("mainPanel");
+		
 		numericRngeSlider.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent arg0) {
@@ -84,25 +93,9 @@ public class NumericRangeSliderField extends Composite implements Field{
 				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 			}
 		});
-
-		numericRngeSlider.addMouseUpHandler(new MouseUpHandler() {
-			@Override
-			public void onMouseUp(MouseUpEvent arg0) {
-				System.out.println("Selected Range: "+numericRngeSlider.getCurrentValue());
-				FieldEvent fieldEvent = new FieldEvent();
-				fieldEvent.setEventType(FieldEvent.EDITINITIATED);
-				fieldEvent.setEventData(numericRngeSlider.getCurrentValue());
-				
-				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
-			}
-		});
 		
-		VerticalPanel verticalPanel = new VerticalPanel();
 		verticalPanel.setSpacing(10);
 		verticalPanel.add(numericRngeSlider);
-		verticalPanel.setStylePrimaryName("numericRangeSliderPanel");
-		
-		initWidget(verticalPanel);
 	}
 
 	private void initializeConfiguration() {

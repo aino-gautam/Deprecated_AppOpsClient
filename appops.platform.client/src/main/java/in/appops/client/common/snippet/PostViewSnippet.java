@@ -421,31 +421,40 @@ public class PostViewSnippet extends RowSnippet {
 	
 	private void showEmbededEntityDetailsInSnippet(Entity postEnt){
 		
-		JsonProperty jsonProp = (JsonProperty) postEnt.getProperty("embeddedEntity");
+		String jsonEmbededString = null;
 		
-		String jsonEmbededString  = jsonProp.getJsonString();
-		
-		JsonToEntityConverter jsonToEntityConverter = new JsonToEntityConverter();
-		
-		Entity embeddedEntity = jsonToEntityConverter.convertjsonStringToEntity(jsonEmbededString);
-		
-		Label detailLbl = new Label();
-		
-		if(embeddedEntity.getPropertyByName("title") != null){
-			detailLbl.setText(embeddedEntity.getPropertyByName("title").toString());
-		}else if(embeddedEntity.getPropertyByName("name") != null){
-			detailLbl.setText(embeddedEntity.getPropertyByName("name").toString());
+		if(postEnt.getProperty("embeddedEntity") instanceof JsonProperty){
+			JsonProperty jsonProp = (JsonProperty) postEnt.getProperty("embeddedEntity");
 			
+			jsonEmbededString = jsonProp.getJsonString();
+		}else if(postEnt.getProperty("embeddedEntity") instanceof Property){
+			
+			jsonEmbededString =  postEnt.getPropertyByName("embeddedEntity");
 		}
 		
-		detailLbl.setStylePrimaryName("blockquote");
 		
-		if(detailLbl.getText().equals("") ||detailLbl.getText().equals(" ")){
-			
-		}else{
-			postContentPanel.add(detailLbl);
-			
-			postContentPanel.setCellHorizontalAlignment(detailLbl, HasHorizontalAlignment.ALIGN_LEFT);
+		JsonToEntityConverter jsonToEntityConverter = new JsonToEntityConverter();
+		if (jsonEmbededString != null) {
+
+			Entity embeddedEntity = jsonToEntityConverter.convertjsonStringToEntity(jsonEmbededString);
+
+			Label detailLbl = new Label();
+
+			if (embeddedEntity.getPropertyByName("title") != null) {
+				detailLbl.setText(embeddedEntity.getPropertyByName("title").toString());
+			} else if (embeddedEntity.getPropertyByName("name") != null) {
+				detailLbl.setText(embeddedEntity.getPropertyByName("name").toString());
+
+			}
+
+			detailLbl.setStylePrimaryName("blockquote");
+
+			if (!detailLbl.getText().equals("")) {
+
+				postContentPanel.add(detailLbl);
+
+				postContentPanel.setCellHorizontalAlignment(detailLbl,HasHorizontalAlignment.ALIGN_LEFT);
+			}
 		}
 		
 		

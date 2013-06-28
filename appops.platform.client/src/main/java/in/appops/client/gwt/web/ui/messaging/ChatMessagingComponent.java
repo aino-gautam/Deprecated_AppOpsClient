@@ -16,8 +16,10 @@ import in.appops.platform.core.entity.broadcast.BroadcastEntity;
 import in.appops.platform.core.entity.broadcast.ChatEntity;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
+import in.appops.platform.server.core.services.spacemanagement.constants.SpaceConstants;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -48,7 +50,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * of appops chat widget.
  * 
  */
-public class MessagingComponent extends Composite implements MessengerEventHandler , AtmosphereListener, ClickHandler{
+public class ChatMessagingComponent extends Composite implements MessengerEventHandler , AtmosphereListener, ClickHandler{
 	
 	/**
 	 * Actual base container.
@@ -89,7 +91,7 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 	 * Constructor in which the global variable will be initialising and
 	 * the base ui is created. 
 	 */
-	public MessagingComponent(){
+	public ChatMessagingComponent(){
 		initialize();
 		initWidget(baseHp);
 	}
@@ -207,7 +209,6 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 	 */
 	private MainUserListingComponent createBottomUserListPanel() {
 		MainUserListingComponent chatUserListWidget = new MainUserListingComponent();
-		chatUserListWidget.setParentMessagingWidget(this);
 		return chatUserListWidget;
 	}
 
@@ -218,7 +219,6 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 	private SpaceListWidget createRightNavigatorPanel() {
 		SpaceListModel spaceListModel  = new SpaceListModel(contactEntity);
 		spaceListWidget = new SpaceListWidget(spaceListModel);
-		spaceListWidget.setParentMessagingWidget(this);
 		return spaceListWidget;
 	}
 
@@ -230,7 +230,6 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 		chatTextArea = new TextArea();
 		setGrpMapEntityMap(new HashMap<String, ChatEntity>());
 		chatDisplayWidget = new ChatDisplayWidget();
-		chatDisplayWidget.setParentMessagingComponent(this);
 		AppUtils.EVENT_BUS.addHandler(MessengerEvent.TYPE, this);
 	}
 
@@ -329,7 +328,179 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 			
 			createUi();
 		}
-		
+		else if (event.getEventType() == MessengerEvent.ONCHATCLOSED) {
+			String headerTitle = (String) event.getEventData();
+			removeFromDisplayList(headerTitle);
+		}
+		else if (event.getEventType() == MessengerEvent.STARTNEARBYSPACECHAT) {
+			String spaceName = (String) event.getEventData();
+			startNearBySpaceChat(spaceName);
+		}
+		else if (event.getEventType() == MessengerEvent.STARTSPACECHAT) {
+			ArrayList<Object> dataMap =  (ArrayList<Object>) event.getEventData();
+			String spaceName = (String) dataMap.get(0);
+			Entity spaceEntity = (Entity) dataMap.get(1);
+			startSpaceChat(spaceName,spaceEntity);
+		}
+		else if (event.getEventType()  == MessengerEvent.STARTUSERSELECTEDCHAT){
+			Entity contactEntity = (Entity) event.getEventData();
+			startUserSelectedChat(contactEntity);
+		}
+		else if (event.getEventType()  == MessengerEvent.RESTARTPREVIOUSCHAT){
+			Entity contactEntity = (Entity) event.getEventData();
+			continuePreviousUserChat(contactEntity);
+		}
+	}
+
+	private void continuePreviousUserChat(Entity contactEnt) {
+		try{
+			String currenUserName = getContactEntity().getPropertyByName(ContactConstant.NAME).toString();
+			String aliasName = contactEnt.getPropertyByName(ContactConstant.NAME).toString();
+			
+			String headerTitle = currenUserName +"##"+ aliasName;
+			String reverseHeaderTitle = aliasName + "##" + currenUserName;
+			ChatEntity chatEnt = getChatEntity(headerTitle, reverseHeaderTitle,contactEnt);
+			startNewChat(chatEnt);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private ChatEntity getChatEntity(String headerTitle, String reverseHeaderTitle, Entity contactEnt) {
+		try{
+			if(getGrpMapEntityMap().get(headerTitle) != null){
+				ChatEntity chatEnt = getGrpMapEntityMap().get(headerTitle);
+				return chatEnt;
+			} else if(getGrpMapEntityMap().get(reverseHeaderTitle) != null){
+				ChatEntity chatEnt = getGrpMapEntityMap().get(reverseHeaderTitle);
+				return chatEnt;
+			} else {
+				ChatEntity chatEntity = new ChatEntity();
+				EntityList participantList = new EntityList();
+				participantList.add(contactEnt);
+
+				participantList.add(getContactEntity());
+				chatEntity.setParticipantEntity(participantList);
+				chatEntity.setHeaderTitle(headerTitle);
+				chatEntity.setIsGroupChat(false);
+				return chatEntity;
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * This method will start new chat if the chat entity doesn't exist else will load
+	 * the pre-existing chat entity for specific user entity.
+	 * @param contactEnt
+	 */
+	private void startUserSelectedChat(Entity contactEnt) {
+		try{
+			EntityList participantList = new EntityList();
+			
+			participantList.add(getContactEntity());
+			participantList.add(contactEnt);
+			
+			ChatEntity entity = new ChatEntity();
+			String currenUserName = getContactEntity().getPropertyByName(ContactConstant.NAME).toString();
+			String aliasName = contactEnt.getPropertyByName(ContactConstant.NAME).toString();
+			
+			String headerTitle = currenUserName +"##"+ aliasName;
+			if(getGrpMapEntityMap().get(headerTitle)==null){
+				entity.setParticipantEntity(participantList);
+				entity.setHeaderTitle(headerTitle);
+				entity.setIsGroupChat(false);
+
+				startNewChat(entity);
+			}
+			else{
+				ChatEntity chatEnt = getGrpMapEntityMap().get(headerTitle);
+				startNewChat(chatEnt);
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * This method will start new chat if the chat entity doesn't exist else will load
+	 * the pre-existing chat entity for space chat.
+	 * @param spaceName
+	 */
+	private void startSpaceChat(String spaceName, Entity spaceEntity) {
+		try{
+			EntityList participantList = new EntityList();
+			participantList.add(getContactEntity());
+			
+			ChatEntity entity = new ChatEntity();
+			
+			if(getGrpMapEntityMap().get(spaceName)==null){
+				entity.setParticipantEntity(participantList);
+				entity.setHeaderTitle(spaceName);
+				entity.setSpaceEntity(spaceEntity);
+				entity.setIsGroupChat(true);
+
+				startNewChat(entity);
+				
+				AtmosphereGWTSerializer serializer = (AtmosphereGWTSerializer) GWT.create(RealTimeSyncEventSerializer.class);
+				Key<Long> value = spaceEntity.getPropertyByName(SpaceConstants.ID);
+				String val =  value.getKeyValue().toString();
+				
+				String url = GWT.getHostPageBaseURL() + "gwtComet?entity_id="+val+"&is_space_type=true";
+				AtmosphereClient client = new AtmosphereClient(url,serializer, this);
+				client.start();
+			}
+			else{
+				ChatEntity chatEnt = getGrpMapEntityMap().get(spaceName);
+				startNewChat(chatEnt);
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * This method will start new near by chat if the chat entity doesn't exist else will load
+	 * the pre-existing chat entity for space chat.
+	 * @param spaceName
+	 */
+	private void startNearBySpaceChat(String spaceName) {
+		try{
+			ChatEntity entity = new ChatEntity();
+			if(getGrpMapEntityMap().get(spaceName)==null){
+				EntityList participantList = new EntityList();
+				participantList.add(getContactEntity());
+				
+				entity.setParticipantEntity(participantList);
+				entity.setHeaderTitle(spaceName);
+				
+				entity.setSpaceEntity(getContactEntity());
+				entity.setIsGroupChat(true);
+				
+				
+				AtmosphereGWTSerializer serializer = (AtmosphereGWTSerializer) GWT.create(RealTimeSyncEventSerializer.class);
+				String val =  "NEARBY";
+				
+				String url = GWT.getHostPageBaseURL() + "gwtComet?entity_id="+val+"&is_space_type=true";
+				AtmosphereClient client = new AtmosphereClient(url,serializer, this);
+				client.start();
+				
+				startNewChat(entity);
+			}
+			else{
+				ChatEntity chatEnt = getGrpMapEntityMap().get(spaceName);
+				startNewChat(chatEnt);
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -359,7 +530,6 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 	@Override
 	public void onHeartbeat() {
 		System.out.println("heartbeat....");
-		
 	}
 
 	@Override
@@ -405,8 +575,6 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 									if(!curUserEmail.equals(chtInitEmail)) {
 										chatDisplayWidget.refreshChatUi(userEnt,chatTextEntity,true);
 									}
-									/*else
-										chatDisplayWidget.refreshChatUi(userEnt,chatTextEntity,true);*/
 								}
 							} else {
 								ChatEntity chatEnt = getGrpMapEntityMap().get(title);
@@ -415,7 +583,7 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 										spaceListWidget.receivedChat(chatEnt);
 										spaceMsgAlertPanel.addStyleName("chatReceivedAlert");
 									} else {
-										mainUserListPanel.receivedChat(chatEnt);
+										receivedChat(chatEnt);
 										userMsgAlertPanel.addStyleName("chatReceivedAlert");
 									}
 								} else {
@@ -424,7 +592,7 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 										spaceMsgAlertPanel.addStyleName("chatReceivedAlert");
 									} else {
 										initializeContactSnippet(chatEntity);
-										mainUserListPanel.receivedChat(chatEntity);
+										receivedChat(chatEntity);
 										userMsgAlertPanel.addStyleName("chatReceivedAlert");
 									}
 								}
@@ -458,18 +626,18 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 		if(event.getSource().equals(userMsgAlertPanel)) {
 			userMsgAlertPanel.removeStyleName("chatReceivedAlert");
 			userListPopup.show();
-			userListPopup.setPopupPosition(0, 45);
+			userListPopup.setPopupPosition(0, 61);
 		} else if(event.getSource().equals(spaceMsgAlertPanel)) {
 			spaceMsgAlertPanel.removeStyleName("chatReceivedAlert");
 			spaceListPopup.show();
 			int left = Window.getClientWidth() - 198;
-			spaceListPopup.setPopupPosition(left, 45);
+			spaceListPopup.setPopupPosition(left, 56);
 		}
 	}
 
 	public void removeFromDisplayList(String header) {
 		ChatEntity chatEnt = getGrpMapEntityMap().remove(header);
-		mainUserListPanel.removeFromList(chatEnt);
+		removeFromList(chatEnt);
 		chatDisplayWidget.setChatEntity(null);
 		Set<String> ketSet = getGrpMapEntityMap().keySet();
 		Iterator<String> iterator = ketSet.iterator();
@@ -512,4 +680,40 @@ public class MessagingComponent extends Composite implements MessengerEventHandl
 			return true;
 		}
 	}
+	
+	public void receivedChat(ChatEntity chatEnt) {
+		Entity currentContact = getContactEntity();
+		
+		EntityList participantList = chatEnt.getParticipantEntity();
+		Iterator<Entity> iterator = participantList.iterator();
+		while(iterator.hasNext()) {
+			Entity contactEnt = iterator.next();
+			String contactId = ((Key<Long>)contactEnt.getPropertyByName(ContactConstant.ID)).getKeyValue().toString();
+			String currentContactId = ((Key<Long>)currentContact.getPropertyByName(ContactConstant.ID)).getKeyValue().toString();
+			if(!contactId.equals(currentContactId)) {
+				MessengerEvent msgEvent = new MessengerEvent(MessengerEvent.ONCHATRECEIVED, contactId);
+				AppUtils.EVENT_BUS.fireEvent(msgEvent);
+			}
+		}
+	}
+
+	public void removeFromList(ChatEntity entity) {
+		
+		Entity currentContact = getContactEntity();
+		
+		EntityList participantList = entity.getParticipantEntity();
+		Iterator<Entity> iterator = participantList.iterator();
+		while(iterator.hasNext()) {
+			Entity contactEnt = iterator.next();
+			String contactId = ((Key<Long>)contactEnt.getPropertyByName(ContactConstant.ID)).getKeyValue().toString();
+			String currentContactId = ((Key<Long>)currentContact.getPropertyByName(ContactConstant.ID)).getKeyValue().toString();
+			if(!contactId.equals(currentContactId)) {
+			
+				MessengerEvent msgEvent = new MessengerEvent(MessengerEvent.ONCHATENTITYREMOVED, contactId);
+				AppUtils.EVENT_BUS.fireEvent(msgEvent);
+				
+			}
+		}
+	}
+	
 }

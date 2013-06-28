@@ -1,13 +1,16 @@
 package in.appops.client.common.fields;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
-
+import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -103,31 +106,53 @@ public class CheckboxGroupField extends Composite implements Field{
 		
 	}
 	
-	public void addCheckItem(String value) {
+	public void addCheckItem(String text, boolean value) {
 		
 		if(checkboxSelectMode.equals(CHECKBOX_SINGLESELECT)) {
 			
 			RadioButton radioButton = new RadioButton("singleSelection");
-			radioButton.setText(value);
+			radioButton.setText(text);
+			radioButton.setValue(value);
+			addClickHandler(radioButton);
 			if(checkboxBasepanel.equals(CHECKBOX_HORIZONTALBASEPANEL)) {
 				horizontalBasePanel.add(radioButton);
 			} else if(checkboxBasepanel.equals(CHECKBOX_VERTICALBASEPANEL)) {
 				verticalBasePanel.add(radioButton);
 			}
-			groupMap.put(value, radioButton);
+			groupMap.put(text, radioButton);
 		}else if(checkboxSelectMode.equals(CHECKBOX_MULTISELECT)) {
 			
 			CheckBox checkBox = new CheckBox();
-			checkBox.setText(value);
+			checkBox.setText(text);
+			checkBox.setValue(value);
+			addClickHandler(checkBox);
 			if(checkboxBasepanel.equals(CHECKBOX_HORIZONTALBASEPANEL)) {
 				horizontalBasePanel.add(checkBox);
 			} else if(checkboxBasepanel.equals(CHECKBOX_VERTICALBASEPANEL)) {
 				verticalBasePanel.add(checkBox);
 			}
-			groupMap.put(value, checkBox);
+			groupMap.put(text, checkBox);
 		}
 	}
 	
+	private void addClickHandler(final CheckBox checkBox) {
+		checkBox.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventData(checkBox);
+				boolean value = checkBox.getValue();
+				if(value) {
+					fieldEvent.setEventType(FieldEvent.CHECKBOX_SELECT);
+				} else {
+					fieldEvent.setEventType(FieldEvent.CHECKBOX_DESELECT);
+				}
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+			}
+		});
+	}
+
 	public CheckBox getCheckBox(String text) {
 		if(groupMap.containsKey(text))
 			return groupMap.get(text);

@@ -8,6 +8,7 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.constants.propertyconstants.SpaceConstants;
 import in.appops.platform.core.constants.propertyconstants.UserConstants;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
@@ -78,9 +79,18 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 	private void fetchContactOfLoggedUser(final Entity userEntity) {
  		Key<Serializable> key = (Key<Serializable>) userEntity.getProperty(UserConstants.ID).getValue();
 	    Long userId = (Long) key.getKeyValue();
+
 	    Query query = new Query();
-		query.setQueryName("getContactFromUser");
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
+		
+		if(AppEnviornment.getCurrentSpace()!=null){
+			query.setQueryName("getUserSpaceContact");
+			Entity spaceEnt = AppEnviornment.getCurrentSpace();
+			Long spaceId = ((Key<Long>)spaceEnt.getPropertyByName(SpaceConstants.ID)).getKeyValue();
+			hashMap.put("spaceId", spaceId);
+		}else
+			query.setQueryName("getContactFromUserId");
+		
 		hashMap.put("userId", userId);
 		
 		query.setQueryParameterMap(hashMap);
@@ -103,11 +113,19 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 				if(result!=null){
 				  EntityList  list=result.getOperationResult();
 				  try {
+					  if(list.size()>0){
 					   for(Entity conEntity : list){
 						   contactEntity = conEntity;
 						   createComponent(userEntity,conEntity);
 					   }
-						
+					  }else{
+						  LabelField label = new LabelField();
+							label.setFieldValue("No contacts are available for current space..");
+							label.setConfiguration(getLabelFieldConfiguration(true, "messageNotificationLabel", null, null));
+							label.createField();
+							
+							mainPanel.add(label);
+					  }
 					} catch (AppOpsException e) {
 						e.printStackTrace();
 					}
@@ -158,9 +176,12 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 	@Override
 	public void onFieldEvent(FieldEvent event) {
 		int eventType = event.getEventType();
-		Entity snippetEntity = (Entity) event.getEventData();
-		 if(eventType == FieldEvent.SUGGESTION_CLICKED ){
-			fetchMessageConversationForContact(snippetEntity); 
+		Object object=event.getEventData();
+		if(object instanceof Entity){
+			Entity snippetEntity = (Entity) event.getEventData();
+			 if(eventType == FieldEvent.SUGGESTION_CLICKED ){
+				fetchMessageConversationForContact(snippetEntity); 
+			}
 		}
 		
 	}
