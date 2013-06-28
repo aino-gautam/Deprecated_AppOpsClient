@@ -1,5 +1,11 @@
 package in.appops.client.common.components;
 
+import gwtupload.client.IFileInput.FileInputType;
+import gwtupload.client.IUploadStatus.Status;
+import gwtupload.client.IUploader;
+import gwtupload.client.IUploader.OnFinishUploaderHandler;
+import gwtupload.client.IUploader.UploadedInfo;
+import gwtupload.client.MultiUploader;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.AttachmentEvent;
 import in.appops.client.common.gin.AppOpsGinjector;
@@ -11,13 +17,6 @@ import in.appops.platform.server.core.services.media.constant.MediaConstant;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
-import gwtupload.client.IFileInput.FileInputType;
-import gwtupload.client.IUploadStatus.Status;
-import gwtupload.client.IUploader;
-import gwtupload.client.IUploader.OnFinishUploaderHandler;
-import gwtupload.client.IUploader.UploadedInfo;
-import gwtupload.client.MultiUploader;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,6 +30,7 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 	private HashMap<String, HorizontalPanel> uploadedBlobIdVsSnippetMap = null;
 	private List<String> uploadedMediaId = null;
 	private MultiUploader multiUploader;
+	private boolean isProfileImage;
 	
 	public WebMediaAttachWidget(){
 		initializeComponent();
@@ -60,6 +60,7 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 
 	public MultiUploader getMultiUploader(){
 		MultiUploader fileUploader = new MultiUploader(FileInputType.BROWSER_INPUT);
+		fileUploader.setServletPath("servlet.gupld?isProfileImage=" + isProfileImage);
 		fileUploader.setAutoSubmit(true);
 		fileUploader.setEnabled(true);
 		fileUploader.avoidRepeatFiles(true);
@@ -205,5 +206,8 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 		}
 		expand();
 	}
-
+	
+	public void isProfileImage(boolean isProfileImage) {
+		this.isProfileImage = isProfileImage;
+	}
 }

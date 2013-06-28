@@ -1,10 +1,5 @@
 package in.appops.client.common.contactmodel;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import in.appops.client.common.core.EntityListModel;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.SelectionEvent;
@@ -12,10 +7,14 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
-import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.util.EntityList;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class ContactSelectorModel extends EntityListModel {
 	
