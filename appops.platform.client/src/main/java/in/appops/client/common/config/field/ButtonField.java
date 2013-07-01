@@ -1,8 +1,10 @@
 package in.appops.client.common.config.field;
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockPanel;
 
@@ -103,8 +105,8 @@ public class ButtonField extends BaseField implements ClickHandler{
 	 */
 	private String getDisplayText() {
 		String displayTxt = "";
-		if (getConfigurationValue(ButtonFieldConstant.BTNFIELD_DISPLAYTEXT) != null) {
-			displayTxt = getConfigurationValue(ButtonFieldConstant.BTNFIELD_DISPLAYTEXT).toString();
+		if (getConfigurationValue(ButtonFieldConstant.BTNFD_DISPLAYTEXT) != null) {
+			displayTxt = getConfigurationValue(ButtonFieldConstant.BTNFD_DISPLAYTEXT).toString();
 		}
 		return displayTxt;
 	}
@@ -115,28 +117,48 @@ public class ButtonField extends BaseField implements ClickHandler{
 	 */
 	private String getBtnTitle() {
 		String btnTitle = null;
-		if (getConfigurationValue(ButtonFieldConstant.BTNFIELD_TITLE) != null) {
-			btnTitle = getConfigurationValue(ButtonFieldConstant.BTNFIELD_TITLE).toString();
+		if (getConfigurationValue(ButtonFieldConstant.BTNFD_TITLE) != null) {
+			btnTitle = getConfigurationValue(ButtonFieldConstant.BTNFD_TITLE).toString();
 		}
 		return btnTitle;
+	}
+	
+	/**
+	 * Method return the button field event type.  
+	 * @return
+	 */
+	private Integer getBtnClickEvent() {
+		Integer eventType = null;
+		if (getConfigurationValue(ButtonFieldConstant.BTNFD_CLICK_EVENT) != null) {
+			eventType = (Integer) getConfigurationValue(ButtonFieldConstant.BTNFD_CLICK_EVENT);
+		}
+		return eventType;
 	}
 	
 	/**************************   *******************************/
 	
 	@Override
 	public void onClick(ClickEvent event) {
-		Window.alert(" Configurable button");
+		
+		int eventType = getBtnClickEvent();
+		FieldEvent fieldEvent = new FieldEvent();
+		fieldEvent.setEventType(eventType);
+		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		
 	}
 	
 	
 	public interface ButtonFieldConstant extends BaseFieldConstant{
 		
 		/** Specifies display text for button **/
-		public static final String BTNFIELD_DISPLAYTEXT = "displayText";
+		public static final String BTNFD_DISPLAYTEXT = "displayText";
 		
 		/** Specifies the title to display in the tooltip  **/
-		public static final String BTNFIELD_TITLE = "title";
-						
+		public static final String BTNFD_TITLE = "title";
+		
+		/** Specifies the event on button click  **/
+		public static final String BTNFD_CLICK_EVENT = "clickEvent";
+		
 	}
 
 }

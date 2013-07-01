@@ -16,6 +16,8 @@ import in.appops.client.common.config.field.LinkField;
 import in.appops.client.common.config.field.LinkField.LinkFieldConstant;
 import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
+import in.appops.client.common.config.field.LocationSelectorField;
+import in.appops.client.common.config.field.LocationSelectorField.LocationSelectorFieldConstant;
 import in.appops.client.common.config.field.RadioButtonField.RadionButtonFieldConstant;
 import in.appops.client.common.config.field.date.DatePickerField;
 import in.appops.client.common.config.field.spinner.SpinnerField;
@@ -53,7 +55,6 @@ import com.google.code.gwt.geolocation.client.PositionCallback;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.maps.client.base.LatLng;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -85,7 +86,6 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	public static final String TIME_PICKER_SEC = "Time Picker(Short_Sec )";
 	public static final String DATE_PICKER = "Date Picker";
 	public static final String DATETIME_PICKER = "Date Time Picker";
-	public static final String LOCATIONSELECTOR = "Location Selector";
 	public static final String NUMBERRANGE_SLIDER = "NumericRangeSlider";
 	public static final String STRINGRANGE_SLIDER = "StringRangeSlider";
 	public static final String NUM_SPINNER = "Numeric Spinner";
@@ -100,6 +100,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	public static final String BUTTONFIELD = "ButtonField";
 	public static final String IMAGEFIELD = "ImageField";
 	public static final String LISTBOX = "ListBox(Static list)";
+	public static final String LOCATIONSELECTOR = "Location Selector";
 	
 	
 	private Image loaderImage;
@@ -145,7 +146,6 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		listBox.addItem(TIME_PICKER_SEC); */
 		listBox.addItem(DATE_PICKER);
 		/*listBox.addItem(DATETIME_PICKER);
-		listBox.addItem(LOCATIONSELECTOR);
 		listBox.addItem(NUMBERRANGE_SLIDER);
 		listBox.addItem(STRINGRANGE_SLIDER); */
 		listBox.addItem(NUM_SPINNER);
@@ -159,6 +159,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		listBox.addItem(BUTTONFIELD);
 		listBox.addItem(IMAGEFIELD);
 		listBox.addItem(LISTBOX);
+		listBox.addItem(LOCATIONSELECTOR);
 		
 		listBox.addChangeHandler(this);
 		listBox.setStylePrimaryName("fieldShowcaseBasePanel");
@@ -201,19 +202,23 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		return configuration;
 	}
 	
-	private Configuration getLocationSelectorConf() {
-		Configuration configuration = new Configuration();
+	private Configuration getLocationSelectorConf(double latitude, double longitude) {
 		
-		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "images/locationMarker1.png");
-		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "images/locationMarker1.png");
-		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, "appops-TextField");
-		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CHOOSE_LOCATION_BTN, "chooseLocationBtn");
-		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_POPUPPANEL, "currentLocationField");
-		configuration.setPropertyByName(LocationSelector.MAP_ZOOM, "8");
-		configuration.setPropertyByName(LocationSelector.CHANGE_LOCATION_IMAGE_URL, "images/iconEdit.png");
-		configuration.setPropertyByName(LocationSelector.DONE_SELECTION_IMAGE_URL, "images/iconTickBlackCircle.png");
-		configuration.setPropertyByName(LocationSelector.MAP_WIDTH, "300px");
-		configuration.setPropertyByName(LocationSelector.MAP_HEIGHT, "200px");
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_ZOOMLEVEL, 8);
+		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCFD_WIDTH, "400px");
+		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_HEIGHT, "200px");
+		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_LATITUDE, latitude);
+		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_LONGITUDE, longitude);
+		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_SHOWINPOPUP, true);
+		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_DONEBTN_CSS, "appops-Button");
+		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_LOCATION_IMG_CSS, "locationImage");
+		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_SEARCHTF_PCLS, "appops-TextField");
+		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_SEARCHTF_DCLS, "fadeInRight");
+		configuration.setPropertyByName(LocationSelectorFieldConstant.SEARCHFD_EVENTTYPE, FieldEvent.WORDENTERED);
+		configuration.setPropertyByName(LocationSelectorFieldConstant.DONEBTN_EVENTTYPE, FieldEvent.LOCATION_CHANGED);
+		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCN_IMG_EVENTTYPE, FieldEvent.SHOW_MAP_IN_POPUP);
+		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_CURRENT_ADDRESS, "Shivaji Road , Kasba Peth , Pune , Pune , Maharashtra , India , 411030");
 		
 		return configuration;
 	}
@@ -425,17 +430,17 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	
 	private Configuration getButtonConfiguration(){
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(ButtonFieldConstant.BTNFIELD_DISPLAYTEXT, "Configure");
+		configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Configure");
 		configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,"appops-Button");
-		configuration.setPropertyByName(ButtonFieldConstant.BTNFIELD_TITLE, "Configurable Button");
+		configuration.setPropertyByName(ButtonFieldConstant.BTNFD_TITLE, "Configurable Button");
 		return configuration;
 	}
 	
 	private Configuration getImageConfiguration(){
 		Configuration configuration = new Configuration();
 		configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, "images/test2.jpg");
-		configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,"appops-imageField");
-		configuration.setPropertyByName(ButtonFieldConstant.BTNFIELD_TITLE, "Configurable Image");
+		configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,"showcaseImage");
+		configuration.setPropertyByName(ButtonFieldConstant.BTNFD_TITLE, "Configurable Image");
 		return configuration;
 	}
 	
@@ -654,13 +659,14 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 						public void onSuccess(Position position) {
 							
 							Coordinates coords = position.getCoords();
-							LatLng latLng = new LatLng(coords.getLatitude(), coords.getLongitude());
+							//LatLng latLng = new LatLng(coords.getLatitude(), coords.getLongitude());
 											
-							LocationHomeSelector homeSelector = new LocationHomeSelector();
-							homeSelector.setCoords(coords);
-							homeSelector.createUi();
-							innerPanel.add(homeSelector);
-							innerPanel.setCellHorizontalAlignment(homeSelector,HorizontalPanel.ALIGN_CENTER);
+							LocationSelectorField locationField = new LocationSelectorField();
+							locationField.setConfiguration(getLocationSelectorConf(coords.getLatitude(), coords.getLongitude()));
+							locationField.configure();
+							locationField.create();
+							innerPanel.add(locationField);
+							innerPanel.setCellHorizontalAlignment(locationField,HorizontalPanel.ALIGN_CENTER);
 
 						}
 
@@ -743,6 +749,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			e.printStackTrace();
 		}
 	}
+	
 
 	public MediaAttachWidget createMediaField() {
 		MediaAttachWidget mediaWidget = new WebMediaAttachWidget();

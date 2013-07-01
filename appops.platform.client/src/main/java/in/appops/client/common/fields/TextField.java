@@ -2,6 +2,9 @@ package in.appops.client.common.fields;
 
 import in.appops.client.common.config.field.BaseField;
 import in.appops.client.common.config.field.NumericTextbox;
+import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
 
 import java.util.ArrayList;
 
@@ -120,6 +123,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			textBox.addStyleName(getBaseFieldCss());
 		
 		textBox.setMaxLength(getFieldMaxLength());
+		setFieldValue(getValue().toString());
 		if(getTabIndex()!=null)
 			textBox.setTabIndex(getTabIndex());
 		
@@ -144,7 +148,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		Integer visibleLines = getNoOfVisibleLines();
 		textArea.setVisibleLines(visibleLines);
 		textArea.setReadOnly(isReadOnly());
-		
+		setFieldValue(getValue().toString());
 		if(getBaseFieldPrimCss() != null)
 			textArea.setStylePrimaryName(getBaseFieldPrimCss());
 		if(getBaseFieldCss()!= null)
@@ -169,6 +173,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		if(getTabIndex()!=null)
 			passwordTextBox.setTabIndex(getTabIndex());
 		
+		setFieldValue(getValue().toString());
 		/*** Events fired by passwordTextBox ****/
 		
 		passwordTextBox.addKeyPressHandler(this);
@@ -196,6 +201,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			numericTextbox.addStyleName(getBaseFieldCss());
 		
 		numericTextbox.setMaxLength(getFieldMaxLength());
+		
+				
 		if(getTabIndex()!=null)
 			numericTextbox.setTabIndex(getTabIndex());
 		
@@ -631,6 +638,18 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		}
 	}
 	
+	/**
+	 * Method return the event which will be used when user enter some text.  
+	 * @return
+	 */
+	private Integer getFieldEnteredEvent() {
+		Integer eventType = null;
+		if (getConfigurationValue(TextFieldConstant.TF_VALUE_ENTERED_EVENT) != null) {
+			eventType = (Integer) getConfigurationValue(TextFieldConstant.TF_VALUE_ENTERED_EVENT);
+		}
+		return eventType;
+	}
+	
 	/************     Events in which field is interested ******************************/
 	@Override
 	public void onKeyUp(KeyUpEvent event) {
@@ -645,30 +664,44 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	
 	@Override
 	public void onBlur(BlurEvent event) {
-		
-		 setValue(getValue());
-		 if(validate()){
-			 if(numericTextbox!=null && numericTextbox.isAllowDecimal()){
-				 setFieldValue(numericTextbox.fixPrecision());
-			 }
-		 }
+		if(getTextFieldType().equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX)){
+			
+		}else{
+			setValue(getValue());
+			if(validate()){
+				if(numericTextbox!=null && numericTextbox.isAllowDecimal()){
+					setFieldValue(numericTextbox.fixPrecision());
+				}
+			}
+		}
 			 
 	}
 
 	@Override
 	public void onKeyPress(KeyPressEvent event) {
 		
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {    
-			  @Override
-			  public void execute() {
-				  
-				  if(isValidateOnChange()){
-					  setValue(getValue());
-					  validate();
-					  setFocus();
-				  }
+		if(getTextFieldType().equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX)){
+			if(event.getUnicodeCharCode()==KeyCodes.KEY_ENTER){
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventType(getFieldEnteredEvent());
+				fieldEvent.setEventData(getValue());
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+			}
+		}else{
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {    
+				  @Override
+				  public void execute() {
+					  
+					  if(isValidateOnChange()){
+						  setValue(getValue());
+						  validate();
+						  setFocus();
+					  }
+			}
+			});
 		}
-		});
+		
+		
 	}
 	
 	/****************** Textfield constants  *******************/
@@ -734,6 +767,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		/** Specifies negative value error text to be shown **/
 		public static final String NEGATIVE_VALUE_TEXT = "negativevalTxt";
 		
-		
+		/** Specifies the event that will be fired when user enters **/
+		public static final String TF_VALUE_ENTERED_EVENT = "fieldEnteredEvent";
+				
 	}
 }

@@ -1,9 +1,15 @@
 package in.appops.client.common.config.field;
 
+import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Image;
 
-public class ImageField extends BaseField {
+public class ImageField extends BaseField implements ClickHandler{
 
 	private Image image ;
 	
@@ -18,6 +24,7 @@ public class ImageField extends BaseField {
 	@Override
 	public void create() {
 		
+	  image.addClickHandler(this);
 	  getBasePanel().add(image,DockPanel.CENTER);
 	  
 	}
@@ -48,6 +55,19 @@ public class ImageField extends BaseField {
 		return blobId;
 	}
 	
+	
+	/**
+	 * Method return the event which will be used when user clicks on image..  
+	 * @return
+	 */
+	private Integer getImageClickEvent() {
+		Integer eventType = null;
+		if (getConfigurationValue(ImageFieldConstant.IMGFD_CLICK_EVENT) != null) {
+			eventType = (Integer) getConfigurationValue(ImageFieldConstant.IMGFD_CLICK_EVENT);
+		}
+		return eventType;
+	}
+	
 	/**
 	 * Method return the image title.
 	 * @return
@@ -60,6 +80,15 @@ public class ImageField extends BaseField {
 		return title;
 	}
 	
+	@Override
+	public void onClick(ClickEvent event) {
+		
+		FieldEvent fieldEvent = new FieldEvent();
+		fieldEvent.setEventType(getImageClickEvent());
+		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		
+	}
+	
 	/***************************   ***********************************************/
 	
 	public interface ImageFieldConstant  extends BaseFieldConstant{
@@ -70,6 +99,11 @@ public class ImageField extends BaseField {
 		/**  Specifies the image blobId ****/
 		public static final String IMGFD_BLOBID = "blobId";
 		
+		/** Specifies the event that will be fired on image click **/
+		public static final String IMGFD_CLICK_EVENT = "imageClickEvent";
+		
 	}
+
+	
 
 }

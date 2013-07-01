@@ -95,7 +95,6 @@ public class LocationSelector extends Composite implements Field,EntityReceiver,
 	
 	@Override
 	public void create() {
-		// TODO will need a map + textbox to enter a location
 		basePanel.clear();
 		
 	 if(!isMapMode){	
