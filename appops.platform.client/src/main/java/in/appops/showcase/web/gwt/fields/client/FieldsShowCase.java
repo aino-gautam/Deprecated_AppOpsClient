@@ -20,6 +20,7 @@ import in.appops.client.common.config.field.LocationSelectorField;
 import in.appops.client.common.config.field.LocationSelectorField.LocationSelectorFieldConstant;
 import in.appops.client.common.config.field.RadioButtonField.RadionButtonFieldConstant;
 import in.appops.client.common.config.field.date.DatePickerField;
+import in.appops.client.common.config.field.date.DatePickerField.DatePickerConstant;
 import in.appops.client.common.config.field.spinner.SpinnerField;
 import in.appops.client.common.config.field.spinner.SpinnerField.SpinnerFieldConstant;
 import in.appops.client.common.event.AppUtils;
@@ -642,6 +643,16 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			} else if(fieldName.equals(DATE_PICKER)) {
 
 				DatePickerField dtPicker = new DatePickerField();
+				Configuration configuration = new Configuration();
+				configuration.setPropertyByName(DatePickerConstant.BF_DEFVAL, "01.07.2013");
+				configuration.setPropertyByName(DatePickerConstant.DP_MAXDATE, "03.08.2013");
+				configuration.setPropertyByName(DatePickerConstant.DP_MINDATE, "05.06.2013");
+				configuration.setPropertyByName(DatePickerConstant.DP_FORMAT, "dd.MM.yyyy");
+				configuration.setPropertyByName(DatePickerConstant.DP_ALLOWBLNK, false);
+				configuration.setPropertyByName(DatePickerConstant.BF_ERRPOS, DatePickerConstant.BF_BOTTOM);
+				
+				dtPicker.setConfiguration(configuration);
+				dtPicker.configure();
 				dtPicker.create();
 				innerPanel.add(dtPicker);
 				innerPanel.setCellHorizontalAlignment(dtPicker,HorizontalPanel.ALIGN_CENTER);
@@ -700,10 +711,10 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, true);
 				configuration.setPropertyByName(SpinnerFieldConstant.BF_DEFVAL, 3F);
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_TYPE, SpinnerFieldConstant.SP_TYPENUMERIC);
-				configuration.setPropertyByName(SpinnerFieldConstant.BF_ERRPOS, SpinnerFieldConstant.BF_TOP);
+				configuration.setPropertyByName(SpinnerFieldConstant.BF_ERRPOS, SpinnerFieldConstant.BF_BOTTOM);
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_DECPRECISION, 0);
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_ALLOWDEC, false);
-				configuration.setPropertyByName(SpinnerFieldConstant.SP_VALIDATEONCHANGE, false);
+				configuration.setPropertyByName(SpinnerFieldConstant.BF_VALIDATEONCHANGE, true);
 				
 				SpinnerField valueSpinner = new SpinnerField();
 				valueSpinner.setConfiguration(configuration);
