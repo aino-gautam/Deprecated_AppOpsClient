@@ -1,10 +1,8 @@
 package in.appops.client.common.config.field.date;
 
-import in.appops.client.common.event.FieldEvent;
-import in.appops.client.common.fields.Field;
-import in.appops.platform.core.shared.Configuration;
-import in.appops.platform.core.util.AppOpsException;
+import in.appops.client.common.config.field.BaseField;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import com.google.gwt.dom.client.Node;
@@ -21,13 +19,11 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ToggleButton;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.datepicker.client.CalendarUtil;
 
 /**
@@ -35,69 +31,116 @@ import com.google.gwt.user.datepicker.client.CalendarUtil;
  * @author nitish@ensatm.com 
  *
  */
-public class DatePickerField extends Composite implements Field, ClickHandler {
+public class DatePickerField  extends BaseField implements ClickHandler {
 	
-	public interface DatePickerConstant {
+	public interface DatePickerConstant extends BaseFieldConstant {
+		
+		/** Style class primary for spinner text box  **/ 
+		public static final String DP_BXPCLS = "dateBoxPrimaryCss";
+		
+		/** Style class dependent for spinner text box. **/
+		public static final String DP_BXDCLS = "dateBoxDependentCss";
+		
+		public static final String DP_MAXDATE = "maxDate";
+		
+		/** The minimum allowed value. Will be used by the field's validation logic **/
+		public static final String DP_MINDATE = "minDate";
+		
+		public static final String DP_FORMAT = "format";
+		
+		public static final String DP_ALTFORMAT= "altformat";
+		
+		public static final String DP_ALLOWBLNK = "allowBlank";
+
+		public static final String DP_ERRMSGBLNK = "blnktxt";
+		public static final String DP_ERRMSGMIN = "minText";
+		public static final String DP_ERRMSGMAX = "maxText";
+		
 
 	}
 	
 	private HorizontalPanel dtPickFieldBase;
-	private VerticalPanel vp;
-	private VerticalPanel dtPickPopupBase;
 	private PopupPanel dtPickPopup;
 	private TextBox dtPickBox;
 	private ToggleButton dtPickTrigger;
 	private AppopsDatePicker dtPicker;
-	private Date start;
-	private Date end;
-	Label invalidFormat;
-	Date startDt = null;//DateTimeFormat.getFormat("dd/MM/yyyy").parse("09/08/2013");
-	Date endDt = null;//DateTimeFormat.getFormat("dd/MM/yyyy").parse("22/08/2013");
-	public DatePickerField(){
-		initialize();
-		
-		
-		
-		/*		textbox=new TextBox();
-		textbox.setStylePrimaryName("appops-TextField-default");
-		textbox.addFocusHandler(this);
-*/		//initWidget(dtPickBox);
-	}
-	
-	private void initialize() {
-		dtPickFieldBase = new HorizontalPanel();
-		dtPickBox=new TextBox();
-		dtPickBox.getElement().setAttribute("placeholder", "DD/MM/YYYY");
-		dtPickTrigger = new ToggleButton();
-		dtPickPopupBase = new VerticalPanel();
-		dtPickPopup = new PopupPanel(true);
-		dtPickPopup.setWidth("142px");
-		dtPicker = new AppopsDatePicker();
-		vp = new VerticalPanel();
-	}
-	
-	public void configure() {
-		
+
+	public DatePickerField() {
+		super();
 	}
 	
 	@Override
-	public void create() throws AppOpsException {
-		Date dateString = DateTimeFormat.getFormat("dd/MM/yyyy").parse("12/08/2013");
-        dtPickBox.setText( DateTimeFormat.getFormat("dd/MM/yyyy").format(dateString));
-        vp.add(dtPickFieldBase);
-		dtPickFieldBase.setStylePrimaryName(getDatePickFieldPrimCss());
+	protected void initialize() {
+		super.initialize();
+		dtPickFieldBase = new HorizontalPanel();
+		dtPickBox=new TextBox();
+		dtPickTrigger = new ToggleButton();
+		dtPickPopup = new PopupPanel(true);
+		dtPickPopup.setWidth("142px");
+		dtPicker = new AppopsDatePicker();
+
+	}
+	
+	
+	@Override
+	public void configure() {
+		super.configure();
 		dtPickBox.setStylePrimaryName(getDatePickBoxPrimCss());
+
+		dtPickBox.getElement().setAttribute("placeholder", getFormat());
+		
+		if(getDefaultValue() == null || parseDate(getDefaultValue().toString()) == null) {
+			setFieldValue("");
+		} else {
+			Date defaultValue = parseDate(getDefaultValue().toString());
+			setFieldValue(format(defaultValue, getFormat()));
+			setValue(defaultValue);
+		}
+		
+	}
+	
+	
+	private String getFormat() {
+		String format = "dd/MM/yyyy";
+		if(getConfigurationValue(DatePickerConstant.DP_FORMAT) != null) {
+			format = getConfigurationValue(DatePickerConstant.DP_FORMAT).toString();
+		}
+		return format;
+	}
+	
+	@Override
+	public void setFieldValue(String fieldValue) {
+		dtPickBox.setText(fieldValue);
+	}
+	
+	@Override
+	protected String getBaseFieldPrimCss() {
+		String primaryCss = super.getBaseFieldPrimCss();
+		
+		if(primaryCss == null) {
+			return "appops-SpinnerFieldPrimary";
+		}
+		return primaryCss;
+	}
+
+	protected String getBaseFieldCss() {
+		String depCss = super.getBaseFieldCss();
+		if(depCss == null) {
+			return "appops-SpinnerFieldDependent";
+		}	
+		return depCss;
+	}
+	
+	@Override
+	public void create(){
+		super.create();
+        basePanel.add(dtPickFieldBase, DockPanel.CENTER);
 		dtPickFieldBase.add(dtPickBox);
 		
 		dtPickTrigger.setStylePrimaryName("appops-dtPickTrigger");
 		dtPickFieldBase.add(dtPickTrigger);
-		invalidFormat = new Label("Invalid format");
-		invalidFormat.setWidth("150px");
-		invalidFormat.setHeight("20px");
-		invalidFormat.setStylePrimaryName("appops-ErrorText");
-		vp.add(invalidFormat);
 		dtPickTrigger.setDown(false);
-		invalidFormat.setVisible(false);
+
 		NodeList<com.google.gwt.dom.client.Element> nodeList = dtPickFieldBase.getElement().getElementsByTagName("td");
 	    Node td1Node = nodeList.getItem(0);
 	    Element td1Element = (Element) Element.as(td1Node);
@@ -106,30 +149,27 @@ public class DatePickerField extends Composite implements Field, ClickHandler {
 	    Node td2Node = nodeList.getItem(1);
 	    Element td2Element = (Element) Element.as(td2Node);
 	    td2Element.setClassName("appops-dtPicker-border-box");
-		
+	    
 	    dtPicker.setWidth("100%");
-	    dtPickPopup.setVisible(false);
 	    dtPickPopup.setAnimationEnabled(true);
 	    dtPickPopup.setWidget(dtPicker);
 	    
-		initWidget(vp);
-		dtPickTrigger.addClickHandler(this);
-		dtPicker.addValueChangeHandler(new ValueChangeHandler(){
+	    dtPickTrigger.addClickHandler(this);
+	    
+		dtPicker.addValueChangeHandler(new ValueChangeHandler<Date>(){
 			@Override
-			public void onValueChange(ValueChangeEvent event) {
-				java.util.Date date = (java.util.Date) event.getValue();
-		        String dateString = DateTimeFormat.getFormat("dd/MM/yyyy").format(date);
+			public void onValueChange(ValueChangeEvent<Date> event) {
+				Date date = (Date) event.getValue();
+		        String dateString = format(date, getFormat());
 		        dtPickBox.setText(dateString);
-		        dtPickPopup.hide();
-		       
-		     }});
+		        hidePicker();
+		     }
+		});
 		
 		dtPickPopup.addCloseHandler(new CloseHandler<PopupPanel>() {
-			
 			@Override
 			public void onClose(CloseEvent<PopupPanel> event) {
 				dtPickTrigger.setDown(false);
-				
 			}
 		});
 		
@@ -138,86 +178,38 @@ public class DatePickerField extends Composite implements Field, ClickHandler {
 	             setValidDates(dateShowRangeEvent);
 	         }
 	    });
+		
 		dtPickBox.addBlurHandler(new BlurHandler() {
-			
 			@Override
 			public void onBlur(BlurEvent event) {
-				p();
-				
+				validate();
 			}
 		});
 	}
-
+	
+	private void hidePicker() {
+		dtPickPopup.hide();
+	}
+	
 	private void setValidDates(ShowRangeEvent<Date> dateShowRangeEvent) {
-        start = dateShowRangeEvent.getStart();
-        end = dateShowRangeEvent.getEnd();
+        Date start = dateShowRangeEvent.getStart();
+        Date end = dateShowRangeEvent.getEnd();
 
         Integer daysBetween = CalendarUtil.getDaysBetween(start, end);
 
         for (int i = 0; i < daysBetween; i++) {
             Date date = new Date(start.getTime());
             CalendarUtil.addDaysToDate(date, i);
-            setDatePickable(date);
+            if(date.before(getMinDate()) || date.after(getMaxDate())) {
+            	disableDate(date);
+            }
         }
     }
-    private void setDatePickable(Date date) {
-        Boolean enabled = true;
-        Date todaysDate = new Date();
-//        String dateString = DateTimeFormat.getFormat("dd/MM/yyyy").format(todaysDate);
-//        Date parsedDate = DateTimeFormat.getFormat("dd/MM/yyyy").parse(dateString);
-//        Date endDate = DateTimeFormat.getFormat("dd/MM/yyyy").parse("22/08/2013");
-        if (startDt != null && date.before(startDt)) {
-            enabled = false;
-        } else if (endDt != null && date.after(endDt)) {
-            enabled = false;
-        }
-        dtPicker.getCalendarView().setEnabledOnDate(enabled, date);
+	
+    private void disableDate(Date date) {
+        dtPicker.getCalendarView().setEnabledOnDate(false, date);
     }
-	
-	
-	@Override
-	public Configuration getConfiguration() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public void setConfiguration(Configuration conf) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onFieldEvent(FieldEvent event) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-
-	@Override
-	public void clear() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void reset() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public String getFieldValue() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setFieldValue(String fieldValue) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	/**
 	 * Returns the primary style to be applied to the spinner field.
@@ -251,7 +243,7 @@ public class DatePickerField extends Composite implements Field, ClickHandler {
 	 * @return
 	 */
 	protected String getDatePickBoxPrimCss() {
-		String primaryCss = "appops-dtPickBoxPrim";
+		String primaryCss = "appops-SpinnerBoxPrimary";
 //		if(getConfigurationValue(SpinnerConfigurationConstant.BOX_PRIMARYCSS) != null) {
 //			primaryCss = getConfigurationValue(SpinnerConfigurationConstant.BOX_PRIMARYCSS).toString();
 //		}
@@ -270,80 +262,159 @@ public class DatePickerField extends Composite implements Field, ClickHandler {
 //		}
 		return dependentCss;
 	}
+	
+	@Override
+	public boolean isAllowBlank() {
+		boolean allowblank = false; 
+		if(getConfigurationValue(DatePickerConstant.DP_ALLOWBLNK) != null) {
+			allowblank = (Boolean)getConfigurationValue(DatePickerConstant.DP_ALLOWBLNK);
+		}
+		return allowblank;
+	}
 
 	@Override
 	public void onClick(ClickEvent event) {
 		if(event.getSource().equals(dtPickTrigger)) {
 			if(dtPickTrigger.isDown()) {
-/*				final String[] formats = { "yyyy-MM-dd'T'HH:mm:ss'Z'", "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss",
-                    "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd HH:mm:ss", "MM/dd/yyyy HH:mm:ss",
-                    "MM/dd/yyyy'T'HH:mm:ss.SSS'Z'", "MM/dd/yyyy'T'HH:mm:ss.SSSZ", "MM/dd/yyyy'T'HH:mm:ss.SSS", "MM/dd/yyyy'T'HH:mm:ssZ",
-                    "MM/dd/yyyy'T'HH:mm:ss", "yyyy:MM:dd HH:mm:ss", "yyyyMMdd"};
-*/				p();
-			} else if(!dtPickTrigger.isDown()) {
+				createPicker();
+				displayPicker();
+				} else if(!dtPickTrigger.isDown()) {
 
 			}
-			
 		}
 		
 	}
 	
-	public void p () {
-		final String[] formats = { "dd.MM.yyyy", "dd/MM/yyyy", "dd-MM-yyyy"};
-		String regex = "^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$";
-		Date endDate = null;
-		boolean parsed = false;
-		if(!dtPickBox.getText().equals("")) {
-			for(String parse : formats) {
-				try {
-					if(!parsed) { 
-						endDate = DateTimeFormat.getFormat(parse).parse(dtPickBox.getText());
-						if(endDate != null)
-							parsed = true;
-					}
-				} catch(IllegalArgumentException e) {
-					System.out.println("sdfsd");
-				}
-			}
-			if(parsed) {
-				if(dtPickBox.getText().matches(regex)) {
-					if(startDt != null && endDt != null) {
-						if(endDate.before(endDt) && endDate.after(startDt)) {
-							dtPicker.setCurrentMonth(endDate);
-							dtPicker.setValue(endDate);
-							dtPickPopup.showRelativeTo(dtPickBox);
-							
-							invalidFormat.setVisible(false);
-						} else {
-							invalidFormat.setText("Date should be between max and min");
-							invalidFormat.setVisible(true);
-							dtPickTrigger.setDown(false);
-						}
-					} else {
-						dtPicker.setCurrentMonth(endDate);
-						dtPicker.setValue(endDate);
-						dtPickPopup.showRelativeTo(dtPickBox);
-						invalidFormat.setVisible(false);
-					}
-				} else {
-					invalidFormat.setText("Invalid date");
-					invalidFormat.setVisible(true);
-					dtPickTrigger.setDown(false);
-				}
-			} else {
-				invalidFormat.setText("Invalid format");
-				invalidFormat.setVisible(true);
-				dtPickTrigger.setDown(false);
-			}
-		} else {
-			Date dateString = DateTimeFormat.getFormat("dd/MM/yyyy").parse("12/08/2013");
-			dtPicker.setCurrentMonth(endDate);
+	private void createPicker() {
+		String fieldValue = dtPickBox.getText();
+		Date dateVal = new Date();
+		if(getErrors(fieldValue).isEmpty()) {
+			dateVal = parseDate(fieldValue); 
+		}
+		dtPicker.setCurrentMonth(dateVal);
+		dtPicker.setValue(dateVal);
+	}
+	
+	private void displayPicker() {
+		dtPickPopup.showRelativeTo(dtPickBox);
+	}
 
-			dtPicker.setValue(dateString);
-			dtPickPopup.showRelativeTo(dtPickBox);
-			
-			invalidFormat.setVisible(false);
+	@Override
+	public void setValue(Object value) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getFieldValue() {
+		String fieldValue = dtPickBox.getText().trim();
+		return fieldValue;
+	}
+	
+	public Date getMinDate() {
+		Date min = new Date(0);
+		Date minDate = null;
+		if(getConfigurationValue(DatePickerConstant.DP_MINDATE) != null) {
+			String minDateStr =  getConfigurationValue(DatePickerConstant.DP_MINDATE).toString();
+			minDate = parseDate(minDateStr);
+			if(minDate != null) {
+				min = minDate;
+			}
+		}
+		return min;
+	}
+
+	public Date getMaxDate() {
+		Date max = new Date(Long.MAX_VALUE);
+		Date maxDate = null;
+		if(getConfigurationValue(DatePickerConstant.DP_MAXDATE) != null) {
+			String maxDateStr =  getConfigurationValue(DatePickerConstant.DP_MAXDATE).toString();
+			maxDate = parseDate(maxDateStr);
+			if(maxDate !=  null) {
+				max = maxDate;
+			}
+		}
+		return max;
+	}
+
+	private String getMinErrMsg() {
+		String minMsg = "The date in the field should be equal or after " + format(getMinDate(), getFormat());
+		if(getConfigurationValue(DatePickerConstant.DP_ERRMSGMIN) != null) {
+			minMsg = getConfigurationValue(DatePickerConstant.DP_ERRMSGMIN).toString();
+		}
+		return minMsg;
+	}
+	
+	private String getMaxErrMsg() {
+		String maxMsg = "The date in the field should be equal or before " + format(getMaxDate(), getFormat());
+		if(getConfigurationValue(DatePickerConstant.DP_ERRMSGMAX) != null) {
+			maxMsg = getConfigurationValue(DatePickerConstant.DP_ERRMSGMAX).toString();
+		}
+		return maxMsg;
+	}
+	
+	private String getBlankErrMsg() {
+		String blnkMsg = "This field is required";
+		if(getConfigurationValue(DatePickerConstant.DP_ERRMSGBLNK) != null) {
+			blnkMsg = getConfigurationValue(DatePickerConstant.DP_ERRMSGBLNK).toString();
+		}
+		return blnkMsg;
+	}
+	
+	private Date parseDate(String valueStr) {
+		try {
+			if(valueStr == null || valueStr.trim().equals("")){
+				return null;
+			}
+			Date date = DateTimeFormat.getFormat(getFormat()).parse(valueStr.trim()); 
+			if(date != null) {
+				return date;
+			}
+			return null;
+		} catch (IllegalArgumentException e) {
+			return null;
 		}
 	}
 	
+	private String format(Date date, String format) {
+		return DateTimeFormat.getFormat(format).format(date);
+	}
+	
+	@Override
+	protected String getInvalidMsg() {
+		String invalidMsg = getFieldValue() + " is not a valid date. It must be in the format " + getFormat();
+		if(getConfigurationValue(BaseFieldConstant.BF_INVLDMSG) != null) {
+			invalidMsg = getConfigurationValue(BaseFieldConstant.BF_INVLDMSG).toString();
+		}
+		return invalidMsg;
+	}
+	
+	@Override
+	public ArrayList<String> getErrors(String fieldValue) {
+		ArrayList<String> errors = new ArrayList<String>();
+		if(fieldValue != null) {
+			if(!isAllowBlank() && fieldValue.toString().trim().equals("")) {
+				errors.add(getBlankErrMsg());
+				return errors;
+			}
+//			if(!fieldValue.toString().matches("-?\\d+(\\.\\d+)?")) {
+//				errors.add(getInvalidErrMsg());
+//				return errors;
+//			}
+			
+			Date date = parseDate(fieldValue.toString());
+			if(date == null) {
+				errors.add(getInvalidMsg());
+				return errors;
+			}
+
+			if(date.before(getMinDate())) {
+				errors.add(getMinErrMsg());
+			}
+			if(date.after(getMaxDate())) {
+				errors.add(getMaxErrMsg());
+			} 
+		}
+		return errors;
+	}
 }

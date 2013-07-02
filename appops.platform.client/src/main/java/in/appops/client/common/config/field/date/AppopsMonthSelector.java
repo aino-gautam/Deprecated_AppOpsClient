@@ -9,16 +9,13 @@ import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.datepicker.client.CalendarModel;
 import com.google.gwt.user.datepicker.client.MonthSelector;
 
@@ -29,11 +26,7 @@ import com.google.gwt.user.datepicker.client.MonthSelector;
  */
 public class AppopsMonthSelector extends MonthSelector implements FieldEventHandler{
 
-	private static String BASE_NAME = "datePicker";
-	  private PushButton backwards; 
-	  private PushButton forwards; 
-	  private PushButton backwardsYear; 
-	  private PushButton forwardsYear; 
+
 	private Grid grid;
 
 	private CalendarModel model;
@@ -43,6 +36,8 @@ public class AppopsMonthSelector extends MonthSelector implements FieldEventHand
 	private ArrayList<String> monthAbbrList;
 	
 	private SpinnerField yearSpinner;
+	private Date maxDate;
+	private Date minDate;
 
 	public void setModel(CalendarModel model) {
 		this.model = model;
@@ -67,104 +62,67 @@ public class AppopsMonthSelector extends MonthSelector implements FieldEventHand
 
 	@Override
 	protected void setup() {
-		
-	   monthSpinner = new SpinnerField();
-	   monthAbbrList = new ArrayList<String>();
-	   
-	   DateTimeFormat dtf = DateTimeFormat.getFormat(PredefinedFormat.MONTH_ABBR);
-	   for (int i = 1; i <= 12; i++) {
-		   String mon = i + "";
-		   if(i <= 9) {
-			   mon = "0" + i;
-		   }
-		   Date startDt = DateTimeFormat.getFormat("dd/M/yyyy").parse("01/"+ mon +"/2000");
-		   String monthName = dtf.format(startDt);        
-		   monthAbbrList.add(monthName);
-	   }
 
-	   Configuration configuration = new Configuration();
-       configuration.setPropertyByName(SpinnerFieldConstant.SP_VALUELIST, monthAbbrList);
-	   configuration.setPropertyByName(SpinnerFieldConstant.SP_VALUEIDX, 0);
-	   configuration.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, true);
-	   configuration.setPropertyByName(SpinnerFieldConstant.SP_TYPE, SpinnerFieldConstant.SP_TYPELIST);
-	   configuration.setPropertyByName(SpinnerFieldConstant.BF_PCLS, "appops-DpMonYrSpin");
-	   
+		monthSpinner = new SpinnerField();
+		monthAbbrList = new ArrayList<String>();
+
+		DateTimeFormat dtf = DateTimeFormat.getFormat(PredefinedFormat.MONTH_ABBR);
+		for (int i = 1; i <= 12; i++) {
+			String mon = i + "";
+			if (i <= 9) {
+				mon = "0" + i;
+			}
+			Date startDt = DateTimeFormat.getFormat("dd/M/yyyy").parse("01/" + mon + "/2000");
+			String monthName = dtf.format(startDt);
+			monthAbbrList.add(monthName);
+		}
+
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(SpinnerFieldConstant.SP_VALUELIST, monthAbbrList);
+		configuration.setPropertyByName(SpinnerFieldConstant.SP_VALUEIDX, 0);
+		configuration.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, true);
+		configuration.setPropertyByName(SpinnerFieldConstant.SP_TYPE, SpinnerFieldConstant.SP_TYPELIST);
+		configuration.setPropertyByName(SpinnerFieldConstant.BF_PCLS, "appops-DpMonYrSpin");
+		configuration.setPropertyByName(SpinnerFieldConstant.BF_ERRPOS, SpinnerFieldConstant.BF_ERRINLINE);
+
 		monthSpinner.setConfiguration(configuration);
 		monthSpinner.configure();
 		monthSpinner.create();
-		
+
 		yearSpinner = new SpinnerField();
+
+		Configuration confNs = new Configuration();
+		confNs.setPropertyByName(SpinnerFieldConstant.SP_STEP, 1);
+		confNs.setPropertyByName(SpinnerFieldConstant.SP_MAXVAL, 2099L);
+		confNs.setPropertyByName(SpinnerFieldConstant.SP_MINVAL, 1900L);
+		confNs.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, true);
+		confNs.setPropertyByName(SpinnerFieldConstant.BF_PCLS, "appops-DpMonYrSpin");
+		confNs.setPropertyByName(SpinnerFieldConstant.SP_TYPE, SpinnerFieldConstant.SP_TYPENUMERIC);
+		confNs.setPropertyByName(SpinnerFieldConstant.BF_ERRPOS, SpinnerFieldConstant.BF_ERRINLINE);
+		confNs.setPropertyByName(SpinnerFieldConstant.BF_ERRPOS, SpinnerFieldConstant.BF_ERRINLINE);
 		
-		 Configuration confNs = new Configuration();
-		 confNs.setPropertyByName(SpinnerFieldConstant.SP_STEP, 1);
-		 confNs.setPropertyByName(SpinnerFieldConstant.SP_MAXVAL, 2099L);
-		 confNs.setPropertyByName(SpinnerFieldConstant.SP_MINVAL, 1900L);
-		 confNs.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, true);
-		 confNs.setPropertyByName(SpinnerFieldConstant.BF_PCLS, "appops-DpMonYrSpin");
-		 configuration.setPropertyByName(SpinnerFieldConstant.SP_TYPE, SpinnerFieldConstant.SP_TYPENUMERIC);
-			
-			yearSpinner.setConfiguration(confNs);
-			yearSpinner.configure();
-			yearSpinner.create();
+		/*DateTimeFormat yrFrmt = DateTimeFormat.getFormat(PredefinedFormat.YEAR);
+		String maxYearStr = yrFrmt.format(maxDate);
+		String minYearStr = yrFrmt.format(minDate);
+
+		Float maxYear = Float.parseFloat(maxYearStr);
+		Float minYear = Float.parseFloat(minYearStr);
 		
+		confNs.setPropertyByName(SpinnerFieldConstant.SP_MAXVAL, maxYear);
+		confNs.setPropertyByName(SpinnerFieldConstant.SP_MINVAL, minYear);*/
+		
+		yearSpinner.setConfiguration(confNs);
+		yearSpinner.configure();
+		yearSpinner.create();
+
 		AppUtils.EVENT_BUS.addHandlerToSource(FieldEvent.TYPE, monthSpinner, this);
 		AppUtils.EVENT_BUS.addHandlerToSource(FieldEvent.TYPE, yearSpinner, this);
-		
-		backwards = new PushButton();
-		backwards.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				addMonths(-1);
-			}
-		});
-
-		backwards.getUpFace().setHTML("&lsaquo;");
-		backwards.setStyleName(BASE_NAME + "PreviousButton");
-
-		forwards = new PushButton();
-		forwards.getUpFace().setHTML("&rsaquo;");
-		forwards.setStyleName(BASE_NAME + "NextButton");
-		forwards.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				addMonths(+1);
-			}
-		});
-
-		// Set up backwards year
-		backwardsYear = new PushButton();
-		backwardsYear.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				addMonths(-12);
-			}
-		});
-
-		backwardsYear.getUpFace().setHTML("&laquo;");
-		backwardsYear.setStyleName(BASE_NAME + "PreviousButton");
-
-		forwardsYear = new PushButton();
-		forwardsYear.getUpFace().setHTML("&raquo;");
-		forwardsYear.setStyleName(BASE_NAME + "NextButton");
-		forwardsYear.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				addMonths(+12);
-			}
-		});
 
 		// Set up grid.
 		grid = new Grid(1, 2);
-		grid.setWidget(0, 0 , monthSpinner);
-		grid.setWidget(0, 1 , yearSpinner );
-		/*grid.setWidget(0, previousMonthColumn, backwards);
-		grid.setWidget(0, nextMonthColumn, forwards);
-		grid.setWidget(0, nextYearColumn, forwardsYear);*/
+		grid.setWidget(0, 0, monthSpinner);
+		grid.setWidget(0, 1, yearSpinner);
 
-		CellFormatter formatter = grid.getCellFormatter();
-		/*formatter.setStyleName(0, monthColumn, BASE_NAME + "Month");
-		formatter.setWidth(0, previousYearColumn, "1");
-		formatter.setWidth(0, previousMonthColumn, "1");
-		formatter.setWidth(0, monthColumn, "100%");
-		formatter.setWidth(0, nextMonthColumn, "1");
-		formatter.setWidth(0, nextYearColumn, "1");
-		grid.setStyleName(BASE_NAME + "MonthSelector");*/
 		initWidget(grid);
 	}
 
@@ -187,6 +145,26 @@ public class AppopsMonthSelector extends MonthSelector implements FieldEventHand
 			} else if(event.getSource().equals(yearSpinner)) {
 				addMonths(-12);
 			}
+		} else if(event.getEventType() == FieldEvent.VALUECHANGED) {
+			if(event.getSource().equals(yearSpinner)) {
+				BigDecimal bd = new BigDecimal((Float)event.getEventData());
+			    bd.stripTrailingZeros();
+			    BigDecimal rounded = bd.setScale(0, BigDecimal.ROUND_HALF_UP);
+			    Integer year = Integer.parseInt(rounded.toString());
+				
+				Date current = getModel().getCurrentMonth();
+				current.setYear(year - 1900);
+				getModel().setCurrentMonth(current);
+				picker.refreshComponents();
+			}
 		}
+	}
+
+	public void setMaxDate(Date maxDate) {
+		this.maxDate = maxDate;
+	}
+
+	public void setMinDate(Date minDate) {
+		this.minDate = minDate;		
 	}
 }
