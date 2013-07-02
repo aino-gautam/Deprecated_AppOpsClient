@@ -325,7 +325,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 * Overriden method from BaseField returns the list of errors.
 	 */
 	@Override
-	public ArrayList<String> getErrors(Object value) {
+	public ArrayList<String> getErrors(String value) {
 		
 		String fieldType = getTextFieldType();
 		String errorText = null;
