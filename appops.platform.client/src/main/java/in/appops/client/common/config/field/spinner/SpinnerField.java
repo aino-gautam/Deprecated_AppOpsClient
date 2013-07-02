@@ -1,6 +1,8 @@
 package in.appops.client.common.config.field.spinner;
 
 import in.appops.client.common.config.field.BaseField;
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
 
 import java.util.ArrayList;
 
@@ -112,11 +114,9 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		/** Index of default value to be shown from the {@link SpinnerFieldConstant#SP_VALUELIST}.  **/
 		public static final String SP_VALUEIDX = "valueListIndex";
 
+		/** Number of digits to follow the decimal  **/
 		public static final String SP_DECPRECISION = "decimalPrecision";
 
-		public static final String SP_VALIDATEONCHANGE = "validateOnChange";
-
-		public static final String SP_VALIDATEONBLUR = "validateOnBlur";
 	}
 	
 	/************* Spinner Components & Members ************/
@@ -369,9 +369,15 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		String fieldValue = spinnerBox.getText().trim();
 		return fieldValue;
 	}
+
+	@Override
+	public String getFieldValue() {
+		String fieldValue = spinnerBox.getText().trim();
+		return fieldValue;
+	}
 	
 	@Override
-	public ArrayList<String> getErrors(Object value) {
+	public ArrayList<String> getErrors(String value) {
 		ArrayList<String> errors = new ArrayList<String>();
 		boolean valid = true;
 		errors.clear();
@@ -480,6 +486,7 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 	    arrowPanel.setWidth("17px");
 	   // Event.setEventListener(spinnerBox.getElement(), this);
 	    sinkEvents(Event.ONPASTE);
+	    
 	}
 
 	/************************************* -- END --**************************************************/
@@ -552,6 +559,10 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		if(isValidateOnChange()) {
 			validate();
 		}
+		
+		FieldEvent spinUpEvent = new FieldEvent(FieldEvent.SPN_SPINUP, null); 
+		
+		AppUtils.EVENT_BUS.fireEventFromSource(spinUpEvent, this);
 	}
 	
 	private void onSpinDown() {
@@ -561,7 +572,12 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		if(isValidateOnChange()) {
 			validate();
 		}
+		
+		FieldEvent spinDownEvent = new FieldEvent(FieldEvent.SPN_SPINDOWN, null); 
+		
+		AppUtils.EVENT_BUS.fireEventFromSource(spinDownEvent, this);
 	}
+	
 	
 	@Override
 	public void onKeyUp(KeyUpEvent event) {
@@ -614,6 +630,8 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
             	if(isValidateOnChange()) {
         			if(validate()) {
         				updateModel();
+        				FieldEvent valueEvent = new FieldEvent(FieldEvent.VALUECHANGED, model.getValue()); 
+        				AppUtils.EVENT_BUS.fireEventFromSource(valueEvent, SpinnerField.this);
         			}
             	}
             }
