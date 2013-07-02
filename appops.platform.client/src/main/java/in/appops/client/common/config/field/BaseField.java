@@ -38,7 +38,7 @@ public class BaseField extends Composite implements Field {
 	
 	public interface BaseFieldConstant {
 		
-		/** Style class primary for field. **/
+		/** Sets an id to the field **/
 		public static final String BF_ID = "baseFieldId";
 		
 		/** Style class primary for field. **/
@@ -661,7 +661,7 @@ public class BaseField extends Composite implements Field {
 	}
 	
 	@Override
-	public ArrayList<String> getErrors(Object fieldValue) {
+	public ArrayList<String> getErrors(String fieldValue) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -685,7 +685,7 @@ public class BaseField extends Composite implements Field {
 
 	@Override
 	public boolean isValid() {
-		ArrayList<String> errors = getErrors(getValue());
+		ArrayList<String> errors = getErrors(getFieldValue());
 		if(errors.isEmpty()) {
 			return true;
 		}

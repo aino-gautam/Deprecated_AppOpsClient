@@ -42,7 +42,7 @@ public interface Field extends Configurable {
 	/**
 	 * Will do the field validation and return a list of error messages for validation failed. Would be called internally while by {@link #validate()}
 	 */
-	ArrayList<String> getErrors(Object fieldValue);
+	ArrayList<String> getErrors(String fieldValue);
 	
 	
 	/**
