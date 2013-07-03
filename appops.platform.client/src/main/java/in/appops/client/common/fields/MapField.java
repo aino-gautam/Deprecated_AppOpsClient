@@ -121,7 +121,7 @@ public class MapField  extends Composite implements Field{
 					
 					choosenAddress = address;
 					FieldEvent fieldEvent = new FieldEvent();
-					fieldEvent.setEventType(FieldEvent.LOCATION_IN_MAP);
+					fieldEvent.setEventType(FieldEvent.LOCATION_RECIEVED);
 					fieldEvent.setEventData(address);	
 					AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, MapField.this);
 				} else {

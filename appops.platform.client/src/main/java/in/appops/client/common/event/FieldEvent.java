@@ -22,7 +22,7 @@ public class FieldEvent extends GwtEvent<FieldEventHandler> {
 	public static final int TIMEONLY = 11;
 	public static final int DATETIMEONLY = 12;
 	public static final int DATEONLY = 13;
-	public static final int LOCATION_IN_MAP = 14;
+	public static final int LOCATION_RECIEVED = 14;
 	public static final int CHECKBOX_SELECT = 15;
 	public static final int CHECKBOX_DESELECT = 16;
 	public static final int VALUECHANGED = 17;

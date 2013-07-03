@@ -419,7 +419,7 @@ public class LocationSelector extends Composite implements Field,EntityReceiver,
 	@Override
 	public void onFieldEvent(FieldEvent event) {
 		int eventType=event.getEventType();
-		if(eventType == FieldEvent.LOCATION_IN_MAP){
+		if(eventType == FieldEvent.LOCATION_RECIEVED){
 			currentSelectedLocation=(String) event.getEventData();
 		}
 	}

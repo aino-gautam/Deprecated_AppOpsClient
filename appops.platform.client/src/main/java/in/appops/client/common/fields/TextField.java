@@ -2,7 +2,6 @@ package in.appops.client.common.fields;
 
 import in.appops.client.common.config.field.BaseField;
 import in.appops.client.common.config.field.NumericTextbox;
-import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 
@@ -312,10 +311,12 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		String fieldType = getTextFieldType();
 		
 		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC)){
-			if(numericTextbox.isAllowDecimal())
-				return Double.parseDouble(numericTextbox.getText());
-			else
-				return Integer.parseInt(numericTextbox.getText());
+			if(validate()){
+				if(numericTextbox.isAllowDecimal())
+					return Double.parseDouble(numericTextbox.getText());
+				else
+					return Integer.parseInt(numericTextbox.getText());
+			}
 		}
 		return getFieldValue();
 		
@@ -351,9 +352,10 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 * Overriden method from BaseField to set inline error.
 	 */
 	@Override
-	protected void setErrorInline () {
+	public void setErrorInline () {
 		getWidget().addStyleName(getErrorMsgCls());
 		getWidget().addStyleName(getErrorIconCls());
+		getWidget().setTitle(getInvalidMsg());
 		
 		if(getErrorIconBlobId()!=null)
 			setCssPropertyToElement(getWidget(), getErrorIconBlobId());
@@ -374,12 +376,12 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	/**
 	 * Overriden method from BaseField to clear inline msg .
 	 */
-	protected void clearInlineMsg () {
+	public void clearInlineMsg () {
 		getWidget().removeStyleName(getErrorMsgCls());
 		getWidget().removeStyleName(getErrorIconCls());
 		getWidget().removeStyleName(getValidFieldMsgCls());
 		getWidget().removeStyleName(getValidFieldIconCls());
-		
+		getWidget().setTitle("");
 		
 		if(getWidget().getElement().getStyle().getProperty("background")!=null)
 			getWidget().getElement().getStyle().clearProperty("background");
@@ -657,7 +659,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		Integer keycode= event.getNativeKeyCode();
 		if(keycode.equals(KeyCodes.KEY_BACKSPACE) || keycode.equals(KeyCodes.KEY_TAB)|| keycode.equals(KeyCodes.KEY_DELETE)){
 			validate();
-			 setFocus();
+			setFocus();
 		}
 				
 	}
@@ -667,10 +669,9 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		if(getTextFieldType().equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX)){
 			
 		}else{
-			setValue(getValue());
 			if(validate()){
 				if(numericTextbox!=null && numericTextbox.isAllowDecimal()){
-					setFieldValue(numericTextbox.fixPrecision());
+					setValue(numericTextbox.fixPrecision());
 				}
 			}
 		}
@@ -693,8 +694,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 				  public void execute() {
 					  
 					  if(isValidateOnChange()){
-						  setValue(getValue());
-						  validate();
+						  if(validate())
+							  setValue(getValue());
 						  setFocus();
 					  }
 			}
@@ -722,7 +723,6 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		
 		/** Specifies which field to use .Defaults to textbox**/
 		public static final String TF_TYPE = "fieldType";
-		
 		
 		/***  1.textbox   2.numeric box  3.emailbox 4.textarea  this are the types provided by textfield. ***/ 
 		public static final String TFTYPE_TXTBOX = "txtbox";
