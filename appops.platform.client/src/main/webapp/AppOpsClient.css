@@ -1549,4 +1549,22 @@ td.datePickerMonth {
 	height:20px;
 }
 
+.locationSearchBox{
+	width: 250px;
+	height: 25px;
+	color: #333;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 12px;
+	padding-left: 15px !important;
+	background: white url("images/searchIconLight.png") no-repeat left center;
+}
 
+.locationMapWidget{
+	border: 2px solid #999999 !important;
+	background: #E6E6E6 !important;
+	padding: 3px !important;
+}
+
+.sliderPanel{
+	width:500px;
+}
