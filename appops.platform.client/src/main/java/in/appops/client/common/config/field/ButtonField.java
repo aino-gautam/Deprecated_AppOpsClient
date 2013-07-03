@@ -8,6 +8,28 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockPanel;
 
+/**
+* Field class to represent a {@link Button} .
+* @author pallavi@ensarm.com
+*
+*<p>
+<h3>Configuration</h3>
+<a href="ButtonField.ButtonFieldConstant.html">Available configurations</a>
+</p>
+
+<p>
+<h3>Example</h3>
+ButtonField btnField = new ButtonField();<br>
+Configuration configuration = new Configuration();<br>
+configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Configure");<br>
+configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,"appops-Button");<br>
+configuration.setPropertyByName(ButtonFieldConstant.BTNFD_TITLE, "Configurable Button");<br>
+configuration.setPropertyByName(ButtonFieldConstant.BTNFD_CLICK_EVENT,FieldEvent.LOCATION_CHANGED);<br>
+btnField.setConfiguration(conf);<br>
+btnField.configure();<br>
+btnField.create();<br>
+
+</p>*/
 public class ButtonField extends BaseField implements ClickHandler{
 	
 	private Button button ;

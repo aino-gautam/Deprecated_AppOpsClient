@@ -14,7 +14,37 @@ import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 
+/**
+Field class to represent a {@link LocationSelectorField}
+@author pallavi@ensarm.com
 
+<p>
+<h3>Configuration</h3>
+<a href="LocationSelectorField.LocationSelectorFieldConstant.html">Available configurations</a>
+</p>
+
+<p>
+<h3>Example</h3>
+LocationSelectorField locationField = new LocationSelectorField();<br>
+configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_ZOOMLEVEL, 8);<br>
+configuration.setPropertyByName(LocationSelectorFieldConstant.LOCFD_WIDTH, "400px");<br>
+configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_HEIGHT, "200px");<br>
+configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_LATITUDE, latitude);<br>
+configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_LONGITUDE, longitude);<br>
+configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_SHOWINPOPUP, false);<br>
+configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_DONEBTN_CSS, "appops-Button");<br>
+configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_LOCATION_IMG_CSS, "locationImage");<br>
+configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_SEARCHBOX_PCLS, "locationSearchBox");<br>
+configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_SEARCHBOX_DCLS, "fadeInRight");<br>
+configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_ERRPOS, TextFieldConstant.BF_ERRINLINE);<br>
+configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_INVALID_LOCNMSG, "Invalid location");<br>
+configuration.setPropertyByName(LocationSelectorFieldConstant.SEARCHFD_EVENT, FieldEvent.WORDENTERED);<br>
+configuration.setPropertyByName(LocationSelectorFieldConstant.DONEBTN_EVENT, FieldEvent.LOCATION_CHANGED);<br>
+configuration.setPropertyByName(LocationSelectorFieldConstant.LOCN_IMG_EVENT, FieldEvent.SHOW_MAP_IN_POPUP);<br>
+locationField.setConfiguration(configuration);<br>
+locationField.configure();<br>
+locationField.create();<br>
+</p>*/
 public class LocationSelectorField extends BaseField implements FieldEventHandler {
 
 	private LocationMapWidget mapWidget;
@@ -38,7 +68,7 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 				
 		mapWidget = new LocationMapWidget(getLatLang(),getZoomlevel(),getMapWidth(),getMapHeight(),getSearchFieldConf(),getDoneBtnConfiguration());
 		
-		mapWidget.createMapUi();
+		mapWidget.createMap();
 		
 		basePanel = new HorizontalPanel();
 		
@@ -51,11 +81,13 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 			
 			locationLabelField = new LabelField();
 			if(getCurrentAddress()!=null){
-				locationLabelField.setConfiguration(getCurrentLocationLblConf(getCurrentAddress(),getCurrentLocationLblCss()));
+				locationLabelField.setConfiguration(getCurrentLocationLblConf(getCurrentLocationLblCss()));
+				locationLabelField.setValue(getCurrentAddress());
 			}else{
-				Configuration conf = getCurrentLocationLblConf(mapWidget.setCurrentAddressFromLatlang(getLatLang()),getCurrentLocationLblCss());
+				Configuration conf = getCurrentLocationLblConf(getCurrentLocationLblCss());
 				locationLabelField.setConfiguration(conf);
 			}
+			
 			locationLabelField.configure();
 			locationLabelField.create();
 			
@@ -63,9 +95,18 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 			basePanel.add(locationLabelField);
 		}else{
 			basePanel.clear();
+			mapWidget.setStylePrimaryName("locationMapWidget");
 			basePanel.add(mapWidget);
 		}
 		
+		if(getBaseFieldPrimCss()!=null)
+			basePanel.setStylePrimaryName(getBaseFieldPrimCss());
+		
+		
+		if(getBaseFieldCss()!=null)
+			basePanel.setStylePrimaryName(getBaseFieldCss());
+		
+	
 		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
 	}
 	
@@ -120,9 +161,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 	private String getSearchFieldPrimaryCss() {
 		
 		String searchFieldcss = null;
-		if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SEARCHTF_PCLS) != null) {
+		if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SEARCHBOX_PCLS) != null) {
 			
-			searchFieldcss = (String) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SEARCHTF_PCLS);
+			searchFieldcss = (String) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SEARCHBOX_PCLS);
 		}
 		return searchFieldcss;
 	}
@@ -134,9 +175,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 	private String getSearchFieldDependentCss() {
 		
 		String dependentcss = null;
-		if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SEARCHTF_DCLS) != null) {
+		if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SEARCHBOX_DCLS) != null) {
 			
-			dependentcss = (String) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SEARCHTF_DCLS);
+			dependentcss = (String) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SEARCHBOX_DCLS);
 		}
 		return dependentcss;
 	}
@@ -262,9 +303,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 	private Integer getLocationImageClickEvent() {
 		
 		Integer eventType = null;
-		if(getConfigurationValue(LocationSelectorFieldConstant.LOCN_IMG_EVENTTYPE) != null) {
+		if(getConfigurationValue(LocationSelectorFieldConstant.LOCN_IMG_EVENT) != null) {
 			
-			eventType = (Integer) getConfigurationValue(LocationSelectorFieldConstant.LOCN_IMG_EVENTTYPE);
+			eventType = (Integer) getConfigurationValue(LocationSelectorFieldConstant.LOCN_IMG_EVENT);
 		}
 		return eventType;
 	}
@@ -276,9 +317,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 	private Integer getSearchFieldEnteredEvent() {
 		
 		Integer eventType = null;
-		if(getConfigurationValue(LocationSelectorFieldConstant.SEARCHFD_EVENTTYPE) != null) {
+		if(getConfigurationValue(LocationSelectorFieldConstant.SEARCHFD_EVENT) != null) {
 			
-			eventType = (Integer) getConfigurationValue(LocationSelectorFieldConstant.SEARCHFD_EVENTTYPE);
+			eventType = (Integer) getConfigurationValue(LocationSelectorFieldConstant.SEARCHFD_EVENT);
 		}
 		return eventType;
 	}
@@ -290,11 +331,39 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 	private Integer getDoneBtnEvent() {
 		
 		Integer event = null;
-		if(getConfigurationValue(LocationSelectorFieldConstant.DONEBTN_EVENTTYPE) != null) {
+		if(getConfigurationValue(LocationSelectorFieldConstant.DONEBTN_EVENT) != null) {
 			
-			event = (Integer) getConfigurationValue(LocationSelectorFieldConstant.DONEBTN_EVENTTYPE);
+			event = (Integer) getConfigurationValue(LocationSelectorFieldConstant.DONEBTN_EVENT);
 		}
 		return event;
+	}
+	
+	/**
+	 * Method returns the error position for the search text field ;
+	 * @return
+	 */
+	private String getSearchFieldErrorPos() {
+		
+		String pos = null;
+		if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_ERRPOS) != null) {
+			
+			pos = (String) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_ERRPOS);
+		}
+		return pos;
+	}
+	
+	/**
+	 * Method returns the error msg used for invalid location;
+	 * @return
+	 */
+	private String getSearchInvalidMsg() {
+		
+		String pos = null;
+		if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_INVALID_LOCNMSG) != null) {
+			
+			pos = (String) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_INVALID_LOCNMSG);
+		}
+		return pos;
 	}
 	
 	
@@ -316,10 +385,14 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 	 * Method shows the map in popup panel.
 	 */
 	private void showMapInPopupPanel(){
-		popupPanelForMap = new PopupPanel();
-		popupPanelForMap.setAutoHideEnabled(true);
-		popupPanelForMap.add(mapWidget);
+		if(popupPanelForMap ==null){
+			popupPanelForMap = new PopupPanel();
+			popupPanelForMap.setAutoHideEnabled(true);
+			popupPanelForMap.add(mapWidget);
+			
+	}
 		popupPanelForMap.showRelativeTo(locationIconField);
+		
 	}
 	
 	/**
@@ -335,6 +408,8 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
 		configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter location");
 		configuration.setPropertyByName(TextFieldConstant.TF_VALUE_ENTERED_EVENT, getSearchFieldEnteredEvent());
+		configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, getSearchFieldErrorPos());
+		configuration.setPropertyByName(TextFieldConstant.BF_INVLDMSG, getSearchInvalidMsg());
 		return configuration;
 	}
 	
@@ -366,10 +441,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		
 	}
 	
-	private Configuration getCurrentLocationLblConf(String displayText, String primaryCss){
+	private Configuration getCurrentLocationLblConf(String primaryCss){
 		
 		Configuration conf = new Configuration();
-		conf.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, displayText);
 		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
 		
 		return conf;
@@ -383,9 +457,14 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		switch (eventType) {
 		case FieldEvent.SHOW_MAP_IN_POPUP: {
 			showMapInPopupPanel();
+			break;
 		}case FieldEvent.CHANGE_LOCATION:{
 			locationLabelField.setValue(event.getEventData().toString());
 			popupPanelForMap.hide();
+			break;
+		}case FieldEvent.LOCATION_RECIEVED:{
+			locationLabelField.setValue(event.getEventData().toString());
+			break;
 		}
 		default:
 			break;
@@ -422,10 +501,10 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		public static final String LOCNFD_CURRENT_ADDRESS = "currentAddress";
 		
 		/** Specifies the search textfield primary css **/
-		public static final String LOCNFD_SEARCHTF_PCLS = "searchBoxPrimarycss";
+		public static final String LOCNFD_SEARCHBOX_PCLS = "searchBoxPrimarycss";
 		
 		/** Specifies the search textfield dependant css **/
-		public static final String LOCNFD_SEARCHTF_DCLS = "searchBoxDependantcss";
+		public static final String LOCNFD_SEARCHBOX_DCLS = "searchBoxDependantcss";
 		
 		/** Specifies the done button css **/
 		public static final String LOCNFD_DONEBTN_CSS = "doneBtnCss";
@@ -437,13 +516,17 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		public static final String LOCNFD_LOCATION_IMG_CSS = "locationImageCss";
 		
 		/** Specifies the event which will be fired on click of location image **/
-		public static final String LOCN_IMG_EVENTTYPE = "locationImageEvent";
+		public static final String LOCN_IMG_EVENT = "locationImageEvent";
 		
 		/** Specifies the event which will be fired when user enters location to search **/
-		public static final String SEARCHFD_EVENTTYPE = "searchFieldEvent";
+		public static final String SEARCHFD_EVENT = "searchFieldEvent";
 		
 		/** Specifies the event which will be fired when user clicks on done button **/
-		public static final String DONEBTN_EVENTTYPE = "doneBtnEvent";
+		public static final String DONEBTN_EVENT = "doneBtnEvent";
+
+		public static final String LOCNFD_ERRPOS = "errorPosForInvalidLocation";
+
+		public static final String LOCNFD_INVALID_LOCNMSG = "invalidMsg";
 		
 	}
 

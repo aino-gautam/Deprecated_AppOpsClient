@@ -6,6 +6,7 @@ import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
 import in.appops.platform.core.shared.Configuration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.maps.client.MapOptions;
@@ -26,7 +27,6 @@ import com.google.gwt.maps.client.geocoder.HasGeocoderResult;
 import com.google.gwt.maps.client.overlay.HasMarker;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -39,7 +39,6 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 	private String mapWidth;
 	private String mapHeight;
 	private Integer mapZoomLevel;
-	private ButtonField doneBtnField;
 	private TextField searchTextField;
 	private Configuration searchTextFieldConf;
 	private Configuration doneBtnFieldConf;
@@ -61,8 +60,7 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 		
 	}
 	
-	
-	public void createMapUi(){
+	public void createMap(){
 		
 		mainPanel = new VerticalPanel();
 		
@@ -81,19 +79,21 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 	    mapWidget.setSize(getMapWidth(), getMapHeight());
 	    
 	    marker.setMap(mapWidget.getMap());
-	    setCurrentAddressFromLatlang(getLatLng());
+	    
+	    getAddressFromLatlang(latLng);
 	    
 	    searchTextField = new TextField();
 	    searchTextField.setConfiguration(getSearchTextFieldConf());
 	    searchTextField.configure();
 	    searchTextField.create();
-	    
-	    mainPanel.add(searchTextField);
-	    mainPanel.add(mapWidget);
-	    doneBtnField = new ButtonField();
+	   	   
+	    ButtonField doneBtnField = new ButtonField();
 	    doneBtnField.setConfiguration(getDoneBtnFieldConf());
 	    doneBtnField.configure();
 	    doneBtnField.create();
+	    	    	    
+	    mainPanel.add(searchTextField);
+	    mainPanel.add(mapWidget);
 	    mainPanel.add(doneBtnField);
 	    
 	    MouseEventCallback mapClickCallback = new MouseEventCallback() {
@@ -103,7 +103,7 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 					
 				 marker.setPosition(event.getLatLng());
 				 mapWidget.getMap().panTo(event.getLatLng());
-				
+				 searchTextField.clearError();
 				 getAddressAndSet(event.getLatLng());
 				 
 				}
@@ -125,29 +125,26 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 		geocoder.geocode(gRequest, new GeocoderCallback() {
 
 			@Override
-			public void callback(List<HasGeocoderResult> responses,
-					String status) {
+			public void callback(List<HasGeocoderResult> responses,	String status) {
 
 				String address = "";
 				if (status.equals("OK")) {
 					HasGeocoderResult result = responses.get(0);
-					List<HasAddressComponent> addCompList = result
-							.getAddressComponents();
+					List<HasAddressComponent> addCompList = result.getAddressComponents();
 					for (int i = 0; i < addCompList.size(); i++) {
 						if (i == 0) {
 							address = addCompList.get(i).getLongName();
 						} else if (i != addCompList.size())
-							address = address + " , "
-									+ addCompList.get(i).getLongName();
+							address = address + " , "+ addCompList.get(i).getLongName();
 						else
-							address = address + " "
-									+ addCompList.get(i).getLongName();
+							address = address + " "+ addCompList.get(i).getLongName();
 						
 					}
 					currentAddress = address;
 					searchTextField.setValue(currentAddress);
+										
 				} else {
-					Window.alert("Error in Geocoding : " + status);
+					setInvalidLocationError();
 				}
 				
 			}
@@ -176,6 +173,7 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 						
 						@Override
 						public void run() {
+							searchTextField.clearError();
 							searchTextField.setValue(getCurrentAddress());
 							
 						}
@@ -183,13 +181,13 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 				 
 				
             } else {
-              Window.alert("Geocoder failed with response : " + status);
+            	setInvalidLocationError();
             }
           }
         });
 	}
 	
-	public String setCurrentAddressFromLatlang(LatLng latLng) {
+	public void getAddressFromLatlang(LatLng latLng) {
 
 		HasGeocoderRequest gRequest = new GeocoderRequest();
 		gRequest.setLatLng(latLng);
@@ -212,13 +210,24 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 					}
 					currentAddress = address;
 					searchTextField.setValue(currentAddress);
+					
+					FieldEvent fieldEvent = new FieldEvent();
+					fieldEvent.setEventType(FieldEvent.LOCATION_RECIEVED);
+					fieldEvent.setEventData(address);	
+					AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, this);
+					
 				} else {
-					Window.alert("Error in Geocoding : " + status);
+					setInvalidLocationError();
 				}
 			}
 		});
-		return currentAddress;
 
+	}
+	
+	private void setInvalidLocationError(){
+		ArrayList<String> errors = new ArrayList<String>();
+		errors.add(searchTextField.getInvalidMsg());
+		searchTextField.markInvalid(errors);
 	}
 
 	public MapWidget getMapWidget() {
@@ -282,10 +291,13 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 		switch (eventType) {
 		case FieldEvent.WORDENTERED: {
 			displaySearchedAddress(searchTextField.getValue().toString());
+			break;
 		}case FieldEvent.LOCATION_CHANGED:{
-			event.setEventType(FieldEvent.CHANGE_LOCATION);
-			event.setEventData(searchTextField.getValue().toString());
-			AppUtils.EVENT_BUS.fireEvent(event);
+			FieldEvent changeLocationEvent = new FieldEvent();
+			changeLocationEvent.setEventType(FieldEvent.CHANGE_LOCATION);
+			changeLocationEvent.setEventData(searchTextField.getValue().toString());
+			AppUtils.EVENT_BUS.fireEvent(changeLocationEvent);
+			break;
 		}
 		default:
 			break;

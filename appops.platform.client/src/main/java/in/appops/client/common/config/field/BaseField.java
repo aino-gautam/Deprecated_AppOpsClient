@@ -621,7 +621,7 @@ public class BaseField extends Composite implements Field {
 		clearError();
 	}
 
-	private void clearError(){
+	public void clearError(){
 		
 		String position = getErrorPosition();
 		

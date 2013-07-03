@@ -1,6 +1,5 @@
 package in.appops.client.common.config.field;
 
-import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 
@@ -9,6 +8,27 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Image;
 
+/**
+* Field class to represent a {@link ImageField} .
+* @author pallavi@ensarm.com
+*
+*<p>
+<h3>Configuration</h3>
+<a href="ImageField.ImageFieldConstant.html">Available configurations</a>
+</p>
+
+<p>
+<h3>Example</h3>
+ImageField imageField = new ImageField();<br>
+Configuration configuration = new Configuration();<br>
+configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, "images/test2.jpg");<br>
+configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,"showcaseImage");<br>
+configuration.setPropertyByName(ButtonFieldConstant.BTNFD_TITLE, "Configurable Image");<br>
+imageField.setConfiguration(conf);<br>
+imageField.configure();<br>
+imageField.create();<br>
+
+</p>*/
 public class ImageField extends BaseField implements ClickHandler{
 
 	private Image image ;
@@ -23,7 +43,6 @@ public class ImageField extends BaseField implements ClickHandler{
 	 */
 	@Override
 	public void create() {
-		
 	  image.addClickHandler(this);
 	  getBasePanel().add(image,DockPanel.CENTER);
 	  
@@ -82,10 +101,11 @@ public class ImageField extends BaseField implements ClickHandler{
 	
 	@Override
 	public void onClick(ClickEvent event) {
-		
-		FieldEvent fieldEvent = new FieldEvent();
-		fieldEvent.setEventType(getImageClickEvent());
-		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		if(event.getSource().equals(image)){
+			FieldEvent fieldEvent = new FieldEvent();
+			fieldEvent.setEventType(getImageClickEvent());
+			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		}
 		
 	}
 	
