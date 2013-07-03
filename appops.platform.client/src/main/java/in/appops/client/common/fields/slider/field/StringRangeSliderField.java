@@ -63,6 +63,7 @@ public class StringRangeSliderField extends Composite implements Field{
 			DOM.setElementAttribute(getElement(), "width", widhtMultiplier+"%");
 		}else
 			setStylePrimaryName("mainPanel");
+		
 		stringRangeSlider.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent arg0) {

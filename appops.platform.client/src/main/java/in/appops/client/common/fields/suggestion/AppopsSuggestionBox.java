@@ -98,6 +98,9 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	public void setIsSearchQuery(Boolean val) {
 		oracle.IsSearchQuery(val);
 	}
+	public void setStaticSuggestion(Boolean val) {
+		oracle.IsSearchQuery(val);
+	}
 
 	public void setAutoSuggestion(Boolean val) {
 		isAutoSuggestion = val;

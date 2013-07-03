@@ -1,6 +1,5 @@
 package in.appops.showcase.web.gwt.fields.client;
 
-import in.appops.client.common.components.LocationHomeSelector;
 import in.appops.client.common.components.MediaAttachWidget;
 import in.appops.client.common.components.WebMediaAttachWidget;
 import in.appops.client.common.config.field.ButtonField;
@@ -19,8 +18,12 @@ import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
 import in.appops.client.common.config.field.LocationSelectorField;
 import in.appops.client.common.config.field.LocationSelectorField.LocationSelectorFieldConstant;
 import in.appops.client.common.config.field.RadioButtonField.RadionButtonFieldConstant;
+import in.appops.client.common.config.field.StateField;
+import in.appops.client.common.config.field.StateField.StateFieldConstant;
 import in.appops.client.common.config.field.date.DatePickerField;
 import in.appops.client.common.config.field.date.DatePickerField.DatePickerConstant;
+import in.appops.client.common.config.field.rangeslider.RangeSliderField;
+import in.appops.client.common.config.field.rangeslider.RangeSliderField.RangeSliderFieldConstant;
 import in.appops.client.common.config.field.spinner.SpinnerField;
 import in.appops.client.common.config.field.spinner.SpinnerField.SpinnerFieldConstant;
 import in.appops.client.common.event.AppUtils;
@@ -28,11 +31,11 @@ import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.DateTimeField;
 import in.appops.client.common.fields.LocationSelector;
-import in.appops.client.common.fields.StateField;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.client.common.fields.slider.NumericRangeSliderFieldComponent;
 import in.appops.client.common.fields.slider.StringRangeSliderFieldComponent;
+import in.appops.client.common.fields.slider.field.NumericRangeSliderField;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -72,6 +75,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	private ListBox listBox;
 	private VerticalPanel innerPanel;
 	private ShowcaseComponentHolder componentHolder;
+	private LocationSelectorField locationField;
 	
 	public static final String TEXTBOX = "Text Box";
 	public static final String PASSWORDTEXTBOX = "Password Textbox";
@@ -140,7 +144,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		
 		/*listBox.addItem(CHECKBOXGROUPMULTISELECT);
 		listBox.addItem(CHECKBOXFIELD);
-		listBox.addItem(STATEFIELD);
+		
 		listBox.addItem(TIME_PICKER);
 		listBox.addItem(TIME_PICKER_HOUR);
 		listBox.addItem(TIME_PICKER_MINUTE);
@@ -161,6 +165,9 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		listBox.addItem(IMAGEFIELD);
 		listBox.addItem(LISTBOX);
 		listBox.addItem(LOCATIONSELECTOR);
+		listBox.addItem(NUMBERRANGE_SLIDER);
+		listBox.addItem(STRINGRANGE_SLIDER); 
+		listBox.addItem(STATEFIELD);
 		
 		listBox.addChangeHandler(this);
 		listBox.setStylePrimaryName("fieldShowcaseBasePanel");
@@ -214,12 +221,13 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_SHOWINPOPUP, true);
 		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_DONEBTN_CSS, "appops-Button");
 		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_LOCATION_IMG_CSS, "locationImage");
-		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_SEARCHTF_PCLS, "appops-TextField");
-		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_SEARCHTF_DCLS, "fadeInRight");
-		configuration.setPropertyByName(LocationSelectorFieldConstant.SEARCHFD_EVENTTYPE, FieldEvent.WORDENTERED);
-		configuration.setPropertyByName(LocationSelectorFieldConstant.DONEBTN_EVENTTYPE, FieldEvent.LOCATION_CHANGED);
-		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCN_IMG_EVENTTYPE, FieldEvent.SHOW_MAP_IN_POPUP);
-		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_CURRENT_ADDRESS, "Shivaji Road , Kasba Peth , Pune , Pune , Maharashtra , India , 411030");
+		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_SEARCHBOX_PCLS, "locationSearchBox");
+		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_SEARCHBOX_DCLS, "fadeInRight");
+		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_ERRPOS, TextFieldConstant.BF_ERRINLINE);
+		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_INVALID_LOCNMSG, "Invalid location");
+		configuration.setPropertyByName(LocationSelectorFieldConstant.SEARCHFD_EVENT, FieldEvent.WORDENTERED);
+		configuration.setPropertyByName(LocationSelectorFieldConstant.DONEBTN_EVENT, FieldEvent.LOCATION_CHANGED);
+		configuration.setPropertyByName(LocationSelectorFieldConstant.LOCN_IMG_EVENT, FieldEvent.SHOW_MAP_IN_POPUP);
 		
 		return configuration;
 	}
@@ -461,13 +469,21 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 
 	
 	
-	private Configuration getStateFieldConfiguration(String stateFieldType, String qname, String operationName, String displayText) {
+	private Configuration getStateFieldConfiguration() {
 
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(StateField.STATEFIELD_MODE, stateFieldType);
-		configuration.setPropertyByName(StateField.STATEFIELD_QUERY, qname);
-		configuration.setPropertyByName(StateField.STATEFIELD_OPERATION, operationName);
-		configuration.setPropertyByName(StateField.STATEFIELD_PROPERTY_TO_DISPLAY, displayText);
+		configuration.setPropertyByName(StateFieldConstant.IS_STATIC_BOX, true);
+		
+		ArrayList<String> days = new ArrayList<String>();
+		days.add("Sunday");
+		days.add("Monday");
+		days.add("Tuesday");
+		days.add("Wednesday");
+		days.add("Thursday");
+		days.add("Friday");
+		days.add("Saturday");
+		configuration.setPropertyByName(StateFieldConstant.ITEMS_LIST, days);
+		
 		return configuration;
 	}
 	
@@ -606,8 +622,9 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				innerPanel.setCellHorizontalAlignment(staticListBox,HorizontalPanel.ALIGN_CENTER);
 			}else if(fieldName.equals(STATEFIELD)) {
 				StateField stateField = new StateField();
-				Configuration stateFieldConfig = getStateFieldConfiguration(StateField.STATEFIELDMODE_SUGGESTIVE, "getSpaceTypesWithName", "spacemanagement.SpaceManagementService.getEntityList", SpaceTypeConstants.NAME);
+				Configuration stateFieldConfig = getStateFieldConfiguration();
 				stateField.setConfiguration(stateFieldConfig);
+				stateField.configure();
 				stateField.create();
 				innerPanel.add(stateField);
 				innerPanel.setCellHorizontalAlignment(stateField,HorizontalPanel.ALIGN_CENTER);
@@ -671,14 +688,14 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 							
 							Coordinates coords = position.getCoords();
 							//LatLng latLng = new LatLng(coords.getLatitude(), coords.getLongitude());
-											
-							LocationSelectorField locationField = new LocationSelectorField();
-							locationField.setConfiguration(getLocationSelectorConf(coords.getLatitude(), coords.getLongitude()));
-							locationField.configure();
-							locationField.create();
+								if(locationField==null)	{		
+									locationField = new LocationSelectorField();
+									locationField.setConfiguration(getLocationSelectorConf(coords.getLatitude(), coords.getLongitude()));
+									locationField.configure();
+									locationField.create();
+								}
 							innerPanel.add(locationField);
 							innerPanel.setCellHorizontalAlignment(locationField,HorizontalPanel.ALIGN_CENTER);
-
 						}
 
 						@Override
@@ -689,20 +706,27 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 					});
 				}
 			} else if(fieldName.equals(NUMBERRANGE_SLIDER)) {
-				NumericRangeSliderFieldComponent numericRangeSliderFieldComponent = new NumericRangeSliderFieldComponent();
-				numericRangeSliderFieldComponent.creatUI();
+				
+				RangeSliderField rangeSliderField = new RangeSliderField();
+				rangeSliderField.setConfiguration(getNumericSliderConf());
+				rangeSliderField.configure();
+				rangeSliderField.create();
+							
 				innerPanel.setWidth("100%");
-				innerPanel.add(numericRangeSliderFieldComponent);
-				innerPanel.setCellHorizontalAlignment(numericRangeSliderFieldComponent, HorizontalPanel.ALIGN_CENTER);
+				innerPanel.add(rangeSliderField);
+				innerPanel.setCellHorizontalAlignment(rangeSliderField, HorizontalPanel.ALIGN_CENTER);
 
 			} else if(fieldName.equals(STRINGRANGE_SLIDER)) {
-				StringRangeSliderFieldComponent stringRangeSliderFieldComponent = new StringRangeSliderFieldComponent();
-				stringRangeSliderFieldComponent.creatUI();
+				RangeSliderField rangeSliderField = new RangeSliderField();
+				rangeSliderField.setConfiguration(getStringSliderConf());
+				rangeSliderField.configure();
+				rangeSliderField.create();
+							
 				innerPanel.setWidth("100%");
-				innerPanel.add(stringRangeSliderFieldComponent);
-				innerPanel.setCellHorizontalAlignment(stringRangeSliderFieldComponent, HorizontalPanel.ALIGN_CENTER);
+				innerPanel.add(rangeSliderField);
+				innerPanel.setCellHorizontalAlignment(rangeSliderField, HorizontalPanel.ALIGN_CENTER);
 
-			} else if(fieldName.equals(NUM_SPINNER)) {
+			}  else if(fieldName.equals(NUM_SPINNER)) {
 				Configuration configuration = new Configuration();
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_STEP, 3);
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_UNIT, "%");
@@ -761,6 +785,30 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		}
 	}
 	
+	private Configuration getNumericSliderConf() {
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(RangeSliderFieldConstant.SLIDER_MODE,RangeSliderFieldConstant.NUM_SLIDER);
+		conf.setPropertyByName(RangeSliderFieldConstant.BF_PCLS,"sliderPanel");
+		conf.setPropertyByName(RangeSliderFieldConstant.MINVAL,100d);
+		conf.setPropertyByName(RangeSliderFieldConstant.MAXVAL,200d);
+		conf.setPropertyByName(RangeSliderFieldConstant.STEPVAL,50d);
+		return conf;
+	}
+	
+	private Configuration getStringSliderConf() {
+			
+		ArrayList<String> optionList = new ArrayList<String>();
+		optionList.add("Me");
+		optionList.add("Public");
+		optionList.add("Private");
+		optionList.add("Restricted");
+		
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(RangeSliderFieldConstant.SLIDER_MODE,RangeSliderFieldConstant.STRING_SLIDER);
+		conf.setPropertyByName(RangeSliderFieldConstant.BF_PCLS,"sliderPanel");
+		conf.setPropertyByName(RangeSliderFieldConstant.ITEMS_LIST,optionList);
+		return conf;
+	}
 
 	public MediaAttachWidget createMediaField() {
 		MediaAttachWidget mediaWidget = new WebMediaAttachWidget();
@@ -816,13 +864,11 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			} else if(fieldName.equals(TIME_PICKER) || fieldName.equals(TIME_PICKER_HOUR) || fieldName.equals(TIME_PICKER_MINUTE) || fieldName.equals(TIME_PICKER_SEC) || fieldName.equals(DATETIME_PICKER)) {
 				return DateTimeField.class.getName();
 			} else if(fieldName.equals(DATE_PICKER)) {
-				//return DatePickerField.class.getName();
-			} else if(fieldName.equals(LOCATIONSELECTOR)) {
-				return LocationHomeSelector.class.getName();
+				return DatePickerField.class.getName();
 			} else if(fieldName.equals(NUMBERRANGE_SLIDER)) {
-				return NumericRangeSliderFieldComponent.class.getName();
+				return RangeSliderField.class.getName();
 			} else if(fieldName.equals(STRINGRANGE_SLIDER)) {
-				return StringRangeSliderFieldComponent.class.getName();
+				return RangeSliderField.class.getName();
 			} else if(fieldName.equals(NUM_SPINNER)) {
 				return SpinnerField.class.getName();
 			} else if(fieldName.equals(LIST_SPINNER)) {
@@ -839,6 +885,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				return ListBoxField.class.getName();
 			}else if(fieldName.equals(BUTTONFIELD)) {
 				return ButtonField.class.getName();
+			}else if(fieldName.equals(LOCATIONSELECTOR)) {
+				return LocationSelectorField.class.getName();
 			}
 			
 		return null;
