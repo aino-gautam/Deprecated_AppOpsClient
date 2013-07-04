@@ -39,7 +39,7 @@ public class LabelField extends BaseField  {
 		label = new Label();
 	}
 	
-	/******************************** BaseField Overriden methods ****************************************/
+	/******************************** ****************************************/
 	/**
 	 * creates the field UI
 	 * @throws AppOpsException 
@@ -64,7 +64,7 @@ public class LabelField extends BaseField  {
 		
 	}
 	
-	/**************** Configuration method **********************/
+	/**************** **********************/
 	/**
 	 * Method returns diplaytext for label.
 	 * @return

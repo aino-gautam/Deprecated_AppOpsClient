@@ -475,7 +475,7 @@ public class BaseField extends Composite implements Field {
 		return validValueTxt;
 
 	}
-	/******************** End of Configuration Methods ***************************/
+	/******************** ***************************/
 	
 	
 	@Override

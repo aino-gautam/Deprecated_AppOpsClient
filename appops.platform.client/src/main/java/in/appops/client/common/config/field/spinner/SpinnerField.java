@@ -119,8 +119,7 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 
 	}
 	
-	/************* Spinner Components & Members ************/
-	
+		
 	protected HorizontalPanel fieldPanel;
 	protected TextBox spinnerBox;
 	protected HorizontalPanel fieldSideErrorPanel ;
@@ -136,14 +135,14 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 	
 	private SpinnerModel model;
 	
-	/***************** Constructor ****************/
+	/*********************************/
 
 	public SpinnerField(){
 		super();
 	}
 
 
-	/************************** All Configuration Methods here *****************************************/
+	/************************** ****************************************/
 	/**
 	 * Returns the Spinner type. Defaults to {@link SpinnerFieldConstant#SP_TYPENUMERIC}
 	 * Values {@link SpinnerFieldConstant#SP_TYPENUMERIC}, {@link SpinnerFieldConstant#SP_TYPELIST}
@@ -342,9 +341,9 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		return valueList;
 	}
 	
-	/******************************** -- End Configuration Methods -- ************************************/
 	
-	/******************************** BaseField Overriden methods ****************************************/
+	
+	/******************************** ****************************************/
 	
 	@Override
 	protected void setErrorInline () {

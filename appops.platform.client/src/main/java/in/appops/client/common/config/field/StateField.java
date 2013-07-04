@@ -42,7 +42,7 @@ public class StateField extends BaseField {
 		
 	}
 	
-	/******************************************  Basefield Overriden methods *******************************/
+	/****************************************** *******************************/
 	
 	@Override
 	public void create() {
@@ -64,7 +64,7 @@ public class StateField extends BaseField {
 		
 	}
 	
-	/************************************ Class methods and events*****************************************/
+	/****************************************************************************/
 	
 	public AppopsSuggestionBox getAppopsSuggestionBox() {
 		return appopsSuggestionBox;
@@ -74,7 +74,7 @@ public class StateField extends BaseField {
 		this.appopsSuggestionBox = appopsSuggestionBox;
 	}
 	
-	/************************************* Configuration methods ************************************/
+	/*************************************  ************************************/
 
 	/**
 	 * Method returns flag whether work with static data or with query. Defaults to true.
@@ -135,7 +135,7 @@ public class StateField extends BaseField {
 		}
 		return isSearchQuery;
 	}
-	/************************************  StateField constants *************************************/
+	/************************************ *************************************/
 	
 	public interface StateFieldConstant extends BaseFieldConstant{
 		

@@ -38,7 +38,7 @@ public class ButtonField extends BaseField implements ClickHandler{
 		button = new Button();
 	}
 	
-	/******************************** BaseField Overriden methods ****************************************/
+	/******************************** ****************************************/
 	/**
 	 * creates the field UI
 	 */
@@ -119,7 +119,7 @@ public class ButtonField extends BaseField implements ClickHandler{
 		return button.getText();
 	}
 	
-	/**************** Configuration method **********************/
+	/**************************************/
 	
 	/**
 	 * Method return the display text of button.  

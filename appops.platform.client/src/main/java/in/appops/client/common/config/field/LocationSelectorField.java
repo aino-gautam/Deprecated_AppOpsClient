@@ -57,7 +57,7 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		
 	}
 	
-	/******************************** BaseField Overriden methods ****************************************/
+	/************************************************************************/
 	@Override
 	public void create() {
 	  getBasePanel().add(basePanel, DockPanel.CENTER);
@@ -110,7 +110,7 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
 	}
 	
-	/***************************************** Configuration methods ************************************************************/
+	/***************************************** ************************************************************/
 	
 	/**
 	 * Method returns whether map to be shown in popup or not. Defaults to false.
@@ -367,7 +367,7 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 	}
 	
 	
-	/******************************* Class methods ******************************************************************/
+	/******************************* *****************************************************************/
 	
 	
 	/**
@@ -449,7 +449,7 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		return conf;
 	}
 	
-	/****************************************Events received ****************************************************/
+	/********************************************************************************************/
 	
 	@Override
 	public void onFieldEvent(FieldEvent event) {
@@ -472,7 +472,7 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 	}
 	
 	
-	/************************************** Class constants *******************************************************/
+	/************************************** *******************************************************/
 	
 	public interface LocationSelectorFieldConstant extends BaseFieldConstant{
 		

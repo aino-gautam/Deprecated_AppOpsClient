@@ -41,7 +41,7 @@ public class LinkField extends BaseField implements ClickHandler{
 	}
 	
 	
-	/******************************** BaseField Overriden methods ****************************************/
+	/************************************************************************/
 	/**
 	 * creates the field UI
 	 */
@@ -142,7 +142,7 @@ public class LinkField extends BaseField implements ClickHandler{
 	}
 	
 	
-	/************************** Configuration method **********************/
+	/************************************************/
 	/**
 	 * Method return the type of the link to use . Defaults to anchor.  
 	 * @return
@@ -216,7 +216,7 @@ public class LinkField extends BaseField implements ClickHandler{
 	}
 	
 	
-	/************************************** *******************************/
+	/*********************************************************************/
 	
 	public Widget getWidget() {
 		if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)) {

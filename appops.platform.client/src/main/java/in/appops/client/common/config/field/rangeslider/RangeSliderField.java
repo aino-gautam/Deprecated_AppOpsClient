@@ -41,7 +41,7 @@ public class RangeSliderField extends BaseField{
 		
 	}
 	
-	/******************************** BaseField Overriden methods ****************************************/
+	/************************************************************************/
 
 	@Override
 	public void create() {
@@ -93,7 +93,7 @@ public class RangeSliderField extends BaseField{
 		return null;
 	}
 	
-	/******************************  Configuration methods **************************/
+	/********************************************************/
 	
 	/**
 	 * Method returns the range slider mode..
@@ -182,7 +182,7 @@ public class RangeSliderField extends BaseField{
 		return listOfItems;
 	}
 		
-	/***************************** Range slider constants **************************************/
+	/*******************************************************************/
 	
 	public interface RangeSliderFieldConstant extends BaseFieldConstant{
 		

@@ -37,7 +37,7 @@ public class ImageField extends BaseField implements ClickHandler{
 		image = new Image();
 	}
 
-	/******************************** BaseField Overriden methods ****************************************/
+	/******************************** ****************************************/
 	/**
 	 * creates the field UI
 	 */
@@ -60,7 +60,7 @@ public class ImageField extends BaseField implements ClickHandler{
 			image.setStylePrimaryName(getBaseFieldCss());
 	}
 	
-	/*********************** Configuration methods *****************************/
+	/*********************** *****************************/
 	
 	/**
 	 * Method return the image blobId.

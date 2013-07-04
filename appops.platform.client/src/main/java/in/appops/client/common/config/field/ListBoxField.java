@@ -25,7 +25,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,EntityListR
 		listBox = new ListBox();
 	}
 	
-	/******************************** BaseField Overriden methods ****************************************/
+	/******************************** ****************************************/
 
 	@Override
 	public void create() {
@@ -66,7 +66,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,EntityListR
 		return selectedItem;
 	}
 	
-	/*****************************  Configuration methods ******************************/
+	/***************************** *****************************/
 
 	/**
 	 * Method returns the no of visible items in the listbox .Defaults to 3;
