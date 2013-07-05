@@ -32,7 +32,7 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 		initWidget(basePanel);
 	}
 	
-	/***************************************** Class methods *******************************/
+	/***************************************** *******************************/
 	public void createUi(){
 		this.basePanel.add(suggestBox);
 		suggestBox.addSelectionHandler(this);
@@ -54,7 +54,7 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	}
 	
 	
-	/******************************  Following methods set the params to oracle************************************************************/
+	/****************************** ************************************************************/
 	
 	/**
 	 * Methods sets the query name to oracle..
@@ -128,7 +128,7 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 		oracle.IsSearchQuery(val);
 	}
 	
-	/**********************************  Events fired ***************************************/
+	/********************************** ***************************************/
 	@Override
 	public void onFocus(FocusEvent event) {
 		if(isAutoSuggestion){

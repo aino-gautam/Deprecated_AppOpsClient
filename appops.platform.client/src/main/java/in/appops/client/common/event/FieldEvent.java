@@ -32,6 +32,7 @@ public class FieldEvent extends GwtEvent<FieldEventHandler> {
 	public static final int SHOW_MAP_IN_POPUP = 21;
 	public static final int LOCATION_CHANGED = 22;
 	public static final int CHANGE_LOCATION = 23;
+	public static final int RADIOBUTTON_SELECTED = 24;
 
 	
 	public static Type<FieldEventHandler> TYPE = new Type<FieldEventHandler>();

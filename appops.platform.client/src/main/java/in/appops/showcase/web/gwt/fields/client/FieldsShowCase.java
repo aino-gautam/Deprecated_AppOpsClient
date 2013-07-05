@@ -22,6 +22,10 @@ import in.appops.client.common.config.field.StateField;
 import in.appops.client.common.config.field.StateField.StateFieldConstant;
 import in.appops.client.common.config.field.date.DatePickerField;
 import in.appops.client.common.config.field.date.DatePickerField.DatePickerConstant;
+import in.appops.client.common.config.field.date.DateTimePickerField;
+import in.appops.client.common.config.field.date.DateTimePickerField.DateTimePickerFieldConstant;
+import in.appops.client.common.config.field.date.TimePickerField;
+import in.appops.client.common.config.field.date.TimePickerField.TimePickerFieldConstant;
 import in.appops.client.common.config.field.rangeslider.RangeSliderField;
 import in.appops.client.common.config.field.rangeslider.RangeSliderField.RangeSliderFieldConstant;
 import in.appops.client.common.config.field.spinner.SpinnerField;
@@ -30,12 +34,8 @@ import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.DateTimeField;
-import in.appops.client.common.fields.LocationSelector;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
-import in.appops.client.common.fields.slider.NumericRangeSliderFieldComponent;
-import in.appops.client.common.fields.slider.StringRangeSliderFieldComponent;
-import in.appops.client.common.fields.slider.field.NumericRangeSliderField;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -43,9 +43,7 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.Defa
 import in.appops.platform.core.operation.ResponseActionContext;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
-import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
-import in.appops.platform.server.core.services.spacemanagement.constants.SpaceTypeConstants;
 import in.appops.showcase.web.gwt.holder.client.ShowcaseComponentHolder;
 
 import java.util.ArrayList;
@@ -86,9 +84,6 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	public static final String CHECKBOXFIELD = "CheckboxField";
 	public static final String STATEFIELD = "StateField";
 	public static final String TIME_PICKER = "Time Picker";
-	public static final String TIME_PICKER_HOUR = "Time Picker(Short_Hours )";
-	public static final String TIME_PICKER_MINUTE = "Time Picker(Short_Minute )";
-	public static final String TIME_PICKER_SEC = "Time Picker(Short_Sec )";
 	public static final String DATE_PICKER = "Date Picker";
 	public static final String DATETIME_PICKER = "Date Time Picker";
 	public static final String NUMBERRANGE_SLIDER = "NumericRangeSlider";
@@ -141,18 +136,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		listBox.addItem(EMAILBOX);
 		listBox.addItem(TEXTAREA);
 		listBox.addItem(NUMERICBOX);
-		
-		/*listBox.addItem(CHECKBOXGROUPMULTISELECT);
-		listBox.addItem(CHECKBOXFIELD);
-		
-		listBox.addItem(TIME_PICKER);
-		listBox.addItem(TIME_PICKER_HOUR);
-		listBox.addItem(TIME_PICKER_MINUTE);
-		listBox.addItem(TIME_PICKER_SEC); */
 		listBox.addItem(DATE_PICKER);
-		/*listBox.addItem(DATETIME_PICKER);
-		listBox.addItem(NUMBERRANGE_SLIDER);
-		listBox.addItem(STRINGRANGE_SLIDER); */
 		listBox.addItem(NUM_SPINNER);
 		listBox.addItem(LIST_SPINNER);
 		/*listBox.addItem(MEDIA_UPLOAD);*/
@@ -169,6 +153,9 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		listBox.addItem(STRINGRANGE_SLIDER); 
 		listBox.addItem(STATEFIELD);
 		
+		listBox.addItem(TIME_PICKER);
+		listBox.addItem(DATETIME_PICKER);
+		
 		listBox.addChangeHandler(this);
 		listBox.setStylePrimaryName("fieldShowcaseBasePanel");
 		listBoxPanel.add(titleLabel);
@@ -183,30 +170,15 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	}
 	
 	
-	private Configuration getDateTimeFieldConfiguration(String modeSelection,String datetimefieldTimeonly, String modeTimeValue) {
+	private Configuration getDateTimeFieldConfiguration() {
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(DateTimeField.DATETIMEFIELD_MODE, modeSelection);
-		configuration.setPropertyByName(DateTimeField.DATETIMEFIELD_TYPE, datetimefieldTimeonly);
-		if(modeTimeValue!=null)
-		  configuration.setPropertyByName(modeTimeValue, modeTimeValue);
-		
-		return configuration;
-	}
-	
-	private Configuration getLocationSelectorConfForFalse() {
-		Configuration configuration = new Configuration();
-		
-		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "images/locationMarker1.png");
-		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "images/locationMarker1.png");
-		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, "appops-TextField");
-		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CHOOSE_LOCATION_BTN, "chooseLocationBtn");
-		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_POPUPPANEL, "currentLocationField");
-		configuration.setPropertyByName(LocationSelector.MAP_ZOOM, "8");
-		configuration.setPropertyByName(LocationSelector.CHANGE_LOCATION_IMAGE_URL, "images/iconEdit.png");
-		configuration.setPropertyByName(LocationSelector.DONE_SELECTION_IMAGE_URL, "images/iconTickBlackCircle.png");
-		configuration.setPropertyByName(LocationSelector.MAP_WIDTH, "600px");
-		configuration.setPropertyByName(LocationSelector.MAP_HEIGHT, "400px");
-		
+		configuration.setPropertyByName(DatePickerConstant.BF_DEFVAL, "01.07.2013");
+		configuration.setPropertyByName(DatePickerConstant.DP_MAXDATE, "03.08.2013");
+		configuration.setPropertyByName(DatePickerConstant.DP_MINDATE, "05.06.2013");
+		configuration.setPropertyByName(DatePickerConstant.DP_FORMAT, "dd.MM.yyyy");
+		configuration.setPropertyByName(DatePickerConstant.DP_ALLOWBLNK, false);
+		configuration.setPropertyByName(DatePickerConstant.BF_ERRPOS, DatePickerConstant.BF_BOTTOM);
+		configuration.setPropertyByName(TimePickerFieldConstant.TIME_FORMAT, TimePickerFieldConstant.FORMAT24HOUR_WITH_SECONDS);
 		return configuration;
 	}
 	
@@ -242,7 +214,6 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	 */
 	private Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String displayText){
 		
-		
 		Configuration conf = new Configuration();
 		conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
 		conf.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, displayText);
@@ -269,6 +240,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
 		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, primaryCss);
 		configuration.setPropertyByName(TextFieldConstant.BF_DCLS, secondaryCss);
+		//configuration.setPropertyByName(TextFieldConstant.BF_ALLOWBLNK, false);
 		configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
 		configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter field value");
 		configuration.setPropertyByName(TextFieldConstant.BF_VALIDATEONCHANGE, true);
@@ -284,7 +256,6 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
 		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, primaryCss);
 		configuration.setPropertyByName(TextFieldConstant.BF_DCLS, secondaryCss);
-		//configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_TOP);
 		configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter Number");
 		configuration.setPropertyByName(TextFieldConstant.MINVALUE,0);
 		configuration.setPropertyByName(TextFieldConstant.ALLOWDEC,true);
@@ -530,259 +501,246 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 
 	private void initializeField(String fieldName) {
 		
-		try {
-			innerPanel.clear();
-			if(fieldName.equals(TEXTBOX)) {
-				TextField textFieldTB = new TextField();
-				textFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, "appops-TextField", null, null));
-				textFieldTB.configure();
-				textFieldTB.create();
-				innerPanel.add(textFieldTB);
-				innerPanel.setCellHorizontalAlignment(textFieldTB,HorizontalPanel.ALIGN_CENTER);
-			} else if(fieldName.equals(PASSWORDTEXTBOX)) {
-				TextField textFieldPTB = new TextField();
-				textFieldPTB.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_PSWBOX, "appops-TextField", null, null));
-				textFieldPTB.configure();
-				textFieldPTB.create();
-				innerPanel.add(textFieldPTB);
-				innerPanel.setCellHorizontalAlignment(textFieldPTB,HorizontalPanel.ALIGN_CENTER);
-				
-			}else if(fieldName.equals(EMAILBOX)) {
-				TextField textFieldTB = new TextField();
-				textFieldTB.setConfiguration(getEmailFieldConfiguration(1, false, TextFieldConstant.TFTYPE_EMAILBOX, "appops-TextField", null, null));
-				textFieldTB.configure();
-				textFieldTB.create();
-				innerPanel.add(textFieldTB);
-				innerPanel.setCellHorizontalAlignment(textFieldTB,HorizontalPanel.ALIGN_CENTER);
-				
-			} else if(fieldName.equals(TEXTAREA)) {
-				TextField textFieldTA = new TextField();
-				textFieldTA.setConfiguration(getTextAreaConfiguration(10, false, TextFieldConstant.TFTTYPE_TXTAREA, null, null, null));
-				textFieldTA.configure();
-				textFieldTA.create();
-				innerPanel.add(textFieldTA);
-				innerPanel.setCellHorizontalAlignment(textFieldTA,HorizontalPanel.ALIGN_CENTER);
+		innerPanel.clear();
+		if(fieldName.equals(TEXTBOX)) {
+			TextField textFieldTB = new TextField();
+			textFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, "appops-TextField", null, null));
+			textFieldTB.configure();
+			textFieldTB.create();
+			innerPanel.add(textFieldTB);
+			innerPanel.setCellHorizontalAlignment(textFieldTB,HorizontalPanel.ALIGN_CENTER);
+		} else if(fieldName.equals(PASSWORDTEXTBOX)) {
+			TextField textFieldPTB = new TextField();
+			textFieldPTB.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_PSWBOX, "appops-TextField", null, null));
+			textFieldPTB.configure();
+			textFieldPTB.create();
+			innerPanel.add(textFieldPTB);
+			innerPanel.setCellHorizontalAlignment(textFieldPTB,HorizontalPanel.ALIGN_CENTER);
+			
+		}else if(fieldName.equals(EMAILBOX)) {
+			TextField textFieldTB = new TextField();
+			textFieldTB.setConfiguration(getEmailFieldConfiguration(1, false, TextFieldConstant.TFTYPE_EMAILBOX, "appops-TextField", null, null));
+			textFieldTB.configure();
+			textFieldTB.create();
+			innerPanel.add(textFieldTB);
+			innerPanel.setCellHorizontalAlignment(textFieldTB,HorizontalPanel.ALIGN_CENTER);
+			
+		} else if(fieldName.equals(TEXTAREA)) {
+			TextField textFieldTA = new TextField();
+			textFieldTA.setConfiguration(getTextAreaConfiguration(10, false, TextFieldConstant.TFTTYPE_TXTAREA, null, null, null));
+			textFieldTA.configure();
+			textFieldTA.create();
+			innerPanel.add(textFieldTA);
+			innerPanel.setCellHorizontalAlignment(textFieldTA,HorizontalPanel.ALIGN_CENTER);
 
-			}else if(fieldName.equals(NUMERICBOX)) {
-				TextField textFieldTB = new TextField();
-				textFieldTB.setConfiguration(getNumericFieldConfiguration(1, false, TextFieldConstant.TFTYPE_NUMERIC, "appops-TextField", null, null));
-				textFieldTB.configure();
-				textFieldTB.create();
-				innerPanel.add(textFieldTB);
-				innerPanel.setCellHorizontalAlignment(textFieldTB,HorizontalPanel.ALIGN_CENTER);
-			}else if(fieldName.equals(GROUPFIELD)) {
-				GroupField groupField = getCheckBoxGroupField();
-				innerPanel.add(groupField);
-				innerPanel.setCellHorizontalAlignment(groupField,HorizontalPanel.ALIGN_CENTER);
-			} else if(fieldName.equals(GROUPFIELDRADIO)) {
-				GroupField groupField = getRadioButtonGroupField();
-				innerPanel.add(groupField);
-				innerPanel.setCellHorizontalAlignment(groupField,HorizontalPanel.ALIGN_CENTER);
-			} else if(fieldName.equals(LABELFIELD)) {
-				LabelField labelField = new LabelField();
-				labelField.setConfiguration(getLabelFieldConfiguration(true,"appops-LabelField",null,"Label with configuration"));
-				labelField.configure();
-				labelField.create();
-				innerPanel.add(labelField);
-				innerPanel.setCellHorizontalAlignment(labelField,HorizontalPanel.ALIGN_CENTER);
-			} else if(fieldName.equals(LINKFIELDHYPERLINK)) {
-				LinkField hyperLinkField = new LinkField();
-				hyperLinkField.setConfiguration(getHyperLinkConfiguration());
-				hyperLinkField.configure();
-				hyperLinkField.create();
-				innerPanel.add(hyperLinkField);
-				innerPanel.setCellHorizontalAlignment(hyperLinkField,HorizontalPanel.ALIGN_CENTER);
-			}else if(fieldName.equals(LINKFIELDANCHOR)) {
-				LinkField anchorLinkField = new LinkField();
-				anchorLinkField.setConfiguration(getAnchorConfiguration());
-				anchorLinkField.configure();
-				anchorLinkField.create();
-				innerPanel.add(anchorLinkField);
-				innerPanel.setCellHorizontalAlignment(anchorLinkField,HorizontalPanel.ALIGN_CENTER);
-			}else if(fieldName.equals(BUTTONFIELD)) {
-				ButtonField btnField = new ButtonField();
-				btnField.setConfiguration(getButtonConfiguration());
-				btnField.configure();
-				btnField.create();
-				innerPanel.add(btnField);
-				innerPanel.setCellHorizontalAlignment(btnField,HorizontalPanel.ALIGN_CENTER);
-			}else if(fieldName.equals(IMAGEFIELD)) {
-				ImageField imageField = new ImageField();
-				imageField.setConfiguration(getImageConfiguration());
-				imageField.configure();
-				imageField.create();
-				innerPanel.add(imageField);
-				innerPanel.setCellHorizontalAlignment(imageField,HorizontalPanel.ALIGN_CENTER);
-			}else if(fieldName.equals(LISTBOX)) {
-				ListBoxField staticListBox = new ListBoxField();
-				staticListBox.setConfiguration(getStaticListBoxConfiguration());
-				staticListBox.configure();
-				staticListBox.create();
-				innerPanel.add(staticListBox);
-				innerPanel.setCellHorizontalAlignment(staticListBox,HorizontalPanel.ALIGN_CENTER);
-			}else if(fieldName.equals(STATEFIELD)) {
-				StateField stateField = new StateField();
-				Configuration stateFieldConfig = getStateFieldConfiguration();
-				stateField.setConfiguration(stateFieldConfig);
-				stateField.configure();
-				stateField.create();
-				innerPanel.add(stateField);
-				innerPanel.setCellHorizontalAlignment(stateField,HorizontalPanel.ALIGN_CENTER);
+		}else if(fieldName.equals(NUMERICBOX)) {
+			TextField textFieldTB = new TextField();
+			textFieldTB.setConfiguration(getNumericFieldConfiguration(1, false, TextFieldConstant.TFTYPE_NUMERIC, "appops-TextField", null, null));
+			textFieldTB.configure();
+			textFieldTB.create();
+			innerPanel.add(textFieldTB);
+			innerPanel.setCellHorizontalAlignment(textFieldTB,HorizontalPanel.ALIGN_CENTER);
+		}else if(fieldName.equals(GROUPFIELD)) {
+			GroupField groupField = getCheckBoxGroupField();
+			innerPanel.add(groupField);
+			innerPanel.setCellHorizontalAlignment(groupField,HorizontalPanel.ALIGN_CENTER);
+		} else if(fieldName.equals(GROUPFIELDRADIO)) {
+			GroupField groupField = getRadioButtonGroupField();
+			innerPanel.add(groupField);
+			innerPanel.setCellHorizontalAlignment(groupField,HorizontalPanel.ALIGN_CENTER);
+		} else if(fieldName.equals(LABELFIELD)) {
+			LabelField labelField = new LabelField();
+			labelField.setConfiguration(getLabelFieldConfiguration(true,"appops-LabelField",null,"Label with configuration"));
+			labelField.configure();
+			labelField.create();
+			innerPanel.add(labelField);
+			innerPanel.setCellHorizontalAlignment(labelField,HorizontalPanel.ALIGN_CENTER);
+		} else if(fieldName.equals(LINKFIELDHYPERLINK)) {
+			LinkField hyperLinkField = new LinkField();
+			hyperLinkField.setConfiguration(getHyperLinkConfiguration());
+			hyperLinkField.configure();
+			hyperLinkField.create();
+			innerPanel.add(hyperLinkField);
+			innerPanel.setCellHorizontalAlignment(hyperLinkField,HorizontalPanel.ALIGN_CENTER);
+		}else if(fieldName.equals(LINKFIELDANCHOR)) {
+			LinkField anchorLinkField = new LinkField();
+			anchorLinkField.setConfiguration(getAnchorConfiguration());
+			anchorLinkField.configure();
+			anchorLinkField.create();
+			innerPanel.add(anchorLinkField);
+			innerPanel.setCellHorizontalAlignment(anchorLinkField,HorizontalPanel.ALIGN_CENTER);
+		}else if(fieldName.equals(BUTTONFIELD)) {
+			ButtonField btnField = new ButtonField();
+			btnField.setConfiguration(getButtonConfiguration());
+			btnField.configure();
+			btnField.create();
+			innerPanel.add(btnField);
+			innerPanel.setCellHorizontalAlignment(btnField,HorizontalPanel.ALIGN_CENTER);
+		}else if(fieldName.equals(IMAGEFIELD)) {
+			ImageField imageField = new ImageField();
+			imageField.setConfiguration(getImageConfiguration());
+			imageField.configure();
+			imageField.create();
+			innerPanel.add(imageField);
+			innerPanel.setCellHorizontalAlignment(imageField,HorizontalPanel.ALIGN_CENTER);
+		}else if(fieldName.equals(LISTBOX)) {
+			ListBoxField staticListBox = new ListBoxField();
+			staticListBox.setConfiguration(getStaticListBoxConfiguration());
+			staticListBox.configure();
+			staticListBox.create();
+			innerPanel.add(staticListBox);
+			innerPanel.setCellHorizontalAlignment(staticListBox,HorizontalPanel.ALIGN_CENTER);
+		}else if(fieldName.equals(STATEFIELD)) {
+			StateField stateField = new StateField();
+			Configuration stateFieldConfig = getStateFieldConfiguration();
+			stateField.setConfiguration(stateFieldConfig);
+			stateField.configure();
+			stateField.create();
+			innerPanel.add(stateField);
+			innerPanel.setCellHorizontalAlignment(stateField,HorizontalPanel.ALIGN_CENTER);
 
-			} else if(fieldName.equals(TIME_PICKER)) {
-				DateTimeField dateTimeField = new DateTimeField();
-				dateTimeField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_VIEW,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.Full_Time));
-				dateTimeField.create();
-				innerPanel.add(dateTimeField);
-				innerPanel.setCellHorizontalAlignment(dateTimeField,HorizontalPanel.ALIGN_CENTER);
+		} else if(fieldName.equals(TIME_PICKER)) {
+			TimePickerField dateTimeField = new TimePickerField();
+			Configuration configuration = new Configuration();
+			configuration.setPropertyByName(TimePickerFieldConstant.TIME_FORMAT, TimePickerFieldConstant.AMPMFORMAT_WITH_SECONDS);
+			dateTimeField.setConfiguration(configuration);
+			dateTimeField.configure();
+			dateTimeField.create();
+			innerPanel.add(dateTimeField);
+			innerPanel.setCellHorizontalAlignment(dateTimeField,HorizontalPanel.ALIGN_CENTER);
 
-			} else if(fieldName.equals(TIME_PICKER_HOUR)) {
-				DateTimeField dateTimeShortHoursField = new DateTimeField();
-				dateTimeShortHoursField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_VIEW,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.SHORT_HOURS));
-				dateTimeShortHoursField.create();
-				innerPanel.add(dateTimeShortHoursField);
-				innerPanel.setCellHorizontalAlignment(dateTimeShortHoursField,HorizontalPanel.ALIGN_CENTER);
+		} else if(fieldName.equals(DATE_PICKER)) {
 
-			} else if(fieldName.equals(TIME_PICKER_MINUTE)) {
-				DateTimeField dateTimeShortMinuteField = new DateTimeField();
-				dateTimeShortMinuteField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_VIEW,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.SHORT_MINUTE));
-				dateTimeShortMinuteField.create();
-				innerPanel.add(dateTimeShortMinuteField);
-				innerPanel.setCellHorizontalAlignment(dateTimeShortMinuteField,HorizontalPanel.ALIGN_CENTER);
+			DatePickerField dtPicker = new DatePickerField();
+			Configuration configuration = new Configuration();
+			configuration.setPropertyByName(DatePickerConstant.BF_DEFVAL, "01.07.2013");
+			configuration.setPropertyByName(DatePickerConstant.DP_MAXDATE, "03.08.2013");
+			configuration.setPropertyByName(DatePickerConstant.DP_MINDATE, "05.06.2013");
+			configuration.setPropertyByName(DatePickerConstant.DP_FORMAT, "dd.MM.yyyy");
+			configuration.setPropertyByName(DatePickerConstant.DP_ALLOWBLNK, false);
+			configuration.setPropertyByName(DatePickerConstant.BF_ERRPOS, DatePickerConstant.BF_BOTTOM);
+			
+			dtPicker.setConfiguration(configuration);
+			dtPicker.configure();
+			dtPicker.create();
+			innerPanel.add(dtPicker);
+			innerPanel.setCellHorizontalAlignment(dtPicker,HorizontalPanel.ALIGN_CENTER);
+		} else if(fieldName.equals(DATETIME_PICKER)) {
+			DateTimePickerField dateTimePicker = new DateTimePickerField();
+			dateTimePicker.setConfiguration(getDateTimePickerFieldConfiguration());
+			dateTimePicker.configure();
+			dateTimePicker.create();
+			innerPanel.add(dateTimePicker);
+			innerPanel.setCellHorizontalAlignment(dateTimePicker,HorizontalPanel.ALIGN_CENTER);
 
-			} else if(fieldName.equals(TIME_PICKER_SEC)) {
-				DateTimeField dateTimeShortSecField = new DateTimeField();
-				dateTimeShortSecField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_VIEW,DateTimeField.DATETIMEFIELD_TIMEONLY,DateTimeField.SHORT_SECONDS));
-				dateTimeShortSecField.create();
-				innerPanel.add(dateTimeShortSecField);
-				innerPanel.setCellHorizontalAlignment(dateTimeShortSecField,HorizontalPanel.ALIGN_CENTER);
+		} else if(fieldName.equals(LOCATIONSELECTOR)) {
+			if (Geolocation.isSupported()) {
+				Geolocation.getGeolocation().getCurrentPosition(new PositionCallback() {
+					public void onSuccess(Position position) {
+						Coordinates coords = position.getCoords();
+							if(locationField==null)	{		
+								locationField = new LocationSelectorField();
+								locationField.setConfiguration(getLocationSelectorConf(coords.getLatitude(), coords.getLongitude()));
+								locationField.configure();
+								locationField.create();
+							}
+						innerPanel.add(locationField);
+						innerPanel.setCellHorizontalAlignment(locationField,HorizontalPanel.ALIGN_CENTER);
+					}
 
-			} else if(fieldName.equals(DATE_PICKER)) {
+					@Override
+					public void onFailure(com.google.code.gwt.geolocation.client.PositionError error) {
+						System.out.println(" "+error.getMessage());
 
-				DatePickerField dtPicker = new DatePickerField();
-				Configuration configuration = new Configuration();
-				configuration.setPropertyByName(DatePickerConstant.BF_DEFVAL, "01.07.2013");
-				configuration.setPropertyByName(DatePickerConstant.DP_MAXDATE, "03.08.2013");
-				configuration.setPropertyByName(DatePickerConstant.DP_MINDATE, "05.06.2013");
-				configuration.setPropertyByName(DatePickerConstant.DP_FORMAT, "dd.MM.yyyy");
-				configuration.setPropertyByName(DatePickerConstant.DP_ALLOWBLNK, false);
-				configuration.setPropertyByName(DatePickerConstant.BF_ERRPOS, DatePickerConstant.BF_BOTTOM);
-				
-				dtPicker.setConfiguration(configuration);
-				dtPicker.configure();
-				dtPicker.create();
-				innerPanel.add(dtPicker);
-				innerPanel.setCellHorizontalAlignment(dtPicker,HorizontalPanel.ALIGN_CENTER);
-			} else if(fieldName.equals(DATETIME_PICKER)) {
-				DateTimeField dateTimeOnlyField = new DateTimeField();
-				dateTimeOnlyField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_VIEW,DateTimeField.DATETIMEFIELD_DATETIMEONLY,null));
-				dateTimeOnlyField.create();
-				innerPanel.add(dateTimeOnlyField);
-				innerPanel.setCellHorizontalAlignment(dateTimeOnlyField,HorizontalPanel.ALIGN_CENTER);
-
-			} else if(fieldName.equals(LOCATIONSELECTOR)) {
-				if (Geolocation.isSupported()) {
-					Geolocation.getGeolocation().getCurrentPosition(new PositionCallback() {
-						
-						public void onSuccess(Position position) {
-							
-							Coordinates coords = position.getCoords();
-							//LatLng latLng = new LatLng(coords.getLatitude(), coords.getLongitude());
-								if(locationField==null)	{		
-									locationField = new LocationSelectorField();
-									locationField.setConfiguration(getLocationSelectorConf(coords.getLatitude(), coords.getLongitude()));
-									locationField.configure();
-									locationField.create();
-								}
-							innerPanel.add(locationField);
-							innerPanel.setCellHorizontalAlignment(locationField,HorizontalPanel.ALIGN_CENTER);
-						}
-
-						@Override
-						public void onFailure(com.google.code.gwt.geolocation.client.PositionError error) {
-							System.out.println(" "+error.getMessage());
-
-						}
-					});
-				}
-			} else if(fieldName.equals(NUMBERRANGE_SLIDER)) {
-				
-				RangeSliderField rangeSliderField = new RangeSliderField();
-				rangeSliderField.setConfiguration(getNumericSliderConf());
-				rangeSliderField.configure();
-				rangeSliderField.create();
-							
-				innerPanel.setWidth("100%");
-				innerPanel.add(rangeSliderField);
-				innerPanel.setCellHorizontalAlignment(rangeSliderField, HorizontalPanel.ALIGN_CENTER);
-
-			} else if(fieldName.equals(STRINGRANGE_SLIDER)) {
-				RangeSliderField rangeSliderField = new RangeSliderField();
-				rangeSliderField.setConfiguration(getStringSliderConf());
-				rangeSliderField.configure();
-				rangeSliderField.create();
-							
-				innerPanel.setWidth("100%");
-				innerPanel.add(rangeSliderField);
-				innerPanel.setCellHorizontalAlignment(rangeSliderField, HorizontalPanel.ALIGN_CENTER);
-
-			}  else if(fieldName.equals(NUM_SPINNER)) {
-				Configuration configuration = new Configuration();
-				configuration.setPropertyByName(SpinnerFieldConstant.SP_STEP, 3);
-				configuration.setPropertyByName(SpinnerFieldConstant.SP_UNIT, "%");
-				configuration.setPropertyByName(SpinnerFieldConstant.SP_MAXVAL, 23F);
-				configuration.setPropertyByName(SpinnerFieldConstant.SP_MINVAL, -3F);
-				configuration.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, true);
-				configuration.setPropertyByName(SpinnerFieldConstant.BF_DEFVAL, 3F);
-				configuration.setPropertyByName(SpinnerFieldConstant.SP_TYPE, SpinnerFieldConstant.SP_TYPENUMERIC);
-				configuration.setPropertyByName(SpinnerFieldConstant.BF_ERRPOS, SpinnerFieldConstant.BF_BOTTOM);
-				configuration.setPropertyByName(SpinnerFieldConstant.SP_DECPRECISION, 0);
-				configuration.setPropertyByName(SpinnerFieldConstant.SP_ALLOWDEC, false);
-				configuration.setPropertyByName(SpinnerFieldConstant.BF_VALIDATEONCHANGE, true);
-				
-				SpinnerField valueSpinner = new SpinnerField();
-				valueSpinner.setConfiguration(configuration);
-				valueSpinner.configure();
-				valueSpinner.create();
-				innerPanel.add(valueSpinner);
-				innerPanel.setCellHorizontalAlignment(valueSpinner,HorizontalPanel.ALIGN_CENTER);
-
-			} else if(fieldName.equals(LIST_SPINNER)) {
-				ArrayList<String> days = new ArrayList<String>();
-				days.add("Sunday");
-				days.add("Monday");
-				days.add("Tuesday");
-				days.add("Wednesday");
-				days.add("Thursday");
-				days.add("Friday");
-				days.add("Saturday");
-				
-				Configuration configuration = new Configuration();
-				configuration.setPropertyByName(SpinnerFieldConstant.SP_TYPE, SpinnerFieldConstant.SP_TYPELIST);
-				configuration.setPropertyByName(SpinnerFieldConstant.SP_VALUELIST, days);
-				configuration.setPropertyByName(SpinnerFieldConstant.SP_VALUEIDX, 0);
-				configuration.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, true);
-				
-				SpinnerField listSpinner = new SpinnerField();
-				listSpinner.setConfiguration(configuration);
-				listSpinner.configure();
-				listSpinner.create();
-				innerPanel.add(listSpinner);
-				innerPanel.setCellHorizontalAlignment(listSpinner,HorizontalPanel.ALIGN_CENTER);
-
-			} else if(fieldName.equals(MEDIA_UPLOAD)) {
-
-				innerPanel.add(loaderImage);
-				innerPanel.setCellHorizontalAlignment(loaderImage,HorizontalPanel.ALIGN_CENTER);
-				loaderImage.setVisible(true);	
-				addMediaUploaderField();
+					}
+				});
 			}
+		} else if(fieldName.equals(NUMBERRANGE_SLIDER)) {
 			
-			componentHolder.setPackageName(getPackageNameOfSelectedField(fieldName));
+			RangeSliderField rangeSliderField = new RangeSliderField();
+			rangeSliderField.setConfiguration(getNumericSliderConf());
+			rangeSliderField.configure();
+			rangeSliderField.create();
+						
+			innerPanel.setWidth("100%");
+			innerPanel.add(rangeSliderField);
+			innerPanel.setCellHorizontalAlignment(rangeSliderField, HorizontalPanel.ALIGN_CENTER);
+
+		} else if(fieldName.equals(STRINGRANGE_SLIDER)) {
+			RangeSliderField rangeSliderField = new RangeSliderField();
+			rangeSliderField.setConfiguration(getStringSliderConf());
+			rangeSliderField.configure();
+			rangeSliderField.create();
+						
+			innerPanel.setWidth("100%");
+			innerPanel.add(rangeSliderField);
+			innerPanel.setCellHorizontalAlignment(rangeSliderField, HorizontalPanel.ALIGN_CENTER);
+
+		}  else if(fieldName.equals(NUM_SPINNER)) {
+			Configuration configuration = new Configuration();
+			configuration.setPropertyByName(SpinnerFieldConstant.SP_STEP, 3);
+			configuration.setPropertyByName(SpinnerFieldConstant.SP_UNIT, "%");
+			configuration.setPropertyByName(SpinnerFieldConstant.SP_MAXVAL, 23F);
+			configuration.setPropertyByName(SpinnerFieldConstant.SP_MINVAL, -3F);
+			configuration.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, true);
+			configuration.setPropertyByName(SpinnerFieldConstant.BF_DEFVAL, 3F);
+			configuration.setPropertyByName(SpinnerFieldConstant.SP_TYPE, SpinnerFieldConstant.SP_TYPENUMERIC);
+			configuration.setPropertyByName(SpinnerFieldConstant.BF_ERRPOS, SpinnerFieldConstant.BF_BOTTOM);
+			configuration.setPropertyByName(SpinnerFieldConstant.SP_DECPRECISION, 0);
+			configuration.setPropertyByName(SpinnerFieldConstant.SP_ALLOWDEC, false);
+			configuration.setPropertyByName(SpinnerFieldConstant.BF_VALIDATEONCHANGE, true);
 			
-		} catch (AppOpsException e) {
-			e.printStackTrace();
+			SpinnerField valueSpinner = new SpinnerField();
+			valueSpinner.setConfiguration(configuration);
+			valueSpinner.configure();
+			valueSpinner.create();
+			innerPanel.add(valueSpinner);
+			innerPanel.setCellHorizontalAlignment(valueSpinner,HorizontalPanel.ALIGN_CENTER);
+
+		} else if(fieldName.equals(LIST_SPINNER)) {
+			ArrayList<String> days = new ArrayList<String>();
+			days.add("Sunday");
+			days.add("Monday");
+			days.add("Tuesday");
+			days.add("Wednesday");
+			days.add("Thursday");
+			days.add("Friday");
+			days.add("Saturday");
+			
+			Configuration configuration = new Configuration();
+			configuration.setPropertyByName(SpinnerFieldConstant.SP_TYPE, SpinnerFieldConstant.SP_TYPELIST);
+			configuration.setPropertyByName(SpinnerFieldConstant.SP_VALUELIST, days);
+			configuration.setPropertyByName(SpinnerFieldConstant.SP_VALUEIDX, 0);
+			configuration.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, true);
+			
+			SpinnerField listSpinner = new SpinnerField();
+			listSpinner.setConfiguration(configuration);
+			listSpinner.configure();
+			listSpinner.create();
+			innerPanel.add(listSpinner);
+			innerPanel.setCellHorizontalAlignment(listSpinner,HorizontalPanel.ALIGN_CENTER);
+
+		} else if(fieldName.equals(MEDIA_UPLOAD)) {
+
+			innerPanel.add(loaderImage);
+			innerPanel.setCellHorizontalAlignment(loaderImage,HorizontalPanel.ALIGN_CENTER);
+			loaderImage.setVisible(true);	
+			addMediaUploaderField();
 		}
+		
+		componentHolder.setPackageName(getPackageNameOfSelectedField(fieldName));
+	}
+	
+	private Configuration getDateTimePickerFieldConfiguration(){
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(DateTimePickerFieldConstant.DATE_DEFVAL, "01.07.2013");
+		configuration.setPropertyByName(DatePickerConstant.DP_MAXDATE, "03.08.2013");
+		configuration.setPropertyByName(DatePickerConstant.DP_MINDATE, "05.06.2013");
+		configuration.setPropertyByName(DatePickerConstant.DP_FORMAT, "dd.MM.yyyy");
+		configuration.setPropertyByName(DatePickerConstant.DP_ALLOWBLNK, false);
+		configuration.setPropertyByName(DatePickerConstant.BF_ERRPOS, DatePickerConstant.BF_BOTTOM);
+		configuration.setPropertyByName(TimePickerFieldConstant.TIME_FORMAT, TimePickerFieldConstant.AMPMFORMAT_WITH_SECONDS);
+		return configuration;
 	}
 	
 	private Configuration getNumericSliderConf() {
@@ -861,7 +819,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				return GroupField.class.getName();
 			}else if(fieldName.equals(STATEFIELD)) {
 				return StateField.class.getName();
-			} else if(fieldName.equals(TIME_PICKER) || fieldName.equals(TIME_PICKER_HOUR) || fieldName.equals(TIME_PICKER_MINUTE) || fieldName.equals(TIME_PICKER_SEC) || fieldName.equals(DATETIME_PICKER)) {
+			} else if(fieldName.equals(TIME_PICKER) || fieldName.equals(DATETIME_PICKER)) {
 				return DateTimeField.class.getName();
 			} else if(fieldName.equals(DATE_PICKER)) {
 				return DatePickerField.class.getName();

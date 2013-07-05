@@ -1,6 +1,8 @@
 package in.appops.client.common.config.field.date;
 
 import in.appops.client.common.config.field.BaseField;
+import in.appops.client.common.fields.DateTimeField;
+import in.appops.platform.core.shared.Configuration;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,9 +55,10 @@ public class DatePickerField  extends BaseField implements ClickHandler {
 		public static final String DP_ALLOWBLNK = "allowBlank";
 
 		public static final String DP_ERRMSGBLNK = "blnktxt";
-		public static final String DP_ERRMSGMIN = "minText";
-		public static final String DP_ERRMSGMAX = "maxText";
 		
+		public static final String DP_ERRMSGMIN = "minText";
+		
+		public static final String DP_ERRMSGMAX = "maxText";
 
 	}
 	
@@ -99,8 +102,19 @@ public class DatePickerField  extends BaseField implements ClickHandler {
 		
 	}
 	
+	@Override
+	public Object getValue(){
+		Date date = DateTimeFormat.getFormat(getFormat()).parse(dtPickBox.getText());
+		return date;
+	}
 	
-	private String getFormat() {
+/*	@Override
+	public String getFieldValue(){
+		return dtPickBox.getText();
+	}*/
+	
+	
+	public String getFormat() {
 		String format = "dd/MM/yyyy";
 		if(getConfigurationValue(DatePickerConstant.DP_FORMAT) != null) {
 			format = getConfigurationValue(DatePickerConstant.DP_FORMAT).toString();
@@ -151,6 +165,7 @@ public class DatePickerField  extends BaseField implements ClickHandler {
 	    td2Element.setClassName("appops-dtPicker-border-box");
 	    
 	    dtPicker.setWidth("100%");
+	    
 	    dtPickPopup.setAnimationEnabled(true);
 	    dtPickPopup.setWidget(dtPicker);
 	    
@@ -185,6 +200,16 @@ public class DatePickerField  extends BaseField implements ClickHandler {
 				validate();
 			}
 		});
+	}
+	
+	private Configuration getDateTimeFieldConfiguration(String modeSelection,String datetimefieldTimeonly, String modeTimeValue) {
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(DateTimeField.DATETIMEFIELD_MODE, modeSelection);
+		configuration.setPropertyByName(DateTimeField.DATETIMEFIELD_TYPE, datetimefieldTimeonly);
+		if(modeTimeValue!=null)
+		  configuration.setPropertyByName(modeTimeValue, modeTimeValue);
+		
+		return configuration;
 	}
 	
 	private void hidePicker() {

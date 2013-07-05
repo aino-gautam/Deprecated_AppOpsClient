@@ -1568,3 +1568,10 @@ td.datePickerMonth {
 .sliderPanel{
 	width:500px;
 }
+
+.timeSeperator{
+	font-weight: bold;
+}
+.timeSpinner{
+	width: 50px;	
+}
