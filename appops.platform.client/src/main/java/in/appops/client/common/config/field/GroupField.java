@@ -1,12 +1,16 @@
 package in.appops.client.common.config.field;
 
 import in.appops.client.common.config.field.RadioButtonField.RadionButtonFieldConstant;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 
 import java.util.ArrayList;
 
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -51,12 +55,13 @@ groupField.configure();<br>
 groupField.create()<br>
 </p>*/
 
-public class GroupField extends BaseField {
+public class GroupField extends BaseField implements FieldEventHandler{
 
 	private FlexTable flexTable;
 	private Integer row = 0;
 	private Integer column = 0;
-	private ArrayList<Widget> listOfItems ;
+	private ArrayList<Widget> fieldItems ;
+	private ArrayList<Widget> selectedItems ;
 	
 	public GroupField() {
 		 flexTable = new FlexTable();
@@ -64,6 +69,8 @@ public class GroupField extends BaseField {
 
 	@Override
 	public void create() {
+		
+		selectedItems = new ArrayList<Widget>();
 		
 		getBasePanel().add(flexTable,DockPanel.CENTER);
 		
@@ -89,10 +96,10 @@ public class GroupField extends BaseField {
 		radioField.configure();
 		radioField.create();
 		
-		if(listOfItems==null)
-			listOfItems = new ArrayList<Widget>();
+		if(fieldItems==null)
+			fieldItems = new ArrayList<Widget>();
 
-		listOfItems.add(radioField);
+		fieldItems.add(radioField);
 		return radioField;
 	}
 	
@@ -116,10 +123,10 @@ public class GroupField extends BaseField {
 		checkBoxField.configure();
 		checkBoxField.create();
 		
-		if(listOfItems==null)
-			listOfItems = new ArrayList<Widget>();
+		if(fieldItems==null)
+			fieldItems = new ArrayList<Widget>();
 
-		listOfItems.add(checkBoxField);
+		fieldItems.add(checkBoxField);
 		return checkBoxField;
 	}
 	
@@ -172,8 +179,8 @@ public class GroupField extends BaseField {
 		String groupFieldType = getGroupFieldType();
 		if(groupFieldType.equals(GroupFieldConstant.GFTYPE_MULTISELECT)){
 			
-			for(int i= 0;i<listOfItems.size();i++){
-				CheckboxField chkboxField = (CheckboxField) listOfItems.get(i);
+			for(int i= 0;i<fieldItems.size();i++){
+				CheckboxField chkboxField = (CheckboxField) fieldItems.get(i);
 				chkboxField.setValue(true);
 			}
 		}
@@ -188,12 +195,21 @@ public class GroupField extends BaseField {
 		String groupFieldType = getGroupFieldType();
 		
 		if(groupFieldType.equals(GroupFieldConstant.GFTYPE_MULTISELECT)){
-			for(int i= 0;i<listOfItems.size();i++){
-				CheckboxField chkboxField = (CheckboxField) listOfItems.get(i);
+			for(int i= 0;i<fieldItems.size();i++){
+				CheckboxField chkboxField = (CheckboxField) fieldItems.get(i);
 				chkboxField.setValue(false);
 			}
 		}
 		
+	}
+	
+	/**
+	 * Overriden method from BaseField returns the selected items.
+	 */
+	
+	@Override
+	public Object getValue() {
+		return selectedItems;
 	}
 	
 	@Override
@@ -331,13 +347,42 @@ public class GroupField extends BaseField {
 		return null;
 	}
 
+	/****************************************************************************************************/
+	
 	public ArrayList<Widget> getListOfItems() {
-		return listOfItems;
+		return fieldItems;
 	}
 
 	public void setListOfItems(ArrayList<Widget> listOfItems) {
-		this.listOfItems = listOfItems;
+		this.fieldItems = listOfItems;
 	}
+	
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		int eventType = event.getEventType();
+		switch (eventType) {
+		case FieldEvent.CHECKBOX_SELECT: {
+			CheckBox checkbox = (CheckBox) event.getEventData();
+			selectedItems.add(checkbox);
+			break;
+		}
+		case FieldEvent.CHECKBOX_DESELECT: {
+			CheckBox checkbox = (CheckBox) event.getEventData();
+			selectedItems.remove(checkbox);
+			break;
+		}
+		case FieldEvent.RADIOBUTTON_SELECTED: {
+			selectedItems.clear();
+			RadioButton radioButton = (RadioButton) event.getEventData();
+			selectedItems.add(radioButton);
+			break;
+		}
+		default:
+			break;
+		}
+		
+	}
+	/***********************************************************************************/
 
 	public interface GroupFieldConstant extends BaseFieldConstant{
 		
@@ -358,6 +403,5 @@ public class GroupField extends BaseField {
 		public static final String GF_LIST_OF_ITEMS = "listOfItems";
 		
 	}
-
 
 }

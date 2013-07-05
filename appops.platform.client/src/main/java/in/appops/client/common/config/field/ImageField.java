@@ -48,6 +48,9 @@ public class ImageField extends BaseField implements ClickHandler{
 	  
 	}
 
+	/**
+	 * Configure the image field.
+	 */
 	@Override
 	public void configure() {
 		if(getImageBlobId()!=null)

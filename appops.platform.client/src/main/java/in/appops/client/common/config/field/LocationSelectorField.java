@@ -58,11 +58,17 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 	}
 	
 	/************************************************************************/
+	/**
+	 * Method creates the location selector field.
+	 */
 	@Override
 	public void create() {
 	  getBasePanel().add(basePanel, DockPanel.CENTER);
 	}
 	
+	/**
+	 * Method configure the location selector field.
+	 */
 	@Override
 	public void configure() {
 				
@@ -113,7 +119,7 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 	/***************************************** ************************************************************/
 	
 	/**
-	 * Method returns whether map to be shown in popup or not. Defaults to false.
+	 * Returns whether map to be show in popup or not. Defaults to false.
 	 * @return
 	 */
 	private Boolean isMapInPopup() {

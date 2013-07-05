@@ -18,6 +18,8 @@ import com.google.gwt.user.client.ui.ListBox;
  */
 public class ListBoxField extends BaseField implements ChangeHandler,EntityListReceiver{
 
+	//TODO: ListBox with query part is left.
+	
 	private ListBox listBox;
 	private HashMap<String, Object> nameVsEntity ;
 
@@ -141,6 +143,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,EntityListR
 			listBox.addItem(item);
 		}
 	}
+	
 	
 	private void excuteListQuery() {
 		EntityListModel listModel = new EntityListModel();

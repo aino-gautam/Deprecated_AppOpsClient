@@ -60,6 +60,10 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 		
 	}
 	
+	/**
+	 * Method creates the map UI
+	 */
+	
 	public void createMap(){
 		
 		mainPanel = new VerticalPanel();
@@ -116,6 +120,10 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 		
 	}
 	
+	/**
+	 * Method get the address from lattitude and longitude and set the current address also set it in search text field.
+	 * @param latLng
+	 */
 	public void getAddressAndSet(HasLatLng latLng) {
 
 		HasGeocoderRequest gRequest = new GeocoderRequest();
@@ -153,6 +161,10 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 
 	}
 	
+	/**
+	 * Display the searched address in the map.
+	 * @param address
+	 */
 	public void displaySearchedAddress(String address){
 		final HasGeocoderRequest gRequest = new GeocoderRequest();
         gRequest.setAddress(address);
@@ -187,6 +199,10 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
         });
 	}
 	
+	/**
+	 * Method gets the address from latlang also fires FieldEvent.LOCATION_RECIEVED event after location is received.
+	 * @param latLng
+	 */
 	public void getAddressFromLatlang(LatLng latLng) {
 
 		HasGeocoderRequest gRequest = new GeocoderRequest();
@@ -224,6 +240,9 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 
 	}
 	
+	/**
+	 * Method set the error message when user enters invalid location in seach text field.
+	 */
 	private void setInvalidLocationError(){
 		ArrayList<String> errors = new ArrayList<String>();
 		errors.add(searchTextField.getInvalidMsg());
@@ -295,7 +314,7 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 		}case FieldEvent.LOCATION_CHANGED:{
 			FieldEvent changeLocationEvent = new FieldEvent();
 			changeLocationEvent.setEventType(FieldEvent.CHANGE_LOCATION);
-			changeLocationEvent.setEventData(searchTextField.getValue().toString());
+			changeLocationEvent.setEventData(getCurrentAddress());
 			AppUtils.EVENT_BUS.fireEvent(changeLocationEvent);
 			break;
 		}

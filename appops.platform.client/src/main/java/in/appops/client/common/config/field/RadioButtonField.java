@@ -1,11 +1,15 @@
 package in.appops.client.common.config.field;
 
 import in.appops.client.common.config.field.BaseField;
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
 
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 
-public class RadioButtonField extends BaseField{
+public class RadioButtonField extends BaseField implements ValueChangeHandler{
 
 	private RadioButton radioBtn;
 	
@@ -15,6 +19,7 @@ public class RadioButtonField extends BaseField{
 	
 	@Override
 	public void create() {
+		radioBtn.addValueChangeHandler(this);
 		basePanel.add(radioBtn,DockPanel.CENTER);
 	}
 	
@@ -102,6 +107,20 @@ public class RadioButtonField extends BaseField{
 		
 		/** Specify isChecked property for radio button **/
 		public static final String RF_CHECKED = "isChecked";
+		
+	}
+
+
+	@Override
+	public void onValueChange(ValueChangeEvent event) {
+		
+		RadioButton radioButton = (RadioButton) event.getSource();
+		
+		FieldEvent fieldEvent = new FieldEvent();
+		fieldEvent.setEventType(FieldEvent.RADIOBUTTON_SELECTED);
+		
+		fieldEvent.setEventData(radioButton);
+		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 		
 	}
 }

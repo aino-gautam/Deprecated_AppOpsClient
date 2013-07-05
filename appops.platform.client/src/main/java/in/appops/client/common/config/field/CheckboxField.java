@@ -1,11 +1,14 @@
 package in.appops.client.common.config.field;
 
-import in.appops.client.common.config.field.BaseField;
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
 
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DockPanel;
 
-public class CheckboxField extends BaseField{
+public class CheckboxField extends BaseField implements ValueChangeHandler{
 
 	private CheckBox checkBox;
 	
@@ -15,7 +18,7 @@ public class CheckboxField extends BaseField{
 	
 	@Override
 	public void create() {
-		
+		checkBox.addValueChangeHandler(this);
 		basePanel.add(checkBox,DockPanel.CENTER);
 		
 	}
@@ -86,6 +89,22 @@ public class CheckboxField extends BaseField{
 		public static final String CF_DISPLAYTEXT = "displayText";
 		
 		public static final String CF_CHECKED = "isChecked";
+		
+	}
+
+	@Override
+	public void onValueChange(ValueChangeEvent event) {
+		
+		CheckBox checkBox = (CheckBox) event.getSource();
+		boolean checked = checkBox.getValue();
+		FieldEvent fieldEvent = new FieldEvent();
+		if(checked)
+			fieldEvent.setEventType(FieldEvent.CHECKBOX_SELECT);
+		else
+			fieldEvent.setEventType(FieldEvent.CHECKBOX_DESELECT);
+		
+		fieldEvent.setEventData(checkBox);
+		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 		
 	}
 }

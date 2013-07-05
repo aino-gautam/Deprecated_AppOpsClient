@@ -1,9 +1,11 @@
 package in.appops.client.common.config.field;
 
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -40,7 +42,6 @@ public class LinkField extends BaseField implements ClickHandler{
 
 	}
 	
-	
 	/************************************************************************/
 	/**
 	 * creates the field UI
@@ -62,7 +63,9 @@ public class LinkField extends BaseField implements ClickHandler{
 			anchor.setText(getValue().toString());
 	}
 	
-
+    /**
+     * Method configures the link field.
+     */
 	@Override
 	public void configure() {
 		
@@ -215,6 +218,18 @@ public class LinkField extends BaseField implements ClickHandler{
 		return targetFrm;
 	}
 	
+	/**
+	 * Method return the link field event type.  
+	 * @return
+	 */
+	private Integer getLinkClickEvent() {
+		Integer eventType = null;
+		if (getConfigurationValue(LinkFieldConstant.LNK_CLICK_EVENT) != null) {
+			eventType = (Integer) getConfigurationValue(LinkFieldConstant.LNK_CLICK_EVENT);
+		}
+		return eventType;
+	}
+	
 	
 	/*********************************************************************/
 	
@@ -227,8 +242,10 @@ public class LinkField extends BaseField implements ClickHandler{
 	
 	@Override
 	public void onClick(ClickEvent event) {
-		//TODO fire events 
-		Window.alert("Anchor events");
+		int eventType = getLinkClickEvent();
+		FieldEvent fieldEvent = new FieldEvent();
+		fieldEvent.setEventType(eventType);
+		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 	}
 	
 	public interface LinkFieldConstant extends BaseFieldConstant{
@@ -254,6 +271,9 @@ public class LinkField extends BaseField implements ClickHandler{
 		
 		/** Specifies the target frame for anchor **/
 		public static final String LNK_TARGET_FRAME = "targetFrame";
+		
+		/** Specifies the event on link click  **/
+		public static final String LNK_CLICK_EVENT = "clickEvent";
 		
 	}
 	

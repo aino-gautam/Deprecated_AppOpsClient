@@ -169,6 +169,7 @@ public class ButtonField extends BaseField implements ClickHandler{
 		
 	}
 	
+	/*********************************************************************************/
 	
 	public interface ButtonFieldConstant extends BaseFieldConstant{
 		

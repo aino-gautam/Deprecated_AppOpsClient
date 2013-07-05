@@ -1,6 +1,5 @@
 package in.appops.client.common.config.field;
 
-import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.platform.core.shared.Configuration;
 
 import java.io.Serializable;
@@ -176,10 +175,10 @@ public class BaseField extends Composite implements Field {
 	}
 
 	
-	/****************************** All Configurations methods here *********************************/
+	/****************************** *********************************/
 	
 	/**
-	 * Returns configuration is present else creates a new one
+	 * Returns configuration if present else creates a new one
 	 */
 	@Override
 	public Configuration getConfiguration() {
@@ -317,6 +316,10 @@ public class BaseField extends Composite implements Field {
 		return invalidMsg;
 	}
 
+	/**
+	 * Returns if field is readonly or not. Defaults to false.
+	 * @return
+	 */
 	protected boolean isReadOnly() {
 		boolean readOnly = false;
 		if(getConfigurationValue(BaseFieldConstant.BF_READONLY) != null) {
@@ -333,6 +336,10 @@ public class BaseField extends Composite implements Field {
 		return disabled;
 	}
 	
+	/**
+	 * Returns the error message css style. 
+	 * @return
+	 */
 	protected String getErrorMsgCls() {
 		String errorCss = getErrorPosition() == BaseFieldConstant.BF_BOTTOM || getErrorPosition() == BaseFieldConstant.BF_TOP  || getErrorPosition() == BaseFieldConstant.BF_SIDE 
 				? "appops-errorTopBottomCls" : "appops-errorInvalidInline";
@@ -342,6 +349,10 @@ public class BaseField extends Composite implements Field {
 		return errorCss;
 	}
 	
+	/**
+	 * Returns the error icon css style to use.
+	 * @return
+	 */
 	protected String getErrorIconCls() {
 		
 		String errorCss = "appops-errorIconCls";
@@ -351,6 +362,10 @@ public class BaseField extends Composite implements Field {
 		return errorCss;
 	}
 	
+	/**
+	 * Returns the valid field message css style.
+	 * @return
+	 */
 	protected String getValidFieldMsgCls() {
 		String errorCss = getErrorPosition() == BaseFieldConstant.BF_BOTTOM || getErrorPosition() == BaseFieldConstant.BF_TOP  || getErrorPosition() == BaseFieldConstant.BF_SIDE 
 				? "appops-validFieldTopBottomCls" : "appops-validFieldInline";
@@ -360,6 +375,9 @@ public class BaseField extends Composite implements Field {
 		return errorCss;
 	}
 	
+	/**
+	 * Returns the css style with checkmark icon in to use . 
+	 */
 	protected String getValidFieldIconCls() {
 		
 		String errorCss = "appops-validFieldIconCls";
@@ -369,7 +387,10 @@ public class BaseField extends Composite implements Field {
 		return errorCss;
 	}
 	
-	
+	/**
+	 * Returns the suggestion text css style.
+	 * @return
+	 */
 	protected String getSuggestionMsgCls() {
 		
 		String errorCss = "appops-suggestionText";
@@ -396,14 +417,22 @@ public class BaseField extends Composite implements Field {
 		return validateOnBlur;
 	}
 	
+	/**
+	 * Returns whether field allow blank value . Defaults to true.
+	 * @return
+	 */
 	public boolean isAllowBlank() {
-		boolean allowBlank = false;
+		boolean allowBlank = true;
 		if(getConfigurationValue(BaseFieldConstant.BF_ALLOWBLNK) != null) {
 			allowBlank = (Boolean)getConfigurationValue(BaseFieldConstant.BF_ALLOWBLNK);
 		}
 		return allowBlank;
 	}
 	
+	/**
+	 * Returns the tab index of the field.
+	 * @return
+	 */
 	protected Integer getTabIndex() {
 		
 		Integer pos = null;
@@ -414,6 +443,10 @@ public class BaseField extends Composite implements Field {
 		return pos;
 	}
 	
+	/**
+	 * Returns the suggestion position.Defaults to {BF_SUGGESTION_INLINE}
+	 * @return
+	 */
 	protected String getSuggestionPosition() {
 		
 		String pos = BaseFieldConstant.BF_SUGGESTION_INLINE;
@@ -424,6 +457,10 @@ public class BaseField extends Composite implements Field {
 		return pos;
 	}
 	
+	/**
+	 * Returns the suggestion text for the field. If not set returns null;
+	 * @return
+	 */
 	protected String getSuggestionText() {
 		
 		if(getConfigurationValue(BaseFieldConstant.BF_SUGGESTION_TEXT) != null) {
@@ -445,6 +482,10 @@ public class BaseField extends Composite implements Field {
 		return blankFdText;
 	}
 
+	/**
+	 * Returns the error icon blob to use.
+	 * @return
+	 */
 	protected String getErrorIconBlobId(){
 		
 			if(getConfigurationValue(BaseFieldConstant.BF_ERRICON_BLOB) !=null){
@@ -475,7 +516,7 @@ public class BaseField extends Composite implements Field {
 		return validValueTxt;
 
 	}
-	/******************** ***************************/
+	/***********************************************/
 	
 	
 	@Override
@@ -501,7 +542,9 @@ public class BaseField extends Composite implements Field {
 	 */
 	protected void setSuggestionInline () { }
 	
-	
+	/**
+	 * Method clear the inline error message.
+	 */
 	protected void clearInlineMsg () {
 		getWidget().addStyleName(getErrorMsgCls());
 		getWidget().addStyleName(getErrorIconCls());
@@ -515,6 +558,11 @@ public class BaseField extends Composite implements Field {
 	 */
 	protected void setSuggestion() { }
 	
+	/**
+	 * Method set the error or sugegstion to the position provided.
+	 * @param widget
+	 * @param position
+	 */
 	protected void setErrorOrSuggestion(Widget widget,String position){
 			
 		if(position.equals(BaseFieldConstant.BF_BOTTOM)){
@@ -544,6 +592,9 @@ public class BaseField extends Composite implements Field {
 		}
 	}
 	
+	/**
+	 * Method validates the field.
+	 */
 	@Override
 	public boolean validate() {
 		ArrayList<String> errors = getErrors(getFieldValue());
@@ -565,6 +616,9 @@ public class BaseField extends Composite implements Field {
 		return errorMsg;
 	}
 
+	/**
+	 * Method used to set invalid messages.
+	 */
 	@Override
 	public void markInvalid(ArrayList<String> errors) {
 		
@@ -591,6 +645,9 @@ public class BaseField extends Composite implements Field {
 		}
 	}
 	
+	/**
+	 * Method set the valid message.
+	 */
 	@Override
 	public void markValid() {
 		    clearInvalidMarkers();
@@ -621,6 +678,9 @@ public class BaseField extends Composite implements Field {
 		clearError();
 	}
 
+	/** 
+	 * Method clears the error messages.
+	 */
 	public void clearError(){
 		
 		String position = getErrorPosition();
