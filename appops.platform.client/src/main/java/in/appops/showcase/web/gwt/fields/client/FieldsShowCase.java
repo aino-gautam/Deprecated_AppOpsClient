@@ -36,6 +36,8 @@ import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.DateTimeField;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
+import in.appops.client.common.fields.htmleditor.HtmlEditorField;
+import in.appops.client.common.fields.htmleditor.HtmlEditorField.HtmlEditorFieldConstant;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -101,7 +103,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	public static final String IMAGEFIELD = "ImageField";
 	public static final String LISTBOX = "ListBox(Static list)";
 	public static final String LOCATIONSELECTOR = "Location Selector";
-	
+	public static final String HTMLEDITOR = "html Editor";
 	
 	private Image loaderImage;
 	public FieldsShowCase() {
@@ -155,6 +157,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		
 		listBox.addItem(TIME_PICKER);
 		listBox.addItem(DATETIME_PICKER);
+		listBox.addItem(HTMLEDITOR);
 		
 		listBox.addChangeHandler(this);
 		listBox.setStylePrimaryName("fieldShowcaseBasePanel");
@@ -726,6 +729,19 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			innerPanel.setCellHorizontalAlignment(loaderImage,HorizontalPanel.ALIGN_CENTER);
 			loaderImage.setVisible(true);	
 			addMediaUploaderField();
+		} else if(fieldName.equals(HTMLEDITOR)) {
+			
+			Configuration configuration = new Configuration();
+			configuration.setPropertyByName(HtmlEditorFieldConstant.FIELD_MODE, HtmlEditorFieldConstant.FIELD_EDIT_MODE);
+			configuration.setPropertyByName(HtmlEditorFieldConstant.FIELD_HEIGHT, "250px");
+			configuration.setPropertyByName(HtmlEditorFieldConstant.FIELD_WIDTH, "500px");
+			configuration.setPropertyByName(HtmlEditorFieldConstant.FIELD_RESIZE_ENABLE, false);
+			
+			final HtmlEditorField editorField = new HtmlEditorField();
+			editorField.setConfiguration(configuration);
+			editorField.configure();
+			editorField.create();
+			innerPanel.add(editorField);
 		}
 		
 		componentHolder.setPackageName(getPackageNameOfSelectedField(fieldName));
