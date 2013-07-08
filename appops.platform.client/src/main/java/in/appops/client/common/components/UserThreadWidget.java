@@ -140,8 +140,24 @@ public class UserThreadWidget extends Composite implements EventListener,ClickHa
 				if(result!=null){
 				   EntityList  list=result.getOperationResult();
 				   if(list!=null){
-					   mainPanel.clear();
-					 createUserSnippet(list);  
+					  if(list.size() > 0) {
+						mainPanel.clear();
+						createUserSnippet(list);  
+					  } else {
+						  try {
+							  mainPanel.clear();
+							  LabelField labelField = new LabelField();
+							  Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
+							  labelField.setFieldValue("No contacts");
+							  labelField.setConfiguration(labelConfig);
+							  labelField.createField();
+							  mainPanel.add(labelField);
+							  mainPanel.setCellVerticalAlignment(labelField, HasVerticalAlignment.ALIGN_MIDDLE);
+							  mainPanel.setCellHorizontalAlignment(labelField, HasHorizontalAlignment.ALIGN_CENTER);
+						} catch (AppOpsException e) {
+							e.printStackTrace();
+						}
+					  }
 				   }
 				}
 			}

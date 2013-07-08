@@ -6,8 +6,10 @@ import in.appops.client.common.event.SelectionEvent;
 import in.appops.client.common.event.handlers.SelectionEventHandler;
 import in.appops.client.common.fields.ImageField;
 import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.snippet.Snippet;
 import in.appops.client.common.util.BlobDownloader;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
@@ -23,7 +25,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class ContactSelector extends Composite implements SelectionEventHandler,EntityListReceiver{
+public class ContactSelector extends Composite implements SelectionEventHandler, EntityListReceiver, Snippet{
 
 	private boolean isSelectionAllowed;
 	private VerticalPanel basePanel;
@@ -67,14 +69,14 @@ public class ContactSelector extends Composite implements SelectionEventHandler,
 		setInnerPanelWidth();
 		
 		scrollPanel = new ScrollPanel(innerHorizonPanel);
-		int height = Window.getClientHeight() - 120;
-		int width = Window.getClientWidth() - 100;
+		int height = Window.getClientHeight() - 250;
+		int width = Window.getClientWidth() - 330;
 		scrollPanel.setHeight(height + "px");
 		scrollPanel.setWidth(width + "px");
 		titleHorizonPanel.setWidth("100%");
 		basePanel.add(titleHorizonPanel);
 		basePanel.add(scrollPanel);
-		basePanel.setStylePrimaryName("contactSelectorBase");
+		basePanel.addStyleName("contactSelectorBase");
 		
 		contactSelectorModel.getEntityList(0, this);
 	}
@@ -243,8 +245,13 @@ public class ContactSelector extends Composite implements SelectionEventHandler,
 				while(iterator.hasNext()) {
 					Entity entity = iterator.next();
 					ContactSnippet contactSnippet = new ContactSnippet(isSelectionAllowed);
-					String blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
-					String url = downloader.getIconDownloadURL(blobId);
+					String url = null;
+					if(entity.getPropertyByName(ContactConstant.IMGBLOBID) != null) {
+						String blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
+						url = downloader.getIconDownloadURL(blobId);
+					} else {
+						url = "images/default_Icon.png";
+					}
 					Configuration imageConfig = getImageFieldConfiguration(url, "defaultIcon");
 					Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 					contactSnippet.setConfigurationForFields(labelConfig, imageConfig);
@@ -252,6 +259,9 @@ public class ContactSelector extends Composite implements SelectionEventHandler,
 					contactSnippet.addStyleName("flowPanelContent");
 					nearByContactFlowPanel.add(contactSnippet);
 				}
+			} else {
+				Label noResults = new Label("No Contacts");
+				nearByContactFlowPanel.add(noResults);
 			}
 		}
 
@@ -263,8 +273,13 @@ public class ContactSelector extends Composite implements SelectionEventHandler,
 				while(iterator.hasNext()) {
 					Entity entity = iterator.next();
 					ContactSnippet contactSnippet = new ContactSnippet(isSelectionAllowed);
-					String blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
-					String url = downloader.getIconDownloadURL(blobId);
+					String url = null;
+					if(entity.getPropertyByName(ContactConstant.IMGBLOBID) != null) {
+						String blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
+						url = downloader.getIconDownloadURL(blobId);
+					} else {
+						url = "images/default_Icon.png";
+					}
 					Configuration imageConfig = getImageFieldConfiguration(url, "defaultIcon");
 					Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 					contactSnippet.setConfigurationForFields(labelConfig, imageConfig);
@@ -272,6 +287,9 @@ public class ContactSelector extends Composite implements SelectionEventHandler,
 					contactSnippet.addStyleName("flowPanelContent");
 					yourContactFlowPanel.add(contactSnippet);
 				}
+			} else {
+				Label noResults = new Label("No Contacts");
+				yourContactFlowPanel.add(noResults);
 			}
 		}
 
@@ -283,8 +301,13 @@ public class ContactSelector extends Composite implements SelectionEventHandler,
 				while(iterator.hasNext()) {
 					Entity entity = iterator.next();
 					ContactSnippet contactSnippet = new ContactSnippet(isSelectionAllowed);
-					String blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
-					String url = downloader.getIconDownloadURL(blobId);
+					String url = null;
+					if(entity.getPropertyByName(ContactConstant.IMGBLOBID) != null) {
+						String blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
+						url = downloader.getIconDownloadURL(blobId);
+					} else {
+						url = "images/default_Icon.png";
+					}
 					Configuration imageConfig = getImageFieldConfiguration(url, "defaultIcon");
 					Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 					contactSnippet.setConfigurationForFields(labelConfig, imageConfig);
@@ -292,6 +315,9 @@ public class ContactSelector extends Composite implements SelectionEventHandler,
 					contactSnippet.addStyleName("flowPanelContent");
 					contactMayKnownFlowPanel.add(contactSnippet);
 				}
+			} else {
+				Label noResults = new Label("No Contacts");
+				contactMayKnownFlowPanel.add(noResults);
 			}
 		}
 	}
@@ -299,24 +325,26 @@ public class ContactSelector extends Composite implements SelectionEventHandler,
 	@Override
 	public void onSelection(SelectionEvent event) {
 		int eventType = event.getEventType();
-		ContactSnippet contactSnippet = (ContactSnippet) event.getEventData();
-		Entity entity = contactSnippet.getEntity();
-		
-		switch (eventType) {
-		case SelectionEvent.SELECTED: {
-			selectedContactList.add(entity);
-			break;
-		}
-		case SelectionEvent.DESELECTED: {
-			selectedContactList.remove(entity);
-			break;
-		}
-		case SelectionEvent.DATARECEIVED: {
-			//selectedContactList.remove(entity);
-			break;
-		}
-		default:
-			break;
+		if(event.getEventData() instanceof ContactSnippet) {
+			ContactSnippet contactSnippet = (ContactSnippet) event.getEventData();
+			Entity entity = contactSnippet.getEntity();
+			
+			switch (eventType) {
+			case SelectionEvent.SELECTED: {
+				selectedContactList.add(entity);
+				break;
+			}
+			case SelectionEvent.DESELECTED: {
+				selectedContactList.remove(entity);
+				break;
+			}
+			case SelectionEvent.DATARECEIVED: {
+				//selectedContactList.remove(entity);
+				break;
+			}
+			default:
+				break;
+			}
 		}
 	}
 	
@@ -355,6 +383,60 @@ public class ContactSelector extends Composite implements SelectionEventHandler,
 
 	@Override
 	public void updateCurrentView(Entity entity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Entity getEntity() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setEntity(Entity entity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setType(String type) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void initialize() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setConfiguration(Configuration configuration) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Configuration getConfiguration() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ActionContext getActionContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setActionContext(ActionContext actionContext) {
 		// TODO Auto-generated method stub
 		
 	}

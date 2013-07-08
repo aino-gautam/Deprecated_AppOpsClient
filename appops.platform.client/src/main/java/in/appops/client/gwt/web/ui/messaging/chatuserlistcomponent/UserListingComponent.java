@@ -35,7 +35,7 @@ public class UserListingComponent extends Composite{
 	}
 	
 	private void createUI() {
-		int height = Window.getClientHeight() - 200;
+		int height = Window.getClientHeight() - 235;
 		basePanel.setHeight(height + "px");
 		addScrollHandler();
 	}
@@ -77,6 +77,7 @@ public class UserListingComponent extends Composite{
 		}
 		
 		userSnippetContainerPanel.add(widget);
+		widget.addStyleName("widgetSeparator");
 		widgetList.add((ContactSnippetDisplayer) widget);
 	}
 

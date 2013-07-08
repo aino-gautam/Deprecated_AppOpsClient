@@ -288,11 +288,12 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
     	if(keyCode == KeyCodes.KEY_BACKSPACE){
 			int start = textTillCaretPosition.trim().lastIndexOf(" ") + 1;
 			String nodeType = IntelliThoughtUtil.getNodeType(intelliText, start, caretPosition);
-			if(nodeType.equalsIgnoreCase("a")){
-				IntelliThoughtUtil.setCaretPosition(intelliText, start+1, caretPosition, true);
+			if(nodeType != null) {
+				if(nodeType.equalsIgnoreCase("a")){
+					IntelliThoughtUtil.setCaretPosition(intelliText, start+1, caretPosition, true);
+				}
 			}
     	}
-		
 	}
 	
 	private void collectSelectedSuggestion(Entity entity) {

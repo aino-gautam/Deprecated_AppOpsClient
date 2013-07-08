@@ -626,12 +626,12 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 		if(event.getSource().equals(userMsgAlertPanel)) {
 			userMsgAlertPanel.removeStyleName("chatReceivedAlert");
 			userListPopup.show();
-			userListPopup.setPopupPosition(0, 61);
+			userListPopup.setPopupPosition(0, 92);
 		} else if(event.getSource().equals(spaceMsgAlertPanel)) {
 			spaceMsgAlertPanel.removeStyleName("chatReceivedAlert");
 			spaceListPopup.show();
 			int left = Window.getClientWidth() - 198;
-			spaceListPopup.setPopupPosition(left, 56);
+			spaceListPopup.setPopupPosition(left, 87);
 		}
 	}
 

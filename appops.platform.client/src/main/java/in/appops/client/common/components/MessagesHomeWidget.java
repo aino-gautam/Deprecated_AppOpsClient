@@ -163,6 +163,16 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 		mainPanel.setStylePrimaryName("messagesHomeWidget");
 		leftSidePanel.setStylePrimaryName("leftSidePanel");
 		
+		try {
+			LabelField labelField = new LabelField();
+			  Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
+			  labelField.setFieldValue("No Conversation");
+			  labelField.setConfiguration(labelConfig);
+			  labelField.createField();
+			  rightSidePanel.add(labelField);
+		} catch (AppOpsException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public Entity getUserEntity() {
@@ -218,18 +228,32 @@ public class MessagesHomeWidget extends Composite implements FieldEventHandler{
 				
 				if(result!=null){
 				  EntityList  list=result.getOperationResult();
-				    try {
-				    	rightSidePanel.clear();
-						MessagingThreadWithReplyWidget messagingThreadWithReplyWidget = new MessagingThreadWithReplyWidget();
-						messagingThreadWithReplyWidget.setContactEntity(contactEntity);
-						messagingThreadWithReplyWidget.setClickSnippetEntity(snippetEntity);
-						messagingThreadWithReplyWidget.createComponent(list);
-						rightSidePanel.add(messagingThreadWithReplyWidget);
-						
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				    
+				  if(list != null) {
+					  if(list.size() > 0) {
+						  try {
+						    	rightSidePanel.clear();
+								MessagingThreadWithReplyWidget messagingThreadWithReplyWidget = new MessagingThreadWithReplyWidget();
+								messagingThreadWithReplyWidget.setContactEntity(contactEntity);
+								messagingThreadWithReplyWidget.setClickSnippetEntity(snippetEntity);
+								messagingThreadWithReplyWidget.createComponent(list);
+								rightSidePanel.add(messagingThreadWithReplyWidget);
+								
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+					  }else {
+						  try {
+								LabelField labelField = new LabelField();
+								  Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
+								  labelField.setFieldValue("No Conversation");
+								  labelField.setConfiguration(labelConfig);
+								  labelField.createField();
+								  mainPanel.add(labelField);
+							} catch (AppOpsException e) {
+								e.printStackTrace();
+							}
+						  }
+				  }
 				}
 			}
 		});

@@ -281,14 +281,14 @@
 
 @keyframes mainUserListPanelExpand
 {
-0%   {left:-200px; top:61px;}
-100%  {left:0px; top:61px;}
+0%   {left:-200px; top:92px;}
+100%  {left:0px; top:92px;}
 }
 
 @-webkit-keyframes mainUserListPanelExpand 
 {
-0%   {left:-200px; top:61px;}
-100%  {left:0px; top:61px;}
+0%   {left:-200px; top:92px;}
+100%  {left:0px; top:92px;}
 }
 
 .flowPanelContent{
@@ -320,14 +320,14 @@
 
 @keyframes spaceListPanelExpand
 {
-0%   {left:100%; top:56px;}
-100%  {left:85.4%; top:56px;}
+0%   {left:100%; top:87px;}
+100%  {left:85.4%; top:87px;}
 }
 
 @-webkit-keyframes spaceListPanelExpand 
 {
-0%   {left:100%; top:56px;}
-100%  {left:85.4%; top:56px;}
+0%   {left:100%; top:87px;}
+100%  {left:85.4%; top:87px;}
 }
 
 .contactDisplayerBasePanel{
@@ -450,4 +450,18 @@
 	-ms-animation-name: fadeInLeft;
 	-o-animation-name: fadeInLeft;
 	animation-name: fadeInLeft;
+}
+
+.widgetSeparator{
+	border-bottom: 1px dotted darkGray;
+}
+
+.spaceDisplayerBasePanel:HOVER {
+	cursor:pointer;
+	box-shadow: 3px 3px 3px #c3c3c3;
+}
+
+.nearByBasePanel:HOVER {
+	cursor:pointer;
+	box-shadow: 3px 3px 3px #c3c3c3;
 }
