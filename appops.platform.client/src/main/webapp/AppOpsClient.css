@@ -1575,3 +1575,7 @@ td.datePickerMonth {
 .timeSpinner{
 	width: 50px;	
 }
+
+.dateTimelabel{
+	font-weight: bold;
+}

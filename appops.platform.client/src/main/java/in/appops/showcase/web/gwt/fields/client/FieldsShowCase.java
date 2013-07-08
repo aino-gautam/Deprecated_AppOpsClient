@@ -20,6 +20,8 @@ import in.appops.client.common.config.field.LocationSelectorField.LocationSelect
 import in.appops.client.common.config.field.RadioButtonField.RadionButtonFieldConstant;
 import in.appops.client.common.config.field.StateField;
 import in.appops.client.common.config.field.StateField.StateFieldConstant;
+import in.appops.client.common.config.field.date.DateLabelField;
+import in.appops.client.common.config.field.date.DateLabelField.DateLabelFieldConstant;
 import in.appops.client.common.config.field.date.DatePickerField;
 import in.appops.client.common.config.field.date.DatePickerField.DatePickerConstant;
 import in.appops.client.common.config.field.date.DateTimePickerField;
@@ -51,6 +53,7 @@ import in.appops.platform.core.util.EntityList;
 import in.appops.showcase.web.gwt.holder.client.ShowcaseComponentHolder;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -106,6 +109,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	public static final String LISTBOX = "ListBox(Static list)";
 	public static final String LOCATIONSELECTOR = "Location Selector";
 	public static final String HTMLEDITOR = "html Editor";
+	public static final String  DATELABEL_WITH_TIMESTAMP= "DateLable(TimeStamp)";
+	public static final String  DATELABEL_WITH_DATETIME= "DateLable(DateTime)";
 	
 	
 	private Image loaderImage;
@@ -161,6 +166,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		listBox.addItem(DATETIME_PICKER);
 		listBox.addItem(HTMLEDITOR);
 		listBox.addItem(MEDIA_UPLOAD);
+		listBox.addItem(DATELABEL_WITH_TIMESTAMP);
+		listBox.addItem(DATELABEL_WITH_DATETIME);
 		
 		listBox.addChangeHandler(this);
 		listBox.setStylePrimaryName("fieldShowcaseBasePanel");
@@ -543,7 +550,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			innerPanel.setCellHorizontalAlignment(groupField,HorizontalPanel.ALIGN_CENTER);
 		} else if(fieldName.equals(LABELFIELD)) {
 			LabelField labelField = new LabelField();
-			labelField.setConfiguration(getLabelFieldConfiguration(true,"appops-LabelField",null,"Label with configuration"));
+			labelField.setConfiguration(getLabelFieldConfiguration(true,"appops-LabelField","dateTimelabel","Label with configuration"));
 			labelField.configure();
 			labelField.create();
 			innerPanel.add(labelField);
@@ -733,11 +740,35 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			editorField.configure();
 			editorField.create();
 			innerPanel.add(editorField);
+		}else if(fieldName.equals(DATELABEL_WITH_TIMESTAMP)) {
+			DateLabelField dateLabelField = new DateLabelField();
+			dateLabelField.setConfiguration(getDateLabelTimeStampConf(DateLabelFieldConstant.LIVETIMESTAMP_DSPLY));
+			dateLabelField.configure();
+			dateLabelField.create();
+			innerPanel.add(dateLabelField);
+			innerPanel.setCellHorizontalAlignment(dateLabelField,HorizontalPanel.ALIGN_CENTER);
+		}else if(fieldName.equals(DATELABEL_WITH_DATETIME)) {
+			DateLabelField dateLabelField = new DateLabelField();
+			dateLabelField.setConfiguration(getDateLabelTimeStampConf(DateLabelFieldConstant.DATETIME_DSPLY));
+			dateLabelField.configure();
+			dateLabelField.create();
+			innerPanel.add(dateLabelField);
+			innerPanel.setCellHorizontalAlignment(dateLabelField,HorizontalPanel.ALIGN_CENTER);
 		}
 		
 		componentHolder.setPackageName(getPackageNameOfSelectedField(fieldName));
 	}
 	
+	private Configuration getDateLabelTimeStampConf(String displayFormat) {
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(DateLabelFieldConstant.DTLBL_DSPLY_FORM, displayFormat);
+		configuration.setPropertyByName(DateLabelFieldConstant.DATETIME_FORMAT, "MMM dd ''yy 'at' HH:mm");
+		configuration.setPropertyByName(DateLabelFieldConstant.DATETIME_TO_DISPLAY, new Date());
+		configuration.setPropertyByName(DateLabelFieldConstant.BF_PCLS, "dateTimelabel");
+		
+		return configuration;
+	}
+
 	private Configuration getMediaFieldConfiguration() {
 		
 		Configuration configuration = new Configuration();
@@ -874,6 +905,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				return LocationSelectorField.class.getName();
 			}else if(fieldName.equals(HTMLEDITOR)) {
 				return HtmlEditorField.class.getName();
+			}else if(fieldName.equals(DATELABEL_WITH_DATETIME) || fieldName.equals(DATELABEL_WITH_TIMESTAMP)) {
+				return DateLabelField.class.getName();
 			}
 			
 		return null;
