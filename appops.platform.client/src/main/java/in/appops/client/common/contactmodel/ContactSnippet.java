@@ -60,7 +60,18 @@ public class ContactSnippet extends Composite implements Snippet, ClickHandler {
 	
 	public void initialize(Entity entity) {
 		this.entity = entity;
-		String name = entity.getPropertyByName(ContactConstant.NAME).toString();
+		String name;
+		if(entity.getPropertyByName(ContactConstant.NAME) != null) {
+			name = entity.getPropertyByName(ContactConstant.NAME).toString();
+		} else {
+			name = entity.getPropertyByName(ContactConstant.EMAILID).toString();
+			int length = name.length();
+			if(length >= 14) {
+				basePanel.setTitle(name);
+				CharSequence nameSequence = name.subSequence(0, 14);
+				name = nameSequence + "...";
+			}
+		}
 		userName.setFieldValue(name);
 		userName.resetField();
 	}
