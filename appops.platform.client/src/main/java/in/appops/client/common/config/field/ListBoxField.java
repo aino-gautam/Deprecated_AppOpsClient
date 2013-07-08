@@ -1,27 +1,54 @@
 package in.appops.client.common.config.field;
 
-import in.appops.client.common.core.EntityListModel;
-import in.appops.client.common.core.EntityListReceiver;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.query.Query;
+import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.util.EntityList;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
+import java.util.Map;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.ListBox;
 
 /**
- * Field class to represent listbox. 
- * @author pallavi@ensarm.com
- */
-public class ListBoxField extends BaseField implements ChangeHandler,EntityListReceiver{
+Field class to represent a {@link ListBox}
+@author pallavi@ensarm.com
 
-	//TODO: ListBox with query part is left.
+<p>
+<h3>Configuration</h3>
+<a href="ListBoxField.ListBoxFieldConstant.html">Available configurations</a>
+</p>
+
+<p>
+<h3>Example</h3>
+ListBoxField staticListBox = new ListBoxField();
+Configuration configuration = new Configuration();
+ArrayList<String> items = new ArrayList<String>();
+items.add("Private access");
+items.add("Public");
+items.add("Restricted");
+items.add("Me");
+configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,items);
+staticListBox.setConfiguration(conf);<br>
+staticListBox.configure();<br>
+staticListBox.create();<br>
+
+</p>*/
+public class ListBoxField extends BaseField {
+
+	//TODO: ListBox with query testing is left.
 	
 	private ListBox listBox;
 	private HashMap<String, Object> nameVsEntity ;
+	private final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 
 	public ListBoxField(){
 		listBox = new ListBox();
@@ -32,14 +59,14 @@ public class ListBoxField extends BaseField implements ChangeHandler,EntityListR
 	@Override
 	public void create() {
 		
-		if(getListQuery()!=null){
+		if(getListQueryName()!=null){
 			excuteListQuery();
 		}else{
 			if(getStaticListOfItems()!=null){
 				populateList(getStaticListOfItems());
 			}
 		}
-		listBox.addChangeHandler(this);
+		
 		getBasePanel().add(listBox, DockPanel.CENTER);
 	}
 	
@@ -62,7 +89,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,EntityListR
 	@Override
 	public Object getValue() {
 		String selectedItem = listBox.getItemText(listBox.getSelectedIndex());
-		if(getListQuery()!=null){
+		if(getListQueryName()!=null){
 			return nameVsEntity.get(selectedItem);
 		}
 		return selectedItem;
@@ -98,7 +125,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,EntityListR
 	 * Method returns the list query;
 	 * @return
 	 */
-	private String getListQuery() {
+	private String getListQueryName() {
 		String query = null;
 		if(getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY) != null) {
 			query = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY);
@@ -118,6 +145,42 @@ public class ListBoxField extends BaseField implements ChangeHandler,EntityListR
 		return entprop;
 	}
 	
+	/**
+	 * Method returns the list of restrictions to the query.;
+	 * @return
+	 */
+	private HashMap<String, Object> getQueryRestrictions() {
+		HashMap<String, Object> queryRestrictions = null;
+		if(getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_RESTRICTION) != null) {
+			queryRestrictions =  (HashMap<String, Object>) getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_RESTRICTION);
+		}
+		return queryRestrictions;
+	}
+	
+	/**
+	 * Method returns the max result for query.
+	 * @return
+	 */
+	private Integer getQueryMaxResult() {
+		Integer maxResult = 10;
+		if(getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_MAXRESULT) != null) {
+			maxResult =(Integer) getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_MAXRESULT);
+		}
+		return maxResult;
+	}
+	
+	
+	/**
+	 * Method returns the operation to execute.
+	 * @return
+	 */
+	private String getOperationName() {
+		String queryname = null;
+		if(getConfigurationValue(ListBoxFieldConstant.LSTFD_OPRTION) != null) {
+			queryname =(String) getConfigurationValue(ListBoxFieldConstant.LSTFD_OPRTION);
+		}
+		return queryname;
+	}
 	/***********************************************************************************/
 
 	/**
@@ -146,42 +209,34 @@ public class ListBoxField extends BaseField implements ChangeHandler,EntityListR
 	
 	
 	private void excuteListQuery() {
-		EntityListModel listModel = new EntityListModel();
-		Query query = new Query();
-		query.setQueryName(getListQuery());
-		listModel.setQueryToBind(query);
-		listModel.getEntityList(10, this);
-		listModel.getCurrentEntityList();
-	}
-	
-	@Override
-	public void onChange(ChangeEvent event) {
 		
-	}
-	
-	@Override
-	public void noMoreData() {
-		// TODO Auto-generated method stub
+		Query queryObj = new Query();
+		queryObj.setQueryName(getListQueryName());
+		queryObj.setListSize(getQueryMaxResult());
+		queryObj.setQueryParameterMap(getQueryRestrictions());
 		
-	}
+		Map parameterMap = new HashMap();
+		parameterMap.put("query", queryObj);
+		
+		StandardAction action = new StandardAction(Entity.class, getOperationName(), parameterMap);
+		dispatch.execute(action, new AsyncCallback<Result>() {
 
-	@Override
-	public void onEntityListReceived(EntityList entityList) {
-		if(entityList!=null)
-			populateEntityList(entityList);
-		
-	}
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
 
-	@Override
-	public void onEntityListUpdated() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void updateCurrentView(Entity entity) {
-		// TODO Auto-generated method stub
-		
+			@Override
+			public void onSuccess(Result result) {
+				
+				if(result!=null){
+					EntityList list   = (EntityList) result.getOperationResult();
+					if(!list.isEmpty())
+						populateEntityList(list);
+				}
+				
+			}
+		});
 	}
 	
 	public interface ListBoxFieldConstant extends BaseFieldConstant{
@@ -192,11 +247,15 @@ public class ListBoxField extends BaseField implements ChangeHandler,EntityListR
 		/** Specifies the no of items in the list. **/
 		public static final String LSTFD_ITEMS = "listOfItems";
 		
-		/** Specifies the query to execute. **/
-		public static final String LSTFD_QUERY = "query";
+		public static final String LSTFD_QUERY = "queryName";
 		
-		/** Specifies the property of the entity to display in the list **/
+		public static final String LSTFD_OPRTION = "operation";
+		
+		public static final String LSTFD_QUERY_MAXRESULT = "queryMaxresult";
+		
 		public static final String LSTFD_ENTPROP = "propertyToDisplay";
+		
+		public static final String LSTFD_QUERY_RESTRICTION = "queryRestriction";
 		
 	}
 

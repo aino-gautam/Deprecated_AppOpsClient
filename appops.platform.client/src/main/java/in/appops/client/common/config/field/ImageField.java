@@ -43,7 +43,8 @@ public class ImageField extends BaseField implements ClickHandler{
 	 */
 	@Override
 	public void create() {
-	  image.addClickHandler(this);
+		if(getImageClickEvent()!=null)
+			image.addClickHandler(this);
 	  getBasePanel().add(image,DockPanel.CENTER);
 	  
 	}

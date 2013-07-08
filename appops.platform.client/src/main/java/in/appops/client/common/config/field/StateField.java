@@ -4,6 +4,7 @@ package in.appops.client.common.config.field;
 import in.appops.client.common.config.field.suggestion.AppopsSuggestionBox;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.google.gwt.user.client.ui.DockPanel;
 
@@ -53,8 +54,16 @@ public class StateField extends BaseField {
 	@Override
 	public void configure() {
 		appopsSuggestionBox = new AppopsSuggestionBox();
-		appopsSuggestionBox.setStaticSuggestionBox(isStaticSuggestionBox());
-		appopsSuggestionBox.setItemsToDisplay(getFieldItemList());
+		if(isStaticSuggestionBox()){
+			appopsSuggestionBox.setStaticSuggestionBox(isStaticSuggestionBox());
+			appopsSuggestionBox.setItemsToDisplay(getFieldItemList());
+		}else{
+			appopsSuggestionBox.setQueryName(getQueryName());
+			appopsSuggestionBox.setQueryRestrictions(getQueryRestrictions());
+			appopsSuggestionBox.setIsSearchQuery(isSearchQuery());
+			appopsSuggestionBox.setQueryMaxResult(getQueryMaxResult());
+		}
+		
 		appopsSuggestionBox.setAutoSuggestion(isAutosuggestion());
 		appopsSuggestionBox.createUi();
 	}
@@ -89,6 +98,18 @@ public class StateField extends BaseField {
 	}
 	
 	/**
+	 * Method returns the max result for query.
+	 * @return
+	 */
+	private Integer getQueryMaxResult() {
+		Integer maxResult = 10;
+		if(getConfigurationValue(StateFieldConstant.STFD_QUERY_MAXRESULT) != null) {
+			maxResult =(Integer) getConfigurationValue(StateFieldConstant.STFD_QUERY_MAXRESULT);
+		}
+		return maxResult;
+	}
+	
+	/**
 	 * Method returns the list of items to show in field;
 	 * @return
 	 */
@@ -100,14 +121,40 @@ public class StateField extends BaseField {
 		return listOfItems;
 	}
 	
+	
+	/**
+	 * Method returns the list of restrictions to the query.;
+	 * @return
+	 */
+	private HashMap<String, Object> getQueryRestrictions() {
+		HashMap<String, Object> queryRestrictions = null;
+		if(getConfigurationValue(StateFieldConstant.STFD_QUERY_RESTRICTION) != null) {
+			queryRestrictions =  (HashMap<String, Object>) getConfigurationValue(StateFieldConstant.STFD_QUERY_RESTRICTION);
+		}
+		return queryRestrictions;
+	}
+	
 	/**
 	 * Method returns the query string to bind with.
 	 * @return
 	 */
-	private String getQuery() {
+	private String getQueryName() {
 		String queryname = null;
 		if(getConfigurationValue(StateFieldConstant.STFD_QUERY) != null) {
 			queryname =(String) getConfigurationValue(StateFieldConstant.STFD_QUERY);
+		}
+		return queryname;
+	}
+	
+	
+	/**
+	 * Method returns the operation to execute.
+	 * @return
+	 */
+	private String getOperationName() {
+		String queryname = null;
+		if(getConfigurationValue(StateFieldConstant.STFD_OPRTION) != null) {
+			queryname =(String) getConfigurationValue(StateFieldConstant.STFD_OPRTION);
 		}
 		return queryname;
 	}

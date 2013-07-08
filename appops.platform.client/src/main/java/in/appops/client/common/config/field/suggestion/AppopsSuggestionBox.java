@@ -84,7 +84,7 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 * Method sets the max result of the query result.
 	 * @param max
 	 */
-	public void setMaxResult(int max) {
+	public void setQueryMaxResult(int max) {
 		oracle.setMaxResult(max);
 	}
 
