@@ -102,15 +102,15 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 			if(getConfiguration().getPropertyByName(SCROLLPANELWIDTH) != null)
 				scrollPanel.setWidth(getConfiguration().getPropertyByName(SCROLLPANELWIDTH) + "px");
 			else{
-				int width = Window.getClientWidth() - 100;
-				scrollPanel.setWidth(width + "px");
+				/*int width = Window.getClientWidth() - 100;
+				scrollPanel.setWidth(width + "px");*/
 			}
 			
 			if(getConfiguration().getPropertyByName(SCROLLPANELHEIGHT) != null)
 				scrollPanel.setHeight(getConfiguration().getPropertyByName(SCROLLPANELHEIGHT) + "px");
 			else{
-				int height = Window.getClientHeight() - 120;
-				scrollPanel.setHeight(height + "px");
+				/*int height = Window.getClientHeight() - 120;
+				scrollPanel.setHeight(height + "px");*/
 			}
 		}else{
 			gridPanel.setStylePrimaryName("listComponentPanel");
@@ -250,8 +250,11 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 			if(entityList.isEmpty()){
 				noMoreResultLabel.setText("No result(s)");
 			}else{
-				if(maxResult==0)
-					maxResult = entityList.getMaxResult();
+				if(maxResult==0) {
+					if(entityList.getMaxResult() != null) {
+						maxResult = entityList.getMaxResult();
+					}
+				}
 				initializeGridPanel(entityList);
 			}
 		}
@@ -295,40 +298,41 @@ public class GridSnippet extends Composite implements Snippet, EntityListReceive
 	
 	@Override
 	public void onSelection(SelectionEvent event) {
-		Entity entity = (Entity) event.getEventData();
 		int eventType = event.getEventType();
 		
-		if (getConfiguration() != null) {
-			if(getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)!=null){
-				if((Boolean)getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)){
+		if(event.getEventData() instanceof Entity) {
+			Entity entity = (Entity) event.getEventData();
+			if (getConfiguration() != null) {
+				if(getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)!=null){
+					if((Boolean)getConfiguration().getPropertyByName(SnippetConstant.SELECTIONMODE)){
 
-				EntitySelectionModel entitySelectionModel = (EntitySelectionModel) entityListModel;
-				
-				switch (eventType) {
-				case SelectionEvent.SELECTED: {
-					entitySelectionModel.addSelectedEntity(entity);
-					if (entitySelectionModel.getSelectedList() == entitySelectionModel.getCurrentEntityList()) {
-						selectAllCheckboxField.setChecked(true);
+					EntitySelectionModel entitySelectionModel = (EntitySelectionModel) entityListModel;
+					
+					switch (eventType) {
+					case SelectionEvent.SELECTED: {
+						entitySelectionModel.addSelectedEntity(entity);
+						if (entitySelectionModel.getSelectedList() == entitySelectionModel.getCurrentEntityList()) {
+							selectAllCheckboxField.setChecked(true);
+						}
+						break;
 					}
-					break;
-				}
-				case SelectionEvent.DESELECTED: {
-					entitySelectionModel.removeSelection(entity);
-					boolean checked = selectAllCheckboxField.isChecked();
-					if (checked)
-						selectAllCheckboxField.setChecked(false);
+					case SelectionEvent.DESELECTED: {
+						entitySelectionModel.removeSelection(entity);
+						boolean checked = selectAllCheckboxField.isChecked();
+						if (checked)
+							selectAllCheckboxField.setChecked(false);
 
-					break;
-				}
+						break;
+					}
 
-				default:
-					break;
-				}
+					default:
+						break;
+					}
 
+				}
+			}
 			}
 		}
-		}
-		
 	}
 	
 	@Override
