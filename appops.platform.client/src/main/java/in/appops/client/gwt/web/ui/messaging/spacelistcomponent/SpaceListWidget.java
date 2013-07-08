@@ -127,10 +127,14 @@ public class SpaceListWidget extends Composite implements EntityListReceiver,Mes
 				}
 			});
 			
-			Image bearByImage = new Image("images/nearby.png");
-			bearByImage.setStylePrimaryName("chatSpaceIcon");
-			nearbyWidgetContainer.add(bearByImage);
+			Image nearByImage = new Image("images/nearby.png");
+			nearByImage.setStylePrimaryName("chatSpaceIcon");
+			nearbyWidgetContainer.add(nearByImage);
 			nearbyWidgetContainer.add(spaceNameAnchor);
+			nearbyWidgetContainer.addStyleName("widgetSeparator");
+			nearbyWidgetContainer.setWidth("95%");
+			nearbyWidgetContainer.setCellWidth(nearByImage, "10%");
+			nearbyWidgetContainer.addStyleName("nearByBasePanel");
 			
 			baseVp.add(nearbyWidgetContainer);
 			
@@ -208,6 +212,9 @@ public class SpaceListWidget extends Composite implements EntityListReceiver,Mes
 		try{
 			for(Entity entity : entityList){
 				SpaceWidgetIcon spWidgetIcon = new SpaceWidgetIcon(entity);
+				spWidgetIcon.addStyleName("widgetSeparator");
+				spWidgetIcon.setWidth("100%");
+				spWidgetIcon.addStyleName("spaceDisplayerBasePanel");
 				centerBaseConatiner.add(spWidgetIcon);
 				spaceList.add(spWidgetIcon);
 			}

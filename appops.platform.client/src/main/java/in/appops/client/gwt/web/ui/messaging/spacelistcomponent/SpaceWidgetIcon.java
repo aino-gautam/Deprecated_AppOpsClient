@@ -61,6 +61,8 @@ public class SpaceWidgetIcon extends VerticalPanel implements MessengerEventHand
 			spaceIcon.setStylePrimaryName("chatSpaceIcon");
 			widgetIconHolder.add(spaceIcon);
 			widgetIconHolder.add(spaceNameAnchor);
+			widgetIconHolder.setWidth("100%");
+			widgetIconHolder.setCellWidth(spaceIcon, "10%");
 			
 			add(widgetIconHolder);
 			
