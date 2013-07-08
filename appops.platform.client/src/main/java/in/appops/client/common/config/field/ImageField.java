@@ -43,7 +43,7 @@ public class ImageField extends BaseField implements ClickHandler{
 	 */
 	@Override
 	public void create() {
-		if(getImageClickEvent()!=null)
+		if(getImageClickEvent()!=0)
 			image.addClickHandler(this);
 	  getBasePanel().add(image,DockPanel.CENTER);
 	  
@@ -84,7 +84,7 @@ public class ImageField extends BaseField implements ClickHandler{
 	 * @return
 	 */
 	private Integer getImageClickEvent() {
-		Integer eventType = null;
+		Integer eventType = 0;
 		if (getConfigurationValue(ImageFieldConstant.IMGFD_CLICK_EVENT) != null) {
 			eventType = (Integer) getConfigurationValue(ImageFieldConstant.IMGFD_CLICK_EVENT);
 		}

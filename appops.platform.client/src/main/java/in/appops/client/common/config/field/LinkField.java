@@ -82,7 +82,9 @@ public class LinkField extends BaseField implements ClickHandler{
 			anchor.setHref(getHref());
 			if(getTargetFrame()!=null)
 				anchor.setTarget(getTargetFrame());
-			anchor.addClickHandler(this);
+			
+			if(getLinkClickEvent()!=0)
+				anchor.addClickHandler(this);
 		}
 		
 		if(getBaseFieldPrimCss()!= null)
@@ -223,7 +225,7 @@ public class LinkField extends BaseField implements ClickHandler{
 	 * @return
 	 */
 	private Integer getLinkClickEvent() {
-		Integer eventType = null;
+		Integer eventType = 0;
 		if (getConfigurationValue(LinkFieldConstant.LNK_CLICK_EVENT) != null) {
 			eventType = (Integer) getConfigurationValue(LinkFieldConstant.LNK_CLICK_EVENT);
 		}

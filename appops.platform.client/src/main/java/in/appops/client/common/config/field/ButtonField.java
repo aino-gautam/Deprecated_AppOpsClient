@@ -44,8 +44,8 @@ public class ButtonField extends BaseField implements ClickHandler{
 	 */
 	@Override
 	public void create(){
-		
-		button.addClickHandler(this);
+		if(getBtnClickEvent()!=0)
+			button.addClickHandler(this);
 		
 		getBasePanel().add(button,DockPanel.CENTER);
 	}
@@ -150,7 +150,7 @@ public class ButtonField extends BaseField implements ClickHandler{
 	 * @return
 	 */
 	private Integer getBtnClickEvent() {
-		Integer eventType = null;
+		Integer eventType = 0;
 		if (getConfigurationValue(ButtonFieldConstant.BTNFD_CLICK_EVENT) != null) {
 			eventType = (Integer) getConfigurationValue(ButtonFieldConstant.BTNFD_CLICK_EVENT);
 		}

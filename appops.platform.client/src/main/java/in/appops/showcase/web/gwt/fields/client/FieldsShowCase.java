@@ -721,12 +721,11 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			innerPanel.setCellHorizontalAlignment(listSpinner,HorizontalPanel.ALIGN_CENTER);
 
 		} else if(fieldName.equals(MEDIA_UPLOAD)) {
-			MediaField mediaField = new MediaField();
-			mediaField.setConfiguration(getMediaFieldConfiguration());
-			mediaField.configure();
-			mediaField.create();
-			innerPanel.add(mediaField);
-			innerPanel.setCellHorizontalAlignment(mediaField,HorizontalPanel.ALIGN_CENTER);
+			
+			innerPanel.add(loaderImage);
+			innerPanel.setCellHorizontalAlignment(loaderImage,HorizontalPanel.ALIGN_CENTER);
+			loaderImage.setVisible(true);	
+			addMediaUploaderField();
 		}else if(fieldName.equals(HTMLEDITOR)) {
 			
 			Configuration configuration = new Configuration();
@@ -840,8 +839,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	
 	private void addMediaUploaderField() {
 		Map parameters = new HashMap();
-		parameters.put("emailId", "nitish@ensarm.com");
-		parameters.put("password", "nitish123");
+		parameters.put("emailId", "pallavi@ensarm.com");
+		parameters.put("password", "pallavi123");
 		
 		StandardAction action = new StandardAction(EntityList.class, "useraccount.LoginService.validateUser", parameters);
 		
@@ -861,10 +860,12 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			@Override
 			public void onSuccess(Result result) {
 				innerPanel.clear();
-				Label mediaUploadLabel = new Label("Media Uploader");
-				MediaAttachWidget mediaAttachWidget = createMediaField();
-				innerPanel.add(mediaAttachWidget);
-				innerPanel.setCellHorizontalAlignment(mediaAttachWidget,HorizontalPanel.ALIGN_CENTER);
+				MediaField mediaField = new MediaField();
+				mediaField.setConfiguration(getMediaFieldConfiguration());
+				mediaField.configure();
+				mediaField.create();
+				innerPanel.add(mediaField);
+				innerPanel.setCellHorizontalAlignment(mediaField,HorizontalPanel.ALIGN_CENTER);
 			}
 		});
 	}
