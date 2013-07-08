@@ -159,16 +159,16 @@ public class MainUserListingComponent extends Composite implements MessengerEven
 	 */
 	private void createUserSuggestionWidget() {
 		//userSuggestionField.setQueryName("getContactListSuggestion");
-		//TODO: changes made for spaceId not present
+		//TODO: changes made for spaceId not present i.e for AppopsShowcase
 		userSuggestionField.setQueryName("getContactForChat");
-		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		/*HashMap<String, Object> paramMap = new HashMap<String, Object>();
 		Long spaceId = null;
 		if(AppEnviornment.getCurrentSpace()!=null){
 			Entity spaceEnt = AppEnviornment.getCurrentSpace();
 			spaceId = ((Key<Long>)spaceEnt.getPropertyByName(SpaceConstants.ID)).getKeyValue();
 			paramMap.put("spaceId", spaceId);
 			userSuggestionField.setQueryRestrictions(paramMap);
-		}
+		}*/
 		userSuggestionField.setOperationName("contact.ContactService.getEntityList");
 	}
 
