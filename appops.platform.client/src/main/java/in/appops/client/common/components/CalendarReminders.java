@@ -71,8 +71,6 @@ public class CalendarReminders extends VerticalPanel implements Field{
 	private Configuration createConfigurationForDefaultList() {
 		Configuration configuration = new Configuration();
 		configuration.setPropertyByName(SnippetConstant.SELECTIONMODE, false);
-		configuration.setPropertyByName(ListSnippet.SCROLLPANELWIDTH, 650);
-		configuration.setPropertyByName(ListSnippet.SCROLLPANELHEIGHT, 500);
 		configuration.setPropertyByName(ReminderListSnippet.DEFAULT_LIST, "defaultList");
 		setConfiguration(configuration);
 		return configuration;
@@ -109,8 +107,6 @@ public class CalendarReminders extends VerticalPanel implements Field{
 	private Configuration createConfigurationForDateList(Date eventData) {
 		Configuration configuration = new Configuration();
 		configuration.setPropertyByName(SnippetConstant.SELECTIONMODE, false);
-		configuration.setPropertyByName(ListSnippet.SCROLLPANELWIDTH, 650);
-		configuration.setPropertyByName(ListSnippet.SCROLLPANELHEIGHT, 500);
 		configuration.setPropertyByName(ReminderListSnippet.DATEBASED_LIST, "dateBasedList");
 		configuration.setPropertyByName(ReminderListSnippet.DATEBASED_LIST_VALUE, eventData);
 		
