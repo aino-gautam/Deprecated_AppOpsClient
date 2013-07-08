@@ -60,7 +60,7 @@ public class ImageField extends BaseField implements ClickHandler{
 		if(getBaseFieldPrimCss()!=null)
 			image.setStylePrimaryName(getBaseFieldPrimCss());		
 		if(getBaseFieldCss()!=null)
-			image.setStylePrimaryName(getBaseFieldCss());
+			image.addStyleName(getBaseFieldCss());
 	}
 	
 	/*********************** *****************************/

@@ -6,12 +6,16 @@ import gwtupload.client.IUploader;
 import gwtupload.client.IUploader.OnFinishUploaderHandler;
 import gwtupload.client.IUploader.UploadedInfo;
 import gwtupload.client.MultiUploader;
+import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.AttachmentEvent;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.client.common.snippet.Snippet;
 import in.appops.client.common.snippet.SnippetFactory;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.server.core.services.media.constant.MediaConstant;
 
 import java.util.HashMap;
@@ -19,12 +23,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class WebMediaAttachWidget extends MediaAttachWidget{
+public class WebMediaAttachWidget extends MediaAttachWidget implements FieldEventHandler{
 
 
 	private HashMap<String, HorizontalPanel> uploadedBlobIdVsSnippetMap = null;
@@ -51,10 +53,8 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 		fileUploader.setEnabled(true);
 		fileUploader.avoidRepeatFiles(true);
 		fileUploader.setVisible(true);
-		//String[] validExtensions = {"jpg","jpeg","gif","png"};
-		
-		String[] validExtensions = (String[]) getExtensionList().toArray();
-		
+				
+		String[] validExtensions = getExtensionList().toArray(new String[getExtensionList().size()]);
 		fileUploader.setValidExtensions(validExtensions);
 
 		fileUploader.addOnFinishUploadHandler(new OnFinishUploaderHandler() {
@@ -96,8 +96,13 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 		snippet.initialize();
 		iconPanel.add(snippet);
 		
-		IconWithCrossImage crossImage = new IconWithCrossImage(blobId, "images/crossIconSmall.png");
-		iconPanel.add(crossImage);
+		IconWithCrossImageField crossImageField = new IconWithCrossImageField();
+		crossImageField.setConfiguration(getUplodedImageConfiguration(getCrossImageBlobId()));
+		crossImageField.setBlobId(blobId);
+		crossImageField.configure();
+		crossImageField.create();
+		
+		iconPanel.add(crossImageField);
 		
 		attachmentPanel.add(iconPanel);
 		uploadedBlobIdVsSnippetMap.put(blobId, iconPanel);
@@ -105,25 +110,6 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 			uploadedMediaId.add(blobId);
 		}
 		
-		crossImage.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				
-				if(isSingleUpload) {
-					multiUploader.setVisible(true);
-				}
-				
-				IconWithCrossImage crossImage = (IconWithCrossImage) event.getSource();
-				String blbId = crossImage.getBlobId();
-				if(uploadedBlobIdVsSnippetMap.containsKey(blbId)){
-					HorizontalPanel snippetPanel = uploadedBlobIdVsSnippetMap.get(blbId);
-					uploadedBlobIdVsSnippetMap.remove(blbId);
-					uploadedMediaId.remove(blbId);
-					attachmentPanel.remove(snippetPanel);
-					AppUtils.EVENT_BUS.fireEvent(new AttachmentEvent(3, blbId));
-				}
-			}
-		});
 	}
 	
 	IUploader.OnCancelUploaderHandler onCancelUploaderHandler = new IUploader.OnCancelUploaderHandler() {
@@ -197,5 +183,40 @@ public class WebMediaAttachWidget extends MediaAttachWidget{
 
 	public void setFileUploadPanelCss(String fileUploadPanelCss) {
 		this.fileUploadPanelCss = fileUploadPanelCss;
+	}
+	
+	private Configuration getUplodedImageConfiguration(String blobId){
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, blobId);
+		configuration.setPropertyByName(ImageFieldConstant.BF_PCLS, getCrossImagePrimaryCss());
+		configuration.setPropertyByName(ImageFieldConstant.IMGFD_CLICK_EVENT,FieldEvent.UPLOADED_IMGCLICKED);
+		configuration.setPropertyByName(ImageFieldConstant.IMGFD_TITLE, "UploadImage");
+		return configuration;
+		
+	}
+
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		int eventType = event.getEventType();
+		switch (eventType) {
+		case FieldEvent.UPLOADED_IMGCLICKED: {
+			if(isSingleUpload) {
+				multiUploader.setVisible(true);
+			}
+			
+			IconWithCrossImageField crossImage = (IconWithCrossImageField) event.getSource();
+			String blbId = crossImage.getBlobId();
+			if(uploadedBlobIdVsSnippetMap.containsKey(blbId)){
+				HorizontalPanel snippetPanel = uploadedBlobIdVsSnippetMap.get(blbId);
+				uploadedBlobIdVsSnippetMap.remove(blbId);
+				uploadedMediaId.remove(blbId);
+				attachmentPanel.remove(snippetPanel);
+				AppUtils.EVENT_BUS.fireEvent(new AttachmentEvent(3, blbId));
+			}
+		}
+		default:
+			break;
+		}
+		
 	}
 }

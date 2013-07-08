@@ -1,9 +1,10 @@
 package in.appops.client.common.config.field.media;
 
 import in.appops.client.common.config.field.BaseField;
-import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
-import in.appops.platform.core.shared.Configurable;
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 
 import java.util.ArrayList;
@@ -11,23 +12,22 @@ import java.util.ArrayList;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class MediaField extends BaseField implements  Configurable{
+public class MediaField extends BaseField implements FieldEventHandler{
 	
-	private ImageField mediaImageField;
 	private VerticalPanel basePanel;
 	private MediaAttachWidget mediaAttachWidget;
 	
 	public MediaField(){
 		basePanel = new VerticalPanel();
-		initWidget(basePanel);
 	}
 	
 	@Override
 	public void create() {
 		
 		mediaAttachWidget.createUi();
-		mediaImageField.setVisible(isMediaImageVisible());
 		mediaAttachWidget.createAttachmentUi();
+		mediaAttachWidget.collapse();
+		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
 		basePanel.add(mediaAttachWidget);
 		getBasePanel().add(basePanel,DockPanel.CENTER);
 	}
@@ -41,9 +41,12 @@ public class MediaField extends BaseField implements  Configurable{
 		if(getBaseFieldCss()!=null)
 		mediaAttachWidget.setDependentcss(getBaseFieldCss());
 		
+		mediaAttachWidget.setProfileImage(isProfileImage());
 		mediaAttachWidget.setExtensionList(getExtensionList());
 		mediaAttachWidget.setMediaImageConfiguration(getMediaImageConfiguration());
 		mediaAttachWidget.setFileUploadPanelCss(getFileUploadPanelcss());
+		mediaAttachWidget.setCrossImageBlobId(getCrossImageBlobId());
+		mediaAttachWidget.setCrossImagePrimaryCss(getCrossImagePrimaryCss());
 	}
 	
 	/**
@@ -52,11 +55,11 @@ public class MediaField extends BaseField implements  Configurable{
 	 */
 	private String getMediaImageBlobId() {
 		
-		String blobId = "mediaImage";
+		String blobId = "images/Media.png";
 		
-		if(getConfigurationValue(MediaFieldConsatnt.MF_MEDIAIMG_BLOB) != null) {
+		if(getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_BLOB) != null) {
 			
-			blobId = getConfigurationValue(MediaFieldConsatnt.MF_MEDIAIMG_BLOB).toString();
+			blobId = getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_BLOB).toString();
 		}
 		return blobId;
 	}
@@ -67,11 +70,26 @@ public class MediaField extends BaseField implements  Configurable{
 	 */
 	private String getMediaImagePrimaryCss() {
 		
-		String primCss = null;
+		String primCss = "mediaImage";
 		
-		if(getConfigurationValue(MediaFieldConsatnt.MF_MEDIAIMG_PCLS) != null) {
+		if(getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_PCLS) != null) {
 			
-			primCss = getConfigurationValue(MediaFieldConsatnt.MF_MEDIAIMG_PCLS).toString();
+			primCss = getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_PCLS).toString();
+		}
+		return primCss;
+	}
+	
+	/**
+	 * Method returns media image primary css.
+	 * @return
+	 */
+	private String getCrossImagePrimaryCss() {
+		
+		String primCss = "crossIconSmall";
+		
+		if(getConfigurationValue(MediaFieldConstant.MF_CROSSIMG_PCLS) != null) {
+			
+			primCss = getConfigurationValue(MediaFieldConstant.MF_CROSSIMG_PCLS).toString();
 		}
 		return primCss;
 	}
@@ -84,9 +102,9 @@ public class MediaField extends BaseField implements  Configurable{
 		
 		String primCss = null;
 		
-		if(getConfigurationValue(MediaFieldConsatnt.MF_MEDIAIMG_DCLS) != null) {
+		if(getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_DCLS) != null) {
 			
-			primCss = getConfigurationValue(MediaFieldConsatnt.MF_MEDIAIMG_DCLS).toString();
+			primCss = getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_DCLS).toString();
 		}
 		return primCss;
 	}
@@ -98,13 +116,13 @@ public class MediaField extends BaseField implements  Configurable{
 	 */
 	private String getCrossImageBlobId() {
 		
-		String primCss = null;
+		String crossImageBlobId = "images/crossIconSmall.png";
 		
-		if(getConfigurationValue(MediaFieldConsatnt.MF_CROSSIMG_BLOBID) != null) {
+		if(getConfigurationValue(MediaFieldConstant.MF_CROSSIMG_BLOBID) != null) {
 			
-			primCss = getConfigurationValue(MediaFieldConsatnt.MF_CROSSIMG_BLOBID).toString();
+			crossImageBlobId = getConfigurationValue(MediaFieldConstant.MF_CROSSIMG_BLOBID).toString();
 		}
-		return primCss;
+		return crossImageBlobId;
 	}
 	
 	/**
@@ -113,13 +131,28 @@ public class MediaField extends BaseField implements  Configurable{
 	 */
 	private String getFileUploadPanelcss() {
 		
-		String primCss = null;
+		String primCss = "appops-webMediaAttachment";
 		
-		if(getConfigurationValue(MediaFieldConsatnt.MF_FILEUPLOADER_CLS) != null) {
+		if(getConfigurationValue(MediaFieldConstant.MF_FILEUPLOADER_CLS) != null) {
 			
-			primCss = getConfigurationValue(MediaFieldConsatnt.MF_FILEUPLOADER_CLS).toString();
+			primCss = getConfigurationValue(MediaFieldConstant.MF_FILEUPLOADER_CLS).toString();
 		}
 		return primCss;
+	}
+	
+	/**
+	 * Method returns file upload panel css.
+	 * @return
+	 */
+	private Integer getMediaImageClickEvent() {
+		
+		Integer clickEvent = null;
+		
+		if(getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_CLICKEVENT) != null) {
+			
+			clickEvent = (Integer) getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_CLICKEVENT);
+		}
+		return clickEvent;
 	}
 	/**
 	 * Returns if profile image.
@@ -129,9 +162,9 @@ public class MediaField extends BaseField implements  Configurable{
 		
 		Boolean isProfileImage = null;
 		
-		if(getConfigurationValue(MediaFieldConsatnt.MF_ISPROFILE_IMG) != null) {
+		if(getConfigurationValue(MediaFieldConstant.MF_ISPROFILE_IMG) != null) {
 			
-			isProfileImage = (Boolean)getConfigurationValue(MediaFieldConsatnt.MF_ISPROFILE_IMG);
+			isProfileImage = (Boolean)getConfigurationValue(MediaFieldConstant.MF_ISPROFILE_IMG);
 		}
 		return isProfileImage;
 	}
@@ -146,9 +179,9 @@ public class MediaField extends BaseField implements  Configurable{
 		
 		Boolean isVisible = true;
 		
-		if(getConfigurationValue(MediaFieldConsatnt.MF_ISMEDIAIMG_VISIBLE) != null) {
+		if(getConfigurationValue(MediaFieldConstant.MF_ISMEDIAIMG_VISIBLE) != null) {
 			
-			isVisible = (Boolean)getConfigurationValue(MediaFieldConsatnt.MF_ISMEDIAIMG_VISIBLE);
+			isVisible = (Boolean)getConfigurationValue(MediaFieldConstant.MF_ISMEDIAIMG_VISIBLE);
 		}
 		return isVisible;
 	}
@@ -162,9 +195,9 @@ public class MediaField extends BaseField implements  Configurable{
 		
 		ArrayList<String> extensionList = null;
 		
-		if(getConfigurationValue(MediaFieldConsatnt.MF_VALIDEXTEXNSION_LIST) != null) {
+		if(getConfigurationValue(MediaFieldConstant.MF_VALIDEXTEXNSION_LIST) != null) {
 			
-			extensionList = (ArrayList<String>) getConfigurationValue(MediaFieldConsatnt.MF_VALIDEXTEXNSION_LIST);
+			extensionList = (ArrayList<String>) getConfigurationValue(MediaFieldConstant.MF_VALIDEXTEXNSION_LIST);
 		}
 		return extensionList;
 	}
@@ -175,15 +208,33 @@ public class MediaField extends BaseField implements  Configurable{
 	private Configuration getMediaImageConfiguration(){
 		
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, "images/test2.jpg");
+		configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, getMediaImageBlobId());
 		configuration.setPropertyByName(ImageFieldConstant.BF_PCLS,getMediaImagePrimaryCss());
 		configuration.setPropertyByName(ImageFieldConstant.BF_DCLS,getMediaImageDependentCss());
+		configuration.setPropertyByName(ImageFieldConstant.IMGFD_CLICK_EVENT,getMediaImageClickEvent());
 		configuration.setPropertyByName(ImageFieldConstant.IMGFD_TITLE, "Upload");
 		return configuration;
 		
 	}
+	
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		int eventType = event.getEventType();
+		switch (eventType) {
+		case FieldEvent.MEDIA_UPLOAD: {
+			if(mediaAttachWidget.isExpand()){
+				mediaAttachWidget.collapse();
+			} else if(mediaAttachWidget.isCollapse()){
+				mediaAttachWidget.expand();
+			}
+		}
+		default:
+			break;
+		}
+		
+	}
 
-	public interface MediaFieldConsatnt extends BaseFieldConstant{
+	public interface MediaFieldConstant extends BaseFieldConstant{
 		
 		/** Specifies the blobId for media image to show **/
 		public static final String MF_MEDIAIMG_BLOB = "blobId";
@@ -203,12 +254,19 @@ public class MediaField extends BaseField implements  Configurable{
 		/** Specifies the valid extensions supported**/
 		public static final String MF_FILEUPLOADER_CLS = "fileUploadPanelCss";
 		
-		/** Specifies the cross image css**/
+		/** Specifies the cross image blobId**/
 		public static final String MF_CROSSIMG_BLOBID = "crossImageBlobId";
+		
+		/** Specifies the cross image css**/
+		public static final String MF_CROSSIMG_PCLS = "crossImageCss";
 		
 		/** Specifies id media image should be visible or not**/
 		public static final String MF_ISMEDIAIMG_VISIBLE = "isMediaImageVisible";
 		
+		/** Specifies id media image should be visible or not**/
+		public static final String MF_MEDIAIMG_CLICKEVENT = "mediaClickEvent";
+		
 	}
+
 	
 }

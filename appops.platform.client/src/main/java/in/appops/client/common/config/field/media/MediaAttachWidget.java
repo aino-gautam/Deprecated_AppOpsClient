@@ -22,11 +22,15 @@ public abstract class MediaAttachWidget extends Composite implements Configurabl
 	protected VerticalPanel fileUploadPanel = null;
 	protected HorizontalPanel attachmentPanel = null;
 	protected boolean isSingleUpload;
+	
+	protected boolean isProfileImage;
 	private String primaryCss;
 	private String dependentcss;
 	private String fileUploadPanelCss;
 	private Configuration mediaImageConfiguration;
 	private ArrayList<String> extensionList ;
+	private String crossImageBlobId;
+	private String crossImagePrimaryCss;
 	
 	public MediaAttachWidget(){
 		initialize();
@@ -136,5 +140,37 @@ public abstract class MediaAttachWidget extends Composite implements Configurabl
 
 	public void setFileUploadPanelCss(String fileUploadPanelCss) {
 		this.fileUploadPanelCss = fileUploadPanelCss;
+	}
+
+	public boolean isProfileImage() {
+		return isProfileImage;
+	}
+
+	public void setProfileImage(boolean isProfileImage) {
+		this.isProfileImage = isProfileImage;
+	}
+
+	public ImageField getMediaImageField() {
+		return mediaImageField;
+	}
+
+	public void setMediaImageField(ImageField mediaImageField) {
+		this.mediaImageField = mediaImageField;
+	}
+
+	public String getCrossImageBlobId() {
+		return crossImageBlobId;
+	}
+
+	public void setCrossImageBlobId(String crossImageBlobId) {
+		this.crossImageBlobId = crossImageBlobId;
+	}
+
+	public String getCrossImagePrimaryCss() {
+		return crossImagePrimaryCss;
+	}
+
+	public void setCrossImagePrimaryCss(String crossImagePrimaryCss) {
+		this.crossImagePrimaryCss = crossImagePrimaryCss;
 	}
 }

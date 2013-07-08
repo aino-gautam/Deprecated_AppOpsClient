@@ -26,6 +26,8 @@ import in.appops.client.common.config.field.date.DateTimePickerField;
 import in.appops.client.common.config.field.date.DateTimePickerField.DateTimePickerFieldConstant;
 import in.appops.client.common.config.field.date.TimePickerField;
 import in.appops.client.common.config.field.date.TimePickerField.TimePickerFieldConstant;
+import in.appops.client.common.config.field.media.MediaField;
+import in.appops.client.common.config.field.media.MediaField.MediaFieldConstant;
 import in.appops.client.common.config.field.rangeslider.RangeSliderField;
 import in.appops.client.common.config.field.rangeslider.RangeSliderField.RangeSliderFieldConstant;
 import in.appops.client.common.config.field.spinner.SpinnerField;
@@ -37,7 +39,6 @@ import in.appops.client.common.fields.DateTimeField;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.client.common.fields.htmleditor.HtmlEditorField;
-import in.appops.client.common.fields.htmleditor.HtmlEditorField.HtmlEditorFieldConstant;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -103,7 +104,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	public static final String IMAGEFIELD = "ImageField";
 	public static final String LISTBOX = "ListBox(Static list)";
 	public static final String LOCATIONSELECTOR = "Location Selector";
-	public static final String HTMLEDITOR = "html Editor";
+public static final String HTMLEDITOR = "html Editor";
+	
 	
 	private Image loaderImage;
 	public FieldsShowCase() {
@@ -141,7 +143,6 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		listBox.addItem(DATE_PICKER);
 		listBox.addItem(NUM_SPINNER);
 		listBox.addItem(LIST_SPINNER);
-		/*listBox.addItem(MEDIA_UPLOAD);*/
 		listBox.addItem(GROUPFIELD);
 		listBox.addItem(GROUPFIELDRADIO);
 		listBox.addItem(LABELFIELD);
@@ -158,6 +159,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		listBox.addItem(TIME_PICKER);
 		listBox.addItem(DATETIME_PICKER);
 		listBox.addItem(HTMLEDITOR);
+		listBox.addItem(MEDIA_UPLOAD);
 		
 		listBox.addChangeHandler(this);
 		listBox.setStylePrimaryName("fieldShowcaseBasePanel");
@@ -724,12 +726,13 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			innerPanel.setCellHorizontalAlignment(listSpinner,HorizontalPanel.ALIGN_CENTER);
 
 		} else if(fieldName.equals(MEDIA_UPLOAD)) {
-
-			innerPanel.add(loaderImage);
-			innerPanel.setCellHorizontalAlignment(loaderImage,HorizontalPanel.ALIGN_CENTER);
-			loaderImage.setVisible(true);	
-			addMediaUploaderField();
-		} else if(fieldName.equals(HTMLEDITOR)) {
+			MediaField mediaField = new MediaField();
+			mediaField.setConfiguration(getMediaFieldConfiguration());
+			mediaField.configure();
+			mediaField.create();
+			innerPanel.add(mediaField);
+			innerPanel.setCellHorizontalAlignment(mediaField,HorizontalPanel.ALIGN_CENTER);
+		}else if(fieldName.equals(HTMLEDITOR)) {
 			
 			Configuration configuration = new Configuration();
 			configuration.setPropertyByName(HtmlEditorFieldConstant.FIELD_MODE, HtmlEditorFieldConstant.FIELD_EDIT_MODE);
@@ -747,6 +750,26 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		componentHolder.setPackageName(getPackageNameOfSelectedField(fieldName));
 	}
 	
+	private Configuration getMediaFieldConfiguration() {
+		
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_BLOB, "images/Media.png");
+		configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_PCLS, "mediaImage");
+		configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_DCLS, "fadeInUp");
+		configuration.setPropertyByName(MediaFieldConstant.MF_ISPROFILE_IMG, true);
+		configuration.setPropertyByName(MediaFieldConstant.MF_FILEUPLOADER_CLS, "appops-webMediaAttachment");
+		configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_CLICKEVENT, FieldEvent.MEDIA_UPLOAD);
+		
+		ArrayList<String> extensions = new ArrayList<String>();
+		extensions.add("jpg");
+		extensions.add("jpeg");
+		extensions.add("gif");
+		extensions.add("png");
+		configuration.setPropertyByName(MediaFieldConstant.MF_VALIDEXTEXNSION_LIST, extensions);
+		
+		return configuration;
+	}
+
 	private Configuration getDateTimePickerFieldConfiguration(){
 		Configuration configuration = new Configuration();
 		configuration.setPropertyByName(DateTimePickerFieldConstant.DATE_DEFVAL, "01.07.2013");
@@ -848,7 +871,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			} else if(fieldName.equals(LIST_SPINNER)) {
 				return SpinnerField.class.getName();
 			} else if(fieldName.equals(MEDIA_UPLOAD)) {
-				return MediaAttachWidget.class.getName();
+				return MediaField.class.getName();
 			}else if(fieldName.equals(LABELFIELD)) {
 				return LabelField.class.getName();
 			}else if(fieldName.equals(LINKFIELDHYPERLINK) || fieldName.equals(LINKFIELDANCHOR)) {
@@ -861,6 +884,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				return ButtonField.class.getName();
 			}else if(fieldName.equals(LOCATIONSELECTOR)) {
 				return LocationSelectorField.class.getName();
+			}else if(fieldName.equals(HTMLEDITOR)) {
+				return HtmlEditorField.class.getName();
 			}
 			
 		return null;
