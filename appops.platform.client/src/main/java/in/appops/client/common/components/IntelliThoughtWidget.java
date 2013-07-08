@@ -6,6 +6,7 @@ import in.appops.client.common.event.ActionEvent;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.AttachmentEvent;
 import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.SearchEvent;
 import in.appops.client.common.event.handlers.AttachmentEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.IntelliThoughtField;
@@ -212,21 +213,21 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 
 		Widget source = (Widget) event.getSource();
 		if(source.equals(searchBasePanel)){
-/*			SearchEvent searchEvent = new SearchEvent(SearchEvent.SEARCHFIRED, text);
-			AppUtils.EVENT_BUS.fireEvent(searchEvent);*/
+			SearchEvent searchEvent = new SearchEvent(SearchEvent.SEARCHFIRED, text);
+			AppUtils.EVENT_BUS.fireEvent(searchEvent);
 
-			/**** For Appops Showcase *****/
+			/**** For Appops Showcase *****//*
 			if(!text.trim().equals("")) {
 				Window.open( GWT.getHostPageBaseURL() + "SearchWidgetDemo.html?text="+text.trim(), "right_frame", "");
-			}
+			}*/
 		} else if(source.equals(messageBasePanel)){
-//			ActionEvent actionEvent = getMessageActionEvent();
-//			AppUtils.EVENT_BUS.fireEvent(actionEvent);
+			ActionEvent actionEvent = getMessageActionEvent();
+			AppUtils.EVENT_BUS.fireEvent(actionEvent);
 
 			/**** For Appops Showcase *****/
-			if(!text.trim().equals("")) {
+			/*if(!text.trim().equals("")) {
 				Window.open( GWT.getHostPageBaseURL() + "contactbox.html?text="+text.trim(), "right_frame", "");
-			}
+			}*/
 		}
 	}
 
@@ -331,11 +332,11 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 								
 								@Override
 								public void onClick(ClickEvent event) {
-	//								ActionEvent actionEvent = getActionEvent(actionWidget);
-	//								actionWidget.fireEvent(actionEvent);
+									ActionEvent actionEvent = getActionEvent(actionWidget);
+									actionWidget.fireEvent(actionEvent);
 									
 									/**** For Appops Showcase *****/
-									appopsClientTransformWidget(widgetName);
+//									appopsClientTransformWidget(widgetName);
 								}
 	
 							});
