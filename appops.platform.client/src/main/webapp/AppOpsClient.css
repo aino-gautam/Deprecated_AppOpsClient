@@ -416,10 +416,9 @@
 	background: #EEE;
 	/* webkit-box-shadows: 1px 2px 3px rgba(0, 0, 0, 0.1);
 	moz-box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1);
-	box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1); */
-	padding-left: 2px;
-	padding-right: 2px;
-	padding-top: 2px;
+	box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.1); 
+	border: 1px solid #dcdcdc;*/
+	box-shadow: 4px 4px 4px #c3c3c3;
 }
 .selectedContactSnippet{
 	background: #EEE;
@@ -436,7 +435,11 @@
 	margin-bottom: 10px;
 }
 .contactSelectorBase{
-	margin: 0px 10px;
+	border: 1px solid #E0E0E0;
+	border-radius: 5px;
+	padding: 50px 50px;
+	box-shadow: 5px 5px 5px #B0B0B0;
+	margin-top: 10px;
 }
 .selectedItem {
 	background-color: #E6E6E6;

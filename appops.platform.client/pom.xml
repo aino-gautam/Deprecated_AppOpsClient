@@ -164,7 +164,7 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>13.05.2013</version>
+			<version>14.06.2013</version>
 		</dependency>
 
 		<dependency>
@@ -223,141 +223,141 @@
 		<!-- Appops server jars -->
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>core</artifactId>
-			<version>13.06.2013</version>
+			<version>19.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>entitystore</artifactId>
-			<version>13.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>entitycache</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>configuration</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>media</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>blobstore</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>spacemanagement</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>useraccount</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>searchservice</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>httpsessionservice</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>entitybroadcast</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>calendar</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>statics</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>contact</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>messenger</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>social</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>usermessage</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>inservice</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>restaurant</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>deal</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>dating</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>email</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>activity</artifactId>
-			<version>12.06.2013</version>
+			<version>20.06.2013</version>
 		</dependency>
 
 	</dependencies>
