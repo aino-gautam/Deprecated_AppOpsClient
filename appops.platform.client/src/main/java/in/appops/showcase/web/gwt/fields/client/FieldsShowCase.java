@@ -105,7 +105,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	public static final String IMAGEFIELD = "ImageField";
 	public static final String LISTBOX = "ListBox(Static list)";
 	public static final String LOCATIONSELECTOR = "Location Selector";
-public static final String HTMLEDITOR = "html Editor";
+	public static final String HTMLEDITOR = "html Editor";
 	
 	
 	private Image loaderImage;
@@ -173,19 +173,6 @@ public static final String HTMLEDITOR = "html Editor";
 		basePanel.setStylePrimaryName("fieldShowcaseBasePanel");
 		return basePanel;
 		
-	}
-	
-	
-	private Configuration getDateTimeFieldConfiguration() {
-		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(DatePickerConstant.BF_DEFVAL, "01.07.2013");
-		configuration.setPropertyByName(DatePickerConstant.DP_MAXDATE, "03.08.2013");
-		configuration.setPropertyByName(DatePickerConstant.DP_MINDATE, "05.06.2013");
-		configuration.setPropertyByName(DatePickerConstant.DP_FORMAT, "dd.MM.yyyy");
-		configuration.setPropertyByName(DatePickerConstant.DP_ALLOWBLNK, false);
-		configuration.setPropertyByName(DatePickerConstant.BF_ERRPOS, DatePickerConstant.BF_BOTTOM);
-		configuration.setPropertyByName(TimePickerFieldConstant.TIME_FORMAT, TimePickerFieldConstant.FORMAT24HOUR_WITH_SECONDS);
-		return configuration;
 	}
 	
 	private Configuration getLocationSelectorConf(double latitude, double longitude) {

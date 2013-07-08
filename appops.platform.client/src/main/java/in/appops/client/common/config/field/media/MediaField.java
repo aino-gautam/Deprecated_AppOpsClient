@@ -6,12 +6,54 @@ import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
-
 import java.util.ArrayList;
-
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+
+/**
+Field class to represent a {@link Media upload field}
+@author pallavi@ensarm.com
+
+
+<h3>CSS Style Rules</h3>
+<ul class='css'>
+<li>.mediaImage { primary style for media upload image  }</li>
+<li>.crossIconSmall { primary style for cross on uploaded image}</li>
+<li>.appops-webMediaAttachment { class with width and height }</li>
+<li>.appops-validFieldTopBottomCls { style to show valid messages outside the field }</li>
+<li>.appops-validFieldIconCls { style class with valid field icon set in the background }</li>
+<li>.appops-validFieldInline { style class to show valid field  }</li>
+<li>.appops-suggestionText { style to show suggestion text }</li>
+</ul>
+<p>
+<h3>Configuration</h3>
+<a href="MediaField.MediaFieldConstant.html">Available configurations</a>
+</p>
+
+<p>
+<h3>Example</h3>
+
+MediaField mediaField = new MediaField();
+Configuration configuration = new Configuration();
+configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_BLOB, "images/Media.png");
+configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_PCLS, "mediaImage");
+configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_DCLS, "fadeInUp");
+configuration.setPropertyByName(MediaFieldConstant.MF_ISPROFILE_IMG, true);
+configuration.setPropertyByName(MediaFieldConstant.MF_FILEUPLOADER_CLS, "appops-webMediaAttachment");
+configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_CLICKEVENT, FieldEvent.MEDIA_UPLOAD);
+
+ArrayList<String> extensions = new ArrayList<String>();
+extensions.add("jpg");
+extensions.add("jpeg");
+extensions.add("gif");
+extensions.add("png");
+configuration.setPropertyByName(MediaFieldConstant.MF_VALIDEXTEXNSION_LIST, extensions);
+mediaField.setConfiguration(configuration);
+mediaField.configure();<br>
+mediaField.create();<br>
+
+</p>*/
 public class MediaField extends BaseField implements FieldEventHandler{
 	
 	private VerticalPanel basePanel;
@@ -50,7 +92,7 @@ public class MediaField extends BaseField implements FieldEventHandler{
 	}
 	
 	/**
-	 * Method returns media image blobId.
+	 * Method returns media image blobId. Defaults to "images/Media.png".
 	 * @return
 	 */
 	private String getMediaImageBlobId() {
@@ -65,7 +107,7 @@ public class MediaField extends BaseField implements FieldEventHandler{
 	}
 	
 	/**
-	 * Method returns media image primary css.
+	 * Method returns media image primary css. 
 	 * @return
 	 */
 	private String getMediaImagePrimaryCss() {
@@ -141,7 +183,7 @@ public class MediaField extends BaseField implements FieldEventHandler{
 	}
 	
 	/**
-	 * Method returns file upload panel css.
+	 * Method returns event that will be fired when user clicks on media upload image.
 	 * @return
 	 */
 	private Integer getMediaImageClickEvent() {
@@ -155,12 +197,12 @@ public class MediaField extends BaseField implements FieldEventHandler{
 		return clickEvent;
 	}
 	/**
-	 * Returns if profile image.
+	 * Returns if profile image. Defaults to false.
 	 * @return
 	 */
 	private Boolean isProfileImage() {
 		
-		Boolean isProfileImage = null;
+		Boolean isProfileImage = false;
 		
 		if(getConfigurationValue(MediaFieldConstant.MF_ISPROFILE_IMG) != null) {
 			
@@ -172,7 +214,7 @@ public class MediaField extends BaseField implements FieldEventHandler{
 	
 	
 	/**
-	 * Returns if media image shouldbe visible. Defaults to true.
+	 * Returns if media image should be visible. Defaults to true.
 	 * @return
 	 */
 	private Boolean isMediaImageVisible() {
@@ -263,10 +305,9 @@ public class MediaField extends BaseField implements FieldEventHandler{
 		/** Specifies id media image should be visible or not**/
 		public static final String MF_ISMEDIAIMG_VISIBLE = "isMediaImageVisible";
 		
-		/** Specifies id media image should be visible or not**/
+		/** Specifies the event that will be fired when user clicks on media upload image**/
 		public static final String MF_MEDIAIMG_CLICKEVENT = "mediaClickEvent";
 		
 	}
-
 	
 }
