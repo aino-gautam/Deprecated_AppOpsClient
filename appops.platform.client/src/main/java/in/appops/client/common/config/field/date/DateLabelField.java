@@ -112,6 +112,19 @@ public class DateLabelField extends BaseField{
 		return date;
 	}
 		
+	/**
+	 * Method returns whether title should be visible or not on the date label. Defaults to true.
+	 * @return
+	 */
+	private Boolean isTitleVisible() {
+		
+		Boolean displayFormat = true;
+		if(getConfigurationValue(DateLabelFieldConstant.IS_TITLE_VISIBLE) != null) {
+			
+			displayFormat = (Boolean) getConfigurationValue(DateLabelFieldConstant.IS_TITLE_VISIBLE);
+		}
+		return displayFormat;
+	}
 	/**************************************************************************************************/
 	
 	private void setTimeToLabel(){
@@ -166,6 +179,9 @@ public class DateLabelField extends BaseField{
 		conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, true);
 		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, getBaseFieldPrimCss());
 		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, getBaseFieldCss());
+		
+		if(isTitleVisible())
+			conf.setPropertyByName(LabelFieldConstant.LBLFD_TITLE, getDateTimeToDisplay().toString());
 		return conf;
 		
 	}
@@ -199,6 +215,9 @@ public class DateLabelField extends BaseField{
 		
 		/** Specifies the date time. */
 		public static final String DATETIME_TO_DISPLAY = "dateTimeToDisplay";
+		
+		/** Specifies if tooltip with datetime should be displayed or not on dateLabel. */
+		public static final String IS_TITLE_VISIBLE = "isTitleVisible";
 		
 	}
 
