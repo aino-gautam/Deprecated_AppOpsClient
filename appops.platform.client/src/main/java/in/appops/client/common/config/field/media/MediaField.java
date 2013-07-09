@@ -21,10 +21,6 @@ Field class to represent a {@link Media upload field}
 <li>.mediaImage { primary style for media upload image  }</li>
 <li>.crossIconSmall { primary style for cross on uploaded image}</li>
 <li>.appops-webMediaAttachment { class with width and height }</li>
-<li>.appops-validFieldTopBottomCls { style to show valid messages outside the field }</li>
-<li>.appops-validFieldIconCls { style class with valid field icon set in the background }</li>
-<li>.appops-validFieldInline { style class to show valid field  }</li>
-<li>.appops-suggestionText { style to show suggestion text }</li>
 </ul>
 <p>
 <h3>Configuration</h3>
@@ -34,22 +30,22 @@ Field class to represent a {@link Media upload field}
 <p>
 <h3>Example</h3>
 
-MediaField mediaField = new MediaField();
-Configuration configuration = new Configuration();
-configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_BLOB, "images/Media.png");
-configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_PCLS, "mediaImage");
-configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_DCLS, "fadeInUp");
-configuration.setPropertyByName(MediaFieldConstant.MF_ISPROFILE_IMG, true);
-configuration.setPropertyByName(MediaFieldConstant.MF_FILEUPLOADER_CLS, "appops-webMediaAttachment");
+MediaField mediaField = new MediaField();<br>
+Configuration configuration = new Configuration();<br>
+configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_BLOB, "images/Media.png");<br>
+configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_PCLS, "mediaImage");<br>
+configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_DCLS, "fadeInUp");<br>
+configuration.setPropertyByName(MediaFieldConstant.MF_ISPROFILE_IMG, true);<br>
+configuration.setPropertyByName(MediaFieldConstant.MF_FILEUPLOADER_CLS, "appops-webMediaAttachment");<br>
 configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_CLICKEVENT, FieldEvent.MEDIA_UPLOAD);
-
-ArrayList<String> extensions = new ArrayList<String>();
-extensions.add("jpg");
-extensions.add("jpeg");
-extensions.add("gif");
-extensions.add("png");
-configuration.setPropertyByName(MediaFieldConstant.MF_VALIDEXTEXNSION_LIST, extensions);
-mediaField.setConfiguration(configuration);
+<br>
+ArrayList<String> extensions = new ArrayList<String>();<br>
+extensions.add("jpg");<br>
+extensions.add("jpeg");<br>
+extensions.add("gif");<br>
+extensions.add("png");<br>
+configuration.setPropertyByName(MediaFieldConstant.MF_VALIDEXTEXNSION_LIST, extensions);<br>
+mediaField.setConfiguration(configuration);<br>
 mediaField.configure();<br>
 mediaField.create();<br>
 
