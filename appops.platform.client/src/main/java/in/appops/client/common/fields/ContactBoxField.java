@@ -241,10 +241,10 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 		Key<Serializable> key=(Key<Serializable>) spaceEntity.getProperty(SpaceConstants.ID).getValue();
 		Long spaceId = (Long) key.getKeyValue();
 		Query query = new Query();
-		query.setQueryName("getMessageContact");
+		query.setQueryName("getContactListSuggestion");
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("search", "%"+eventData+"%");
-		//map.put("spaceId", spaceId);
+		map.put("searchChar", "%"+eventData+"%");
+		map.put("spaceId", spaceId);
 		query.setQueryParameterMap(map);
 		query.setListSize(8);
 		ContactSelectorModel contactSelectorModel = new ContactSelectorModel(query,"contact.ContactService.getEntityList",0);
@@ -410,6 +410,20 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 			contactWigetSuggestion.clearList();
 			contactWigetSuggestion.setEntityList(entityList);
 			contactWigetSuggestion.populateSuggestions();
+			if(!contactWigetSuggestion.isShowing()){
+				contactWigetSuggestion.show();
+				contactWigetSuggestion.setWidth(basePanel.getElement().getOffsetWidth() - 10 + "px");
+	
+				contactWigetSuggestion.setPopupPosition(posx, posy);
+				contactWigetSuggestion.setFirstSelection();
+			}
+		 }
+	 }else{
+		    final int posy = basePanel.getElement().getAbsoluteTop() + basePanel.getElement().getOffsetHeight();
+			final int posx = basePanel.getElement().getAbsoluteLeft();
+			if(posy != 0 || posx !=0){
+				contactWigetSuggestion.clearList();
+		 	contactWigetSuggestion.showNoResult();
 			if(!contactWigetSuggestion.isShowing()){
 				contactWigetSuggestion.show();
 				contactWigetSuggestion.setWidth(basePanel.getElement().getOffsetWidth() - 10 + "px");
