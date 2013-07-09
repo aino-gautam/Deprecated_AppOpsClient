@@ -3,6 +3,8 @@ package in.appops.client.common.snippet;
 import in.appops.client.common.components.CalendarEvents;
 import in.appops.client.common.components.CalendarReminders;
 import in.appops.client.common.components.CreateCalendarEntryScreen;
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.CalendarAndReminderEvent;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.fields.Field;
 import in.appops.client.common.fields.LabelField;
@@ -459,6 +461,9 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 		countryProp.setValue("India");
 		calendarEnt.setProperty(countryProp);
 		
+		//Date date = new Date();
+		//String timeZone=DateTimeFormat.getFormat("ZZZZ").format(date);
+		
 		Property<String> timezoneProp = new Property<String>();
 		timezoneProp.setName(CalendarConstant.TIMEZONE);
 		//timezoneProp.setValue(tz.getDisplayName());
@@ -522,6 +527,11 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 						 popupPanel.center();
 						 popupPanel.setAutoHideEnabled(true);
 						 calendarEntryScreen.clearAllFields();
+						 CalendarAndReminderEvent calendarEvent = new CalendarAndReminderEvent();
+						 calendarEvent.setEventData("");
+						 calendarEvent.setEventType(CalendarAndReminderEvent.COMPLETION);
+						 popupPanel.hide();
+					     AppUtils.EVENT_BUS.fireEvent(calendarEvent);
 					   }else{
 						   addReminderForEvent(calendarEntity);
 					   }
@@ -577,6 +587,11 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 					 popupPanel.center();
 					 popupPanel.setAutoHideEnabled(true);
 					 calendarEntryScreen.clearAllFields();
+					 CalendarAndReminderEvent calendarEvent = new CalendarAndReminderEvent();
+					 calendarEvent.setEventData("");
+					 calendarEvent.setEventType(CalendarAndReminderEvent.COMPLETION);
+					 popupPanel.hide();
+				     AppUtils.EVENT_BUS.fireEvent(calendarEvent);
 				}
 				
 			  }
