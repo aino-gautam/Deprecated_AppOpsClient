@@ -59,6 +59,8 @@ public class StateField extends BaseField {
 			appopsSuggestionBox.setItemsToDisplay(getFieldItemList());
 		}else{
 			appopsSuggestionBox.setQueryName(getQueryName());
+			appopsSuggestionBox.setPropertyToDisplay(getEntPropToDisplay());
+			appopsSuggestionBox.setOperationName(getOperationName());
 			appopsSuggestionBox.setQueryRestrictions(getQueryRestrictions());
 			appopsSuggestionBox.setIsSearchQuery(isSearchQuery());
 			appopsSuggestionBox.setQueryMaxResult(getQueryMaxResult());
@@ -140,10 +142,22 @@ public class StateField extends BaseField {
 	 */
 	private String getQueryName() {
 		String queryname = null;
-		if(getConfigurationValue(StateFieldConstant.STFD_QUERY) != null) {
-			queryname =(String) getConfigurationValue(StateFieldConstant.STFD_QUERY);
+		if(getConfigurationValue(StateFieldConstant.STFD_QUERYNAME) != null) {
+			queryname =(String) getConfigurationValue(StateFieldConstant.STFD_QUERYNAME);
 		}
 		return queryname;
+	}
+	
+	/**
+	 * Method returns the entity property to show in the stateField;
+	 * @return
+	 */
+	private String getEntPropToDisplay() {
+		String entprop = null;
+		if(getConfigurationValue(StateFieldConstant.STFD_ENTPROP) != null) {
+			entprop = (String) getConfigurationValue(StateFieldConstant.STFD_ENTPROP);
+		}
+		return entprop;
 	}
 	
 	
@@ -152,11 +166,11 @@ public class StateField extends BaseField {
 	 * @return
 	 */
 	private String getOperationName() {
-		String queryname = null;
+		String operation = null;
 		if(getConfigurationValue(StateFieldConstant.STFD_OPRTION) != null) {
-			queryname =(String) getConfigurationValue(StateFieldConstant.STFD_OPRTION);
+			operation =(String) getConfigurationValue(StateFieldConstant.STFD_OPRTION);
 		}
-		return queryname;
+		return operation;
 	}
 	
 	/**
@@ -190,7 +204,7 @@ public class StateField extends BaseField {
 		
 		public static final String ITEMS_LIST = "itemsList";
 		
-		public static final String STFD_QUERY = "queryName";
+		public static final String STFD_QUERYNAME = "queryName";
 		
 		public static final String STFD_OPRTION = "operation";
 		

@@ -127,8 +127,8 @@ public class ListBoxField extends BaseField {
 	 */
 	private String getListQueryName() {
 		String query = null;
-		if(getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY) != null) {
-			query = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY);
+		if(getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERYNAME) != null) {
+			query = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERYNAME);
 		}
 		return query;
 	}
@@ -175,11 +175,11 @@ public class ListBoxField extends BaseField {
 	 * @return
 	 */
 	private String getOperationName() {
-		String queryname = null;
+		String operation = null;
 		if(getConfigurationValue(ListBoxFieldConstant.LSTFD_OPRTION) != null) {
-			queryname =(String) getConfigurationValue(ListBoxFieldConstant.LSTFD_OPRTION);
+			operation =(String) getConfigurationValue(ListBoxFieldConstant.LSTFD_OPRTION);
 		}
-		return queryname;
+		return operation;
 	}
 	/***********************************************************************************/
 
@@ -188,6 +188,8 @@ public class ListBoxField extends BaseField {
 	 * @param entityList
 	 */
 	private void populateEntityList(EntityList entityList){
+		if(nameVsEntity==null)
+			nameVsEntity = new HashMap<String, Object>();
 		
 		for(Entity entity : entityList){
 				String item = entity.getPropertyByName(getEntPropToShow());
@@ -213,7 +215,8 @@ public class ListBoxField extends BaseField {
 		Query queryObj = new Query();
 		queryObj.setQueryName(getListQueryName());
 		queryObj.setListSize(getQueryMaxResult());
-		queryObj.setQueryParameterMap(getQueryRestrictions());
+		if(getQueryRestrictions()!=null)
+			queryObj.setQueryParameterMap(getQueryRestrictions());
 		
 		Map parameterMap = new HashMap();
 		parameterMap.put("query", queryObj);
@@ -247,7 +250,7 @@ public class ListBoxField extends BaseField {
 		/** Specifies the no of items in the list. **/
 		public static final String LSTFD_ITEMS = "listOfItems";
 		
-		public static final String LSTFD_QUERY = "queryName";
+		public static final String LSTFD_QUERYNAME = "queryName";
 		
 		public static final String LSTFD_OPRTION = "operation";
 		

@@ -89,7 +89,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	public static final String NUMERICBOX = "Numeric Textbox";
 	public static final String CHECKBOXGROUPMULTISELECT = "CheckboxGroupField";
 	public static final String CHECKBOXFIELD = "CheckboxField";
-	public static final String STATEFIELD = "StateField";
+	public static final String STATEFIELD_WITH_QUERY = "StateField(Query Result)";
+	public static final String STATEFIELD_STATIC = "StateField(Static)";
 	public static final String TIME_PICKER = "Time Picker";
 	public static final String DATE_PICKER = "Date Picker";
 	public static final String DATETIME_PICKER = "Date Time Picker";
@@ -106,7 +107,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	public static final String LINKFIELDANCHOR = "LinkField(Anchor)";
 	public static final String BUTTONFIELD = "ButtonField";
 	public static final String IMAGEFIELD = "ImageField";
-	public static final String LISTBOX = "ListBox(Static list)";
+	public static final String LISTBOX_STATIC = "ListBox(Static list)";
+	public static final String LISTBOX_WITH_QUERY = "ListBox(Query Result)";
 	public static final String LOCATIONSELECTOR = "Location Selector";
 	public static final String HTMLEDITOR = "html Editor";
 	public static final String  DATELABEL_WITH_TIMESTAMP= "DateLable(TimeStamp)";
@@ -146,26 +148,35 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		listBox.addItem(EMAILBOX);
 		listBox.addItem(TEXTAREA);
 		listBox.addItem(NUMERICBOX);
-		listBox.addItem(DATE_PICKER);
+		
 		listBox.addItem(NUM_SPINNER);
 		listBox.addItem(LIST_SPINNER);
+		
 		listBox.addItem(GROUPFIELD);
 		listBox.addItem(GROUPFIELDRADIO);
+		
 		listBox.addItem(LABELFIELD);
 		listBox.addItem(LINKFIELDHYPERLINK);
 		listBox.addItem(LINKFIELDANCHOR);
 		listBox.addItem(BUTTONFIELD);
 		listBox.addItem(IMAGEFIELD);
-		listBox.addItem(LISTBOX);
+		
 		listBox.addItem(LOCATIONSELECTOR);
 		listBox.addItem(NUMBERRANGE_SLIDER);
 		listBox.addItem(STRINGRANGE_SLIDER); 
-		listBox.addItem(STATEFIELD);
 		
+		listBox.addItem(LISTBOX_STATIC);
+		listBox.addItem(LISTBOX_WITH_QUERY);
+		listBox.addItem(STATEFIELD_STATIC);
+		listBox.addItem(STATEFIELD_WITH_QUERY);
+		
+		listBox.addItem(DATE_PICKER);
 		listBox.addItem(TIME_PICKER);
 		listBox.addItem(DATETIME_PICKER);
+		
 		listBox.addItem(HTMLEDITOR);
 		listBox.addItem(MEDIA_UPLOAD);
+		
 		listBox.addItem(DATELABEL_WITH_TIMESTAMP);
 		listBox.addItem(DATELABEL_WITH_DATETIME);
 		
@@ -437,10 +448,20 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		
 		return configuration;
 	}
+	
+	private Configuration getDynamicListBoxConfiguration() {
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_OPRTION,"spacemanagement.SpaceManagementService.getEntityList");
+		configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_QUERYNAME,"getAllSpaces");
+		configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ENTPROP,"name");
+		configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_QUERY_MAXRESULT,10);
+		
+		return configuration;
+	}
 
 	
 	
-	private Configuration getStateFieldConfiguration() {
+	private Configuration getStaticStateFieldConf() {
 
 		Configuration configuration = new Configuration();
 		configuration.setPropertyByName(StateFieldConstant.IS_STATIC_BOX, true);
@@ -454,6 +475,22 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		days.add("Friday");
 		days.add("Saturday");
 		configuration.setPropertyByName(StateFieldConstant.ITEMS_LIST, days);
+		
+		return configuration;
+	}
+	
+	private Configuration getDynamicStateFieldConf() {
+
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(StateFieldConstant.IS_STATIC_BOX,false);
+		configuration.setPropertyByName(StateFieldConstant.STFD_OPRTION,"contact.ContactService.getEntityList");
+		configuration.setPropertyByName(StateFieldConstant.STFD_QUERYNAME,"getContactForChat");
+		configuration.setPropertyByName(StateFieldConstant.STFD_ENTPROP,"name");
+		configuration.setPropertyByName(StateFieldConstant.STFD_QUERY_MAXRESULT,10);
+		configuration.setPropertyByName(StateFieldConstant.IS_AUTOSUGGESTION,false);
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("spaceId", 1);
+		//configuration.setPropertyByName(StateFieldConstant.STFD_QUERY_RESTRICTION,paramMap);
 		
 		return configuration;
 	}
@@ -583,23 +620,39 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			imageField.create();
 			innerPanel.add(imageField);
 			innerPanel.setCellHorizontalAlignment(imageField,HorizontalPanel.ALIGN_CENTER);
-		}else if(fieldName.equals(LISTBOX)) {
+		}else if(fieldName.equals(LISTBOX_WITH_QUERY)) {
+			ListBoxField staticListBox = new ListBoxField();
+			staticListBox.setConfiguration(getDynamicListBoxConfiguration());
+			staticListBox.configure();
+			staticListBox.create();
+			innerPanel.add(staticListBox);
+			innerPanel.setCellHorizontalAlignment(staticListBox,HorizontalPanel.ALIGN_CENTER);
+		}else if(fieldName.equals(LISTBOX_STATIC)) {
 			ListBoxField staticListBox = new ListBoxField();
 			staticListBox.setConfiguration(getStaticListBoxConfiguration());
 			staticListBox.configure();
 			staticListBox.create();
 			innerPanel.add(staticListBox);
 			innerPanel.setCellHorizontalAlignment(staticListBox,HorizontalPanel.ALIGN_CENTER);
-		}else if(fieldName.equals(STATEFIELD)) {
+		}else if(fieldName.equals(STATEFIELD_STATIC)) {
 			StateField stateField = new StateField();
-			Configuration stateFieldConfig = getStateFieldConfiguration();
+			Configuration stateFieldConfig = getStaticStateFieldConf();
 			stateField.setConfiguration(stateFieldConfig);
 			stateField.configure();
 			stateField.create();
 			innerPanel.add(stateField);
 			innerPanel.setCellHorizontalAlignment(stateField,HorizontalPanel.ALIGN_CENTER);
 
-		} else if(fieldName.equals(TIME_PICKER)) {
+		} else if(fieldName.equals(STATEFIELD_WITH_QUERY)) {
+			StateField stateField = new StateField();
+			Configuration stateFieldConfig = getDynamicStateFieldConf();
+			stateField.setConfiguration(stateFieldConfig);
+			stateField.configure();
+			stateField.create();
+			innerPanel.add(stateField);
+			innerPanel.setCellHorizontalAlignment(stateField,HorizontalPanel.ALIGN_CENTER);
+
+		}else if(fieldName.equals(TIME_PICKER)) {
 			TimePickerField dateTimeField = new TimePickerField();
 			Configuration configuration = new Configuration();
 			configuration.setPropertyByName(TimePickerFieldConstant.TIME_FORMAT, TimePickerFieldConstant.AMPMFORMAT_WITH_SECONDS);
@@ -876,7 +929,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				return TextField.class.getName();
 			} else if(fieldName.equals(GROUPFIELD) || fieldName.equals(GROUPFIELDRADIO)) {
 				return GroupField.class.getName();
-			}else if(fieldName.equals(STATEFIELD)) {
+			}else if(fieldName.equals(STATEFIELD_STATIC) || fieldName.equals(STATEFIELD_WITH_QUERY)) {
 				return StateField.class.getName();
 			} else if(fieldName.equals(TIME_PICKER) || fieldName.equals(DATETIME_PICKER)) {
 				return DateTimeField.class.getName();
@@ -898,7 +951,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				return LinkField.class.getName();
 			}else if(fieldName.equals(IMAGEFIELD)) {
 				return ImageField.class.getName();
-			}else if(fieldName.equals(LISTBOX)) {
+			}else if(fieldName.equals(LISTBOX_WITH_QUERY) || fieldName.equals(LISTBOX_STATIC)) {
 				return ListBoxField.class.getName();
 			}else if(fieldName.equals(BUTTONFIELD)) {
 				return ButtonField.class.getName();

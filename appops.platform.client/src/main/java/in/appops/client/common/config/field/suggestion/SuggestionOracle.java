@@ -89,7 +89,8 @@ public class SuggestionOracle extends SuggestOracle {
 			}else
 				map.put("searchChar", "%" + search + "%");
 				//map.put("max", maxResult);
-				queryObj.setQueryParameterMap(map);
+			
+			queryObj.setQueryParameterMap(map);
 			
 			Map parameterMap = new HashMap();
 			parameterMap.put("query", queryObj);
