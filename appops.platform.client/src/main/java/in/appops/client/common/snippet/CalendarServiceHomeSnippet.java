@@ -384,7 +384,6 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 		dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
 			
 			public void onFailure(Throwable caught) {
-				Window.alert("operation failed ");
 				caught.printStackTrace();
 			}
 			
