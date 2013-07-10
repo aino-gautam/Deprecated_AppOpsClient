@@ -1,9 +1,9 @@
 package in.appops.client.common.components;
 
 import in.appops.client.common.bound.EntityListBound;
-import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
+import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.client.common.snippet.SnippetFactory;
 import in.appops.platform.core.entity.Entity;
@@ -18,6 +18,8 @@ import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -59,6 +61,20 @@ public class ContactWigetSuggestion extends PopupPanel implements Configurable, 
 		}
 	}
 
+	public void showNoResult(){
+		try{
+			LabelField noResultLabelField = new LabelField();
+			noResultLabelField.setFieldValue("No results");
+			noResultLabelField.setConfiguration(getLabelFieldConfiguration(true, null, null, null));
+			noResultLabelField.createField();
+			basePanel.add(noResultLabelField);
+			basePanel.setCellHorizontalAlignment(noResultLabelField, HasHorizontalAlignment.ALIGN_CENTER);
+			basePanel.setCellVerticalAlignment(noResultLabelField, HasVerticalAlignment.ALIGN_MIDDLE);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public void onFieldEvent(FieldEvent event) {
 		// TODO Auto-generated method stub
@@ -158,5 +174,14 @@ public class ContactWigetSuggestion extends PopupPanel implements Configurable, 
 
 	public void addHandle(FieldEventHandler handler) {
 		this.handler = handler;
+	}
+	
+	private Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId){
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
+		configuration.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
+		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
+		configuration.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
+		return configuration;
 	}
 }
