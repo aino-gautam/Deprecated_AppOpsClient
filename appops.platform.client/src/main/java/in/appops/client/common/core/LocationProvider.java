@@ -77,7 +77,8 @@ public class LocationProvider {
 				
 				@Override
 				public void onFailure(PositionError error) {
-					System.out.println(" "+error.getMessage());
+					entityReceiver.onEntityReceived(null);
+					//System.out.println(" "+error.getMessage());
 				}
 			}, options);
 		} catch (Exception e) {

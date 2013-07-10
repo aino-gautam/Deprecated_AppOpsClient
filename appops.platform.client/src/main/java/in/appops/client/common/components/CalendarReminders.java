@@ -3,7 +3,6 @@ package in.appops.client.common.components;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.fields.DateTimeField;
 import in.appops.client.common.fields.Field;
-import in.appops.client.common.snippet.ListSnippet;
 import in.appops.client.common.snippet.ReminderListSnippet;
 import in.appops.client.common.snippet.SnippetConstant;
 import in.appops.platform.core.shared.Configuration;
