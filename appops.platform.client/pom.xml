@@ -162,9 +162,9 @@
 
 		<!-- This should be used when using a final version of the jar -->
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>14.06.2013</version>
+			<version>09.07.2013</version>
 		</dependency>
 
 		<dependency>
@@ -285,7 +285,7 @@
 		<dependency>
 			<groupId>vikram_appops_platform</groupId>
 			<artifactId>entitybroadcast</artifactId>
-			<version>20.06.2013</version>
+			<version>09.07.2013</version>
 		</dependency>
 
 		<dependency>
