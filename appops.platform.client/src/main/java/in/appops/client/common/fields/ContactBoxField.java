@@ -7,6 +7,7 @@ import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.core.constants.propertyconstants.SpaceConstants;
+import in.appops.platform.core.constants.propertyconstants.UserConstants;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.query.Query;
@@ -238,13 +239,20 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 
 	private void handleThreeCharEnteredEvent(String eventData) {
 		Entity spaceEntity = AppEnviornment.getCurrentSpace();
+		Entity userEntity = AppEnviornment.getCurrentUser();
+		
 		Key<Serializable> key=(Key<Serializable>) spaceEntity.getProperty(SpaceConstants.ID).getValue();
 		Long spaceId = (Long) key.getKeyValue();
+		
+		Key<Serializable> userKey=(Key<Serializable>) userEntity.getProperty(UserConstants.ID).getValue();
+		Long userId = (Long) userKey.getKeyValue();
+		
 		Query query = new Query();
-		query.setQueryName("getContactListSuggestion");
+		query.setQueryName("getConatctSuggestionForSendMessage");
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("searchChar", "%"+eventData+"%");
 		map.put("spaceId", spaceId);
+		map.put("userId", userId);
 		query.setQueryParameterMap(map);
 		query.setListSize(8);
 		ContactSelectorModel contactSelectorModel = new ContactSelectorModel(query,"contact.ContactService.getEntityList",0);
