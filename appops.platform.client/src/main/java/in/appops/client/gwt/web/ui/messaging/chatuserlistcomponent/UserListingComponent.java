@@ -87,6 +87,7 @@ public class UserListingComponent extends Composite{
 			ContactSnippetDisplayer contactWidget = iterator.next();
 			String contactId = ((Key<Long>)contactWidget.getEntity().getPropertyByName(ContactConstant.ID)).getKeyValue().toString();
 			if(contactId.equals(contactIdToHighlight)) {
+				contactWidget.removeStyleName("widgetSeparator");
 				contactWidget.addStyleName("hightlightSnippet");
 			}
 		}

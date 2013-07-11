@@ -13,6 +13,7 @@ import in.appops.client.common.util.BlobDownloader;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEvent;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEventHandler;
 import in.appops.platform.core.constants.propertyconstants.SpaceConstants;
+import in.appops.platform.core.constants.propertyconstants.UserConstants;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.shared.Configuration;
@@ -55,12 +56,13 @@ public class MainUserListingComponent extends Composite implements MessengerEven
 	 * Button to toggle between the showing the all users or spcific users.
 	 *//*
 	private ToggleButton allSpecificBtn;*/
-	
+	private Entity userEntity;
 	/**
 	 * Constructor in which the global variable will be initialising and
 	 * the base ui is created. 
 	 */
-	public MainUserListingComponent(){
+	public MainUserListingComponent(Entity userEntity){
+		this.userEntity = userEntity;
 		initialize();
 		createUi();
 		initWidget(baseVp);
@@ -122,13 +124,14 @@ public class MainUserListingComponent extends Composite implements MessengerEven
 	public void createContactSnippet(Entity contactEnt) {
 		try{
 			ContactSnippetDisplayer contactDisplayer = new ContactSnippetDisplayer();
-			String blobId;
-			if(contactEnt.getPropertyByName(ContactConstant.IMGBLOBID) != null)
-				blobId = contactEnt.getPropertyByName(ContactConstant.IMGBLOBID).toString();
-			else
-				blobId = "images/default_userIcon.png";
-			BlobDownloader downloader = new BlobDownloader();
-			String url = downloader.getIconDownloadURL(blobId);
+			String url;
+			if(contactEnt.getPropertyByName(ContactConstant.IMGBLOBID) != null) {
+				String blobId = contactEnt.getPropertyByName(ContactConstant.IMGBLOBID).toString();
+				BlobDownloader downloader = new BlobDownloader();
+				url = downloader.getIconDownloadURL(blobId);
+			} else {
+				url = "images/default_userIcon.png";
+			}
 			Configuration imageConfig = getImageFieldConfiguration(url, "contactIcon");
 			Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 			contactDisplayer.setConfigurationForFields(labelConfig, imageConfig);
@@ -158,17 +161,24 @@ public class MainUserListingComponent extends Composite implements MessengerEven
 	 * binding the query name and operation name for fetching the typed user in the suggestion box.
 	 */
 	private void createUserSuggestionWidget() {
-		//userSuggestionField.setQueryName("getContactListSuggestion");
 		//TODO: changes made for spaceId not present i.e for AppopsShowcase
-		userSuggestionField.setQueryName("getContactForChat");
-		/*HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		//userSuggestionField.setQueryName("getMessageContact");
+		
+		userSuggestionField.setQueryName("getContactListSuggestion");
+		HashMap<String, Object> paramMap = new HashMap<String, Object>();
+		
 		Long spaceId = null;
 		if(AppEnviornment.getCurrentSpace()!=null){
 			Entity spaceEnt = AppEnviornment.getCurrentSpace();
 			spaceId = ((Key<Long>)spaceEnt.getPropertyByName(SpaceConstants.ID)).getKeyValue();
 			paramMap.put("spaceId", spaceId);
-			userSuggestionField.setQueryRestrictions(paramMap);
-		}*/
+		}
+		
+		Long userId = null;
+		Entity spaceEnt = AppEnviornment.getCurrentSpace();
+		userId = ((Key<Long>)userEntity.getPropertyByName(UserConstants.ID)).getKeyValue();
+		paramMap.put("userId", userId);
+		userSuggestionField.setQueryRestrictions(paramMap);
 		userSuggestionField.setOperationName("contact.ContactService.getEntityList");
 	}
 
@@ -217,5 +227,13 @@ public class MainUserListingComponent extends Composite implements MessengerEven
 		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
 		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
 		return config;
+	}
+	
+	public Entity getUserEntity() {
+		return userEntity;
+	}
+
+	public void setUserEntity(Entity userEntity) {
+		this.userEntity = userEntity;
 	}
 }

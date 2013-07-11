@@ -46,6 +46,7 @@ public class SpaceWidgetIcon extends VerticalPanel implements MessengerEventHand
 				public void onClick(ClickEvent event) {
 					
 					removeStyleName("hightlightSnippet");
+					addStyleName("widgetSeparator");
 				
 					String groupName = spaceNameAnchor.getHTML();
 					ArrayList<Object> dataMap = new ArrayList<Object>();
@@ -91,6 +92,7 @@ public class SpaceWidgetIcon extends VerticalPanel implements MessengerEventHand
 	}
 
 	public void highlightWidget() {
+		removeStyleName("widgetSeparator");
 		addStyleName("hightlightSnippet");
 	}
 }
