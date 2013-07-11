@@ -160,8 +160,8 @@ public class MessagingThreadWithReplyWidget extends Composite implements ClickHa
 					Map.Entry mEntry = (Map.Entry) iter.next();
 					Entity contactEntity=(Entity) mEntry.getValue();
 					Property< Serializable> idProperty = (Property<Serializable>) contactEntity.getProperty("id");
-					Property< Serializable> idPrope =(Property< Serializable>) idProperty.getValue();
-					Key<Serializable>key = (Key<Serializable>) idPrope.getValue();
+					//Property< Serializable> idPrope =(Property< Serializable>) idProperty.getValue();
+					Key<Serializable>key = (Key<Serializable>) idProperty.getValue();
 					Long idValue=(Long) key.getKeyValue();
 					messageParticipantsEntity.setPropertyByName(MessageParticipantsConstant.CONTACTID, idValue);
 				
