@@ -10,10 +10,14 @@ import in.appops.client.gwt.web.ui.messaging.event.MessengerEvent;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEventHandler;
 import in.appops.client.gwt.web.ui.messaging.spacelistcomponent.SpaceListModel;
 import in.appops.client.gwt.web.ui.messaging.spacelistcomponent.SpaceListWidget;
+import in.appops.platform.core.constants.propertyconstants.UserConstants;
+import in.appops.platform.core.constants.typeconstants.TypeConstants;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
+import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.broadcast.BroadcastEntity;
 import in.appops.platform.core.entity.broadcast.ChatEntity;
+import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 import in.appops.platform.server.core.services.spacemanagement.constants.SpaceConstants;
@@ -72,6 +76,7 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 	 * The current user in the session who is initiating the chat.
 	 */
 	private Entity contactEntity;
+	private Entity userEntity;
 	
 	/**
 	 * A single chat display widget depending on the group user selected, the
@@ -208,7 +213,7 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 	 * @return
 	 */
 	private MainUserListingComponent createBottomUserListPanel() {
-		MainUserListingComponent chatUserListWidget = new MainUserListingComponent();
+		MainUserListingComponent chatUserListWidget = new MainUserListingComponent(getUserEntity());
 		return chatUserListWidget;
 	}
 
@@ -245,6 +250,14 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 	 */
 	public void setContactEntity(Entity userEntity) {
 		this.contactEntity = userEntity;
+	}
+
+	public Entity getUserEntity() {
+		return userEntity;
+	}
+
+	public void setUserEntity(Entity userEntity) {
+		this.userEntity = userEntity;
 	}
 
 	/**
@@ -312,12 +325,33 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 			Entity contactEntity = (Entity) event.getEventData();
 			setContactEntity(contactEntity);
 			chatDisplayWidget.setContactEntity(contactEntity);
+		} else if (event.getEventType() == MessengerEvent.ONCHATCLOSED) {
+			String headerTitle = (String) event.getEventData();
+			removeFromDisplayList(headerTitle);
+		} else if (event.getEventType() == MessengerEvent.STARTNEARBYSPACECHAT) {
+			String spaceName = (String) event.getEventData();
+			startNearBySpaceChat(spaceName);
+		} else if (event.getEventType() == MessengerEvent.STARTSPACECHAT) {
+			ArrayList<Object> dataMap =  (ArrayList<Object>) event.getEventData();
+			String spaceName = (String) dataMap.get(0);
+			Entity spaceEntity = (Entity) dataMap.get(1);
+			startSpaceChat(spaceName,spaceEntity);
+		} else if (event.getEventType()  == MessengerEvent.STARTUSERSELECTEDCHAT){
+			Entity contactEntity = (Entity) event.getEventData();
+			startUserSelectedChat(contactEntity);
+		} else if (event.getEventType()  == MessengerEvent.RESTARTPREVIOUSCHAT){
+			Entity contactEntity = (Entity) event.getEventData();
+			continuePreviousUserChat(contactEntity);
+		} else if(event.getEventType() == MessengerEvent.CONNECTION_NOT_ESTABLISHED) {
+			Entity userEntity = (Entity) event.getEventData();
+			setUserEntity(userEntity);
+			chatDisplayWidget.setUserEntity(userEntity);
 			
 			AtmosphereGWTSerializer serializer = (AtmosphereGWTSerializer) GWT.create(RealTimeSyncEventSerializer.class);
-			Key<Long> value = contactEntity.getPropertyByName(ContactConstant.ID);
+			Key<Long> value = userEntity.getPropertyByName(UserConstants.ID);
 			String val =  value.getKeyValue().toString();
 			
-			String typeName = contactEntity.getType().getTypeName();
+			String typeName = userEntity.getType().getTypeName();
 			typeName = typeName.replace(".", "#");
 			String[] splittedArray = typeName.split("#");
 			String type = splittedArray[splittedArray.length-1];
@@ -327,28 +361,11 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 			client.start();
 			
 			createUi();
-		}
-		else if (event.getEventType() == MessengerEvent.ONCHATCLOSED) {
-			String headerTitle = (String) event.getEventData();
-			removeFromDisplayList(headerTitle);
-		}
-		else if (event.getEventType() == MessengerEvent.STARTNEARBYSPACECHAT) {
-			String spaceName = (String) event.getEventData();
-			startNearBySpaceChat(spaceName);
-		}
-		else if (event.getEventType() == MessengerEvent.STARTSPACECHAT) {
-			ArrayList<Object> dataMap =  (ArrayList<Object>) event.getEventData();
-			String spaceName = (String) dataMap.get(0);
-			Entity spaceEntity = (Entity) dataMap.get(1);
-			startSpaceChat(spaceName,spaceEntity);
-		}
-		else if (event.getEventType()  == MessengerEvent.STARTUSERSELECTEDCHAT){
-			Entity contactEntity = (Entity) event.getEventData();
-			startUserSelectedChat(contactEntity);
-		}
-		else if (event.getEventType()  == MessengerEvent.RESTARTPREVIOUSCHAT){
-			Entity contactEntity = (Entity) event.getEventData();
-			continuePreviousUserChat(contactEntity);
+		} else if(event.getEventType() == MessengerEvent.CONNECTION_ESTABLISHED) {
+			Entity userEntity = (Entity) event.getEventData();
+			setUserEntity(userEntity);
+			chatDisplayWidget.setUserEntity(userEntity);
+			createUi();
 		}
 	}
 
@@ -377,11 +394,18 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 				return chatEnt;
 			} else {
 				ChatEntity chatEntity = new ChatEntity();
+				
 				EntityList participantList = new EntityList();
-				participantList.add(contactEnt);
-
-				participantList.add(getContactEntity());
+				Entity userEnt = getUserEnt(contactEnt);
+				participantList.add(getUserEntity());
+				participantList.add(userEnt);
+				
+				EntityList participantContactList = new EntityList();
+				participantContactList.add(contactEnt);
+				participantContactList.add(getContactEntity());
+				
 				chatEntity.setParticipantEntity(participantList);
+				chatEntity.setParticipantContactEntity(participantContactList);
 				chatEntity.setHeaderTitle(headerTitle);
 				chatEntity.setIsGroupChat(false);
 				return chatEntity;
@@ -401,9 +425,13 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 	private void startUserSelectedChat(Entity contactEnt) {
 		try{
 			EntityList participantList = new EntityList();
+			Entity userEnt = getUserEnt(contactEnt);
+			participantList.add(getUserEntity());
+			participantList.add(userEnt);
 			
-			participantList.add(getContactEntity());
-			participantList.add(contactEnt);
+			EntityList participantContactList = new EntityList();
+			participantContactList.add(getContactEntity());
+			participantContactList.add(contactEnt);
 			
 			ChatEntity entity = new ChatEntity();
 			String currenUserName = getContactEntity().getPropertyByName(ContactConstant.NAME).toString();
@@ -412,6 +440,7 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 			String headerTitle = currenUserName +"##"+ aliasName;
 			if(getGrpMapEntityMap().get(headerTitle)==null){
 				entity.setParticipantEntity(participantList);
+				entity.setParticipantContactEntity(participantContactList);
 				entity.setHeaderTitle(headerTitle);
 				entity.setIsGroupChat(false);
 
@@ -427,6 +456,22 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 		}
 	}
 
+	private Entity getUserEnt(Entity contactEnt) {
+		Entity userEnt = null;
+		try {
+			userEnt = new Entity();
+			userEnt.setType(new MetaType(TypeConstants.USER));
+			
+			Long userId = contactEnt.getPropertyByName(ContactConstant.USERID);
+			Key<Long> userEntityKey = new Key<Long>(userId);
+			Property<Key<Long>> userEntityKeyProp = new Property<Key<Long>>(userEntityKey);
+			userEnt.setProperty(UserConstants.ID, userEntityKeyProp);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return userEnt;
+	}
+
 	/**
 	 * This method will start new chat if the chat entity doesn't exist else will load
 	 * the pre-existing chat entity for space chat.
@@ -435,12 +480,16 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 	private void startSpaceChat(String spaceName, Entity spaceEntity) {
 		try{
 			EntityList participantList = new EntityList();
-			participantList.add(getContactEntity());
+			participantList.add(getUserEntity());
+			
+			EntityList participantContactList = new EntityList();
+			participantContactList.add(getContactEntity());
 			
 			ChatEntity entity = new ChatEntity();
 			
 			if(getGrpMapEntityMap().get(spaceName)==null){
 				entity.setParticipantEntity(participantList);
+				entity.setParticipantContactEntity(participantContactList);
 				entity.setHeaderTitle(spaceName);
 				entity.setSpaceEntity(spaceEntity);
 				entity.setIsGroupChat(true);
@@ -474,10 +523,15 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 		try{
 			ChatEntity entity = new ChatEntity();
 			if(getGrpMapEntityMap().get(spaceName)==null){
+				
 				EntityList participantList = new EntityList();
-				participantList.add(getContactEntity());
+				participantList.add(getUserEntity());
+				
+				EntityList participantContactList = new EntityList();
+				participantContactList.add(getContactEntity());
 				
 				entity.setParticipantEntity(participantList);
+				entity.setParticipantContactEntity(participantContactList);
 				entity.setHeaderTitle(spaceName);
 				
 				entity.setSpaceEntity(getContactEntity());
@@ -652,13 +706,13 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 	
 	private void initializeContactSnippet(ChatEntity entity) {
 		if(!entity.getIsGroupChat()) {
-			EntityList participantList = entity.getParticipantEntity();
+			EntityList participantList = entity.getParticipantContactEntity();
 			Iterator<Entity> iterator = participantList.iterator();
 			while(iterator.hasNext()) {
 				Entity contactEnt = iterator.next();
-				String contactId = ((Key<Long>)contactEnt.getPropertyByName(ContactConstant.ID)).getKeyValue().toString();
-				String currentContactId = ((Key<Long>)getContactEntity().getPropertyByName(ContactConstant.ID)).getKeyValue().toString();
-				if(!contactId.equals(currentContactId)) {
+				String userId = contactEnt.getPropertyByName(ContactConstant.USERID).toString();
+				String currentUserId = ((Key<Long>)getUserEntity().getPropertyByName(UserConstants.ID)).getKeyValue().toString();
+				if(!userId.equals(currentUserId)) {
 					mainUserListPanel.createContactSnippet(contactEnt);
 				}
 			}
@@ -684,7 +738,7 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 	public void receivedChat(ChatEntity chatEnt) {
 		Entity currentContact = getContactEntity();
 		
-		EntityList participantList = chatEnt.getParticipantEntity();
+		EntityList participantList = chatEnt.getParticipantContactEntity();
 		Iterator<Entity> iterator = participantList.iterator();
 		while(iterator.hasNext()) {
 			Entity contactEnt = iterator.next();
@@ -701,7 +755,7 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 		
 		Entity currentContact = getContactEntity();
 		
-		EntityList participantList = entity.getParticipantEntity();
+		EntityList participantList = entity.getParticipantContactEntity();
 		Iterator<Entity> iterator = participantList.iterator();
 		while(iterator.hasNext()) {
 			Entity contactEnt = iterator.next();

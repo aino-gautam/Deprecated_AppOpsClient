@@ -24,6 +24,8 @@ public class MessengerEvent  extends GwtEvent<MessengerEventHandler> {
 	public static final int ONCHATRECEIVED = 8;
 	public static final int ONCHATENTITYREMOVED = 9;
 	public static final int RESTARTPREVIOUSCHAT = 10;
+	public static final int CONNECTION_ESTABLISHED = 11;
+	public static final int CONNECTION_NOT_ESTABLISHED= 12;
 	
 	public static Type<MessengerEventHandler> TYPE = new Type<MessengerEventHandler>();
 	

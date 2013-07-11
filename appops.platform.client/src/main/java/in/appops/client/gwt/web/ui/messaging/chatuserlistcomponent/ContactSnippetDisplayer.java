@@ -22,6 +22,7 @@ public class ContactSnippetDisplayer extends ContactSnippet{
 	@Override
 	public void onClick(ClickEvent event) {
 		getBasePanel().removeStyleName("hightlightSnippet");
+		getBasePanel().addStyleName("widgetSeparator");
 		MessengerEvent msgEvent = new MessengerEvent(MessengerEvent.RESTARTPREVIOUSCHAT,getEntity());
 		AppUtils.EVENT_BUS.fireEvent(msgEvent);
 	}

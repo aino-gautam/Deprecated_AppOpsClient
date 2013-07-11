@@ -59,6 +59,7 @@ public class ChatDisplayWidget extends VerticalPanel /*implements AtmosphereList
 	private ChatEntity chatEntity;
 	
 	private Entity contactEntity;
+	private Entity userEntity;
 	
 	public ChatDisplayWidget(){
 		initialize();
@@ -308,5 +309,13 @@ public class ChatDisplayWidget extends VerticalPanel /*implements AtmosphereList
 
 	public void setContactEntity(Entity contactEntity) {
 		this.contactEntity = contactEntity;
+	}
+
+	public Entity getUserEntity() {
+		return userEntity;
+	}
+
+	public void setUserEntity(Entity userEntity) {
+		this.userEntity = userEntity;
 	}
 }
