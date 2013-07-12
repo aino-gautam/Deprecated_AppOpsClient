@@ -160,9 +160,9 @@ public class MainUserListingComponent extends Composite implements MessengerEven
 	/**
 	 * binding the query name and operation name for fetching the typed user in the suggestion box.
 	 */
-	private void createUserSuggestionWidget() {
+	public void createUserSuggestionWidget() {
 		//TODO: changes made for spaceId not present i.e for AppopsShowcase
-		//userSuggestionField.setQueryName("getMessageContact");
+		//userSuggestionField.setQueryName("getContactForChat");
 		
 		userSuggestionField.setQueryName("getContactListSuggestion");
 		HashMap<String, Object> paramMap = new HashMap<String, Object>();
