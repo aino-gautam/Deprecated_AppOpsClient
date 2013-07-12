@@ -366,6 +366,8 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 			setUserEntity(userEntity);
 			chatDisplayWidget.setUserEntity(userEntity);
 			createUi();
+		} else if(event.getEventType() == MessengerEvent.RECEIVED_BROADCAST) {
+			onMessage((List<?>) event.getEventData());
 		}
 	}
 
@@ -606,9 +608,11 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 					if(broadcastEntity.getBroadcastEntity() instanceof ChatEntity) {
 						ChatEntity chatEntity = (ChatEntity) broadcastEntity.getBroadcastEntity();
 						String title  = chatEntity.getHeaderTitle();
-
+						boolean isOwnMessage = true;
+						
 						if(getGrpMapEntityMap().isEmpty()){
 							startNewChat(chatEntity);
+							isOwnMessage = false;
 						}
 						else{
 							if(chatDisplayWidget.getChatEntity().getHeaderTitle().equals(title)){
@@ -628,6 +632,7 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 									
 									if(!curUserEmail.equals(chtInitEmail)) {
 										chatDisplayWidget.refreshChatUi(userEnt,chatTextEntity,true);
+										isOwnMessage = false;
 									}
 								}
 							} else {
@@ -637,6 +642,7 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 										spaceListWidget.receivedChat(chatEnt);
 										spaceMsgAlertPanel.addStyleName("chatReceivedAlert");
 									} else {
+										isOwnMessage = false;
 										receivedChat(chatEnt);
 										userMsgAlertPanel.addStyleName("chatReceivedAlert");
 									}
@@ -645,6 +651,7 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 										spaceListWidget.receivedChat(chatEntity);
 										spaceMsgAlertPanel.addStyleName("chatReceivedAlert");
 									} else {
+										isOwnMessage = false;
 										initializeContactSnippet(chatEntity);
 										receivedChat(chatEntity);
 										userMsgAlertPanel.addStyleName("chatReceivedAlert");
@@ -655,16 +662,18 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 						getGrpMapEntityMap().put(title, chatEntity);
 						chatDisplayWidget.setChatEntity(chatEntity);
 						
-						boolean isCurrUserInitiator = checkChatInitiator(chatEntity.getChatRecordMap());
-						if(!isCurrUserInitiator) {
-							MessengerEvent msgEvent;
-							if(chatEntity.getIsGroupChat()){
-								msgEvent = new MessengerEvent(MessengerEvent.ONSPACEMSGRECIEVED, chatEntity);
+						if(!isOwnMessage) {
+							boolean isCurrUserInitiator = checkChatInitiator(chatEntity.getChatRecordMap());
+							if(!isCurrUserInitiator) {
+								MessengerEvent msgEvent;
+								if(chatEntity.getIsGroupChat()){
+									msgEvent = new MessengerEvent(MessengerEvent.ONSPACEMSGRECIEVED, chatEntity);
+								}
+								else{
+									msgEvent = new MessengerEvent(MessengerEvent.ONUSERMSGRECEIVED, chatEntity);
+								}
+								AppUtils.EVENT_BUS.fireEvent(msgEvent);
 							}
-							else{
-								msgEvent = new MessengerEvent(MessengerEvent.ONUSERMSGRECEIVED, chatEntity);
-							}
-							AppUtils.EVENT_BUS.fireEvent(msgEvent);
 						}
 					}
 				}
@@ -770,4 +779,9 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 		}
 	}
 	
+	public void createUserSuggestionWidget() {
+		if(mainUserListPanel != null) {
+			mainUserListPanel.createUserSuggestionWidget();
+		}
+	}
 }
