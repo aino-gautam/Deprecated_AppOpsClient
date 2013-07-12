@@ -55,6 +55,8 @@ public class SpaceWidgetIcon extends VerticalPanel implements MessengerEventHand
  					MessengerEvent msgEvent = new MessengerEvent(MessengerEvent.STARTSPACECHAT, dataMap);
 					AppUtils.EVENT_BUS.fireEvent(msgEvent);
 					
+					MessengerEvent messengerEvent = new MessengerEvent(MessengerEvent.CHAT_VIEWED, dataMap);
+					AppUtils.EVENT_BUS.fireEvent(messengerEvent);
 				}
 			});
 			
