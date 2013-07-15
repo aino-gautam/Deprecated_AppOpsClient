@@ -74,7 +74,7 @@ public class ListBoxField extends BaseField {
 	public void configure() {
 		
 		listBox.setVisibleItemCount(getVisibleItemCount());
-		
+			
 		if(getBaseFieldPrimCss() != null)
 			getBasePanel().setStylePrimaryName(getBaseFieldPrimCss());
 		if(getBaseFieldCss() != null)
@@ -93,6 +93,13 @@ public class ListBoxField extends BaseField {
 			return nameVsEntity.get(selectedItem);
 		}
 		return selectedItem;
+	}
+	
+	@Override
+	public void setValue(Object value) {
+		
+		if(value!=null)
+			listBox.setSelectedIndex(getIndexFromText(value.toString()));
 	}
 	
 	/***************************** *****************************/
@@ -169,7 +176,6 @@ public class ListBoxField extends BaseField {
 		return maxResult;
 	}
 	
-	
 	/**
 	 * Method returns the operation to execute.
 	 * @return
@@ -196,6 +202,8 @@ public class ListBoxField extends BaseField {
 				nameVsEntity.put(item, entity);
 				listBox.addItem(item);
 		}
+		if(getDefaultValue()!=null)
+			listBox.setSelectedIndex(getIndexFromText(getDefaultValue().toString()));
 	}
 	
 	/**
@@ -207,9 +215,14 @@ public class ListBoxField extends BaseField {
 			String item = listOfItems.get(count);
 			listBox.addItem(item);
 		}
+		
+		if(getDefaultValue()!=null)
+			listBox.setSelectedIndex(getIndexFromText(getDefaultValue().toString()));
 	}
 	
-	
+	/**
+	 * Method creates the query object from query name ,set parameters to it and executes the list query.
+	 */
 	private void excuteListQuery() {
 		
 		Query queryObj = new Query();
@@ -240,6 +253,23 @@ public class ListBoxField extends BaseField {
 				
 			}
 		});
+	}
+	
+	/**
+	 * Method returns the index of the item from item text.
+	 * @param text
+	 * @return
+	 */
+	private Integer getIndexFromText(String text){
+
+		int indexToFind = -1;
+		for (int i=0; i<listBox.getItemCount(); i++) {
+		    if (listBox.getItemText(i).equals(text)) {
+		        indexToFind = i;
+		        break;
+		    }
+		}
+		return indexToFind;
 	}
 	
 	public interface ListBoxFieldConstant extends BaseFieldConstant{

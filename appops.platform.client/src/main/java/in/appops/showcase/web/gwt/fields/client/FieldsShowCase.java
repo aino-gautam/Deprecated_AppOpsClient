@@ -444,6 +444,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		items.add("Restricted");
 		items.add("Me");
 		
+		configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"Public");
 		configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,items);
 		
 		return configuration;
