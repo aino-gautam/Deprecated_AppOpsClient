@@ -1,15 +1,19 @@
 package in.appops.client.common.config.field;
 
-import in.appops.platform.core.shared.Configuration;
-
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class ConfigurationEditor extends Composite{
 	
-	private Configuration configuration;
+	private Field field;
+	private VerticalPanel basePanel ;
 	
 	public ConfigurationEditor() {
 		
+	}
+
+	public ConfigurationEditor(Field selectedField) {
+		this.field = selectedField;
 	}
 
 	/**
@@ -17,6 +21,10 @@ public class ConfigurationEditor extends Composite{
 	 * @param conf
 	 */
 	public void create(){
+		
+		basePanel = new VerticalPanel();
+		initWidget(basePanel);
+		
 		//TODO 
 		//create ui with editor on top and preview button at the bottom.
 		
@@ -25,7 +33,7 @@ public class ConfigurationEditor extends Composite{
 		3.add it to the hashmap of propertyname vs txtbox.
 		4.set the property value as textbox value.*/
 		
-		// on click of preview button collect all the property values and put it in the configuration instance. 
+		// write a method which will collect all the property values and put it in the configuration instance. 
 	}
 	
 	/**
@@ -45,12 +53,12 @@ public class ConfigurationEditor extends Composite{
 			return propValue;
 	}
 
-	public Configuration getConfiguration() {
-		return configuration;
+	public Field getField() {
+		return field;
 	}
 
-	public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
+	public void setField(Field field) {
+		this.field = field;
 	}
 
 }

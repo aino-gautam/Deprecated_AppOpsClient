@@ -1,5 +1,7 @@
 package in.appops.client.common.config.field;
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -13,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.ListBox;
@@ -41,12 +45,10 @@ staticListBox.configure();<br>
 staticListBox.create();<br>
 
 </p>*/
-public class ListBoxField extends BaseField {
+public class ListBoxField extends BaseField implements ChangeHandler{
 
-	//TODO: ListBox with query testing is left.
-	
 	private ListBox listBox;
-	private HashMap<String, Object> nameVsEntity ;
+	private HashMap<String, Entity> nameVsEntity ;
 	private final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 
@@ -74,11 +76,18 @@ public class ListBoxField extends BaseField {
 	public void configure() {
 		
 		listBox.setVisibleItemCount(getVisibleItemCount());
+		if(getDefaultValue()!=null){
+			listBox.insertItem(getDefaultValue().toString(),0);
+			listBox.setSelectedIndex(0);
+		}
 			
 		if(getBaseFieldPrimCss() != null)
 			getBasePanel().setStylePrimaryName(getBaseFieldPrimCss());
 		if(getBaseFieldCss() != null)
 			getBasePanel().addStyleName(getBaseFieldCss());
+		
+		if(getValueChangeEvent()!=0)
+			listBox.addChangeHandler(this);
 	}
 	
 	@Override
@@ -89,9 +98,6 @@ public class ListBoxField extends BaseField {
 	@Override
 	public Object getValue() {
 		String selectedItem = listBox.getItemText(listBox.getSelectedIndex());
-		if(getListQueryName()!=null){
-			return nameVsEntity.get(selectedItem);
-		}
 		return selectedItem;
 	}
 	
@@ -187,6 +193,18 @@ public class ListBoxField extends BaseField {
 		}
 		return operation;
 	}
+	
+	/**
+	 * Method return the event that will be fired when listbox value changes.  
+	 * @return
+	 */
+	private Integer getValueChangeEvent() {
+		Integer eventType = 0;
+		if (getConfigurationValue(ListBoxFieldConstant.LSTFD_CHANGEEVENT) != null) {
+			eventType = (Integer) getConfigurationValue(ListBoxFieldConstant.LSTFD_CHANGEEVENT);
+		}
+		return eventType;
+	}
 	/***********************************************************************************/
 
 	/**
@@ -195,15 +213,14 @@ public class ListBoxField extends BaseField {
 	 */
 	private void populateEntityList(EntityList entityList){
 		if(nameVsEntity==null)
-			nameVsEntity = new HashMap<String, Object>();
+			nameVsEntity = new HashMap<String, Entity>();
 		
 		for(Entity entity : entityList){
 				String item = entity.getPropertyByName(getEntPropToShow());
 				nameVsEntity.put(item, entity);
 				listBox.addItem(item);
 		}
-		if(getDefaultValue()!=null)
-			listBox.setSelectedIndex(getIndexFromText(getDefaultValue().toString()));
+		
 	}
 	
 	/**
@@ -216,8 +233,6 @@ public class ListBoxField extends BaseField {
 			listBox.addItem(item);
 		}
 		
-		if(getDefaultValue()!=null)
-			listBox.setSelectedIndex(getIndexFromText(getDefaultValue().toString()));
 	}
 	
 	/**
@@ -272,6 +287,35 @@ public class ListBoxField extends BaseField {
 		return indexToFind;
 	}
 	
+	@Override
+	public void onChange(ChangeEvent event) {
+		
+		boolean fireEvent = true;
+		
+		if(getDefaultValue()!=null){
+			if(!getValue().toString().equals(getDefaultValue().toString())){
+				fireEvent = true;
+			}else{
+				fireEvent = false;
+			}
+		}
+		
+		if(fireEvent){
+			
+			FieldEvent fieldEvent = new FieldEvent();
+			String selectedtem = getValue().toString();
+			SelectedItem selectedEntity = new SelectedItem();
+			selectedEntity.setItemString(selectedtem);
+			if(getListQueryName()!=null){
+				selectedEntity.setAssociatedEntity(nameVsEntity.get(selectedtem));
+			}
+			fieldEvent.setEventData(selectedEntity);
+			fieldEvent.setEventType(getValueChangeEvent());
+			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		}
+		
+	}
+	
 	public interface ListBoxFieldConstant extends BaseFieldConstant{
 		
 		/** Specifies No of list items should be visible in the listbox. **/
@@ -290,7 +334,8 @@ public class ListBoxField extends BaseField {
 		
 		public static final String LSTFD_QUERY_RESTRICTION = "queryRestriction";
 		
+		public static final String LSTFD_CHANGEEVENT = "changeEvent";
+		
 	}
-
 
 }

@@ -1,6 +1,8 @@
 package in.appops.showcase.web.gwt.holder.client;
 
 
+import in.appops.client.common.config.field.ConfigurationEditor;
+import in.appops.client.common.config.field.Field;
 import in.appops.client.common.fields.LinkField;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -11,12 +13,14 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class ShowcaseComponentHolder extends DockPanel implements EntryPoint{
 	
 	
 	private String packageName = null;
 	private String javaDocPackage = "javadoc/";
+	private VerticalPanel editorAndHelpPanel ;
 	private LinkField helpLink = new LinkField();
 	
 	public ShowcaseComponentHolder() {
@@ -39,7 +43,9 @@ public class ShowcaseComponentHolder extends DockPanel implements EntryPoint{
 			e.printStackTrace();
 		}
 		
-		add(helpLink,DockPanel.EAST);
+		editorAndHelpPanel = new VerticalPanel();
+		editorAndHelpPanel.add(helpLink);
+		add(editorAndHelpPanel,DockPanel.EAST);
 		
 	}
 	
@@ -76,6 +82,12 @@ public class ShowcaseComponentHolder extends DockPanel implements EntryPoint{
 	public void onModuleLoad() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public void showConfigurationEditor(Field selectedField) {
+		ConfigurationEditor configurationEditor = new ConfigurationEditor(selectedField);
+		configurationEditor.create();
+		editorAndHelpPanel.add(configurationEditor);
 	}
 	
 	

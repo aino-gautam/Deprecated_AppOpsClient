@@ -5,6 +5,7 @@ import in.appops.client.common.components.WebMediaAttachWidget;
 import in.appops.client.common.config.field.ButtonField;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
 import in.appops.client.common.config.field.CheckboxField.CheckBoxFieldConstant;
+import in.appops.client.common.config.field.Field;
 import in.appops.client.common.config.field.GroupField;
 import in.appops.client.common.config.field.GroupField.GroupFieldConstant;
 import in.appops.client.common.config.field.ImageField;
@@ -64,7 +65,10 @@ import com.google.code.gwt.geolocation.client.PositionCallback;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -81,6 +85,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	private VerticalPanel innerPanel;
 	private ShowcaseComponentHolder componentHolder;
 	private LocationSelectorField locationField;
+	private Field selectedField = null;
 	
 	public static final String TEXTBOX = "Text Box";
 	public static final String PASSWORDTEXTBOX = "Password Textbox";
@@ -446,6 +451,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		
 		configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"Public");
 		configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,items);
+		configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_CHANGEEVENT,FieldEvent.VALUECHANGED);
 		
 		return configuration;
 	}
@@ -540,11 +546,13 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	private void initializeField(String fieldName) {
 		
 		innerPanel.clear();
+		
 		if(fieldName.equals(TEXTBOX)) {
 			TextField textFieldTB = new TextField();
 			textFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, "appops-TextField", null, null));
 			textFieldTB.configure();
 			textFieldTB.create();
+			selectedField = textFieldTB;
 			innerPanel.add(textFieldTB);
 			innerPanel.setCellHorizontalAlignment(textFieldTB,HorizontalPanel.ALIGN_CENTER);
 		} else if(fieldName.equals(PASSWORDTEXTBOX)) {
@@ -552,6 +560,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			textFieldPTB.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_PSWBOX, "appops-TextField", null, null));
 			textFieldPTB.configure();
 			textFieldPTB.create();
+			selectedField = textFieldPTB;
 			innerPanel.add(textFieldPTB);
 			innerPanel.setCellHorizontalAlignment(textFieldPTB,HorizontalPanel.ALIGN_CENTER);
 			
@@ -560,6 +569,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			textFieldTB.setConfiguration(getEmailFieldConfiguration(1, false, TextFieldConstant.TFTYPE_EMAILBOX, "appops-TextField", null, null));
 			textFieldTB.configure();
 			textFieldTB.create();
+			selectedField = textFieldTB;
 			innerPanel.add(textFieldTB);
 			innerPanel.setCellHorizontalAlignment(textFieldTB,HorizontalPanel.ALIGN_CENTER);
 			
@@ -568,6 +578,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			textFieldTA.setConfiguration(getTextAreaConfiguration(10, false, TextFieldConstant.TFTTYPE_TXTAREA, null, null, null));
 			textFieldTA.configure();
 			textFieldTA.create();
+			selectedField = textFieldTA;
 			innerPanel.add(textFieldTA);
 			innerPanel.setCellHorizontalAlignment(textFieldTA,HorizontalPanel.ALIGN_CENTER);
 
@@ -576,28 +587,45 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			textFieldTB.setConfiguration(getNumericFieldConfiguration(1, false, TextFieldConstant.TFTYPE_NUMERIC, "appops-TextField", null, null));
 			textFieldTB.configure();
 			textFieldTB.create();
+			selectedField = textFieldTB;
 			innerPanel.add(textFieldTB);
 			innerPanel.setCellHorizontalAlignment(textFieldTB,HorizontalPanel.ALIGN_CENTER);
 		}else if(fieldName.equals(GROUPFIELD)) {
 			GroupField groupField = getCheckBoxGroupField();
 			innerPanel.add(groupField);
+			selectedField = groupField;
 			innerPanel.setCellHorizontalAlignment(groupField,HorizontalPanel.ALIGN_CENTER);
 		} else if(fieldName.equals(GROUPFIELDRADIO)) {
 			GroupField groupField = getRadioButtonGroupField();
 			innerPanel.add(groupField);
+			selectedField = groupField;
 			innerPanel.setCellHorizontalAlignment(groupField,HorizontalPanel.ALIGN_CENTER);
 		} else if(fieldName.equals(LABELFIELD)) {
-			LabelField labelField = new LabelField();
+			final LabelField labelField = new LabelField();
 			labelField.setConfiguration(getLabelFieldConfiguration(true,"appops-LabelField","dateTimelabel","Label with configuration"));
 			labelField.configure();
 			labelField.create();
+			selectedField = labelField;
 			innerPanel.add(labelField);
+			/*Button btn = new Button("configure");
+			btn.addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					labelField .getConfiguration().setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "after conf set");
+					labelField.configure();
+					labelField.create();
+					
+				}
+			});
+			innerPanel.add(btn);*/
 			innerPanel.setCellHorizontalAlignment(labelField,HorizontalPanel.ALIGN_CENTER);
 		} else if(fieldName.equals(LINKFIELDHYPERLINK)) {
 			LinkField hyperLinkField = new LinkField();
 			hyperLinkField.setConfiguration(getHyperLinkConfiguration());
 			hyperLinkField.configure();
 			hyperLinkField.create();
+			selectedField = hyperLinkField;
 			innerPanel.add(hyperLinkField);
 			innerPanel.setCellHorizontalAlignment(hyperLinkField,HorizontalPanel.ALIGN_CENTER);
 		}else if(fieldName.equals(LINKFIELDANCHOR)) {
@@ -605,6 +633,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			anchorLinkField.setConfiguration(getAnchorConfiguration());
 			anchorLinkField.configure();
 			anchorLinkField.create();
+			selectedField = anchorLinkField;
 			innerPanel.add(anchorLinkField);
 			innerPanel.setCellHorizontalAlignment(anchorLinkField,HorizontalPanel.ALIGN_CENTER);
 		}else if(fieldName.equals(BUTTONFIELD)) {
@@ -612,6 +641,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			btnField.setConfiguration(getButtonConfiguration());
 			btnField.configure();
 			btnField.create();
+			selectedField = btnField;
 			innerPanel.add(btnField);
 			innerPanel.setCellHorizontalAlignment(btnField,HorizontalPanel.ALIGN_CENTER);
 		}else if(fieldName.equals(IMAGEFIELD)) {
@@ -619,6 +649,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			imageField.setConfiguration(getImageConfiguration());
 			imageField.configure();
 			imageField.create();
+			selectedField = imageField;
 			innerPanel.add(imageField);
 			innerPanel.setCellHorizontalAlignment(imageField,HorizontalPanel.ALIGN_CENTER);
 		}else if(fieldName.equals(LISTBOX_WITH_QUERY)) {
@@ -626,6 +657,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			staticListBox.setConfiguration(getDynamicListBoxConfiguration());
 			staticListBox.configure();
 			staticListBox.create();
+			selectedField = staticListBox;
 			innerPanel.add(staticListBox);
 			innerPanel.setCellHorizontalAlignment(staticListBox,HorizontalPanel.ALIGN_CENTER);
 		}else if(fieldName.equals(LISTBOX_STATIC)) {
@@ -633,6 +665,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			staticListBox.setConfiguration(getStaticListBoxConfiguration());
 			staticListBox.configure();
 			staticListBox.create();
+			selectedField = staticListBox;
 			innerPanel.add(staticListBox);
 			innerPanel.setCellHorizontalAlignment(staticListBox,HorizontalPanel.ALIGN_CENTER);
 		}else if(fieldName.equals(STATEFIELD_STATIC)) {
@@ -641,6 +674,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			stateField.setConfiguration(stateFieldConfig);
 			stateField.configure();
 			stateField.create();
+			selectedField = stateField;
 			innerPanel.add(stateField);
 			innerPanel.setCellHorizontalAlignment(stateField,HorizontalPanel.ALIGN_CENTER);
 
@@ -650,6 +684,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			stateField.setConfiguration(stateFieldConfig);
 			stateField.configure();
 			stateField.create();
+			selectedField = stateField;
 			innerPanel.add(stateField);
 			innerPanel.setCellHorizontalAlignment(stateField,HorizontalPanel.ALIGN_CENTER);
 
@@ -660,6 +695,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			dateTimeField.setConfiguration(configuration);
 			dateTimeField.configure();
 			dateTimeField.create();
+			selectedField = dateTimeField;
 			innerPanel.add(dateTimeField);
 			innerPanel.setCellHorizontalAlignment(dateTimeField,HorizontalPanel.ALIGN_CENTER);
 
@@ -677,6 +713,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			dtPicker.setConfiguration(configuration);
 			dtPicker.configure();
 			dtPicker.create();
+			selectedField = selectedField;
 			innerPanel.add(dtPicker);
 			innerPanel.setCellHorizontalAlignment(dtPicker,HorizontalPanel.ALIGN_CENTER);
 		} else if(fieldName.equals(DATETIME_PICKER)) {
@@ -684,6 +721,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			dateTimePicker.setConfiguration(getDateTimePickerFieldConfiguration());
 			dateTimePicker.configure();
 			dateTimePicker.create();
+			selectedField = dateTimePicker;
 			innerPanel.add(dateTimePicker);
 			innerPanel.setCellHorizontalAlignment(dateTimePicker,HorizontalPanel.ALIGN_CENTER);
 
@@ -697,6 +735,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 								locationField.setConfiguration(getLocationSelectorConf(coords.getLatitude(), coords.getLongitude()));
 								locationField.configure();
 								locationField.create();
+								selectedField = locationField;
 							}
 						innerPanel.add(locationField);
 						innerPanel.setCellHorizontalAlignment(locationField,HorizontalPanel.ALIGN_CENTER);
@@ -715,7 +754,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			rangeSliderField.setConfiguration(getNumericSliderConf());
 			rangeSliderField.configure();
 			rangeSliderField.create();
-						
+			selectedField = rangeSliderField;
 			innerPanel.setWidth("100%");
 			innerPanel.add(rangeSliderField);
 			innerPanel.setCellHorizontalAlignment(rangeSliderField, HorizontalPanel.ALIGN_CENTER);
@@ -725,7 +764,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			rangeSliderField.setConfiguration(getStringSliderConf());
 			rangeSliderField.configure();
 			rangeSliderField.create();
-						
+			selectedField = rangeSliderField;
 			innerPanel.setWidth("100%");
 			innerPanel.add(rangeSliderField);
 			innerPanel.setCellHorizontalAlignment(rangeSliderField, HorizontalPanel.ALIGN_CENTER);
@@ -748,6 +787,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			valueSpinner.setConfiguration(configuration);
 			valueSpinner.configure();
 			valueSpinner.create();
+			selectedField = valueSpinner;
 			innerPanel.add(valueSpinner);
 			innerPanel.setCellHorizontalAlignment(valueSpinner,HorizontalPanel.ALIGN_CENTER);
 
@@ -771,6 +811,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			listSpinner.setConfiguration(configuration);
 			listSpinner.configure();
 			listSpinner.create();
+			selectedField = listSpinner;
 			innerPanel.add(listSpinner);
 			innerPanel.setCellHorizontalAlignment(listSpinner,HorizontalPanel.ALIGN_CENTER);
 
@@ -792,12 +833,14 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			editorField.setConfiguration(configuration);
 			editorField.configure();
 			editorField.create();
+			selectedField = editorField;
 			innerPanel.add(editorField);
 		}else if(fieldName.equals(DATELABEL_WITH_TIMESTAMP)) {
 			DateLabelField dateLabelField = new DateLabelField();
 			dateLabelField.setConfiguration(getDateLabelTimeStampConf(DateLabelFieldConstant.LIVETIMESTAMP_DSPLY));
 			dateLabelField.configure();
 			dateLabelField.create();
+			selectedField = dateLabelField;
 			innerPanel.add(dateLabelField);
 			innerPanel.setCellHorizontalAlignment(dateLabelField,HorizontalPanel.ALIGN_CENTER);
 		}else if(fieldName.equals(DATELABEL_WITH_DATETIME)) {
@@ -805,11 +848,13 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			dateLabelField.setConfiguration(getDateLabelTimeStampConf(DateLabelFieldConstant.DATETIME_DSPLY));
 			dateLabelField.configure();
 			dateLabelField.create();
+			selectedField = dateLabelField;
 			innerPanel.add(dateLabelField);
 			innerPanel.setCellHorizontalAlignment(dateLabelField,HorizontalPanel.ALIGN_CENTER);
 		}
 		
 		componentHolder.setPackageName(getPackageNameOfSelectedField(fieldName));
+		componentHolder.showConfigurationEditor(selectedField);
 	}
 	
 	private Configuration getDateLabelTimeStampConf(String displayFormat) {
@@ -918,6 +963,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				mediaField.setConfiguration(getMediaFieldConfiguration());
 				mediaField.configure();
 				mediaField.create();
+				selectedField = mediaField;
 				innerPanel.add(mediaField);
 				innerPanel.setCellHorizontalAlignment(mediaField,HorizontalPanel.ALIGN_CENTER);
 			}
