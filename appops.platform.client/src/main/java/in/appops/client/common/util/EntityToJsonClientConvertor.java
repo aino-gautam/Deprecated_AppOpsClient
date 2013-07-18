@@ -12,8 +12,12 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONBoolean;
+import com.google.gwt.json.client.JSONNull;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
@@ -36,6 +40,21 @@ public class EntityToJsonClientConvertor {
 		}
 		return jsona;
 	}
+	
+	 protected static JSONObject encodeMap(HashMap<String, Object> data) {
+		    JSONObject jsobj = new JSONObject();
+		    for (String key : data.keySet()) {
+		      Object val = data.get(key);
+		      if (val instanceof String) {
+		        jsobj.put(key, new JSONString(val.toString()));
+		      } else if(val instanceof Entity){
+		    	  JSONObject entJsonObj = createJsonFromEntity((Entity)val);
+		    	  jsobj.put(key, entJsonObj);
+		      }
+		    }
+		    return jsobj;
+	  }
+	
 	
 	public static JSONObject createJsonFromEntity(Entity entity) {
 		JSONObject mainJson = null;
@@ -194,10 +213,21 @@ public class EntityToJsonClientConvertor {
 						j.put("intelliThought", intelliThoughtJson);
 
 						childJson.put("intelliThought", j);
-					} else if(value instanceof ArrayList){
+					} else if(value instanceof ArrayList) {
 						JSONArray ja = encodeList((ArrayList<Object>)value);
-						childJson.put(propName, ja);
-					}
+						
+						JSONObject listJson = new JSONObject();
+						listJson.put("arrayList", ja);
+						
+						childJson.put(propName, listJson);
+					} else if(value instanceof HashMap) {
+						JSONObject jsonMapVal = encodeMap((HashMap<String, Object>)value);
+						
+						JSONObject mapJson = new JSONObject();
+						mapJson.put("map", jsonMapVal);
+						
+						childJson.put(propName, mapJson);
+					} 
 				}
 			}
 			

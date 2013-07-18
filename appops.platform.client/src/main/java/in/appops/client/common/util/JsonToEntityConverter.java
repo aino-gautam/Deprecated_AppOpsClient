@@ -11,16 +11,19 @@ import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.entity.type.Type;
 import in.appops.platform.core.operation.InitiateActionContext;
 import in.appops.platform.core.operation.IntelliThought;
+import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 
 
@@ -68,6 +71,8 @@ public class JsonToEntityConverter {
 			
 			if(mainType.contains("ActionContext")){
 				entity = new InitiateActionContext();
+			} else if (mainType.contains("config")){
+				entity = new Configuration();
 			} else {
 				entity = new Entity();
 			}
@@ -221,6 +226,14 @@ public class JsonToEntityConverter {
 					intelliThought.setLinkedEntities((ArrayList<Entity>)decodeJsonArray(intelliLinkedEntities));
 
 					entity.setPropertyByName(propName, intelliThought);
+				} else if(primitiveTypeName.equals("map")){
+					JSONObject jsonMap = propValueJson.get(primitiveTypeName).isObject();
+					HashMap<String, Object> valueMap = decodeJsonMap(jsonMap); 
+					entity.setPropertyByName(propName, valueMap);
+				} else if(primitiveTypeName.equals("arrayList")){
+					JSONArray jsonArr = propValueJson.get(primitiveTypeName).isArray();
+					ArrayList<String> valueMap = decodeJsonArrayStr(jsonArr); 
+					entity.setPropertyByName(propName, valueMap);
 				}
 				else{
 					Entity childEntity = getConvertedEntity(propValueJson);
@@ -276,6 +289,40 @@ public class JsonToEntityConverter {
 		}
 		return list;
 		
+	}
+	
+	private ArrayList<String> decodeJsonArrayStr(JSONArray jsonArray){
+		ArrayList<String> list = null;
+		try{
+			list = new ArrayList<String>();
+			for (int i = 0; i < jsonArray.size(); i++) {
+				JSONValue v = jsonArray.get(i);
+				if(v.isString() != null){
+					JSONString str = v.isString();
+					list.add(str.stringValue());
+				}
+			}
+			
+		}
+		catch (Exception e) {
+			logger.log(Level.SEVERE, "[JsonToEntityConverter] :: [decodeJsonArray] :: Exception", e);
+		}
+		return list;
+		
+	}
+	
+	private HashMap<String, Object> decodeJsonMap(JSONObject jso) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+	    for (String key : jso.keySet()) {
+	      JSONValue j = jso.get(key);
+	      if (j.isString() != null) {
+	        map.put(key, j.isString().stringValue());
+	      } else if(j.isObject() != null){
+				Entity entity =  getConvertedEntity(j.isObject());
+		        map.put(key, entity);
+	      }
+	    }
+	    return map;
 	}
 	
 	public Entity convertjsonStringToEntity(String jsonObjectStr){
