@@ -1,5 +1,6 @@
 package in.appops.client.common.config.field;
 
+import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 
 import java.io.Serializable;
@@ -136,6 +137,10 @@ public class BaseField extends Composite implements Field {
 		/** Set the fields valid field msg css class **/
 		public static final String BF_VALID_FIELD_MSGCLS = "validFieldMsgCls";
 		
+		String BF_BINDPROP = "bindProperty";
+		String BF_VISIBLE = "visible";
+
+		
 	}
 	
 	
@@ -150,6 +155,7 @@ public class BaseField extends Composite implements Field {
 	/** List of current active error displayed **/
 	private ArrayList<String> activeErrors;
 	
+	private Entity entity;
 	
 	protected DockPanel basePanel;
 	private HTML label;
@@ -157,7 +163,9 @@ public class BaseField extends Composite implements Field {
 	private HorizontalPanel sideWidget = null;
 	private HorizontalPanel bottomWidget = null;
 	
-	private Configuration configuration;	
+	private Configuration configuration;
+
+	protected Long bindId;	
 	
 	
 	public BaseField() {
@@ -517,6 +525,25 @@ public class BaseField extends Composite implements Field {
 
 	}
 	/***********************************************/
+
+	
+	public String getBindProperty() {
+		String bindProp = null;
+		if(getConfigurationValue(BaseFieldConstant.BF_BINDPROP) != null) {
+			bindProp = getConfigurationValue(BaseFieldConstant.BF_BINDPROP).toString();
+		}
+		return bindProp;
+	}
+	
+	public boolean isFieldVisible() {
+		boolean visible = true;
+		if(getConfigurationValue(BaseFieldConstant.BF_VISIBLE) != null) {
+			visible = (Boolean) getConfigurationValue(BaseFieldConstant.BF_VISIBLE);
+		}
+		return visible;
+	}
+
+	/***********************************************/
 	
 	
 	@Override
@@ -524,6 +551,7 @@ public class BaseField extends Composite implements Field {
 		/** Apply Css to the spinner base container, if not configured value default css applied **/
 		basePanel.setStylePrimaryName(getBaseFieldPrimCss());
 		basePanel.addStyleName(getBaseFieldCss());
+		basePanel.setVisible(isFieldVisible());
 	}
 
 		
@@ -784,6 +812,18 @@ public class BaseField extends Composite implements Field {
 
 	public void setBasePanel(DockPanel basePanel) {
 		this.basePanel = basePanel;
+	}
+
+	public Entity getEntity() {
+		return entity;
+	}
+
+	public void setEntity(Entity entity) {
+		this.entity = entity;
+	}
+	
+	public void setBindId(Long id) {
+		this.bindId = id;
 	}
 	
 }

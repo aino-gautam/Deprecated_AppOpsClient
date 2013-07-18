@@ -1,6 +1,5 @@
 package in.appops.client.common.config.field;
 
-import in.appops.client.common.config.field.BaseField;
 import in.appops.platform.core.util.AppOpsException;
 
 import com.google.gwt.user.client.ui.DockPanel;
@@ -54,13 +53,16 @@ public class LabelField extends BaseField  {
 	public void configure() {
 		
 		setValue(getDisplayText());
-		label.setWordWrap(isWordWrap());
+		//label.setWordWrap(isWordWrap());
 		label.setTitle(getLblTitle());
 		
 		if(getBaseFieldPrimCss() != null)
 			getBasePanel().setStylePrimaryName(getBaseFieldPrimCss());
 		if(getBaseFieldCss() != null)
 			getBasePanel().addStyleName(getBaseFieldCss());
+		if(getLabelFieldCss() != null)
+			label.setStylePrimaryName(getLabelFieldCss());
+		label.setVisible(isFieldVisible());
 		
 	}
 	
@@ -92,6 +94,15 @@ public class LabelField extends BaseField  {
 		}
 		return title;
 	}
+	
+	private String getLabelFieldCss() {
+		String depCss = null;
+		if(getConfigurationValue(LabelFieldConstant.LBLFD_FCSS) != null) {
+			depCss = getConfigurationValue(LabelFieldConstant.LBLFD_FCSS).toString();
+		}
+		return depCss;
+	}
+	
 	
 	/**
 	 * Method read the wordwrap value from configuration and return. Defaults to false;
@@ -130,6 +141,9 @@ public class LabelField extends BaseField  {
 		
 		/** Title text for label **/
 		public static final String LBLFD_TITLE = "title";
+		
+		public static final String LBLFD_FCSS = "labelfieldcss";
+
 		
 	}
 
