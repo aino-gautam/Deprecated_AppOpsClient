@@ -632,7 +632,7 @@ public class ChatMessagingComponent extends Composite implements MessengerEventH
 									
 									if(!curUserEmail.equals(chtInitEmail)) {
 										chatDisplayWidget.refreshChatUi(userEnt,chatTextEntity,true);
-										isOwnMessage = false;
+										//isOwnMessage = false;
 									}
 								}
 							} else {
