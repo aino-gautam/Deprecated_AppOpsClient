@@ -63,10 +63,18 @@ public class DateLabelField extends BaseField{
 		if(displayFormat.equals(DateLabelFieldConstant.LIVETIMESTAMP_DSPLY)){
 			setTimeToLabel();
 		}else{
-			displayLblField.setValue(getFormatedDate());
+			Date displayDate =  getDateTimeToDisplay();
+			if(displayDate != null) {
+				displayLblField.setValue(getFormatedDate(displayDate));
+			}
 		}
 	}
 	
+	@Override
+	public void setValue(Object value) {
+		super.setValue(value);
+		displayLblField.setValue(getFormatedDate((Date) value));
+	}
 	/********************************************************************************************************/
 	
 	/**
@@ -179,9 +187,11 @@ public class DateLabelField extends BaseField{
 		conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, true);
 		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, getBaseFieldPrimCss());
 		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, getBaseFieldCss());
+		conf.setPropertyByName(LabelFieldConstant.LBLFD_FCSS, "postenDateLabelField");
 		
-		if(isTitleVisible())
-			conf.setPropertyByName(LabelFieldConstant.LBLFD_TITLE, getDateTimeToDisplay().toString());
+		if(isTitleVisible()) {
+			//conf.setPropertyByName(LabelFieldConstant.LBLFD_TITLE, getDateTimeToDisplay().toString());
+		}
 		return conf;
 		
 	}
@@ -190,9 +200,9 @@ public class DateLabelField extends BaseField{
 	 * Method convert date from one format to other format and return.
 	 * @return
 	 */
-	private String getFormatedDate(){
+	private String getFormatedDate(Date date){
 		
-		String dateString = DateTimeFormat.getFormat(getDateTimeFormat()).format(getDateTimeToDisplay());
+		String dateString = DateTimeFormat.getFormat(getDateTimeFormat()).format(date);
 		
 		return dateString;
 	}
