@@ -82,9 +82,9 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		}
 			
 		if(getBaseFieldPrimCss() != null)
-			getBasePanel().setStylePrimaryName(getBaseFieldPrimCss());
+			listBox.setStylePrimaryName(getBaseFieldPrimCss());
 		if(getBaseFieldCss() != null)
-			getBasePanel().addStyleName(getBaseFieldCss());
+			listBox.addStyleName(getBaseFieldCss());
 		
 		if(getValueChangeEvent()!=0)
 			listBox.addChangeHandler(this);
@@ -205,6 +205,18 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		}
 		return eventType;
 	}
+	
+	/**
+	 * Method returns the selected text for listbox;
+	 * @return
+	 */
+	private String getDefaultSelectedText() {
+		String selectedTxt = null;
+		if(getConfigurationValue(ListBoxFieldConstant.LSTFD_SELECTED_TXT) != null) {
+			selectedTxt = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_SELECTED_TXT);
+		}
+		return selectedTxt;
+	}
 	/***********************************************************************************/
 
 	/**
@@ -221,6 +233,10 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 				listBox.addItem(item);
 		}
 		
+		if(getDefaultSelectedText()!=null){
+			listBox.setSelectedIndex(getIndexFromText(getDefaultSelectedText()));
+		}
+		
 	}
 	
 	/**
@@ -233,11 +249,16 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 			listBox.addItem(item);
 		}
 		
+		if(getDefaultSelectedText()!=null){
+			listBox.setSelectedIndex(getIndexFromText(getDefaultSelectedText()));
+		}
+		
 	}
 	
 	/**
 	 * Method creates the query object from query name ,set parameters to it and executes the list query.
 	 */
+	@SuppressWarnings("unchecked")
 	private void excuteListQuery() {
 		
 		Query queryObj = new Query();
@@ -268,6 +289,13 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 				
 			}
 		});
+	}
+	
+	public Entity getAssociatedEntity(String itemText){
+		if(nameVsEntity !=null)
+		  return nameVsEntity.get(itemText);
+		return null;
+		
 	}
 	
 	/**
@@ -333,6 +361,8 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		public static final String LSTFD_ENTPROP = "propertyToDisplay";
 		
 		public static final String LSTFD_QUERY_RESTRICTION = "queryRestriction";
+		
+		public static final String LSTFD_SELECTED_TXT = "defaultSelectedText";
 		
 		public static final String LSTFD_CHANGEEVENT = "changeEvent";
 		

@@ -120,9 +120,11 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			textBox.setStylePrimaryName(getBaseFieldPrimCss());
 		if(getBaseFieldCss() != null)
 			textBox.addStyleName(getBaseFieldCss());
+		if(getDefaultValue()!=null)
+			textBox.setText(getDefaultValue().toString());
 		
 		textBox.setMaxLength(getFieldMaxLength());
-		setFieldValue(getValue().toString());
+		
 		if(getTabIndex()!=null)
 			textBox.setTabIndex(getTabIndex());
 		
@@ -147,7 +149,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		Integer visibleLines = getNoOfVisibleLines();
 		textArea.setVisibleLines(visibleLines);
 		textArea.setReadOnly(isReadOnly());
-		setFieldValue(getValue().toString());
+
 		if(getBaseFieldPrimCss() != null)
 			textArea.setStylePrimaryName(getBaseFieldPrimCss());
 		if(getBaseFieldCss()!= null)
@@ -155,6 +157,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		if(getFieldCharWidth()!=null)
 			textArea.setCharacterWidth(getFieldCharWidth());
 					
+		if(getDefaultValue()!=null)
+			textArea.setText(getDefaultValue().toString());
 	}
 	
 	/** 
@@ -167,12 +171,14 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			passwordTextBox.setStylePrimaryName(getBaseFieldPrimCss());
 		if(getBaseFieldCss() != null)
 			passwordTextBox.addStyleName(getBaseFieldCss());
+		if(getDefaultValue()!=null)
+			passwordTextBox.setText(getDefaultValue().toString());
 		
 		passwordTextBox.setMaxLength(getFieldMaxLength());
 		if(getTabIndex()!=null)
 			passwordTextBox.setTabIndex(getTabIndex());
 		
-		setFieldValue(getValue().toString());
+		
 		/*** Events fired by passwordTextBox ****/
 		
 		passwordTextBox.addKeyPressHandler(this);
@@ -198,6 +204,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			numericTextbox.setStylePrimaryName(getBaseFieldPrimCss());
 		if(getBaseFieldCss() != null)
 			numericTextbox.addStyleName(getBaseFieldCss());
+		if(getDefaultValue()!=null)
+			numericTextbox.setText(getDefaultValue().toString());
 		
 		numericTextbox.setMaxLength(getFieldMaxLength());
 		

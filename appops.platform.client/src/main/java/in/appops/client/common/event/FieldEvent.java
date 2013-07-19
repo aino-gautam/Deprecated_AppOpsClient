@@ -35,6 +35,7 @@ public class FieldEvent extends GwtEvent<FieldEventHandler> {
 	public static final int RADIOBUTTON_SELECTED = 24;
 	public static final int MEDIA_UPLOAD = 25;
 	public static final int UPLOADED_IMGCLICKED = 26;
+	public static final int PREVIEW = 27;
 
 	
 	public static Type<FieldEventHandler> TYPE = new Type<FieldEventHandler>();

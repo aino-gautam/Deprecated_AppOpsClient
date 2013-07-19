@@ -67,10 +67,11 @@ public class ButtonField extends BaseField implements ClickHandler{
 			button.setTitle(getBtnTitle());
 		
 		if(getBaseFieldPrimCss()!= null)
-			getBasePanel().setStylePrimaryName(getBaseFieldPrimCss());
+			button.setStylePrimaryName(getBaseFieldPrimCss());
 		if(getBaseFieldCss() != null)
-			getBasePanel().addStyleName(getBaseFieldCss());
-		
+			button.addStyleName(getBaseFieldCss());
+		button.setEnabled(isDisabled());
+		 
 	}
 	
 	/**
