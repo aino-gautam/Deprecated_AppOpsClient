@@ -86,7 +86,7 @@ public class BaseField extends Composite implements Field {
 		 * Specifies whether the field be disabled.
 		 * Defaults to <code>false</code>
 		 */
-		public static final String BF_DISABLED = "disabled";
+		public static final String BF_ENABLED = "disabled";
 		
 		/** Specifies whether this field should be validated immediately whenever a change in its value is detected. 
 		 *  When set to true, it would allow the field to show feedback about the validity of its contents immediately as the user is typing.
@@ -147,7 +147,7 @@ public class BaseField extends Composite implements Field {
 	/**************** Properties *******************/
 	
 	/** The original value of the field as configured in the value configuration **/
-	private Object originalValue;
+	private Object originalValue = null;
 	
 	/** value of the field **/
 	private Object value;
@@ -336,12 +336,12 @@ public class BaseField extends Composite implements Field {
 		return readOnly;
 	}
 
-	protected boolean isDisabled() {
-		boolean disabled = false;
-		if(getConfigurationValue(BaseFieldConstant.BF_DISABLED) != null) {
-			disabled = (Boolean)getConfigurationValue(BaseFieldConstant.BF_DISABLED);
+	protected boolean isEnabled() {
+		boolean enabled = true;
+		if(getConfigurationValue(BaseFieldConstant.BF_ENABLED) != null) {
+			enabled = (Boolean)getConfigurationValue(BaseFieldConstant.BF_ENABLED);
 		}
-		return disabled;
+		return enabled;
 	}
 	
 	/**
@@ -824,6 +824,14 @@ public class BaseField extends Composite implements Field {
 	
 	public void setBindId(Long id) {
 		this.bindId = id;
+	}
+
+	public Object getOriginalValue() {
+		return originalValue;
+	}
+
+	public void setOriginalValue(Object originalValue) {
+		this.originalValue = originalValue;
 	}
 	
 }

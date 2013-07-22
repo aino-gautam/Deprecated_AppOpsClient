@@ -106,6 +106,11 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		}
 		
 		setSuggestion();
+		if(getDefaultValue()!=null){
+			setValue(getDefaultValue());
+			setOriginalValue(getDefaultValue());
+			setFieldValue(getDefaultValue().toString());
+		}
 		
 	}
 	
@@ -120,8 +125,6 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			textBox.setStylePrimaryName(getBaseFieldPrimCss());
 		if(getBaseFieldCss() != null)
 			textBox.addStyleName(getBaseFieldCss());
-		if(getDefaultValue()!=null)
-			textBox.setText(getDefaultValue().toString());
 		
 		textBox.setMaxLength(getFieldMaxLength());
 		
@@ -130,12 +133,13 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		
 		textBox.addKeyPressHandler(this);
 		
-		if(isValidateOnBlur()){
-			textBox.addBlurHandler(this);
-		}
-		if(isValidateOnChange()){
-			textBox.addKeyUpHandler(this);
-		}
+		//In case of simple textbox no validation is required.
+			if(isValidateOnBlur()){
+				textBox.addBlurHandler(this);
+			}
+			if(isValidateOnChange()){
+				textBox.addKeyUpHandler(this);
+			}
 						
 	}
 	
@@ -156,9 +160,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			textArea.addStyleName(getBaseFieldCss());
 		if(getFieldCharWidth()!=null)
 			textArea.setCharacterWidth(getFieldCharWidth());
-					
-		if(getDefaultValue()!=null)
-			textArea.setText(getDefaultValue().toString());
+				
 	}
 	
 	/** 
@@ -171,9 +173,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			passwordTextBox.setStylePrimaryName(getBaseFieldPrimCss());
 		if(getBaseFieldCss() != null)
 			passwordTextBox.addStyleName(getBaseFieldCss());
-		if(getDefaultValue()!=null)
-			passwordTextBox.setText(getDefaultValue().toString());
-		
+				
 		passwordTextBox.setMaxLength(getFieldMaxLength());
 		if(getTabIndex()!=null)
 			passwordTextBox.setTabIndex(getTabIndex());
@@ -204,9 +204,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			numericTextbox.setStylePrimaryName(getBaseFieldPrimCss());
 		if(getBaseFieldCss() != null)
 			numericTextbox.addStyleName(getBaseFieldCss());
-		if(getDefaultValue()!=null)
-			numericTextbox.setText(getDefaultValue().toString());
-		
+				
 		numericTextbox.setMaxLength(getFieldMaxLength());
 		
 				
@@ -482,16 +480,11 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 */
 	private Integer getNoOfVisibleLines(){
 		
-		if(getConfiguration()!=null){
-			
-			Integer noOfVisibleLines =  (Integer) getConfiguration().getPropertyByName(TextFieldConstant.TF_VISLINES);
-			if(noOfVisibleLines !=null){
-				return noOfVisibleLines; 
-			}else{
-				return 1;
-			}
+		Integer noOfVisibleLines = 1;
+		if (getConfigurationValue(TextFieldConstant.TF_VISLINES) != null) {
+			noOfVisibleLines = (Integer) getConfigurationValue(TextFieldConstant.TF_VISLINES);
 		}
-		return null;
+		return noOfVisibleLines;
 	}
 	
 	/**
@@ -499,18 +492,11 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 * @return
 	 */
 	private String getTextFieldType(){
-		
-		if(getConfiguration()!=null){
-			
-			String fieldType = getConfiguration().getPropertyByName(TextFieldConstant.TF_TYPE);
-			if(fieldType !=null){
-				return fieldType;
-			}else{
-				return TextFieldConstant.TFTYPE_TXTBOX;
-			}
+		String fieldType = TextFieldConstant.TFTYPE_TXTBOX;
+		if (getConfigurationValue(TextFieldConstant.TF_TYPE) != null) {
+			fieldType = (String) getConfigurationValue(TextFieldConstant.TF_TYPE);
 		}
-		return null;
-		
+		return fieldType;
 	}
 	
 	/**
@@ -520,15 +506,11 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	
 	private Integer getFieldMaxLength(){
 		
-		if(getConfiguration()!=null){
-			Integer maxLength = (Integer) getConfiguration().getPropertyByName(TextFieldConstant.TF_MAXLENGTH);
-			if(maxLength !=null){
-				return maxLength;
-			}else{
-				return 255;
-			}
+		Integer maxLength = 255;
+		if (getConfigurationValue(TextFieldConstant.TF_MAXLENGTH) != null) {
+			maxLength = (Integer) getConfigurationValue(TextFieldConstant.TF_MAXLENGTH);
 		}
-		return null;
+		return maxLength;
 	}
 	
 	/**
@@ -538,16 +520,23 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	
 	private Integer getMinLength(){
 		
-		if(getConfiguration()!=null){
-			
-			Integer minLength = (Integer) getConfiguration().getPropertyByName(TextFieldConstant.TF_MINLENGTH);
-			if(minLength !=null){
-				return minLength;
-			}else{
-				return 6;
-			}
+		Integer minLength = 6;
+		if (getConfigurationValue(TextFieldConstant.TF_MINLENGTH) != null) {
+			minLength = (Integer) getConfigurationValue(TextFieldConstant.TF_MINLENGTH);
 		}
-		return null;
+		return minLength;
+	}
+	
+	/**
+	 * Returns if field should be validated or not.
+	 * @return
+	 */
+	private Boolean isValidateField(){
+		Boolean validate = true;
+		if (getConfigurationValue(TextFieldConstant.VALIDATEFIELD) != null) {
+			validate = (Boolean) getConfigurationValue(TextFieldConstant.VALIDATEFIELD);
+		}
+		return validate;
 	}
 	
 	/**
@@ -557,16 +546,11 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	
 	private Integer getFieldCharWidth(){
 		
-		if(getConfiguration()!=null){
-			
-			Integer charWidth = (Integer) getConfiguration().getPropertyByName(TextFieldConstant.TF_CHARWIDTH);
-			if(charWidth !=null){
-				return charWidth;
-			}else{
-				return 255;
-			}
+		Integer charWidth = 255;
+		if (getConfigurationValue(TextFieldConstant.TF_CHARWIDTH) != null) {
+			charWidth = (Integer) getConfigurationValue(TextFieldConstant.TF_CHARWIDTH);
 		}
-		return null;
+		return charWidth;
 	}
 	
 	/**
@@ -593,16 +577,11 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 */
 	
 	private String getMinLengthErrorText(){
-		
-		if(getConfiguration()!=null){
-			String minValueText = getConfiguration().getPropertyByName(TextFieldConstant.MIN_LEGTH_ERROR_TEXT);
-			if(minValueText !=null){
-				return minValueText;
-			}else{
-				return "The minimum length for this field is "+ getMinLength();
-			}
+		String minValueText = "The minimum length for this field is "+ getMinLength();
+		if (getConfigurationValue(TextFieldConstant.MIN_LEGTH_ERROR_TEXT) != null) {
+			minValueText = (String) getConfigurationValue(TextFieldConstant.MIN_LEGTH_ERROR_TEXT);
 		}
-		return null;
+		return minValueText;
 	}
 	
 	/**
@@ -611,15 +590,11 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 */
 	private String getInvalidEmailText(){
 		
-		if(getConfiguration()!=null){
-			String maxValueText = getConfiguration().getPropertyByName(TextFieldConstant.INVALID_EMAIL_TEXT);
-			if(maxValueText !=null){
-				return maxValueText;
-			}else{
-				return "Invalid email";
-			}
+		String invalidEmailText = "Invalid email";
+		if (getConfigurationValue(TextFieldConstant.INVALID_EMAIL_TEXT) != null) {
+			invalidEmailText = (String) getConfigurationValue(TextFieldConstant.INVALID_EMAIL_TEXT);
 		}
-		return null;
+		return invalidEmailText;
 	}
 
 	private void setFocus(){
@@ -649,13 +624,25 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	}
 	
 	/**
-	 * Method return the event which will be used when user enter some text.  
+	 * Method return the event which will be fired when user press enter key.  
 	 * @return
 	 */
-	private Integer getFieldEnteredEvent() {
-		Integer eventType = null;
-		if (getConfigurationValue(TextFieldConstant.TF_VALUE_ENTERED_EVENT) != null) {
-			eventType = (Integer) getConfigurationValue(TextFieldConstant.TF_VALUE_ENTERED_EVENT);
+	private Integer getEnterEvent() {
+		Integer eventType = 0;
+		if (getConfigurationValue(TextFieldConstant.TF_ENTER_EVENT) != null) {
+			eventType = (Integer) getConfigurationValue(TextFieldConstant.TF_ENTER_EVENT);
+		}
+		return eventType;
+	}
+	
+	/**
+	 * Method return the event which will be fired when user change some value in field.  
+	 * @return
+	 */
+	private Integer getValueChangedEvent() {
+		Integer eventType = 0;
+		if (getConfigurationValue(TextFieldConstant.TF_VALUE_CHANGED_EVENT) != null) {
+			eventType = (Integer) getConfigurationValue(TextFieldConstant.TF_VALUE_CHANGED_EVENT);
 		}
 		return eventType;
 	}
@@ -666,7 +653,12 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		
 		Integer keycode= event.getNativeKeyCode();
 		if(keycode.equals(KeyCodes.KEY_BACKSPACE) || keycode.equals(KeyCodes.KEY_TAB)|| keycode.equals(KeyCodes.KEY_DELETE)){
-			validate();
+			if(isValidateField()){
+				if(validate())
+					setValue(getValue());
+			}else{
+				setValue(getValue());
+			}
 			setFocus();
 		}
 				
@@ -674,42 +666,52 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	
 	@Override
 	public void onBlur(BlurEvent event) {
-		if(getTextFieldType().equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX)){
-			
-		}else{
+		if(isValidateField()){
 			if(validate()){
 				if(numericTextbox!=null && numericTextbox.isAllowDecimal()){
 					setValue(numericTextbox.fixPrecision());
 				}
 			}
+		}else{
+			setValue(getValue());
 		}
-			 
+		
 	}
 
 	@Override
 	public void onKeyPress(KeyPressEvent event) {
-		
-		if(getTextFieldType().equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX)){
-			if(event.getUnicodeCharCode()==KeyCodes.KEY_ENTER){
-				FieldEvent fieldEvent = new FieldEvent();
-				fieldEvent.setEventType(getFieldEnteredEvent());
-				fieldEvent.setEventData(getValue());
-				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		final int charCode= event.getUnicodeCharCode();
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				if (isValidateField()) {
+					if (isValidateOnChange()) {
+						if (validate())
+							setValue(getValue());
+						setFocus();
+					}
+				} else {
+					setValue(getValue());
+					setFocus();
+				}
+				
+				if(isDirty()){
+					if (charCode == KeyCodes.KEY_ENTER) {
+						if (getEnterEvent() != 0) {
+							FieldEvent fieldEvent = new FieldEvent();
+							fieldEvent.setEventType(getEnterEvent());
+							fieldEvent.setEventData(getValue());
+							AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+						}
+					}else if (getValueChangedEvent() != 0) {
+						FieldEvent fieldEvent = new FieldEvent();
+						fieldEvent.setEventType(getValueChangedEvent());
+						fieldEvent.setEventData(getValue());
+						AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+					}
+				}
 			}
-		}else{
-			Scheduler.get().scheduleDeferred(new ScheduledCommand() {    
-				  @Override
-				  public void execute() {
-					  
-					  if(isValidateOnChange()){
-						  if(validate())
-							  setValue(getValue());
-						  setFocus();
-					  }
-			}
-			});
-		}
-		
+		});
 		
 	}
 	
@@ -776,7 +778,13 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		public static final String NEGATIVE_VALUE_TEXT = "negativevalTxt";
 		
 		/** Specifies the event that will be fired when user enters **/
-		public static final String TF_VALUE_ENTERED_EVENT = "fieldEnteredEvent";
+		public static final String TF_ENTER_EVENT = "enterEvent";
+		
+		/** Specifies whether field should be validated or not**/
+		public static final String VALIDATEFIELD = "validateField";
+		
+		/** Specifies the event that will be fired when field value is changed and not as original value that was set**/
+		public static final String TF_VALUE_CHANGED_EVENT = "valueChangedEvent";
 				
 	}
 }

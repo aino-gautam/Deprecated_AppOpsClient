@@ -57,11 +57,13 @@ public class LabelField extends BaseField  {
 		label.setTitle(getLblTitle());
 		
 		if(getBaseFieldPrimCss() != null)
-			getBasePanel().setStylePrimaryName(getBaseFieldPrimCss());
+			label.setStylePrimaryName(getBaseFieldPrimCss());
 		if(getBaseFieldCss() != null)
-			getBasePanel().addStyleName(getBaseFieldCss());
+			label.addStyleName(getBaseFieldCss());
+		
 		if(getLabelFieldCss() != null)
 			label.setStylePrimaryName(getLabelFieldCss());
+		
 		label.setVisible(isFieldVisible());
 		
 	}
@@ -95,6 +97,7 @@ public class LabelField extends BaseField  {
 		return title;
 	}
 	
+	
 	private String getLabelFieldCss() {
 		String depCss = null;
 		if(getConfigurationValue(LabelFieldConstant.LBLFD_FCSS) != null) {
@@ -102,7 +105,6 @@ public class LabelField extends BaseField  {
 		}
 		return depCss;
 	}
-	
 	
 	/**
 	 * Method read the wordwrap value from configuration and return. Defaults to false;
@@ -143,7 +145,6 @@ public class LabelField extends BaseField  {
 		public static final String LBLFD_TITLE = "title";
 		
 		public static final String LBLFD_FCSS = "labelfieldcss";
-
 		
 	}
 

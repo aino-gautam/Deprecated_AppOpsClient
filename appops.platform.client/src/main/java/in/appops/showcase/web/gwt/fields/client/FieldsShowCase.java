@@ -262,6 +262,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		configuration.setPropertyByName(TextFieldConstant.BF_VALIDATEONCHANGE, true);
 		configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
 		configuration.setPropertyByName(TextFieldConstant.TF_MAXLENGTH, 10);
+		configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, true);
 		return configuration;
 	}
 	
@@ -276,6 +277,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		configuration.setPropertyByName(TextFieldConstant.MINVALUE,0);
 		configuration.setPropertyByName(TextFieldConstant.ALLOWDEC,true);
 		configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
+		configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, true);
 		
 		return configuration;
 	}
@@ -383,6 +385,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
 		configuration.setPropertyByName(TextFieldConstant.TF_MAXLENGTH, 10);
 		configuration.setPropertyByName(TextFieldConstant.TF_CHARWIDTH, 70);
+		configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, false);
 		
 		return configuration;
 	}
@@ -399,6 +402,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		configuration.setPropertyByName(TextFieldConstant.BF_SHOW_VALID_FIELD,true);
 		configuration.setPropertyByName(TextFieldConstant.BF_VALIDATEONCHANGE, true);
 		configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
+		configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, true);
 		
 		return configuration;
 	}

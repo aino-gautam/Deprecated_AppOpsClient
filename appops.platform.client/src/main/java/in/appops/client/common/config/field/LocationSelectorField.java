@@ -413,7 +413,7 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		configuration.setPropertyByName(TextFieldConstant.BF_DCLS, getSearchFieldDependentCss());
 		configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
 		configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter location");
-		configuration.setPropertyByName(TextFieldConstant.TF_VALUE_ENTERED_EVENT, getSearchFieldEnteredEvent());
+		configuration.setPropertyByName(TextFieldConstant.TF_ENTER_EVENT, getSearchFieldEnteredEvent());
 		configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, getSearchFieldErrorPos());
 		configuration.setPropertyByName(TextFieldConstant.BF_INVLDMSG, getSearchInvalidMsg());
 		return configuration;

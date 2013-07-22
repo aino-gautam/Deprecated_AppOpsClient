@@ -70,7 +70,8 @@ public class ButtonField extends BaseField implements ClickHandler{
 			button.setStylePrimaryName(getBaseFieldPrimCss());
 		if(getBaseFieldCss() != null)
 			button.addStyleName(getBaseFieldCss());
-		button.setEnabled(isDisabled());
+		
+		button.setEnabled(isEnabled());
 		 
 	}
 	
