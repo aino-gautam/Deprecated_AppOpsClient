@@ -61,9 +61,11 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	@Override
 	public void create() {
 		
-		if(getListQueryName()!=null){
+		if(getListQueryName() != null){
 			excuteListQuery();
-		}else{
+		} else if(getListQueryName() == null && getOperationName() != null) { 
+			executeOperation(null);
+		} else{
 			if(getStaticListOfItems()!=null){
 				populateList(getStaticListOfItems());
 			}
@@ -227,6 +229,9 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		if(nameVsEntity==null)
 			nameVsEntity = new HashMap<String, Entity>();
 		
+		String defaultValue = getDefaultValueName();
+		listBox.addItem(defaultValue);
+		
 		for(Entity entity : entityList){
 				String item = entity.getPropertyByName(getEntPropToShow());
 				nameVsEntity.put(item, entity);
@@ -270,25 +275,7 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		Map parameterMap = new HashMap();
 		parameterMap.put("query", queryObj);
 		
-		StandardAction action = new StandardAction(Entity.class, getOperationName(), parameterMap);
-		dispatch.execute(action, new AsyncCallback<Result>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
-			}
-
-			@Override
-			public void onSuccess(Result result) {
-				
-				if(result!=null){
-					EntityList list   = (EntityList) result.getOperationResult();
-					if(!list.isEmpty())
-						populateEntityList(list);
-				}
-				
-			}
-		});
+		executeOperation(parameterMap);
 	}
 	
 	public Entity getAssociatedEntity(String itemText){
@@ -297,6 +284,7 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		return null;
 		
 	}
+	
 	
 	/**
 	 * Method returns the index of the item from item text.
@@ -343,6 +331,40 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		}
 		
 	}
+
+
+	private void executeOperation(Map parameterMap) {
+		StandardAction action = new StandardAction(EntityList.class, getOperationName(), parameterMap);
+		dispatch.execute(action, new AsyncCallback<Result>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
+
+			@Override
+			public void onSuccess(Result result) {
+				
+				if(result!=null){
+					EntityList list   = (EntityList) result.getOperationResult();
+					if(!list.isEmpty())
+						populateEntityList(list);
+				}
+				
+			}
+		});
+	}
+	
+	private String getDefaultValueName() {
+		String defaultName = null;
+		if(getConfigurationValue(ListBoxFieldConstant.LISTBOX_DEFAULT_VALUE) != null) {
+			String value =(String) getConfigurationValue(ListBoxFieldConstant.LISTBOX_DEFAULT_VALUE);
+			defaultName = "--" + value + "--";
+		} else {
+			defaultName = "--Select--";
+		}
+		return defaultName;
+	}
 	
 	public interface ListBoxFieldConstant extends BaseFieldConstant{
 		
@@ -365,6 +387,8 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		public static final String LSTFD_SELECTED_TXT = "defaultSelectedText";
 		
 		public static final String LSTFD_CHANGEEVENT = "changeEvent";
+		
+		public static final String LISTBOX_DEFAULT_VALUE = "listboxDefaultValue";
 		
 	}
 
