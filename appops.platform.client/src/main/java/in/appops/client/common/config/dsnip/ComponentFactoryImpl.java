@@ -8,6 +8,7 @@ import in.appops.client.common.config.field.ActionField;
 import in.appops.client.common.config.field.BaseField;
 import in.appops.client.common.config.field.HTMLField;
 import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.date.DateLabelField;
 import in.appops.client.common.config.field.spinner.SpinnerField;
 import in.appops.client.common.fields.TextField;
@@ -21,6 +22,7 @@ public class ComponentFactoryImpl implements ComponentFactory {
 	private final String TEXTFIELD = "textField";
 	private final String HTMLEDTFIELD = "htmlEditorField";
 	private final String DATETIMEFIELD = "dateTimeFieldField";
+	private final String LISTBOXFIELD = "listBoxField";
 	
 	@Override
 	public BaseField getField(String type) {
@@ -38,6 +40,8 @@ public class ComponentFactoryImpl implements ComponentFactory {
 			return new HtmlEditorField();
 		} else if(type.equalsIgnoreCase(DATETIMEFIELD)) {
 			return new DateLabelField();
+		} else if(type.equalsIgnoreCase(LISTBOXFIELD)) {
+			return new ListBoxField();
 		}
 		return null;
 	}
