@@ -78,5 +78,7 @@ pageHeaderSnippet:"<table style=\"float: right;\" cellspacing=\"5\" cellpadding=
 		"					</tr>\n" + 
 		"				</tbody>\n" + 
         "  		  </table>",		
-	
+articleListSnippetForBlog: "<table cellspacing=\"1\" cellpadding=\"0\" style=\"width: 100%;\"><tbody><tr><td align=\"left\" style=\"vertical-align: top; \">" +
+							"<span id=\"listBoxField\" appopsField=\"true\" widgetType= \"listBoxField\" data-config=\"listBoxField\"></span>" +
+							"</td></tr></tbody></table>",	
 }; 
