@@ -5,6 +5,9 @@ import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.platform.core.shared.Configuration;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -36,7 +39,7 @@ dateLabelField.create();<br>
 public class DateLabelField extends BaseField{
 	
 	private LabelField displayLblField ;
-	
+	private Logger logger = Logger.getLogger(getClass().getName());
 	public DateLabelField() {}
 	
 	/**
@@ -44,7 +47,12 @@ public class DateLabelField extends BaseField{
 	 */
 	@Override
 	public void create() {
-		getBasePanel().add(displayLblField,DockPanel.CENTER);
+		try {
+			logger.log(Level.INFO,"[DateLabelField]:: In create  method ");
+			getBasePanel().add(displayLblField,DockPanel.CENTER);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[DateLabelField]::Exception In create  method :"+e);
+		}
 	}
 	
 	/**
@@ -53,25 +61,32 @@ public class DateLabelField extends BaseField{
 	@Override
 	public void configure() {
 		
-		displayLblField = new LabelField();
-		displayLblField.setConfiguration(getDateLabelConfiguration());
-		displayLblField.configure();
-		displayLblField.create();
-		
-		String displayFormat = getDisplayFormat();
-		
-		if(displayFormat.equals(DateLabelFieldConstant.LIVETIMESTAMP_DSPLY)){
-			setTimeToLabel();
-		}else{
-			Date displayDate =  getDateTimeToDisplay();
-			if(displayDate != null) {
-				displayLblField.setValue(getFormatedDate(displayDate));
+		try {
+			logger.log(Level.INFO,"[DateLabelField]:: In configure  method ");
+			displayLblField = new LabelField();
+			displayLblField.setConfiguration(getDateLabelConfiguration());
+			displayLblField.configure();
+			displayLblField.create();
+			
+			String displayFormat = getDisplayFormat();
+			
+			if(displayFormat.equals(DateLabelFieldConstant.LIVETIMESTAMP_DSPLY)){
+				setTimeToLabel();
+			}else{
+				Date displayDate =  getDateTimeToDisplay();
+				if(displayDate != null) {
+					displayLblField.setValue(getFormatedDate(displayDate));
+				}
 			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[DateLabelField]::Exception In configure  method :"+e);
+
 		}
 	}
 	
 	@Override
 	public void setValue(Object value) {
+		logger.log(Level.INFO,"[DateLabelField]:: In setValue  method ");
 		super.setValue(value);
 		displayLblField.setValue(getFormatedDate((Date) value));
 	}
@@ -84,9 +99,15 @@ public class DateLabelField extends BaseField{
 	private String getDisplayFormat() {
 		
 		String displayFormat = DateLabelFieldConstant.LIVETIMESTAMP_DSPLY;
-		if(getConfigurationValue(DateLabelFieldConstant.DTLBL_DSPLY_FORM) != null) {
-			
-			displayFormat = getConfigurationValue(DateLabelFieldConstant.DTLBL_DSPLY_FORM).toString();
+		try {
+			logger.log(Level.INFO,"[DateLabelField]:: In getDisplayFormat  method ");
+			if(getConfigurationValue(DateLabelFieldConstant.DTLBL_DSPLY_FORM) != null) {
+				
+				displayFormat = getConfigurationValue(DateLabelFieldConstant.DTLBL_DSPLY_FORM).toString();
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[DateLabelField]::Exception In getDisplayFormat  method :"+e);
+
 		}
 		return displayFormat;
 	}
@@ -99,9 +120,15 @@ public class DateLabelField extends BaseField{
 	private String getDateTimeFormat() {
 		
 		String displayFormat = "MMM dd''yy 'at' HH:mm a";
-		if(getConfigurationValue(DateLabelFieldConstant.DATETIME_FORMAT) != null) {
-			
-			displayFormat = getConfigurationValue(DateLabelFieldConstant.DATETIME_FORMAT).toString();
+		try {
+			logger.log(Level.INFO,"[DateLabelField]:: In getDateTimeFormat  method ");
+			if(getConfigurationValue(DateLabelFieldConstant.DATETIME_FORMAT) != null) {
+				
+				displayFormat = getConfigurationValue(DateLabelFieldConstant.DATETIME_FORMAT).toString();
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[DateLabelField]::Exception In getDateTimeFormat  method :"+e);
+
 		}
 		return displayFormat;
 	}
@@ -113,9 +140,15 @@ public class DateLabelField extends BaseField{
 	private Date getDateTimeToDisplay() {
 		
 		Date date = null;;
-		if(getConfigurationValue(DateLabelFieldConstant.DATETIME_TO_DISPLAY) != null) {
-			
-			date = (Date) getConfigurationValue(DateLabelFieldConstant.DATETIME_TO_DISPLAY);
+		try {
+			logger.log(Level.INFO,"[DateLabelField]:: In getDateTimeToDisplay  method ");
+			if(getConfigurationValue(DateLabelFieldConstant.DATETIME_TO_DISPLAY) != null) {
+				
+				date = (Date) getConfigurationValue(DateLabelFieldConstant.DATETIME_TO_DISPLAY);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[DateLabelField]::Exception In getDateTimeToDisplay  method :"+e);
+
 		}
 		return date;
 	}
@@ -127,23 +160,34 @@ public class DateLabelField extends BaseField{
 	private Boolean isTitleVisible() {
 		
 		Boolean displayFormat = true;
-		if(getConfigurationValue(DateLabelFieldConstant.IS_TITLE_VISIBLE) != null) {
-			
-			displayFormat = (Boolean) getConfigurationValue(DateLabelFieldConstant.IS_TITLE_VISIBLE);
+		try {
+			logger.log(Level.INFO,"[DateLabelField]:: In isTitleVisible  method ");
+			if(getConfigurationValue(DateLabelFieldConstant.IS_TITLE_VISIBLE) != null) {
+				
+				displayFormat = (Boolean) getConfigurationValue(DateLabelFieldConstant.IS_TITLE_VISIBLE);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[DateLabelField]::Exception In isTitleVisible  method :"+e);
 		}
 		return displayFormat;
 	}
 	/**************************************************************************************************/
 	
 	private void setTimeToLabel(){
-		Timer timer = new Timer() {
-			public void run() {
-				String timeAgo = calculateTimeAgo(getDateTimeToDisplay());
-				displayLblField.setValue(timeAgo);
-			}
-		};
-		timer.run();
-		timer.scheduleRepeating(1000);
+		try {
+			logger.log(Level.INFO,"[DateLabelField]:: In setTimeToLabel  method ");
+			Timer timer = new Timer() {
+				public void run() {
+					String timeAgo = calculateTimeAgo(getDateTimeToDisplay());
+					displayLblField.setValue(timeAgo);
+				}
+			};
+			timer.run();
+			timer.scheduleRepeating(1000);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[DateLabelField]::Exception In setTimeToLabel  method :"+e);
+
+		}
 	}
 	
 	/**
@@ -152,6 +196,7 @@ public class DateLabelField extends BaseField{
 	 * @return
 	 */
 	private String calculateTimeAgo(Date activitydate){
+		logger.log(Level.INFO,"[DateLabelField]:: In calculateTimeAgo  method ");
 		Date currDate = new Date();
 		long diffInSec = (currDate.getTime() - activitydate.getTime()) / 1000;
 		long second = diffInSec % 60;
@@ -184,13 +229,19 @@ public class DateLabelField extends BaseField{
 	 */
 	private Configuration getDateLabelConfiguration(){
 		Configuration conf = new Configuration();
-		conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, true);
-		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, getBaseFieldPrimCss());
-		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, getBaseFieldCss());
-		conf.setPropertyByName(LabelFieldConstant.LBLFD_FCSS, "postenDateLabelField");
-		
-		if(isTitleVisible()) {
-			//conf.setPropertyByName(LabelFieldConstant.LBLFD_TITLE, getDateTimeToDisplay().toString());
+		try {
+			logger.log(Level.INFO,"[DateLabelField]:: In getDateLabelConfiguration  method ");
+			conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, true);
+			conf.setPropertyByName(LabelFieldConstant.BF_PCLS, getBaseFieldPrimCss());
+			conf.setPropertyByName(LabelFieldConstant.BF_DCLS, getBaseFieldCss());
+			conf.setPropertyByName(LabelFieldConstant.LBLFD_FCSS, "postenDateLabelField");
+			
+			if(isTitleVisible()) {
+				//conf.setPropertyByName(LabelFieldConstant.LBLFD_TITLE, getDateTimeToDisplay().toString());
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[DateLabelField]::Exception In getDateLabelConfiguration  method :"+e);
+
 		}
 		return conf;
 		
@@ -201,7 +252,7 @@ public class DateLabelField extends BaseField{
 	 * @return
 	 */
 	private String getFormatedDate(Date date){
-		
+		logger.log(Level.INFO,"[DateLabelField]:: In getFormatedDate  method ");
 		String dateString = DateTimeFormat.getFormat(getDateTimeFormat()).format(date);
 		
 		return dateString;
