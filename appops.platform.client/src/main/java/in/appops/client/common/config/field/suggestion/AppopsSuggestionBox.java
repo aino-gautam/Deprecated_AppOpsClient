@@ -5,6 +5,8 @@ import in.appops.client.common.event.FieldEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -25,7 +27,8 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	private SuggestionOracle oracle = new SuggestionOracle();
 	private SuggestBox suggestBox = new SuggestBox(oracle);
 	private Boolean isAutoSuggestion = false;
-	
+	private Logger logger = Logger.getLogger(getClass().getName());
+
 	public AppopsSuggestionBox() {
 		basePanel = new VerticalPanel();
 		createUi();
@@ -34,10 +37,15 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	
 	/***************************************** *******************************/
 	public void createUi(){
-		this.basePanel.add(suggestBox);
-		suggestBox.addSelectionHandler(this);
-		suggestBox.getTextBox().addClickHandler(this);
-		suggestBox.getTextBox().addFocusHandler(this);
+		try {
+			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In createUi method ");
+			this.basePanel.add(suggestBox);
+			suggestBox.addSelectionHandler(this);
+			suggestBox.getTextBox().addClickHandler(this);
+			suggestBox.getTextBox().addFocusHandler(this);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in createUi method :"+e);
+		}
 	}
 	
 	
@@ -61,7 +69,12 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 * @param queryName
 	 */
 	public void setQueryName(String queryName) {
-		oracle.setQueryName(queryName);
+		try {
+			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setQueryName method ");
+			oracle.setQueryName(queryName);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setQueryName method :"+e);
+		}
 	}
 	
 	/**
@@ -69,7 +82,12 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 * @param name
 	 */
 	public void setOperationName(String name) {
-		oracle.setOperationName(name);
+		try {
+			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setOperationName method ");
+			oracle.setOperationName(name);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setOperationName method :"+e);
+		}
 	}
 	
 	/**
@@ -77,7 +95,12 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 * @param name
 	 */
 	public void setQueryRestrictions(HashMap<String, Object> map) {
-		oracle.setRestriction(map);
+		try {
+			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setQueryRestrictions method ");
+			oracle.setRestriction(map);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setQueryRestrictions method :"+e);
+		}
 	}
 
 	/**
@@ -85,7 +108,12 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 * @param max
 	 */
 	public void setQueryMaxResult(int max) {
-		oracle.setMaxResult(max);
+		try {
+			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setQueryMaxResult method ");
+			oracle.setMaxResult(max);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setQueryMaxResult method :"+e);
+		}
 	}
 
 	/**
@@ -93,7 +121,12 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 * @param propertyByName
 	 */
 	public void setPropertyToDisplay(String propertyByName) {
-		oracle.setEntityPropToDisplay(propertyByName);
+		try {
+			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setPropertyToDisplay method ");
+			oracle.setEntityPropToDisplay(propertyByName);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setPropertyToDisplay method :"+e);
+		}
 	}
 
 	/**
@@ -101,7 +134,12 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 * @param val
 	 */
 	public void setAutoSuggestion(Boolean val) {
-		isAutoSuggestion = val;
+		try {
+			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setAutoSuggestion method ");
+			isAutoSuggestion = val;
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setAutoSuggestion method :"+e);
+		}
 	}
 	
 	/**
@@ -109,7 +147,12 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 * @param val
 	 */
 	public void setStaticSuggestionBox(Boolean val) {
-		oracle.IsStaticSuggestionBox(val);
+		try {
+			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setStaticSuggestionBox method ");
+			oracle.IsStaticSuggestionBox(val);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setStaticSuggestionBox method :"+e);
+		}
 	}
 	
 	/**
@@ -117,7 +160,12 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 * @param itemsToDisplay
 	 */
 	public void setItemsToDisplay(ArrayList<String> itemsToDisplay) {
-		oracle.setItemsToDisplay(itemsToDisplay);
+		try {
+			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setItemsToDisplay method ");
+			oracle.setItemsToDisplay(itemsToDisplay);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setItemsToDisplay method :"+e);
+		}
 	}
 
 	/**
@@ -125,44 +173,64 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 * @param val
 	 */
 	public void setIsSearchQuery(Boolean val) {
-		oracle.IsSearchQuery(val);
+		try {
+			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setIsSearchQuery method ");
+			oracle.IsSearchQuery(val);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setIsSearchQuery method :"+e);
+		}
 	}
 	
 	/********************************** ***************************************/
 	@Override
 	public void onFocus(FocusEvent event) {
-		if(isAutoSuggestion){
-			if(getSuggestBox().getText().equals(""))
-				getSuggestBox().setText(" ");
-			getSuggestBox().showSuggestionList();
-			if(getSuggestBox().getText().equals(" "))
-				getSuggestBox().setText("");
+		try {
+			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In onFocus method ");
+			if(isAutoSuggestion){
+				if(getSuggestBox().getText().equals(""))
+					getSuggestBox().setText(" ");
+				getSuggestBox().showSuggestionList();
+				if(getSuggestBox().getText().equals(" "))
+					getSuggestBox().setText("");
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in onFocus method :"+e);
 		}
 	}
 	
 	@Override
 	public void onClick(ClickEvent event) {
-		if(getSuggestBox().getText().equals("")){
-			getSuggestBox().setText(" ");
-		}
-		getSuggestBox().showSuggestionList();
-		if(getSuggestBox().getText().equals(" ")) {
-			getSuggestBox().setText("");
+		try {
+			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In onClick method ");
+			if(getSuggestBox().getText().equals("")){
+				getSuggestBox().setText(" ");
+			}
+			getSuggestBox().showSuggestionList();
+			if(getSuggestBox().getText().equals(" ")) {
+				getSuggestBox().setText("");
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in onClick method :"+e);
 		}
 	}
 	
 	@Override
 	public void onSelection(SelectionEvent<Suggestion> event) {
 		
-		AppopsSuggestion selectedSuggestion = (AppopsSuggestion) event.getSelectedItem();
-		setSelectedSuggestion(selectedSuggestion);
-		getSuggestBox().setText(selectedSuggestion.getDisplayString());
-		getSuggestBox().getTextBox().setFocus(false);
-		
-		FieldEvent fieldEvent = new FieldEvent();
-		fieldEvent.setEventData(selectedSuggestion);
-		fieldEvent.setEventType(FieldEvent.SUGGESTION_SELECTED);
-		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		try {
+			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In onSelection method ");
+			AppopsSuggestion selectedSuggestion = (AppopsSuggestion) event.getSelectedItem();
+			setSelectedSuggestion(selectedSuggestion);
+			getSuggestBox().setText(selectedSuggestion.getDisplayString());
+			getSuggestBox().getTextBox().setFocus(false);
+			
+			FieldEvent fieldEvent = new FieldEvent();
+			fieldEvent.setEventData(selectedSuggestion);
+			fieldEvent.setEventType(FieldEvent.SUGGESTION_SELECTED);
+			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in onSelection method :"+e);
+		}
 	}
 
 
