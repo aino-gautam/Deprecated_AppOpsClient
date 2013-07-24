@@ -1,5 +1,8 @@
 package in.appops.client.common.config.field.suggestion;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import in.appops.platform.core.entity.Entity;
 
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
@@ -8,7 +11,8 @@ public class AppopsSuggestion implements Suggestion{
 
 	private Entity entity;
 	private String display;
-	
+	private Logger logger = Logger.getLogger(getClass().getName());
+
 	public AppopsSuggestion() {
 		// TODO Auto-generated constructor stub
 	}
@@ -40,8 +44,13 @@ public class AppopsSuggestion implements Suggestion{
 	}
 
 	public void setPropertToDisplay(String entProp) {
-		String name = entity.getProperty(entProp).getValue().toString();
-		//name is the string which will be displayed while showing the suggestions
-		setDisplay(name);
+		try {
+			logger.log(Level.INFO, "[AppopsSuggestion] ::In setPropertToDisplay method ");
+			String name = entity.getProperty(entProp).getValue().toString();
+			//name is the string which will be displayed while showing the suggestions
+			setDisplay(name);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[AppopsSuggestion] ::Exception in setPropertToDisplay method :"+e);
+		}
 	}
 }
