@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SuggestOracle;
@@ -31,7 +33,8 @@ public class SuggestionOracle extends SuggestOracle {
 	private Boolean isSearchQuery = false;
 	private Boolean isStaticSuggestionBox = false;
 	private ArrayList<String> itemsToDisplay;
-	
+	private Logger logger = Logger.getLogger(getClass().getName());
+
 	public SuggestionOracle() {
 		
 	}
@@ -47,88 +50,93 @@ public class SuggestionOracle extends SuggestOracle {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void requestSuggestions(final Request request, final Callback callback) {
-		final String search = request.getQuery();
-		final SuggestOracle.Response response = new Response();
-		List<AppopsSuggestion> suggestionList = new LinkedList<AppopsSuggestion>();
+		try {
+			logger.log(Level.INFO, "[SuggestionOracle] ::In requestSuggestions method ");
+			final String search = request.getQuery();
+			final SuggestOracle.Response response = new Response();
+			List<AppopsSuggestion> suggestionList = new LinkedList<AppopsSuggestion>();
 
-		if(store != null && !store.isEmpty() && !search.equals(" ")){
-			for(AppopsSuggestion suggestion : store){
-				if(suggestion.getDisplayString().toLowerCase().startsWith(search.trim().toLowerCase())){
-					suggestionList.add(suggestion);
+			if(store != null && !store.isEmpty() && !search.equals(" ")){
+				for(AppopsSuggestion suggestion : store){
+					if(suggestion.getDisplayString().toLowerCase().startsWith(search.trim().toLowerCase())){
+						suggestionList.add(suggestion);
+					}
 				}
 			}
-		}
-		
-		if(!suggestionList.isEmpty()){
-			response.setSuggestions(suggestionList);
-			callback.onSuggestionsReady(request, response);
-		} else if(isStaticSuggestionBox){
-			store = new LinkedList<AppopsSuggestion>();
-			for (String name : getItemsToDisplay()) {
-				AppopsSuggestion appopsSuggestion = new AppopsSuggestion();
-				appopsSuggestion.setDisplay(name);
-				store.add(appopsSuggestion);
-			}
-		}else{
 			
-			Query queryObj = new Query();
-			queryObj.setQueryName(queryName);
-			queryObj.setListSize(maxResult);
-			HashMap map = new HashMap();
+			if(!suggestionList.isEmpty()){
+				response.setSuggestions(suggestionList);
+				callback.onSuggestionsReady(request, response);
+			} else if(isStaticSuggestionBox){
+				store = new LinkedList<AppopsSuggestion>();
+				for (String name : getItemsToDisplay()) {
+					AppopsSuggestion appopsSuggestion = new AppopsSuggestion();
+					appopsSuggestion.setDisplay(name);
+					store.add(appopsSuggestion);
+				}
+			}else{
+				
+				Query queryObj = new Query();
+				queryObj.setQueryName(queryName);
+				queryObj.setListSize(maxResult);
+				HashMap map = new HashMap();
 
-			if(isSearchQuery){
-				if(restrictionMap != null){
+				if(isSearchQuery){
+					if(restrictionMap != null){
+						for (String key : restrictionMap.keySet())
+							map.put(key, restrictionMap.get(key));
+					}
+					map.put("searchChar", search+"*");
+				}else if(restrictionMap != null){
 					for (String key : restrictionMap.keySet())
 						map.put(key, restrictionMap.get(key));
-				}
-				map.put("searchChar", search+"*");
-			}else if(restrictionMap != null){
-				for (String key : restrictionMap.keySet())
-					map.put(key, restrictionMap.get(key));
-				map.put("searchChar", "%" + search + "%");
-			}else
-				map.put("searchChar", "%" + search + "%");
-				//map.put("max", maxResult);
-			
-			queryObj.setQueryParameterMap(map);
-			
-			Map parameterMap = new HashMap();
-			parameterMap.put("query", queryObj);
-			
-			StandardAction action = new StandardAction(Entity.class, operationName, parameterMap);
-			dispatch.execute(action, new AsyncCallback<Result>() {
+					map.put("searchChar", "%" + search + "%");
+				}else
+					map.put("searchChar", "%" + search + "%");
+					//map.put("max", maxResult);
+				
+				queryObj.setQueryParameterMap(map);
+				
+				Map parameterMap = new HashMap();
+				parameterMap.put("query", queryObj);
+				
+				StandardAction action = new StandardAction(Entity.class, operationName, parameterMap);
+				dispatch.execute(action, new AsyncCallback<Result>() {
 
-				@Override
-				public void onFailure(Throwable caught) {
-					caught.printStackTrace();
-				}
-
-				@Override
-				public void onSuccess(Result result) {
-					store = new LinkedList<AppopsSuggestion>();
-					EntityList entityList = (EntityList) result.getOperationResult();
-					if(entityList != null && !entityList.isEmpty()) {
-						for (Entity entity : entityList) {
-							AppopsSuggestion appopsSuggestion = new AppopsSuggestion(entity);
-							appopsSuggestion.setPropertToDisplay(entPropToDisplay);
-							store.add(appopsSuggestion);
-						}
+					@Override
+					public void onFailure(Throwable caught) {
+						caught.printStackTrace();
 					}
-					
-					if(search.equals(" ")){
-						response.setSuggestions(store);
-					} else{
-						List<AppopsSuggestion> suggestionList = new LinkedList<AppopsSuggestion>();
-						for(AppopsSuggestion suggestion : store){
-							if(suggestion.getDisplayString().toLowerCase().startsWith(search.trim().toLowerCase())){
-								suggestionList.add(suggestion);
+
+					@Override
+					public void onSuccess(Result result) {
+						store = new LinkedList<AppopsSuggestion>();
+						EntityList entityList = (EntityList) result.getOperationResult();
+						if(entityList != null && !entityList.isEmpty()) {
+							for (Entity entity : entityList) {
+								AppopsSuggestion appopsSuggestion = new AppopsSuggestion(entity);
+								appopsSuggestion.setPropertToDisplay(entPropToDisplay);
+								store.add(appopsSuggestion);
 							}
 						}
-						response.setSuggestions(suggestionList);
+						
+						if(search.equals(" ")){
+							response.setSuggestions(store);
+						} else{
+							List<AppopsSuggestion> suggestionList = new LinkedList<AppopsSuggestion>();
+							for(AppopsSuggestion suggestion : store){
+								if(suggestion.getDisplayString().toLowerCase().startsWith(search.trim().toLowerCase())){
+									suggestionList.add(suggestion);
+								}
+							}
+							response.setSuggestions(suggestionList);
+						}
+						callback.onSuggestionsReady(request, response);
 					}
-					callback.onSuggestionsReady(request, response);
-				}
-			});
+				});
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[SuggestionOracle] ::Exception in requestSuggestions method :"+e);
 		}
 	}
 	
