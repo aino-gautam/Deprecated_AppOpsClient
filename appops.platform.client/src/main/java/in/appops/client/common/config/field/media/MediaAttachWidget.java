@@ -6,6 +6,8 @@ import in.appops.platform.core.shared.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -31,7 +33,7 @@ public abstract class MediaAttachWidget extends Composite implements Configurabl
 	private ArrayList<String> extensionList ;
 	private String crossImageBlobId;
 	private String crossImagePrimaryCss;
-	
+	private Logger logger = Logger.getLogger(getClass().getName());
 	public MediaAttachWidget(){
 		initialize();
 		initWidget(basePanel);
@@ -42,23 +44,28 @@ public abstract class MediaAttachWidget extends Composite implements Configurabl
 	}
 
 	public void createUi(){
-		HorizontalPanel mediaPanel = new HorizontalPanel();
-		if(getPrimaryCss()!=null)
-			mediaPanel.setStylePrimaryName(getPrimaryCss());
-		
-		if(getDependentcss()!=null)
-			mediaPanel.setStylePrimaryName(getDependentcss());
-		
-		basePanel.add(mediaPanel);
-		
-		mediaImageField = new ImageField();
-		mediaImageField.setConfiguration(getMediaImageConfiguration());
-		mediaImageField.configure();
-		mediaImageField.create();
-		
-		mediaPanel.add(mediaImageField);
-		mediaPanel.setCellHorizontalAlignment(mediaImageField, HasHorizontalAlignment.ALIGN_RIGHT);
-		mediaPanel.setCellVerticalAlignment(mediaImageField, HasVerticalAlignment.ALIGN_MIDDLE);
+		try {
+			logger.log(Level.INFO, "[MediaAttachWidget] ::In createUi method ");
+			HorizontalPanel mediaPanel = new HorizontalPanel();
+			if(getPrimaryCss()!=null)
+				mediaPanel.setStylePrimaryName(getPrimaryCss());
+			
+			if(getDependentcss()!=null)
+				mediaPanel.setStylePrimaryName(getDependentcss());
+			
+			basePanel.add(mediaPanel);
+			
+			mediaImageField = new ImageField();
+			mediaImageField.setConfiguration(getMediaImageConfiguration());
+			mediaImageField.configure();
+			mediaImageField.create();
+			
+			mediaPanel.add(mediaImageField);
+			mediaPanel.setCellHorizontalAlignment(mediaImageField, HasHorizontalAlignment.ALIGN_RIGHT);
+			mediaPanel.setCellVerticalAlignment(mediaImageField, HasVerticalAlignment.ALIGN_MIDDLE);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[MediaAttachWidget] ::Exception In createUi method :"+e);
+		}
 	}
 	
 	@Override
@@ -79,9 +86,14 @@ public abstract class MediaAttachWidget extends Composite implements Configurabl
 	}
 
 	public void expand() {
-		fileUploadPanel.setVisible(true);
-		this.isExpand = true;
-		this.isCollapse = false;
+		try {
+			logger.log(Level.INFO, "[MediaAttachWidget] ::In expand method ");
+			fileUploadPanel.setVisible(true);
+			this.isExpand = true;
+			this.isCollapse = false;
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[MediaAttachWidget] ::Exception In expand method :"+e);
+		}
 	}
 
 	public boolean isCollapse() {
@@ -89,9 +101,14 @@ public abstract class MediaAttachWidget extends Composite implements Configurabl
 	}
 
 	public void collapse() {
-		fileUploadPanel.setVisible(false);
-		this.isCollapse = true;
-		this.isExpand = false;
+		try {
+			logger.log(Level.INFO, "[MediaAttachWidget] ::In collapse method ");
+			fileUploadPanel.setVisible(false);
+			this.isCollapse = true;
+			this.isExpand = false;
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[MediaAttachWidget] ::Exception In collapse method :"+e);
+		}
 	}
 	
 	public void isMediaImageVisible(boolean visible) {
