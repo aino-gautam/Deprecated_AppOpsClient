@@ -14,6 +14,8 @@ import in.appops.platform.core.util.EntityList;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -51,7 +53,7 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	private HashMap<String, Entity> nameVsEntity ;
 	private final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
-
+	private Logger logger = Logger.getLogger(getClass().getName());
 	public ListBoxField(){
 		listBox = new ListBox();
 	}
@@ -61,44 +63,62 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	@Override
 	public void create() {
 		
-		if(getListQueryName() != null){
-			excuteListQuery();
-		} else if(getListQueryName() == null && getOperationName() != null) { 
-			executeOperation(null);
-		} else{
-			if(getStaticListOfItems()!=null){
-				populateList(getStaticListOfItems());
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In create  method ");
+
+			if(getListQueryName() != null){
+				excuteListQuery();
+			} else if(getListQueryName() == null && getOperationName() != null) { 
+				executeOperation(null);
+			} else{
+				if(getStaticListOfItems()!=null){
+					populateList(getStaticListOfItems());
+				}
 			}
+			
+			getBasePanel().add(listBox, DockPanel.CENTER);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In create  method :"+e);
+
 		}
-		
-		getBasePanel().add(listBox, DockPanel.CENTER);
 	}
 	
 	@Override
 	public void configure() {
 		
-		listBox.setVisibleItemCount(getVisibleItemCount());
-		if(getDefaultValue()!=null){
-			listBox.insertItem(getDefaultValue().toString(),0);
-			listBox.setSelectedIndex(0);
-		}
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In configure  method ");
+			listBox.setVisibleItemCount(getVisibleItemCount());
+			if(getDefaultValue()!=null){
+				listBox.insertItem(getDefaultValue().toString(),0);
+				listBox.setSelectedIndex(0);
+			}
+				
+			if(getBaseFieldPrimCss() != null)
+				listBox.setStylePrimaryName(getBaseFieldPrimCss());
+			if(getBaseFieldCss() != null)
+				listBox.addStyleName(getBaseFieldCss());
 			
-		if(getBaseFieldPrimCss() != null)
-			listBox.setStylePrimaryName(getBaseFieldPrimCss());
-		if(getBaseFieldCss() != null)
-			listBox.addStyleName(getBaseFieldCss());
-		
-		if(getValueChangeEvent()!=0)
-			listBox.addChangeHandler(this);
+			if(getValueChangeEvent()!=0)
+				listBox.addChangeHandler(this);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In configure  method :"+e);
+		}
 	}
 	
 	@Override
 	public void clear() {
-		listBox.clear();
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In clear  method ");
+			listBox.clear();
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In clear  method :"+e);
+		}
 	}
 	
 	@Override
 	public Object getValue() {
+		logger.log(Level.INFO,"[ListBoxField]:: In getValue  method ");
 		String selectedItem = listBox.getItemText(listBox.getSelectedIndex());
 		return selectedItem;
 	}
@@ -106,8 +126,13 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	@Override
 	public void setValue(Object value) {
 		
-		if(value!=null)
-			listBox.setSelectedIndex(getIndexFromText(value.toString()));
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In setValue  method ");
+			if(value!=null)
+				listBox.setSelectedIndex(getIndexFromText(value.toString()));
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In setValue  method :"+e);
+		}
 	}
 	
 	/***************************** *****************************/
@@ -118,8 +143,13 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	 */
 	private Integer getVisibleItemCount() {
 		Integer noOfVisibleItems = 1;
-		if(getConfigurationValue(ListBoxFieldConstant.LSTFD_VISIBLE_ITEM_CNT) != null) {
-			noOfVisibleItems = (Integer) getConfigurationValue(ListBoxFieldConstant.LSTFD_VISIBLE_ITEM_CNT);
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getVisibleItemCount  method ");
+			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_VISIBLE_ITEM_CNT) != null) {
+				noOfVisibleItems = (Integer) getConfigurationValue(ListBoxFieldConstant.LSTFD_VISIBLE_ITEM_CNT);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getVisibleItemCount  method :"+e);
 		}
 		return noOfVisibleItems;
 	}
@@ -130,8 +160,13 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	 */
 	private ArrayList<String> getStaticListOfItems() {
 		ArrayList<String> listOfItems = null;
-		if(getConfigurationValue(ListBoxFieldConstant.LSTFD_ITEMS) != null) {
-			listOfItems = (ArrayList<String>) getConfigurationValue(ListBoxFieldConstant.LSTFD_ITEMS);
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getStaticListOfItems  method ");
+			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_ITEMS) != null) {
+				listOfItems = (ArrayList<String>) getConfigurationValue(ListBoxFieldConstant.LSTFD_ITEMS);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getStaticListOfItems  method :"+e);
 		}
 		return listOfItems;
 	}
@@ -142,8 +177,13 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	 */
 	private String getListQueryName() {
 		String query = null;
-		if(getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERYNAME) != null) {
-			query = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERYNAME);
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getListQueryName  method ");
+			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERYNAME) != null) {
+				query = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERYNAME);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getListQueryName  method :"+e);
 		}
 		return query;
 	}
@@ -154,8 +194,13 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	 */
 	private String getEntPropToShow() {
 		String entprop = null;
-		if(getConfigurationValue(ListBoxFieldConstant.LSTFD_ENTPROP) != null) {
-			entprop = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_ENTPROP);
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getEntPropToShow  method ");
+			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_ENTPROP) != null) {
+				entprop = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_ENTPROP);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getEntPropToShow  method :"+e);
 		}
 		return entprop;
 	}
@@ -166,8 +211,13 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	 */
 	private HashMap<String, Object> getQueryRestrictions() {
 		HashMap<String, Object> queryRestrictions = null;
-		if(getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_RESTRICTION) != null) {
-			queryRestrictions =  (HashMap<String, Object>) getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_RESTRICTION);
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getQueryRestrictions  method ");
+			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_RESTRICTION) != null) {
+				queryRestrictions =  (HashMap<String, Object>) getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_RESTRICTION);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getQueryRestrictions  method :"+e);
 		}
 		return queryRestrictions;
 	}
@@ -178,8 +228,13 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	 */
 	private Integer getQueryMaxResult() {
 		Integer maxResult = 10;
-		if(getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_MAXRESULT) != null) {
-			maxResult =(Integer) getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_MAXRESULT);
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getQueryMaxResult  method ");
+			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_MAXRESULT) != null) {
+				maxResult =(Integer) getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_MAXRESULT);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getQueryMaxResult  method :"+e);
 		}
 		return maxResult;
 	}
@@ -190,8 +245,13 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	 */
 	private String getOperationName() {
 		String operation = null;
-		if(getConfigurationValue(ListBoxFieldConstant.LSTFD_OPRTION) != null) {
-			operation =(String) getConfigurationValue(ListBoxFieldConstant.LSTFD_OPRTION);
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getOperationName  method ");
+			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_OPRTION) != null) {
+				operation =(String) getConfigurationValue(ListBoxFieldConstant.LSTFD_OPRTION);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getOperationName  method :"+e);
 		}
 		return operation;
 	}
@@ -202,8 +262,13 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	 */
 	private Integer getValueChangeEvent() {
 		Integer eventType = 0;
-		if (getConfigurationValue(ListBoxFieldConstant.LSTFD_CHANGEEVENT) != null) {
-			eventType = (Integer) getConfigurationValue(ListBoxFieldConstant.LSTFD_CHANGEEVENT);
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getValueChangeEvent  method ");
+			if (getConfigurationValue(ListBoxFieldConstant.LSTFD_CHANGEEVENT) != null) {
+				eventType = (Integer) getConfigurationValue(ListBoxFieldConstant.LSTFD_CHANGEEVENT);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getValueChangeEvent  method :"+e);
 		}
 		return eventType;
 	}
@@ -214,8 +279,13 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	 */
 	private String getDefaultSelectedText() {
 		String selectedTxt = null;
-		if(getConfigurationValue(ListBoxFieldConstant.LSTFD_SELECTED_TXT) != null) {
-			selectedTxt = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_SELECTED_TXT);
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getDefaultSelectedText  method ");
+			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_SELECTED_TXT) != null) {
+				selectedTxt = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_SELECTED_TXT);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getDefaultSelectedText  method :"+e);
 		}
 		return selectedTxt;
 	}
@@ -226,20 +296,25 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	 * @param entityList
 	 */
 	private void populateEntityList(EntityList entityList){
-		if(nameVsEntity==null)
-			nameVsEntity = new HashMap<String, Entity>();
-		
-		String defaultValue = getDefaultValueName();
-		listBox.addItem(defaultValue);
-		
-		for(Entity entity : entityList){
-				String item = entity.getPropertyByName(getEntPropToShow());
-				nameVsEntity.put(item, entity);
-				listBox.addItem(item);
-		}
-		
-		if(getDefaultSelectedText()!=null){
-			listBox.setSelectedIndex(getIndexFromText(getDefaultSelectedText()));
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In populateEntityList  method ");
+			if(nameVsEntity==null)
+				nameVsEntity = new HashMap<String, Entity>();
+			
+			String defaultValue = getDefaultValueName();
+			listBox.addItem(defaultValue);
+			
+			for(Entity entity : entityList){
+					String item = entity.getPropertyByName(getEntPropToShow());
+					nameVsEntity.put(item, entity);
+					listBox.addItem(item);
+			}
+			
+			if(getDefaultSelectedText()!=null){
+				listBox.setSelectedIndex(getIndexFromText(getDefaultSelectedText()));
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In populateEntityList  method :"+e);
 		}
 		
 	}
@@ -249,13 +324,18 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	 * @param listOfItems
 	 */
 	private void populateList(ArrayList<String> listOfItems){
-		for(int count = 0; count<listOfItems.size() ;count ++){
-			String item = listOfItems.get(count);
-			listBox.addItem(item);
-		}
-		
-		if(getDefaultSelectedText()!=null){
-			listBox.setSelectedIndex(getIndexFromText(getDefaultSelectedText()));
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In populateList  method ");
+			for(int count = 0; count<listOfItems.size() ;count ++){
+				String item = listOfItems.get(count);
+				listBox.addItem(item);
+			}
+			
+			if(getDefaultSelectedText()!=null){
+				listBox.setSelectedIndex(getIndexFromText(getDefaultSelectedText()));
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In populateList  method :"+e);
 		}
 		
 	}
@@ -266,19 +346,25 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	@SuppressWarnings("unchecked")
 	private void excuteListQuery() {
 		
-		Query queryObj = new Query();
-		queryObj.setQueryName(getListQueryName());
-		queryObj.setListSize(getQueryMaxResult());
-		if(getQueryRestrictions()!=null)
-			queryObj.setQueryParameterMap(getQueryRestrictions());
-		
-		Map parameterMap = new HashMap();
-		parameterMap.put("query", queryObj);
-		
-		executeOperation(parameterMap);
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In excuteListQuery  method ");
+			Query queryObj = new Query();
+			queryObj.setQueryName(getListQueryName());
+			queryObj.setListSize(getQueryMaxResult());
+			if(getQueryRestrictions()!=null)
+				queryObj.setQueryParameterMap(getQueryRestrictions());
+			
+			Map parameterMap = new HashMap();
+			parameterMap.put("query", queryObj);
+			
+			executeOperation(parameterMap);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In excuteListQuery  method :"+e);
+		}
 	}
 	
 	public Entity getAssociatedEntity(String itemText){
+		logger.log(Level.INFO,"[ListBoxField]:: In getAssociatedEntity  method ");
 		if(nameVsEntity !=null)
 		  return nameVsEntity.get(itemText);
 		return null;
@@ -294,11 +380,16 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	private Integer getIndexFromText(String text){
 
 		int indexToFind = -1;
-		for (int i=0; i<listBox.getItemCount(); i++) {
-		    if (listBox.getItemText(i).equals(text)) {
-		        indexToFind = i;
-		        break;
-		    }
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getIndexFromText  method ");
+			for (int i=0; i<listBox.getItemCount(); i++) {
+			    if (listBox.getItemText(i).equals(text)) {
+			        indexToFind = i;
+			        break;
+			    }
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getIndexFromText  method :"+e);
 		}
 		return indexToFind;
 	}
@@ -306,62 +397,78 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	@Override
 	public void onChange(ChangeEvent event) {
 		
-		boolean fireEvent = true;
 		
-		if(getDefaultValue()!=null){
-			if(!getValue().toString().equals(getDefaultValue().toString())){
-				fireEvent = true;
-			}else{
-				fireEvent = false;
-			}
-		}
-		
-		if(fireEvent){
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In onChange  method ");
+			boolean fireEvent = true;
 			
-			FieldEvent fieldEvent = new FieldEvent();
-			String selectedtem = getValue().toString();
-			SelectedItem selectedEntity = new SelectedItem();
-			selectedEntity.setItemString(selectedtem);
-			if(getListQueryName()!=null){
-				selectedEntity.setAssociatedEntity(nameVsEntity.get(selectedtem));
+			if(getDefaultValue()!=null){
+				if(!getValue().toString().equals(getDefaultValue().toString())){
+					fireEvent = true;
+				}else{
+					fireEvent = false;
+				}
 			}
-			fieldEvent.setEventData(selectedEntity);
-			fieldEvent.setEventType(getValueChangeEvent());
-			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+			
+			if(fireEvent){
+				
+				FieldEvent fieldEvent = new FieldEvent();
+				String selectedtem = getValue().toString();
+				SelectedItem selectedEntity = new SelectedItem();
+				selectedEntity.setItemString(selectedtem);
+				if(getListQueryName()!=null){
+					selectedEntity.setAssociatedEntity(nameVsEntity.get(selectedtem));
+				}
+				fieldEvent.setEventData(selectedEntity);
+				fieldEvent.setEventType(getValueChangeEvent());
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In onChange  method :"+e);
 		}
 		
 	}
 
 
 	private void executeOperation(Map parameterMap) {
-		StandardAction action = new StandardAction(EntityList.class, getOperationName(), parameterMap);
-		dispatch.execute(action, new AsyncCallback<Result>() {
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In executeOperation  method ");
+			StandardAction action = new StandardAction(EntityList.class, getOperationName(), parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result>() {
 
-			@Override
-			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
-			}
-
-			@Override
-			public void onSuccess(Result result) {
-				
-				if(result!=null){
-					EntityList list   = (EntityList) result.getOperationResult();
-					if(!list.isEmpty())
-						populateEntityList(list);
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
 				}
-				
-			}
-		});
+
+				@Override
+				public void onSuccess(Result result) {
+					
+					if(result!=null){
+						EntityList list   = (EntityList) result.getOperationResult();
+						if(!list.isEmpty())
+							populateEntityList(list);
+					}
+					
+				}
+			});
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In executeOperation  method :"+e);
+		}
 	}
 	
 	private String getDefaultValueName() {
 		String defaultName = null;
-		if(getConfigurationValue(ListBoxFieldConstant.LISTBOX_DEFAULT_VALUE) != null) {
-			String value =(String) getConfigurationValue(ListBoxFieldConstant.LISTBOX_DEFAULT_VALUE);
-			defaultName = "--" + value + "--";
-		} else {
-			defaultName = "--Select--";
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getDefaultValueName  method ");
+			if(getConfigurationValue(ListBoxFieldConstant.LISTBOX_DEFAULT_VALUE) != null) {
+				String value =(String) getConfigurationValue(ListBoxFieldConstant.LISTBOX_DEFAULT_VALUE);
+				defaultName = "--" + value + "--";
+			} else {
+				defaultName = "--Select--";
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getDefaultValueName  method :"+e);
 		}
 		return defaultName;
 	}

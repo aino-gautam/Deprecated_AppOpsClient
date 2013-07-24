@@ -1,6 +1,9 @@
 package in.appops.client.common.config.field;
 
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 
@@ -37,7 +40,8 @@ public class LinkField extends BaseField implements ClickHandler{
 
 	private Anchor anchor;
 	private Hyperlink hyperLink;
-	
+	private Logger logger = Logger.getLogger(getClass().getName());
+
 	public LinkField(){
 
 	}
@@ -48,7 +52,12 @@ public class LinkField extends BaseField implements ClickHandler{
 	 */
 	@Override
 	public void create(){
-		getBasePanel().add(getWidget(),DockPanel.CENTER);
+		try {
+			logger.log(Level.INFO, "[LinkField] ::In create method ");
+			getBasePanel().add(getWidget(),DockPanel.CENTER);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LinkField] ::Exception in create method :"+e);
+		}
 	}
 
 	/**
@@ -57,10 +66,15 @@ public class LinkField extends BaseField implements ClickHandler{
 	@Override
 	public void reset() {
 		
-		if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)) {
-			hyperLink.setText(getValue().toString());
-		}else 
-			anchor.setText(getValue().toString());
+		try {
+			logger.log(Level.INFO, "[LinkField] ::In reset method ");
+			if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)) {
+				hyperLink.setText(getValue().toString());
+			}else 
+				anchor.setText(getValue().toString());
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LinkField] ::Exception in reset method :"+e);
+		}
 	}
 	
     /**
@@ -69,30 +83,35 @@ public class LinkField extends BaseField implements ClickHandler{
 	@Override
 	public void configure() {
 		
-		if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)){
-			hyperLink = new Hyperlink();
-			hyperLink.setText(getDisplayText());
+		try {
+			logger.log(Level.INFO, "[LinkField] ::In configure method ");
+			if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)){
+				hyperLink = new Hyperlink();
+				hyperLink.setText(getDisplayText());
+				
+				if(getTargetHistoryToken()!=null)
+					hyperLink.setTargetHistoryToken(getTargetHistoryToken());
+			}else {
+				anchor = new Anchor();
+				anchor.setText(getDisplayText());
+				if(getHref()!=null)
+				anchor.setHref(getHref());
+				if(getTargetFrame()!=null)
+					anchor.setTarget(getTargetFrame());
+				
+				if(getLinkClickEvent()!=0)
+					anchor.addClickHandler(this);
+			}
 			
-			if(getTargetHistoryToken()!=null)
-				hyperLink.setTargetHistoryToken(getTargetHistoryToken());
-		}else {
-			anchor = new Anchor();
-			anchor.setText(getDisplayText());
-			if(getHref()!=null)
-			anchor.setHref(getHref());
-			if(getTargetFrame()!=null)
-				anchor.setTarget(getTargetFrame());
-			
-			if(getLinkClickEvent()!=0)
-				anchor.addClickHandler(this);
+			if(getBaseFieldPrimCss()!= null)
+				getBasePanel().setStylePrimaryName(getBaseFieldPrimCss());
+			if(getBaseFieldCss() != null)
+				getBasePanel().addStyleName(getBaseFieldCss());
+			if(getLinkTitle()!=null)
+				getWidget().setTitle(getLinkTitle());
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LinkField] ::Exception in configure method :"+e);
 		}
-		
-		if(getBaseFieldPrimCss()!= null)
-			getBasePanel().setStylePrimaryName(getBaseFieldPrimCss());
-		if(getBaseFieldCss() != null)
-			getBasePanel().addStyleName(getBaseFieldCss());
-		if(getLinkTitle()!=null)
-			getWidget().setTitle(getLinkTitle());
 		
 	}
 	
@@ -102,10 +121,15 @@ public class LinkField extends BaseField implements ClickHandler{
 	@Override
 	public void clear() {
 		
-		if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)){
-			hyperLink.setText("");
-		}else 
-			anchor.setText("");
+		try {
+			logger.log(Level.INFO, "[LinkField] ::In clear method ");
+			if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)){
+				hyperLink.setText("");
+			}else 
+				anchor.setText("");
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LinkField] ::Exception in clear method :"+e);
+		}
 	}
 	
 	/**
@@ -114,9 +138,14 @@ public class LinkField extends BaseField implements ClickHandler{
 	@Override
 	public void setValue(Object value) {
 		
-		super.setValue(value);
-		clear();
-		setFieldValue(value.toString());
+		try {
+			logger.log(Level.INFO, "[LinkField] ::In setValue method ");
+			super.setValue(value);
+			clear();
+			setFieldValue(value.toString());
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LinkField] ::Exception in setValue method :"+e);
+		}
 		
 	}
 	
@@ -125,6 +154,7 @@ public class LinkField extends BaseField implements ClickHandler{
 	 */
 	@Override
 	public Object getValue() {
+		logger.log(Level.INFO, "[LinkField] ::In getValue method ");
 		if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)){
 			return hyperLink.getText();
 		}else 
@@ -138,11 +168,16 @@ public class LinkField extends BaseField implements ClickHandler{
 	@Override
 	public void setFieldValue(String value) {
 		
-		clear();
-		if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)){
-			hyperLink.setText(value);
-		}else 
-			anchor.setText(value);
+		try {
+			logger.log(Level.INFO, "[LinkField] ::In setFieldValue method ");
+			clear();
+			if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)){
+				hyperLink.setText(value);
+			}else 
+				anchor.setText(value);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LinkField] ::Exception in setFieldValue method :"+e);
+		}
 		
 	}
 	
@@ -154,8 +189,13 @@ public class LinkField extends BaseField implements ClickHandler{
 	 */
 	private String getLinkType() {
 		String linkType = LinkFieldConstant.LNKTYPE_ANCHOR;
-		if (getConfigurationValue(LinkFieldConstant.LNK_TYPE) != null) {
-			linkType = getConfigurationValue(LinkFieldConstant.LNK_TYPE).toString();
+		try {
+			logger.log(Level.INFO, "[LinkField] ::In getLinkType method ");
+			if (getConfigurationValue(LinkFieldConstant.LNK_TYPE) != null) {
+				linkType = getConfigurationValue(LinkFieldConstant.LNK_TYPE).toString();
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LinkField] ::Exception in getLinkType method :"+e);
 		}
 		return linkType;
 	}
@@ -166,8 +206,13 @@ public class LinkField extends BaseField implements ClickHandler{
 	 */
 	private String getDisplayText() {
 		String displayTxt = "";
-		if (getConfigurationValue(LinkFieldConstant.LNK_DISPLAYTEXT) != null) {
-			displayTxt = getConfigurationValue(LinkFieldConstant.LNK_DISPLAYTEXT).toString();
+		try {
+			logger.log(Level.INFO, "[LinkField] ::In getDisplayText method ");
+			if (getConfigurationValue(LinkFieldConstant.LNK_DISPLAYTEXT) != null) {
+				displayTxt = getConfigurationValue(LinkFieldConstant.LNK_DISPLAYTEXT).toString();
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LinkField] ::Exception in getDisplayText method :"+e);
 		}
 		return displayTxt;
 	}
@@ -178,8 +223,13 @@ public class LinkField extends BaseField implements ClickHandler{
 	 */
 	private String getLinkTitle() {
 		String linkTitle = null;
-		if (getConfigurationValue(LinkFieldConstant.LNK_TITLE) != null) {
-			linkTitle = getConfigurationValue(LinkFieldConstant.LNK_TITLE).toString();
+		try {
+			logger.log(Level.INFO, "[LinkField] ::In getLinkTitle method ");
+			if (getConfigurationValue(LinkFieldConstant.LNK_TITLE) != null) {
+				linkTitle = getConfigurationValue(LinkFieldConstant.LNK_TITLE).toString();
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LinkField] ::Exception in getLinkTitle method :"+e);
 		}
 		return linkTitle;
 	}
@@ -190,8 +240,13 @@ public class LinkField extends BaseField implements ClickHandler{
 	 */
 	private String getTargetHistoryToken() {
 		String historyToken = null;
-		if (getConfigurationValue(LinkFieldConstant.LNK_HISTORYTOKEN) != null) {
-			historyToken = getConfigurationValue(LinkFieldConstant.LNK_HISTORYTOKEN).toString();
+		try {
+			logger.log(Level.INFO, "[LinkField] ::In getTargetHistoryToken method ");
+			if (getConfigurationValue(LinkFieldConstant.LNK_HISTORYTOKEN) != null) {
+				historyToken = getConfigurationValue(LinkFieldConstant.LNK_HISTORYTOKEN).toString();
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LinkField] ::Exception in getTargetHistoryToken method :"+e);
 		}
 		return historyToken;
 	}
@@ -202,8 +257,13 @@ public class LinkField extends BaseField implements ClickHandler{
 	 */
 	private String getHref() {
 		String href = null;
-		if (getConfigurationValue(LinkFieldConstant.LNK_HREF) != null) {
-			href = getConfigurationValue(LinkFieldConstant.LNK_HREF).toString();
+		try {
+			logger.log(Level.INFO, "[LinkField] ::In getHref method ");
+			if (getConfigurationValue(LinkFieldConstant.LNK_HREF) != null) {
+				href = getConfigurationValue(LinkFieldConstant.LNK_HREF).toString();
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LinkField] ::Exception in getHref method :"+e);
 		}
 		return href;
 	}
@@ -214,8 +274,13 @@ public class LinkField extends BaseField implements ClickHandler{
 	 */
 	private String getTargetFrame() {
 		String targetFrm = null;
-		if (getConfigurationValue(LinkFieldConstant.LNK_TARGET_FRAME) != null) {
-			targetFrm = getConfigurationValue(LinkFieldConstant.LNK_TARGET_FRAME).toString();
+		try {
+			logger.log(Level.INFO, "[LinkField] ::In getTargetFrame method ");
+			if (getConfigurationValue(LinkFieldConstant.LNK_TARGET_FRAME) != null) {
+				targetFrm = getConfigurationValue(LinkFieldConstant.LNK_TARGET_FRAME).toString();
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LinkField] ::Exception in getTargetFrame method :"+e);
 		}
 		return targetFrm;
 	}
@@ -226,8 +291,13 @@ public class LinkField extends BaseField implements ClickHandler{
 	 */
 	private Integer getLinkClickEvent() {
 		Integer eventType = 0;
-		if (getConfigurationValue(LinkFieldConstant.LNK_CLICK_EVENT) != null) {
-			eventType = (Integer) getConfigurationValue(LinkFieldConstant.LNK_CLICK_EVENT);
+		try {
+			logger.log(Level.INFO, "[LinkField] ::In getLinkClickEvent method ");
+			if (getConfigurationValue(LinkFieldConstant.LNK_CLICK_EVENT) != null) {
+				eventType = (Integer) getConfigurationValue(LinkFieldConstant.LNK_CLICK_EVENT);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LinkField] ::Exception in getLinkClickEvent method :"+e);
 		}
 		return eventType;
 	}
@@ -236,6 +306,7 @@ public class LinkField extends BaseField implements ClickHandler{
 	/*********************************************************************/
 	
 	public Widget getWidget() {
+		logger.log(Level.INFO, "[LinkField] ::In getWidget method ");
 		if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)) {
 			return hyperLink;
 		} else 
@@ -244,10 +315,15 @@ public class LinkField extends BaseField implements ClickHandler{
 	
 	@Override
 	public void onClick(ClickEvent event) {
-		int eventType = getLinkClickEvent();
-		FieldEvent fieldEvent = new FieldEvent();
-		fieldEvent.setEventType(eventType);
-		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		try {
+			logger.log(Level.INFO, "[LinkField] ::In onClick method ");
+			int eventType = getLinkClickEvent();
+			FieldEvent fieldEvent = new FieldEvent();
+			fieldEvent.setEventType(eventType);
+			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LinkField] ::Exception in onClick method :"+e);
+		}
 	}
 	
 	public interface LinkFieldConstant extends BaseFieldConstant{

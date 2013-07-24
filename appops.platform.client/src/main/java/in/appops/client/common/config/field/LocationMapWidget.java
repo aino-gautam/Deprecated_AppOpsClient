@@ -8,6 +8,8 @@ import in.appops.platform.core.shared.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.maps.client.MapOptions;
 import com.google.gwt.maps.client.MapTypeId;
@@ -43,6 +45,7 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 	private Configuration searchTextFieldConf;
 	private Configuration doneBtnFieldConf;
 	private String currentAddress = null;
+	private Logger logger = Logger.getLogger(getClass().getName());
 	
 	public LocationMapWidget() {
 		
@@ -66,57 +69,62 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 	
 	public void createMap(){
 		
-		mainPanel = new VerticalPanel();
-		
-		final MapOptions options = new MapOptions();
-	    options.setZoom(getMapZoomLevel());
-	    options.setCenter(getLatLng());
-	    options.setMapTypeId(new MapTypeId().getRoadmap());
-	    options.setDraggable(true);
-	    options.setNavigationControl(true);
-	    options.setMapTypeControl(true);
-	    mapWidget = new MapWidget(options);
-	    marker = new Marker();
-	   
-		marker.setPosition(getLatLng());
-		
-	    mapWidget.setSize(getMapWidth(), getMapHeight());
-	    
-	    marker.setMap(mapWidget.getMap());
-	    
-	    getAddressFromLatlang(latLng);
-	    
-	    searchTextField = new TextField();
-	    searchTextField.setConfiguration(getSearchTextFieldConf());
-	    searchTextField.configure();
-	    searchTextField.create();
-	   	   
-	    ButtonField doneBtnField = new ButtonField();
-	    doneBtnField.setConfiguration(getDoneBtnFieldConf());
-	    doneBtnField.configure();
-	    doneBtnField.create();
-	    	    	    
-	    mainPanel.add(searchTextField);
-	    mainPanel.add(mapWidget);
-	    mainPanel.add(doneBtnField);
-	    
-	    MouseEventCallback mapClickCallback = new MouseEventCallback() {
-	          
-			@Override
-				public void callback(HasMouseEvent event) {
-					
-				 marker.setPosition(event.getLatLng());
-				 mapWidget.getMap().panTo(event.getLatLng());
-				 searchTextField.clearError();
-				 getAddressAndSet(event.getLatLng());
-				 
-				}
-		      };
-		Event.addListener(mapWidget.getMap(), "click", mapClickCallback);
-		
-		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
-		
-		initWidget(mainPanel);
+		try {
+			logger.log(Level.INFO, "[LocationMapWidget] ::In createMap method ");
+			mainPanel = new VerticalPanel();
+			
+			final MapOptions options = new MapOptions();
+			options.setZoom(getMapZoomLevel());
+			options.setCenter(getLatLng());
+			options.setMapTypeId(new MapTypeId().getRoadmap());
+			options.setDraggable(true);
+			options.setNavigationControl(true);
+			options.setMapTypeControl(true);
+			mapWidget = new MapWidget(options);
+			marker = new Marker();
+   
+			marker.setPosition(getLatLng());
+			
+			mapWidget.setSize(getMapWidth(), getMapHeight());
+			
+			marker.setMap(mapWidget.getMap());
+			
+			getAddressFromLatlang(latLng);
+			
+			searchTextField = new TextField();
+			searchTextField.setConfiguration(getSearchTextFieldConf());
+			searchTextField.configure();
+			searchTextField.create();
+			   
+			ButtonField doneBtnField = new ButtonField();
+			doneBtnField.setConfiguration(getDoneBtnFieldConf());
+			doneBtnField.configure();
+			doneBtnField.create();
+				    	    
+			mainPanel.add(searchTextField);
+			mainPanel.add(mapWidget);
+			mainPanel.add(doneBtnField);
+			
+			MouseEventCallback mapClickCallback = new MouseEventCallback() {
+			      
+				@Override
+					public void callback(HasMouseEvent event) {
+						
+					 marker.setPosition(event.getLatLng());
+					 mapWidget.getMap().panTo(event.getLatLng());
+					 searchTextField.clearError();
+					 getAddressAndSet(event.getLatLng());
+					 
+					}
+			      };
+			Event.addListener(mapWidget.getMap(), "click", mapClickCallback);
+			
+			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
+			
+			initWidget(mainPanel);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LocationMapWidget] ::Exception in createMap method :"+e); 
+		}
 		
 	}
 	
@@ -126,38 +134,43 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 	 */
 	public void getAddressAndSet(HasLatLng latLng) {
 
-		HasGeocoderRequest gRequest = new GeocoderRequest();
-		gRequest.setLatLng(latLng);
+		try {
+			logger.log(Level.INFO, "[LocationMapWidget] ::In getAddressAndSet method ");
+			HasGeocoderRequest gRequest = new GeocoderRequest();
+			gRequest.setLatLng(latLng);
 
-		HasGeocoder geocoder = new Geocoder();
-		geocoder.geocode(gRequest, new GeocoderCallback() {
+			HasGeocoder geocoder = new Geocoder();
+			geocoder.geocode(gRequest, new GeocoderCallback() {
 
-			@Override
-			public void callback(List<HasGeocoderResult> responses,	String status) {
+				@Override
+				public void callback(List<HasGeocoderResult> responses,	String status) {
 
-				String address = "";
-				if (status.equals("OK")) {
-					HasGeocoderResult result = responses.get(0);
-					List<HasAddressComponent> addCompList = result.getAddressComponents();
-					for (int i = 0; i < addCompList.size(); i++) {
-						if (i == 0) {
-							address = addCompList.get(i).getLongName();
-						} else if (i != addCompList.size())
-							address = address + " , "+ addCompList.get(i).getLongName();
-						else
-							address = address + " "+ addCompList.get(i).getLongName();
-						
+					String address = "";
+					if (status.equals("OK")) {
+						HasGeocoderResult result = responses.get(0);
+						List<HasAddressComponent> addCompList = result.getAddressComponents();
+						for (int i = 0; i < addCompList.size(); i++) {
+							if (i == 0) {
+								address = addCompList.get(i).getLongName();
+							} else if (i != addCompList.size())
+								address = address + " , "+ addCompList.get(i).getLongName();
+							else
+								address = address + " "+ addCompList.get(i).getLongName();
+							
+						}
+						currentAddress = address;
+						searchTextField.setValue(currentAddress);
+											
+					} else {
+						setInvalidLocationError();
 					}
-					currentAddress = address;
-					searchTextField.setValue(currentAddress);
-										
-				} else {
-					setInvalidLocationError();
+					
 				}
 				
-			}
-			
-		});
+			});
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LocationMapWidget] ::Exception in getAddressAndSet method :"+e); 
+		}
 
 	}
 	
@@ -166,37 +179,42 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 	 * @param address
 	 */
 	public void displaySearchedAddress(String address){
-		final HasGeocoderRequest gRequest = new GeocoderRequest();
-        gRequest.setAddress(address);
-        
-        final HasGeocoder geocoder = new Geocoder();
-        geocoder.geocode(gRequest, new GeocoderCallback() {
-          
-          @Override
-          public void callback(List<HasGeocoderResult> responses, String status) {
-            if (status.equals("OK")) {
-              final HasGeocoderResult gResult = responses.get(0);
-              final HasLatLng gLatLng = gResult.getGeometry().getLocation();
-              latLng = (LatLng) gLatLng; 
-                getMarker().setPosition(latLng);
-				getMapWidget().getMap().panTo(latLng);
-				getAddressAndSet(gLatLng);
-				 Timer timer = new Timer() {
-						
-						@Override
-						public void run() {
-							searchTextField.clearError();
-							searchTextField.setValue(getCurrentAddress());
+		try {
+			logger.log(Level.INFO, "[LocationMapWidget] ::In displaySearchedAddress method ");
+			final HasGeocoderRequest gRequest = new GeocoderRequest();
+			gRequest.setAddress(address);
+			
+			final HasGeocoder geocoder = new Geocoder();
+			geocoder.geocode(gRequest, new GeocoderCallback() {
+			  
+			  @Override
+			  public void callback(List<HasGeocoderResult> responses, String status) {
+			    if (status.equals("OK")) {
+			      final HasGeocoderResult gResult = responses.get(0);
+			      final HasLatLng gLatLng = gResult.getGeometry().getLocation();
+			      latLng = (LatLng) gLatLng; 
+			        getMarker().setPosition(latLng);
+					getMapWidget().getMap().panTo(latLng);
+					getAddressAndSet(gLatLng);
+					 Timer timer = new Timer() {
 							
-						}
-					};timer.schedule(1000);
-				 
-				
-            } else {
-            	setInvalidLocationError();
-            }
-          }
-        });
+							@Override
+							public void run() {
+								searchTextField.clearError();
+								searchTextField.setValue(getCurrentAddress());
+								
+							}
+						};timer.schedule(1000);
+					 
+					
+			    } else {
+			    	setInvalidLocationError();
+			    }
+			  }
+			});
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LocationMapWidget] ::Exception in displaySearchedAddress method :"+e); 
+		}
 	}
 	
 	/**
@@ -205,38 +223,43 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 	 */
 	public void getAddressFromLatlang(LatLng latLng) {
 
-		HasGeocoderRequest gRequest = new GeocoderRequest();
-		gRequest.setLatLng(latLng);
+		try {
+			logger.log(Level.INFO, "[LocationMapWidget] ::In getAddressFromLatlang method ");
+			HasGeocoderRequest gRequest = new GeocoderRequest();
+			gRequest.setLatLng(latLng);
 
-		HasGeocoder geocoder = new Geocoder();
-		geocoder.geocode(gRequest, new GeocoderCallback() {
-			@Override
-			public void callback(List<HasGeocoderResult> responses,String status) {
-				String address = "";
-				if (status.equals("OK")) {
-					HasGeocoderResult result = responses.get(0);
-					List<HasAddressComponent> addCompList = result.getAddressComponents();
-					for (int i = 0; i < addCompList.size(); i++) {
-						if (i == 0) {
-							address = addCompList.get(i).getLongName();
-						} else if (i != addCompList.size())
-							address = address + " , "+ addCompList.get(i).getLongName();
-						else
-							address = address + " "+ addCompList.get(i).getLongName();
+			HasGeocoder geocoder = new Geocoder();
+			geocoder.geocode(gRequest, new GeocoderCallback() {
+				@Override
+				public void callback(List<HasGeocoderResult> responses,String status) {
+					String address = "";
+					if (status.equals("OK")) {
+						HasGeocoderResult result = responses.get(0);
+						List<HasAddressComponent> addCompList = result.getAddressComponents();
+						for (int i = 0; i < addCompList.size(); i++) {
+							if (i == 0) {
+								address = addCompList.get(i).getLongName();
+							} else if (i != addCompList.size())
+								address = address + " , "+ addCompList.get(i).getLongName();
+							else
+								address = address + " "+ addCompList.get(i).getLongName();
+						}
+						currentAddress = address;
+						searchTextField.setValue(currentAddress);
+						
+						FieldEvent fieldEvent = new FieldEvent();
+						fieldEvent.setEventType(FieldEvent.LOCATION_RECIEVED);
+						fieldEvent.setEventData(address);	
+						AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, this);
+						
+					} else {
+						setInvalidLocationError();
 					}
-					currentAddress = address;
-					searchTextField.setValue(currentAddress);
-					
-					FieldEvent fieldEvent = new FieldEvent();
-					fieldEvent.setEventType(FieldEvent.LOCATION_RECIEVED);
-					fieldEvent.setEventData(address);	
-					AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, this);
-					
-				} else {
-					setInvalidLocationError();
 				}
-			}
-		});
+			});
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LocationMapWidget] ::Exception in getAddressFromLatlang method :"+e); 
+		}
 
 	}
 	
@@ -244,9 +267,14 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 	 * Method set the error message when user enters invalid location in seach text field.
 	 */
 	private void setInvalidLocationError(){
-		ArrayList<String> errors = new ArrayList<String>();
-		errors.add(searchTextField.getInvalidMsg());
-		searchTextField.markInvalid(errors);
+		try {
+			logger.log(Level.INFO, "[LocationMapWidget] ::In setInvalidLocationError method ");
+			ArrayList<String> errors = new ArrayList<String>();
+			errors.add(searchTextField.getInvalidMsg());
+			searchTextField.markInvalid(errors);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LocationMapWidget] ::Exception in setInvalidLocationError method :"+e); 
+		}
 	}
 
 	public MapWidget getMapWidget() {
@@ -306,20 +334,25 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 	 
 	@Override
 	public void onFieldEvent(FieldEvent event) {
-		int eventType = event.getEventType();
-		switch (eventType) {
-		case FieldEvent.WORDENTERED: {
-			displaySearchedAddress(searchTextField.getValue().toString());
-			break;
-		}case FieldEvent.LOCATION_CHANGED:{
-			FieldEvent changeLocationEvent = new FieldEvent();
-			changeLocationEvent.setEventType(FieldEvent.CHANGE_LOCATION);
-			changeLocationEvent.setEventData(getCurrentAddress());
-			AppUtils.EVENT_BUS.fireEvent(changeLocationEvent);
-			break;
-		}
-		default:
-			break;
+		try {
+			logger.log(Level.INFO, "[LocationMapWidget] ::In onFieldEvent method ");
+			int eventType = event.getEventType();
+			switch (eventType) {
+			case FieldEvent.WORDENTERED: {
+				displaySearchedAddress(searchTextField.getValue().toString());
+				break;
+			}case FieldEvent.LOCATION_CHANGED:{
+				FieldEvent changeLocationEvent = new FieldEvent();
+				changeLocationEvent.setEventType(FieldEvent.CHANGE_LOCATION);
+				changeLocationEvent.setEventData(getCurrentAddress());
+				AppUtils.EVENT_BUS.fireEvent(changeLocationEvent);
+				break;
+			}
+			default:
+				break;
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[LocationMapWidget] ::Exception in onFieldEvent method :"+e); 
 		}
 	}
 
@@ -346,6 +379,4 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 	public void setCurrentAddress(String currentAddress) {
 		this.currentAddress = currentAddress;
 	}
-
-
 }

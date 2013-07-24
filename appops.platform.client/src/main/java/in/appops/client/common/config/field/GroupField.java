@@ -6,6 +6,8 @@ import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -62,7 +64,8 @@ public class GroupField extends BaseField implements FieldEventHandler{
 	private Integer column = 0;
 	private ArrayList<Widget> fieldItems ;
 	private ArrayList<Widget> selectedItems ;
-	
+	private Logger logger = Logger.getLogger(getClass().getName());
+
 	public GroupField() {
 		 flexTable = new FlexTable();
 	}
@@ -70,9 +73,14 @@ public class GroupField extends BaseField implements FieldEventHandler{
 	@Override
 	public void create() {
 		
-		selectedItems = new ArrayList<Widget>();
-		
-		getBasePanel().add(flexTable,DockPanel.CENTER);
+		try {
+			logger.log(Level.INFO, "[GroupField] ::In create method ");
+			selectedItems = new ArrayList<Widget>();
+			
+			getBasePanel().add(flexTable,DockPanel.CENTER);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[GroupField] ::Exception in create method :"+e);
+		}
 		
 	}
 	
@@ -85,21 +93,26 @@ public class GroupField extends BaseField implements FieldEventHandler{
 	private RadioButtonField getRadioButtonField(String id){
 		
 		RadioButtonField radioField = new RadioButtonField();
-		Configuration childConfig = getChildConfiguration(id);
-		
-		if(childConfig!=null){
-			if(childConfig.getPropertyByName(RadionButtonFieldConstant.RF_ID) == null)
-				childConfig.setPropertyByName(RadionButtonFieldConstant.RF_ID, id);
-		}
-		
-		radioField.setConfiguration(childConfig);
-		radioField.configure();
-		radioField.create();
-		
-		if(fieldItems==null)
-			fieldItems = new ArrayList<Widget>();
+		try {
+			logger.log(Level.INFO, "[GroupField] ::In getRadioButtonField method ");
+			Configuration childConfig = getChildConfiguration(id);
+			
+			if(childConfig!=null){
+				if(childConfig.getPropertyByName(RadionButtonFieldConstant.RF_ID) == null)
+					childConfig.setPropertyByName(RadionButtonFieldConstant.RF_ID, id);
+			}
+			
+			radioField.setConfiguration(childConfig);
+			radioField.configure();
+			radioField.create();
+			
+			if(fieldItems==null)
+				fieldItems = new ArrayList<Widget>();
 
-		fieldItems.add(radioField);
+			fieldItems.add(radioField);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[GroupField] ::Exception in getRadioButtonField method :"+e);
+		}
 		return radioField;
 	}
 	
@@ -112,21 +125,26 @@ public class GroupField extends BaseField implements FieldEventHandler{
 	private CheckboxField getCheckBoxField(String id){
 		
 		CheckboxField checkBoxField = new CheckboxField();
-		Configuration childConfig = getChildConfiguration(id);
-		
-		if(childConfig!=null){
-			if(childConfig.getPropertyByName(BaseFieldConstant.BF_ID) == null)
-				childConfig.setPropertyByName(BaseFieldConstant.BF_ID, id);
-		}
-		
-		checkBoxField.setConfiguration(childConfig);
-		checkBoxField.configure();
-		checkBoxField.create();
-		
-		if(fieldItems==null)
-			fieldItems = new ArrayList<Widget>();
+		try {
+			logger.log(Level.INFO, "[GroupField] ::In getCheckBoxField method ");
+			Configuration childConfig = getChildConfiguration(id);
+			
+			if(childConfig!=null){
+				if(childConfig.getPropertyByName(BaseFieldConstant.BF_ID) == null)
+					childConfig.setPropertyByName(BaseFieldConstant.BF_ID, id);
+			}
+			
+			checkBoxField.setConfiguration(childConfig);
+			checkBoxField.configure();
+			checkBoxField.create();
+			
+			if(fieldItems==null)
+				fieldItems = new ArrayList<Widget>();
 
-		fieldItems.add(checkBoxField);
+			fieldItems.add(checkBoxField);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[GroupField] ::Exception in getCheckBoxField method :"+e);
+		}
 		return checkBoxField;
 	}
 	
@@ -136,14 +154,19 @@ public class GroupField extends BaseField implements FieldEventHandler{
 	 */
 	private String getGroupFieldAlignment() {
 		
-		if(getConfiguration()!=null){
-			
-			String fieldBasePanel =  getConfiguration().getPropertyByName(GroupFieldConstant.GF_ALIGNMENT);
-			if(fieldBasePanel !=null){
-				return fieldBasePanel; 
-			}else{
-				return GroupFieldConstant.GF_ALIGN_VERTICAL;
+		try {
+			logger.log(Level.INFO, "[GroupField] ::In getGroupFieldAlignment method ");
+			if(getConfiguration()!=null){
+				
+				String fieldBasePanel =  getConfiguration().getPropertyByName(GroupFieldConstant.GF_ALIGNMENT);
+				if(fieldBasePanel !=null){
+					return fieldBasePanel; 
+				}else{
+					return GroupFieldConstant.GF_ALIGN_VERTICAL;
+				}
 			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[GroupField] ::Exception in getGroupFieldAlignment method :"+e);
 		}
 		return null;
 	}
@@ -154,14 +177,19 @@ public class GroupField extends BaseField implements FieldEventHandler{
 	 */
 
 	private String getGroupFieldType(){
-		if(getConfiguration()!=null){
-			
-			String fieldType =  getConfiguration().getPropertyByName(GroupFieldConstant.GF_TYPE);
-			if(fieldType !=null){
-				return fieldType; 
-			}else{
-				return GroupFieldConstant.GFTYPE_SINGLE_SELECT;
+		try {
+			logger.log(Level.INFO, "[GroupField] ::In getGroupFieldType method ");
+			if(getConfiguration()!=null){
+				
+				String fieldType =  getConfiguration().getPropertyByName(GroupFieldConstant.GF_TYPE);
+				if(fieldType !=null){
+					return fieldType; 
+				}else{
+					return GroupFieldConstant.GFTYPE_SINGLE_SELECT;
+				}
 			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[GroupField] ::Exception in getGroupFieldType method :"+e);
 		}
 		return null;
 	}
@@ -176,13 +204,18 @@ public class GroupField extends BaseField implements FieldEventHandler{
 	 * Method checks whether type is checkbox group then select all the items in the group field .
 	 */
 	public void selectAllGroupItems(){
-		String groupFieldType = getGroupFieldType();
-		if(groupFieldType.equals(GroupFieldConstant.GFTYPE_MULTISELECT)){
-			
-			for(int i= 0;i<fieldItems.size();i++){
-				CheckboxField chkboxField = (CheckboxField) fieldItems.get(i);
-				chkboxField.setValue(true);
+		try {
+			logger.log(Level.INFO, "[GroupField] ::In selectAllGroupItems method ");
+			String groupFieldType = getGroupFieldType();
+			if(groupFieldType.equals(GroupFieldConstant.GFTYPE_MULTISELECT)){
+				
+				for(int i= 0;i<fieldItems.size();i++){
+					CheckboxField chkboxField = (CheckboxField) fieldItems.get(i);
+					chkboxField.setValue(true);
+				}
 			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[GroupField] ::Exception in selectAllGroupItems method :"+e);
 		}
 		
 	}
@@ -192,13 +225,18 @@ public class GroupField extends BaseField implements FieldEventHandler{
 	 */
 	public void deselectAllGroupItems(){
 		
-		String groupFieldType = getGroupFieldType();
-		
-		if(groupFieldType.equals(GroupFieldConstant.GFTYPE_MULTISELECT)){
-			for(int i= 0;i<fieldItems.size();i++){
-				CheckboxField chkboxField = (CheckboxField) fieldItems.get(i);
-				chkboxField.setValue(false);
+		try {
+			logger.log(Level.INFO, "[GroupField] ::In deselectAllGroupItems method ");
+			String groupFieldType = getGroupFieldType();
+			
+			if(groupFieldType.equals(GroupFieldConstant.GFTYPE_MULTISELECT)){
+				for(int i= 0;i<fieldItems.size();i++){
+					CheckboxField chkboxField = (CheckboxField) fieldItems.get(i);
+					chkboxField.setValue(false);
+				}
 			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[GroupField] ::Exception in deselectAllGroupItems method :"+e);
 		}
 		
 	}
@@ -215,79 +253,84 @@ public class GroupField extends BaseField implements FieldEventHandler{
 	@Override
 	public void configure() {
 		
-		if(getBaseFieldPrimCss()!=null)
-			flexTable.setStylePrimaryName(getBaseFieldPrimCss());		
-		if(getBaseFieldCss()!=null)
-			flexTable.setStylePrimaryName(getBaseFieldCss());
-		
-		String groupFieldType = getGroupFieldType();
-		
-		String groupFieldAlignment = getGroupFieldAlignment();
-		
-		Integer fieldLimit = getFieldLimit();
-		
-		ArrayList<String> listOfItemsInGroupField = getListOfItemsInGroupField();
-		
-		if (listOfItemsInGroupField!=null) {
-			if (groupFieldType.equals(GroupFieldConstant.GFTYPE_MULTISELECT)) {
+		try {
+			logger.log(Level.INFO, "[GroupField] ::In configure method ");
+			if(getBaseFieldPrimCss()!=null)
+				flexTable.setStylePrimaryName(getBaseFieldPrimCss());		
+			if(getBaseFieldCss()!=null)
+				flexTable.setStylePrimaryName(getBaseFieldCss());
+			
+			String groupFieldType = getGroupFieldType();
+			
+			String groupFieldAlignment = getGroupFieldAlignment();
+			
+			Integer fieldLimit = getFieldLimit();
+			
+			ArrayList<String> listOfItemsInGroupField = getListOfItemsInGroupField();
+			
+			if (listOfItemsInGroupField!=null) {
+				if (groupFieldType.equals(GroupFieldConstant.GFTYPE_MULTISELECT)) {
 
-				if (groupFieldAlignment.equals(GroupFieldConstant.GF_ALIGN_HORIZONTAL)) {
+					if (groupFieldAlignment.equals(GroupFieldConstant.GF_ALIGN_HORIZONTAL)) {
 
-					for (int item = 0; item < listOfItemsInGroupField.size(); item++) {
-						CheckboxField chkBoxField = getCheckBoxField(listOfItemsInGroupField.get(item));
-						flexTable.setWidget(row, column, chkBoxField);
-						
-						if (column >= fieldLimit - 1) {
-							row++;
-							column = 0;
-						} else {
-							column++;
+						for (int item = 0; item < listOfItemsInGroupField.size(); item++) {
+							CheckboxField chkBoxField = getCheckBoxField(listOfItemsInGroupField.get(item));
+							flexTable.setWidget(row, column, chkBoxField);
+							
+							if (column >= fieldLimit - 1) {
+								row++;
+								column = 0;
+							} else {
+								column++;
+							}
+						}
+
+					} else {
+						for (int item = 0; item < listOfItemsInGroupField.size(); item++) {
+							CheckboxField chkBoxField = getCheckBoxField(listOfItemsInGroupField.get(item));
+							flexTable.setWidget(row, column, chkBoxField);
+							
+							if (row >= fieldLimit - 1) {
+								column++;
+								row = 0;
+							} else {
+								row++;
+							}
 						}
 					}
 
-				} else {
-					for (int item = 0; item < listOfItemsInGroupField.size(); item++) {
-						CheckboxField chkBoxField = getCheckBoxField(listOfItemsInGroupField.get(item));
-						flexTable.setWidget(row, column, chkBoxField);
-						
-						if (row >= fieldLimit - 1) {
-							column++;
-							row = 0;
-						} else {
-							row++;
+				} else if (groupFieldType.equals(GroupFieldConstant.GFTYPE_SINGLE_SELECT)) {
+
+					if (groupFieldAlignment.equals(GroupFieldConstant.GF_ALIGN_HORIZONTAL)) {
+
+						for (int item = 0; item < listOfItemsInGroupField.size(); item++) {
+							RadioButtonField radioButton = getRadioButtonField(listOfItemsInGroupField.get(item));
+							flexTable.setWidget(row, column, radioButton);
+							if (column >= fieldLimit - 1) {
+								row++;
+								column = 0;
+							} else {
+								column++;
+							}
+						}
+					} else {
+
+						for (int item = 0; item < listOfItemsInGroupField.size(); item++) {
+							RadioButtonField radioButton = getRadioButtonField(listOfItemsInGroupField.get(item));
+							flexTable.setWidget(row, column, radioButton);
+							if (row >= fieldLimit - 1) {
+								column++;
+								row = 0;
+							} else {
+								row++;
+							}
 						}
 					}
+
 				}
-
-			} else if (groupFieldType.equals(GroupFieldConstant.GFTYPE_SINGLE_SELECT)) {
-
-				if (groupFieldAlignment.equals(GroupFieldConstant.GF_ALIGN_HORIZONTAL)) {
-
-					for (int item = 0; item < listOfItemsInGroupField.size(); item++) {
-						RadioButtonField radioButton = getRadioButtonField(listOfItemsInGroupField.get(item));
-						flexTable.setWidget(row, column, radioButton);
-						if (column >= fieldLimit - 1) {
-							row++;
-							column = 0;
-						} else {
-							column++;
-						}
-					}
-				} else {
-
-					for (int item = 0; item < listOfItemsInGroupField.size(); item++) {
-						RadioButtonField radioButton = getRadioButtonField(listOfItemsInGroupField.get(item));
-						flexTable.setWidget(row, column, radioButton);
-						if (row >= fieldLimit - 1) {
-							column++;
-							row = 0;
-						} else {
-							row++;
-						}
-					}
-				}
-
 			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[GroupField] ::Exception in configure method :"+e);
 		}		
 		
 	}
@@ -298,12 +341,17 @@ public class GroupField extends BaseField implements FieldEventHandler{
 	 */
 	private ArrayList<String> getListOfItemsInGroupField() {
 		
-		if(getConfiguration()!=null){
-			
-			ArrayList<String> listOfItems =  getConfiguration().getPropertyByName(GroupFieldConstant.GF_LIST_OF_ITEMS);
-			if(listOfItems !=null){
-				return listOfItems; 
+		try {
+			logger.log(Level.INFO, "[GroupField] ::In getListOfItemsInGroupField method ");
+			if(getConfiguration()!=null){
+				
+				ArrayList<String> listOfItems =  getConfiguration().getPropertyByName(GroupFieldConstant.GF_LIST_OF_ITEMS);
+				if(listOfItems !=null){
+					return listOfItems; 
+				}
 			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[GroupField] ::Exception in getListOfItemsInGroupField method :"+e);
 		}
 		return null;
 	}
@@ -315,14 +363,19 @@ public class GroupField extends BaseField implements FieldEventHandler{
 	 */
 	public Configuration getChildConfiguration(String id){
 		
-		if(getConfiguration()!=null){
-			
-			Configuration childConfig = getConfiguration().getPropertyByName(id);
-			if(childConfig !=null){
-				return childConfig;
-			}else{
-				return null;
+		try {
+			logger.log(Level.INFO, "[GroupField] ::In getChildConfiguration method ");
+			if(getConfiguration()!=null){
+				
+				Configuration childConfig = getConfiguration().getPropertyByName(id);
+				if(childConfig !=null){
+					return childConfig;
+				}else{
+					return null;
+				}
 			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[GroupField] ::Exception in getChildConfiguration method :"+e);
 		}
 		return null;
 	}
@@ -335,14 +388,19 @@ public class GroupField extends BaseField implements FieldEventHandler{
 
 	private Integer getFieldLimit() {
 		
-		if(getConfiguration()!=null){
-			
-			Integer limit =  getConfiguration().getPropertyByName(GroupFieldConstant.GF_LIMIT);
-			if(limit !=null){
-				return limit; 
-			}else{
-				return 2;
+		try {
+			logger.log(Level.INFO, "[GroupField] ::In getFieldLimit method ");
+			if(getConfiguration()!=null){
+				
+				Integer limit =  getConfiguration().getPropertyByName(GroupFieldConstant.GF_LIMIT);
+				if(limit !=null){
+					return limit; 
+				}else{
+					return 2;
+				}
 			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[GroupField] ::Exception in getFieldLimit method :"+e);
 		}
 		return null;
 	}
@@ -359,26 +417,31 @@ public class GroupField extends BaseField implements FieldEventHandler{
 	
 	@Override
 	public void onFieldEvent(FieldEvent event) {
-		int eventType = event.getEventType();
-		switch (eventType) {
-		case FieldEvent.CHECKBOX_SELECT: {
-			CheckBox checkbox = (CheckBox) event.getEventData();
-			selectedItems.add(checkbox);
-			break;
-		}
-		case FieldEvent.CHECKBOX_DESELECT: {
-			CheckBox checkbox = (CheckBox) event.getEventData();
-			selectedItems.remove(checkbox);
-			break;
-		}
-		case FieldEvent.RADIOBUTTON_SELECTED: {
-			selectedItems.clear();
-			RadioButton radioButton = (RadioButton) event.getEventData();
-			selectedItems.add(radioButton);
-			break;
-		}
-		default:
-			break;
+		try {
+			logger.log(Level.INFO, "[GroupField] ::In onFieldEvent method ");
+			int eventType = event.getEventType();
+			switch (eventType) {
+			case FieldEvent.CHECKBOX_SELECT: {
+				CheckBox checkbox = (CheckBox) event.getEventData();
+				selectedItems.add(checkbox);
+				break;
+			}
+			case FieldEvent.CHECKBOX_DESELECT: {
+				CheckBox checkbox = (CheckBox) event.getEventData();
+				selectedItems.remove(checkbox);
+				break;
+			}
+			case FieldEvent.RADIOBUTTON_SELECTED: {
+				selectedItems.clear();
+				RadioButton radioButton = (RadioButton) event.getEventData();
+				selectedItems.add(radioButton);
+				break;
+			}
+			default:
+				break;
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[GroupField] ::Exception in onFieldEvent method :"+e);	
 		}
 		
 	}

@@ -1,5 +1,8 @@
 package in.appops.client.common.config.field;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 
@@ -33,7 +36,8 @@ btnField.create();<br>
 public class ButtonField extends BaseField implements ClickHandler{
 	
 	private Button button ;
-	
+	private Logger logger = Logger.getLogger(getClass().getName());
+
 	public ButtonField() {
 		button = new Button();
 	}
@@ -44,10 +48,15 @@ public class ButtonField extends BaseField implements ClickHandler{
 	 */
 	@Override
 	public void create(){
-		if(getBtnClickEvent()!=0)
-			button.addClickHandler(this);
-		
-		getBasePanel().add(button,DockPanel.CENTER);
+		try {
+			logger.log(Level.INFO,"[ButtonField]:: In create  method ");
+			if(getBtnClickEvent()!=0)
+				button.addClickHandler(this);
+			
+			getBasePanel().add(button,DockPanel.CENTER);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ButtonField]::Exception In create  method :"+e);
+		}
 	}
 
 	/**
@@ -55,23 +64,34 @@ public class ButtonField extends BaseField implements ClickHandler{
 	 */
 	@Override
 	public void reset() {
-		setFieldValue(getValue().toString());
+		try {
+			
+			logger.log(Level.INFO,"[ButtonField]:: In reset  method ");
+			setFieldValue(getValue().toString());
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ButtonField]::Exception In reset  method :"+e);
+		}
 	}
 	
 
 	@Override
 	public void configure() {
 		
-		setFieldValue(getDisplayText());
-		if(getBtnTitle()!=null)
-			button.setTitle(getBtnTitle());
-		
-		if(getBaseFieldPrimCss()!= null)
-			button.setStylePrimaryName(getBaseFieldPrimCss());
-		if(getBaseFieldCss() != null)
-			button.addStyleName(getBaseFieldCss());
-		
-		button.setEnabled(isEnabled());
+		try {
+			logger.log(Level.INFO,"[ButtonField]:: In configure  method ");
+			setFieldValue(getDisplayText());
+			if(getBtnTitle()!=null)
+				button.setTitle(getBtnTitle());
+			
+			if(getBaseFieldPrimCss()!= null)
+				button.setStylePrimaryName(getBaseFieldPrimCss());
+			if(getBaseFieldCss() != null)
+				button.addStyleName(getBaseFieldCss());
+			
+			button.setEnabled(isEnabled());
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ButtonField]::Exception In configure  method :"+e);
+		}
 		 
 	}
 	
@@ -80,7 +100,12 @@ public class ButtonField extends BaseField implements ClickHandler{
 	 */
 	@Override
 	public void clear() {
-		setFieldValue("");
+		try {
+			logger.log(Level.INFO,"[ButtonField]:: In clear  method ");
+			setFieldValue("");
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ButtonField]::Exception In clear  method :"+e);
+		}
 	}
 	
 	/**
@@ -89,9 +114,14 @@ public class ButtonField extends BaseField implements ClickHandler{
 	@Override
 	public void setValue(Object value) {
 		
-		super.setValue(value);
-		clear();
-		setFieldValue(value.toString());
+		try {
+			logger.log(Level.INFO,"[ButtonField]:: In setValue  method ");
+			super.setValue(value);
+			clear();
+			setFieldValue(value.toString());
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ButtonField]::Exception In setValue  method :"+e);
+		}
 		
 	}
 	
@@ -129,8 +159,13 @@ public class ButtonField extends BaseField implements ClickHandler{
 	 */
 	private String getDisplayText() {
 		String displayTxt = "";
-		if (getConfigurationValue(ButtonFieldConstant.BTNFD_DISPLAYTEXT) != null) {
-			displayTxt = getConfigurationValue(ButtonFieldConstant.BTNFD_DISPLAYTEXT).toString();
+		try {
+			logger.log(Level.INFO,"[ButtonField]:: In getDisplayText  method ");
+			if (getConfigurationValue(ButtonFieldConstant.BTNFD_DISPLAYTEXT) != null) {
+				displayTxt = getConfigurationValue(ButtonFieldConstant.BTNFD_DISPLAYTEXT).toString();
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ButtonField]::Exception In creagetDisplayTextte  method :"+e);
 		}
 		return displayTxt;
 	}
@@ -141,8 +176,13 @@ public class ButtonField extends BaseField implements ClickHandler{
 	 */
 	private String getBtnTitle() {
 		String btnTitle = null;
-		if (getConfigurationValue(ButtonFieldConstant.BTNFD_TITLE) != null) {
-			btnTitle = getConfigurationValue(ButtonFieldConstant.BTNFD_TITLE).toString();
+		try {
+			logger.log(Level.INFO,"[ButtonField]:: In getBtnTitle  method ");
+			if (getConfigurationValue(ButtonFieldConstant.BTNFD_TITLE) != null) {
+				btnTitle = getConfigurationValue(ButtonFieldConstant.BTNFD_TITLE).toString();
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ButtonField]::Exception In getBtnTitle  method :"+e);
 		}
 		return btnTitle;
 	}
@@ -153,8 +193,13 @@ public class ButtonField extends BaseField implements ClickHandler{
 	 */
 	private Integer getBtnClickEvent() {
 		Integer eventType = 0;
-		if (getConfigurationValue(ButtonFieldConstant.BTNFD_CLICK_EVENT) != null) {
-			eventType = (Integer) getConfigurationValue(ButtonFieldConstant.BTNFD_CLICK_EVENT);
+		try {
+			logger.log(Level.INFO,"[ButtonField]:: In getBtnClickEvent  method ");
+			if (getConfigurationValue(ButtonFieldConstant.BTNFD_CLICK_EVENT) != null) {
+				eventType = (Integer) getConfigurationValue(ButtonFieldConstant.BTNFD_CLICK_EVENT);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ButtonField]::Exception In getBtnClickEvent  method :"+e);
 		}
 		return eventType;
 	}
@@ -164,10 +209,15 @@ public class ButtonField extends BaseField implements ClickHandler{
 	@Override
 	public void onClick(ClickEvent event) {
 		
-		int eventType = getBtnClickEvent();
-		FieldEvent fieldEvent = new FieldEvent();
-		fieldEvent.setEventType(eventType);
-		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		try {
+			logger.log(Level.INFO,"[ButtonField]:: In onClick  method ");
+			int eventType = getBtnClickEvent();
+			FieldEvent fieldEvent = new FieldEvent();
+			fieldEvent.setEventType(eventType);
+			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ButtonField]::Exception In onClick  method :"+e);
+		}
 		
 	}
 	

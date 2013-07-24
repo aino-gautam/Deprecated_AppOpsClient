@@ -5,6 +5,8 @@ import in.appops.client.common.config.field.suggestion.AppopsSuggestionBox;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.user.client.ui.DockPanel;
 
@@ -38,7 +40,8 @@ stateField.create();<br>
 public class StateField extends BaseField {
 
 	private AppopsSuggestionBox appopsSuggestionBox;
-	
+	private Logger logger = Logger.getLogger(getClass().getName());
+
 	public StateField(){
 		
 	}
@@ -48,26 +51,36 @@ public class StateField extends BaseField {
 	@Override
 	public void create() {
 		
-		getBasePanel().add(appopsSuggestionBox,DockPanel.CENTER);
+		try {
+			logger.log(Level.INFO, "[StateField] ::In create method ");
+			getBasePanel().add(appopsSuggestionBox,DockPanel.CENTER);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception in create method :"+e);
+		}
 	}
 	
 	@Override
 	public void configure() {
-		appopsSuggestionBox = new AppopsSuggestionBox();
-		if(isStaticSuggestionBox()){
-			appopsSuggestionBox.setStaticSuggestionBox(isStaticSuggestionBox());
-			appopsSuggestionBox.setItemsToDisplay(getFieldItemList());
-		}else{
-			appopsSuggestionBox.setQueryName(getQueryName());
-			appopsSuggestionBox.setPropertyToDisplay(getEntPropToDisplay());
-			appopsSuggestionBox.setOperationName(getOperationName());
-			appopsSuggestionBox.setQueryRestrictions(getQueryRestrictions());
-			appopsSuggestionBox.setIsSearchQuery(isSearchQuery());
-			appopsSuggestionBox.setQueryMaxResult(getQueryMaxResult());
+		try {
+			logger.log(Level.INFO, "[StateField] ::In configure method ");
+			appopsSuggestionBox = new AppopsSuggestionBox();
+			if(isStaticSuggestionBox()){
+				appopsSuggestionBox.setStaticSuggestionBox(isStaticSuggestionBox());
+				appopsSuggestionBox.setItemsToDisplay(getFieldItemList());
+			}else{
+				appopsSuggestionBox.setQueryName(getQueryName());
+				appopsSuggestionBox.setPropertyToDisplay(getEntPropToDisplay());
+				appopsSuggestionBox.setOperationName(getOperationName());
+				appopsSuggestionBox.setQueryRestrictions(getQueryRestrictions());
+				appopsSuggestionBox.setIsSearchQuery(isSearchQuery());
+				appopsSuggestionBox.setQueryMaxResult(getQueryMaxResult());
+			}
+			
+			appopsSuggestionBox.setAutoSuggestion(isAutosuggestion());
+			appopsSuggestionBox.createUi();
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception in configure method :"+e);
 		}
-		
-		appopsSuggestionBox.setAutoSuggestion(isAutosuggestion());
-		appopsSuggestionBox.createUi();
 	}
 
 	@Override
@@ -93,8 +106,13 @@ public class StateField extends BaseField {
 	 */
 	private Boolean isStaticSuggestionBox() {
 		Boolean isStatic = false;
-		if(getConfigurationValue(StateFieldConstant.IS_STATIC_BOX) != null) {
-			isStatic =(Boolean) getConfigurationValue(StateFieldConstant.IS_STATIC_BOX);
+		try {
+			logger.log(Level.INFO, "[StateField] ::In isStaticSuggestionBox method ");
+			if(getConfigurationValue(StateFieldConstant.IS_STATIC_BOX) != null) {
+				isStatic =(Boolean) getConfigurationValue(StateFieldConstant.IS_STATIC_BOX);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception in isStaticSuggestionBox method :"+e);
 		}
 		return isStatic;
 	}
@@ -105,8 +123,13 @@ public class StateField extends BaseField {
 	 */
 	private Integer getQueryMaxResult() {
 		Integer maxResult = 10;
-		if(getConfigurationValue(StateFieldConstant.STFD_QUERY_MAXRESULT) != null) {
-			maxResult =(Integer) getConfigurationValue(StateFieldConstant.STFD_QUERY_MAXRESULT);
+		try {
+			logger.log(Level.INFO, "[StateField] ::In getQueryMaxResult method ");
+			if(getConfigurationValue(StateFieldConstant.STFD_QUERY_MAXRESULT) != null) {
+				maxResult =(Integer) getConfigurationValue(StateFieldConstant.STFD_QUERY_MAXRESULT);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception in getQueryMaxResult method :"+e);
 		}
 		return maxResult;
 	}
@@ -117,8 +140,13 @@ public class StateField extends BaseField {
 	 */
 	private ArrayList<String> getFieldItemList() {
 		ArrayList<String> listOfItems = null;
-		if(getConfigurationValue(StateFieldConstant.ITEMS_LIST) != null) {
-			listOfItems = (ArrayList<String>) getConfigurationValue(StateFieldConstant.ITEMS_LIST);
+		try {
+			logger.log(Level.INFO, "[StateField] ::In getFieldItemList method ");
+			if(getConfigurationValue(StateFieldConstant.ITEMS_LIST) != null) {
+				listOfItems = (ArrayList<String>) getConfigurationValue(StateFieldConstant.ITEMS_LIST);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception in getFieldItemList method :"+e);
 		}
 		return listOfItems;
 	}
@@ -130,8 +158,13 @@ public class StateField extends BaseField {
 	 */
 	private HashMap<String, Object> getQueryRestrictions() {
 		HashMap<String, Object> queryRestrictions = null;
-		if(getConfigurationValue(StateFieldConstant.STFD_QUERY_RESTRICTION) != null) {
-			queryRestrictions =  (HashMap<String, Object>) getConfigurationValue(StateFieldConstant.STFD_QUERY_RESTRICTION);
+		try {
+			logger.log(Level.INFO, "[StateField] ::In getQueryRestrictions method ");
+			if(getConfigurationValue(StateFieldConstant.STFD_QUERY_RESTRICTION) != null) {
+				queryRestrictions =  (HashMap<String, Object>) getConfigurationValue(StateFieldConstant.STFD_QUERY_RESTRICTION);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception in getQueryRestrictions method :"+e);
 		}
 		return queryRestrictions;
 	}
@@ -142,8 +175,13 @@ public class StateField extends BaseField {
 	 */
 	private String getQueryName() {
 		String queryname = null;
-		if(getConfigurationValue(StateFieldConstant.STFD_QUERYNAME) != null) {
-			queryname =(String) getConfigurationValue(StateFieldConstant.STFD_QUERYNAME);
+		try {
+			logger.log(Level.INFO, "[StateField] ::In getQueryName method ");
+			if(getConfigurationValue(StateFieldConstant.STFD_QUERYNAME) != null) {
+				queryname =(String) getConfigurationValue(StateFieldConstant.STFD_QUERYNAME);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception in getQueryName method :"+e);
 		}
 		return queryname;
 	}
@@ -154,8 +192,13 @@ public class StateField extends BaseField {
 	 */
 	private String getEntPropToDisplay() {
 		String entprop = null;
-		if(getConfigurationValue(StateFieldConstant.STFD_ENTPROP) != null) {
-			entprop = (String) getConfigurationValue(StateFieldConstant.STFD_ENTPROP);
+		try {
+			logger.log(Level.INFO, "[StateField] ::In getEntPropToDisplay method ");
+			if(getConfigurationValue(StateFieldConstant.STFD_ENTPROP) != null) {
+				entprop = (String) getConfigurationValue(StateFieldConstant.STFD_ENTPROP);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception in getEntPropToDisplay method :"+e);
 		}
 		return entprop;
 	}
@@ -167,8 +210,13 @@ public class StateField extends BaseField {
 	 */
 	private String getOperationName() {
 		String operation = null;
-		if(getConfigurationValue(StateFieldConstant.STFD_OPRTION) != null) {
-			operation =(String) getConfigurationValue(StateFieldConstant.STFD_OPRTION);
+		try {
+			logger.log(Level.INFO, "[StateField] ::In getOperationName method ");
+			if(getConfigurationValue(StateFieldConstant.STFD_OPRTION) != null) {
+				operation =(String) getConfigurationValue(StateFieldConstant.STFD_OPRTION);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception in getOperationName method :"+e);
 		}
 		return operation;
 	}
@@ -179,8 +227,13 @@ public class StateField extends BaseField {
 	 */
 	private Boolean isAutosuggestion() {
 		Boolean isautoSuggetion = true;
-		if(getConfigurationValue(StateFieldConstant.IS_AUTOSUGGESTION) != null) {
-			isautoSuggetion =(Boolean) getConfigurationValue(StateFieldConstant.IS_AUTOSUGGESTION);
+		try {
+			logger.log(Level.INFO, "[StateField] ::In isAutosuggestion method ");
+			if(getConfigurationValue(StateFieldConstant.IS_AUTOSUGGESTION) != null) {
+				isautoSuggetion =(Boolean) getConfigurationValue(StateFieldConstant.IS_AUTOSUGGESTION);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception in isAutosuggestion method :"+e);
 		}
 		return isautoSuggetion;
 	}
@@ -191,8 +244,13 @@ public class StateField extends BaseField {
 	 */
 	private Boolean isSearchQuery() {
 		Boolean isSearchQuery = false;
-		if(getConfigurationValue(StateFieldConstant.IS_SEARCH_QUERY) != null) {
-			isSearchQuery =(Boolean) getConfigurationValue(StateFieldConstant.IS_SEARCH_QUERY);
+		try {
+			logger.log(Level.INFO, "[StateField] ::In isSearchQuery method ");
+			if(getConfigurationValue(StateFieldConstant.IS_SEARCH_QUERY) != null) {
+				isSearchQuery =(Boolean) getConfigurationValue(StateFieldConstant.IS_SEARCH_QUERY);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception in isSearchQuery method :"+e);
 		}
 		return isSearchQuery;
 	}

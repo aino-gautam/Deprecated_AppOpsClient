@@ -1,5 +1,8 @@
 package in.appops.client.common.config.field;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import in.appops.platform.core.util.AppOpsException;
 
 import com.google.gwt.user.client.ui.DockPanel;
@@ -33,7 +36,8 @@ lblField.create();<br>
 public class LabelField extends BaseField  {
 
 	private Label label;
-	
+	private Logger logger = Logger.getLogger(getClass().getName());
+
 	public LabelField() {
 		label = new Label();
 	}
@@ -46,25 +50,35 @@ public class LabelField extends BaseField  {
 	@Override
 	public void create() {
 		
-		getBasePanel().add(label, DockPanel.CENTER);
+		try {
+			logger.log(Level.INFO,"[LabelField]:: In create  method ");
+			getBasePanel().add(label, DockPanel.CENTER);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[LabelField]::Exception In create  method :"+e);
+		}
 	}
 	
 	@Override
 	public void configure() {
 		
-		setValue(getDisplayText());
-		//label.setWordWrap(isWordWrap());
-		label.setTitle(getLblTitle());
-		
-		if(getBaseFieldPrimCss() != null)
-			label.setStylePrimaryName(getBaseFieldPrimCss());
-		if(getBaseFieldCss() != null)
-			label.addStyleName(getBaseFieldCss());
-		
-		if(getLabelFieldCss() != null)
-			label.setStylePrimaryName(getLabelFieldCss());
-		
-		label.setVisible(isFieldVisible());
+		try {
+			logger.log(Level.INFO,"[LabelField]:: In configure  method ");
+			setValue(getDisplayText());
+			//label.setWordWrap(isWordWrap());
+			label.setTitle(getLblTitle());
+			
+			if(getBaseFieldPrimCss() != null)
+				label.setStylePrimaryName(getBaseFieldPrimCss());
+			if(getBaseFieldCss() != null)
+				label.addStyleName(getBaseFieldCss());
+			
+			if(getLabelFieldCss() != null)
+				label.setStylePrimaryName(getLabelFieldCss());
+			
+			label.setVisible(isFieldVisible());
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[LabelField]::Exception In configure  method :"+e);		
+		}
 		
 	}
 	
@@ -76,9 +90,14 @@ public class LabelField extends BaseField  {
 	private String getDisplayText() {
 		
 		String displayTxt = "";
-		if(getConfigurationValue(LabelFieldConstant.LBLFD_DISPLAYTXT) != null) {
-			
-			displayTxt = getConfigurationValue(LabelFieldConstant.LBLFD_DISPLAYTXT).toString();
+		try {
+			logger.log(Level.INFO,"[LabelField]:: In getDisplayText  method ");
+			if(getConfigurationValue(LabelFieldConstant.LBLFD_DISPLAYTXT) != null) {
+				
+				displayTxt = getConfigurationValue(LabelFieldConstant.LBLFD_DISPLAYTXT).toString();
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[LabelField]::Exception In getDisplayText  method :"+e);
 		}
 		return displayTxt;
 	}
@@ -90,9 +109,14 @@ public class LabelField extends BaseField  {
 	private String getLblTitle() {
 		
 		String title = "";
-		if(getConfigurationValue(LabelFieldConstant.LBLFD_TITLE) != null) {
-			
-			title = getConfigurationValue(LabelFieldConstant.LBLFD_TITLE).toString();
+		try {
+			logger.log(Level.INFO,"[LabelField]:: In getLblTitle  method ");
+			if(getConfigurationValue(LabelFieldConstant.LBLFD_TITLE) != null) {
+				
+				title = getConfigurationValue(LabelFieldConstant.LBLFD_TITLE).toString();
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[LabelField]::Exception In getLblTitle  method :"+e);
 		}
 		return title;
 	}
@@ -100,8 +124,13 @@ public class LabelField extends BaseField  {
 	
 	private String getLabelFieldCss() {
 		String depCss = null;
-		if(getConfigurationValue(LabelFieldConstant.LBLFD_FCSS) != null) {
-			depCss = getConfigurationValue(LabelFieldConstant.LBLFD_FCSS).toString();
+		try {
+			logger.log(Level.INFO,"[LabelField]:: In getLabelFieldCss  method ");
+			if(getConfigurationValue(LabelFieldConstant.LBLFD_FCSS) != null) {
+				depCss = getConfigurationValue(LabelFieldConstant.LBLFD_FCSS).toString();
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[LabelField]::Exception In getLabelFieldCss  method :"+e);
 		}
 		return depCss;
 	}
@@ -114,17 +143,27 @@ public class LabelField extends BaseField  {
 		
 		Boolean isWordWrap = false;
 		
-		if(getConfigurationValue(LabelFieldConstant.LBLFD_ISWORDWRAP) != null) {
-			
-			isWordWrap = (Boolean) getConfigurationValue(LabelFieldConstant.LBLFD_ISWORDWRAP);
+		try {
+			logger.log(Level.INFO,"[LabelField]:: In isWordWrap  method ");
+			if(getConfigurationValue(LabelFieldConstant.LBLFD_ISWORDWRAP) != null) {
+				
+				isWordWrap = (Boolean) getConfigurationValue(LabelFieldConstant.LBLFD_ISWORDWRAP);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[LabelField]::Exception In isWordWrap  method :"+e);
 		}
 		return isWordWrap;
 	}
 	
 	@Override
 	public void setValue(Object value) {
-		super.setValue(value);
-		label.setText(value.toString());
+		try {
+			logger.log(Level.INFO,"[LabelField]:: In setValue  method ");
+			super.setValue(value);
+			label.setText(value.toString());
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[LabelField]::Exception In setValue  method :"+e);
+		}
 	}
 	
 	@Override
