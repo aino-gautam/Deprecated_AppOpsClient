@@ -6,6 +6,8 @@ import in.appops.client.common.config.field.date.TimePickerField.TimePickerField
 import in.appops.platform.core.shared.Configuration;
 
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -16,7 +18,7 @@ public class DateTimePickerField extends BaseField{
 	private HorizontalPanel dateTimePanel ;
 	private DatePickerField dtPickerField;
 	private TimePickerField timeField;
-	
+	private Logger logger = Logger.getLogger(getClass().getName());
 	public DateTimePickerField() {
 		
 	}
@@ -27,7 +29,12 @@ public class DateTimePickerField extends BaseField{
 	
 	@Override
 	public void create() {
-		getBasePanel().add(dateTimePanel,DockPanel.CENTER);
+		try {
+			logger.log(Level.INFO,"[DateTimePickerField]:: In create  method ");
+			getBasePanel().add(dateTimePanel,DockPanel.CENTER);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[DateTimePickerField]::Exception In create  method :"+e);
+		}
 	}
 	
 	/**
@@ -36,32 +43,44 @@ public class DateTimePickerField extends BaseField{
 	@Override
 	public void configure() {
 		
-		dateTimePanel = new HorizontalPanel();
-		
-		timeField = new TimePickerField();
-		timeField.setConfiguration(getTimePickerConfiguration());
-		timeField.configure();
-		timeField.create();
-		
-		dtPickerField = new DatePickerField();
-		dtPickerField.setConfiguration(getDatePickerConfiguration());
-		dtPickerField.configure();
-		dtPickerField.create();
-		
-		dateTimePanel.add(dtPickerField);
-		dateTimePanel.add(timeField);
-				
-		if(getBaseFieldPrimCss()!=null)
-			getBasePanel().setStylePrimaryName(getBaseFieldPrimCss());
-		
-		if(getBaseFieldCss()!=null)
-			getBasePanel().setStyleName(getBaseFieldCss());
+		try {
+			logger.log(Level.INFO,"[DateTimePickerField]:: In configure  method ");
+			dateTimePanel = new HorizontalPanel();
+			
+			timeField = new TimePickerField();
+			timeField.setConfiguration(getTimePickerConfiguration());
+			timeField.configure();
+			timeField.create();
+			
+			dtPickerField = new DatePickerField();
+			dtPickerField.setConfiguration(getDatePickerConfiguration());
+			dtPickerField.configure();
+			dtPickerField.create();
+			
+			dateTimePanel.add(dtPickerField);
+			dateTimePanel.add(timeField);
+					
+			if(getBaseFieldPrimCss()!=null)
+				getBasePanel().setStylePrimaryName(getBaseFieldPrimCss());
+			
+			if(getBaseFieldCss()!=null)
+				getBasePanel().setStyleName(getBaseFieldCss());
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[DateTimePickerField]::Exception In configure  method :"+e);
+		}
 	}
 	
 	@Override
 	public Object getValue(){
-		String dateTime = dtPickerField.getFieldValue() + " "+timeField.getFieldValue();
-		Date result = DateTimeFormat.getFormat(dtPickerField.getFormat() +" "+ timeField.getTimeFormat()).parse(dateTime);
+		
+		Date result = null;
+		try {
+			logger.log(Level.INFO,"[DateTimePickerField]:: In getValue  method ");
+			String dateTime = dtPickerField.getFieldValue() + " "+timeField.getFieldValue();
+			result = DateTimeFormat.getFormat(dtPickerField.getFormat() +" "+ timeField.getTimeFormat()).parse(dateTime);
+		} catch (IllegalArgumentException e) {
+			logger.log(Level.SEVERE,"[DateTimePickerField]::Exception In getValue  method :"+e);
+		}
 						
 		return result;
 	}
@@ -72,7 +91,7 @@ public class DateTimePickerField extends BaseField{
 	 * @return
 	 */
 	private String getValueFromConf(String propertyName){
-					
+		logger.log(Level.INFO,"[DateTimePickerField]:: In getValueFromConf  method ");
 		if(getConfigurationValue(propertyName)!=null)
 			return getConfigurationValue(propertyName).toString();
 		
@@ -86,11 +105,16 @@ public class DateTimePickerField extends BaseField{
 		
 		Configuration configuration = new Configuration();
 		
-		configuration.setPropertyByName(TimePickerFieldConstant.BF_PCLS, getValueFromConf(DateTimePickerFieldConstant.TIMEPICKER_PCLS));
-		configuration.setPropertyByName(TimePickerFieldConstant.BF_DCLS, getValueFromConf(DateTimePickerFieldConstant.TIMEPICKER_DCLS));
-		configuration.setPropertyByName(TimePickerFieldConstant.TIME_FORMAT, getValueFromConf(TimePickerFieldConstant.TIME_FORMAT));
-		configuration.setPropertyByName(TimePickerFieldConstant.TIMESPINNER_PCLS, getValueFromConf(DateTimePickerFieldConstant.TIMESPINNER_PCLS));
-		configuration.setPropertyByName(TimePickerFieldConstant.TIMESPINNER_DCLS, getValueFromConf(DateTimePickerFieldConstant.TIMESPINNER_DCLS));
+		try {
+			logger.log(Level.INFO,"[DateTimePickerField]:: In getTimePickerConfiguration  method ");
+			configuration.setPropertyByName(TimePickerFieldConstant.BF_PCLS, getValueFromConf(DateTimePickerFieldConstant.TIMEPICKER_PCLS));
+			configuration.setPropertyByName(TimePickerFieldConstant.BF_DCLS, getValueFromConf(DateTimePickerFieldConstant.TIMEPICKER_DCLS));
+			configuration.setPropertyByName(TimePickerFieldConstant.TIME_FORMAT, getValueFromConf(TimePickerFieldConstant.TIME_FORMAT));
+			configuration.setPropertyByName(TimePickerFieldConstant.TIMESPINNER_PCLS, getValueFromConf(DateTimePickerFieldConstant.TIMESPINNER_PCLS));
+			configuration.setPropertyByName(TimePickerFieldConstant.TIMESPINNER_DCLS, getValueFromConf(DateTimePickerFieldConstant.TIMESPINNER_DCLS));
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[DateTimePickerField]::Exception In getTimePickerConfiguration  method :"+e);
+		}
 		return configuration;
 	}
 	
@@ -102,19 +126,24 @@ public class DateTimePickerField extends BaseField{
 		
 		Configuration configuration = new Configuration();
 		
-		configuration.setPropertyByName(DatePickerConstant.BF_DEFVAL, getValueFromConf(DateTimePickerFieldConstant.DATE_DEFVAL));
-		configuration.setPropertyByName(DatePickerConstant.DP_MAXDATE, getValueFromConf(DateTimePickerFieldConstant.MAXDATE));
-		configuration.setPropertyByName(DatePickerConstant.DP_MINDATE, getValueFromConf(DateTimePickerFieldConstant.MINDATE));
-		configuration.setPropertyByName(DatePickerConstant.DP_FORMAT, getValueFromConf(DateTimePickerFieldConstant.DATE_FORMAT));
-		
-		boolean allowBlank = Boolean.valueOf(getValueFromConf(DateTimePickerFieldConstant.DATE_ALLOWBLNK));
-		configuration.setPropertyByName(DatePickerConstant.DP_ALLOWBLNK,allowBlank);
-		configuration.setPropertyByName(DatePickerConstant.BF_PCLS, getValueFromConf(DateTimePickerFieldConstant.DATE_PCLS));
-		configuration.setPropertyByName(DatePickerConstant.BF_DCLS, getValueFromConf(DateTimePickerFieldConstant.DATE_DCLS));
-		configuration.setPropertyByName(DatePickerConstant.BF_ERRPOS, getValueFromConf(DateTimePickerFieldConstant.BF_ERRPOS));
-		configuration.setPropertyByName(DatePickerConstant.DP_ERRMSGBLNK, getValueFromConf(DateTimePickerFieldConstant.DATE_ERRMSGBLNK));
-		configuration.setPropertyByName(DatePickerConstant.DP_ERRMSGMAX, getValueFromConf(DateTimePickerFieldConstant.DATE_ERRMSGMAX));
-		configuration.setPropertyByName(DatePickerConstant.DP_ERRMSGMIN, getValueFromConf(DateTimePickerFieldConstant.DATE_ERRMSGMIN));
+		try {
+			logger.log(Level.INFO,"[DateTimePickerField]:: In getDatePickerConfiguration  method ");
+			configuration.setPropertyByName(DatePickerConstant.BF_DEFVAL, getValueFromConf(DateTimePickerFieldConstant.DATE_DEFVAL));
+			configuration.setPropertyByName(DatePickerConstant.DP_MAXDATE, getValueFromConf(DateTimePickerFieldConstant.MAXDATE));
+			configuration.setPropertyByName(DatePickerConstant.DP_MINDATE, getValueFromConf(DateTimePickerFieldConstant.MINDATE));
+			configuration.setPropertyByName(DatePickerConstant.DP_FORMAT, getValueFromConf(DateTimePickerFieldConstant.DATE_FORMAT));
+			
+			boolean allowBlank = Boolean.valueOf(getValueFromConf(DateTimePickerFieldConstant.DATE_ALLOWBLNK));
+			configuration.setPropertyByName(DatePickerConstant.DP_ALLOWBLNK,allowBlank);
+			configuration.setPropertyByName(DatePickerConstant.BF_PCLS, getValueFromConf(DateTimePickerFieldConstant.DATE_PCLS));
+			configuration.setPropertyByName(DatePickerConstant.BF_DCLS, getValueFromConf(DateTimePickerFieldConstant.DATE_DCLS));
+			configuration.setPropertyByName(DatePickerConstant.BF_ERRPOS, getValueFromConf(DateTimePickerFieldConstant.BF_ERRPOS));
+			configuration.setPropertyByName(DatePickerConstant.DP_ERRMSGBLNK, getValueFromConf(DateTimePickerFieldConstant.DATE_ERRMSGBLNK));
+			configuration.setPropertyByName(DatePickerConstant.DP_ERRMSGMAX, getValueFromConf(DateTimePickerFieldConstant.DATE_ERRMSGMAX));
+			configuration.setPropertyByName(DatePickerConstant.DP_ERRMSGMIN, getValueFromConf(DateTimePickerFieldConstant.DATE_ERRMSGMIN));
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[DateTimePickerField]::Exception In getDatePickerConfiguration  method :"+e);
+		}
 
 		return configuration;
 		
@@ -162,9 +191,5 @@ public class DateTimePickerField extends BaseField{
 		public static final String AMPMFORMAT_WITH_SECONDS = "hh:mm:ss a";
 		
 		public static final String AMPMFORMAT_WITHOUT_SECONDS = "hh:mm a";
-
-		
 	}
-	
-
 }
