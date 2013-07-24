@@ -1,13 +1,15 @@
 package in.appops.client.common.config.field.spinner;
 
 import java.math.BigDecimal;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class NumericModel implements SpinnerModel {
 
 	private Float value, max, min;
 	private Integer step;
 	private boolean circular;
-	
+	private Logger logger = Logger.getLogger(getClass().getName());
 	
 	public void setStep(Integer step) {
 		this.step = step;
@@ -34,6 +36,7 @@ public class NumericModel implements SpinnerModel {
 	@Override
 	public void spinUp() {
 		try {
+			logger.log(Level.INFO, "[NumericModel] ::In spinUp method ");
 			if((value + step > max)) { //
 				if(isCircular()) { 
 					value = ((value - (max - value)) - 1) + min;
@@ -44,7 +47,9 @@ public class NumericModel implements SpinnerModel {
 				value = value + step;
 			}
 		} catch (NumberFormatException e) {
-			System.out.println("Spin up");
+//			System.out.println("Spin up");
+			logger.log(Level.SEVERE, "[NumericModel] ::Exception in spinUp method :"+e);
+
 		}
 	}
 	
@@ -53,29 +58,50 @@ public class NumericModel implements SpinnerModel {
 	}
 	
 	public String fixPrecision(Float value, int precision) {
-	    BigDecimal bd = new BigDecimal(value);
-	    bd.stripTrailingZeros();
-	    BigDecimal rounded = bd.setScale(precision, BigDecimal.ROUND_HALF_UP);
+	    BigDecimal rounded = null;
+		try {
+			logger.log(Level.INFO, "[NumericModel] ::In fixPrecision method ");
+			BigDecimal bd = new BigDecimal(value);
+			bd.stripTrailingZeros();
+			rounded = bd.setScale(precision, BigDecimal.ROUND_HALF_UP);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[NumericModel] ::Exception in fixPrecision method :"+e);
+
+		}
 	    return rounded.toString();
 	}
 	
 	public Float parseValue(String value) {
-		if(isNumeric(value)) {
-			return Float.parseFloat(value);
+		try {
+			logger.log(Level.INFO, "[NumericModel] ::In parseValue method ");
+
+			if(isNumeric(value)) {
+				return Float.parseFloat(value);
+			}
+		} catch (NumberFormatException e) {
+			logger.log(Level.SEVERE, "[NumericModel] ::Exception in parseValue method :"+e);
+
 		} 
 		return null;
 	}
 
 	@Override
 	public void spinDown() {
-		if(value - step < min) {
-			if(isCircular()) {
-				value = (max - (step - (value - min))) + 1;
+		try {
+			logger.log(Level.INFO, "[NumericModel] ::In spinDown method ");
+
+			if(value - step < min) {
+				if(isCircular()) {
+					value = (max - (step - (value - min))) + 1;
+				} else {
+					value = min;
+				}
 			} else {
-				value = min;
+				value = value - step;
 			}
-		} else {
-			value = value - step;
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[NumericModel] ::Exception in spinDown method :"+e);
+
 		}		
 	}
 
