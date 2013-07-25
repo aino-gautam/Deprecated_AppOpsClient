@@ -82,37 +82,39 @@ public class LinkField extends BaseField implements ClickHandler{
      */
 	@Override
 	public void configure() {
-		
 		try {
-			logger.log(Level.INFO, "[LinkField] ::In configure method ");
-			if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)){
+			if (getLinkType().equalsIgnoreCase(
+					LinkFieldConstant.LNKTYPE_HYPERLINK)) {
 				hyperLink = new Hyperlink();
 				hyperLink.setText(getDisplayText());
-				
-				if(getTargetHistoryToken()!=null)
+
+				if (getTargetHistoryToken() != null)
 					hyperLink.setTargetHistoryToken(getTargetHistoryToken());
-			}else {
+			} else {
 				anchor = new Anchor();
 				anchor.setText(getDisplayText());
-				if(getHref()!=null)
-				anchor.setHref(getHref());
-				if(getTargetFrame()!=null)
+				if (getHref() != null)
+					anchor.setHref(getHref());
+				if (getTargetFrame() != null)
 					anchor.setTarget(getTargetFrame());
-				
-				if(getLinkClickEvent()!=0)
+
+				if (getLinkClickEvent() != 0)
 					anchor.addClickHandler(this);
 			}
-			
-			if(getBaseFieldPrimCss()!= null)
-				getBasePanel().setStylePrimaryName(getBaseFieldPrimCss());
-			if(getBaseFieldCss() != null)
-				getBasePanel().addStyleName(getBaseFieldCss());
-			if(getLinkTitle()!=null)
+
+			if (getBaseFieldPrimCss() != null)
+				getWidget().setStylePrimaryName(getBaseFieldPrimCss());
+			if (getBaseFieldCss() != null)
+				getWidget().addStyleName(getBaseFieldCss());
+			if (getLinkTitle() != null)
 				getWidget().setTitle(getLinkTitle());
+
+			if (getLinkFieldBasePanelCss() != null)
+				getBasePanel().setStylePrimaryName(getLinkFieldBasePanelCss());
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "[LinkField] ::Exception in configure method :"+e);
+			logger.log(Level.SEVERE,
+					"[LinkField] ::Exception in configure method :" + e);
 		}
-		
 	}
 	
 	/**
@@ -183,6 +185,19 @@ public class LinkField extends BaseField implements ClickHandler{
 	
 	
 	/************************************************/
+	
+	/**
+	 * Method returns linkfield base panel css.
+	 * @return
+	 */
+	private String getLinkFieldBasePanelCss() {
+		String basePanelCss = null;
+		if(getConfigurationValue(LinkFieldConstant.LNK_BASEPANEL_CSS) != null) {
+			basePanelCss = getConfigurationValue(LinkFieldConstant.LNK_BASEPANEL_CSS).toString();
+		}
+		return basePanelCss;
+	}
+	
 	/**
 	 * Method return the type of the link to use . Defaults to anchor.  
 	 * @return
@@ -352,6 +367,9 @@ public class LinkField extends BaseField implements ClickHandler{
 		
 		/** Specifies the event on link click  **/
 		public static final String LNK_CLICK_EVENT = "clickEvent";
+		
+		/**Label field base panel css.**/
+		public static final String LNK_BASEPANEL_CSS = "linkfieldBasePanelcss";
 		
 	}
 	

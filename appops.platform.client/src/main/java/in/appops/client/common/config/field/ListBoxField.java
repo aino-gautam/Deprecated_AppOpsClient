@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.ListBox;
@@ -50,9 +51,10 @@ staticListBox.create();<br>
 public class ListBoxField extends BaseField implements ChangeHandler{
 
 	private ListBox listBox;
-	private HashMap<String, Entity> nameVsEntity ;
+	private HashMap<String, Entity> nameVsEntity  = null;
 	private final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+	private HandlerRegistration selectionHandler = null ;
 	private Logger logger = Logger.getLogger(getClass().getName());
 	public ListBoxField(){
 		listBox = new ListBox();
@@ -60,60 +62,87 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	
 	/******************************** ****************************************/
 
+	/**
+	 * Method checks whether user wants to execute listQuery or user provided the static list of items from configuration. If user is providing
+	 * query name then it executes the query and populate the list . If user is providing static list of items  
+	 * then it populates the listbox with entityList.
+	 *  
+	 */
 	@Override
 	public void create() {
-		
 		try {
-			logger.log(Level.INFO,"[ListBoxField]:: In create  method ");
-
-			if(getListQueryName() != null){
+			if (getListQueryName() != null) {
 				excuteListQuery();
-			} else if(getListQueryName() == null && getOperationName() != null) { 
-				executeOperation(null);
-			} else{
-				if(getStaticListOfItems()!=null){
-					populateList(getStaticListOfItems());
+			} else {
+				if (getStaticListOfItems() != null) {
+					Object obj = getStaticListOfItems();
+					if (obj instanceof ArrayList) {
+						ArrayList<Object> staticList = (ArrayList<Object>) obj;
+						if (staticList.get(0) instanceof String) {
+							populateList((ArrayList<String>) obj);
+						} else if (staticList.get(0) instanceof Entity) {
+							EntityList list = (EntityList) obj;
+							populateEntityList(list);
+						}
+					} else if (obj instanceof EntityList) {
+						EntityList list = (EntityList) obj;
+						populateEntityList(list);
+					}
+
 				}
 			}
-			
+
 			getBasePanel().add(listBox, DockPanel.CENTER);
+
 		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[ListBoxField]::Exception In create  method :"+e);
+			logger.log(Level.SEVERE,
+					"[ListBoxField]::Exception In create  method :" + e);
 
 		}
 	}
 	
 	@Override
 	public void configure() {
-		
 		try {
-			logger.log(Level.INFO,"[ListBoxField]:: In configure  method ");
 			listBox.setVisibleItemCount(getVisibleItemCount());
-			if(getDefaultValue()!=null){
-				listBox.insertItem(getDefaultValue().toString(),0);
+			listBox.setEnabled(isEnabled());
+
+			if (getDefaultValue() != null) {
+				listBox.insertItem(getDefaultValue().toString(), 0);
 				listBox.setSelectedIndex(0);
 			}
-				
-			if(getBaseFieldPrimCss() != null)
+
+			if (getBaseFieldPrimCss() != null)
 				listBox.setStylePrimaryName(getBaseFieldPrimCss());
-			if(getBaseFieldCss() != null)
+			if (getBaseFieldCss() != null)
 				listBox.addStyleName(getBaseFieldCss());
-			
-			if(getValueChangeEvent()!=0)
-				listBox.addChangeHandler(this);
+
+			if (getValueChangeEvent() != 0)
+				selectionHandler = listBox.addChangeHandler(this);
 		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[ListBoxField]::Exception In configure  method :"+e);
+			logger.log(Level.SEVERE,
+					"[ListBoxField]::Exception In configure  method :" + e);
 		}
 	}
 	
 	@Override
 	public void clear() {
+		
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In clear  method ");
 			listBox.clear();
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In clear  method :"+e);
 		}
+	}
+	
+	/**
+	 * Method removed registered handlers from field
+	 */
+	@Override
+	public void removeRegisteredHandlers() {
+		if(selectionHandler!=null)
+			selectionHandler.removeHandler();
 	}
 	
 	@Override
@@ -158,18 +187,20 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	 * Method returns the static list of items for listbox;
 	 * @return
 	 */
-	private ArrayList<String> getStaticListOfItems() {
-		ArrayList<String> listOfItems = null;
+
+	private Object getStaticListOfItems() {
+		Object listOfItems = null;
 		try {
-			logger.log(Level.INFO,"[ListBoxField]:: In getStaticListOfItems  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_ITEMS) != null) {
-				listOfItems = (ArrayList<String>) getConfigurationValue(ListBoxFieldConstant.LSTFD_ITEMS);
+			if (getConfigurationValue(ListBoxFieldConstant.LSTFD_ITEMS) != null) {
+				listOfItems = getConfigurationValue(ListBoxFieldConstant.LSTFD_ITEMS);
 			}
 		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getStaticListOfItems  method :"+e);
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getStaticListOfItems  method :"
+							+ e);
 		}
 		return listOfItems;
 	}
+	
 	
 	/**
 	 * Method returns the list query;
@@ -363,6 +394,11 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		}
 	}
 	
+	/**
+	 * Method returns associated entity of the item text.
+	 * @param itemText
+	 * @return
+	 */
 	public Entity getAssociatedEntity(String itemText){
 		logger.log(Level.INFO,"[ListBoxField]:: In getAssociatedEntity  method ");
 		if(nameVsEntity !=null)

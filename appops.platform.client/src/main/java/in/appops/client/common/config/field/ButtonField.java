@@ -8,6 +8,7 @@ import in.appops.client.common.event.FieldEvent;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockPanel;
 
@@ -36,6 +37,7 @@ btnField.create();<br>
 public class ButtonField extends BaseField implements ClickHandler{
 	
 	private Button button ;
+	private HandlerRegistration clickHandler = null ;
 	private Logger logger = Logger.getLogger(getClass().getName());
 
 	public ButtonField() {
@@ -48,10 +50,10 @@ public class ButtonField extends BaseField implements ClickHandler{
 	 */
 	@Override
 	public void create(){
+		
 		try {
-			logger.log(Level.INFO,"[ButtonField]:: In create  method ");
 			if(getBtnClickEvent()!=0)
-				button.addClickHandler(this);
+				clickHandler = button.addClickHandler(this);
 			
 			getBasePanel().add(button,DockPanel.CENTER);
 		} catch (Exception e) {
@@ -76,7 +78,6 @@ public class ButtonField extends BaseField implements ClickHandler{
 
 	@Override
 	public void configure() {
-		
 		try {
 			logger.log(Level.INFO,"[ButtonField]:: In configure  method ");
 			setFieldValue(getDisplayText());
@@ -96,10 +97,11 @@ public class ButtonField extends BaseField implements ClickHandler{
 	}
 	
 	/**
-	 * clears the field .
+	 * clears the field text.
 	 */
 	@Override
 	public void clear() {
+		
 		try {
 			logger.log(Level.INFO,"[ButtonField]:: In clear  method ");
 			setFieldValue("");
@@ -109,20 +111,26 @@ public class ButtonField extends BaseField implements ClickHandler{
 	}
 	
 	/**
+	 * Method removed registered handlers from field
+	 */
+	@Override
+	public void removeRegisteredHandlers() {
+		
+		if(clickHandler!=null)
+			clickHandler.removeHandler();
+	}
+	
+	/**
 	 * Overriden method from BaseField sets the value to button.
 	 */
 	@Override
 	public void setValue(Object value) {
-		
 		try {
-			logger.log(Level.INFO,"[ButtonField]:: In setValue  method ");
 			super.setValue(value);
-			clear();
 			setFieldValue(value.toString());
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ButtonField]::Exception In setValue  method :"+e);
 		}
-		
 	}
 	
 	/**

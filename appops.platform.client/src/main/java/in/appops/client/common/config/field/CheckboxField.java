@@ -67,6 +67,45 @@ public class CheckboxField extends BaseField implements ValueChangeHandler{
 		return isChecked;
 	}
 
+	/**
+	 * Method will return the group name in which the checkbox will be added.
+	 * @return
+	 */
+	public String getGroupName(){
+		
+		String name = "multiSelection";
+		if(getConfigurationValue(CheckBoxFieldConstant.CF_GROUPID) != null) {
+			
+			name = (String) getConfigurationValue(CheckBoxFieldConstant.CF_GROUPID);
+		}
+		return name;
+	}
+	
+	/**
+	 * Method return the event that will be fired when checkbox is selected.  
+	 * @return
+	 */
+	private Integer getSelectionEvent() {
+		Integer eventType = FieldEvent.CHECKBOX_SELECT;
+		if (getConfigurationValue(CheckBoxFieldConstant.CF_SELECT_EVENT) != null) {
+			eventType = (Integer) getConfigurationValue(CheckBoxFieldConstant.CF_SELECT_EVENT);
+		}
+		return eventType;
+	}
+	
+	
+	/**
+	 * Method return the event that will be fired when checkbox is deselected.  
+	 * @return
+	 */
+	private Integer getDeselectionEvent() {
+		Integer eventType = FieldEvent.CHECKBOX_DESELECT;
+		if (getConfigurationValue(CheckBoxFieldConstant.CF_DESELECT_EVENT) != null) {
+			eventType = (Integer) getConfigurationValue(CheckBoxFieldConstant.CF_DESELECT_EVENT);
+		}
+		return eventType;
+	}
+	
 
 	@Override
 	public void reset() {
@@ -94,22 +133,40 @@ public class CheckboxField extends BaseField implements ValueChangeHandler{
 	
 	@Override
 	public void configure() {
-		
 		try {
-			logger.log(Level.INFO, "[CheckboxField] ::In configure method ");
 			checkBox.setValue(isFieldChecked());
-				
+
 			checkBox.setText(getDisplayText());
-			
-			if(getBaseFieldPrimCss()!=null)
+
+			if (getBaseFieldId() != null)
+				checkBox.setName(getBaseFieldId());
+			else
+				checkBox.setName(getDisplayText());
+
+			if (getBaseFieldPrimCss() != null)
 				this.setStylePrimaryName(getBaseFieldPrimCss());
-			if(getBaseFieldCss()!=null)
+			if (getBaseFieldCss() != null)
 				this.addStyleName(getBaseFieldCss());
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "[CheckboxField] ::Exception in configure method :"+e);
+			logger.log(Level.SEVERE,"[CheckboxField] ::Exception in configure method :" + e);
 		}
 	}
 	
+	@Override
+	public void onValueChange(ValueChangeEvent event) {
+		
+		CheckBox checkBox = (CheckBox) event.getSource();
+		boolean checked = checkBox.getValue();
+		FieldEvent fieldEvent = new FieldEvent();
+		if(checked)
+			fieldEvent.setEventType(getSelectionEvent());
+		else
+			fieldEvent.setEventType(getDeselectionEvent());
+		
+		fieldEvent.setEventData(checkBox.getName());
+		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		
+	}
 	
 	public interface CheckBoxFieldConstant extends BaseFieldConstant{
 		
@@ -117,26 +174,12 @@ public class CheckboxField extends BaseField implements ValueChangeHandler{
 		
 		public static final String CF_CHECKED = "isChecked";
 		
-	}
-
-	@Override
-	public void onValueChange(ValueChangeEvent event) {
+		public static final String CF_GROUPID = "groupId";
 		
-		try {
-			logger.log(Level.INFO, "[CheckboxField] ::In onValueChange method ");
-			CheckBox checkBox = (CheckBox) event.getSource();
-			boolean checked = checkBox.getValue();
-			FieldEvent fieldEvent = new FieldEvent();
-			if(checked)
-				fieldEvent.setEventType(FieldEvent.CHECKBOX_SELECT);
-			else
-				fieldEvent.setEventType(FieldEvent.CHECKBOX_DESELECT);
-			
-			fieldEvent.setEventData(checkBox);
-			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "[CheckboxField] ::Exception in onValueChange method :"+e);
-		}
+		public static final String CF_SELECT_EVENT = "selectionEvent";
+		
+		public static final String CF_DESELECT_EVENT = "deselectEvent";
 		
 	}
+	
 }

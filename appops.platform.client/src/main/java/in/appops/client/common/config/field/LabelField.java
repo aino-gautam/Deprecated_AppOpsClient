@@ -60,24 +60,23 @@ public class LabelField extends BaseField  {
 	
 	@Override
 	public void configure() {
-		
 		try {
-			logger.log(Level.INFO,"[LabelField]:: In configure  method ");
 			setValue(getDisplayText());
-			//label.setWordWrap(isWordWrap());
+			// label.setWordWrap(isWordWrap());
 			label.setTitle(getLblTitle());
-			
-			if(getBaseFieldPrimCss() != null)
+
+			if (getBaseFieldPrimCss() != null)
 				label.setStylePrimaryName(getBaseFieldPrimCss());
-			if(getBaseFieldCss() != null)
+			if (getBaseFieldCss() != null)
 				label.addStyleName(getBaseFieldCss());
-			
-			if(getLabelFieldCss() != null)
-				label.setStylePrimaryName(getLabelFieldCss());
-			
+
+			if (getLabelFieldBasePanelCss() != null)
+				getBasePanel().setStylePrimaryName(getLabelFieldBasePanelCss());
+
 			label.setVisible(isFieldVisible());
 		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[LabelField]::Exception In configure  method :"+e);		
+			logger.log(Level.SEVERE,
+					"[LabelField]::Exception In configure  method :" + e);
 		}
 		
 	}
@@ -135,6 +134,14 @@ public class LabelField extends BaseField  {
 		return depCss;
 	}
 	
+	private String getLabelFieldBasePanelCss() {
+		String depCss = null;
+		if(getConfigurationValue(LabelFieldConstant.LBLFD_BASEPANEL_CSS) != null) {
+			depCss = getConfigurationValue(LabelFieldConstant.LBLFD_BASEPANEL_CSS).toString();
+		}
+		return depCss;
+	}
+	
 	/**
 	 * Method read the wordwrap value from configuration and return. Defaults to false;
 	 * @return
@@ -184,6 +191,9 @@ public class LabelField extends BaseField  {
 		public static final String LBLFD_TITLE = "title";
 		
 		public static final String LBLFD_FCSS = "labelfieldcss";
+		
+		/**Label field base panel css.**/
+		public static final String LBLFD_BASEPANEL_CSS = "labelfieldBasePanelcss";
 		
 	}
 

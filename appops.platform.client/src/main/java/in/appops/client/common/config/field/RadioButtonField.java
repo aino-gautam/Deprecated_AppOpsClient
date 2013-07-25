@@ -3,7 +3,6 @@ package in.appops.client.common.config.field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import in.appops.client.common.config.field.BaseField;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 
@@ -18,11 +17,12 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 	private Logger logger = Logger.getLogger(getClass().getName());
 
 	public RadioButtonField(){
-		radioBtn = new RadioButton("singleSelection");
+		
 	}
 	
 	@Override
 	public void create() {
+		
 		try {
 			logger.log(Level.INFO, "[RadioButtonField] ::In create method ");
 			radioBtn.addValueChangeHandler(this);
@@ -52,23 +52,18 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 	}
 	
 	/**
-	 * Method will return the display text of checkbox.
+	 * Method will return the group name in which the radioButton will be added.
 	 * @return
 	 */
-	public String getFieldId(){
+	public String getGroupName(){
 		
-		String  id = getDisplayText();
+		String name = "singleSelection";
 		
-		try {
-			logger.log(Level.INFO, "[RadioButtonField] ::In getFieldId method ");
-			if(getConfigurationValue(RadionButtonFieldConstant.RF_ID) != null) {
-				
-				id = (String) getConfigurationValue(RadionButtonFieldConstant.RF_ID);
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "[RadioButtonField] ::Exception in getFieldId method :"+e);
+		if(getConfigurationValue(RadionButtonFieldConstant.RF_GROUPID) != null) {
+			
+			name = (String) getConfigurationValue(RadionButtonFieldConstant.RF_GROUPID);
 		}
-		return id;
+		return name;
 	}
 	
 	/**
@@ -91,6 +86,17 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 		return isChecked;
 	}
 
+	/**
+	 * Method return the event that will be fired when radioButton is selected.  
+	 * @return
+	 */
+	private Integer getSelectionEvent() {
+		Integer eventType = FieldEvent.RADIOBUTTON_SELECTED;
+		if (getConfigurationValue(RadionButtonFieldConstant.RF_SELECT_EVENT) != null) {
+			eventType = (Integer) getConfigurationValue(RadionButtonFieldConstant.RF_SELECT_EVENT);
+		}
+		return eventType;
+	}
 
 	@Override
 	public void reset() {
@@ -120,6 +126,7 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 	@Override
 	public void configure() {
 		
+		radioBtn = new RadioButton(getGroupName());
 		try {
 			logger.log(Level.INFO, "[RadioButtonField] ::In configure method ");
 			radioBtn.setValue(isFieldChecked());
@@ -135,36 +142,33 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 		}
 	}
 	
+
+	@Override
+	public void onValueChange(ValueChangeEvent event) {
+		
+		RadioButton radioButton = (RadioButton) event.getSource();
+		
+		FieldEvent fieldEvent = new FieldEvent();
+		fieldEvent.setEventType(getSelectionEvent());
+		
+		fieldEvent.setEventData(radioButton);
+		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		
+	}
 	
 	public interface RadionButtonFieldConstant extends BaseFieldConstant{
 		
 		/** Display text for radio button **/
 		public static final String RF_DISPLAYTEXT = "displayText";
 		
-		/** Specifies the id for radio button **/
-		public static final String RF_ID = "id";
-		
 		/** Specify isChecked property for radio button **/
 		public static final String RF_CHECKED = "isChecked";
 		
-	}
-
-
-	@Override
-	public void onValueChange(ValueChangeEvent event) {
+		/** Specify the group name for the radioButton **/
+		public static final String RF_GROUPID = "groupId";
 		
-		try {
-			logger.log(Level.INFO, "[RadioButtonField] ::In onValueChange method ");
-			RadioButton radioButton = (RadioButton) event.getSource();
-			
-			FieldEvent fieldEvent = new FieldEvent();
-			fieldEvent.setEventType(FieldEvent.RADIOBUTTON_SELECTED);
-			
-			fieldEvent.setEventData(radioButton);
-			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "[RadioButtonField] ::Exception in onValueChange method :"+e);
-		}
+		public static final String RF_SELECT_EVENT = "selectEvent";
 		
 	}
+
 }

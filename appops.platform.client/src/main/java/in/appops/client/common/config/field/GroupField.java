@@ -1,5 +1,6 @@
 package in.appops.client.common.config.field;
 
+import in.appops.client.common.config.field.CheckboxField.CheckBoxFieldConstant;
 import in.appops.client.common.config.field.RadioButtonField.RadionButtonFieldConstant;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
@@ -94,22 +95,22 @@ public class GroupField extends BaseField implements FieldEventHandler{
 		
 		RadioButtonField radioField = new RadioButtonField();
 		try {
-			logger.log(Level.INFO, "[GroupField] ::In getRadioButtonField method ");
-			Configuration childConfig = getChildConfiguration(id);
-			
-			if(childConfig!=null){
-				if(childConfig.getPropertyByName(RadionButtonFieldConstant.RF_ID) == null)
-					childConfig.setPropertyByName(RadionButtonFieldConstant.RF_ID, id);
-			}
-			
-			radioField.setConfiguration(childConfig);
-			radioField.configure();
-			radioField.create();
-			
-			if(fieldItems==null)
-				fieldItems = new ArrayList<Widget>();
+		
+		Configuration childConfig = getChildConfiguration(id);
+		
+		/*if(childConfig!=null){
+			if(childConfig.getPropertyByName(RadionButtonFieldConstant.RF_ID) == null)
+				childConfig.setPropertyByName(RadionButtonFieldConstant.RF_ID, id);
+		}*/
+		childConfig.setPropertyByName(RadionButtonFieldConstant.RF_GROUPID, getGroupId());
+		radioField.setConfiguration(childConfig);
+		radioField.configure();
+		radioField.create();
+		
+		if(fieldItems==null)
+			fieldItems = new ArrayList<Widget>();
 
-			fieldItems.add(radioField);
+		fieldItems.add(radioField);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[GroupField] ::Exception in getRadioButtonField method :"+e);
 		}
@@ -126,22 +127,24 @@ public class GroupField extends BaseField implements FieldEventHandler{
 		
 		CheckboxField checkBoxField = new CheckboxField();
 		try {
-			logger.log(Level.INFO, "[GroupField] ::In getCheckBoxField method ");
-			Configuration childConfig = getChildConfiguration(id);
-			
-			if(childConfig!=null){
-				if(childConfig.getPropertyByName(BaseFieldConstant.BF_ID) == null)
-					childConfig.setPropertyByName(BaseFieldConstant.BF_ID, id);
-			}
-			
-			checkBoxField.setConfiguration(childConfig);
-			checkBoxField.configure();
-			checkBoxField.create();
-			
-			if(fieldItems==null)
-				fieldItems = new ArrayList<Widget>();
+		Configuration childConfig = getChildConfiguration(id);
+		
+		if(childConfig!=null){
+			if(childConfig.getPropertyByName(BaseFieldConstant.BF_ID) == null)
+				childConfig.setPropertyByName(BaseFieldConstant.BF_ID, id);
+		}
+		
+		childConfig.setPropertyByName(CheckBoxFieldConstant.CF_GROUPID, getGroupId());
+		
+		checkBoxField.setConfiguration(childConfig);
+		checkBoxField.configure();
+		checkBoxField.create();
+		
+		if(fieldItems==null)
+			fieldItems = new ArrayList<Widget>();
 
-			fieldItems.add(checkBoxField);
+		fieldItems.add(checkBoxField);
+		
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[GroupField] ::Exception in getCheckBoxField method :"+e);
 		}
@@ -404,6 +407,21 @@ public class GroupField extends BaseField implements FieldEventHandler{
 		}
 		return null;
 	}
+	
+	/**
+	 * Method will return the group name .
+	 * @return
+	 */
+	public String getGroupId(){
+		
+		String name = "groupId";
+		if(getConfigurationValue(GroupFieldConstant.GF_ID) != null) {
+			
+			name = (String) getConfigurationValue(GroupFieldConstant.GF_ID);
+		}
+		return name;
+	}
+	
 
 	/****************************************************************************************************/
 	
@@ -464,6 +482,8 @@ public class GroupField extends BaseField implements FieldEventHandler{
 		public static final String GF_LIMIT = "limit";
 		
 		public static final String GF_LIST_OF_ITEMS = "listOfItems";
+		
+		public static final String GF_ID = "groupFieldid";
 		
 	}
 
