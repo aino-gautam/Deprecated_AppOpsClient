@@ -6,11 +6,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.gwtck.client.CKConfig;
-import com.gwtck.client.CKConfig.TOOLBAR_OPTIONS;
-import com.gwtck.client.CKEditor;
-import com.gwtck.client.Toolbar;
-import com.gwtck.client.ToolbarLine;
 
 public class HtmlEditorField extends BaseField implements ValueChangeHandler<String> {
 
@@ -36,9 +31,9 @@ public class HtmlEditorField extends BaseField implements ValueChangeHandler<Str
 	}
 	
 	private String fieldMode;
-	private CKConfig config;
+	//private CKConfig config;
 	private HTML content;
-	private CKEditor editor;
+	//private CKEditor editor;
 	private String fieldConfigMode;
 	private String editedHtmlContent;
 	
@@ -46,7 +41,7 @@ public class HtmlEditorField extends BaseField implements ValueChangeHandler<Str
 		super();
 	}
 	
-	public Toolbar createToolbar() {
+	/*public Toolbar createToolbar() {
 		try {
 			ToolbarLine toolbarLine = new ToolbarLine();
 			TOOLBAR_OPTIONS[] options = { TOOLBAR_OPTIONS.Bold, TOOLBAR_OPTIONS.Italic, TOOLBAR_OPTIONS.Font, TOOLBAR_OPTIONS.FontSize, TOOLBAR_OPTIONS.BulletedList, TOOLBAR_OPTIONS.Link};
@@ -58,13 +53,13 @@ public class HtmlEditorField extends BaseField implements ValueChangeHandler<Str
 			e.printStackTrace();
 		}
 		return null;
-	}
+	}*/
 	
 	@Override
 	public void configure() {
 		super.configure();
 		
-		fieldConfigMode = getFieldConfigMode();
+		/*fieldConfigMode = getFieldConfigMode();
 		if(fieldConfigMode != null) {
 			if(fieldConfigMode.equals(HtmlEditorFieldConstant.FIELD_CONFIG_FULL_MODE)) {
 				config = CKConfig.full;
@@ -94,7 +89,7 @@ public class HtmlEditorField extends BaseField implements ValueChangeHandler<Str
 			int minResizeWidth = getMinResizeWidth();
 			config.setResizeMinWidth(minResizeWidth);
 		}
-		editor = new CKEditor(config);
+		editor = new CKEditor(config);*/
 		//editor.addValueChangeHandler(this);
 	}
 	
@@ -227,13 +222,13 @@ public class HtmlEditorField extends BaseField implements ValueChangeHandler<Str
 	}
 
 	private void createEditModeUI() {
-		if(fieldConfigMode != null) {
+		/*if(fieldConfigMode != null) {
 			if(fieldConfigMode.equals(HtmlEditorFieldConstant.FIELD_CONFIG_CUSTOM_MODE)) {
 				Toolbar toolbar = createToolbar();
 				config.setToolbar(toolbar);
 			}
 		}
-		basePanel.add(editor,DockPanel.CENTER);
+		basePanel.add(editor,DockPanel.CENTER);*/
 	}
 	
 	public void setHtmlContent(String html) {
@@ -252,9 +247,9 @@ public class HtmlEditorField extends BaseField implements ValueChangeHandler<Str
 	
 	public String getEditedContent() {
 		String html = null;
-		if(editor != null) {
+		/*if(editor != null) {
 			html = editor.getHTML();
-		}
+		}*/
 		return html;
 	}
 	
@@ -276,7 +271,7 @@ public class HtmlEditorField extends BaseField implements ValueChangeHandler<Str
 	}
 	
 	public void changeToEditMode() {
-		basePanel.clear();
+		/*basePanel.clear();
 		if(editor == null) {
 			createEditModeUI();
 		} else {
@@ -288,11 +283,21 @@ public class HtmlEditorField extends BaseField implements ValueChangeHandler<Str
 			editor.setHTML(htmlContent);
 		} else {
 			editor.setHTML("");
-		}
+		}*/
 	}
 
 	@Override
 	public void onValueChange(ValueChangeEvent<String> event) {
 		editedHtmlContent = event.getValue();
+	}
+	
+	public void setContentToEditor(String content) {
+		/*try {
+			if(editor != null) {
+				editor.setHTML(content);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}*/
 	}
 }
