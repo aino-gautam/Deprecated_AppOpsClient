@@ -239,6 +239,12 @@ public class BaseField extends Composite implements Field {
 	protected void clear() { }
 	
 	/**
+	 * Method removed registered handlers from field
+	 */
+	
+	protected void removeRegisteredHandlers() { }
+	
+	/**
 	 * Returns the value of the configuration if the configuration is provided.
 	 * @param configKey - The configuration whose value it to be retrieved
 	 * @return
@@ -254,12 +260,12 @@ public class BaseField extends Composite implements Field {
 	 * Returns the id of the field.
 	 * @return
 	 */
-	protected Integer getBaseFieldId() {
-		Integer fieldId = null;
+	protected String getBaseFieldId() {
+		String fieldId = null;
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getBaseFieldId  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_ID) != null) {
-				fieldId = (Integer) getConfigurationValue(BaseFieldConstant.BF_ID);
+				fieldId = (String) getConfigurationValue(BaseFieldConstant.BF_ID);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In getBaseFieldId  method :"+e);
