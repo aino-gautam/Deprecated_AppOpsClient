@@ -18,6 +18,7 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -72,6 +73,9 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	private PasswordTextBox passwordTextBox;
 	private TextArea textArea;
 	private NumericTextbox numericTextbox;
+	private HandlerRegistration keyPressHandler  = null;
+	private HandlerRegistration keyUpHandler  = null;
+	private HandlerRegistration blurHandler  = null;
 	public Logger logger = Logger.getLogger(getClass().getName());
 	public TextField(){
 		
@@ -134,30 +138,30 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 * Method creates the textbox.
 	 */
 	private void createTextBox(){
-		
 		try {
 			logger.log(Level.INFO, "[TextField] ::In createTextBox method ");                                           
-			textBox = new TextBox();
-			textBox.setReadOnly(isReadOnly());
-			if(getBaseFieldPrimCss()!= null)
-				textBox.setStylePrimaryName(getBaseFieldPrimCss());
-			if(getBaseFieldCss() != null)
-				textBox.addStyleName(getBaseFieldCss());
+		textBox = new TextBox();
+		textBox.setReadOnly(isReadOnly());
+		if(getBaseFieldPrimCss()!= null)
+			textBox.setStylePrimaryName(getBaseFieldPrimCss());
+		if(getBaseFieldCss() != null)
+			textBox.addStyleName(getBaseFieldCss());
+		
+		textBox.setMaxLength(getFieldMaxLength());
+		
+		if(getTabIndex()!=null)
+			textBox.setTabIndex(getTabIndex());
+		
+		keyPressHandler = textBox.addKeyPressHandler(this);
+		
+		//In case of simple textbox no validation is required.
+			if(isValidateOnBlur()){
+				blurHandler = textBox.addBlurHandler(this);
+			}
+			if(isValidateOnChange()){
+				keyUpHandler =textBox.addKeyUpHandler(this);
+			}
 			
-			textBox.setMaxLength(getFieldMaxLength());
-			
-			if(getTabIndex()!=null)
-				textBox.setTabIndex(getTabIndex());
-			
-			textBox.addKeyPressHandler(this);
-			
-			//In case of simple textbox no validation is required.
-				if(isValidateOnBlur()){
-					textBox.addBlurHandler(this);
-				}
-				if(isValidateOnChange()){
-					textBox.addKeyUpHandler(this);
-				}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[TextField] ::Exception In createTextBox method "+e);
 			
@@ -199,29 +203,29 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			logger.log(Level.INFO, "[TextField] ::In createPasswordBox method ");
 			passwordTextBox = new PasswordTextBox();
 			passwordTextBox.setReadOnly(isReadOnly());
-			if(getBaseFieldPrimCss()!= null)
+			if (getBaseFieldPrimCss() != null)
 				passwordTextBox.setStylePrimaryName(getBaseFieldPrimCss());
-			if(getBaseFieldCss() != null)
+			if (getBaseFieldCss() != null)
 				passwordTextBox.addStyleName(getBaseFieldCss());
-					
+
 			passwordTextBox.setMaxLength(getFieldMaxLength());
-			if(getTabIndex()!=null)
+			if (getTabIndex() != null)
 				passwordTextBox.setTabIndex(getTabIndex());
-			
-			
+
 			/*** Events fired by passwordTextBox ****/
-			
-			passwordTextBox.addKeyPressHandler(this);
-			
-			if(isValidateOnBlur()){
-				passwordTextBox.addBlurHandler(this);
+
+			keyPressHandler = passwordTextBox.addKeyPressHandler(this);
+
+			if (isValidateOnBlur()) {
+				blurHandler = passwordTextBox.addBlurHandler(this);
 			}
-			if(isValidateOnChange()){
-				passwordTextBox.addKeyUpHandler(this);
+			if (isValidateOnChange()) {
+				keyUpHandler = passwordTextBox.addKeyUpHandler(this);
 			}
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "[TextField] ::Exception In createPasswordBox method "+e);
-			
+			logger.log(Level.SEVERE,
+					"[TextField] ::Exception In createPasswordBox method " + e);
+
 		}
 	}
 	
@@ -230,37 +234,37 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 * handler if isValidateOnChange is set as true in the configuration .
 	 */
 	private void createNumericTextBox(){
-		
 		try {
-			logger.log(Level.INFO, "[TextField] ::In createNumericTextBox method ");
+			logger.log(Level.INFO,
+					"[TextField] ::In createNumericTextBox method ");
 			numericTextbox = new NumericTextbox(this);
 			numericTextbox.setConfiguration(getConfiguration());
 			numericTextbox.setReadOnly(isReadOnly());
-			if(getBaseFieldPrimCss()!= null)
+			if (getBaseFieldPrimCss() != null)
 				numericTextbox.setStylePrimaryName(getBaseFieldPrimCss());
-			if(getBaseFieldCss() != null)
+			if (getBaseFieldCss() != null)
 				numericTextbox.addStyleName(getBaseFieldCss());
-					
+
 			numericTextbox.setMaxLength(getFieldMaxLength());
-			
-					
-			if(getTabIndex()!=null)
+
+			if (getTabIndex() != null)
 				numericTextbox.setTabIndex(getTabIndex());
-			
+
 			/*** Events fired by passwordTextBox ****/
-			
-			numericTextbox.addKeyPressHandler(numericTextbox);
-					
-			if(isValidateOnChange()){
-				numericTextbox.addKeyUpHandler(this);
+
+			keyPressHandler = numericTextbox.addKeyPressHandler(numericTextbox);
+
+			if (isValidateOnChange()) {
+				keyUpHandler = numericTextbox.addKeyUpHandler(this);
 			}
-			
-			numericTextbox.addBlurHandler(this);
+
+			blurHandler = numericTextbox.addBlurHandler(this);
 		} catch (Exception e) {
 
-             logger.log(Level.SEVERE, "[TextField] ::Exception In createNumericTextBox method "+e);
+			logger.log(Level.SEVERE,
+					"[TextField] ::Exception In createNumericTextBox method "
+							+ e);
 		}
-		
 	}
 	
 	/**
@@ -310,6 +314,22 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			logger.log(Level.SEVERE, "[TextField] ::Exception In clear method "+e);
 			
 		}
+	}
+	
+	
+	/**
+	 * Method removed registered handlers from field
+	 */
+	@Override
+	public void removeRegisteredHandlers() {
+		if(keyUpHandler!=null)
+			keyUpHandler.removeHandler();
+		
+		if(blurHandler!=null)
+			blurHandler.removeHandler();
+		
+		if(blurHandler!=null)
+			blurHandler.removeHandler();
 	}
 	
 	/**
@@ -778,7 +798,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 * Method return the event which will be fired when user press enter key.  
 	 * @return
 	 */
-	private Integer getEnterEvent() {
+	public Integer getEnterEvent() {
 		Integer eventType = 0;
 		try {
 			logger.log(Level.INFO, "[TextField] ::In getEnterEvent method ");
@@ -795,7 +815,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 * Method return the event which will be fired when user change some value in field.  
 	 * @return
 	 */
-	private Integer getValueChangedEvent() {
+	public Integer getValueChangedEvent() {
 		Integer eventType = 0;
 		try {
 			logger.log(Level.INFO, "[TextField] ::In getValueChangedEvent method ");
