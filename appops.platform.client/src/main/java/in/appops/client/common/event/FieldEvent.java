@@ -37,6 +37,13 @@ public class FieldEvent extends GwtEvent<FieldEventHandler> {
 	public static final int UPLOADED_IMGCLICKED = 26;
 	public static final int PREVIEW = 27;
 	public static final int PROPERTY_VALUE_CHANGED = 28;
+	public static final int ADD_NEW_PROPERTY = 29;
+	public static final int PRIMARY_KEY_ADDED = 30;
+	public static final int FOREIGN_KEY_ADDED = 31;
+	public static final int FOREIGN_KEY_REMOVED = 32;
+	public static final int ENTERED_HIT = 33;
+	
+	
 
 	
 	public static Type<FieldEventHandler> TYPE = new Type<FieldEventHandler>();
