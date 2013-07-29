@@ -8,6 +8,7 @@ import in.appops.client.common.event.FieldEvent;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DockPanel;
 
@@ -15,6 +16,10 @@ public class CheckboxField extends BaseField implements ValueChangeHandler{
 
 	private CheckBox checkBox;
 	public Logger logger = Logger.getLogger(getClass().getName());
+	private HandlerRegistration changeHandler  =  null;
+	
+	/*******************  Fields ID *****************************/
+	private static String MULTI_SELECTION = "multiSelection";
 
 	public CheckboxField(){
 		checkBox = new CheckBox();
@@ -23,8 +28,9 @@ public class CheckboxField extends BaseField implements ValueChangeHandler{
 	@Override
 	public void create() {
 		logger.log(Level.INFO, "[CheckboxField] ::In create method ");
-		checkBox.addValueChangeHandler(this);
-		basePanel.add(checkBox,DockPanel.CENTER);
+		changeHandler = checkBox.addValueChangeHandler(this);
+		
+		getBasePanel().add(checkBox,DockPanel.CENTER);
 		
 	}
 	
@@ -68,51 +74,35 @@ public class CheckboxField extends BaseField implements ValueChangeHandler{
 	}
 
 	/**
-	 * Method will return the group name in which the checkbox will be added.
+	 * Method will return the group ID in which the checkbox will be added.
 	 * @return
 	 */
-	public String getGroupName(){
+	public String getGroupId(){
 		
-		String name = "multiSelection";
+		String id = MULTI_SELECTION;
 		if(getConfigurationValue(CheckBoxFieldConstant.CF_GROUPID) != null) {
 			
-			name = (String) getConfigurationValue(CheckBoxFieldConstant.CF_GROUPID);
+			id = (String) getConfigurationValue(CheckBoxFieldConstant.CF_GROUPID);
 		}
-		return name;
+		return id;
 	}
 	
 	/**
-	 * Method return the event that will be fired when checkbox is selected.  
-	 * @return
+	 * Method removed registered handlers from field
 	 */
-	private Integer getSelectionEvent() {
-		Integer eventType = FieldEvent.CHECKBOX_SELECT;
-		if (getConfigurationValue(CheckBoxFieldConstant.CF_SELECT_EVENT) != null) {
-			eventType = (Integer) getConfigurationValue(CheckBoxFieldConstant.CF_SELECT_EVENT);
-		}
-		return eventType;
+	@Override
+	public void removeRegisteredHandlers() {
+		
+		if(changeHandler!=null)
+			changeHandler.removeHandler();
 	}
-	
-	
-	/**
-	 * Method return the event that will be fired when checkbox is deselected.  
-	 * @return
-	 */
-	private Integer getDeselectionEvent() {
-		Integer eventType = FieldEvent.CHECKBOX_DESELECT;
-		if (getConfigurationValue(CheckBoxFieldConstant.CF_DESELECT_EVENT) != null) {
-			eventType = (Integer) getConfigurationValue(CheckBoxFieldConstant.CF_DESELECT_EVENT);
-		}
-		return eventType;
-	}
-	
 
 	@Override
 	public void reset() {
 		logger.log(Level.INFO, "[CheckboxField] ::In reset method ");
 		this.setValue(Boolean.valueOf(getFieldValue()));
 	}
-
+	
 
 	@Override
 	public void setValue(Object value) {
@@ -144,9 +134,15 @@ public class CheckboxField extends BaseField implements ValueChangeHandler{
 				checkBox.setName(getDisplayText());
 
 			if (getBaseFieldPrimCss() != null)
-				this.setStylePrimaryName(getBaseFieldPrimCss());
-			if (getBaseFieldCss() != null)
-				this.addStyleName(getBaseFieldCss());
+				checkBox.setStylePrimaryName(getBaseFieldPrimCss());
+			if (getBaseFieldDependentCss() != null)
+				checkBox.addStyleName(getBaseFieldDependentCss());
+			
+			if (getBasePanelPrimCss() != null)
+				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
+			if (getBasePanelDependentCss() != null)
+				getBasePanel().addStyleName(getBasePanelDependentCss());
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[CheckboxField] ::Exception in configure method :" + e);
 		}
@@ -159,11 +155,12 @@ public class CheckboxField extends BaseField implements ValueChangeHandler{
 		boolean checked = checkBox.getValue();
 		FieldEvent fieldEvent = new FieldEvent();
 		if(checked)
-			fieldEvent.setEventType(getSelectionEvent());
+			fieldEvent.setEventType(FieldEvent.CHECKBOX_SELECT);
 		else
-			fieldEvent.setEventType(getDeselectionEvent());
+			fieldEvent.setEventType(FieldEvent.CHECKBOX_DESELECT);
 		
 		fieldEvent.setEventData(checkBox.getName());
+		fieldEvent.setEventSource(this);
 		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 		
 	}
@@ -175,10 +172,6 @@ public class CheckboxField extends BaseField implements ValueChangeHandler{
 		public static final String CF_CHECKED = "isChecked";
 		
 		public static final String CF_GROUPID = "groupId";
-		
-		public static final String CF_SELECT_EVENT = "selectionEvent";
-		
-		public static final String CF_DESELECT_EVENT = "deselectEvent";
 		
 	}
 	
