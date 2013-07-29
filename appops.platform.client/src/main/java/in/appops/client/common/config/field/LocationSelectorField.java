@@ -1,8 +1,5 @@
 package in.appops.client.common.config.field;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
 import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
@@ -11,6 +8,9 @@ import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.platform.core.shared.Configuration;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.maps.client.base.LatLng;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -41,9 +41,6 @@ configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_SEARCHBOX_P
 configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_SEARCHBOX_DCLS, "fadeInRight");<br>
 configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_ERRPOS, TextFieldConstant.BF_ERRINLINE);<br>
 configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_INVALID_LOCNMSG, "Invalid location");<br>
-configuration.setPropertyByName(LocationSelectorFieldConstant.SEARCHFD_EVENT, FieldEvent.WORDENTERED);<br>
-configuration.setPropertyByName(LocationSelectorFieldConstant.DONEBTN_EVENT, FieldEvent.LOCATION_CHANGED);<br>
-configuration.setPropertyByName(LocationSelectorFieldConstant.LOCN_IMG_EVENT, FieldEvent.SHOW_MAP_IN_POPUP);<br>
 locationField.setConfiguration(configuration);<br>
 locationField.configure();<br>
 locationField.create();<br>
@@ -56,6 +53,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 	private ImageField locationIconField ;
 	private PopupPanel popupPanelForMap;
 	private Logger logger = Logger.getLogger(getClass().getName());
+	private static String SHOWMAP_IMAGEID = "showMapInPopup";
+	private static String CHANGE_LOCATION = "changeLocation";
+	private static String SEARCH_LOCATION = "searchLocation";
 
 	public LocationSelectorField(){
 		
@@ -121,8 +121,8 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 				basePanel.setStylePrimaryName(getBaseFieldPrimCss());
 			
 			
-			if(getBaseFieldCss()!=null)
-				basePanel.setStylePrimaryName(getBaseFieldCss());
+			if(getBaseFieldDependentCss()!=null)
+				basePanel.setStylePrimaryName(getBaseFieldDependentCss());
 			
 
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
@@ -397,66 +397,6 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 	}
 	
 	/**
-	 * Method returns the event that will be fired when user clicks on the location image;
-	 * @return
-	 */
-	private Integer getLocationImageClickEvent() {
-		
-		Integer eventType = null;
-		try {
-			logger.log(Level.INFO,"[LocationSelectorField]:: In getLocationImageClickEvent  method ");
-			if(getConfigurationValue(LocationSelectorFieldConstant.LOCN_IMG_EVENT) != null) {
-				
-				eventType = (Integer) getConfigurationValue(LocationSelectorFieldConstant.LOCN_IMG_EVENT);
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In getLocationImageClickEvent  method :"+e);
-
-		}
-		return eventType;
-	}
-	
-	/**
-	 * Method returns the event that will be fired when user clicks on the location image;
-	 * @return
-	 */
-	private Integer getSearchFieldEnteredEvent() {
-		
-		Integer eventType = null;
-		try {
-			logger.log(Level.INFO,"[LocationSelectorField]:: In getSearchFieldEnteredEvent  method ");
-			if(getConfigurationValue(LocationSelectorFieldConstant.SEARCHFD_EVENT) != null) {
-				
-				eventType = (Integer) getConfigurationValue(LocationSelectorFieldConstant.SEARCHFD_EVENT);
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In getSearchFieldEnteredEvent  method :"+e);
-
-		}
-		return eventType;
-	}
-	
-	/**
-	 * Method returns the event that will be fired when user clicks on the location image;
-	 * @return
-	 */
-	private Integer getDoneBtnEvent() {
-		
-		Integer event = null;
-		try {
-			logger.log(Level.INFO,"[LocationSelectorField]:: In getDoneBtnEvent  method ");
-			if(getConfigurationValue(LocationSelectorFieldConstant.DONEBTN_EVENT) != null) {
-				
-				event = (Integer) getConfigurationValue(LocationSelectorFieldConstant.DONEBTN_EVENT);
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In getDoneBtnEvent  method :"+e);
-
-		}
-		return event;
-	}
-	
-	/**
 	 * Method returns the error position for the search text field ;
 	 * @return
 	 */
@@ -543,9 +483,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 			configuration.setPropertyByName(TextFieldConstant.TF_TYPE, TextFieldConstant.TFTYPE_TXTBOX);
 			configuration.setPropertyByName(TextFieldConstant.BF_PCLS, getSearchFieldPrimaryCss());
 			configuration.setPropertyByName(TextFieldConstant.BF_DCLS, getSearchFieldDependentCss());
+			configuration.setPropertyByName(TextFieldConstant.BF_ID,SEARCH_LOCATION );
 			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
 			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter location");
-			configuration.setPropertyByName(TextFieldConstant.TF_ENTER_EVENT, getSearchFieldEnteredEvent());
 			configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, getSearchFieldErrorPos());
 			configuration.setPropertyByName(TextFieldConstant.BF_INVLDMSG, getSearchInvalidMsg());
 		} catch (Exception e) {
@@ -564,8 +504,8 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		try {
 			logger.log(Level.INFO,"[LocationSelectorField]:: In getImageFieldConfiguration  method ");
 			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, getImageBlobForMapPopup());
-			configuration.setPropertyByName(ImageFieldConstant.IMGFD_CLICK_EVENT, getLocationImageClickEvent());
 			configuration.setPropertyByName(ImageFieldConstant.BF_PCLS,getLocationImageCss());
+			configuration.setPropertyByName(ImageFieldConstant.BF_ID,SHOWMAP_IMAGEID);
 			configuration.setPropertyByName(ImageFieldConstant.IMGFD_TITLE, "Click here...");
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In getImageFieldConfiguration  method :"+e);
@@ -585,8 +525,8 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 			logger.log(Level.INFO,"[LocationSelectorField]:: In getDoneBtnConfiguration  method ");
 			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Done");
 			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,getDoneBtnCss());
-			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_CLICK_EVENT,getDoneBtnEvent());
 			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_TITLE, "Change location");
+			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, CHANGE_LOCATION);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In getDoneBtnConfiguration  method :"+e);
 
@@ -616,10 +556,17 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		try {
 			logger.log(Level.INFO,"[LocationSelectorField]:: In onFieldEvent  method ");
 			int eventType = event.getEventType();
+			Object eventSource = event.getEventSource();
+			
 			switch (eventType) {
-			case FieldEvent.SHOW_MAP_IN_POPUP: {
-				showMapInPopupPanel();
-				break;
+			case FieldEvent.CLICKED: {
+				if(eventSource instanceof ImageField){
+					ImageField imgField = (ImageField) eventSource;
+					if(imgField.getBaseFieldId().equals(SHOWMAP_IMAGEID)){
+						showMapInPopupPanel();
+						break;
+					}
+				}
 			}case FieldEvent.CHANGE_LOCATION:{
 				locationLabelField.setValue(event.getEventData().toString());
 				popupPanelForMap.hide();
@@ -681,15 +628,6 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		/** Specifies the location image css **/
 		public static final String LOCNFD_LOCATION_IMG_CSS = "locationImageCss";
 		
-		/** Specifies the event which will be fired on click of location image **/
-		public static final String LOCN_IMG_EVENT = "locationImageEvent";
-		
-		/** Specifies the event which will be fired when user enters location to search **/
-		public static final String SEARCHFD_EVENT = "searchFieldEvent";
-		
-		/** Specifies the event which will be fired when user clicks on done button **/
-		public static final String DONEBTN_EVENT = "doneBtnEvent";
-
 		public static final String LOCNFD_ERRPOS = "errorPosForInvalidLocation";
 
 		public static final String LOCNFD_INVALID_LOCNMSG = "invalidMsg";
