@@ -231,8 +231,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 				keyUpHandler = passwordTextBox.addKeyUpHandler(this);
 			}
 		} catch (Exception e) {
-			logger.log(Level.SEVERE,
-					"[TextField] ::Exception In createPasswordBox method " + e);
+			logger.log(Level.SEVERE,"[TextField] ::Exception In createPasswordBox method " + e);
 
 		}
 	}
@@ -269,9 +268,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			blurHandler = numericTextbox.addBlurHandler(this);
 		} catch (Exception e) {
 
-			logger.log(Level.SEVERE,
-					"[TextField] ::Exception In createNumericTextBox method "
-							+ e);
+			logger.log(Level.SEVERE,"[TextField] ::Exception In createNumericTextBox method "+ e);
 		}
 	}
 	
@@ -326,7 +323,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	
 	
 	/**
-	 * Method removed registered handlers from field
+	 * Overriden method from BaseField remove registered handlers from the field.
 	 */
 	@Override
 	public void removeRegisteredHandlers() {
@@ -770,6 +767,9 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		return invalidEmailText;
 	}
 
+	/**
+	 * Method sets the focus to the field.
+	 */
 	private void setFocus(){
 		
 		try {
@@ -814,10 +814,11 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 				if(isValidateField()){
 					if(validate())
 						setValue(getValue());
+					setFocus();
 				}else{
 					setValue(getValue());
 				}
-				setFocus();
+				
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[TextField] ::Exception In onKeyUp method "+e);
@@ -854,6 +855,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			fieldEvent.setEventSource(this);
 			fieldEvent.setEventData(getValue());
 			
+			/** Scheduler is added because when user press backspace ,tab and delete keyPressEvent is not fired. **/ 
 			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 				@Override
 				public void execute() {
@@ -865,7 +867,6 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 						}
 					} else {
 						setValue(getValue());
-						setFocus();
 					}
 					
 					if(isDirty()){
