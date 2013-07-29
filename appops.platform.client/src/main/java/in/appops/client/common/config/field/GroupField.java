@@ -260,8 +260,8 @@ public class GroupField extends BaseField implements FieldEventHandler{
 			logger.log(Level.INFO, "[GroupField] ::In configure method ");
 			if(getBaseFieldPrimCss()!=null)
 				flexTable.setStylePrimaryName(getBaseFieldPrimCss());		
-			if(getBaseFieldCss()!=null)
-				flexTable.setStylePrimaryName(getBaseFieldCss());
+			if(getBaseFieldDependentCss()!=null)
+				flexTable.setStylePrimaryName(getBaseFieldDependentCss());
 			
 			String groupFieldType = getGroupFieldType();
 			
