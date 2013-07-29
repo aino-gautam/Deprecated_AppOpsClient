@@ -21,12 +21,11 @@ import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.user.client.ui.TextBox;
 
 public class NumericTextbox extends TextBox implements KeyPressHandler {
-	
 		
 	private Configuration configuration ;
-	
 	private TextField textField ;
 	private Logger logger = Logger.getLogger(getClass().getName());
+	
 	public NumericTextbox() {
 		
 	}
@@ -284,49 +283,51 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 
 	@Override
 	public void onKeyPress(KeyPressEvent event) {
-		final int charCode= event.getUnicodeCharCode();
+		
+		final int charCode = event.getUnicodeCharCode();
+
 		try {
 			logger.log(Level.INFO, "[NumericTextbox] ::In onKeyPress method ");
-		if(!Character.isDigit(event.getCharCode()) && event.getCharCode() != '-' && event.getCharCode() != '.') {
-			event.preventDefault();
-			return;
-		}
-		if(getMin() > 0 && event.getCharCode() == '-') {
-			event.preventDefault();
-			return;
-		}
-		if(!isAllowDecimal() && event.getCharCode() == '.') {
-			event.preventDefault();
-			return;
-		}
-		
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {    
-			  @Override
-			  public void execute() {
-				  
-				  if(textField.isValidateOnChange()){
-					  textField.validate();
-				  }
-				  
-				  if(textField.isDirty()){
+			if (!Character.isDigit(event.getCharCode())&& event.getCharCode() != '-' && event.getCharCode() != '.') {
+				event.preventDefault();
+				return;
+			}
+			if (getMin() > 0 && event.getCharCode() == '-') {
+				event.preventDefault();
+				return;
+			}
+			if (!isAllowDecimal() && event.getCharCode() == '.') {
+				event.preventDefault();
+				return;
+			}
+
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+				@Override
+				public void execute() {
+
+					if (textField.isValidateOnChange()) {
+						textField.validate();
+					}
+
+					if (textField.isDirty()) {
 						if (charCode == KeyCodes.KEY_ENTER) {
-							if (textField.getEnterEvent() != 0) {
-								FieldEvent fieldEvent = new FieldEvent();
-								fieldEvent.setEventType(textField.getEnterEvent());
-								fieldEvent.setEventData(getValue());
-								AppUtils.EVENT_BUS.fireEvent(fieldEvent);
-							}
-						}else if (textField.getValueChangedEvent() != 0) {
 							FieldEvent fieldEvent = new FieldEvent();
-							fieldEvent.setEventType(textField.getValueChangedEvent());
+							fieldEvent.setEventSource(textField);
+							fieldEvent.setEventType(FieldEvent.ENTERED_HIT);
+							fieldEvent.setEventData(getValue());
+							AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+						} else {
+							FieldEvent fieldEvent = new FieldEvent();
+							fieldEvent.setEventType(FieldEvent.EDITINPROGRESS);
+							fieldEvent.setEventSource(textField);
 							fieldEvent.setEventData(getValue());
 							AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 						}
+					}
 				}
-		}
-		});
+			});
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "[NumericTextbox] ::Exception in onKeyPress method :"+e);
+			logger.log(Level.SEVERE,"[NumericTextbox] ::Exception in onKeyPress method :" + e);
 		}
 	}
 }
