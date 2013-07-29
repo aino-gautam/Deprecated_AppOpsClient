@@ -8,6 +8,7 @@ public class FieldEvent extends GwtEvent<FieldEventHandler> {
 
 	protected int eventType;
 	protected Object eventData = null;
+	protected Object eventSource = null;
 	
 	public static final int EDITINITIATED = 1;
 	public static final int EDITINPROGRESS = 2;
@@ -29,22 +30,11 @@ public class FieldEvent extends GwtEvent<FieldEventHandler> {
 	public static final int SUGGESTION_SELECTED = 18;
 	public static final int SPN_SPINUP = 19;
 	public static final int SPN_SPINDOWN = 20;
-	public static final int SHOW_MAP_IN_POPUP = 21;
 	public static final int LOCATION_CHANGED = 22;
 	public static final int CHANGE_LOCATION = 23;
 	public static final int RADIOBUTTON_SELECTED = 24;
-	public static final int MEDIA_UPLOAD = 25;
-	public static final int UPLOADED_IMGCLICKED = 26;
-	public static final int PREVIEW = 27;
-	public static final int PROPERTY_VALUE_CHANGED = 28;
-	public static final int ADD_NEW_PROPERTY = 29;
-	public static final int PRIMARY_KEY_ADDED = 30;
-	public static final int FOREIGN_KEY_ADDED = 31;
-	public static final int FOREIGN_KEY_REMOVED = 32;
 	public static final int ENTERED_HIT = 33;
-	
-	
-
+	public static final int CLICKED = 34;
 	
 	public static Type<FieldEventHandler> TYPE = new Type<FieldEventHandler>();
 	
@@ -83,6 +73,14 @@ public class FieldEvent extends GwtEvent<FieldEventHandler> {
 	
 	public void setEventData(Object eventData) {
 		this.eventData = eventData;
+	}
+
+	public Object getEventSource() {
+		return eventSource;
+	}
+
+	public void setEventSource(Object eventSource) {
+		this.eventSource = eventSource;
 	}
 
 }
