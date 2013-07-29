@@ -28,7 +28,6 @@ Configuration configuration = new Configuration();<br>
 configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Configure");<br>
 configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,"appops-Button");<br>
 configuration.setPropertyByName(ButtonFieldConstant.BTNFD_TITLE, "Configurable Button");<br>
-configuration.setPropertyByName(ButtonFieldConstant.BTNFD_CLICK_EVENT,FieldEvent.LOCATION_CHANGED);<br>
 btnField.setConfiguration(conf);<br>
 btnField.configure();<br>
 btnField.create();<br>
@@ -52,9 +51,7 @@ public class ButtonField extends BaseField implements ClickHandler{
 	public void create(){
 		
 		try {
-			if(getBtnClickEvent()!=0)
-				clickHandler = button.addClickHandler(this);
-			
+			clickHandler = button.addClickHandler(this);
 			getBasePanel().add(button,DockPanel.CENTER);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ButtonField]::Exception In create  method :"+e);
@@ -86,8 +83,13 @@ public class ButtonField extends BaseField implements ClickHandler{
 			
 			if(getBaseFieldPrimCss()!= null)
 				button.setStylePrimaryName(getBaseFieldPrimCss());
-			if(getBaseFieldCss() != null)
-				button.addStyleName(getBaseFieldCss());
+			if(getBaseFieldDependentCss() != null)
+				button.addStyleName(getBaseFieldDependentCss());
+			
+			if (getBasePanelPrimCss() != null)
+				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
+			if (getBasePanelDependentCss() != null)
+				getBasePanel().addStyleName(getBasePanelDependentCss());
 			
 			button.setEnabled(isEnabled());
 		} catch (Exception e) {
@@ -194,34 +196,16 @@ public class ButtonField extends BaseField implements ClickHandler{
 		}
 		return btnTitle;
 	}
-	
-	/**
-	 * Method return the button field event type.  
-	 * @return
-	 */
-	private Integer getBtnClickEvent() {
-		Integer eventType = 0;
-		try {
-			logger.log(Level.INFO,"[ButtonField]:: In getBtnClickEvent  method ");
-			if (getConfigurationValue(ButtonFieldConstant.BTNFD_CLICK_EVENT) != null) {
-				eventType = (Integer) getConfigurationValue(ButtonFieldConstant.BTNFD_CLICK_EVENT);
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[ButtonField]::Exception In getBtnClickEvent  method :"+e);
-		}
-		return eventType;
-	}
-	
+		
 	/**************************   *******************************/
 	
 	@Override
 	public void onClick(ClickEvent event) {
-		
 		try {
 			logger.log(Level.INFO,"[ButtonField]:: In onClick  method ");
-			int eventType = getBtnClickEvent();
 			FieldEvent fieldEvent = new FieldEvent();
-			fieldEvent.setEventType(eventType);
+			fieldEvent.setEventSource(this);
+			fieldEvent.setEventType(FieldEvent.CLICKED);
 			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ButtonField]::Exception In onClick  method :"+e);
