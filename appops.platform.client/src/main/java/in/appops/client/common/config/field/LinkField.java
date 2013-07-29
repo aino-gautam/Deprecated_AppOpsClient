@@ -9,6 +9,7 @@ import in.appops.client.common.event.FieldEvent;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -41,6 +42,7 @@ public class LinkField extends BaseField implements ClickHandler{
 	private Anchor anchor;
 	private Hyperlink hyperLink;
 	private Logger logger = Logger.getLogger(getClass().getName());
+	private HandlerRegistration clickHandler  =  null;
 
 	public LinkField(){
 
@@ -83,8 +85,7 @@ public class LinkField extends BaseField implements ClickHandler{
 	@Override
 	public void configure() {
 		try {
-			if (getLinkType().equalsIgnoreCase(
-					LinkFieldConstant.LNKTYPE_HYPERLINK)) {
+			if (getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)) {
 				hyperLink = new Hyperlink();
 				hyperLink.setText(getDisplayText());
 
@@ -98,22 +99,23 @@ public class LinkField extends BaseField implements ClickHandler{
 				if (getTargetFrame() != null)
 					anchor.setTarget(getTargetFrame());
 
-				if (getLinkClickEvent() != 0)
-					anchor.addClickHandler(this);
+				clickHandler = anchor.addClickHandler(this);
 			}
 
 			if (getBaseFieldPrimCss() != null)
 				getWidget().setStylePrimaryName(getBaseFieldPrimCss());
-			if (getBaseFieldCss() != null)
-				getWidget().addStyleName(getBaseFieldCss());
+			if (getBaseFieldDependentCss() != null)
+				getWidget().addStyleName(getBaseFieldDependentCss());
 			if (getLinkTitle() != null)
 				getWidget().setTitle(getLinkTitle());
 
-			if (getLinkFieldBasePanelCss() != null)
-				getBasePanel().setStylePrimaryName(getLinkFieldBasePanelCss());
+			if (getBasePanelPrimCss() != null)
+				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
+			if (getBasePanelDependentCss() != null)
+				getBasePanel().addStyleName(getBasePanelDependentCss());
+			
 		} catch (Exception e) {
-			logger.log(Level.SEVERE,
-					"[LinkField] ::Exception in configure method :" + e);
+			logger.log(Level.SEVERE,"[LinkField] ::Exception in configure method :" + e);
 		}
 	}
 	
@@ -183,20 +185,17 @@ public class LinkField extends BaseField implements ClickHandler{
 		
 	}
 	
+	/**
+	 * Method removed registered handlers from field
+	 */
+	@Override
+	public void removeRegisteredHandlers() {
+		
+		if(clickHandler!=null)
+			clickHandler.removeHandler();
+	}
 	
 	/************************************************/
-	
-	/**
-	 * Method returns linkfield base panel css.
-	 * @return
-	 */
-	private String getLinkFieldBasePanelCss() {
-		String basePanelCss = null;
-		if(getConfigurationValue(LinkFieldConstant.LNK_BASEPANEL_CSS) != null) {
-			basePanelCss = getConfigurationValue(LinkFieldConstant.LNK_BASEPANEL_CSS).toString();
-		}
-		return basePanelCss;
-	}
 	
 	/**
 	 * Method return the type of the link to use . Defaults to anchor.  
@@ -300,23 +299,6 @@ public class LinkField extends BaseField implements ClickHandler{
 		return targetFrm;
 	}
 	
-	/**
-	 * Method return the link field event type.  
-	 * @return
-	 */
-	private Integer getLinkClickEvent() {
-		Integer eventType = 0;
-		try {
-			logger.log(Level.INFO, "[LinkField] ::In getLinkClickEvent method ");
-			if (getConfigurationValue(LinkFieldConstant.LNK_CLICK_EVENT) != null) {
-				eventType = (Integer) getConfigurationValue(LinkFieldConstant.LNK_CLICK_EVENT);
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "[LinkField] ::Exception in getLinkClickEvent method :"+e);
-		}
-		return eventType;
-	}
-	
 	
 	/*********************************************************************/
 	
@@ -330,11 +312,12 @@ public class LinkField extends BaseField implements ClickHandler{
 	
 	@Override
 	public void onClick(ClickEvent event) {
+		
 		try {
 			logger.log(Level.INFO, "[LinkField] ::In onClick method ");
-			int eventType = getLinkClickEvent();
 			FieldEvent fieldEvent = new FieldEvent();
-			fieldEvent.setEventType(eventType);
+			fieldEvent.setEventType(FieldEvent.CLICKED);
+			fieldEvent.setEventSource(this);
 			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[LinkField] ::Exception in onClick method :"+e);
@@ -364,12 +347,6 @@ public class LinkField extends BaseField implements ClickHandler{
 		
 		/** Specifies the target frame for anchor **/
 		public static final String LNK_TARGET_FRAME = "targetFrame";
-		
-		/** Specifies the event on link click  **/
-		public static final String LNK_CLICK_EVENT = "clickEvent";
-		
-		/**Label field base panel css.**/
-		public static final String LNK_BASEPANEL_CSS = "linkfieldBasePanelcss";
 		
 	}
 	
