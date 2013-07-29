@@ -114,14 +114,17 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 
 			if (getBaseFieldPrimCss() != null)
 				listBox.setStylePrimaryName(getBaseFieldPrimCss());
-			if (getBaseFieldCss() != null)
-				listBox.addStyleName(getBaseFieldCss());
+			if (getBaseFieldDependentCss() != null)
+				listBox.addStyleName(getBaseFieldDependentCss());
+			
+			if (getBasePanelPrimCss() != null)
+				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
+			if (getBasePanelDependentCss() != null)
+				getBasePanel().addStyleName(getBasePanelDependentCss());
 
-			if (getValueChangeEvent() != 0)
 				selectionHandler = listBox.addChangeHandler(this);
 		} catch (Exception e) {
-			logger.log(Level.SEVERE,
-					"[ListBoxField]::Exception In configure  method :" + e);
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In configure  method :" + e);
 		}
 	}
 	
@@ -288,23 +291,6 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	}
 	
 	/**
-	 * Method return the event that will be fired when listbox value changes.  
-	 * @return
-	 */
-	private Integer getValueChangeEvent() {
-		Integer eventType = 0;
-		try {
-			logger.log(Level.INFO,"[ListBoxField]:: In getValueChangeEvent  method ");
-			if (getConfigurationValue(ListBoxFieldConstant.LSTFD_CHANGEEVENT) != null) {
-				eventType = (Integer) getConfigurationValue(ListBoxFieldConstant.LSTFD_CHANGEEVENT);
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getValueChangeEvent  method :"+e);
-		}
-		return eventType;
-	}
-	
-	/**
 	 * Method returns the selected text for listbox;
 	 * @return
 	 */
@@ -331,10 +317,7 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 			logger.log(Level.INFO,"[ListBoxField]:: In populateEntityList  method ");
 			if(nameVsEntity==null)
 				nameVsEntity = new HashMap<String, Entity>();
-			
-			String defaultValue = getDefaultValueName();
-			listBox.addItem(defaultValue);
-			
+						
 			for(Entity entity : entityList){
 					String item = entity.getPropertyByName(getEntPropToShow());
 					nameVsEntity.put(item, entity);
@@ -433,7 +416,6 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	@Override
 	public void onChange(ChangeEvent event) {
 		
-		
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In onChange  method ");
 			boolean fireEvent = true;
@@ -452,11 +434,12 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 				String selectedtem = getValue().toString();
 				SelectedItem selectedEntity = new SelectedItem();
 				selectedEntity.setItemString(selectedtem);
-				if(getListQueryName()!=null){
+				if(nameVsEntity!=null){
 					selectedEntity.setAssociatedEntity(nameVsEntity.get(selectedtem));
 				}
+				fieldEvent.setEventSource(this);
 				fieldEvent.setEventData(selectedEntity);
-				fieldEvent.setEventType(getValueChangeEvent());
+				fieldEvent.setEventType(FieldEvent.VALUECHANGED);
 				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 			}
 		} catch (Exception e) {
@@ -493,22 +476,6 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		}
 	}
 	
-	private String getDefaultValueName() {
-		String defaultName = null;
-		try {
-			logger.log(Level.INFO,"[ListBoxField]:: In getDefaultValueName  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LISTBOX_DEFAULT_VALUE) != null) {
-				String value =(String) getConfigurationValue(ListBoxFieldConstant.LISTBOX_DEFAULT_VALUE);
-				defaultName = "--" + value + "--";
-			} else {
-				defaultName = "--Select--";
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getDefaultValueName  method :"+e);
-		}
-		return defaultName;
-	}
-	
 	public interface ListBoxFieldConstant extends BaseFieldConstant{
 		
 		/** Specifies No of list items should be visible in the listbox. **/
@@ -528,10 +495,6 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		public static final String LSTFD_QUERY_RESTRICTION = "queryRestriction";
 		
 		public static final String LSTFD_SELECTED_TXT = "defaultSelectedText";
-		
-		public static final String LSTFD_CHANGEEVENT = "changeEvent";
-		
-		public static final String LISTBOX_DEFAULT_VALUE = "listboxDefaultValue";
 		
 	}
 
