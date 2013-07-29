@@ -139,6 +139,12 @@ public class BaseField extends Composite implements Field {
 		/** Set the fields valid field msg css class **/
 		public static final String BF_VALID_FIELD_MSGCLS = "validFieldMsgCls";
 		
+		/** Style class primary for basepanel on which field is added . **/
+		public static final String BF_BASEPANEL_PCLS = "basePanelPrimaryCss";
+		
+		/** Style class dependent for basepanel on which field is added . **/
+		public static final String BF_BASEPANEL_DCLS = "basePanelDependentCss";
+		
 		String BF_BINDPROP = "bindProperty";
 		String BF_VISIBLE = "visible";
 
@@ -260,7 +266,7 @@ public class BaseField extends Composite implements Field {
 	 * Returns the id of the field.
 	 * @return
 	 */
-	protected String getBaseFieldId() {
+	public String getBaseFieldId() {
 		String fieldId = null;
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getBaseFieldId  method ");
@@ -295,23 +301,63 @@ public class BaseField extends Composite implements Field {
 	
 
 	/**
-	 * Returns the dependent style to be applied to the spinner field.
+	 * Returns the dependent style to be applied to the field.
 	 * If the style is not provided through configuration default is returned
 	 * @return
 	 */
-	protected String getBaseFieldCss() {
+	protected String getBaseFieldDependentCss() {
 		String depCss = null;
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getBaseFieldCss  method ");
+			logger.log(Level.INFO,"[BaseField]:: In getBaseFieldDependentCss  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_DCLS) != null) {
 				depCss = getConfigurationValue(BaseFieldConstant.BF_DCLS).toString();
 			}
 		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[BaseField]::Exception In getBaseFieldCss  method :"+e);
+			logger.log(Level.SEVERE,"[BaseField]::Exception In getBaseFieldDependentCss  method :"+e);
 
 		}
 		return depCss;
 	}
+	
+	/**
+	 * Returns the primary style to be applied to the base field basepanel.
+	 * If the style is not provided through configuration default is returned
+	 * @return
+	 */
+	protected String getBasePanelPrimCss() {
+		String primaryCss = null;
+		try {
+			logger.log(Level.INFO,"[BaseField]:: In getBasePanelPrimCss  method ");
+			if(getConfigurationValue(BaseFieldConstant.BF_BASEPANEL_PCLS) != null) {
+				primaryCss = getConfigurationValue(BaseFieldConstant.BF_BASEPANEL_PCLS).toString();
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[BaseField]::Exception In getBasePanelPrimCss  method :"+e);
+
+		}
+		return primaryCss;
+	}
+	
+
+	/**
+	 * Returns the dependent style to be applied to the field basepanel.
+	 * If the style is not provided through configuration default is returned
+	 * @return
+	 */
+	protected String getBasePanelDependentCss() {
+		String depCss = null;
+		try {
+			logger.log(Level.INFO,"[BaseField]:: In getBasePanelDependentCss  method ");
+			if(getConfigurationValue(BaseFieldConstant.BF_BASEPANEL_DCLS) != null) {
+				depCss = getConfigurationValue(BaseFieldConstant.BF_BASEPANEL_DCLS).toString();
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[BaseField]::Exception In getBasePanelDependentCss  method :"+e);
+
+		}
+		return depCss;
+	}
+	
 	
 	/**
 	 * Returns the default value to be set to the field, which is provided through configuration.
@@ -728,7 +774,7 @@ public class BaseField extends Composite implements Field {
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In configure  method ");
 			basePanel.setStylePrimaryName(getBaseFieldPrimCss());
-			basePanel.addStyleName(getBaseFieldCss());
+			basePanel.addStyleName(getBaseFieldDependentCss());
 			basePanel.setVisible(isFieldVisible());
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In configure  method :"+e);
