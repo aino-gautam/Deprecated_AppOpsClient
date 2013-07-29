@@ -104,7 +104,7 @@ public class HtmlEditorField extends BaseField implements ValueChangeHandler<Str
 	}
 
 	protected String getBaseFieldCss() {
-		String depCss = super.getBaseFieldCss();
+		String depCss = super.getBaseFieldDependentCss();
 		if(depCss == null) {
 			return "appops-HtmlEditorFieldDependent";
 		}	
