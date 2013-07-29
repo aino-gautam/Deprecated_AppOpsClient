@@ -56,8 +56,8 @@ public class ActionField extends BaseField implements ClickHandler{
 		return primaryCss;
 	}
 	
-	protected String getBaseFieldCss() {
-		String depCss = super.getBaseFieldCss();
+	protected String getBaseFieldDependentCss() {
+		String depCss = super.getBaseFieldDependentCss();
 		if(depCss == null) {
 			return "appops-SpinnerFieldDependent";
 		}	
