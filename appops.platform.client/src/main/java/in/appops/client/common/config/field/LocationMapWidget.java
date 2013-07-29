@@ -46,6 +46,8 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 	private Configuration doneBtnFieldConf;
 	private String currentAddress = null;
 	private Logger logger = Logger.getLogger(getClass().getName());
+	private static String CHANGE_LOCATION = "changeLocation";
+	private static String SEARCH_LOCATION = "searchLocation";
 	
 	public LocationMapWidget() {
 		
@@ -337,16 +339,30 @@ public class LocationMapWidget  extends Composite implements FieldEventHandler{
 		try {
 			logger.log(Level.INFO, "[LocationMapWidget] ::In onFieldEvent method ");
 			int eventType = event.getEventType();
+			Object eventSource = event.getEventSource();
+			
 			switch (eventType) {
-			case FieldEvent.WORDENTERED: {
-				displaySearchedAddress(searchTextField.getValue().toString());
-				break;
-			}case FieldEvent.LOCATION_CHANGED:{
-				FieldEvent changeLocationEvent = new FieldEvent();
-				changeLocationEvent.setEventType(FieldEvent.CHANGE_LOCATION);
-				changeLocationEvent.setEventData(getCurrentAddress());
-				AppUtils.EVENT_BUS.fireEvent(changeLocationEvent);
-				break;
+			case FieldEvent.ENTERED_HIT: {
+				if(eventSource instanceof TextField){
+					TextField textField = (TextField) eventSource;
+					if(textField.getBaseFieldId().equals(SEARCH_LOCATION)){
+						displaySearchedAddress(searchTextField.getValue().toString());
+						break;
+					}
+				}
+			}case FieldEvent.CLICKED:{
+				if(eventSource instanceof ButtonField){
+					ButtonField btn = (ButtonField) eventSource;
+					if(btn.getBaseFieldId().equals(CHANGE_LOCATION)){
+						FieldEvent changeLocationEvent = new FieldEvent();
+						changeLocationEvent.setEventType(FieldEvent.CHANGE_LOCATION);
+						changeLocationEvent.setEventData(getCurrentAddress());
+						AppUtils.EVENT_BUS.fireEvent(changeLocationEvent);
+						break;
+					}
+					
+				}
+				
 			}
 			default:
 				break;
