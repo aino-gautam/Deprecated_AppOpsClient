@@ -181,8 +181,8 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		return primaryCss;
 	}
 
-	protected String getBaseFieldCss() {
-		String depCss = super.getBaseFieldCss();
+	protected String getBaseFieldDependentCss() {
+		String depCss = super.getBaseFieldDependentCss();
 		try {
 			logger.log(Level.INFO, "[SpinnerField] ::In getBaseFieldCss method ");
 			if(depCss == null) {

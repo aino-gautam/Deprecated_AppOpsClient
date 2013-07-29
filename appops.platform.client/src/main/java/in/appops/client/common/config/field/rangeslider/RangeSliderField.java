@@ -88,8 +88,8 @@ public class RangeSliderField extends BaseField{
 			
 			if(getBaseFieldPrimCss() != null)
 				basePanel.setStylePrimaryName(getBaseFieldPrimCss());
-			if(getBaseFieldCss() != null)
-				basePanel.addStyleName(getBaseFieldCss());
+			if(getBaseFieldDependentCss() != null)
+				basePanel.addStyleName(getBaseFieldDependentCss());
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[RangeSliderField] ::Exception in configure method :"+e);
 		}
