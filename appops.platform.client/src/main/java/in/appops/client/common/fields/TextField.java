@@ -77,6 +77,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	private HandlerRegistration keyUpHandler  = null;
 	private HandlerRegistration blurHandler  = null;
 	public Logger logger = Logger.getLogger(getClass().getName());
+	private FieldEvent fieldEvent;
+	
 	public TextField(){
 		
 	}
@@ -85,11 +87,9 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 * creates the field UI according the configuration set to it;
 	 */
 	public void create() {
-		
 			try {
-
 				logger.log(Level.INFO, "[TextField] ::In create method ");
-				basePanel.add(getWidget(),DockPanel.CENTER);
+				getBasePanel().add(getWidget(),DockPanel.CENTER);
 			} catch (Exception e) {
 				logger.log(Level.SEVERE, "[TextField] ::Exception In create method "+e);
 				
@@ -127,6 +127,12 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 				setOriginalValue(getDefaultValue());
 				setFieldValue(getDefaultValue().toString());
 			}
+			
+			if (getBasePanelPrimCss() != null)
+				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
+			if (getBasePanelDependentCss() != null)
+				getBasePanel().addStyleName(getBasePanelDependentCss());
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[TextField] ::Exception In configure method "+e);
 
@@ -138,14 +144,17 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 * Method creates the textbox.
 	 */
 	private void createTextBox(){
+		
+		logger.log(Level.INFO, "[TextField] ::In createTextBox method ");         
+		
 		try {
-			logger.log(Level.INFO, "[TextField] ::In createTextBox method ");                                           
+			                                  
 		textBox = new TextBox();
 		textBox.setReadOnly(isReadOnly());
 		if(getBaseFieldPrimCss()!= null)
 			textBox.setStylePrimaryName(getBaseFieldPrimCss());
-		if(getBaseFieldCss() != null)
-			textBox.addStyleName(getBaseFieldCss());
+		if(getBaseFieldDependentCss() != null)
+			textBox.addStyleName(getBaseFieldDependentCss());
 		
 		textBox.setMaxLength(getFieldMaxLength());
 		
@@ -166,7 +175,6 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			logger.log(Level.SEVERE, "[TextField] ::Exception In createTextBox method "+e);
 			
 		}
-						
 	}
 	
 	/** 
@@ -184,8 +192,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 
 			if(getBaseFieldPrimCss() != null)
 				textArea.setStylePrimaryName(getBaseFieldPrimCss());
-			if(getBaseFieldCss()!= null)
-				textArea.addStyleName(getBaseFieldCss());
+			if(getBaseFieldDependentCss()!= null)
+				textArea.addStyleName(getBaseFieldDependentCss());
 			if(getFieldCharWidth()!=null)
 				textArea.setCharacterWidth(getFieldCharWidth());
 		} catch (Exception e) {
@@ -205,8 +213,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			passwordTextBox.setReadOnly(isReadOnly());
 			if (getBaseFieldPrimCss() != null)
 				passwordTextBox.setStylePrimaryName(getBaseFieldPrimCss());
-			if (getBaseFieldCss() != null)
-				passwordTextBox.addStyleName(getBaseFieldCss());
+			if (getBaseFieldDependentCss() != null)
+				passwordTextBox.addStyleName(getBaseFieldDependentCss());
 
 			passwordTextBox.setMaxLength(getFieldMaxLength());
 			if (getTabIndex() != null)
@@ -242,8 +250,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			numericTextbox.setReadOnly(isReadOnly());
 			if (getBaseFieldPrimCss() != null)
 				numericTextbox.setStylePrimaryName(getBaseFieldPrimCss());
-			if (getBaseFieldCss() != null)
-				numericTextbox.addStyleName(getBaseFieldCss());
+			if (getBaseFieldDependentCss() != null)
+				numericTextbox.addStyleName(getBaseFieldDependentCss());
 
 			numericTextbox.setMaxLength(getFieldMaxLength());
 
@@ -794,39 +802,6 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		}
 	}
 	
-	/**
-	 * Method return the event which will be fired when user press enter key.  
-	 * @return
-	 */
-	public Integer getEnterEvent() {
-		Integer eventType = 0;
-		try {
-			logger.log(Level.INFO, "[TextField] ::In getEnterEvent method ");
-			if (getConfigurationValue(TextFieldConstant.TF_ENTER_EVENT) != null) {
-				eventType = (Integer) getConfigurationValue(TextFieldConstant.TF_ENTER_EVENT);
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "[TextField] ::Exception In getEnterEvent method "+e);
-		}
-		return eventType;
-	}
-	
-	/**
-	 * Method return the event which will be fired when user change some value in field.  
-	 * @return
-	 */
-	public Integer getValueChangedEvent() {
-		Integer eventType = 0;
-		try {
-			logger.log(Level.INFO, "[TextField] ::In getValueChangedEvent method ");
-			if (getConfigurationValue(TextFieldConstant.TF_VALUE_CHANGED_EVENT) != null) {
-				eventType = (Integer) getConfigurationValue(TextFieldConstant.TF_VALUE_CHANGED_EVENT);
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "[TextField] ::Exception In getValueChangedEvent method "+e);
-		}
-		return eventType;
-	}
 	
 	/************     Events in which field is interested ******************************/
 	@Override
@@ -874,6 +849,11 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		try {
 			logger.log(Level.INFO, "[TextField] ::In onKeyPress method ");
 			final int charCode= event.getUnicodeCharCode();
+			
+			fieldEvent = new FieldEvent();
+			fieldEvent.setEventSource(this);
+			fieldEvent.setEventData(getValue());
+			
 			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 				@Override
 				public void execute() {
@@ -889,20 +869,12 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 					}
 					
 					if(isDirty()){
-						if (charCode == KeyCodes.KEY_ENTER) {
-							if (getEnterEvent() != 0) {
-								FieldEvent fieldEvent = new FieldEvent();
-								fieldEvent.setEventType(getEnterEvent());
-								fieldEvent.setEventData(getValue());
-								AppUtils.EVENT_BUS.fireEvent(fieldEvent);
-							}
-						}else if (getValueChangedEvent() != 0) {
-							FieldEvent fieldEvent = new FieldEvent();
-							fieldEvent.setEventType(getValueChangedEvent());
-							fieldEvent.setEventData(getValue());
-							AppUtils.EVENT_BUS.fireEvent(fieldEvent);
-						}
+						if (charCode == KeyCodes.KEY_ENTER)
+								fieldEvent.setEventType(FieldEvent.ENTERED_HIT);
+						else 
+							fieldEvent.setEventType(FieldEvent.EDITINPROGRESS);
 					}
+					AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 				}
 			});
 		} catch (Exception e) {
@@ -910,6 +882,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		}
 		
 	}
+	
 	
 	/****************** Textfield constants  *******************/
 	
@@ -973,14 +946,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		/** Specifies negative value error text to be shown **/
 		public static final String NEGATIVE_VALUE_TEXT = "negativevalTxt";
 		
-		/** Specifies the event that will be fired when user enters **/
-		public static final String TF_ENTER_EVENT = "enterEvent";
-		
 		/** Specifies whether field should be validated or not**/
 		public static final String VALIDATEFIELD = "validateField";
 		
-		/** Specifies the event that will be fired when field value is changed and not as original value that was set**/
-		public static final String TF_VALUE_CHANGED_EVENT = "valueChangedEvent";
-				
 	}
 }
