@@ -34,8 +34,8 @@ public class HTMLField extends BaseField  {
 		
 		if(getBaseFieldPrimCss() != null)
 			getBasePanel().setStylePrimaryName(getBaseFieldPrimCss());
-		if(getBaseFieldCss() != null)
-			getBasePanel().addStyleName(getBaseFieldCss());
+		if(getBaseFieldDependentCss() != null)
+			getBasePanel().addStyleName(getBaseFieldDependentCss());
 
 		if(getHTMLFieldCss() != null)
 			htmlField.setStylePrimaryName(getHTMLFieldCss());
