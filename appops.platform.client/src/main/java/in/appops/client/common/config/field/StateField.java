@@ -76,6 +76,16 @@ public class StateField extends BaseField {
 				appopsSuggestionBox.setQueryMaxResult(getQueryMaxResult());
 			}
 			
+			if (getBaseFieldPrimCss() != null)
+				appopsSuggestionBox.setStylePrimaryName(getBaseFieldPrimCss());
+			if (getBaseFieldDependentCss() != null)
+				appopsSuggestionBox.addStyleName(getBaseFieldDependentCss());
+
+			if (getBasePanelPrimCss() != null)
+				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
+			if (getBasePanelDependentCss() != null)
+				getBasePanel().addStyleName(getBasePanelDependentCss());
+			
 			appopsSuggestionBox.setAutoSuggestion(isAutosuggestion());
 			appopsSuggestionBox.createUi();
 		} catch (Exception e) {

@@ -8,6 +8,7 @@ import in.appops.client.common.event.FieldEvent;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 
@@ -15,6 +16,11 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 
 	private RadioButton radioBtn;
 	private Logger logger = Logger.getLogger(getClass().getName());
+	private HandlerRegistration changeHandler  =  null;
+	
+	/*******************  Fields ID *****************************/
+	
+	private static String SINGLE_SELECTION = "singleSelection";
 
 	public RadioButtonField(){
 		
@@ -22,11 +28,11 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 	
 	@Override
 	public void create() {
-		
+		logger.log(Level.INFO, "[RadioButtonField] ::In create method ");
 		try {
-			logger.log(Level.INFO, "[RadioButtonField] ::In create method ");
-			radioBtn.addValueChangeHandler(this);
-			basePanel.add(radioBtn,DockPanel.CENTER);
+			changeHandler = radioBtn.addValueChangeHandler(this);
+			
+			getBasePanel().add(radioBtn,DockPanel.CENTER);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[RadioButtonField] ::Exception in create method :"+e);
 		}
@@ -52,12 +58,12 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 	}
 	
 	/**
-	 * Method will return the group name in which the radioButton will be added.
+	 * Method will return the group ID in which the radioButton will be added.
 	 * @return
 	 */
-	public String getGroupName(){
+	public String getGroupId(){
 		
-		String name = "singleSelection";
+		String name = SINGLE_SELECTION;
 		
 		if(getConfigurationValue(RadionButtonFieldConstant.RF_GROUPID) != null) {
 			
@@ -87,15 +93,13 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 	}
 
 	/**
-	 * Method return the event that will be fired when radioButton is selected.  
-	 * @return
+	 * Method removed registered handlers from field
 	 */
-	private Integer getSelectionEvent() {
-		Integer eventType = FieldEvent.RADIOBUTTON_SELECTED;
-		if (getConfigurationValue(RadionButtonFieldConstant.RF_SELECT_EVENT) != null) {
-			eventType = (Integer) getConfigurationValue(RadionButtonFieldConstant.RF_SELECT_EVENT);
-		}
-		return eventType;
+	@Override
+	public void removeRegisteredHandlers() {
+		
+		if(changeHandler!=null)
+			changeHandler.removeHandler();
 	}
 
 	@Override
@@ -123,10 +127,11 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 	public Object getValue() {
 		return radioBtn.getValue();
 	}
+	
 	@Override
 	public void configure() {
 		
-		radioBtn = new RadioButton(getGroupName());
+		radioBtn = new RadioButton(getGroupId());
 		try {
 			logger.log(Level.INFO, "[RadioButtonField] ::In configure method ");
 			radioBtn.setValue(isFieldChecked());
@@ -134,9 +139,15 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 			radioBtn.setText(getDisplayText());
 			
 			if(getBaseFieldPrimCss()!=null)
-				this.setStylePrimaryName(getBaseFieldPrimCss());
-			if(getBaseFieldCss()!=null)
-				this.addStyleName(getBaseFieldCss());
+				radioBtn.setStylePrimaryName(getBaseFieldPrimCss());
+			if(getBaseFieldDependentCss()!=null)
+				radioBtn.addStyleName(getBaseFieldDependentCss());
+			
+			if (getBasePanelPrimCss() != null)
+				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
+			if (getBasePanelDependentCss() != null)
+				getBasePanel().addStyleName(getBasePanelDependentCss());
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[RadioButtonField] ::Exception in configure method :"+e);
 		}
@@ -146,12 +157,9 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 	@Override
 	public void onValueChange(ValueChangeEvent event) {
 		
-		RadioButton radioButton = (RadioButton) event.getSource();
-		
 		FieldEvent fieldEvent = new FieldEvent();
-		fieldEvent.setEventType(getSelectionEvent());
-		
-		fieldEvent.setEventData(radioButton);
+		fieldEvent.setEventType(FieldEvent.RADIOBUTTON_SELECTED);
+		fieldEvent.setEventSource(this);
 		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 		
 	}
@@ -166,8 +174,6 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 		
 		/** Specify the group name for the radioButton **/
 		public static final String RF_GROUPID = "groupId";
-		
-		public static final String RF_SELECT_EVENT = "selectEvent";
 		
 	}
 
