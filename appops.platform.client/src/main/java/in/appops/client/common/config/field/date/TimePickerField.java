@@ -76,8 +76,8 @@ public class TimePickerField extends BaseField{
 			if(getBaseFieldPrimCss()!=null)
 				getBasePanel().setStylePrimaryName(getBaseFieldPrimCss());
 			
-			if(getBaseFieldCss()!=null)
-				getBasePanel().setStyleName(getBaseFieldCss());
+			if(getBaseFieldDependentCss()!=null)
+				getBasePanel().setStyleName(getBaseFieldDependentCss());
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[TimePickerField]::Exception In configure  method :"+e);
 		}

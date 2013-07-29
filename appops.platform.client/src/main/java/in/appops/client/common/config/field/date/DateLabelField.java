@@ -233,7 +233,7 @@ public class DateLabelField extends BaseField{
 			logger.log(Level.INFO,"[DateLabelField]:: In getDateLabelConfiguration  method ");
 			conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, true);
 			conf.setPropertyByName(LabelFieldConstant.BF_PCLS, getBaseFieldPrimCss());
-			conf.setPropertyByName(LabelFieldConstant.BF_DCLS, getBaseFieldCss());
+			conf.setPropertyByName(LabelFieldConstant.BF_DCLS, getBaseFieldDependentCss());
 			conf.setPropertyByName(LabelFieldConstant.LBLFD_FCSS, "postenDateLabelField");
 			
 			if(isTitleVisible()) {

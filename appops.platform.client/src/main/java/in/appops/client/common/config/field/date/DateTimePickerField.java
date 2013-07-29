@@ -63,8 +63,8 @@ public class DateTimePickerField extends BaseField{
 			if(getBaseFieldPrimCss()!=null)
 				getBasePanel().setStylePrimaryName(getBaseFieldPrimCss());
 			
-			if(getBaseFieldCss()!=null)
-				getBasePanel().setStyleName(getBaseFieldCss());
+			if(getBaseFieldDependentCss()!=null)
+				getBasePanel().setStyleName(getBaseFieldDependentCss());
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[DateTimePickerField]::Exception In configure  method :"+e);
 		}

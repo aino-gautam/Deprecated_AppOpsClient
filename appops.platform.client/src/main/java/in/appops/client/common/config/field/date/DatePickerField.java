@@ -156,8 +156,8 @@ public class DatePickerField  extends BaseField implements ClickHandler {
 		return primaryCss;
 	}
 
-	protected String getBaseFieldCss() {
-		String depCss = super.getBaseFieldCss();
+	protected String getBaseFieldDependentCss() {
+		String depCss = super.getBaseFieldDependentCss();
 		try {
 			logger.log(Level.INFO,"[DatePickerField]:: In getBaseFieldCss  method ");
 			if(depCss == null) {
