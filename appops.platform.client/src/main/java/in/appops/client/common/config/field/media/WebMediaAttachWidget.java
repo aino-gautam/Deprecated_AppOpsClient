@@ -6,6 +6,7 @@ import gwtupload.client.IUploader;
 import gwtupload.client.IUploader.OnFinishUploaderHandler;
 import gwtupload.client.IUploader.UploadedInfo;
 import gwtupload.client.MultiUploader;
+import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.AttachmentEvent;
@@ -37,6 +38,7 @@ public class WebMediaAttachWidget extends MediaAttachWidget implements FieldEven
 	private boolean isProfileImage;
 	private String fileUploadPanelCss;
 	private Logger logger = Logger.getLogger(getClass().getName());
+	private static String CROSS_IMAGEID = "cancelImage";
 
 	public WebMediaAttachWidget(){
 		initializeComponent();
@@ -49,6 +51,8 @@ public class WebMediaAttachWidget extends MediaAttachWidget implements FieldEven
 			attachmentPanel = new HorizontalPanel();
 			uploadedBlobIdVsSnippetMap = new HashMap<String, HorizontalPanel>();
 			uploadedMediaId = new LinkedList<String>();
+			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[WebMediaAttachWidget] ::Exception in initializeComponent method :"+e);
 		}
@@ -230,8 +234,8 @@ public class WebMediaAttachWidget extends MediaAttachWidget implements FieldEven
 			logger.log(Level.INFO, "[WebMediaAttachWidget] ::In getUplodedImageConfiguration method ");
 			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, blobId);
 			configuration.setPropertyByName(ImageFieldConstant.BF_PCLS, getCrossImagePrimaryCss());
-			configuration.setPropertyByName(ImageFieldConstant.IMGFD_CLICK_EVENT,FieldEvent.UPLOADED_IMGCLICKED);
-			configuration.setPropertyByName(ImageFieldConstant.IMGFD_TITLE, "UploadImage");
+			configuration.setPropertyByName(ImageFieldConstant.BF_ID,CROSS_IMAGEID);
+			configuration.setPropertyByName(ImageFieldConstant.IMGFD_TITLE, "UploadedImage");
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[WebMediaAttachWidget] ::Exception in getUplodedImageConfiguration method :"+e);
 
@@ -246,20 +250,28 @@ public class WebMediaAttachWidget extends MediaAttachWidget implements FieldEven
 			logger.log(Level.INFO, "[WebMediaAttachWidget] ::In onFieldEvent method ");
 			int eventType = event.getEventType();
 			switch (eventType) {
-			case FieldEvent.UPLOADED_IMGCLICKED: {
-				if(isSingleUpload) {
-					multiUploader.setVisible(true);
+			case FieldEvent.CLICKED: {
+				
+				if(event.getEventSource() instanceof ImageField){
+					ImageField crossImg = (ImageField) event.getEventSource();
+					if(crossImg.getBaseFieldId().equalsIgnoreCase(CROSS_IMAGEID)){
+						if(isSingleUpload) {
+							multiUploader.setVisible(true);
+						}
+						
+						IconWithCrossImageField crossImage = (IconWithCrossImageField) event.getEventSource();
+						String blbId = crossImage.getBlobId();
+						if(uploadedBlobIdVsSnippetMap.containsKey(blbId)){
+							HorizontalPanel snippetPanel = uploadedBlobIdVsSnippetMap.get(blbId);
+							uploadedBlobIdVsSnippetMap.remove(blbId);
+							uploadedMediaId.remove(blbId);
+							attachmentPanel.remove(snippetPanel);
+							AppUtils.EVENT_BUS.fireEvent(new AttachmentEvent(3, blbId));
+						}
+						
+					}
 				}
 				
-				IconWithCrossImageField crossImage = (IconWithCrossImageField) event.getSource();
-				String blbId = crossImage.getBlobId();
-				if(uploadedBlobIdVsSnippetMap.containsKey(blbId)){
-					HorizontalPanel snippetPanel = uploadedBlobIdVsSnippetMap.get(blbId);
-					uploadedBlobIdVsSnippetMap.remove(blbId);
-					uploadedMediaId.remove(blbId);
-					attachmentPanel.remove(snippetPanel);
-					AppUtils.EVENT_BUS.fireEvent(new AttachmentEvent(3, blbId));
-				}
 			}
 			default:
 				break;

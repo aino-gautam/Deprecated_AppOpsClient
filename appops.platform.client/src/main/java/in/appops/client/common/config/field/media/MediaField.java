@@ -1,6 +1,7 @@
 package in.appops.client.common.config.field.media;
 
 import in.appops.client.common.config.field.BaseField;
+import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
@@ -40,7 +41,6 @@ configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_PCLS, "mediaImage
 configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_DCLS, "fadeInUp");<br>
 configuration.setPropertyByName(MediaFieldConstant.MF_ISPROFILE_IMG, true);<br>
 configuration.setPropertyByName(MediaFieldConstant.MF_FILEUPLOADER_CLS, "appops-webMediaAttachment");<br>
-configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_CLICKEVENT, FieldEvent.MEDIA_UPLOAD);
 <br>
 ArrayList<String> extensions = new ArrayList<String>();<br>
 extensions.add("jpg");<br>
@@ -58,6 +58,7 @@ public class MediaField extends BaseField implements FieldEventHandler{
 	private VerticalPanel basePanel;
 	private MediaAttachWidget mediaAttachWidget;
 	private Logger logger = Logger.getLogger(getClass().getName());
+	private static String MEDIA_IMAGEID = "mediaUpload";
 
 	public MediaField(){
 		basePanel = new VerticalPanel();
@@ -87,8 +88,13 @@ public class MediaField extends BaseField implements FieldEventHandler{
 			mediaAttachWidget = new WebMediaAttachWidget();
 			if(getBaseFieldPrimCss()!=null)
 				mediaAttachWidget.setPrimaryCss(getBaseFieldPrimCss());
-			if(getBaseFieldCss()!=null)
-			mediaAttachWidget.setDependentcss(getBaseFieldCss());
+			if(getBaseFieldDependentCss()!=null)
+			mediaAttachWidget.setDependentcss(getBaseFieldDependentCss());
+			
+			if (getBasePanelPrimCss() != null)
+				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
+			if (getBasePanelDependentCss() != null)
+				getBasePanel().addStyleName(getBasePanelDependentCss());
 			
 			mediaAttachWidget.setProfileImage(isProfileImage());
 			mediaAttachWidget.setExtensionList(getExtensionList());
@@ -230,26 +236,6 @@ public class MediaField extends BaseField implements FieldEventHandler{
 	}
 	
 	/**
-	 * Method returns event that will be fired when user clicks on media upload image.
-	 * @return
-	 */
-	private Integer getMediaImageClickEvent() {
-		
-		Integer clickEvent = null;
-		
-		try {
-			logger.log(Level.INFO, "[MediaField] ::In getMediaImageClickEvent method ");
-			if(getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_CLICKEVENT) != null) {
-				
-				clickEvent = (Integer) getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_CLICKEVENT);
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "[MediaField] ::Exception In getMediaImageClickEvent method :"+e);
-
-		}
-		return clickEvent;
-	}
-	/**
 	 * Returns if profile image. Defaults to false.
 	 * @return
 	 */
@@ -326,7 +312,7 @@ public class MediaField extends BaseField implements FieldEventHandler{
 			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, getMediaImageBlobId());
 			configuration.setPropertyByName(ImageFieldConstant.BF_PCLS,getMediaImagePrimaryCss());
 			configuration.setPropertyByName(ImageFieldConstant.BF_DCLS,getMediaImageDependentCss());
-			configuration.setPropertyByName(ImageFieldConstant.IMGFD_CLICK_EVENT,getMediaImageClickEvent());
+			configuration.setPropertyByName(ImageFieldConstant.BF_ID,MEDIA_IMAGEID);
 			configuration.setPropertyByName(ImageFieldConstant.IMGFD_TITLE, "Upload");
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[MediaField] ::Exception In getMediaImageConfiguration method :"+e);
@@ -342,12 +328,19 @@ public class MediaField extends BaseField implements FieldEventHandler{
 			logger.log(Level.INFO, "[MediaField] ::In onFieldEvent method ");
 			int eventType = event.getEventType();
 			switch (eventType) {
-			case FieldEvent.MEDIA_UPLOAD: {
-				if(mediaAttachWidget.isExpand()){
-					mediaAttachWidget.collapse();
-				} else if(mediaAttachWidget.isCollapse()){
-					mediaAttachWidget.expand();
+			case FieldEvent.CLICKED: {
+				if(event.getEventSource() instanceof ImageField){
+					ImageField mediaImg = (ImageField)event.getEventSource();
+					if(mediaImg.getBaseFieldId().equalsIgnoreCase(MEDIA_IMAGEID)){
+						if(mediaAttachWidget.isExpand()){
+							mediaAttachWidget.collapse();
+						} else if(mediaAttachWidget.isCollapse()){
+							mediaAttachWidget.expand();
+						}
+					}
+					
 				}
+				
 			}
 			default:
 				break;
@@ -387,9 +380,6 @@ public class MediaField extends BaseField implements FieldEventHandler{
 		
 		/** Specifies id media image should be visible or not**/
 		public static final String MF_ISMEDIAIMG_VISIBLE = "isMediaImageVisible";
-		
-		/** Specifies the event that will be fired when user clicks on media upload image**/
-		public static final String MF_MEDIAIMG_CLICKEVENT = "mediaClickEvent";
 		
 	}
 	
