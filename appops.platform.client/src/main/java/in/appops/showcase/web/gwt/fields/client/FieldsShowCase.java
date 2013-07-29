@@ -230,9 +230,6 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_SEARCHBOX_DCLS, "fadeInRight");
 			configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_ERRPOS, TextFieldConstant.BF_ERRINLINE);
 			configuration.setPropertyByName(LocationSelectorFieldConstant.LOCNFD_INVALID_LOCNMSG, "Invalid location");
-			configuration.setPropertyByName(LocationSelectorFieldConstant.SEARCHFD_EVENT, FieldEvent.WORDENTERED);
-			configuration.setPropertyByName(LocationSelectorFieldConstant.DONEBTN_EVENT, FieldEvent.LOCATION_CHANGED);
-			configuration.setPropertyByName(LocationSelectorFieldConstant.LOCN_IMG_EVENT, FieldEvent.SHOW_MAP_IN_POPUP);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[FieldsShowCase]::Exception In getLocationSelectorConf  method :"+e);
 		}
@@ -532,7 +529,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			
 			configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"Public");
 			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,items);
-			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_CHANGEEVENT,FieldEvent.VALUECHANGED);
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[FieldsShowCase]::Exception In getStaticListBoxConfiguration  method :"+e);
 		}
@@ -1004,7 +1001,6 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_DCLS, "fadeInUp");
 			configuration.setPropertyByName(MediaFieldConstant.MF_ISPROFILE_IMG, true);
 			configuration.setPropertyByName(MediaFieldConstant.MF_FILEUPLOADER_CLS, "appops-webMediaAttachment");
-			configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_CLICKEVENT, FieldEvent.MEDIA_UPLOAD);
 			
 			ArrayList<String> extensions = new ArrayList<String>();
 			extensions.add("jpg");
