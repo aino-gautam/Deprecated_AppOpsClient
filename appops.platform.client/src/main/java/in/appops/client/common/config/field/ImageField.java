@@ -49,8 +49,7 @@ public class ImageField extends BaseField implements ClickHandler{
 	public void create() {
 		try {
 			logger.log(Level.INFO, "[ImageField] ::In create method ");
-			if(getImageClickEvent()!=0)
-				image.addClickHandler(this);
+			image.addClickHandler(this);
 			getBasePanel().add(image,DockPanel.CENTER);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ImageField] ::Exception in create method :"+e);
@@ -71,8 +70,14 @@ public class ImageField extends BaseField implements ClickHandler{
 				image.setTitle(getImageTitle());
 			if(getBaseFieldPrimCss()!=null)
 				image.setStylePrimaryName(getBaseFieldPrimCss());		
-			if(getBaseFieldCss()!=null)
-				image.addStyleName(getBaseFieldCss());
+			if(getBaseFieldDependentCss()!=null)
+				image.addStyleName(getBaseFieldDependentCss());
+			
+			if (getBasePanelPrimCss() != null)
+				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
+			if (getBasePanelDependentCss() != null)
+				getBasePanel().addStyleName(getBasePanelDependentCss());
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ImageField] ::Exception in configure method :"+e);
 		}
@@ -99,23 +104,6 @@ public class ImageField extends BaseField implements ClickHandler{
 	
 	
 	/**
-	 * Method return the event which will be used when user clicks on image..  
-	 * @return
-	 */
-	private Integer getImageClickEvent() {
-		Integer eventType = 0;
-		try {
-			logger.log(Level.INFO, "[ImageField] ::In getImageClickEvent method ");
-			if (getConfigurationValue(ImageFieldConstant.IMGFD_CLICK_EVENT) != null) {
-				eventType = (Integer) getConfigurationValue(ImageFieldConstant.IMGFD_CLICK_EVENT);
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "[ImageField] ::Exception in getImageClickEvent method :"+e);
-		}
-		return eventType;
-	}
-	
-	/**
 	 * Method return the image title.
 	 * @return
 	 */
@@ -138,7 +126,8 @@ public class ImageField extends BaseField implements ClickHandler{
 			logger.log(Level.INFO, "[ImageField] ::In onClick method ");
 			if(event.getSource().equals(image)){
 				FieldEvent fieldEvent = new FieldEvent();
-				fieldEvent.setEventType(getImageClickEvent());
+				fieldEvent.setEventType(fieldEvent.CLICKED);
+				fieldEvent.setEventSource(this);
 				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 			}
 		} catch (Exception e) {
@@ -156,9 +145,6 @@ public class ImageField extends BaseField implements ClickHandler{
 		
 		/**  Specifies the image blobId ****/
 		public static final String IMGFD_BLOBID = "blobId";
-		
-		/** Specifies the event that will be fired on image click **/
-		public static final String IMGFD_CLICK_EVENT = "imageClickEvent";
 		
 	}
 
