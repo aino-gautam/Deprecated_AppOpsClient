@@ -34,7 +34,7 @@ entityContentSnippet:"		<header class=\"entry-header\">\n" +
 	//	"			</div>\n" + 
 		"		</header>\n" + 
 		"		<div class=\"entry-content\">\n" + 
-		"				<span id=\"contentHtmlField\" appopsField=\"true\" widgetType= \"htmlField\" data-config=\"content\"></span>\n" + 
+		"			<span id=\"contentHtmlField\" appopsField=\"true\" widgetType= \"htmlField\" data-config=\"content\"></span>\n" +
 		"		</div>",
 entityEditCreateSnippet:"<table cellspacing=\"10\" cellpadding=\"0\">\n" + 
 		"		<tbody>\n" + 
@@ -79,6 +79,6 @@ pageHeaderSnippet:"<table style=\"float: right;\" cellspacing=\"5\" cellpadding=
 		"				</tbody>\n" + 
         "  		  </table>",		
 articleListSnippetForBlog: "<table cellspacing=\"1\" cellpadding=\"0\" style=\"width: 100%;\"><tbody><tr><td align=\"left\" style=\"vertical-align: top; \">" +
-							"<span id=\"listBoxField\" appopsField=\"true\" widgetType= \"listBoxField\" data-config=\"listBoxField\"></span>" +
+							"<span id=\"blogListBoxField\" appopsField=\"true\" widgetType= \"listBoxField\" data-config=\"listBoxField\"></span>" +
 							"</td></tr></tbody></table>",	
 }; 

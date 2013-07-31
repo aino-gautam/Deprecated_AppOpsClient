@@ -2862,7 +2862,7 @@ blockquote p,
 
 .entry-content{
 	padding-bottom: 20px;
-	border-bottom: 1px dotted #CCC;
+	/* border-bottom: 1px dotted #CCC; */
 }
 
 .entry-header {
@@ -2887,4 +2887,49 @@ blockquote p,
 
 .byfrom_line {
 	display : inline;
+}
+
+.blogTitleLabel {
+	/* font-size: 13px; */
+	font-family: Arial, 'Arial Unicode MS', Helvetica, Sans-Serif;
+	font-weight: bold;
+}
+
+.seeMoreLabelField {
+	font-size: 10px;
+	font-family: Arial, 'Arial Unicode MS', Helvetica, Sans-Serif;
+}
+
+.article-summaryHTMLField {
+   	text-align: justify;
+	max-height: 160px;
+	overflow: hidden;
+}
+
+.seeMoreHtmlField {
+	top: 150px;
+	position: absolute;
+	background: -webkit-linear-gradient(top, rgba(255, 244, 229, 0) 0%, white 60%);
+	background: -moz-linear-gradient(top, rgba(255, 244, 229, 0) 0%, white 60%);
+	background: -o-linear-gradient(top, rgba(255, 244, 229, 0) 0%, white 60%);
+	background: linear-gradient(to bottom, rgba(255, 244, 229, 0) 0%, white 60%);
+	text-align: -webkit-right;
+	display: block;
+	height: 70px;
+	padding-top: 120px;
+}
+
+.handCursor {
+	cursor: pointer;
+	cursor: hand;
+}
+
+.rightAlignLabel {
+	width: 86%;
+	position: absolute;
+}
+
+.centerAlignLabel {
+	width: 50%;
+	position: absolute;
 }
