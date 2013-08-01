@@ -2896,14 +2896,17 @@ blockquote p,
 }
 
 .seeMoreLabelField {
-	font-size: 10px;
+	font-size: 11px;
 	font-family: Arial, 'Arial Unicode MS', Helvetica, Sans-Serif;
 }
 
 .article-summaryHTMLField {
-   	text-align: justify;
 	max-height: 160px;
 	overflow: hidden;
+}
+
+.textAlignHTMLField {
+   	text-align: justify;
 }
 
 .seeMoreHtmlField {
@@ -2925,11 +2928,16 @@ blockquote p,
 }
 
 .rightAlignLabel {
-	width: 86%;
+	width: 85%;
 	position: absolute;
 }
 
 .centerAlignLabel {
 	width: 50%;
 	position: absolute;
+}
+
+.blogDescriptionTitleLabel {
+	font-weight: bold;
+	font-family: Arial, 'Arial Unicode MS', Helvetica, Sans-Serif;
 }
