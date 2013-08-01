@@ -81,4 +81,42 @@ pageHeaderSnippet:"<table style=\"float: right;\" cellspacing=\"5\" cellpadding=
 articleListSnippetForBlog: "<table cellspacing=\"1\" cellpadding=\"0\" style=\"width: 100%;\"><tbody><tr><td align=\"left\" style=\"vertical-align: top; \">" +
 							"<span id=\"blogListBoxField\" appopsField=\"true\" widgetType= \"listBoxField\" data-config=\"listBoxField\"></span>" +
 							"</td></tr></tbody></table>",	
-}; 
+blogDetailsSnippet: "<table cellspacing=\"1\" cellpadding=\"0\" style=\"width: 100%;\">" +
+		"				<tbody>" +
+		"					<tr>" +
+		"						<td align=\"left\" style=\"vertical-align: top; \">" +
+		"							<table cellspacing=\"2\" cellpadding=\"0\" style=\"width: 100%;\">" +
+		"								<tbody>" +
+		"									<tr>" +
+		"										<td>" +
+		"		     								<span id=\"blogTitleLbl\" appopsField=\"true\" widgetType= \"labelField\" data-config=\"blogTitleLblConfig\"></span>" +
+		"										</td>" +
+		"									</tr>" +
+		"									<tr>" +
+		"										<td>" +
+		"											<span id=\"AuthorLbl\" appopsField=\"true\" widgetType= \"labelField\" data-config=\"AuthorLblConfig\"></span>" +
+		"										</td>" +
+		"									</tr>" +
+		"								</tbody>" +
+		"							</table>" +
+		"						</td>" +
+		"						<td align=\"left\" style=\"vertical-align: top; \">" +
+		"							<table cellspacing=\"2\" cellpadding=\"0\" style=\"width: 100%;\">" +
+		"								<tbody>" +
+		"									<tr>" +
+		"										<td>" +
+		"											<span id=\"blogDescTitleLbl\" appopsField=\"true\" widgetType= \"labelField\" data-config=\"blogDescTitleLblConfig\"></span>" +
+		"										</td>" +
+		"									</tr>" +
+		"									<tr>" +
+		"										<td>" +
+		"		     								<span id=\"blogDescriptionLbl\" appopsField=\"true\" widgetType= \"htmlField\" data-config=\"blogDescriptionLblConfig\"></span>" +
+		"										</td>" +
+		"									</tr>" +
+		"								</tbody>" +
+		"							</table>" +
+		"						</td>" +
+		"					</tr>" +
+		"				</tbody>" +
+		"			</table>",
+};
