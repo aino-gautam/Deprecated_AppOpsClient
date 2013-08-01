@@ -34,8 +34,10 @@ public class HTMLField extends BaseField implements ClickHandler  {
 			VerticalPanel innerPanel = new VerticalPanel();
 			Widget expandWidget = getExpandWidget();
 			expandWidget.addStyleName("handCursor");
+			expandWidget.addStyleName("seeMoreLabelField");
 			innerPanel.add(expandWidget);
 			innerPanel.setStylePrimaryName(getExpandWidgetCSS());
+			innerPanel.addStyleName("textAlignHTMLField");
 			innerPanel.setWidth("100%");
 			panel.add(innerPanel);
 			
