@@ -1576,6 +1576,110 @@ td.datePickerMonth {
 	width: 50px;	
 }
 
+
+.appops-actionBaseField{
+	/* margin: 5px; */ 
+}
+.appops-actionField{
+	cursor: pointer;
+	cursor: hand;
+}
+
+
+.article-titleLinkFieldBase {
+	clear: both;
+	color: #222;
+	font-size: 17px;
+	font-weight: bold;
+	line-height: 1.5em;
+	padding-bottom: .3em;
+	padding-top: 15px;
+}
+
+.article-titleLinkField {
+	color: #222;
+	text-decoration: none;
+	cursor: pointer;
+	cursor: hand;
+}
+
+.article-titleLinkField:hover {
+	color: #1982D1;
+}
+
+.recentPost-articleLinkField {
+	color: #1982D1;
+	text-decoration: none;
+	cursor: pointer;
+	cursor: hand;
+	font-size: 12px;
+}
+
+
+.postenOnLabelFieldBase {
+	padding-right: 76px;
+}
+
+.postenOnLabelField {
+	color: #666;
+	clear: both;
+	font-size: 12px;
+	line-height: 18px;
+	margin-top: 2px;
+}
+
+.postenDateLabelField {
+	color: #1982D1;
+	clear: both;
+	font-size: 12px;
+	line-height: 18px;
+	font-weight: bold;
+}
+
+.article-SummaryHTMLFieldBase {
+	padding: 1.625em 0 0;
+	width: 100%;
+}
+.article-summaryHTMLField {
+	color: #222;
+	display: inline;
+	position: relative;
+	text-decoration: none;
+	z-index: 1;
+	border: none !important;
+}
+
+.recentPostHeaderLbl {
+	color: #666;
+	font-size: 10px;
+	font-weight: 500;
+	letter-spacing: 0.1em;
+	line-height: 2.6em;
+	text-transform: uppercase;
+}
+
+.defaultcss {
+	width: 100%
+}
+
+.defaultcss {
+	width: 100%
+}
+
+.appops-ListScrollCss {
+	width: 100%
+}
+
+.articlebodyTopLink {
+	float: right;
+}
+
 .dateTimelabel{
 	font-weight: bold;
 }
+
+.treeItem {
+	float: left;
+}
+
+
