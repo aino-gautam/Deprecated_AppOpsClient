@@ -1,13 +1,17 @@
 package in.appops.client.common.config.dsnip;
 
-import in.appops.client.common.config.component.base.BaseComponentView.BaseComponentConstant;
-import in.appops.client.common.config.dsnip.Container.ContainerConstant;
+import in.appops.client.common.config.component.base.BaseComponentPresenter.BaseComponentConstant;
 import in.appops.client.common.config.field.BaseField;
+import in.appops.client.common.config.model.EntityListModel;
 import in.appops.client.common.config.model.EntityModel;
 import in.appops.client.common.config.util.Configurator;
 import in.appops.client.common.config.util.ReusableSnippetStore;
 import in.appops.client.common.core.EntityReceiver;
-import in.appops.platform.core.constants.typeconstants.TypeConstants;
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
+import in.appops.client.common.util.EntityToJsonClientConvertor;
+import in.appops.client.common.util.JsonToEntityConverter;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.type.MetaType;
@@ -15,6 +19,7 @@ import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.shared.Configuration;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -22,12 +27,15 @@ import java.util.Set;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
-public class HTMLSnippetPresenter implements Configurable, ValueChangeHandler<String>{
-	
+public class HTMLSnippetPresenter implements Configurable, ValueChangeHandler<String>, FieldEventHandler, EntityReceiver {
+	public interface HTMLSnippetConstant {
+		String HS_INTRSDEVNTS = "interestedEvents";
+		String HS_FIELDEVENTS = "interestedFieldEvents";
+	}
 	protected Configuration configuration;
 	
 	protected HTMLSnippet htmlSnippet;
@@ -56,6 +64,8 @@ public class HTMLSnippetPresenter implements Configurable, ValueChangeHandler<St
 			htmlSnippet.setConfiguration(getViewConfiguration());
 		}
 		historyRegistration = History.addValueChangeHandler(this);
+		model.setReceiver(this);
+		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 	}
 
 	public void load() {
@@ -70,12 +80,17 @@ public class HTMLSnippetPresenter implements Configurable, ValueChangeHandler<St
 			populateFields();
 		} else if(entity == null && entityId != null) {
 			
-			Map<String, Serializable> parameterMap = new HashMap<String, Serializable>();
-			parameterMap.put("articleId", entityId);
-			if(isTypeInteresting("onLoad")) {
-				Configuration eventConf = getEventConfiguration("onLoad");
-				processEvent(eventConf, parameterMap);
-			}
+//			if(isTypeInteresting("onLoad")) {
+//				Configuration eventConf = getEventConfiguration("onLoad");
+//				
+//				//String eventParam = eventConf.getPropertyByName(EventConstant.EVNT_PARAM).toString();
+//
+//				Map<String, Serializable> parameterMap = new HashMap<String, Serializable>();
+//				parameterMap.put("articleId", entityId);
+//				processEvent(eventConf, parameterMap);
+//			}
+			
+			model.fetchEntity();
 		}
 	}
 	
@@ -147,6 +162,8 @@ public class HTMLSnippetPresenter implements Configurable, ValueChangeHandler<St
 
 	public void setEntity(Entity entity) {
 		this.entity = entity;
+		htmlSnippet.setEntity(entity);
+		
 	}
 
 	public Long getEntityId() {
@@ -183,21 +200,27 @@ public class HTMLSnippetPresenter implements Configurable, ValueChangeHandler<St
 		
 	@Override
 	public void onValueChange(ValueChangeEvent<String> event) {
-		String evntToken = event.getValue();
-		String[] tokenSplitter = evntToken.split("&&");
-		String eventName = tokenSplitter[0].substring(tokenSplitter[0].indexOf("=") + 1);
-		// Should be some map of data.
-		String entityIdVal = null;
-		if(tokenSplitter.length > 1) { 
-			entityIdVal = tokenSplitter[1].substring(tokenSplitter[1].indexOf("=") + 1);
-		}
+		String appEventJson = event.getValue();
 		
+		Entity appEvent = new JsonToEntityConverter().convertjsonStringToEntity(appEventJson);
+		
+		String eventName = appEvent.getPropertyByName(EventConstant.EVNT_NAME);
+		// Should be some map of data.
+		Serializable eventData = appEvent.getPropertyByName(EventConstant.EVNT_DATA);
+
 		if(isTypeInteresting(eventName)) {
 			Configuration eventConf = getEventConfiguration(eventName);
 			if(eventName.equalsIgnoreCase("onSubmit")) {
 				onSubmit(eventConf);
 			} else {
-				processEvent(eventConf, entityIdVal);
+				String param = eventConf.getPropertyByName(EventConstant.EVNT_PARAM).toString();
+				HashMap<String, Serializable> paramMap = null;
+				
+				if(param != null) {
+					paramMap = new HashMap<String, Serializable>();
+					paramMap.put(param, eventData);
+				}
+				processEvent(eventConf, paramMap);
 			}
 		}
 		
@@ -238,8 +261,8 @@ public class HTMLSnippetPresenter implements Configurable, ValueChangeHandler<St
 	@SuppressWarnings("unchecked")
 	protected HashMap<String, Configuration> getInterestedEvents() {
 		HashMap<String, Configuration> interestedEvents = new HashMap<String, Configuration>();
-		if(getConfigurationValue(ContainerConstant.CT_INTRSDEVNTS) != null) {
-			interestedEvents = (HashMap<String, Configuration>) getConfigurationValue(ContainerConstant.CT_INTRSDEVNTS);
+		if(getConfigurationValue(HTMLSnippetConstant.HS_INTRSDEVNTS) != null) {
+			interestedEvents = (HashMap<String, Configuration>) getConfigurationValue(HTMLSnippetConstant.HS_INTRSDEVNTS);
 		}
 		return interestedEvents;
 	}
@@ -267,7 +290,7 @@ public class HTMLSnippetPresenter implements Configurable, ValueChangeHandler<St
 	}
 	
 	private void processEvent(final Configuration conf, Object eventData) {
-		Integer eventType = Integer.parseInt(conf.getPropertyByName(EventConstant.EVNT_TYPE).toString());
+		/*Integer eventType = Integer.parseInt(conf.getPropertyByName(EventConstant.EVNT_TYPE).toString());
 		
 		if(eventType == EventConstant.EVNT_TRANSWGT) {
 
@@ -307,11 +330,99 @@ public class HTMLSnippetPresenter implements Configurable, ValueChangeHandler<St
 				}
 			} );
 			
-		}
+		}*/
 	}
 
 	public void removeEventHandler() {
 		historyRegistration.removeHandler();
+	}
+
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		String eventType = Integer.toString(event.getEventType());
+		String eventSource = (String) event.getSource();
+		String eventName = eventType + "##" + eventSource;
+		Serializable eventData = (Serializable)event.getEventData();
+		
+		if(isInterestedFieldEvent(eventName)) {
+			Configuration fieldEventConf = getFieldEventConfiguration(eventName);
+			
+			String appContextParam = fieldEventConf.getPropertyByName(FieldEventConstant.EVNT_CONTEXT_PROP);
+			
+			if(appContextParam != null) {
+				Configuration appContextConfig = Configurator.getConfiguration("applicationContext");
+				ArrayList<String> contextParamList = appContextConfig.getPropertyByName("contextparam");
+				
+				if(contextParamList.contains(appContextParam)) {
+					if(eventData instanceof Entity) {
+						ApplicationContext.getInstance().setProperty(appContextParam, (Entity)eventData);
+					} else {
+						ApplicationContext.getInstance().setPropertyByName(appContextParam, eventData);
+					}
+				}
+			}
+			
+			String appEventToFire = fieldEventConf.getPropertyByName(FieldEventConstant.EVENT_NAME);
+
+			Entity appEvent = new Entity();
+			appEvent.setType(new MetaType("EventData"));
+			appEvent.setPropertyByName(EventConstant.EVNT_NAME, appEventToFire);
+			appEvent.setProperty(EventConstant.EVNT_DATA, (Entity)eventData);
+			
+			JSONObject appEventJson = EntityToJsonClientConvertor.createJsonFromEntity(appEvent);
+			
+			History.newItem(appEventJson.toString(), true);
+		}
+	}
+
+	private boolean isInterestedFieldEvent(String eventName) {
+		HashMap<String, Configuration> interestedFieldEvents = getInterestedFieldEvents();
+		Set<String> eventSet = interestedFieldEvents.keySet();
+		
+		if(!eventSet.isEmpty()) {
+			if(eventSet.contains(eventName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private HashMap<String, Configuration> getInterestedFieldEvents() {
+		HashMap<String, Configuration> interestedFieldEvents = new HashMap<String, Configuration>();
+		if(getConfigurationValue(HTMLSnippetConstant.HS_FIELDEVENTS) != null) {
+			interestedFieldEvents = (HashMap<String, Configuration>) getConfigurationValue(HTMLSnippetConstant.HS_FIELDEVENTS);
+		}
+		return interestedFieldEvents;
+	}
+	
+
+	private Configuration getFieldEventConfiguration(String event) {
+		HashMap<String, Configuration> interestedFieldEvents = getInterestedFieldEvents();
+		
+		if(!interestedFieldEvents.isEmpty() && interestedFieldEvents.containsKey(event)) {
+			return interestedFieldEvents.get(event);
+		}
+		return null;
+	}
+
+	@Override
+	public void noMoreData() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEntityReceived(Entity entity) {
+		if(entity != null) {
+			this.entity = entity;
+			populateFields();
+		}
+	}
+
+	@Override
+	public void onEntityUpdated(Entity entity) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

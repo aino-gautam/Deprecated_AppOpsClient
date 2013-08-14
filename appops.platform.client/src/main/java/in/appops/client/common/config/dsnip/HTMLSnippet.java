@@ -1,8 +1,10 @@
 package in.appops.client.common.config.dsnip;
 
+import in.appops.client.common.config.component.base.BaseComponentPresenter;
+import in.appops.client.common.config.component.base.BaseComponentView;
 import in.appops.client.common.config.field.BaseField;
+import in.appops.client.common.config.field.BaseField.BaseFieldConstant;
 import in.appops.client.common.config.util.Configurator;
-import in.appops.client.common.fields.htmleditor.HtmlEditorField;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
@@ -16,7 +18,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class HTMLSnippet extends HTMLPanel {
@@ -58,12 +59,12 @@ public class HTMLSnippet extends HTMLPanel {
 								if(dataConfig != null && !dataConfig.equals("")) {
 								
 									Configuration fieldConf = Configurator.getChildConfiguration(configuration, dataConfig);
+									fieldConf.setPropertyByName(BaseFieldConstant.BF_ID, spanElement.getId());
 									formField.setConfiguration(fieldConf);
 								}
-
+								
 								formField.configure();
 								formField.create();
-
 								snippetElement.put(spanElement.getId(), formField);
 								this.addAndReplaceElement(formField.asWidget(), spanElement);
 
@@ -79,16 +80,15 @@ public class HTMLSnippet extends HTMLPanel {
 								}
 */							}
 						} else if(spanElement.hasAttribute("appopsComponent") && Boolean.valueOf(spanElement.getAttribute("appopsComponent"))) {
-//							BaseComponentPresenter compPres = componentFactory.getComponent(spanElement.getAttribute("widgetType"));
-//							String dataConfig = spanElement.getAttribute("data-config");
-//							Configuration compConfig = Configurator.getConfiguration(dataConfig);
-//							compPres.setConfiguration(compConfig);
-//							
-//							compPres.init();
-//							BaseComponentView component = compPres.getView();
-//							//HTMLPanel htmlPanel = (HTMLPanel)((SimplePanel)snippetForm).getWidget();
-//							snippetForm.addAndReplaceFormFieldElement(component, spanElement);
-//							compPres.load();
+							BaseComponentPresenter compPres = componentFactory.getComponent(spanElement.getAttribute("widgetType"));
+							String dataConfig = spanElement.getAttribute("data-config");
+							Configuration compConfig =  Configurator.getChildConfiguration(configuration, dataConfig);
+							compPres.setConfiguration(compConfig);
+							
+							compPres.configure();
+							BaseComponentView component = compPres.getView();
+							snippetElement.put(spanElement.getId(), component);
+							this.addAndReplaceElement(component, spanElement);
 						}
 					}
 				}
@@ -147,42 +147,6 @@ public class HTMLSnippet extends HTMLPanel {
 		adopt(widget);
 	}
 	
-	public void setEntity(Entity entity) {
-		this.entity = entity;
-	}
-
-	
-	public void populateFields() {
-//		for (Map.Entry<String, Container> formEntry : placeholders.entrySet()) {
-//		    Container form = formEntry.getValue();
-//		    Map<String, Widget> widgetMap = form.getRenderedFieldMap();
-//		    
-//		    for (Map.Entry<String, Widget> widgetEntry : widgetMap.entrySet()) {
-//		    	Widget formWidget = widgetEntry.getValue();
-//		    	
-//		    	if(formWidget instanceof BaseField) {
-//		    		BaseField baseField = (BaseField)formWidget;
-//		    		
-//	    			Key key = (Key)entity.getPropertyByName("id");
-//	    			Long id = (Long)key.getKeyValue();
-//	    			baseField.setBindId(id);
-//		    		
-//	    			if(baseField.isFieldVisible()) {
-//	    			
-//			    		String bindProp = baseField.getBindProperty();
-//			    		if(bindProp != null) {
-//			    			Serializable bindValue = entity.getPropertyByName(bindProp);
-//			    			baseField.setValue(bindValue);
-//			    			
-//	
-//			    		}
-//	    			}
-//		    	}
-//		    }
-//		}
-//		
-	}
-
 	public Configuration getConfiguration() {
 		return configuration;
 	}
@@ -197,6 +161,14 @@ public class HTMLSnippet extends HTMLPanel {
 
 	public void setSnippetElement(Map<String, Widget> snippetElement) {
 		this.snippetElement = snippetElement;
+	}
+
+	public Entity getEntity() {
+		return entity;
+	}
+
+	public void setEntity(Entity entity) {
+		this.entity = entity;
 	}
 
 }
