@@ -1,9 +1,8 @@
 package in.appops.client.common.config.dsnip;
 
-import in.appops.client.common.config.component.base.BaseComponentModel;
 import in.appops.client.common.config.component.base.BaseComponentPresenter;
 import in.appops.client.common.config.component.list.ListComponentPresenter;
-import in.appops.client.common.config.component.list.ListModel;
+import in.appops.client.common.config.component.tree.TreeComponentPresenter;
 import in.appops.client.common.config.field.ActionField;
 import in.appops.client.common.config.field.BaseField;
 import in.appops.client.common.config.field.HTMLField;
@@ -47,20 +46,15 @@ public class ComponentFactoryImpl implements ComponentFactory {
 	}
 
 	private final String LISTCOMPONENT = "listComponent";
+	private final String LISTTREECOMPONENT = "listTreeComponent";
+
 	
 	@Override
 	public BaseComponentPresenter getComponent(String type) {
 		if(type.equalsIgnoreCase(LISTCOMPONENT)) {
 			return new ListComponentPresenter();
-		} 
-		return null;
-	}
-
-	
-	@Override
-	public BaseComponentModel getModel(String type) {
-		if(type.equalsIgnoreCase(LISTCOMPONENT)) {
-			return new ListModel();
+		} else if(type.equalsIgnoreCase(LISTTREECOMPONENT)) {
+			return new TreeComponentPresenter();
 		} 
 		return null;
 	}
