@@ -223,7 +223,7 @@ public class JsonToEntityConverter {
 					intelliThought.setIntelliText(intellitextStr);
 					intelliThought.setIntelliHtml(intellihtmlStr);
 					
-					intelliThought.setLinkedEntities((ArrayList<Entity>)decodeJsonArray(intelliLinkedEntities));
+					//intelliThought.setLinkedEntities((ArrayList<Entity>)decodeJsonArray(intelliLinkedEntities));
 
 					entity.setPropertyByName(propName, intelliThought);
 				} else if(primitiveTypeName.equals("map")){
@@ -232,7 +232,7 @@ public class JsonToEntityConverter {
 					entity.setPropertyByName(propName, valueMap);
 				} else if(primitiveTypeName.equals("arrayList")){
 					JSONArray jsonArr = propValueJson.get(primitiveTypeName).isArray();
-					ArrayList<String> valueMap = decodeJsonArrayStr(jsonArr); 
+					ArrayList<Object> valueMap = decodeJsonArray(jsonArr); 
 					entity.setPropertyByName(propName, valueMap);
 				}
 				else{
@@ -271,15 +271,18 @@ public class JsonToEntityConverter {
 		return entity;
 	}
 
-	private ArrayList<Entity> decodeJsonArray(JSONArray jsonArray){
-		ArrayList<Entity> list = null;
+	private ArrayList<Object> decodeJsonArray(JSONArray jsonArray){
+		ArrayList<Object> list = null;
 		try{
-			list = new ArrayList<Entity>();
+			list = new ArrayList<Object>();
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONValue v = jsonArray.get(i);
 				if(v.isObject() != null){
 					Entity entity =  getConvertedEntity(v.isObject());
 					list.add(entity);
+				} else if(v.isString() != null){
+					JSONString str = v.isString();
+					list.add(str.stringValue());
 				}
 			}
 			
