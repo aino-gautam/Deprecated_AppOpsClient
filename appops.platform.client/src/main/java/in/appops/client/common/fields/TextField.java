@@ -832,7 +832,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 				}
 				
 				if(isDirty()){
-					fieldEvent = new FieldEvent();
+					FieldEvent fieldEvent = new FieldEvent();
 					fieldEvent.setEventSource(this);
 					fieldEvent.setEventData(getValue());
 					fieldEvent.setEventType(FieldEvent.EDITINPROGRESS);
@@ -894,8 +894,10 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 								fieldEvent.setEventType(FieldEvent.ENTERED_HIT);
 						else 
 							fieldEvent.setEventType(FieldEvent.EDITINPROGRESS);
+						
+						AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 					}
-					AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+					
 				}
 			});
 		} catch (Exception e) {
