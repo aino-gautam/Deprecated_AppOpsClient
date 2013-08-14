@@ -18,11 +18,6 @@
 
 		<dependencies>
 		
-		<!-- <dependency>
-  			<groupId>com.gwtck</groupId>
-  			<artifactId>gwt-ckeditor</artifactId>
-  			<version>1.0</version>
-		</dependency> -->
 		<!-- lucene related jars -->
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
@@ -162,7 +157,7 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>14.06.2013</version>
+			<version>13.08.2013</version>
 		</dependency>
 
 		<dependency>
@@ -358,7 +353,7 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>blogging</artifactId>
-			<version>23.07.2013</version>
+			<version>13.08.2013</version>
 		</dependency>
 
 	</dependencies>
@@ -395,9 +390,9 @@
 
 					<modules>
 						<module>in.appops.client.Client</module>
-						 <module>in.appops.showcase.web.gwt.dragonwheel.dragonwheel</module>  
-						<module>in.appops.showcase.web.gwt.fields.fields</module> 
-						<module>in.appops.showcase.web.gwt.intellithought.IntelliThought</module>
+						<!-- <module>in.appops.showcase.web.gwt.dragonwheel.dragonwheel</module> -->  
+						<!-- <module>in.appops.showcase.web.gwt.fields.fields</module>  -->
+						<!-- <module>in.appops.showcase.web.gwt.intellithought.IntelliThought</module>
 						<module>in.appops.showcase.web.gwt.wizardform.wizardform</module>
 						<module>in.appops.showcase.web.gwt.splash.splash</module>
 						<module>in.appops.showcase.web.gwt.contactselector.contactselector</module>
@@ -409,7 +404,7 @@
 						<module>in.appops.showcase.web.gwt.calendarHome.calendarHome</module>
 						<module>in.appops.showcase.web.gwt.chat.chat</module>
 						<module>in.appops.showcase.web.gwt.search.search</module> 
-						<module>in.appops.showcase.web.gwt.snippets.snippets</module>  
+						<module>in.appops.showcase.web.gwt.snippets.snippets</module> -->  
 						<module>in.appops.showcase.web.gwt.dynamicsnippet.dynamicsnippet</module>
 					</modules>
 				</configuration>
