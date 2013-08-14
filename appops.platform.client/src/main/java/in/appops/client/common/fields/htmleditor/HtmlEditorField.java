@@ -1,13 +1,11 @@
 package in.appops.client.common.fields.htmleditor;
 
 import in.appops.client.common.config.field.BaseField;
+import in.appops.client.common.fields.htmleditor.tool.editor.tinymce.client.code.TinyMCEEditor;
 
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.DockPanel;
-import com.google.gwt.user.client.ui.HTML;
 
-public class HtmlEditorField extends BaseField implements ValueChangeHandler<String> {
+public class HtmlEditorField extends BaseField  {
 
 	/**
 	 *	HtmlEditor Configuration Property Constants 
@@ -28,71 +26,36 @@ public class HtmlEditorField extends BaseField implements ValueChangeHandler<Str
 		public static final String FIELD_CONFIG_BASIC_MODE = "FieldConfigBasicMode";
 		public static final String FIELD_CONFIG_FULL_MODE = "FieldConfigFullMode";
 		public static final String FIELD_CONFIG_CUSTOM_MODE = "FieldConfigCustomMode";
+		public static final String HF_EDTCLS = "htmlEditorBoxCss";
 	}
 	
-	private String fieldMode;
-	//private CKConfig config;
-	private HTML content;
-	//private CKEditor editor;
-	private String fieldConfigMode;
-	private String editedHtmlContent;
+	private TinyMCEEditor mceEditor;
 	
 	public HtmlEditorField() {
 		super();
 	}
 	
-	/*public Toolbar createToolbar() {
-		try {
-			ToolbarLine toolbarLine = new ToolbarLine();
-			TOOLBAR_OPTIONS[] options = { TOOLBAR_OPTIONS.Bold, TOOLBAR_OPTIONS.Italic, TOOLBAR_OPTIONS.Font, TOOLBAR_OPTIONS.FontSize, TOOLBAR_OPTIONS.BulletedList, TOOLBAR_OPTIONS.Link};
-			toolbarLine.addAll(options);
-			Toolbar toolbar = new Toolbar();
-			toolbar.add(toolbarLine);
-			return toolbar;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}*/
+
 	
 	@Override
 	public void configure() {
 		super.configure();
+		mceEditor = new TinyMCEEditor();
 		
-		/*fieldConfigMode = getFieldConfigMode();
-		if(fieldConfigMode != null) {
-			if(fieldConfigMode.equals(HtmlEditorFieldConstant.FIELD_CONFIG_FULL_MODE)) {
-				config = CKConfig.full;
-			} else {
-				config = CKConfig.basic;
-			}
-		} else {
-			config = CKConfig.basic;
-		}
-		
-		fieldMode = getFieldMode();
 		String height = getFieldHeight();
-		config.setHeight(height);
+		mceEditor.setHeight(height);
 		String width = getFieldWidth();
-		config.setWidth(width);
-		boolean isEnable = getFieldResizeEnable();
-		if(isEnable) {
-			int maxResizeHeight = getMaxResizeHeight();
-			config.setResizeMaxHeight(maxResizeHeight);
-			
-			int minResizeHeight = getMinResizeHeight();
-			config.setResizeMinHeight(minResizeHeight);
-			
-			int maxResizeWidth = getMaxResizeWidth();
-			config.setResizeMaxWidth(maxResizeWidth);
-			
-			int minResizeWidth = getMinResizeWidth();
-			config.setResizeMinWidth(minResizeWidth);
-		}
-		editor = new CKEditor(config);*/
-		//editor.addValueChangeHandler(this);
+		mceEditor.setWidth(width);
 	}
 	
+//	private String getEditorPrimaryCls() {
+//		String css = "appops-SpinnerBoxPrimary";
+//		if(getConfigurationValue(HtmlEditorFieldConstant.HF_EDTCLS) != null) {
+//			css = getConfigurationValue(HtmlEditorFieldConstant.HF_EDTCLS).toString();
+//		}
+//		return css;
+//	}
+
 	@Override
 	protected String getBaseFieldPrimCss() {
 		String primaryCss = super.getBaseFieldPrimCss();
@@ -103,13 +66,13 @@ public class HtmlEditorField extends BaseField implements ValueChangeHandler<Str
 		return primaryCss;
 	}
 
-	protected String getBaseFieldCss() {
-		String depCss = super.getBaseFieldDependentCss();
+	/*protected String getBaseFieldCss() {
+		String depCss = super.getBaseFieldCss();
 		if(depCss == null) {
 			return "appops-HtmlEditorFieldDependent";
 		}	
 		return depCss;
-	}
+	}*/
 	
 	private String getFieldConfigMode() {
 		String mode = null;
@@ -203,101 +166,31 @@ public class HtmlEditorField extends BaseField implements ValueChangeHandler<Str
 	public void create() {
 		try {
 			super.create();
-			if(fieldMode != null) {
-				if(fieldMode.equals(HtmlEditorFieldConstant.FIELD_EDIT_MODE)) {
-					createEditModeUI();
-				} else {
-					createViewModeUI();
-				}
-			}
+			basePanel.add(mceEditor, DockPanel.CENTER);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	private void createViewModeUI() {
-		content = new HTML();
-		content.setSize("100%", "100%");
-		basePanel.add(content,DockPanel.CENTER);
-	}
-
-	private void createEditModeUI() {
-		/*if(fieldConfigMode != null) {
-			if(fieldConfigMode.equals(HtmlEditorFieldConstant.FIELD_CONFIG_CUSTOM_MODE)) {
-				Toolbar toolbar = createToolbar();
-				config.setToolbar(toolbar);
-			}
-		}
-		basePanel.add(editor,DockPanel.CENTER);*/
-	}
-	
-	public void setHtmlContent(String html) {
-		if(content != null) {
-			content.setHTML(html);
-		}
-	}
-	
-	public String getHtmlContent() {
-		String html = null;
-		if(content != null) {
-			html = content.getText();
-		}
-		return html;
-	}
-	
-	public String getEditedContent() {
-		String html = null;
-		/*if(editor != null) {
-			html = editor.getHTML();
-		}*/
-		return html;
-	}
-	
-	public void changeToViewMode() {
-		editedHtmlContent = getEditedContent();
-
-		basePanel.clear();
-		if(content == null) {
-			createViewModeUI();
-		} else {
-			basePanel.add(content,DockPanel.CENTER);
-		}
-		
-		if(editedHtmlContent == null || editedHtmlContent.equals("")) {
-			setHtmlContent("-");
-		} else {
-			setHtmlContent(editedHtmlContent);
-		}
-	}
-	
-	public void changeToEditMode() {
-		/*basePanel.clear();
-		if(editor == null) {
-			createEditModeUI();
-		} else {
-			basePanel.add(editor,DockPanel.CENTER);
-		}
-		
-		String htmlContent = getHtmlContent();
-		if(htmlContent != null) {
-			editor.setHTML(htmlContent);
-		} else {
-			editor.setHTML("");
-		}*/
 	}
 
 	@Override
-	public void onValueChange(ValueChangeEvent<String> event) {
-		editedHtmlContent = event.getValue();
+	public void setValue(Object value) {
+		
+		try {
+			super.setValue(value);
+			mceEditor.setEditorContents(value.toString());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
-	public void setContentToEditor(String content) {
-		/*try {
-			if(editor != null) {
-				editor.setHTML(content);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
+	@Override
+	public Object getValue() {
+		String html = null;
+		if(mceEditor != null) {
+			html = mceEditor.getText();
+		}
+		return html;
 	}
 }
