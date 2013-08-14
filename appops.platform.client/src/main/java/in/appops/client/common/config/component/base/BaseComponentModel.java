@@ -1,4 +1,4 @@
-package in.appops.client.common.config.component.base;
+/*package in.appops.client.common.config.component.base;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -167,3 +167,4 @@ public class BaseComponentModel implements AppOpsModel{
 	
 
 }
+*/

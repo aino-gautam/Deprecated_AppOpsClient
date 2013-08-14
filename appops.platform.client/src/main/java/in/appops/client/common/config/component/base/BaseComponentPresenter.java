@@ -1,6 +1,5 @@
 package in.appops.client.common.config.component.base;
 
-import in.appops.client.common.config.component.base.BaseComponentView.BaseComponentConstant;
 import in.appops.client.common.config.model.AppopsBaseModel;
 import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.shared.Configuration;
@@ -19,10 +18,13 @@ public class BaseComponentPresenter implements Configurable, ValueChangeHandler<
 	protected BaseComponentView view;
 	protected AppopsBaseModel model;
 
-	private String componentType;
 	private HandlerRegistration historyRegistration;
 
-	public void init() {
+	public BaseComponentPresenter() {	}
+	
+	public void init() { }
+	
+	public void configure() {
 		historyRegistration = History.addValueChangeHandler(this);
 	}
 	
@@ -59,14 +61,6 @@ public class BaseComponentPresenter implements Configurable, ValueChangeHandler<
 		return new Configuration();
 	}
 	
-	public void setComponentType(String componentType) {
-		this.componentType = componentType;
-	}
-	
-	public String getComponentType() {
-		return componentType;
-	}
-	
 	@Override
 	public Configuration getConfiguration() {
 		return configuration;
@@ -92,6 +86,10 @@ public class BaseComponentPresenter implements Configurable, ValueChangeHandler<
 	public void setModel(AppopsBaseModel model) {
 		this.model = model;
 	}
+	
+	public void updateConfiguration(String confProp) {
+		
+	}
 
 	@Override
 	public void onValueChange(ValueChangeEvent<String> event) {
@@ -101,5 +99,14 @@ public class BaseComponentPresenter implements Configurable, ValueChangeHandler<
 	
 	public void removeEventHandler() {
 		historyRegistration.removeHandler();
+	}
+	
+	public interface BaseComponentConstant {
+		String BC_ID = "component.id";
+		String BC_PCLS = "component.view.basePrimaryCss";
+		String BC_DCLS = "component.view.baseDependentCss";
+		String BC_CONFIGMODEL = "model";
+		String BC_CONFIGVIEW = "view";
+		String BC_INTERESTED_EVENTS = "interestedEvents";
 	}
 }

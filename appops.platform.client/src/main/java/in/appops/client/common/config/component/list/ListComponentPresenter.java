@@ -5,6 +5,7 @@ import in.appops.client.common.config.dsnip.Container.ContainerConstant;
 import in.appops.client.common.config.dsnip.EventConstant;
 import in.appops.client.common.config.model.EntityListModel;
 import in.appops.client.common.core.EntityListReceiver;
+import in.appops.client.common.util.JsonToEntityConverter;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
@@ -13,117 +14,95 @@ import java.util.HashMap;
 import java.util.Set;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.History;
 
-public class ListComponentPresenter extends BaseComponentPresenter {
+public class ListComponentPresenter extends BaseComponentPresenter implements EntityListReceiver {
+	
+	public ListComponentPresenter () {
+		model = new EntityListModel();
+		((EntityListModel)model).setReceiver(this);
+		view = new ListComponentView();
+	}
 	
 	@Override
-	public void init() {
-		super.init();
-
-		model = new EntityListModel();
-		view = new ListComponentView();
+	public void configure() {
+		super.configure();
 		
 		model.setConfiguration(getModelConfiguration());
 		model.configure();
 		view.setConfiguration(getViewConfiguration());
 		
-		view.setModel(model);
 		view.configure();
 		view.create();
 	}
 	
+	
 	@Override
-	public void load() {
-		super.load();
-		if(isTypeInteresting("onLoad")) {
-			Configuration eventConf = getEventConfiguration("onLoad");
-			processEvent(eventConf, null);
-		}
-	}
+	public void init() {
+		super.init();
 
+		((EntityListModel)model).fetchEntityList();
+	}
+	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void onValueChange(ValueChangeEvent<String> event) {
-/*		 String evntToken = event.getValue();
-		 String[] tokenSplitter = evntToken.split("&&");
-		 String eventName = tokenSplitter[0].substring(tokenSplitter[0].indexOf("=") + 1);
-//		 String eventSource = tokenSplitter[1].substring(tokenSplitter[1].indexOf("=") + 1);
-		 
-		 String snippetType = tokenSplitter[2].substring(tokenSplitter[2].indexOf("=") + 1);
-		 String instanceType = tokenSplitter[3].substring(tokenSplitter[3].indexOf("=") + 1);
-		 
-		 ListComponentView listView = (ListComponentView)view;
-		 listView.setSnippetType(snippetType);
-		 listView.setInstanceType(instanceType);
-		 
-		 if(view.isTypeInteresting(eventName)) {
-	        if (eventName.equals("viewArticle")) {
-	        	String opName = tokenSplitter[1].substring(tokenSplitter[1].indexOf("=") + 1);
-	        	String entityIdVal = tokenSplitter[4].substring(tokenSplitter[4].indexOf("=") + 1);
-	        	Long entId = Long.parseLong(entityIdVal);
-	        	//model.getEntity(opName, entId, this);	
-	         } else if(eventName.equals("editArticle")) {
-	        	 String opName = tokenSplitter[1].substring(tokenSplitter[1].indexOf("=") + 1);
-		        	String entityIdVal = tokenSplitter[4].substring(tokenSplitter[4].indexOf("=") + 1);
-		        	Long entId = Long.parseLong(entityIdVal);
-		        	//model.getEntity(opName, entId, this);	
-	         }
-		 }*/
+		String appEventJson = event.getValue();
 		
-		String evntToken = event.getValue();
-		String[] tokenSplitter = evntToken.split("&&");
-		String eventName = tokenSplitter[0].substring(tokenSplitter[0].indexOf("=") + 1);
-		// Should be some map of data.
-		String entityIdVal = null;
-		if(tokenSplitter.length > 1) { 
-			entityIdVal = tokenSplitter[1].substring(tokenSplitter[1].indexOf("=") + 1);
-		}
+		Entity appEvent = new JsonToEntityConverter().convertjsonStringToEntity(appEventJson);
 		
+		String eventName = appEvent.getPropertyByName(EventConstant.EVNT_NAME);
+		Object eventData = appEvent.getPropertyByName(EventConstant.EVNT_DATA);
+
 		if(isTypeInteresting(eventName)) {
 			Configuration eventConf = getEventConfiguration(eventName);
-			processEvent(eventConf, entityIdVal);
+			processEvent(eventConf, eventData);
 		}
  	}
 	
+	@SuppressWarnings("unchecked")
 	private void processEvent(Configuration conf, Object eventData) {
-		Integer eventType = Integer.parseInt(conf.getPropertyByName(EventConstant.EVNT_TYPE).toString());
-		if(eventType == EventConstant.EVNT_TRANSWGT) {
-
-		} else if(eventType == EventConstant.EVNT_EXECOP) {
-			String operation = conf.getPropertyByName(EventConstant.EVNT_OPERATION).toString();
-			
-			EntityListModel listModel = (EntityListModel)model;
-			listModel.executeOperation(operation, null, new EntityListReceiver() {
-				
-				@Override
-				public void updateCurrentView(Entity entity) {	}
-				
-				@Override
-				public void onEntityListUpdated() {}
-				
-				@Override
-				public void onEntityListReceived(EntityList entityList) {
-					if(entityList != null && !entityList.isEmpty()) {
-						ListComponentView listView = (ListComponentView)view;
-						listView.initializeListPanel(entityList);
-					}
-				}
-				
-				@Override
-				public void noMoreData() {	}
-			} );
-			
-		}
+//		try {
+//			Configuration updateConf =  conf.getPropertyByName("updateConfiguration");
+//			Set<String> confSet = updateConf.getValue().keySet();
+//			
+//			for(String confToUpdate : confSet) {
+//				Object confValue = updateConf.getPropertyByName(confToUpdate);
+//				configuration.setPropertyByName(confToUpdate, (Serializable)confValue);
+//			}
+//	
+//			ArrayList<Configuration> paramList = model.getQueryParamList();
+//			
+//			for(Configuration paramConfig : paramList) {
+//				Serializable value = null; paramConfig.getPropertyByName("value");
+//					String paramType = paramConfig.getPropertyByName("paramType");
+//					if(paramType == null) {
+//						value = paramConfig.getPropertyByName("value");
+//					} else {
+//						if(paramType.equals("entityParam")) {
+//							Entity entity = (Entity)eventData;
+//							String entityProp = paramConfig.getPropertyByName("entityProp");
+//							
+//							value = entity.getPropertyByName(entityProp);
+//						} else {
+//								String entityProp = paramConfig.getPropertyByName("entityProp");
+//								
+//								value = ApplicationContext.getInstance().getGraphPropertyValue(entityProp, null);
+//								
+//								if(value instanceof Key) {
+//									Key key = (Key)value;
+//									value = key.getKeyValue();
+//								}
+//						}
+//					}
+//					paramConfig.setPropertyByName("value", value);
+//			}
+//			
+//			init();
+//		} catch(Exception e) {
+//			
+//		}
 	}
 	
-	private int getEventType() {
-		int eventType = EventConstant.EVNT_TRANSWGT;
-		if(getConfigurationValue(EventConstant.EVNT_TYPE) != null) {
-			eventType = Integer.parseInt(getConfigurationValue(EventConstant.EVNT_TYPE).toString());
-		}
-		return eventType;
-	}
 	
 	@SuppressWarnings("unchecked")
 	protected HashMap<String, Configuration> getInterestedEvents() {
@@ -147,7 +126,7 @@ public class ListComponentPresenter extends BaseComponentPresenter {
 		return false;
 	}
 	
-	private Configuration getEventConfiguration(String event) {
+	protected Configuration getEventConfiguration(String event) {
 		HashMap<String, Configuration> interestedEvents = getInterestedEvents();
 		
 		if(!interestedEvents.isEmpty() && interestedEvents.containsKey(event)) {
@@ -156,6 +135,56 @@ public class ListComponentPresenter extends BaseComponentPresenter {
 		return null;
 	}
 	
+	
+	@Override
+	public void updateConfiguration(String confProp) {
+		/*super.updateConfiguration(confProp);
+		
+		String[] splitConf = confProp.split("\\."); 
+		if(splitConf != null && splitConf.length > 0) {
+			
+			if(splitConf[0].equals("model")) {
+				
+			} else if(splitConf[0].equals("view")) {
+				
+			} else {
+				
+			}
+		}*/
+	}
 
+	@Override
+	public void noMoreData() {
+		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public void onEntityListReceived(EntityList entityList) {
+		if(entityList != null && !entityList.isEmpty()) {
+			ListComponentView listView = (ListComponentView)view;
+			listView.setEntityList(entityList);
+			listView.populate();
+		}
+		
+	}
+
+	@Override
+	public void onEntityListUpdated() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateCurrentView(Entity entity) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	public interface ListComponentConstant extends BaseComponentConstant {
+		String LC_LISTCLS = "listCss";
+		String LC_SNIPPETTYPE = "listSnippetType";
+		String LC_INSTANCETYPE = "listSnippetInstanceType";
+	}
 }

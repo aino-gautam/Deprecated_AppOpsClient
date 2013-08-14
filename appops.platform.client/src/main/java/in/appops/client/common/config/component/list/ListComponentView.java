@@ -1,6 +1,7 @@
 package in.appops.client.common.config.component.list;
 
 import in.appops.client.common.config.component.base.BaseComponentView;
+import in.appops.client.common.config.component.list.ListComponentPresenter.ListComponentConstant;
 import in.appops.client.common.config.dsnip.HTMLSnippetPresenter;
 import in.appops.client.common.config.dsnip.SnippetGenerator;
 import in.appops.client.common.gin.AppOpsGinjector;
@@ -14,18 +15,12 @@ import com.google.gwt.user.client.ui.HasAlignment;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
 public class ListComponentView extends BaseComponentView  {
-	
-	public interface ListComponentConstant extends BaseComponentConstant {
-		String LC_LISTCLS = "listCss";
-		String LC_SNIPPETTYPE = "listSnippetType";
-		String LC_INSTANCETYPE = "listSnippetInstanceType";
-	}
-
 	private ScrollPanel scrollPanel;
-	private FlexTable listPanel;
+	protected FlexTable listPanel;
 	private int row = 0;
 	private String instanceType;
 	private String snippetType;
+	private EntityList entityList;
 
 
 	public ListComponentView() {
@@ -79,20 +74,25 @@ public class ListComponentView extends BaseComponentView  {
 
 	
 	
-	public void initializeListPanel(EntityList entityList) {
-		
-		AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
-		SnippetGenerator snippetGenerator = (SnippetGenerator)injector.getSnippetGenerator();
+	protected void populate() {
 		listPanel.clear();
 		row = 0;
 		for(Entity entity : entityList){
-			HTMLSnippetPresenter snippetPres = snippetGenerator.generateSnippet(snippetType, instanceType);
+			HTMLSnippetPresenter snippetPres  = getChildSnippet();
 			listPanel.setWidget(row ,0 ,snippetPres.getHTMLSnippet());
 			snippetPres.setEntity(entity);
 			snippetPres.load();
 			row++;
 		}
 	}
+
+	private HTMLSnippetPresenter getChildSnippet() {
+		AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
+		SnippetGenerator snippetGenerator = (SnippetGenerator)injector.getSnippetGenerator();
+		HTMLSnippetPresenter snippetPres = snippetGenerator.generateSnippet(snippetType, instanceType);
+		return snippetPres;
+	}
+
 
 	private String getInstanceType() {
 		String instanceType = null;
@@ -109,5 +109,15 @@ public class ListComponentView extends BaseComponentView  {
 			snippetType = getConfigurationValue(ListComponentConstant.LC_SNIPPETTYPE).toString();
 		}
 		return snippetType;
+	}
+
+
+	public EntityList getEntityList() {
+		return entityList;
+	}
+
+
+	public void setEntityList(EntityList entityList) {
+		this.entityList = entityList;
 	}
 }

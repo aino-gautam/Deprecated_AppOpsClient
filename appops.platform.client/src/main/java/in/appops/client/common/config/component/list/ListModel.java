@@ -1,4 +1,4 @@
-package in.appops.client.common.config.component.list;
+/*package in.appops.client.common.config.component.list;
 
 import in.appops.client.common.config.component.base.BaseComponentModel;
 import in.appops.client.common.core.EntityListReceiver;
@@ -20,3 +20,4 @@ public class ListModel extends BaseComponentModel {
 		return super.getEntityList(noOfEntities, listReceiver);
 	}
 }
+*/
