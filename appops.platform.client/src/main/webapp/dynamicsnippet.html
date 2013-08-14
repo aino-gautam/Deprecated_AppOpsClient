@@ -38,13 +38,6 @@
 					<a href="#">All About Appops</a>
 				</h1>
 
-				<!-- <nav class="art-nav">
-					<ul class="art-hmenu">
-						<li><a href="blog.html" class="active">Community</a></li>
-						<li><a href="blog.html" class="active">Developers</a></li>
-						<li><a href="blog.html" class="active">Get Your Own</a></li>
-					</ul>
-				</nav> -->
 				<div class="art-nav">
 					<span id="headerPlaceHolder" widgetContainerType="placeholder" data-config="blogHeaderPlaceHonder">
 					</span>
@@ -52,41 +45,17 @@
 
 			</header>
 			<div class="art-layout-wrapper">
-				<!-- <div class="articlebodyTopLink">
-					<span id="articlebodyTopLinkPlcHldr" widgetContainerType="form">
-					<table cellspacing="5" cellpadding="0"> 
-						<tbody> 
-							<tr>
-								<td> 
-									<span id= "blogHomeLink" appopsfield="true" widgetType= "actionField" data-config="blogHomeLinkConfig"> </span>
-								</td>
-								<td> 
-									<span id= "writeArticleActionLink" appopsfield="true" widgetType= "actionField" data-config="writeArticleLinkConfig"> </span>
-								</td>
-								<td>
-									<span id= "authorHomeActionLink" appopsfield="true" widgetType= "actionField" data-config="authorHomeLinkConfig"> </span>
-								</td>	
-							</tr>
-						</tbody>
-					</table>
-					</span>
-				</div> -->
+				</div> 
 				<div class="art-content-layout">
 					<div class="art-content-layout-row">
 						<div class="art-layout-cell art-sidebar1">
 							<div class="art-vmenublock clearfix">
-								<div class="art-vmenublockheader">
-									<h3 class="t">Recent Posts</h3>
-								</div>
 								<div class="art-vmenublockcontent">
-									<span id="recentPostPlaceHolder" widgetContainerType="placeholder" data-config="recentPostPlaceHonder">
-										<div class="art-vmenublockcontent">
-											<span id="recentArticleList" appopsComponent="true"
-												widgetType="listComponent"
-												data-config="recentAuthorArticleListConfig"> </span>
-										</div>
+									<span id="recentPostPlaceHolder" widgetContainerType="placeholder" data-config="blogArticleListPlaceHolder">
 									</span>
-									<!-- <span id="articleListPlaceHolderForBlog" widgetContainerType="placeholder" data-config="articleListPlaceHolderForBlog">
+									<span id="articleTreePlaceHolder" widgetContainerType="placeholder" data-config="blogArticleListTreePlaceHolder">
+									</span>
+									<!-- <span id="blogArticleListPlaceHolder" widgetContainerType="htmlsnippet" snippetType="blogArticleSnippet" snippetInstance="blogArticleListSnippet">
 									</span> -->
 								</div>
 							</div>
@@ -94,14 +63,7 @@
 						<div class="art-layout-cell art-content">
 							<div class="art-post art-article">
 								<span id="articleSnippetPlaceHolder" widgetContainerType="placeholder" data-config="articleSnippetPlaceHolder">
-									<div class="art-vmenublockcontent">
-										<span id="articleSnippetList" appopsComponent="true"
-											widgetType="listComponent"
-											data-config="articleSnippetListConfig"> </span>
-									</div>
 								</span>
-								<!-- <span id="blogDetailsPlaceHolder" widgetContainerType="placeholder" data-config="blogDetailsPlaceHolder">
-								</span> -->
 							</div>
 						</div>
 					</div>
