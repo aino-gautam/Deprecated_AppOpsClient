@@ -437,14 +437,18 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 					errors.add(errorText);
 			} else if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC)) {
 				errors.addAll(numericTextbox.validate());
+			}else if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX)) {
+				if (value.equals("")) {
+					if (!isAllowBlank()) {
+						errorText = getBlankFieldText();
+						errors.add(errorText);
+					}
+				}
 			}
 		} catch (Exception e) {
 			    logger.log(Level.SEVERE, "[TextField] ::Exception In getErrors method "+e);
-			
 		}
-				
 		return errors;
-		
 	}
 	
 	/**
@@ -456,7 +460,15 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			logger.log(Level.INFO, "[TextField] ::In setErrorInline method ");
 			getWidget().addStyleName(getErrorMsgCls());
 			getWidget().addStyleName(getErrorIconCls());
-			getWidget().setTitle(getInvalidMsg());
+			
+			String errorMsg = "";
+			if(!getErrors(getFieldValue()).isEmpty()){
+				for(String error : getErrors(getFieldValue())) {
+					errorMsg = errorMsg + error + ". ";
+				}
+				getWidget().setTitle(errorMsg);
+			}else
+				getWidget().setTitle(getInvalidMsg());
 			
 			if(getErrorIconBlobId()!=null)
 				setCssPropertyToElement(getWidget(), getErrorIconBlobId());
