@@ -1,5 +1,5 @@
 var snippetStore = {
-entityLinkSnippet: "<table cellspacing=\"1\" cellpadding=\"0\" style=\"width: 100%;\"><tbody><tr><td align=\"left\" style=\"vertical-align: top; \">" +
+entityLinkSnippet: "<table cellspacing=\"5\" cellpadding=\"0\" style=\"width: 100%;\"><tbody><tr><td align=\"left\" style=\"vertical-align: top; \">" +
 					"<span id=\"entityLink\" appopsField=\"true\" widgetType= \"actionField\" data-config=\"entityLink\"></span>" +
 					"</td><td style=\"float: right;" + 
 					"\">" + 
@@ -34,7 +34,7 @@ entityContentSnippet:"		<header class=\"entry-header\">\n" +
 	//	"			</div>\n" + 
 		"		</header>\n" + 
 		"		<div class=\"entry-content\">\n" + 
-		"			<span id=\"contentHtmlField\" appopsField=\"true\" widgetType= \"htmlField\" data-config=\"content\"></span>\n" +
+		"				<span id=\"contentHtmlField\" appopsField=\"true\" widgetType= \"htmlField\" data-config=\"content\"></span>\n" + 
 		"		</div>",
 entityEditCreateSnippet:"<table cellspacing=\"10\" cellpadding=\"0\">\n" + 
 		"		<tbody>\n" + 
@@ -78,45 +78,21 @@ pageHeaderSnippet:"<table style=\"float: right;\" cellspacing=\"5\" cellpadding=
 		"					</tr>\n" + 
 		"				</tbody>\n" + 
         "  		  </table>",		
-articleListSnippetForBlog: "<table cellspacing=\"1\" cellpadding=\"0\" style=\"width: 100%;\"><tbody><tr><td align=\"left\" style=\"vertical-align: top; \">" +
-							"<span id=\"blogListBoxField\" appopsField=\"true\" widgetType= \"listBoxField\" data-config=\"listBoxField\"></span>" +
-							"</td></tr></tbody></table>",	
-blogDetailsSnippet: "<table cellspacing=\"1\" cellpadding=\"0\" style=\"width: 100%;\">" +
+blogArticleSnippet: "<div class=\"art-vmenublockheader\">"+ 
+		"				<h3 class=\"t\">Blogs</h3>"+ 
+		"			</div>" +
+		"			<table cellspacing=\"1\" cellpadding=\"0\" style=\"width: 100%;\">" +
 		"				<tbody>" +
 		"					<tr>" +
 		"						<td align=\"left\" style=\"vertical-align: top; \">" +
-		"							<table cellspacing=\"2\" cellpadding=\"0\" style=\"width: 100%;\">" +
-		"								<tbody>" +
-		"									<tr>" +
-		"										<td>" +
-		"		     								<span id=\"blogTitleLbl\" appopsField=\"true\" widgetType= \"labelField\" data-config=\"blogTitleLblConfig\"></span>" +
-		"										</td>" +
-		"									</tr>" +
-		"									<tr>" +
-		"										<td>" +
-		"											<span id=\"AuthorLbl\" appopsField=\"true\" widgetType= \"labelField\" data-config=\"AuthorLblConfig\"></span>" +
-		"										</td>" +
-		"									</tr>" +
-		"								</tbody>" +
-		"							</table>" +
+		"							<span id=\"blogListBoxField\" appopsField=\"true\" widgetType= \"listBoxField\" data-config=\"blogListBoxField\"></span>" +
 		"						</td>" +
+		"					</tr>" +
+		"					<tr>" +
 		"						<td align=\"left\" style=\"vertical-align: top; \">" +
-		"							<table cellspacing=\"2\" cellpadding=\"0\" style=\"width: 100%;\">" +
-		"								<tbody>" +
-		"									<tr>" +
-		"										<td>" +
-		"											<span id=\"blogDescTitleLbl\" appopsField=\"true\" widgetType= \"labelField\" data-config=\"blogDescTitleLblConfig\"></span>" +
-		"										</td>" +
-		"									</tr>" +
-		"									<tr>" +
-		"										<td>" +
-		"		     								<span id=\"blogDescriptionLbl\" appopsField=\"true\" widgetType= \"htmlField\" data-config=\"blogDescriptionLblConfig\"></span>" +
-		"										</td>" +
-		"									</tr>" +
-		"								</tbody>" +
-		"							</table>" +
+		/*"							<span id=\"articleListTree\" appopsComponent=\"true\" widgetType= \"listTreeComponent\" data-config=\"articleListTree\"></span>" +*/
 		"						</td>" +
 		"					</tr>" +
 		"				</tbody>" +
-		"			</table>",
-};
+		"			</table>",	
+}; 
