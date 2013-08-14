@@ -831,6 +831,14 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 					setValue(getValue());
 				}
 				
+				if(isDirty()){
+					fieldEvent = new FieldEvent();
+					fieldEvent.setEventSource(this);
+					fieldEvent.setEventData(getValue());
+					fieldEvent.setEventType(FieldEvent.EDITINPROGRESS);
+					AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+				}
+				
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[TextField] ::Exception In onKeyUp method "+e);
