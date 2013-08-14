@@ -10,7 +10,6 @@
 	<inherits name="gwtupload.GWTUpload"/>
 	<inherits name="com.google.web.bindery.autobean.AutoBean"/>
 	<inherits name="com.google.gwt.json.JSON" />
-	<!-- <inherits name='com.gwtck.GWTCK'/> -->
 	<stylesheet src="Upload.css"/>
 	
 	<source path="client" />
