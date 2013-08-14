@@ -6,13 +6,14 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.Defa
 import in.appops.platform.core.shared.Configuration;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class AppopsBaseModel implements AppopsModel {
 	
 	public interface AppopsModelConstant {
-		String QUERYNM = "queryname";
-		String OPRNM = "operationname";
-		String LISTSIZE = "listSize";
+		String ABM_QRY_NAME = "queryname";
+		String ABM_OPR_NM = "operationname";
+		String ABM_QRY_PARAM = "queryParam";
 	}
 	
 	protected final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
@@ -21,6 +22,7 @@ public class AppopsBaseModel implements AppopsModel {
 	protected Configuration configuration;
 	protected String operationName;
 	protected String queryName;
+//	protected ArrayList<Configuration> queryParamList;
 	
 	@Override
 	public Configuration getConfiguration() {
@@ -42,11 +44,17 @@ public class AppopsBaseModel implements AppopsModel {
 		this.queryName = queryName;
 	}
 
+//	@Override
+//	public void setQueryParamList(ArrayList<Configuration> queryParamList) {
+//		this.queryParamList = queryParamList;
+//	}
+	
 	@Override
 	public void configure() {
 		setOperationName(getOperationName());
+		setQueryName(getQueryName());
+//		setQueryParamList(getQueryParamList());
 	}
-	
 	
 	protected boolean hasConfiguration(String configKey) {
 		if(configuration != null && configuration.getPropertyByName(configKey) != null) {
@@ -64,10 +72,26 @@ public class AppopsBaseModel implements AppopsModel {
 	
 	public String getOperationName() {
 		String operation = null;
-		if(getConfigurationValue(AppopsModelConstant.OPRNM) != null) {
-			operation = getConfigurationValue(AppopsModelConstant.OPRNM).toString();
+		if(getConfigurationValue(AppopsModelConstant.ABM_OPR_NM) != null) {
+			operation = getConfigurationValue(AppopsModelConstant.ABM_OPR_NM).toString();
 		}
 		return operation;
+	}
+
+	public String getQueryName() {
+		String queryName = null;
+		if(getConfigurationValue(AppopsModelConstant.ABM_QRY_NAME) != null) {
+			queryName = getConfigurationValue(AppopsModelConstant.ABM_QRY_NAME).toString();
+		}
+		return queryName;
+	}
+	
+	public Configuration getQueryParam() {
+		Configuration param = null;
+		if(getConfigurationValue(AppopsModelConstant.ABM_QRY_PARAM) != null) {
+			param = (Configuration) getConfigurationValue(AppopsModelConstant.ABM_QRY_PARAM);
+		}
+		return param;
 	}
 
 }
