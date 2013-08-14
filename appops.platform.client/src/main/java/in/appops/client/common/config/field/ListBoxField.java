@@ -7,6 +7,7 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.util.EntityList;
@@ -319,9 +320,11 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 				nameVsEntity = new HashMap<String, Entity>();
 						
 			for(Entity entity : entityList){
-					String item = entity.getPropertyByName(getEntPropToShow());
-					nameVsEntity.put(item, entity);
-					listBox.addItem(item);
+				String item = entity.getPropertyByName(getEntPropToShow());
+				Key keyId = (Key)entity.getPropertyByName("id");
+				Long id = (Long) keyId.getKeyValue();
+				nameVsEntity.put(id.toString(), entity);
+				listBox.addItem(item, id.toString());
 			}
 			
 			if(getDefaultSelectedText()!=null){
@@ -431,11 +434,13 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 			if(fireEvent){
 				
 				FieldEvent fieldEvent = new FieldEvent();
-				String selectedtem = getValue().toString();
+				String selectedItem = getValue().toString();
+				String selectedValue = getSelectedValue().toString();
+				Entity entity = nameVsEntity.get(selectedValue);
 				SelectedItem selectedEntity = new SelectedItem();
-				selectedEntity.setItemString(selectedtem);
+				selectedEntity.setItemString(selectedItem);
 				if(nameVsEntity!=null){
-					selectedEntity.setAssociatedEntity(nameVsEntity.get(selectedtem));
+					selectedEntity.setAssociatedEntity(entity);
 				}
 				fieldEvent.setEventSource(this);
 				fieldEvent.setEventData(selectedEntity);
@@ -449,11 +454,12 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	}
 
 
+	@SuppressWarnings("unchecked")
 	private void executeOperation(Map parameterMap) {
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In executeOperation  method ");
 			StandardAction action = new StandardAction(EntityList.class, getOperationName(), parameterMap);
-			dispatch.execute(action, new AsyncCallback<Result>() {
+			dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -461,10 +467,10 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 				}
 
 				@Override
-				public void onSuccess(Result result) {
+				public void onSuccess(Result<EntityList> result) {
 					
 					if(result!=null){
-						EntityList list   = (EntityList) result.getOperationResult();
+						EntityList list   = result.getOperationResult();
 						if(!list.isEmpty())
 							populateEntityList(list);
 					}
@@ -474,6 +480,27 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In executeOperation  method :"+e);
 		}
+	}
+	
+/*	private String getDefaultValueName() {
+		String defaultName = null;
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getDefaultValueName  method ");
+			if(getConfigurationValue(ListBoxFieldConstant.LISTBOX_DEFAULT_VALUE) != null) {
+				String value =(String) getConfigurationValue(ListBoxFieldConstant.LISTBOX_DEFAULT_VALUE);
+				defaultName = value;
+			} else {
+				defaultName = "-- Select --";
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getDefaultValueName  method :"+e);
+		}
+		return defaultName;
+	}
+	*/
+	public Object getSelectedValue() {
+		String selectedValue = listBox.getValue(listBox.getSelectedIndex());
+		return selectedValue;
 	}
 	
 	public interface ListBoxFieldConstant extends BaseFieldConstant{

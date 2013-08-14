@@ -1,8 +1,14 @@
 package in.appops.client.common.config.field;
 
+import in.appops.client.common.config.dsnip.EventConstant;
+import in.appops.client.common.util.EntityToJsonClientConvertor;
+import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.type.MetaType;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
@@ -168,10 +174,18 @@ public class ActionField extends BaseField implements ClickHandler{
 		if(getMode() == ActionFieldConstant.TOKEN) {
 			String token = getTokenValue();
 		
-			if(bindId != null) {
+			/*if(bindId != null) {
 				token = token + Long.toString(bindId);
-			} 
-			History.newItem(token, true);
+			} */
+			
+			Entity appEvent = new Entity();
+			appEvent.setType(new MetaType("EventData"));
+			appEvent.setPropertyByName(EventConstant.EVNT_NAME, token);
+			appEvent.setPropertyByName(EventConstant.EVNT_DATA, bindId);
+			
+			JSONObject appEventJson = EntityToJsonClientConvertor.createJsonFromEntity(appEvent);
+			
+			History.newItem(appEventJson.toString(), true);
 		} else if(getMode() == ActionFieldConstant.PAGE) {
 			String page = getPageValue(); 
 			String moduleUrl = GWT.getHostPageBaseURL();

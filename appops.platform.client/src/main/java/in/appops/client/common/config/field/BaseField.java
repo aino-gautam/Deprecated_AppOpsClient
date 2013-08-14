@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -145,8 +146,8 @@ public class BaseField extends Composite implements Field {
 		/** Style class dependent for basepanel on which field is added . **/
 		public static final String BF_BASEPANEL_DCLS = "basePanelDependentCss";
 		
-		String BF_BINDPROP = "bindProperty";
-		String BF_VISIBLE = "visible";
+		public static final String BF_BINDPROP = "bindProperty";
+		public static final String BF_VISIBLE = "visible";
 
 		
 	}
@@ -267,11 +268,11 @@ public class BaseField extends Composite implements Field {
 	 * @return
 	 */
 	public String getBaseFieldId() {
-		String fieldId = null;
+		String fieldId = Document.get().createUniqueId();
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getBaseFieldId  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_ID) != null) {
-				fieldId = (String) getConfigurationValue(BaseFieldConstant.BF_ID);
+				fieldId = getConfigurationValue(BaseFieldConstant.BF_ID).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In getBaseFieldId  method :"+e);
