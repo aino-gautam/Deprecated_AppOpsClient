@@ -7,6 +7,6 @@ public interface FieldEventConstant {
 	int EXEC_INLINEJS = 2;
 	
 	String EVENT_NAME = "appEvent";
-	String EVNT_CONTEXT_PROP= "updateAppContextProp";
+	String UP_AC_PROP= "updateAppContextProp";
 
 }

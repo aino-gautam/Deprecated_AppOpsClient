@@ -1,18 +1,15 @@
 package in.appops.client.common.config.dsnip;
 
 import in.appops.client.common.config.util.Configurator;
-import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.platform.core.shared.Configuration;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PageProcessor extends HTMLPanel {
@@ -22,11 +19,12 @@ public class PageProcessor extends HTMLPanel {
 	public PageProcessor(String htmlDesc) {
 		super(htmlDesc);
 	}
-	
+
+	/**
+	 * This method processes all the container span elements in the html page an substitute them with containers widgets.
+	 */
 	public void processPageDescription() {
 		try {
-			// The root <span> element i.e. <span id="bookATableForm" widgetContainerType="form"/> 
-			
 				NodeList<Element> nodeList = this.getElement().getElementsByTagName("span");
 				
 				int lengthOfNodes = nodeList.getLength();
@@ -42,7 +40,8 @@ public class PageProcessor extends HTMLPanel {
 							Configuration configuration =  Configurator.getConfiguration(dataConfig);
 							container.setConfiguration(configuration);
 							container.configure();
-							this.addAndReplaceElement(container, pageSpan);
+							container.setId(pageSpan.getId());
+							this.addAndReplaceElement(container, pageSpan); 
 							placeholders.add(container);
 						}
 					}
@@ -77,14 +76,6 @@ public class PageProcessor extends HTMLPanel {
 			toReplace.getParentNode().insertBefore(widget.getElement(),	toReplace);
 			remove(toRemove);
 		}
-
 		adopt(widget);
 	}
-	
-	public void loadPage() {
-		for (Container container : placeholders) {
-			container.onLoad();
-		}
-	}
-	
 }

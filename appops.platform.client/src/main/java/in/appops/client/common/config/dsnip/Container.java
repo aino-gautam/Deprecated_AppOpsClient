@@ -26,22 +26,42 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * TODO
+ * Container - Acts as a place holder for components and snippets.
+ * Listens to Application events.
  */
 public class Container extends SimplePanel implements Configurable, ValueChangeHandler<String> {
 	
 	public interface ContainerConstant {
+		/**
+		 * 
+		 * The value is a map (event Vs. event configuration) of events that the container is interested to listen and handle
+		 */
 		String CT_INTRSDEVNTS = "interestedEvents";
 	}
 	
+	/** Map containing the snippet instance and the actual snippet added to the container **/
 	private Map<String, HTMLSnippetPresenter> snippetMap	= new HashMap<String, HTMLSnippetPresenter>();
+	
+	/** Map containing the component instance and the actual component added to the container**/
 	private Map<String, BaseComponentPresenter> componentMap = new HashMap<String, BaseComponentPresenter>();
+	
+	/** Container identifier **/
 	private String id;
+	
+	/** Container configuration **/
 	private Configuration configuration;
+	
 	private AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
 
+	/**
+	 * Applies any configuration applicable to the container.
+	 */
 	public void configure() {
-	    History.addValueChangeHandler(this);
+		
+		/** Register to listen application events **/
+		if(getInterestedEvents() != null && !getInterestedEvents().isEmpty()) {
+			History.addValueChangeHandler(this);
+		}
 	}
 
 	public String getId() {
@@ -62,6 +82,9 @@ public class Container extends SimplePanel implements Configurable, ValueChangeH
 		this.configuration = conf;
 	}
 	
+	/**
+	 * Called when the container is created and added. Executes the "onLoad" event.
+	 */
 	@Override
 	protected void onLoad() {
 		super.onLoad();
@@ -72,15 +95,20 @@ public class Container extends SimplePanel implements Configurable, ValueChangeH
 		}
 	}
 	
+	/**
+	 * Processes the event.
+	 * An event can optionally transform to a widget and update configuration of a component/snippet and refresh it.
+	 *  
+	 * @param conf
+	 * @param eventData
+	 */
 	@SuppressWarnings("unchecked")
 	private void processEvent(Configuration conf, Object eventData) {
 		
 		try {
 			Boolean isTransformWidget = (Boolean)conf.getPropertyByName("isTransformWidget");
-			Configuration configuration = null;
 			
 			if(isTransformWidget) {
-				AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
 				String transformTo = conf.getPropertyByName(EventConstant.EVNT_TRANSTO).toString();
 				String transFormInstance = conf.getPropertyByName(EventConstant.EVNT_TRANSINS).toString();
 				Integer transFormType = Integer.parseInt(conf.getPropertyByName(EventConstant.EVNT_TRANSTYPE).toString());
@@ -95,11 +123,12 @@ public class Container extends SimplePanel implements Configurable, ValueChangeH
 			Boolean isUpdateConf = (Boolean)conf.getPropertyByName("isUpdateConfiguration");
 			
 			if(isUpdateConf != null && isUpdateConf) {
-				HashMap<String, Configuration> configToUpdateMap = (HashMap<String, Configuration>)conf.getPropertyByName("configToUpdate");
+				HashMap<String, Configuration> configToUpdateMap = (HashMap<String, Configuration>)conf.getPropertyByName("updateConfiguration");
 				
 				Set<Entry<String, Configuration>> confSet = configToUpdateMap.entrySet();
 				
 				for(Entry<String, Configuration> entry : confSet) {
+
 					String configInstance = entry.getKey();
 					Configuration updateConfig = entry.getValue();
 					
@@ -115,9 +144,7 @@ public class Container extends SimplePanel implements Configurable, ValueChangeH
 						configToUpdate = snippetPresenter.getConfiguration();
 						updateConfig(configToUpdate, updateConfig, eventData);
 						snippetPresenter.load();
-						
 					}
-					
 				}
 			}
 			
@@ -150,7 +177,6 @@ public class Container extends SimplePanel implements Configurable, ValueChangeH
 					} else if(propStrVal.startsWith("ac")) {
 						String appContextProp = propStrVal.substring(propStrVal.indexOf(".") + 1);
 						propvalue = ApplicationContext.getInstance().getGraphPropertyValue(appContextProp, null);
-						
 					}
 					if(propvalue instanceof Key) {
 						Key keyVal = (Key)propvalue;
@@ -166,46 +192,48 @@ public class Container extends SimplePanel implements Configurable, ValueChangeH
 	}
 
 	private void createAddSnippet(String transformTo, String transFormInstance) {
-		SnippetGenerator snippetGenerator = (SnippetGenerator)injector.getSnippetGenerator();
+		try {
+			SnippetGenerator snippetGenerator = (SnippetGenerator)injector.getSnippetGenerator();
 
-		if(!snippetMap.isEmpty()) {
-			HTMLSnippetPresenter prevSnippet = snippetMap.get(transformTo);
-			if(prevSnippet != null) {
-				prevSnippet.removeEventHandler();
-			}
-		}
-		
-		final HTMLSnippetPresenter snippetPres = snippetGenerator.generateSnippet(transformTo, transFormInstance);
+			final HTMLSnippetPresenter snippetPres = snippetGenerator.generateSnippet(transformTo, transFormInstance);
 
-		this.clear();
-		this.add(snippetPres.getHTMLSnippet());
-		snippetMap.put(transformTo, snippetPres);
-		
-		snippetPres.load();		
+			this.clear();
+			this.add(snippetPres.getHTMLSnippet());
+			snippetMap.put(transFormInstance, snippetPres);
+			
+			snippetPres.load();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
 	}
 
 	private void createAddComponent(String transformTo, String transFormInstance) {
-		ComponentFactory componentFactory = injector.getComponentFactory();
-		
-		if(!componentMap.isEmpty()) {
-			BaseComponentPresenter prevComponent = componentMap.get(transformTo);
-			if(prevComponent != null) {
-				prevComponent.removeEventHandler();
+		try {
+			ComponentFactory componentFactory = injector.getComponentFactory();
+			
+			if(!componentMap.isEmpty()) {
+				BaseComponentPresenter prevComponent = componentMap.get(transformTo);
+				if(prevComponent != null) {
+					prevComponent.removeEventHandler();
+				}
 			}
+			
+			BaseComponentPresenter compPres = componentFactory.getComponent(transformTo);
+
+			Configuration componentConfig = Configurator.getConfiguration(transFormInstance);
+			compPres.setConfiguration(componentConfig);
+			compPres.configure();
+			
+			compPres.init();
+			BaseComponentView component = compPres.getView();
+			this.clear();
+
+			this.add(component);
+			componentMap.put(transFormInstance, compPres);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		BaseComponentPresenter compPres = componentFactory.getComponent(transformTo);
-
-		configuration = Configurator.getConfiguration(transFormInstance);
-		compPres.setConfiguration(configuration);
-		compPres.configure();
-		
-		compPres.init();
-		BaseComponentView component = compPres.getView();
-		this.clear();
-
-		this.add(component);
-		componentMap.put(transformTo, compPres);
 	}
 
 	private int getTransformType() {
@@ -214,14 +242,6 @@ public class Container extends SimplePanel implements Configurable, ValueChangeH
 			transformType = Integer.parseInt(getConfigurationValue(EventConstant.EVNT_TRANSTYPE).toString());
 		}
 		return transformType;
-	}
-
-	private int getEventType() {
-		int eventType = EventConstant.EVNT_TRANSWGT;
-		if(getConfigurationValue(EventConstant.EVNT_TYPE) != null) {
-			eventType = Integer.parseInt(getConfigurationValue(EventConstant.EVNT_TYPE).toString());
-		}
-		return eventType;
 	}
 
 	protected boolean hasConfiguration(String configKey) {
