@@ -56,24 +56,31 @@ public class EntityModel extends AppopsBaseModel {
 	@SuppressWarnings("unchecked")
 	public void fetchEntity() {
 		String queryName = getQueryName();
-		Configuration queryParam = getQueryParam();
 		
-		HashMap<String, Object> queryParamMap = new HashMap<String, Object>();
-		
-		Set<Entry<String, Property<? extends Serializable>>> confSet = queryParam.getValue().entrySet();
-		
-		for(Entry<String, Property<? extends Serializable>> entry : confSet) {
-			String paramName = entry.getKey();
-			Serializable value = entry.getValue().getValue();
-				queryParamMap.put(paramName, value);
-		}
-		
-		if(!queryParamMap.isEmpty()) {
-			Query query = new Query();
-			query.setQueryName(queryName);
-			query.setQueryParameterMap(queryParamMap);
+		if(queryName != null) {
 			
-			executeQuery(query);
+			Configuration queryParam = getQueryParam();
+			if(queryParam != null) {
+				HashMap<String, Object> queryParamMap = new HashMap<String, Object>();
+		
+				Set<Entry<String, Property<? extends Serializable>>> confSet = queryParam.getValue().entrySet();
+		
+				for(Entry<String, Property<? extends Serializable>> entry : confSet) {
+					String paramName = entry.getKey();
+					Serializable value = entry.getValue().getValue();
+					if(value != null) {
+						queryParamMap.put(paramName, value);
+					} else return;
+				}
+		
+				if(!queryParamMap.isEmpty()) {
+					Query query = new Query();
+					query.setQueryName(queryName);
+					query.setQueryParameterMap(queryParamMap);
+					
+					executeQuery(query);
+				}
+			}
 		}
 	}
 	

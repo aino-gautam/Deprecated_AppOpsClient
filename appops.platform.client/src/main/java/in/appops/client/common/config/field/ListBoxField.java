@@ -318,7 +318,10 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 			logger.log(Level.INFO,"[ListBoxField]:: In populateEntityList  method ");
 			if(nameVsEntity==null)
 				nameVsEntity = new HashMap<String, Entity>();
-						
+			
+			String defaultValue = getDefaultValueName();
+			listBox.addItem(defaultValue);
+			
 			for(Entity entity : entityList){
 				String item = entity.getPropertyByName(getEntPropToShow());
 				Key keyId = (Key)entity.getPropertyByName("id");
@@ -482,7 +485,7 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		}
 	}
 	
-/*	private String getDefaultValueName() {
+	private String getDefaultValueName() {
 		String defaultName = null;
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getDefaultValueName  method ");
@@ -497,7 +500,7 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		}
 		return defaultName;
 	}
-	*/
+	
 	public Object getSelectedValue() {
 		String selectedValue = listBox.getValue(listBox.getSelectedIndex());
 		return selectedValue;
@@ -522,6 +525,8 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		public static final String LSTFD_QUERY_RESTRICTION = "queryRestriction";
 		
 		public static final String LSTFD_SELECTED_TXT = "defaultSelectedText";
+		
+		public static final String LISTBOX_DEFAULT_VALUE = "listboxDefaultValue";
 		
 	}
 
