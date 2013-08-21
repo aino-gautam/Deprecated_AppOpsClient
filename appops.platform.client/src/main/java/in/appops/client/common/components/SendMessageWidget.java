@@ -38,7 +38,6 @@ import java.util.HashMap;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -218,6 +217,10 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
 		hashMap.put("userId", userId);
 		
+		Entity space = AppEnviornment.getCurrentUserHubSpace();
+		Long spaceId = ((Key<Long>)space.getPropertyByName(SpaceConstants.ID)).getKeyValue();
+		hashMap.put("spaceId", spaceId);
+		
 		query.setQueryParameterMap(hashMap);
 		
 		DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
@@ -230,7 +233,6 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
 			
 			public void onFailure(Throwable caught) {
-				Window.alert("operation failed ");
 				caught.printStackTrace();
 			}
 			
@@ -424,7 +426,6 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
 			
 			public void onFailure(Throwable caught) {
-				Window.alert("operation failed ");
 				caught.printStackTrace();
 			}
 			
