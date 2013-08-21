@@ -25,6 +25,8 @@ public class ContactSnippetDisplayer extends ContactSnippet{
 		getBasePanel().addStyleName("widgetSeparator");
 		MessengerEvent msgEvent = new MessengerEvent(MessengerEvent.RESTARTPREVIOUSCHAT,getEntity());
 		AppUtils.EVENT_BUS.fireEvent(msgEvent);
+		MessengerEvent messengerEvent = new MessengerEvent(MessengerEvent.CHAT_VIEWED,getEntity());
+		AppUtils.EVENT_BUS.fireEvent(messengerEvent);
 	}
 
 }
