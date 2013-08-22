@@ -217,9 +217,9 @@ public class SendMessageWidget extends Composite implements Configurable, ClickH
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
 		hashMap.put("userId", userId);
 		
-		Entity space = AppEnviornment.getCurrentUserHubSpace();
+		/*Entity space = AppEnviornment.getCurrentUserHubSpace();
 		Long spaceId = ((Key<Long>)space.getPropertyByName(SpaceConstants.ID)).getKeyValue();
-		hashMap.put("spaceId", spaceId);
+		hashMap.put("spaceId", spaceId);*/
 		
 		query.setQueryParameterMap(hashMap);
 		
