@@ -32,6 +32,8 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 
 	public interface HTMLSnippetConstant {
 		String HS_FIELDEVENTS = "interestedFieldEvents";
+		String HS_PCLS = "basePrimaryCss";
+		String HS_DCLS = "baseDependentCss";
 	}
 	
 	/**
