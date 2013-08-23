@@ -21,6 +21,8 @@ import in.appops.client.common.config.field.LocationSelectorField.LocationSelect
 import in.appops.client.common.config.field.RadioButtonField.RadionButtonFieldConstant;
 import in.appops.client.common.config.field.StateField;
 import in.appops.client.common.config.field.StateField.StateFieldConstant;
+import in.appops.client.common.config.field.ToggleImageField;
+import in.appops.client.common.config.field.ToggleImageField.ToggleImageFieldConstant;
 import in.appops.client.common.config.field.date.DateLabelField;
 import in.appops.client.common.config.field.date.DateLabelField.DateLabelFieldConstant;
 import in.appops.client.common.config.field.date.DatePickerField;
@@ -41,8 +43,6 @@ import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.DateTimeField;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
-/*import in.appops.client.common.fields.htmleditor.HtmlEditorField;
-import in.appops.client.common.fields.htmleditor.HtmlEditorField.HtmlEditorFieldConstant;*/
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -67,10 +67,7 @@ import com.google.code.gwt.geolocation.client.PositionCallback;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -114,6 +111,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	public static final String LINKFIELDANCHOR = "LinkField(Anchor)";
 	public static final String BUTTONFIELD = "ButtonField";
 	public static final String IMAGEFIELD = "ImageField";
+	public static final String  TOGGLEIMAGEFIELD= "ToggleImageField";
 	public static final String LISTBOX_STATIC = "ListBox(Static list)";
 	public static final String LISTBOX_WITH_QUERY = "ListBox(Query Result)";
 	public static final String LOCATIONSELECTOR = "Location Selector";
@@ -177,6 +175,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			listBox.addItem(LINKFIELDANCHOR);
 			listBox.addItem(BUTTONFIELD);
 			listBox.addItem(IMAGEFIELD);
+			listBox.addItem(TOGGLEIMAGEFIELD);
 			
 			listBox.addItem(LOCATIONSELECTOR);
 			listBox.addItem(NUMBERRANGE_SLIDER);
@@ -516,6 +515,21 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		return configuration;
 	}
 	
+	private Configuration getToggleImageFieldConf(){
+		Configuration configuration = new Configuration();
+		try {
+			logger.log(Level.INFO,"[FieldsShowCase]:: In getToggleImageFieldConf  method ");
+			configuration.setPropertyByName(ToggleImageFieldConstant.TIMGFD_UPSTATE_URL, "images/pinkHeart.jpg");
+			configuration.setPropertyByName(ToggleImageFieldConstant.TIMGFD_UPSTATE_TITLE,"unlike");
+			configuration.setPropertyByName(ToggleImageFieldConstant.TIMGFD_DWNSTATE_URL, "images/grayHeart.jpg");
+			configuration.setPropertyByName(ToggleImageFieldConstant.TIMGFD_DWNSTATE_TITLE,"like");
+			configuration.setPropertyByName(ToggleImageFieldConstant.TIMGFD_STATEIMG_PCLS,"toggleImageCss");
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[FieldsShowCase]::Exception In getToggleImageFieldConf  method :"+e);
+		}
+		return configuration;
+	}
+	
 	private Configuration getStaticListBoxConfiguration() {
 		Configuration configuration = new Configuration();
 		try {
@@ -768,6 +782,15 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				selectedField = imageField;
 				innerPanel.add(imageField);
 				innerPanel.setCellHorizontalAlignment(imageField,HorizontalPanel.ALIGN_CENTER);
+			}else if(fieldName.equals(TOGGLEIMAGEFIELD)) {
+				ToggleImageField toggleImageField = new ToggleImageField();
+				toggleImageField.setConfiguration(getToggleImageFieldConf());
+				toggleImageField.configure();
+				toggleImageField.create();
+				selectedField = toggleImageField;
+				innerPanel.add(toggleImageField);
+				
+				innerPanel.setCellHorizontalAlignment(toggleImageField,HorizontalPanel.ALIGN_CENTER);
 			}else if(fieldName.equals(LISTBOX_WITH_QUERY)) {
 				ListBoxField staticListBox = new ListBoxField();
 				staticListBox.setConfiguration(getDynamicListBoxConfiguration());
@@ -1151,6 +1174,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				return LinkField.class.getName();
 			}else if(fieldName.equals(IMAGEFIELD)) {
 				return ImageField.class.getName();
+			}else if(fieldName.equals(TOGGLEIMAGEFIELD)) {
+				return ToggleImageField.class.getName();
 			}else if(fieldName.equals(LISTBOX_WITH_QUERY) || fieldName.equals(LISTBOX_STATIC)) {
 				return ListBoxField.class.getName();
 			}else if(fieldName.equals(BUTTONFIELD)) {
