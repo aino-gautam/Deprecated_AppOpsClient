@@ -1,13 +1,16 @@
 package in.appops.client.common.components;
 
+import in.appops.client.common.config.field.CheckboxField;
+import in.appops.client.common.config.field.CheckboxField.CheckBoxFieldConstant;
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
-import in.appops.client.common.fields.CheckboxField;
 import in.appops.client.common.fields.CheckboxGroupField;
-import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.LocationSelector;
 import in.appops.client.common.fields.TextField;
+import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.core.entity.GeoLocation;
 import in.appops.platform.core.shared.Configuration;
@@ -79,7 +82,7 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 			groupCheckbox = new CheckboxGroupField();
 			Configuration configuration = getCheckboxGroupFieldConfiguration(CheckboxGroupField.CHECKBOX_SINGLESELECT,CheckboxGroupField.CHECKBOX_HORIZONTALBASEPANEL);
 			groupCheckbox.setConfiguration(configuration);
-			groupCheckbox.createField();
+			groupCheckbox.create();
 			groupCheckbox.addCheckItem("True map mode",true);
 			groupCheckbox.addCheckItem("False map mode",false);
 			configurationSelectionpanel.add(groupCheckbox);
@@ -88,7 +91,7 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 			createUserConfigurationFieldsForTrueMode();
 			
 			configurationMappanel.add(mapModeTrueTable);
-			locationSelector.createField();
+			locationSelector.create();
 			
 			upperHorizontalPanel.add(locationSelector);
 			lowerVerticalPanel.add(configurationSelectionpanel);
@@ -111,33 +114,33 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 			LabelField mapWidthLabel = new LabelField();
 			mapWidthLabel.setFieldValue("Map width :");
 			mapWidthLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-			mapWidthLabel.createField();
+			mapWidthLabel.create();
 			
 			widthMapTrueTextFieldTB = new TextField();
 			widthMapTrueTextFieldTB.setFieldValue("");
-			widthMapTrueTextFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "appops-TextField", null, null));
-			widthMapTrueTextFieldTB.createField();
+			widthMapTrueTextFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, "appops-TextField", null, null));
+			widthMapTrueTextFieldTB.create();
 			
 			LabelField mapHeightLabel = new LabelField();
 			mapHeightLabel.setFieldValue("Map height :");
 			mapHeightLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-			mapHeightLabel.createField();
+			mapHeightLabel.create();
 			
 			heightMapTrueTextFieldTB = new TextField();
 			heightMapTrueTextFieldTB.setFieldValue("");
-			heightMapTrueTextFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "appops-TextField", null, null));
-			heightMapTrueTextFieldTB.createField();
+			heightMapTrueTextFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, "appops-TextField", null, null));
+			heightMapTrueTextFieldTB.create();
 			
 			
 			LabelField mapZommLevelLabel = new LabelField();
 			mapZommLevelLabel.setFieldValue("Map zoom level :");
 			mapZommLevelLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-			mapZommLevelLabel.createField();
+			mapZommLevelLabel.create();
 			
 			zoomLevelMapTrueTextFieldTB = new TextField();
 			zoomLevelMapTrueTextFieldTB.setFieldValue("");
-			zoomLevelMapTrueTextFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "appops-TextField", null, null));
-			zoomLevelMapTrueTextFieldTB.createField();
+			zoomLevelMapTrueTextFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, "appops-TextField", null, null));
+			zoomLevelMapTrueTextFieldTB.create();
 			
 			doneButton = new Button("Apply");
 			doneButton.addClickHandler(this);
@@ -167,33 +170,33 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 			LabelField mapWidthLabel = new LabelField();
 			mapWidthLabel.setFieldValue("Map width :");
 			mapWidthLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-			mapWidthLabel.createField();
+			mapWidthLabel.create();
 			
 			widthMapFalseTextFieldTB = new TextField();
 			widthMapFalseTextFieldTB.setFieldValue("");
-			widthMapFalseTextFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "appops-TextField", null, null));
-			widthMapFalseTextFieldTB.createField();
+			widthMapFalseTextFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, "appops-TextField", null, null));
+			widthMapFalseTextFieldTB.create();
 			
 			LabelField mapHeightLabel = new LabelField();
 			mapHeightLabel.setFieldValue("Map height :");
 			mapHeightLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-			mapHeightLabel.createField();
+			mapHeightLabel.create();
 			
 			heightMapFalseTextFieldTB = new TextField();
 			heightMapFalseTextFieldTB.setFieldValue("");
-			heightMapFalseTextFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "appops-TextField", null, null));
-			heightMapFalseTextFieldTB.createField();
+			heightMapFalseTextFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, "appops-TextField", null, null));
+			heightMapFalseTextFieldTB.create();
 			
 			
 			LabelField mapZommLevelLabel = new LabelField();
 			mapZommLevelLabel.setFieldValue("Map zoom level :");
 			mapZommLevelLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-			mapZommLevelLabel.createField();
+			mapZommLevelLabel.create();
 			
 			zoomLevelMapFalseTextFieldTB = new TextField();
 			zoomLevelMapFalseTextFieldTB.setFieldValue("");
-			zoomLevelMapFalseTextFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "appops-TextField", null, null));
-			zoomLevelMapFalseTextFieldTB.createField();
+			zoomLevelMapFalseTextFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, "appops-TextField", null, null));
+			zoomLevelMapFalseTextFieldTB.create();
 			
 			doneButton = new Button("Apply");
 			doneButton.addClickHandler(this);
@@ -228,27 +231,25 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 	
 	private Configuration getTextFieldConfiguration(int visibleLines, boolean readOnly, String textFieldType, String primaryCss, String secondaryCss, String debugId){
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(TextField.TEXTFIELD_VISIBLELINES, visibleLines);
-		configuration.setPropertyByName(TextField.TEXTFIELD_READONLY, readOnly);
-		configuration.setPropertyByName(TextField.TEXTFIELD_TYPE, textFieldType);
-		configuration.setPropertyByName(TextField.TEXTFIELD_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(TextField.TEXTFIELD_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(TextField.TEXTFIELD_DEBUGID, debugId);
+		configuration.setPropertyByName(TextFieldConstant.TF_VISLINES, visibleLines);
+		configuration.setPropertyByName(TextFieldConstant.BF_READONLY, readOnly);
+		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(TextFieldConstant.BF_DCLS, secondaryCss);
 		return configuration;
 	}
 	
 	private Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId){
-		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		configuration.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return configuration;
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
+		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return conf;
 	}
 	
 	public Configuration getCheckboxFieldConfiguration(String text) {
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(CheckboxField.CHECKBOXFIELD_DISPLAYTEXT, text);
+		configuration.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, text);
 		return configuration;
 	}
 	private Configuration getLocationSelectorConf() {
@@ -256,7 +257,7 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 		
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "images/locationMarker1.png");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "images/locationMarker1.png");
-		configuration.setPropertyByName(TextField.TEXTFIELD_PRIMARYCSS, "appops-TextField");
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, "appops-TextField");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CHOOSE_LOCATION_BTN, "chooseLocationBtn");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_POPUPPANEL, "currentLocationField");
 		configuration.setPropertyByName(LocationSelector.MAP_ZOOM, "8");
@@ -272,7 +273,7 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 		
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "images/locationMarker1.png");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "images/locationMarker1.png");
-		configuration.setPropertyByName(TextField.TEXTFIELD_PRIMARYCSS, "appops-TextField");
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, "appops-TextField");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CHOOSE_LOCATION_BTN, "chooseLocationBtn");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_POPUPPANEL, "currentLocationField");
 		configuration.setPropertyByName(LocationSelector.MAP_ZOOM, "8");
@@ -298,24 +299,24 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 			errorHorizontalPanel.clear();
 			if(selectedFieldText.equals("True map mode")){
 				 
-				 if(!widthMapTrueTextFieldTB.getText().equals("") && !heightMapTrueTextFieldTB.getText().equals("") && !zoomLevelMapTrueTextFieldTB.getText().equals("")){
+				 if(!widthMapTrueTextFieldTB.getFieldText().equals("") && !heightMapTrueTextFieldTB.getFieldText().equals("") && !zoomLevelMapTrueTextFieldTB.getFieldText().equals("")){
 					 upperHorizontalPanel.clear();
 						 		
 				
-					 locationSelector.setConfiguration(getLocationSelectorConfForFalse(widthMapTrueTextFieldTB.getText(),heightMapTrueTextFieldTB.getText(),zoomLevelMapTrueTextFieldTB.getText()));
+					 locationSelector.setConfiguration(getLocationSelectorConfForFalse(widthMapTrueTextFieldTB.getFieldText(),heightMapTrueTextFieldTB.getFieldText(),zoomLevelMapTrueTextFieldTB.getFieldText()));
 					 locationSelector.setMapMode(false);
 					 GeoLocation geoLocation = new GeoLocation();
 					 geoLocation.setLatitude(coords.getLatitude());
 					 geoLocation.setLongitude(coords.getLongitude());
 					 AppEnviornment.setCurrentGeolocation(geoLocation);
-					 locationSelector.createField();
+					 locationSelector.create();
 					 upperHorizontalPanel.add(locationSelector);
 				 }else{
 					 try{
 					    LabelField errorLabel = new LabelField();
 						errorLabel.setFieldValue("*Please enter all details");
 						errorLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-errorLabel", null, null));
-						errorLabel.createField();
+						errorLabel.create();
 						errorHorizontalPanel.add(errorLabel);
 						mapModeTrueTable.setWidget(3, 2, errorHorizontalPanel);
 					 }catch(Exception e){
@@ -324,11 +325,11 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 				 }
 			}else if(selectedFieldText.endsWith("False map mode")){
 					
-				if(!widthMapFalseTextFieldTB.getText().equals("") && !heightMapFalseTextFieldTB.getText().equals("") && !zoomLevelMapFalseTextFieldTB.getText().equals("")){
+				if(!widthMapFalseTextFieldTB.getFieldText().equals("") && !heightMapFalseTextFieldTB.getFieldText().equals("") && !zoomLevelMapFalseTextFieldTB.getFieldText().equals("")){
 					upperHorizontalPanel.clear();
 					 
 				
-					locationSelector.setConfiguration(getLocationSelectorConf(widthMapFalseTextFieldTB.getText(),heightMapFalseTextFieldTB.getText(),zoomLevelMapFalseTextFieldTB.getText()));
+					locationSelector.setConfiguration(getLocationSelectorConf(widthMapFalseTextFieldTB.getFieldText(),heightMapFalseTextFieldTB.getFieldText(),zoomLevelMapFalseTextFieldTB.getFieldText()));
 					locationSelector.setMapMode(true);
 					/*locationSelector.setMapHeight("400px");
 					locationSelector.setMapWidth("600px");*/
@@ -337,14 +338,14 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 					geoLocation.setLongitude(coords.getLongitude());
 					AppEnviornment.setCurrentGeolocation(geoLocation);
 					locationSelector.setCoordinates(coords);
-					locationSelector.createField();
+					locationSelector.create();
 					upperHorizontalPanel.add(locationSelector);
 				}else{
 					try{
 					    LabelField errorLabel = new LabelField();
 						errorLabel.setFieldValue("*Please enter all details");
 						errorLabel.setConfiguration(getLabelFieldConfiguration(true, "appops-errorLabel", null, null));
-						errorLabel.createField();
+						errorLabel.create();
 						errorHorizontalPanel.add(errorLabel);
 						mapModeFalseTable.setWidget(3, 2, errorHorizontalPanel);
 					 }catch(Exception e){
@@ -361,7 +362,7 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 		
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "images/locationMarker1.png");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "images/locationMarker1.png");
-		configuration.setPropertyByName(TextField.TEXTFIELD_PRIMARYCSS, "appops-TextField");
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, "appops-TextField");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CHOOSE_LOCATION_BTN, "chooseLocationBtn");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_POPUPPANEL, "currentLocationField");
 		configuration.setPropertyByName(LocationSelector.MAP_ZOOM, mapZoomLevel);
@@ -379,7 +380,7 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 		
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_IMAGE, "images/locationMarker1.png");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CURRENT_LOCATION_TEXTFIELD, "images/locationMarker1.png");
-		configuration.setPropertyByName(TextField.TEXTFIELD_PRIMARYCSS, "appops-TextField");
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, "appops-TextField");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_CHOOSE_LOCATION_BTN, "chooseLocationBtn");
 		configuration.setPropertyByName(LocationSelector.LOCATION_SELECTOR_POPUPPANEL, "currentLocationField");
 		configuration.setPropertyByName(LocationSelector.MAP_ZOOM, mapZoomLevel);
@@ -417,7 +418,7 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 				geoLocation.setLatitude(coords.getLatitude());
 				geoLocation.setLongitude(coords.getLongitude());
 				AppEnviornment.setCurrentGeolocation(geoLocation);
-				locationSelector.createField();
+				locationSelector.create();
 				upperHorizontalPanel.add(locationSelector);
 			} else if(selectedFieldText.equals("False map mode")) {
 				upperHorizontalPanel.clear();
@@ -441,7 +442,7 @@ public class LocationHomeSelector extends Composite implements FieldEventHandler
 					geoLocation.setLongitude(coords.getLongitude());
 					AppEnviornment.setCurrentGeolocation(geoLocation);
 					locationSelector.setCoordinates(coords);
-					locationSelector.createField();
+					locationSelector.create();
 					upperHorizontalPanel.add(locationSelector);
 			}
 			break;

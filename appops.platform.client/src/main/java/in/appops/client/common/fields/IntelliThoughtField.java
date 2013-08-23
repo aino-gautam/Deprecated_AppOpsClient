@@ -80,7 +80,7 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 	}
 	
 	@Override
-	public void createField() throws AppOpsException {
+	public void create() throws AppOpsException {
 		if(configuration != null) {
 			String primaryCss = configuration.getPropertyByName(INTELLITEXTFIELD_PRIMARYCSS) != null ?  configuration.getPropertyByName(INTELLITEXTFIELD_PRIMARYCSS).toString() : null;  
 			String dependentCss = configuration.getPropertyByName(INTELLITEXTFIELD_DEPENDENTCSS) != null ?  configuration.getPropertyByName(INTELLITEXTFIELD_DEPENDENTCSS).toString() : null;  
@@ -130,12 +130,12 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 	}	
 	
 	@Override
-	public void clearField() {
+	public void clear() {
 		this.setText("");
 	}
 
 	@Override
-	public void resetField() {
+	public void reset() {
 		
 	}
 
@@ -425,5 +425,11 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ha
 		intelliThought.setLinkedUsers(linkedUsers);
 		
 		return intelliThought;
+	}
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
+		
 	}
 }

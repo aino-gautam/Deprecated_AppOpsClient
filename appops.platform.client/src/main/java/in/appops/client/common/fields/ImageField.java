@@ -50,7 +50,7 @@ public class ImageField extends Image implements Field {
 	 * creates the field UI
 	 */
 	@Override
-	public void createField() throws AppOpsException {
+	public void create() throws AppOpsException {
 		if(getConfiguration() == null)
 			throw new AppOpsException("Imagefield configuration unavailable");
 		
@@ -62,13 +62,15 @@ public class ImageField extends Image implements Field {
 			this.addStyleName(getConfiguration().getPropertyByName(IMAGEFIELD_DEPENDENTCSS).toString());
 		if(getConfiguration().getPropertyByName(IMAGEFIELD_DEBUGID) != null)
 			this.ensureDebugId(getConfiguration().getPropertyByName(IMAGEFIELD_DEBUGID).toString());
+		if(getConfiguration().getPropertyByName(IMAGEFIELD_DISPLAYTEXT) != null)
+			this.setTitle(getConfiguration().getPropertyByName(IMAGEFIELD_DISPLAYTEXT).toString());
 	}
 
 	/**
 	 * clears the field
 	 */
 	@Override
-	public void clearField() {
+	public void clear() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -77,7 +79,7 @@ public class ImageField extends Image implements Field {
 	 * resets the field
 	 */
 	@Override
-	public void resetField() {
+	public void reset() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -90,6 +92,12 @@ public class ImageField extends Image implements Field {
 	@Override
 	public void setFieldValue(String fieldValue) {
 		this.fieldValue = fieldValue;
+	}
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

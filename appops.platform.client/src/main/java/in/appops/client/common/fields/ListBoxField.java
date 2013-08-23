@@ -29,7 +29,7 @@ public class ListBoxField extends Composite implements Field, ChangeHandler{
 	}
 
 	@Override
-	public void createField() throws AppOpsException {
+	public void create() throws AppOpsException {
 		if(getConfiguration() == null)
 			throw new AppOpsException("Statefield configuration unavailable");
 
@@ -53,12 +53,12 @@ public class ListBoxField extends Composite implements Field, ChangeHandler{
 	}
 
 	@Override
-	public void clearField() {
+	public void clear() {
 
 	}
 
 	@Override
-	public void resetField() {
+	public void reset() {
 		// TODO Auto-generated method stub
 
 	}
@@ -106,5 +106,11 @@ public class ListBoxField extends Composite implements Field, ChangeHandler{
 	public void onFieldEvent(FieldEvent event) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
+		
 	}
 }

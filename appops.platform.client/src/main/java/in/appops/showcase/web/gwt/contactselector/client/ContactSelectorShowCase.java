@@ -1,15 +1,15 @@
 package in.appops.showcase.web.gwt.contactselector.client;
 
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.contactmodel.ContactSelector;
 import in.appops.client.common.contactmodel.ContactSelectorModel;
 import in.appops.client.common.contactmodel.ContactSnippet;
 import in.appops.client.common.fields.ImageField;
-import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.util.BlobDownloader;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.shared.Configuration;
-import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 
 import java.util.ArrayList;
@@ -70,48 +70,44 @@ public class ContactSelectorShowCase implements EntryPoint, ClickHandler {
 			contactListPanel.clear();
 			snippetPanel.clear();
 			
-			try {
-				LabelField titleLabel = new LabelField();
-				titleLabel.setFieldValue("List of selected contacts ");
-				titleLabel.setConfiguration(getLabelFieldConfiguration(true, "contactSelectortitleLabel", null, null));
-				titleLabel.createField();
-				titleLabel.addStyleName("contactListAlignment");
-				contactListPanel.add(titleLabel);
+			LabelField titleLabel = new LabelField();
+			titleLabel.setFieldValue("List of selected contacts ");
+			titleLabel.setConfiguration(getLabelFieldConfiguration(true, "contactSelectortitleLabel", null, null));
+			titleLabel.create();
+			titleLabel.addStyleName("contactListAlignment");
+			contactListPanel.add(titleLabel);
+			
+			ArrayList<Entity> list = contactSelector.getSelectedContacts();
+			Iterator<Entity> iterator = list.iterator();
+			BlobDownloader downloader = new BlobDownloader();
+			while(iterator.hasNext()) {
+				Entity entity = iterator.next();
+				ContactSnippet contactSnippet = new ContactSnippet(false);
+				String blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
+				String url = downloader.getIconDownloadURL(blobId);
+				Configuration imageConfig = getImageFieldConfiguration(url, "defaultIcon");
+				Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
+				contactSnippet.setConfigurationForFields(labelConfig, imageConfig);
+				contactSnippet.initialize(entity);
+				contactSnippet.addStyleName("flowPanelContent");
+				snippetPanel.add(contactSnippet);
+			}
+			
+			contactListPanel.add(snippetPanel);
+			
+			if(list.isEmpty() || list == null) {
+				titleLabel.setFieldValue("No contacts selected");
+				titleLabel.reset();
 				
-				ArrayList<Entity> list = contactSelector.getSelectedContacts();
-				Iterator<Entity> iterator = list.iterator();
-				BlobDownloader downloader = new BlobDownloader();
-				while(iterator.hasNext()) {
-					Entity entity = iterator.next();
-					ContactSnippet contactSnippet = new ContactSnippet(false);
-					String blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
-					String url = downloader.getIconDownloadURL(blobId);
-					Configuration imageConfig = getImageFieldConfiguration(url, "defaultIcon");
-					Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
-					contactSnippet.setConfigurationForFields(labelConfig, imageConfig);
-					contactSnippet.initialize(entity);
-					contactSnippet.addStyleName("flowPanelContent");
-					snippetPanel.add(contactSnippet);
-				}
-				
-				contactListPanel.add(snippetPanel);
-				
-				if(list.isEmpty() || list == null) {
-					titleLabel.setFieldValue("No contacts selected");
-					titleLabel.resetField();
-				}
-			} catch (AppOpsException e) {
-				e.printStackTrace();
 			}
 		}
 	}
 	
 	private Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId){
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		configuration.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
+		configuration.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
+		configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
 		return configuration;
 	}
 	

@@ -1,15 +1,16 @@
 package in.appops.client.common.contactmodel;
 
+import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.SelectionEvent;
 import in.appops.client.common.fields.ImageField;
-import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.snippet.Snippet;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
-import in.appops.client.common.snippet.Snippet;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ErrorEvent;
@@ -62,7 +63,7 @@ public class ContactSnippet extends Composite implements Snippet, ClickHandler {
 		this.entity = entity;
 		String name = entity.getPropertyByName(ContactConstant.NAME).toString();
 		userName.setFieldValue(name);
-		userName.resetField();
+		userName.reset();
 	}
 
 	public FocusPanel getBasePanel() {
@@ -105,9 +106,9 @@ public class ContactSnippet extends Composite implements Snippet, ClickHandler {
 
 		try {
 			userName.setConfiguration(labelConfig);
-			userName.createField();
+			userName.create();
 			imageField.setConfiguration(imageConfig);
-            imageField.createField();
+            imageField.create();
             imageField.addErrorHandler(new ErrorHandler() {
 				
 				@Override

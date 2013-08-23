@@ -1,15 +1,15 @@
 package in.appops.client.common.contactmodel;
 
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.core.EntityListReceiver;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.SelectionEvent;
 import in.appops.client.common.event.handlers.SelectionEventHandler;
 import in.appops.client.common.fields.ImageField;
-import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.util.BlobDownloader;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
-import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 
@@ -19,7 +19,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -81,55 +80,43 @@ public class ContactSelector extends Composite implements SelectionEventHandler,
 
 	private void addNearByContactComponents() {
 		if(isNearByContact) {
-			try {
-				nearByContact = new LabelField();
-				nearByContact.setFieldValue("Contact Near You");
-				Configuration config = getLabelFieldConfiguration(true, "contactSelectortitleLabel", null, null);
-				nearByContact.setConfiguration(config);
-				nearByContact.createField();
-				nearByContactFlowPanel = new FlowPanel();
-				nearByContactFlowPanel.setSize("100%", "100%");
-				innerHorizonPanel.add(nearByContactFlowPanel);
-				titleHorizonPanel.add(nearByContact);
-			} catch (AppOpsException e) {
-				e.printStackTrace();
-			}
+			nearByContact = new LabelField();
+			nearByContact.setFieldValue("Contact Near You");
+			Configuration config = getLabelFieldConfiguration(true, "contactSelectortitleLabel", null, null);
+			nearByContact.setConfiguration(config);
+			nearByContact.create();
+			nearByContactFlowPanel = new FlowPanel();
+			nearByContactFlowPanel.setSize("100%", "100%");
+			innerHorizonPanel.add(nearByContactFlowPanel);
+			titleHorizonPanel.add(nearByContact);
 		}
 	}
 
 	private void addYourContactComponents() {
 		if(isYourContact) {
-			try {
-				yourContact = new LabelField();
-				yourContact.setFieldValue("Your Contacts");
-				Configuration config = getLabelFieldConfiguration(true, "contactSelectortitleLabel", null, null);
-				yourContact.setConfiguration(config);
-				yourContact.createField();
-				yourContactFlowPanel = new FlowPanel();
-				yourContactFlowPanel.setSize("100%", "100%");
-				innerHorizonPanel.add(yourContactFlowPanel);
-				titleHorizonPanel.add(yourContact);
-			} catch (AppOpsException e) {
-				e.printStackTrace();
-			}
+			yourContact = new LabelField();
+			yourContact.setFieldValue("Your Contacts");
+			Configuration config = getLabelFieldConfiguration(true, "contactSelectortitleLabel", null, null);
+			yourContact.setConfiguration(config);
+			yourContact.create();
+			yourContactFlowPanel = new FlowPanel();
+			yourContactFlowPanel.setSize("100%", "100%");
+			innerHorizonPanel.add(yourContactFlowPanel);
+			titleHorizonPanel.add(yourContact);
 		}
 	}
 
 	private void addontactMayKnownComponents() {
 		if(isContactKnown) {
-			try {
-				contactMayKnown = new LabelField();
-				contactMayKnown.setFieldValue("Contacts you may known");
-				Configuration config = getLabelFieldConfiguration(true, "contactSelectortitleLabel", null, null);
-				contactMayKnown.setConfiguration(config);
-				contactMayKnown.createField();
-				contactMayKnownFlowPanel = new FlowPanel();
-				contactMayKnownFlowPanel.setSize("100%", "100%");
-				innerHorizonPanel.add(contactMayKnownFlowPanel);
-				titleHorizonPanel.add(contactMayKnown);
-			} catch (AppOpsException e) {
-				e.printStackTrace();
-			}
+			contactMayKnown = new LabelField();
+			contactMayKnown.setFieldValue("Contacts you may known");
+			Configuration config = getLabelFieldConfiguration(true, "contactSelectortitleLabel", null, null);
+			contactMayKnown.setConfiguration(config);
+			contactMayKnown.create();
+			contactMayKnownFlowPanel = new FlowPanel();
+			contactMayKnownFlowPanel.setSize("100%", "100%");
+			innerHorizonPanel.add(contactMayKnownFlowPanel);
+			titleHorizonPanel.add(contactMayKnown);
 		}
 	}
 	
@@ -163,14 +150,14 @@ public class ContactSelector extends Composite implements SelectionEventHandler,
 		innerHorizonPanel.setSize("100%", "100%");
 	}
 
-	private void addTitle(Label label) {
-		titleHorizonPanel.setCellWidth(label, "100%");
+	private void addTitle(LabelField contactMayKnown2) {
+		titleHorizonPanel.setCellWidth(contactMayKnown2, "100%");
 		titleHorizonPanel.addStyleName("contactSelectorTitlePanel");
 	}
 
-	private void addTitle(Label label1, Label label2) {
-		titleHorizonPanel.setCellWidth(label1, "50%");
-		titleHorizonPanel.setCellWidth(label2, "50%");
+	private void addTitle(LabelField yourContact2, LabelField contactMayKnown2) {
+		titleHorizonPanel.setCellWidth(yourContact2, "50%");
+		titleHorizonPanel.setCellWidth(contactMayKnown2, "50%");
 		titleHorizonPanel.addStyleName("contactSelectorTitlePanel");
 	}
 
@@ -345,12 +332,12 @@ public class ContactSelector extends Composite implements SelectionEventHandler,
 	}
 	
 	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
-		Configuration config = new Configuration();
-		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return config;
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
+		conf.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Config label");
+		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return conf;
 	}
 
 	@Override

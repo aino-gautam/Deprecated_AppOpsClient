@@ -41,7 +41,7 @@ public class CalendarEvents extends VerticalPanel implements ClickHandler,Field{
 			dateTimeOnlyField = new DateTimeField();
 			dateTimeOnlyField.setHandler(this);
 			dateTimeOnlyField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATEONLY,null));
-			dateTimeOnlyField.createField();
+			dateTimeOnlyField.create();
 			
 			createEventPlusButton = new Button("+");
 			createEventPlusButton.setTitle("Create a event");
@@ -147,19 +147,19 @@ public class CalendarEvents extends VerticalPanel implements ClickHandler,Field{
 	}
 
 	@Override
-	public void createField() throws AppOpsException {
+	public void create() throws AppOpsException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void clearField() {
+	public void clear() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void resetField() {
+	public void reset() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -172,6 +172,12 @@ public class CalendarEvents extends VerticalPanel implements ClickHandler,Field{
 
 	@Override
 	public void setFieldValue(String fieldValue) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void configure() {
 		// TODO Auto-generated method stub
 		
 	}

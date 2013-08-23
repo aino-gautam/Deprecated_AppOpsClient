@@ -2,6 +2,7 @@ package in.appops.client.common.fields;
 
 import in.appops.client.common.core.EntityReceiver;
 import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.GeoLocation;
@@ -93,8 +94,7 @@ public class LocationSelector extends Composite implements Field,EntityReceiver,
 	}
 	
 	@Override
-	public void createField() {
-		// TODO will need a map + textbox to enter a location
+	public void create() {
 		basePanel.clear();
 		
 	 if(!isMapMode){	
@@ -102,10 +102,10 @@ public class LocationSelector extends Composite implements Field,EntityReceiver,
 		
 		currentLocationTextField = new TextField();
 		currentLocationTextField.setFieldValue("Current location");
-		currentLocationTextField.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, getConfiguration().getPropertyByName(TextField.TEXTFIELD_PRIMARYCSS).toString(), null, null));
+		currentLocationTextField.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, getConfiguration().getPropertyByName(TextFieldConstant.BF_PCLS).toString(), null, null));
 	
 		try{
-			currentLocationTextField.createField();
+			currentLocationTextField.create();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -277,12 +277,12 @@ public class LocationSelector extends Composite implements Field,EntityReceiver,
 	}
 	
 	@Override
-	public void clearField() {
+	public void clear() {
 		textBox.setText("");
 	}
 
 	@Override
-	public void resetField() {
+	public void reset() {
 		textBox.setText(getFieldValue());
 	}
 	
@@ -308,9 +308,9 @@ public class LocationSelector extends Composite implements Field,EntityReceiver,
 	
 	
 	private void setSelectedLocation() {
-		currentLocationTextField.clearField();
+		currentLocationTextField.clear();
 		currentLocationTextField.setFieldValue(mapField.getChoosenAddress());
-		currentLocationTextField.resetField();
+		currentLocationTextField.reset();
 		setCurrentSelectedLocation(mapField.getChoosenAddress());
 		//locationSelectorPopupPanel.show();
 		
@@ -328,12 +328,11 @@ public class LocationSelector extends Composite implements Field,EntityReceiver,
 	 */
 	private Configuration getTextFieldConfiguration(int visibleLines, boolean readOnly, String textFieldType, String primaryCss, String secondaryCss, String debugId){
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(TextField.TEXTFIELD_VISIBLELINES, visibleLines);
-		configuration.setPropertyByName(TextField.TEXTFIELD_READONLY, readOnly);
-		configuration.setPropertyByName(TextField.TEXTFIELD_TYPE, textFieldType);
-		configuration.setPropertyByName(TextField.TEXTFIELD_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(TextField.TEXTFIELD_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(TextField.TEXTFIELD_DEBUGID, debugId);
+		configuration.setPropertyByName(TextFieldConstant.TF_VISLINES, visibleLines);
+		configuration.setPropertyByName(TextFieldConstant.BF_READONLY, readOnly);
+		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(TextFieldConstant.BF_DCLS, secondaryCss);
 		return configuration;
 	}
 
@@ -420,7 +419,7 @@ public class LocationSelector extends Composite implements Field,EntityReceiver,
 	@Override
 	public void onFieldEvent(FieldEvent event) {
 		int eventType=event.getEventType();
-		if(eventType == FieldEvent.LOCATION_IN_MAP){
+		if(eventType == FieldEvent.LOCATION_RECIEVED){
 			currentSelectedLocation=(String) event.getEventData();
 		}
 	}
@@ -602,5 +601,11 @@ public class LocationSelector extends Composite implements Field,EntityReceiver,
 	
 	public void isCurrLocationLabelVisible(boolean visible) {
 		currentLocationLabel.setVisible(visible);
+	}
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
+		
 	}
 }

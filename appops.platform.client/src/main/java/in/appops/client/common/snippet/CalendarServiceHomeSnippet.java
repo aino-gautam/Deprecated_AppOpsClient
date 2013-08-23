@@ -3,9 +3,10 @@ package in.appops.client.common.snippet;
 import in.appops.client.common.components.CalendarEvents;
 import in.appops.client.common.components.CalendarReminders;
 import in.appops.client.common.components.CreateCalendarEntryScreen;
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.fields.Field;
-import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
@@ -153,8 +154,8 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 				quickEventLabelField.setFieldValue("Create reminder");
 			}
 			quickEventLabelField.setConfiguration(labelConfig);
-			quickEventLabelField.createField();
-			quickEventLabelField.addClickHandler(this);
+			quickEventLabelField.create();
+			//quickEventLabelField.addClickHandler(this);
 			
 			quickEventLabelField.addStyleName("calendarHomeTabSelected");
 			
@@ -162,14 +163,14 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 			Configuration reminderLabelConfig = getLabelFieldConfiguration(true, "flowPanelContent", "calendarHomeTab", null);
 			reminderLabelField.setFieldValue("Reminders");
 			reminderLabelField.setConfiguration(reminderLabelConfig);
-			reminderLabelField.createField();
-			reminderLabelField.addClickHandler(this);
+			reminderLabelField.create();
+			//reminderLabelField.addClickHandler(this);
 			
 			LabelField seperatorLabelField = new LabelField();
 			Configuration seperatorLabelFieldConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 			seperatorLabelField.setFieldValue("|");
 			seperatorLabelField.setConfiguration(seperatorLabelFieldConfig);
-			seperatorLabelField.createField();
+			seperatorLabelField.create();
 					
 			HorizontalPanel sepratorPanel = new HorizontalPanel();
 			
@@ -241,14 +242,12 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 			eventData = (String) event.getEventData();
 			
 			if(eventData.equals("Create a event")){
-				quickEventLabelField.clearField();
 				quickEventLabelField.setFieldValue(eventData);
-				quickEventLabelField.resetField();
+				quickEventLabelField.reset();
 			}else if(eventData.equals("Back")){
 				
-				quickEventLabelField.clearField();
 				quickEventLabelField.setFieldValue("Events");
-				quickEventLabelField.resetField();
+				quickEventLabelField.reset();
 				
 				calendarEvents = new CalendarEvents();
 				calendarEvents.addHandle(this);
@@ -256,9 +255,8 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 				childPanel.clear();
 				childPanel.add(calendarEvents);
 			}else{
-				quickEventLabelField.clearField();
 				quickEventLabelField.setFieldValue(eventData);
-				quickEventLabelField.resetField();
+				quickEventLabelField.reset();
 				
 				calendarEntryScreen = new CreateCalendarEntryScreen();
 				calendarEntryScreen.setConfiguration(getConfigurationForCreateEvent());
@@ -273,19 +271,19 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 	}
 
 	@Override
-	public void createField() throws AppOpsException {
+	public void create() throws AppOpsException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void clearField() {
+	public void clear() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void resetField() {
+	public void reset() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -303,12 +301,11 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 	}
 
 	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
-		Configuration config = new Configuration();
-		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return config;
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
+		configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return configuration;
 	}
 
 	@Override
@@ -583,5 +580,11 @@ public class CalendarServiceHomeSnippet extends Composite implements Snippet ,Fi
 			}
 		
 	  });
+	}
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
+		
 	}
 }

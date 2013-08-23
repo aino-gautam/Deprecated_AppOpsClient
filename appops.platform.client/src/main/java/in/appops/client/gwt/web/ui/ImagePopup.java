@@ -51,7 +51,7 @@ public class ImagePopup extends PopupPanel implements ClickHandler {
 		
 		crossImageField.setConfiguration(getImageFieldConfiguration("images/crossIconSmall.png", "crossImageInPhotoviewer"));
 		try {
-			crossImageField.createField();
+			crossImageField.create();
 		} catch (AppOpsException e) {
 			e.printStackTrace();
 		}
@@ -62,7 +62,7 @@ public class ImagePopup extends PopupPanel implements ClickHandler {
 		
 		nextImageField.setConfiguration(getImageFieldConfiguration("images/next.png", null));
 		try {
-			nextImageField.createField();
+			nextImageField.create();
 		} catch (AppOpsException e) {
 			e.printStackTrace();
 		}
@@ -73,7 +73,7 @@ public class ImagePopup extends PopupPanel implements ClickHandler {
 		
 		prevImageField.setConfiguration(getImageFieldConfiguration("images/prev.png", null));
 		try {
-			prevImageField.createField();
+			prevImageField.create();
 		} catch (AppOpsException e) {
 			e.printStackTrace();
 		}

@@ -1,9 +1,10 @@
 package in.appops.client.common.snippet;
 
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.event.ActionEvent;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.fields.ImageField;
-import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.util.BlobDownloader;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.operation.ActionContext;
@@ -57,7 +58,7 @@ public class BoxSnippet extends Composite implements Snippet,ClickHandler{
 		else
 			icon.setConfiguration(getIconConfig("images/NoImage.gif"));
 		try {
-			icon.createField();
+			icon.create();
 		} catch (AppOpsException e1) {
 			e1.printStackTrace();
 		}
@@ -70,14 +71,9 @@ public class BoxSnippet extends Composite implements Snippet,ClickHandler{
 		entityTitle = new LabelField();
 		entityTitle.setFieldValue(getEntity().getProperty("name").getValue().toString());
 		entityTitle.setConfiguration(getLabelFieldConfiguration(true, "boxSnippetEntityTitle", null, null));
-		try {
-			entityTitle.createField();
-		} catch (AppOpsException e) {
-	
-			e.printStackTrace();
-		}
+		entityTitle.create();
 		
-		entityTitle.addClickHandler(this);
+		//entityTitle.addClickHandler(this);
 		
 		VerticalPanel spaceDetails = new VerticalPanel();
 		spaceDetails.add(entityTitle);
@@ -89,12 +85,7 @@ public class BoxSnippet extends Composite implements Snippet,ClickHandler{
 			spaceTypeLbl.setFieldValue(spaceType);
 			spaceTypeLbl.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
 			
-			try {
-				spaceTypeLbl.createField();
-			} catch (AppOpsException e) {
-		
-				e.printStackTrace();
-			}
+			spaceTypeLbl.create();
 			
 			
 			spaceDetails.add(spaceTypeLbl);
@@ -105,7 +96,7 @@ public class BoxSnippet extends Composite implements Snippet,ClickHandler{
 		
 		basePanel.setSpacing(5);
 		
-		spaceTypeLbl.addClickHandler(this);
+		//spaceTypeLbl.addClickHandler(this);
 		
 		basePanel.setCellVerticalAlignment(spaceTypeLbl, HasVerticalAlignment.ALIGN_MIDDLE);
 		basePanel.setCellHorizontalAlignment(icon, HasHorizontalAlignment.ALIGN_LEFT);
@@ -123,10 +114,9 @@ public class BoxSnippet extends Composite implements Snippet,ClickHandler{
 	private Configuration getLabelFieldConfiguration(boolean allowWordWrap,
 		String primaryCss, String secondaryCss, String debugId) {
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelField.LABELFIELD_WORDWRAP,allowWordWrap);
-		configuration.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS,primaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS,secondaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
+		configuration.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
+		configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
 		return configuration;
 	}
 	

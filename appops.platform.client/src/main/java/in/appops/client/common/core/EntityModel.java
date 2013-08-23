@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.entity.type.Type;
+import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 
-public class EntityModel implements AppOpsModel{
+public class EntityModel implements AppOpsModel {
 	
 	private Entity entity;
 	private Query query;
@@ -83,7 +84,7 @@ public class EntityModel implements AppOpsModel{
 	 * @return Entity
 	 */
 	@Override
-	public Entity getEntity(Type type, int entityId,
+	public Entity getEntity(String op, Long entityId,
 			EntityReceiver entityReceiver) {
 		// TODO Auto-generated method stub
 		return null;
@@ -136,6 +137,27 @@ public class EntityModel implements AppOpsModel{
 
 	public void setEntityReceiver(EntityReceiver entityReceiver) {
 		this.entityReceiver = entityReceiver;
+	}
+
+
+	@Override
+	public Configuration getConfiguration() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void setConfiguration(Configuration conf) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

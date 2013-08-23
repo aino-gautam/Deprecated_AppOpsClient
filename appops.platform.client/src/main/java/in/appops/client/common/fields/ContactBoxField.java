@@ -68,7 +68,7 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 	}
 	
 	@Override
-	public void createField() throws AppOpsException {
+	public void create() throws AppOpsException {
 		
 		String primaryCss = configuration.getPropertyByName(USERBOXFIELD_PRIMARYCSS) != null ?  configuration.getPropertyByName(USERBOXFIELD_PRIMARYCSS).toString() : null;  
 		String dependentCss = configuration.getPropertyByName(USERBOXFIELD_DEPENDENTCSS) != null ?  configuration.getPropertyByName(USERBOXFIELD_DEPENDENTCSS).toString() : null;  
@@ -244,7 +244,7 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 		query.setQueryName("getMessageContact");
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("search", "%"+eventData+"%");
-		//map.put("spaceId", spaceId);
+		map.put("spaceId", spaceId);
 		query.setQueryParameterMap(map);
 		query.setListSize(8);
 		ContactSelectorModel contactSelectorModel = new ContactSelectorModel(query,"contact.ContactService.getEntityList",0);
@@ -260,13 +260,13 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 		return fieldEvent;
 	}
 	@Override
-	public void clearField() {
+	public void clear() {
 		this.setText("");
 		
 	}
 
 	@Override
-	public void resetField() {
+	public void reset() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -457,6 +457,12 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 
 	public void setPlainEmailsMap(HashMap<String, String> plainEmailsMap) {
 		this.plainEmailsMap = plainEmailsMap;
+	}
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
+		
 	}
 }
 

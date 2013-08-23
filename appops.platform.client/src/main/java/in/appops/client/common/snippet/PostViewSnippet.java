@@ -3,10 +3,11 @@ package in.appops.client.common.snippet;
 import in.appops.client.common.components.ActionWidget;
 import in.appops.client.common.components.ActionWidget.ActionWidgetConfiguration;
 import in.appops.client.common.components.ActionWidget.ActionWidgetType;
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.core.EntityReceiver;
 import in.appops.client.common.event.ActionEvent;
 import in.appops.client.common.fields.ImageField;
-import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.PostInButton;
 import in.appops.client.common.handler.HandlerFactory;
 import in.appops.client.common.handler.HandlerFactoryImpl;
@@ -119,7 +120,7 @@ public class PostViewSnippet extends RowSnippet {
 		}
 		imageField.setConfiguration(getImageFieldConfiguration(blobUrl));
 		try {
-			imageField.createField();
+			imageField.create();
 		} catch (AppOpsException e) {
 			 e.printStackTrace();
 		}
@@ -174,7 +175,7 @@ public class PostViewSnippet extends RowSnippet {
 		final ImageField responsesImageField = new ImageField();
 		responsesImageField.setConfiguration(getImageFieldConfiguration("images/dropDownIcon.png"));
 		try {
-			responsesImageField.createField();
+			responsesImageField.create();
 		} catch (AppOpsException e) {
 			 e.printStackTrace();
 		}
@@ -335,11 +336,7 @@ public class PostViewSnippet extends RowSnippet {
 	private void setTime(Entity ent) {
 		timeLbl = new LabelField();
 		timeLbl.setConfiguration(createConfiguration(true));
-		try {
-			timeLbl.createField();
-		} catch (AppOpsException e) {
-			e.printStackTrace();
-		}
+		timeLbl.create();
 		final Date timeStamp = (Date) ent.getProperty(PostConstant.CREATEDON).getValue();
 		
 		Timer timer = new Timer() {
@@ -347,7 +344,7 @@ public class PostViewSnippet extends RowSnippet {
 			
 			public void run() {
 				String timeAgo = calculateTimeAgo(timeStamp);
-				timeLbl.setText(timeAgo);
+				timeLbl.setValue(timeAgo);
 				
 			}
 		};
@@ -397,7 +394,7 @@ public class PostViewSnippet extends RowSnippet {
 	
 	public Configuration createConfiguration(boolean wordWrap){
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, wordWrap);
+		configuration.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, wordWrap);
 		return configuration;
 		
 	}

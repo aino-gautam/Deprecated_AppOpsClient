@@ -1,9 +1,9 @@
-package in.appops.showcase.web.gwt.fields.client;
+/*package in.appops.showcase.web.gwt.fields.client;
 
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
-import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.config.fields.LabelField;
 import in.appops.client.common.fields.SpinnerField;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -48,7 +48,7 @@ public class SpinnerWidget extends Composite implements FieldEventHandler, Click
 			LabelField modeLabel = new LabelField();
 			modeLabel.setFieldValue("Select mode");
 			modeLabel.setConfiguration(getLabelFieldConfiguration(true, "groupCheckboxTitle", null, null));
-			modeLabel.createField();
+			modeLabel.create();
 			selectModePanel.add(modeLabel);
 			
 			modeListbox.addItem("--Select--");
@@ -82,10 +82,10 @@ public class SpinnerWidget extends Composite implements FieldEventHandler, Click
 			basePanel.add(spinnerField);
 			basePanel.add(spinnerFieldValueLabel);
 			
-			spinnerField.createField();
-			spinnerFieldValueLabel.createField();
+			spinnerField.create();
+			spinnerFieldValueLabel.create();
 			spinnerFieldValueLabel.setFieldValue("Value set is: " + spinnerField.getValue());
-			spinnerFieldValueLabel.resetField();
+			spinnerFieldValueLabel.reset();
 		} catch (AppOpsException e) {
 			e.printStackTrace();
 		}
@@ -105,10 +105,10 @@ public class SpinnerWidget extends Composite implements FieldEventHandler, Click
 			basePanel.add(percentSpinnerField);
 			basePanel.add(spinnerPercentValueLabel);
 			
-			percentSpinnerField.createField();
-			spinnerPercentValueLabel.createField();
+			percentSpinnerField.create();
+			spinnerPercentValueLabel.create();
 			spinnerPercentValueLabel.setFieldValue("Value set is: " + percentSpinnerField.getValue() + "%");
-			spinnerPercentValueLabel.resetField();
+			spinnerPercentValueLabel.reset();
 		} catch (AppOpsException e) {
 			e.printStackTrace();
 		}
@@ -151,11 +151,11 @@ public class SpinnerWidget extends Composite implements FieldEventHandler, Click
 		case FieldEvent.VALUECHANGED: {
 			if(spinnerField != null && spinnerFieldValueLabel !=null) {
 				spinnerFieldValueLabel.setFieldValue("Value set is: " + spinnerField.getValue());
-				spinnerFieldValueLabel.resetField();
+				spinnerFieldValueLabel.reset();
 			}
 			if(percentSpinnerField != null && spinnerPercentValueLabel !=null) {
 				spinnerPercentValueLabel.setFieldValue("Value set is: " + percentSpinnerField.getValue() + "%");
-				spinnerPercentValueLabel.resetField();
+				spinnerPercentValueLabel.reset();
 			}
 			break;
 		}
@@ -164,3 +164,4 @@ public class SpinnerWidget extends Composite implements FieldEventHandler, Click
 		}
 	}
 }
+*/
