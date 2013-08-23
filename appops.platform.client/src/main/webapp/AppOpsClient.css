@@ -1682,4 +1682,47 @@ td.datePickerMonth {
 	float: left;
 }
 
+.gridPanelCss{
+	width: 500px;
+}
 
+/*********** product  entity snippet css ****/
+.cartImageCss{
+	width: 15px;
+	height:15px;
+	cursor: pointer;
+	cursor: hand;
+}
+
+.productImageCss{
+	cursor: pointer;
+	cursor: hand;
+	border-radius: 5px;
+	
+}
+
+.productDetailsLblCss{
+	color: #333;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 13px;
+}
+
+.pinkHeartCss{
+	width: 15px;
+	height:15px;
+	cursor: pointer;
+	cursor: hand;
+}
+
+
+.productSnippetCss{
+	width: 100px;
+	height: 120px;
+	display: inline-block;
+	margin-top: 10px;
+	margin-left: 12px;
+	border: 1px solid;
+	border-color: gray;
+	box-shadow: 5px 5px 5px #B0B0B0;
+}
+/*************************/
