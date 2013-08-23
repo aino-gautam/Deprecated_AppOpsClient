@@ -1,11 +1,13 @@
 package in.appops.client.common.config.dsnip;
 
 import in.appops.client.common.config.component.base.BaseComponentPresenter;
+import in.appops.client.common.config.component.grid.GridComponentPresenter;
 import in.appops.client.common.config.component.list.ListComponentPresenter;
 import in.appops.client.common.config.component.tree.TreeComponentPresenter;
 import in.appops.client.common.config.field.ActionField;
 import in.appops.client.common.config.field.BaseField;
 import in.appops.client.common.config.field.HTMLField;
+import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.date.DateLabelField;
@@ -22,6 +24,7 @@ public class ComponentFactoryImpl implements ComponentFactory {
 	private final String HTMLEDTFIELD = "htmlEditorField";
 	private final String DATETIMEFIELD = "dateTimeFieldField";
 	private final String LISTBOXFIELD = "listBoxField";
+	private final String IMAGEFIELD = "imageField";
 	
 	@Override
 	public BaseField getField(String type) {
@@ -41,11 +44,14 @@ public class ComponentFactoryImpl implements ComponentFactory {
 			return new DateLabelField();
 		} else if(type.equalsIgnoreCase(LISTBOXFIELD)) {
 			return new ListBoxField();
+		}else if(type.equalsIgnoreCase(IMAGEFIELD)) {
+			return new ImageField();
 		}
 		return null;
 	}
 
 	private final String LISTCOMPONENT = "listComponent";
+	private final String GRIDCOMPONENT = "gridComponent";
 	private final String LISTTREECOMPONENT = "listTreeComponent";
 
 	
@@ -55,7 +61,9 @@ public class ComponentFactoryImpl implements ComponentFactory {
 			return new ListComponentPresenter();
 		} else if(type.equalsIgnoreCase(LISTTREECOMPONENT)) {
 			return new TreeComponentPresenter();
-		} 
+		} else if(type.equalsIgnoreCase(GRIDCOMPONENT)) {
+			return new GridComponentPresenter();
+		}
 		return null;
 	}
 }
