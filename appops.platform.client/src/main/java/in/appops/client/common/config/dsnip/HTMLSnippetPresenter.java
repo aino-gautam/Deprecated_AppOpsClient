@@ -83,6 +83,7 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 
 		if(getViewConfiguration() != null) {
 			htmlSnippet.setConfiguration(getViewConfiguration());
+			htmlSnippet.configure();
 		}
 		
 		model.setReceiver(this);
