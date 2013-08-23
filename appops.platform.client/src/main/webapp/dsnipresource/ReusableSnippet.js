@@ -94,5 +94,36 @@ blogArticleSnippet: "<div class=\"art-vmenublockheader\">"+
 		"						</td>" +
 		"					</tr>" +
 		"				</tbody>" +
-		"			</table>",	
+		"			</table>",
+		
+productEntitySnippet:"<table> \n" + 
+		"				<tbody> \n" + 
+		"					<tr>\n" + 
+		"                       <td colspan=\"2\" align =\"center\"> \n" + 
+		"							<span id= \"productImage\" appopsfield=\"true\" widgetType= \"imageField\" data-config=\"productImageConfig\"> </span>\n" + 
+		"						</td>\n" +
+		"                   </tr>\n" + 
+		"		    		<tr>\n" + 
+		"                    	<td colspan=\"2\" align =\"center\"> \n" + 
+		"							<span id= \"productName\" appopsfield=\"true\" widgetType= \"labelField\" data-config=\"productNameConfig\"> </span>\n" + 
+		"						</td>\n" + 
+		"                   </tr>\n" + 
+ 		"					<tr>\n" + 
+		"                    	<td> \n" + 
+		"							<span id= \"price\" appopsfield=\"true\" widgetType= \"labelField\" data-config=\"priceConfig\"> </span>\n" + 
+		"						</td>\n" + 
+		"					 <td > \n" + 
+		"							<span id= \"pinkHeartImage\" appopsfield=\"true\" widgetType= \"imageField\" data-config=\"pinkHeartImageConfig\"> </span>\n" + 
+		"					 </td>\n" +
+		" 						<td> \n" + 
+		"							<span id= \"likes\" appopsfield=\"true\" widgetType= \"labelField\" data-config=\"noOfLikesLabelConfig\"> </span>\n" + 
+		"						</td>\n" + 
+		"                  </tr>\n" + 
+		"					<tr>\n" + 
+		"                    <td colspan=\"2\" align =\"center\"> \n" + 
+		"							<span id= \"cartImage\" appopsfield=\"true\" widgetType= \"imageField\" data-config=\"cartImageConfig\"> </span>\n" + 
+		"					 </td>\n" +
+		"                  </tr>\n" + 
+		"				</tbody>\n" + 
+        "  	 		</table>",
 }; 
