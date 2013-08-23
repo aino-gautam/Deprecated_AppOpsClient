@@ -2,6 +2,7 @@ package in.appops.client.common.config.dsnip;
 
 import in.appops.client.common.config.component.base.BaseComponentPresenter;
 import in.appops.client.common.config.component.base.BaseComponentView;
+import in.appops.client.common.config.dsnip.HTMLSnippetPresenter.HTMLSnippetConstant;
 import in.appops.client.common.config.field.BaseField;
 import in.appops.client.common.config.field.BaseField.BaseFieldConstant;
 import in.appops.client.common.config.util.Configurator;
@@ -153,12 +154,12 @@ public class HTMLSnippet extends HTMLPanel {
 	 */
 	public void configure() {
 				
-		if(getConfigurationValue(BaseFieldConstant.BF_PCLS) != null) {
-			this.setStylePrimaryName(getConfigurationValue(BaseFieldConstant.BF_PCLS).toString());
+		if(getConfigurationValue(HTMLSnippetConstant.HS_PCLS) != null) {
+			this.setStylePrimaryName(getConfigurationValue(HTMLSnippetConstant.HS_PCLS).toString());
 		}
 		
-		if(getConfigurationValue(BaseFieldConstant.BF_DCLS) != null) {
-			this.addStyleName(getConfigurationValue(BaseFieldConstant.BF_DCLS).toString());
+		if(getConfigurationValue(HTMLSnippetConstant.HS_DCLS) != null) {
+			this.addStyleName(getConfigurationValue(HTMLSnippetConstant.HS_DCLS).toString());
 		}
 	}
 	
