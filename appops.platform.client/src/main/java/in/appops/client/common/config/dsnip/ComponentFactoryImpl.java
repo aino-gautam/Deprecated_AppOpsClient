@@ -10,6 +10,7 @@ import in.appops.client.common.config.field.HTMLField;
 import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.ListBoxField;
+import in.appops.client.common.config.field.ToggleImageField;
 import in.appops.client.common.config.field.date.DateLabelField;
 import in.appops.client.common.config.field.spinner.SpinnerField;
 import in.appops.client.common.fields.TextField;
@@ -25,6 +26,7 @@ public class ComponentFactoryImpl implements ComponentFactory {
 	private final String DATETIMEFIELD = "dateTimeFieldField";
 	private final String LISTBOXFIELD = "listBoxField";
 	private final String IMAGEFIELD = "imageField";
+	private final String TOGGLEIMAGEFIELD = "toggleImageField";
 	
 	@Override
 	public BaseField getField(String type) {
@@ -46,6 +48,8 @@ public class ComponentFactoryImpl implements ComponentFactory {
 			return new ListBoxField();
 		}else if(type.equalsIgnoreCase(IMAGEFIELD)) {
 			return new ImageField();
+		}else if(type.equalsIgnoreCase(TOGGLEIMAGEFIELD)) {
+			return new ToggleImageField();
 		}
 		return null;
 	}
