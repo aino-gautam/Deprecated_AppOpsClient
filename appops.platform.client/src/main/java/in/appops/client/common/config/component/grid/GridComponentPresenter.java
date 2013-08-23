@@ -1,3 +1,4 @@
+
 package in.appops.client.common.config.component.grid;
 
 import in.appops.client.common.config.component.base.BaseComponentPresenter;
@@ -50,7 +51,6 @@ public class GridComponentPresenter extends BaseComponentPresenter implements En
 			listView.populate();
 			
 		}
-		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -154,7 +154,7 @@ public class GridComponentPresenter extends BaseComponentPresenter implements En
 		
 		BlobDownloader blobDownloader = new BlobDownloader();		
 		EntityList entityList = new EntityList();
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < 21; i++) {
 			Entity ent = new Entity();
 			ent.setType(new MetaType("product"));
 			
@@ -164,9 +164,15 @@ public class GridComponentPresenter extends BaseComponentPresenter implements En
 			
 			ent.setPropertyByName("name", "Ring"+i);
 			ent.setPropertyByName("blobId", blobDownloader.getThumbNailDownloadURL("i_irqSN52SzHwHksn9NQFKxA6zR2xKgDVgQLkP5WGJXH4%3D"));
-			
+			if(i%2==0){
+				ent.setPropertyByName("isliked", true);
+				ent.setPropertyByName("likes",2);
+			}else{
+				ent.setPropertyByName("isliked", false);
+				ent.setPropertyByName("likes",0);
+			}
 			ent.setPropertyByName("price", "$25");
-			ent.setPropertyByName("likes",25);
+			
 			entityList.add(ent);
 		}
 		
