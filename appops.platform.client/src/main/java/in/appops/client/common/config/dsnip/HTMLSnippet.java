@@ -9,6 +9,7 @@ import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -145,6 +146,34 @@ public class HTMLSnippet extends HTMLPanel {
 		}
 
 		adopt(widget);
+	}
+	
+	/**
+	 * Method configures the html snippet. 
+	 */
+	public void configure() {
+				
+		if(getConfigurationValue(BaseFieldConstant.BF_PCLS) != null) {
+			this.setStylePrimaryName(getConfigurationValue(BaseFieldConstant.BF_PCLS).toString());
+		}
+		
+		if(getConfigurationValue(BaseFieldConstant.BF_DCLS) != null) {
+			this.addStyleName(getConfigurationValue(BaseFieldConstant.BF_DCLS).toString());
+		}
+	}
+	
+	protected boolean hasConfiguration(String configKey) {
+		if(configuration != null && configuration.getPropertyByName(configKey) != null) {
+			return true;
+		}
+		return false;
+	}
+	
+	protected Serializable getConfigurationValue(String configKey) {
+		if(hasConfiguration(configKey)) {
+			return configuration.getPropertyByName(configKey);
+		}
+		return null;
 	}
 	
 	public Configuration getConfiguration() {
