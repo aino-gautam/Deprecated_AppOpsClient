@@ -3,9 +3,10 @@ package in.appops.client.common.core;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.entity.type.Type;
+import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.util.EntityList;
 
-public interface AppOpsModel {
+public interface AppOpsModel extends Configurable{
 	
 	public Entity saveEntity(Entity entity);
 	
@@ -17,7 +18,7 @@ public interface AppOpsModel {
 	
 	public EntityList getEntityList(int noOfEntities, EntityListReceiver listReceiver);
 	
-	public Entity getEntity(Type type, int entityId, EntityReceiver entityReceiver);
+	public Entity getEntity(String op, Long entityId, EntityReceiver entityReceiver);
 	
 	public String getOperationNameToBind();
 	
@@ -28,5 +29,7 @@ public interface AppOpsModel {
 	public boolean isInterestingType(Type type);
 	
 	public void setBroadcastEntity(Entity entity);
+	
+	public void configure();
 
 }

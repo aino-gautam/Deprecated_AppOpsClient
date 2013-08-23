@@ -1,5 +1,7 @@
 package in.appops.client.common.components;
 
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
@@ -7,9 +9,9 @@ import in.appops.client.common.fields.ComboBoxField;
 import in.appops.client.common.fields.DateOnlyPicker;
 import in.appops.client.common.fields.DateTimeField;
 import in.appops.client.common.fields.DateTimePicker;
-import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.fields.LinkField;
 import in.appops.client.common.fields.TextField;
+import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.client.common.fields.TimePicker;
 import in.appops.client.common.util.AppEnviornment;
 import in.appops.client.touch.Screen;
@@ -111,7 +113,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 			Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 			labelField.setFieldValue("Loading fields");
 			labelField.setConfiguration(labelConfig);
-			labelField.createField();
+			labelField.create();
 		    reminderFieldPanel.add(labelField);
 		
 			reminderTypeComboBoxField = new ComboBoxField();
@@ -141,7 +143,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 							reminderTypeComboBoxField.setEntityList(reminderTypeEntityList);
 							//reminderTypeComboBoxField.setFieldValue(ReminderTypeConstant.TYPE);
 							reminderTypeComboBoxField.setConfiguration(createComboboxConfig(null,ReminderTypeConstant.TYPE,"appops-comboBoxField",null,reminderTypeEntityList));
-							reminderTypeComboBoxField.createField();
+							reminderTypeComboBoxField.create();
 							fetchReminderUnits();
 						}catch(Exception e){
 							e.printStackTrace();
@@ -199,7 +201,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 						reminderUnitComboBoxField.setEntityList(reminderUnitEntityList);
 						//reminderUnitComboBoxField.setFieldValue("unit");
 						reminderUnitComboBoxField.setConfiguration(createComboboxConfig(null,"unit","appops-comboBoxField",null,reminderUnitEntityList));
-						reminderUnitComboBoxField.createField();
+						reminderUnitComboBoxField.create();
 						reminderFieldPanel.add(createRemiderField());
 					}catch(Exception e){
 						e.printStackTrace();
@@ -257,12 +259,12 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 			Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 			labelField.setFieldValue("What :");
 			labelField.setConfiguration(labelConfig);
-			labelField.createField();
+			labelField.create();
 			
 			textFieldTB = new TextField();
 			textFieldTB.setFieldValue("");
-			textFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "appops-TextField", null, null));
-			textFieldTB.createField();
+			textFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, "appops-TextField", null, null));
+			textFieldTB.create();
 			
 			DOM.setStyleAttribute(textFieldTB.getElement(), "width", "215px");
 			
@@ -270,24 +272,24 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 			Configuration labelWhenConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 			labelWhenField.setFieldValue("When :");
 			labelWhenField.setConfiguration(labelWhenConfig);
-			labelWhenField.createField();
+			labelWhenField.create();
 			
 			dateTimeOnlyField = new DateTimeField();
 			dateTimeOnlyField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATETIMEONLY,null));
-			dateTimeOnlyField.createField();
+			dateTimeOnlyField.create();
 			
 			LabelField reminderLabelField = new LabelField();
 			Configuration reminderLabelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 			reminderLabelField.setFieldValue("Reminder :");
 			reminderLabelField.setConfiguration(reminderLabelConfig);
-			reminderLabelField.createField();
+			reminderLabelField.create();
 			
 			
 			if(reminderEntity!=null){
 				
 				String reminderTitle = reminderEntity.getPropertyByName(ReminderConstant.TITLE);
 				textFieldTB.setFieldValue(reminderTitle);
-				textFieldTB.resetField();
+				textFieldTB.reset();
 				Date reminderTime=reminderEntity.getPropertyByName(ReminderConstant.REMINDERTIME);
 				DateTimeFormat fmt = DateTimeFormat.getFormat("dd-MM-yyyy HH:mm:ss");
 				String date = fmt.format(reminderTime);
@@ -329,12 +331,12 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 			Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 			labelField.setFieldValue("What :");
 			labelField.setConfiguration(labelConfig);
-			labelField.createField();
+			labelField.create();
 			
 			textFieldTB = new TextField();
 			textFieldTB.setFieldValue("");
-			textFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "appops-TextField", null, null));
-			textFieldTB.createField();
+			textFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, "appops-TextField", null, null));
+			textFieldTB.create();
 			
 			DOM.setStyleAttribute(textFieldTB.getElement(), "width", "215px");
 			
@@ -342,22 +344,22 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 			Configuration labelWhenConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 			labelWhenField.setFieldValue("When :");
 			labelWhenField.setConfiguration(labelWhenConfig);
-			labelWhenField.createField();
+			labelWhenField.create();
 			
 			dateTimeOnlyField = new DateTimeField();
 			dateTimeOnlyField.setConfiguration(getDateTimeFieldConfiguration(DateTimeField.MODE_SELECTION,DateTimeField.DATETIMEFIELD_DATETIMEONLY,null));
-			dateTimeOnlyField.createField();
+			dateTimeOnlyField.create();
 			
 			LabelField labelDescriptionField = new LabelField();
 			Configuration labelDescriptionConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 			labelDescriptionField.setFieldValue("Description :");
 			labelDescriptionField.setConfiguration(labelDescriptionConfig);
-			labelDescriptionField.createField();
+			labelDescriptionField.create();
 			
 			descriptionTextField = new TextField();
 			descriptionTextField.setFieldValue("");
-			descriptionTextField.setConfiguration(getTextFieldConfiguration(10, false, TextField.TEXTFIELDTYPE_TEXTAREA, "appops-TextField", null, null));
-			descriptionTextField.createField();
+			descriptionTextField.setConfiguration(getTextFieldConfiguration(10, false, TextFieldConstant.TFTTYPE_TXTAREA, "appops-TextField", null, null));
+			descriptionTextField.create();
 			DOM.setStyleAttribute(descriptionTextField.getElement(), "width", "215px");
 			DOM.setStyleAttribute(descriptionTextField.getElement(), "height", "65px");
 			
@@ -373,7 +375,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 						Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 						attachmentLabelField.setFieldValue("Attachment :");
 						attachmentLabelField.setConfiguration(labelConfig);
-						attachmentLabelField.createField();
+						attachmentLabelField.create();
 						
 						
 						//Anchor attachementAnchor = new Anchor("Add attachment");
@@ -383,7 +385,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 						Configuration reminderLabelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 						reminderLabelField.setFieldValue("Reminder :");
 						reminderLabelField.setConfiguration(reminderLabelConfig);
-						reminderLabelField.createField();
+						reminderLabelField.create();
 						
 						//HorizontalPanel reminderFieldPanel=createRemiderField();
 						
@@ -412,7 +414,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 			backToEventsLinkField = new LinkField();
 			backToEventsLinkField.setFieldValue("Back");
 			backToEventsLinkField.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_ANCHOR, "crossImageCss", null, null));
-			backToEventsLinkField.createField();
+			backToEventsLinkField.create();
 			
 			((Anchor) backToEventsLinkField.getWidget()).addClickHandler(this);
 			
@@ -458,8 +460,8 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 				    remindarDurationTextFieldTB = new TextField();
 					remindarDurationTextFieldTB.setFieldValue("");
 					//textFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "appops-TextField", null, null));
-					remindarDurationTextFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "reminderDurationBox", null, null));
-					remindarDurationTextFieldTB.createField();
+					remindarDurationTextFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, "reminderDurationBox", null, null));
+					remindarDurationTextFieldTB.create();
 					
 					horizontalPanel.add(remindarDurationTextFieldTB);
 					horizontalPanel.setCellWidth(remindarDurationTextFieldTB, "10%");
@@ -468,8 +470,8 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 					   remindarDurationTextFieldTB = new TextField();
 						remindarDurationTextFieldTB.setFieldValue("");
 						//textFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "appops-TextField", null, null));
-						remindarDurationTextFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextField.TEXTFIELDTYPE_TEXTBOX, "reminderDurationBox", null, null));
-						remindarDurationTextFieldTB.createField();
+						remindarDurationTextFieldTB.setConfiguration(getTextFieldConfiguration(1, false, TextFieldConstant.TFTYPE_TXTBOX, "reminderDurationBox", null, null));
+						remindarDurationTextFieldTB.create();
 						
 						
 						horizontalPanel.add(remindarDurationTextFieldTB);
@@ -537,7 +539,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 		try{
 			if(createEntityType.equals("Create reminder")){
 				
-				if(textFieldTB.getText().equals("")){
+				if(textFieldTB.getFieldText().equals("")){
 					
 					throw new NullPointerException(); 
 				}
@@ -549,7 +551,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 				
 			}else if(createEntityType.equals("Create event")){
 				
-				if(textFieldTB.getText().equals("")){
+				if(textFieldTB.getFieldText().equals("")){
 									
 					throw new NullPointerException(); 
 				}
@@ -559,7 +561,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 					throw new NullPointerException(); 
 				}
 			  if(isAddMoreDetails){
-				  if(remindarDurationTextFieldTB.getText().equals("")){
+				  if(remindarDurationTextFieldTB.getFieldText().equals("")){
 				      throw new NullPointerException(); 
 				  }
 				if(reminderTypeComboBoxField.getFieldValue().equals("--type--")){
@@ -579,7 +581,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 				Configuration labelConfig = getLabelFieldConfiguration(true, "appops-errorLabel", null, null);
 				errorLabelField.setFieldValue("*Please enter all data appropriately.");
 				errorLabelField.setConfiguration(labelConfig);
-				errorLabelField.createField();
+				errorLabelField.create();
 				errorHorizontalPanel.add(errorLabelField);
 				mainPanel.add(errorHorizontalPanel);
 			}catch(Exception e1){
@@ -600,7 +602,7 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 				 entity = new  Entity();
 				 entity.setType(new MetaType(TypeConstants.REMINDER));
 				 
-				    String eventTitle = textFieldTB.getText();
+				    String eventTitle = textFieldTB.getFieldText();
 				    Property<String> descProp = new Property<String>();
 					descProp.setName(ReminderConstant.TITLE);
 					descProp.setValue(eventTitle);
@@ -745,21 +747,21 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 			if(reminderUnitStr.equals("weeks")){
 				
 				//Long.valueOf(eventDateTime);
-				int remindarDuration = Integer.parseInt(remindarDurationTextFieldTB.getText());
+				int remindarDuration = Integer.parseInt(remindarDurationTextFieldTB.getFieldText());
 				  int days = remindarDuration * 7;
 				   newDate = new Date(date.getTime()-days * MILLISECONDS_IN_DAY);
 				
 			}else if(reminderUnitStr.equals("minutes")){
-				int remindarDuration = Integer.parseInt(remindarDurationTextFieldTB.getText());
+				int remindarDuration = Integer.parseInt(remindarDurationTextFieldTB.getFieldText());
 				 newDate = new Date(date.getTime()- remindarDuration * MILLISECONDS_IN_Minutes);
 				
 			}else if(reminderUnitStr.equals("days")){
-				int remindarDuration = Integer.parseInt(remindarDurationTextFieldTB.getText());
+				int remindarDuration = Integer.parseInt(remindarDurationTextFieldTB.getFieldText());
 				// CalendarUtil.addDaysToDate(date, 21);
 				 newDate = new Date(date.getTime() - remindarDuration * MILLISECONDS_IN_DAY);
 				
 			}else if(reminderUnitStr.equals("hours")){
-				int remindarDuration = Integer.parseInt(remindarDurationTextFieldTB.getText());
+				int remindarDuration = Integer.parseInt(remindarDurationTextFieldTB.getFieldText());
 				newDate = new Date(date.getTime() - remindarDuration * MILLISECONDS_IN_Hours);
 			}
 				
@@ -780,10 +782,10 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 		    Entity entity = new  Entity();
 		    entity.setType(new MetaType(TypeConstants.EVENT));
 		    
-		    String eventName = textFieldTB.getText();
+		    String eventName = textFieldTB.getFieldText();
 		    entity.setPropertyByName(EventConstant.NAME, eventName);
 		    
-		    String eventDescription = descriptionTextField.getText();
+		    String eventDescription = descriptionTextField.getFieldText();
 		    entity.setPropertyByName(EventConstant.DESCRIPTION, eventDescription);
 		    
 		    DateTimePicker dateOnlyPicker = (DateTimePicker) dateTimeOnlyField.getCurrentField();
@@ -853,22 +855,20 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 		return configuration;
 	}
 	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
-		Configuration config = new Configuration();
-		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return config;
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
+		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return conf;
 	}
 	
 	private Configuration getTextFieldConfiguration(int visibleLines, boolean readOnly, String textFieldType, String primaryCss, String secondaryCss, String debugId){
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(TextField.TEXTFIELD_VISIBLELINES, visibleLines);
-		configuration.setPropertyByName(TextField.TEXTFIELD_READONLY, readOnly);
-		configuration.setPropertyByName(TextField.TEXTFIELD_TYPE, textFieldType);
-		configuration.setPropertyByName(TextField.TEXTFIELD_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(TextField.TEXTFIELD_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(TextField.TEXTFIELD_DEBUGID, debugId);
+		configuration.setPropertyByName(TextFieldConstant.TF_VISLINES, visibleLines);
+		configuration.setPropertyByName(TextFieldConstant.BF_READONLY, readOnly);
+		configuration.setPropertyByName(TextFieldConstant.TF_TYPE, textFieldType);
+		configuration.setPropertyByName(TextFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(TextFieldConstant.BF_DCLS, secondaryCss);
 		return configuration;
 	}
 	private Configuration getDateTimeFieldConfiguration(String modeSelection,String datetimefieldTimeonly, String modeTimeValue) {
@@ -935,9 +935,9 @@ public class CreateCalendarEntryScreen extends Composite implements Screen,Click
 
 
 	public void clearAllFields() {
-		remindarDurationTextFieldTB.clearField();
-		descriptionTextField.clearField();
-		textFieldTB.clearField();
+		remindarDurationTextFieldTB.clear();
+		descriptionTextField.clear();
+		textFieldTB.clear();
 		Widget widget=dateTimeOnlyField.getCurrentField();
 		if(widget instanceof DateTimePicker){
 			

@@ -1,8 +1,8 @@
 package in.appops.showcase.web.gwt.intellithought.client;
 
 import in.appops.client.common.components.IntelliThoughtWidget;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.fields.IntelliThoughtField;
-import in.appops.client.common.fields.LabelField;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -96,9 +96,8 @@ public class IntelliThoughtShowCase implements EntryPoint{
 
 	private Configuration getIntelliFieldConfiguration(String primaryCss, String secondaryCss){
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		
+		configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
 		configuration.setPropertyByName(IntelliThoughtField.FIRE_EDITINITIATED_EVENT, "true");
 		configuration.setPropertyByName(IntelliThoughtField.FIRE_THREECHARENTERED_EVENT, "true");
 		configuration.setPropertyByName(IntelliThoughtField.FIRE_WORDENTERED_EVENT, "true");
