@@ -1,11 +1,9 @@
 package in.appops.client.common.config.field;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -25,8 +23,8 @@ import com.google.gwt.user.client.ui.Image;
 ImageField imageField = new ImageField();<br>
 Configuration configuration = new Configuration();<br>
 configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, "images/test2.jpg");<br>
-configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,"showcaseImage");<br>
-configuration.setPropertyByName(ButtonFieldConstant.BTNFD_TITLE, "Configurable Image");<br>
+configuration.setPropertyByName(ImageFieldConstant.BF_PCLS,"showcaseImage");<br>
+configuration.setPropertyByName(ImageFieldConstant.IMGFD_TITLE, "Configurable Image");<br>
 imageField.setConfiguration(conf);<br>
 imageField.configure();<br>
 imageField.create();<br>
@@ -80,6 +78,61 @@ public class ImageField extends BaseField implements ClickHandler{
 			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ImageField] ::Exception in configure method :"+e);
+		}
+	}
+	
+	/**
+	 * Overriden method from BaseField sets the value to image.
+	 */
+	@Override
+	public void setValue(Object value) {
+		try {
+			super.setValue(value);
+			setFieldValue(value.toString());
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ImageField]::Exception In setValue  method :"+e);
+		}
+	}
+	
+	/**
+	 * Overriden method from BaseField returns the converted field value.
+	 */
+	@Override
+	public Object getValue() {
+		String value = null;
+		try {
+			value =  getFieldValue();
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ImageField]::Exception In getValue  method :"+e);
+		}
+		return value;
+	}
+	
+	/**
+	 * Overriden method from BaseField returns the url of image.
+	 */
+	@Override
+	public String getFieldValue() {
+		logger.log(Level.INFO, "[ImageField] ::In getFieldValue method ");
+		String value = null;
+		try {
+			value =  image.getUrl();
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ImageField]::Exception In getFieldValue  method :"+e);
+		}
+		return value;
+	}
+	
+	/**
+	 * Overriden method from BaseField sets the url to image.
+	 */
+	@Override
+	public void setFieldValue(String fieldValue) {
+		logger.log(Level.INFO, "[ImageField] ::In setFieldValue method ");
+		try {
+			image.setUrl(fieldValue);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ImageField]::Exception In setFieldValue  method :"+e);
 		}
 	}
 	
