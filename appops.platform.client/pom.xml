@@ -213,15 +213,15 @@
 		<!-- Appops server jars -->
 
 		<dependency>
-			<groupId>vikram_appops_platform</groupId>
+			<groupId>mahesh_appops_platform</groupId>
 			<artifactId>core</artifactId>
-			<version>19.06.2013</version>
+			<version>18.07.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>vikram_appops_platform</groupId>
+			<groupId>appops_platform</groupId>
 			<artifactId>entitystore</artifactId>
-			<version>20.06.2013</version>
+			<version>26.06.2013</version>
 		</dependency>
 
 		<dependency>
@@ -331,6 +331,12 @@
 			<artifactId>deal</artifactId>
 			<version>20.06.2013</version>
 		</dependency>
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>ems</artifactId>
+			<version>08.08.2013</version>
+		</dependency>
+	
 
 		<dependency>
 			<groupId>vikram_appops_platform</groupId>
@@ -351,9 +357,9 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>mahesh_appops_platform</groupId>
 			<artifactId>blogging</artifactId>
-			<version>13.08.2013</version>
+			<version>26.08.2013</version>
 		</dependency>
 
 	</dependencies>
