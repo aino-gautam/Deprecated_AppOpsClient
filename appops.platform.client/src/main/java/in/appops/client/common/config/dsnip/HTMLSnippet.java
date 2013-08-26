@@ -26,7 +26,7 @@ public class HTMLSnippet extends HTMLPanel {
 
 	private Entity entity;
 	private Configuration configuration;
-	private Map<String, Widget> snippetElement = new HashMap<String, Widget>();
+	private Map<String, Widget> snippetElementMap = new HashMap<String, Widget>();
 	/**
 	 * Takes the html description and sets it to the root element of the html panel 
 	 * @param htmlDesc
@@ -67,7 +67,7 @@ public class HTMLSnippet extends HTMLPanel {
 								
 								formField.configure();
 								formField.create();
-								snippetElement.put(spanElement.getId(), formField);
+								snippetElementMap.put(spanElement.getId(), formField);
 								this.addAndReplaceElement(formField.asWidget(), spanElement);
 
 /*								if(formField instanceof HtmlEditorField) {
@@ -89,7 +89,7 @@ public class HTMLSnippet extends HTMLPanel {
 							
 							compPres.configure();
 							BaseComponentView component = compPres.getView();
-							snippetElement.put(spanElement.getId(), component);
+							snippetElementMap.put(spanElement.getId(), component);
 							this.addAndReplaceElement(component, spanElement);
 						}
 					}
@@ -185,12 +185,12 @@ public class HTMLSnippet extends HTMLPanel {
 		this.configuration = configuration;
 	}
 
-	public Map<String, Widget> getSnippetElement() {
-		return snippetElement;
+	public Map<String, Widget> getSnippetElementMap() {
+		return snippetElementMap;
 	}
 
-	public void setSnippetElement(Map<String, Widget> snippetElement) {
-		this.snippetElement = snippetElement;
+	public void setSnippetElementMap(Map<String, Widget> snippetElement) {
+		this.snippetElementMap = snippetElement;
 	}
 
 	public Entity getEntity() {
