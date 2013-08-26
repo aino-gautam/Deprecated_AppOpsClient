@@ -1,59 +1,56 @@
 package in.appops.client.common.config.dsnip;
 
+import com.google.gwt.dom.client.Element;
+
+import in.appops.client.common.config.form.FormSnippetPresenter;
 import in.appops.client.common.config.util.Configurator;
 import in.appops.client.common.config.util.ReusableSnippetStore;
 import in.appops.platform.core.shared.Configuration;
 
-
+/**
+ * @author nitish@ensarm.com	
+ * Class that will be responsible for return proper instance {@link HTMLSnippetPresenter}
+ * Depending on the type of the html.
+ */
 public class SnippetGeneratorImpl implements SnippetGenerator {
 
-/*	@Override
-	public DynamicSnippet generateSnippet(String htmlDesc) {
-		DynamicSnippet snippet = new DynamicSnippet(htmlDesc);
-		snippet.processSnippetDescription();
-		return snippet;
-	}
+	private final String FORMSNIPPET = "formSnippet";
 
-	@Override
-	public DynamicSnippet generateSnippet(String type, String instance) {
-
-		String snippetDesc = ReusableSnippetStore.getSnippetDesc(type);
-		snippetDesc = processPlaceHolders(snippetDesc);
-		
-		
-		DynamicSnippet snippet = new DynamicSnippet(snippetDesc);
-		snippet.setInstance(instance);
-		snippet.processSnippetDescription();		
-		return snippet;
-	}
-
-	private String processPlaceHolders(String desc) {
-		HTMLPanel panel = new HTMLPanel(desc);
-		NodeList<Element> nodeList = panel.getElement().getElementsByTagName("span");
-		int lengthOfNodes = nodeList.getLength();
-		for (int i = lengthOfNodes - 1; i > -1; i--) { // Iterating through the <span> elements
-			Node node = nodeList.getItem(i);
-			Element rootFormElement = Element.as(node);
-			if (rootFormElement != null) {
-				if (rootFormElement.hasAttribute("widgetContainerType") && rootFormElement.getAttribute("widgetContainerType").equals("form")) {
-					rootFormElement.setId(rootFormElement.getId() + UUIDGenerator.uuid());
-				}
-			}
-		}
-		
-		String processedDesc = panel.getElement().getInnerHTML();
-		return processedDesc;
-	} */
-
+	/**
+	 * The method which will return the instance of type {@link HTMLSnippetPresenter}
+	 * depending on the type string passed to it.
+	 * @param type
+	 * @return
+	 */
 	@Override
 	public HTMLSnippetPresenter generateSnippet(String type, String instance) {
-		HTMLSnippetPresenter snippetPres = new HTMLSnippetPresenter();
-		snippetPres.setSnippetType(type);
-		snippetPres.setSnippetInstance(instance);
-		snippetPres.init();
-		snippetPres.create();
-		return snippetPres;
+		try{
+			String snippetDesc = ReusableSnippetStore.getSnippetDesc(type);
+			Configuration configuration = Configurator.getConfiguration(instance);
+
+			HTMLSnippetPresenter snippetPres;
+			HTMLSnippet snippet = new HTMLSnippet(snippetDesc);
+			Element node = snippet.getElement().getFirstChildElement();
+
+			String nodeName = node.getNodeName();
+
+			if(nodeName.equalsIgnoreCase(FORMSNIPPET)){
+				snippet = new HTMLSnippet(node.getInnerHTML());
+				snippetPres = new FormSnippetPresenter();
+			}
+			else {
+				snippetPres = new HTMLSnippetPresenter();
+			}
+			snippetPres.setConfiguration(configuration);
+			snippetPres.setHtmlSnippet(snippet);
+			snippetPres.init();
+			snippetPres.create();
+			return snippetPres;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
-	
 
 }
