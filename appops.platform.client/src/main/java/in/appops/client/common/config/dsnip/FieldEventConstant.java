@@ -8,5 +8,7 @@ public interface FieldEventConstant {
 	
 	String EVENT_NAME = "appEvent";
 	String UP_AC_PROP= "updateAppContextProp";
+	
+	String LOCAL_ACTION = "localAction";
 
 }
