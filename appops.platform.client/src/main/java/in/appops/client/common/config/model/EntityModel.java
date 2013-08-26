@@ -86,10 +86,10 @@ public class EntityModel extends AppopsBaseModel {
 	
 	@SuppressWarnings("unchecked")
 	public void executeQuery(Query query) {
-		Map<String, Serializable> queryParam = new HashMap<String, Serializable>();
-		queryParam.put("query", query);
+		Map<String, Serializable> operationParam = new HashMap<String, Serializable>();
+		operationParam.put("query", query);
 		
-		StandardAction action = new StandardAction(EntityList.class, getOperationName(), queryParam);
+		StandardAction action = new StandardAction(EntityList.class, getOperationName(), operationParam);
 		dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
 
 			@Override
@@ -113,5 +113,7 @@ public class EntityModel extends AppopsBaseModel {
 		this.receiver = receiver;
 	}
 	
-	
+	public EntityReceiver getReceiver() {
+		return receiver;
+	}
 }

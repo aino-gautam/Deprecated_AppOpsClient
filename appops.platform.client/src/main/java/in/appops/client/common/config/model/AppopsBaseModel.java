@@ -6,7 +6,6 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.Defa
 import in.appops.platform.core.shared.Configuration;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class AppopsBaseModel implements AppopsModel {
 	
@@ -14,6 +13,7 @@ public class AppopsBaseModel implements AppopsModel {
 		String ABM_QRY_NAME = "queryname";
 		String ABM_OPR_NM = "operationname";
 		String ABM_QRY_PARAM = "queryParam";
+		String ABM_OPR_PARAM = "operationParam";
 	}
 	
 	protected final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
@@ -90,6 +90,14 @@ public class AppopsBaseModel implements AppopsModel {
 		Configuration param = null;
 		if(getConfigurationValue(AppopsModelConstant.ABM_QRY_PARAM) != null) {
 			param = (Configuration) getConfigurationValue(AppopsModelConstant.ABM_QRY_PARAM);
+		}
+		return param;
+	}
+
+	public Configuration getOperationParam() {
+		Configuration param = null;
+		if(getConfigurationValue(AppopsModelConstant.ABM_OPR_PARAM) != null) {
+			param = (Configuration) getConfigurationValue(AppopsModelConstant.ABM_OPR_PARAM);
 		}
 		return param;
 	}
