@@ -6,7 +6,6 @@ import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.SelectedItem;
 import in.appops.client.common.config.model.EntityModel;
 import in.appops.client.common.config.util.Configurator;
-import in.appops.client.common.config.util.ReusableSnippetStore;
 import in.appops.client.common.core.EntityReceiver;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
@@ -52,19 +51,9 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 	protected EntityModel model;
 
 	/**
-	 * Type of snippet. Corresponding html description if fetched from the reusable snippet
-	 */
-	private String snippetType;
-	
-	/**
-	 * Instance of snippet. Corresponding configuration if fetched from the page configurations
-	 */
-	private String snippetInstance;
-	
-	/**
 	 * Entity bound to a snippet.
 	 */
-	private Entity entity;
+	protected Entity entity;
 
 	/**
 	 * This initialises a snippet w.r.t. the snippet type and instance.
@@ -73,11 +62,6 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 	public void init() {
 		model = new EntityModel();
 
-		String snippetDesc = ReusableSnippetStore.getSnippetDesc(snippetType);
-		htmlSnippet = new HTMLSnippet(snippetDesc);
-
-		configuration = Configurator.getConfiguration(snippetInstance);
-	
 		if(getModelConfiguration() != null) {
 			model.setConfiguration(getModelConfiguration());
 			model.configure();
@@ -142,22 +126,6 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 		return htmlSnippet;
 	}
 
-	public String getSnippetType() {
-		return snippetType;
-	}
-
-	public void setSnippetType(String snippetType) {
-		this.snippetType = snippetType;
-	}
-
-	public String getSnippetInstance() {
-		return snippetInstance;
-	}
-
-	public void setSnippetInstance(String snippetInstance) {
-		this.snippetInstance = snippetInstance;
-	}
-
 	public void create() {
 		htmlSnippet.processSnippetDescription();
 	}
@@ -173,7 +141,7 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 	}
 
 	public void populateFields() {
-		Map<String, Widget> snippetEle = htmlSnippet.getSnippetElement();
+		Map<String, Widget> snippetEle = htmlSnippet.getSnippetElementMap();
 		for (Map.Entry<String, Widget> elementEntry : snippetEle.entrySet()) {
 			Widget element = elementEntry.getValue();
 	    	if(element instanceof BaseField) {
@@ -246,6 +214,9 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 				if(eventData instanceof Entity) {
 					appEvent.setProperty(EventConstant.EVNT_DATA, (Entity)eventData);
 				}
+				else {
+					appEvent.setPropertyByName(EventConstant.EVNT_DATA, (Serializable)eventData);
+				}
 				
 				JSONObject appEventJson = EntityToJsonClientConvertor.createJsonFromEntity(appEvent);
 				
@@ -256,7 +227,7 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 		}
 	}
 
-	private boolean isInterestedFieldEvent(String eventName) {
+	protected boolean isInterestedFieldEvent(String eventName) {
 		HashMap<String, Configuration> interestedFieldEvents = getInterestedFieldEvents();
 		Set<String> eventSet = interestedFieldEvents.keySet();
 		
@@ -268,7 +239,7 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 		return false;
 	}
 
-	private HashMap<String, Configuration> getInterestedFieldEvents() {
+	protected HashMap<String, Configuration> getInterestedFieldEvents() {
 		HashMap<String, Configuration> interestedFieldEvents = new HashMap<String, Configuration>();
 		if(getConfigurationValue(HTMLSnippetConstant.HS_FIELDEVENTS) != null) {
 			interestedFieldEvents = (HashMap<String, Configuration>) getConfigurationValue(HTMLSnippetConstant.HS_FIELDEVENTS);
@@ -277,7 +248,7 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 	}
 	
 
-	private Configuration getFieldEventConfiguration(String event) {
+	protected Configuration getFieldEventConfiguration(String event) {
 		HashMap<String, Configuration> interestedFieldEvents = getInterestedFieldEvents();
 		
 		if(!interestedFieldEvents.isEmpty() && interestedFieldEvents.containsKey(event)) {
@@ -306,5 +277,13 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 		
 	}
 	
+
+	public HTMLSnippet getHtmlSnippet() {
+		return htmlSnippet;
+	}
+
+	public void setHtmlSnippet(HTMLSnippet htmlSnippet) {
+		this.htmlSnippet = htmlSnippet;
+	}
 	
 }
