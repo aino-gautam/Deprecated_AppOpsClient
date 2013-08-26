@@ -163,7 +163,7 @@ public class Container extends SimplePanel implements Configurable, ValueChangeH
 				Serializable propvalue = entry.getValue().getValue();
 				
 				if(propvalue != null) {
-					String propStrVal = entry.getValue().getValue().toString();
+					String propStrVal = propvalue.toString();
 					
 					if(propStrVal.startsWith("evt")) {
 						
