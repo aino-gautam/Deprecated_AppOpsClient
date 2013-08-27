@@ -54,7 +54,8 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 
 	public static final String DEFACTNCONFIG = "defaultActionConfig";
 
-	
+	public static final String PREVIEWCONFIG = "previewConfig";
+
 	/**
 	 * This initialises a snippet w.r.t. the snippet type and instance.
 	 * Applies configurations to view and model.
@@ -72,15 +73,17 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 		}
 		
 		model.setReceiver(this);
-		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+		fieldEventRegistration = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 	}
 	
 	@Override
 	public void onEntityReceived(Entity entity) {
 		if(entity != null) {
 			this.entity = entity;
-			if(Boolean.parseBoolean(entity.getPropertyByName(ISSAVEUPDATECALL).toString())){
-				onSuccessAction();
+			if(entity.getPropertyByName(ISSAVEUPDATECALL)!=null){
+				if(Boolean.parseBoolean(entity.getPropertyByName(ISSAVEUPDATECALL).toString())){
+					onSuccessAction();
+				}
 			}
 			else
 				populateFields();
@@ -118,7 +121,7 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 		try{
 			Configuration defaultConfig = (Configuration) getConfiguration().getProperty(DEFACTNCONFIG);
 			if(defaultConfig != null){
-				Configuration onSuccessConfig = (Configuration) defaultConfig.getProperty(ONSUCCESS);
+				Configuration onSuccessConfig = (Configuration) defaultConfig.getProperty(ONFAILURE);
 				if(Boolean.parseBoolean(onSuccessConfig.getPropertyByName(ALERT).toString())){
 					String msg = onSuccessConfig.getPropertyByName(ALERTMSG).toString();
 					Window.alert(msg);
@@ -224,6 +227,9 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 					else if (propvalue.equals(DEFENT)){
 						getConfiguration().setGraphPropertyValue(key, defaultAuthEnt, null);
 					}
+					else{
+						getConfiguration().setGraphPropertyValue(key, propvalue, null);
+					}
 				}
 				
 				((FormModel)model).saveUpdateEntity();
@@ -240,7 +246,22 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 	 * default form action. 
 	 */
 	private void executePreviewForm() {
-		
+		try{
+			Configuration previewConfig = (Configuration) getConfiguration().getProperty(PREVIEWCONFIG);
+			
+			if(previewConfig.getPropertyByName(ALERT)!=null){
+				if(Boolean.parseBoolean(previewConfig.getPropertyByName(ALERT).toString())){
+					String msg = previewConfig.getPropertyByName(ALERTMSG).toString();
+					Window.alert(msg);
+				}
+			}
+			else{
+				//TODO : need to implement
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	
