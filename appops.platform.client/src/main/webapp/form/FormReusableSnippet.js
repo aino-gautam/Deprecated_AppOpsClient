@@ -35,7 +35,7 @@ blogArticleSnippet: "<div class=\"art-vmenublockheader\">"+
 "					</tr>" +
 "					<tr>" +
 "						<td align=\"left\" style=\"vertical-align: top; \">" +
-/*"							<span id=\"articleListTree\" appopsComponent=\"true\" widgetType= \"listTreeComponent\" data-config=\"articleListTree\"></span>" +*/
+"							<span id=\"createBlogLink\" appopsField=\"true\" widgetType= \"actionField\" data-config=\"newBlogLinkConfig\"></span>" +
 "						</td>" +
 "					</tr>" +
 "				</tbody>" +
