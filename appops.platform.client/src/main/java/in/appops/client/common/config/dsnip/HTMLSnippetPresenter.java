@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Widget;
@@ -55,6 +56,8 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 	 */
 	protected Entity entity;
 
+	protected HandlerRegistration fieldEventRegistration; 
+	
 	/**
 	 * This initialises a snippet w.r.t. the snippet type and instance.
 	 * Applies configurations to view and model.
@@ -73,9 +76,13 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 		}
 		
 		model.setReceiver(this);
-		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+		fieldEventRegistration = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 	}
 
+	public void removeFieldEventHandler() {
+		fieldEventRegistration.removeHandler();
+	}
+	
 	public void load() {
 		if(entity != null) {
 			populateFields();

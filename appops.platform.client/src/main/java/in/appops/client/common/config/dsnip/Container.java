@@ -195,6 +195,13 @@ public class Container extends SimplePanel implements Configurable, ValueChangeH
 		try {
 			SnippetGenerator snippetGenerator = (SnippetGenerator)injector.getSnippetGenerator();
 
+			if(!snippetMap.isEmpty()) {
+				HTMLSnippetPresenter snippetPres = snippetMap.get(transFormInstance);
+				if(snippetPres != null) {
+					snippetPres.removeFieldEventHandler();;
+				}
+			}
+			
 			final HTMLSnippetPresenter snippetPres = snippetGenerator.generateSnippet(transformTo, transFormInstance);
 
 			this.clear();
