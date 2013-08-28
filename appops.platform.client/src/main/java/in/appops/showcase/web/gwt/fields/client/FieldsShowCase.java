@@ -31,6 +31,8 @@ import in.appops.client.common.config.field.date.DateTimePickerField;
 import in.appops.client.common.config.field.date.DateTimePickerField.DateTimePickerFieldConstant;
 import in.appops.client.common.config.field.date.TimePickerField;
 import in.appops.client.common.config.field.date.TimePickerField.TimePickerFieldConstant;
+import in.appops.client.common.config.field.intellithought.IntelliThoughtField;
+import in.appops.client.common.config.field.intellithought.IntelliThoughtField.IntelliThoughtFieldConstant;
 import in.appops.client.common.config.field.media.MediaField;
 import in.appops.client.common.config.field.media.MediaField.MediaFieldConstant;
 import in.appops.client.common.config.field.rangeslider.RangeSliderField;
@@ -118,6 +120,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	public static final String HTMLEDITOR = "html Editor";
 	public static final String  DATELABEL_WITH_TIMESTAMP= "DateLable(TimeStamp)";
 	public static final String  DATELABEL_WITH_DATETIME= "DateLable(DateTime)";
+	public static final String  INTELLITHOUGHTFIELD= "Intellithought";
+	
 	private Logger logger = Logger.getLogger(getClass().getName());
 
 	
@@ -195,6 +199,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			
 			listBox.addItem(DATELABEL_WITH_TIMESTAMP);
 			listBox.addItem(DATELABEL_WITH_DATETIME);
+			listBox.addItem(INTELLITHOUGHTFIELD);
 			
 			listBox.addChangeHandler(this);
 			listBox.setStylePrimaryName("fieldShowcaseBasePanel");
@@ -990,6 +995,12 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				selectedField = dateLabelField;
 				innerPanel.add(dateLabelField);
 				innerPanel.setCellHorizontalAlignment(dateLabelField,HorizontalPanel.ALIGN_CENTER);
+			}else if(fieldName.equals(INTELLITHOUGHTFIELD)) {
+				
+				innerPanel.add(loaderImage);
+				innerPanel.setCellHorizontalAlignment(loaderImage,HorizontalPanel.ALIGN_CENTER);
+				loaderImage.setVisible(true);	
+				addIntellithoughtField();
 			}
 			
 			componentHolder.setPackageName(getPackageNameOfSelectedField(fieldName));
@@ -999,6 +1010,23 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		}
 	}
 	
+	private Configuration getIntellithoughtFieldConf() {
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.BF_PCLS, "intelliThoughtField");
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.BF_SUGGESTION_TEXT, "Any thoughts");
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.FIRE_EDITINITIATED_EVENT, true);
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.FIRE_THREECHARENTERED_EVENT, true);
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.FIRE_WORDENTERED_EVENT, true);
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.INTLTHT_ENTPROP, "name");
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.INTLTHT_OPRTION, "spacemanagement.SpaceManagementService.getLinkSuggestions");
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.INTLTHT_MAXCHARLEN, 3);
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.INTLTHT_QUERY_MAXRESULT, 10);
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.BF_ID, "intelliTextField");
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.INTLTHT_SUGGESTIONLBL_PCLS, "appops-intelliThoughtSuggestionLabel");
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.INTLTHT_SUGGESTIONPOPUP_PCLS, "appops-intelliThoughtLinkedSuggestionPopup");
+		return configuration;
+	}
+
 	private Configuration getDateLabelTimeStampConf(String displayFormat) {
 		Configuration configuration = new Configuration();
 		try {
@@ -1146,6 +1174,46 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		}
 	}
 	
+	
+	private void addIntellithoughtField() {
+		try {
+			logger.log(Level.INFO,"[FieldsShowCase]:: In addIntellithoughtField  method ");
+			Map parameters = new HashMap();
+			parameters.put("emailId", "pallavi@ensarm.com");
+			parameters.put("password", "pallavi123");
+			
+			StandardAction action = new StandardAction(EntityList.class, "useraccount.LoginService.validateUser", parameters);
+			
+			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+
+			ResponseActionContext actionContext = new ResponseActionContext();
+			actionContext.setEmbeddedAction(action);
+			
+			dispatch.executeContextAction(actionContext, new AsyncCallback<Result>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(Result result) {
+					innerPanel.clear();
+					IntelliThoughtField intellithoughtField = new IntelliThoughtField();
+					intellithoughtField.setConfiguration(getIntellithoughtFieldConf());
+					intellithoughtField.configure();
+					intellithoughtField.create();
+					selectedField = intellithoughtField;
+					innerPanel.add(intellithoughtField);
+					innerPanel.setCellHorizontalAlignment(intellithoughtField,HorizontalPanel.ALIGN_CENTER);
+				}
+			});
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[FieldsShowCase]::Exception In addIntellithoughtField  method :"+e);
+		}
+	}
+	
 	private String getPackageNameOfSelectedField(String fieldName){
 				
 			if(fieldName.equals(TEXTBOX) || fieldName.equals(PASSWORDTEXTBOX) || fieldName.equals(EMAILBOX) || 	fieldName.equals(TEXTAREA) || fieldName.equals(NUMERICBOX)	) {
@@ -1186,6 +1254,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 //				return HtmlEditorField.class.getName();
 			}else if(fieldName.equals(DATELABEL_WITH_DATETIME) || fieldName.equals(DATELABEL_WITH_TIMESTAMP)) {
 				return DateLabelField.class.getName();
+			}else if(fieldName.equals(INTELLITHOUGHTFIELD)) {
+				return IntelliThoughtField.class.getName();
 			}
 			
 		return null;
