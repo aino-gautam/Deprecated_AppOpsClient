@@ -1691,6 +1691,10 @@ td.datePickerMonth {
 	height: 15px;
 }
 
+.intelliThoughtField{
+	height: 32px;
+	width: 400px;
+}
 /*********** product  entity snippet css ****/
 .cartImageCss{
 	width: 15px;
