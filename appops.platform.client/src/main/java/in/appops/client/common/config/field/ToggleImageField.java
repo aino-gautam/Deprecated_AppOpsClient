@@ -19,16 +19,16 @@ import com.google.gwt.user.client.ui.ToggleButton;
 </p>
 <p>
 <h3>Example</h3>
-ToggleImageField toggleImageField = new ToggleImageField();
-Configuration conf = new Configuration();
-conf.setPropertyByName(ToggleImageFieldConstant.TIMGFD_UPSTATE_URL, "images/pinkHeart.jpg");
-conf.setPropertyByName(ToggleImageFieldConstant.TIMGFD_UPSTATE_TITLE,"unlike");
-conf.setPropertyByName(ToggleImageFieldConstant.TIMGFD_DWNSTATE_URL, "images/grayHeart.jpg");
-conf.setPropertyByName(ToggleImageFieldConstant.TIMGFD_DWNSTATE_TITLE,"like");
-conf.setPropertyByName(ToggleImageFieldConstant.TIMGFD_STATEIMG_PCLS,"toggleImageCss");
-toggleImageField.setConfiguration(conf);
-toggleImageField.configure();
-toggleImageField.create();
+ToggleImageField toggleImageField = new ToggleImageField();<br>
+Configuration conf = new Configuration();<br>
+conf.setPropertyByName(ToggleImageFieldConstant.TIMGFD_UPSTATE_URL, "images/pinkHeart.jpg");<br>
+conf.setPropertyByName(ToggleImageFieldConstant.TIMGFD_UPSTATE_TITLE,"unlike");<br>
+conf.setPropertyByName(ToggleImageFieldConstant.TIMGFD_DWNSTATE_URL, "images/grayHeart.jpg");<br>
+conf.setPropertyByName(ToggleImageFieldConstant.TIMGFD_DWNSTATE_TITLE,"like");<br>
+conf.setPropertyByName(ToggleImageFieldConstant.TIMGFD_STATEIMG_PCLS,"toggleImageCss");<br>
+toggleImageField.setConfiguration(conf);<br>
+toggleImageField.configure();<br>
+toggleImageField.create();<br>
 </p>*/
  
 @SuppressWarnings("rawtypes")
