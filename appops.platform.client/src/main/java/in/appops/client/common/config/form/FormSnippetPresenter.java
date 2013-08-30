@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import in.appops.client.common.config.component.base.BaseComponentPresenter.BaseComponentConstant;
 import in.appops.client.common.config.dsnip.FieldEventConstant;
 import in.appops.client.common.config.dsnip.HTMLSnippetPresenter;
 import in.appops.client.common.config.field.BaseField;
@@ -27,34 +28,37 @@ import com.google.gwt.user.client.Window;
  */
 public class FormSnippetPresenter extends HTMLSnippetPresenter {
 	
-	public static final String CONFIGTYPE = "config";
-	
-	public static final String frmDefActn = "FormDefaultAction";
-	
-	public static final String frmAltActn = "FormAlternateAction";
-	public static final String resetActn = "ResetAction";
-	public static final String backActn = "BackAction";
-	public static final String previewActn = "PreviewAction";
-	
-	public static final String ISSAVEUPDATECALL = "saveUpdateCall";
-	public static final String ENTITYTYPE = "entityType";
-	public static final String ENTITYPROPERTY = "entityProperty";
-	public static final String FldProp = "fieldProperty";
-	public static final String UPDATECONFIG = "updateConfiguration";
+	public interface FormSnippetConstant extends BaseComponentConstant {
+		final String CONFIGTYPE = "config";
 
-	public static final String CE = "currentEntity";
-	public static final String DEFENT = "defaultEntity";
+		final String frmDefActn = "FormDefaultAction";
 
-	public static final String ONSUCCESS = "onSuccess";
-	public static final String ONFAILURE = "onFailure";
+		final String frmAltActn = "FormAlternateAction";
+		final String resetActn = "ResetAction";
+		final String backActn = "BackAction";
+		final String previewActn = "PreviewAction";
 
-	public static final String ALERT = "windowAlert";
+		final String ISSAVEUPDATECALL = "saveUpdateCall";
+		final String ENTITYTYPE = "entityType";
+		final String ENTITYPROPERTY = "entityProperty";
+		final String FldProp = "fieldProperty";
+		final String UPDATECONFIG = "updateConfiguration";
 
-	public static final String ALERTMSG = "alertMsg";
+		final String CE = "currentEntity";
+		final String DEFENT = "defaultEntity";
 
-	public static final String DEFACTNCONFIG = "defaultActionConfig";
+		final String ONSUCCESS = "onSuccess";
+		final String ONFAILURE = "onFailure";
 
-	public static final String PREVIEWCONFIG = "previewConfig";
+		final String ALERT = "windowAlert";
+
+		final String ALERTMSG = "alertMsg";
+
+		final String DEFACTNCONFIG = "defaultActionConfig";
+
+		final String PREVIEWCONFIG = "previewConfig";
+	}
+
 
 	/**
 	 * This initialises a snippet w.r.t. the snippet type and instance.
@@ -80,8 +84,8 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 	public void onEntityReceived(Entity entity) {
 		if(entity != null) {
 			this.entity = entity;
-			if(entity.getPropertyByName(ISSAVEUPDATECALL)!=null){
-				if(Boolean.parseBoolean(entity.getPropertyByName(ISSAVEUPDATECALL).toString())){
+			if(entity.getPropertyByName(FormSnippetConstant.ISSAVEUPDATECALL)!=null){
+				if(Boolean.parseBoolean(entity.getPropertyByName(FormSnippetConstant.ISSAVEUPDATECALL).toString())){
 					onSuccessAction();
 				}
 			}
@@ -99,11 +103,11 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 	 */
 	private void onSuccessAction() {
 		try{
-			Configuration defaultConfig = (Configuration) getConfiguration().getProperty(DEFACTNCONFIG);
+			Configuration defaultConfig = (Configuration) getConfiguration().getProperty(FormSnippetConstant.DEFACTNCONFIG);
 			if(defaultConfig != null){
-				Configuration onSuccessConfig = (Configuration) defaultConfig.getProperty(ONSUCCESS);
-				if(Boolean.parseBoolean(onSuccessConfig.getPropertyByName(ALERT).toString())){
-					String msg = onSuccessConfig.getPropertyByName(ALERTMSG).toString();
+				Configuration onSuccessConfig = (Configuration) defaultConfig.getProperty(FormSnippetConstant.ONSUCCESS);
+				if(Boolean.parseBoolean(onSuccessConfig.getPropertyByName(FormSnippetConstant.ALERT).toString())){
+					String msg = onSuccessConfig.getPropertyByName(FormSnippetConstant.ALERTMSG).toString();
 					Window.alert(msg);
 				}
 			}
@@ -119,11 +123,11 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 	 */
 	private void onFailureAction() {
 		try{
-			Configuration defaultConfig = (Configuration) getConfiguration().getProperty(DEFACTNCONFIG);
+			Configuration defaultConfig = (Configuration) getConfiguration().getProperty(FormSnippetConstant.DEFACTNCONFIG);
 			if(defaultConfig != null){
-				Configuration onSuccessConfig = (Configuration) defaultConfig.getProperty(ONFAILURE);
-				if(Boolean.parseBoolean(onSuccessConfig.getPropertyByName(ALERT).toString())){
-					String msg = onSuccessConfig.getPropertyByName(ALERTMSG).toString();
+				Configuration onSuccessConfig = (Configuration) defaultConfig.getProperty(FormSnippetConstant.ONFAILURE);
+				if(Boolean.parseBoolean(onSuccessConfig.getPropertyByName(FormSnippetConstant.ALERT).toString())){
+					String msg = onSuccessConfig.getPropertyByName(FormSnippetConstant.ALERTMSG).toString();
 					Window.alert(msg);
 				}
 			}
@@ -153,13 +157,13 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 				
 				String localAction = fieldEventConf.getPropertyByName(FieldEventConstant.LOCAL_ACTION);
 				
-				if(localAction.equalsIgnoreCase(backActn)){
+				if(localAction.equalsIgnoreCase(FormSnippetConstant.backActn)){
 					History.back();
 				}
-				else if(localAction.equalsIgnoreCase(previewActn)){
+				else if(localAction.equalsIgnoreCase(FormSnippetConstant.previewActn)){
 					executePreviewForm();
 				}
-				else if(localAction.equalsIgnoreCase(frmDefActn)){
+				else if(localAction.equalsIgnoreCase(FormSnippetConstant.frmDefActn)){
 					executeDefaultAction();
 				}
 			}
@@ -177,7 +181,7 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 	 */
 	private void executeDefaultAction() {
 		try{
-			Configuration defaultActionConfig = (Configuration) getConfiguration().getProperty(DEFACTNCONFIG);
+			Configuration defaultActionConfig = (Configuration) getConfiguration().getProperty(FormSnippetConstant.DEFACTNCONFIG);
 			
 			if(defaultActionConfig != null){
 				
@@ -185,9 +189,9 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 				if(entity == null){
 					//save entity
 					entity = new Entity();
-					entity.setType(new MetaType(defaultActionConfig.getPropertyByName(ENTITYTYPE).toString()));
+					entity.setType(new MetaType(defaultActionConfig.getPropertyByName(FormSnippetConstant.ENTITYTYPE).toString()));
 				}
-				Configuration propertyConfig = defaultActionConfig.getPropertyByName(ENTITYPROPERTY);
+				Configuration propertyConfig = defaultActionConfig.getPropertyByName(FormSnippetConstant.ENTITYPROPERTY);
 
 				Set<Entry<String, Property<? extends Serializable>>> confSet = propertyConfig.getValue().entrySet();
 
@@ -201,7 +205,7 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 						if(propStrVal.indexOf(".") == -1) {
 							propvalue = entry.getValue().getValue();
 						}
-						else if(propStrVal.startsWith(FldProp)){
+						else if(propStrVal.startsWith(FormSnippetConstant.FldProp)){
 							String fieldName = propStrVal.substring(propStrVal.indexOf(".") + 1);
 							BaseField field = (BaseField) htmlSnippet.getSnippetElementMap().get(fieldName);
 							propvalue = (Serializable) field.getValue();
@@ -214,17 +218,17 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 				Entity defaultAuthEnt = new Entity(new MetaType(TypeConstants.USER));
 				defaultAuthEnt.setPropertyByName("id", new Key<Serializable>("2"));
 				
-				Configuration updateConfig = (Configuration) defaultActionConfig.getProperty(UPDATECONFIG);
+				Configuration updateConfig = (Configuration) defaultActionConfig.getProperty(FormSnippetConstant.UPDATECONFIG);
 				Set<Entry<String, Property<? extends Serializable>>> updateConfSet = updateConfig.getValue().entrySet();
 
 				for(Entry<String, Property<? extends Serializable>> entry : updateConfSet) {
 					String key = entry.getKey();
 					String propvalue = entry.getValue().getValue().toString();
 					
-					if(propvalue.equals(CE)){
+					if(propvalue.equals(FormSnippetConstant.CE)){
 						getConfiguration().setGraphPropertyValue(key, entity, null);
 					}
-					else if (propvalue.equals(DEFENT)){
+					else if (propvalue.equals(FormSnippetConstant.DEFENT)){
 						getConfiguration().setGraphPropertyValue(key, defaultAuthEnt, null);
 					}
 					else{
@@ -247,11 +251,11 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 	 */
 	private void executePreviewForm() {
 		try{
-			Configuration previewConfig = (Configuration) getConfiguration().getProperty(PREVIEWCONFIG);
+			Configuration previewConfig = (Configuration) getConfiguration().getProperty(FormSnippetConstant.PREVIEWCONFIG);
 			
-			if(previewConfig.getPropertyByName(ALERT)!=null){
-				if(Boolean.parseBoolean(previewConfig.getPropertyByName(ALERT).toString())){
-					String msg = previewConfig.getPropertyByName(ALERTMSG).toString();
+			if(previewConfig.getPropertyByName(FormSnippetConstant.ALERT)!=null){
+				if(Boolean.parseBoolean(previewConfig.getPropertyByName(FormSnippetConstant.ALERT).toString())){
+					String msg = previewConfig.getPropertyByName(FormSnippetConstant.ALERTMSG).toString();
 					Window.alert(msg);
 				}
 			}

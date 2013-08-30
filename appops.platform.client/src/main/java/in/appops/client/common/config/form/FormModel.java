@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import in.appops.client.common.config.form.FormSnippetPresenter.FormSnippetConstant;
 import in.appops.client.common.config.model.EntityModel;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.core.entity.Entity;
@@ -43,7 +44,7 @@ public class FormModel extends EntityModel{
 			public void onSuccess(Result result) {
 				try {
 					Entity entity = (Entity) result.getOperationResult();
-					entity.setPropertyByName(FormSnippetPresenter.ISSAVEUPDATECALL, true);
+					entity.setPropertyByName(FormSnippetConstant.ISSAVEUPDATECALL, true);
 					getReceiver().onEntityReceived(entity);
 				} catch (Exception e) {
 					e.printStackTrace();
