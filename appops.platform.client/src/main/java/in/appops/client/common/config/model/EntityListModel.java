@@ -80,4 +80,8 @@ public class EntityListModel extends AppopsBaseModel {
 	public void setReceiver(EntityListReceiver listReceiver) {
 		this.listReceiver = listReceiver;
 	}
+	
+	public EntityListReceiver getReceiver() {
+		return listReceiver;
+	}
 }
