@@ -26,10 +26,9 @@ public class RegisterComponentLister extends Composite {
 	
 	public RegisterComponentLister(){
 		initialize();
-		createUi();
 	}
 
-	private void createUi() {
+	void createUi() {
 		populateComponents();
 	}
 
@@ -69,7 +68,6 @@ public class RegisterComponentLister extends Composite {
 				}
 			});
 		} catch (Exception e) {
-			
 		}
 	}
 	

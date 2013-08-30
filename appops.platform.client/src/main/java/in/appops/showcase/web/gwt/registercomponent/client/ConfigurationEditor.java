@@ -1,7 +1,5 @@
 package in.appops.showcase.web.gwt.registercomponent.client;
 
-import java.util.logging.Level;
-
 import in.appops.client.common.config.field.ButtonField;
 import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
