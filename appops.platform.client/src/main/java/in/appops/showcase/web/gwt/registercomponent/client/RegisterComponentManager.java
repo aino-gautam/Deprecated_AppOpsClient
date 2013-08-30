@@ -3,8 +3,6 @@
  */
 package in.appops.showcase.web.gwt.registercomponent.client;
 
-import in.appops.client.common.config.field.LabelField;
-
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;

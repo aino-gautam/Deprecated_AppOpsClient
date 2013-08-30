@@ -5,6 +5,8 @@ import in.appops.client.common.config.dsnip.Container.ContainerConstant;
 import in.appops.client.common.config.dsnip.EventConstant;
 import in.appops.client.common.config.model.EntityListModel;
 import in.appops.client.common.core.EntityListReceiver;
+import in.appops.client.common.event.HtmlSnippetEvent;
+import in.appops.client.common.event.handlers.HtmlSnippetEventHandler;
 import in.appops.client.common.util.JsonToEntityConverter;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
@@ -15,7 +17,7 @@ import java.util.Set;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 
-public class ListComponentPresenter extends BaseComponentPresenter implements EntityListReceiver {
+public class ListComponentPresenter extends BaseComponentPresenter implements EntityListReceiver,HtmlSnippetEventHandler {
 	
 	public ListComponentPresenter () {
 		model = new EntityListModel();
@@ -166,7 +168,6 @@ public class ListComponentPresenter extends BaseComponentPresenter implements En
 			listView.setEntityList(entityList);
 			listView.populate();
 		}
-		
 	}
 
 	@Override
@@ -181,10 +182,15 @@ public class ListComponentPresenter extends BaseComponentPresenter implements En
 		
 	}
 	
+	@Override
+	public void onHtmlSnippetEvent(HtmlSnippetEvent event) {
+		
+	}
 	
 	public interface ListComponentConstant extends BaseComponentConstant {
 		String LC_LISTCLS = "listCss";
 		String LC_SNIPPETTYPE = "listSnippetType";
 		String LC_INSTANCETYPE = "listSnippetInstanceType";
 	}
+
 }
