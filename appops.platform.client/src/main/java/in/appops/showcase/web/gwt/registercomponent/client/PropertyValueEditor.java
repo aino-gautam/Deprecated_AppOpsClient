@@ -26,6 +26,11 @@ public class PropertyValueEditor {
 
 	public void createUi(String availValue, boolean isDefault){
 				
+		TextField propNameField = new TextField();
+		propNameField.setConfiguration(getPropNameFieldConf(null));
+		propNameField.configure();
+		propNameField.create();
+		
 		TextField propValueField = new TextField();
 		propValueField.setConfiguration(getDefaultValueFieldConf(availValue));
 		propValueField.configure();
@@ -36,10 +41,39 @@ public class PropertyValueEditor {
 		isDefaultValueField.configure();
 		isDefaultValueField.create();
 		
-		propValuePanel.setWidget(valuePanelRow, 0, propValueField);
-		propValuePanel.setWidget(valuePanelRow, 3, isDefaultValueField);
+		propValuePanel.setWidget(valuePanelRow, 0, propNameField);
+		propValuePanel.setWidget(valuePanelRow, 3, propValueField);
+		propValuePanel.setWidget(valuePanelRow, 5, isDefaultValueField);
 		
 	}
+	
+	/**
+	 * Method creates the property name field configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getPropNameFieldConf(String propName){
+		Configuration configuration = new Configuration();
+		
+		try {
+			configuration.setPropertyByName(TextFieldConstant.TF_TYPE, TextFieldConstant.TFTYPE_TXTBOX);
+			
+			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
+			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter property name");
+			
+			if(propName!=null)
+				configuration.setPropertyByName(TextFieldConstant.BF_DEFVAL, propName);
+			
+			configuration.setPropertyByName(TextFieldConstant.BF_ID, propName);
+			
+			configuration.setPropertyByName(TextFieldConstant.BF_BLANK_TEXT,"Property can't be empty");
+			configuration.setPropertyByName(TextFieldConstant.BF_ALLOWBLNK,false);
+			configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS,TextFieldConstant.BF_ERRINLINE);
+			
+		} catch (Exception e) {
+		}
+		return configuration;
+	}
+
 	
 	/**
 	 * Method creates the default value field configuration object and return.

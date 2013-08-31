@@ -23,7 +23,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	private String ADD_NEW_PROPVAL_IMGID = "addNewPropValImgId";
 	private String NEWVALUE_CSS = "addNewPropertyImage";
 	private String PROPPANEL_CSS = "properyPanelCss";
-	private String PROP_LABEL_CSS = "propValueLabelCss";
+	private String PROP_LABEL_CSS = "compRegisterLabelCss";
 	
 	private FlexTable propValuePanel;
 	private int valuePanelRow = 0;
@@ -35,12 +35,12 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	public void createUi(){
 		try {
 			
-			TextField propNameField = new TextField();
-			propNameField.setConfiguration(getPropNameFieldConf(null));
-			propNameField.configure();
-			propNameField.create();
-			
 			propValuePanel = new FlexTable();
+			
+			LabelField propNameLbl = new LabelField();
+			propNameLbl.setConfiguration(getLabelFieldConf("Property Name",PROP_LABEL_CSS,null,null));
+			propNameLbl.configure();
+			propNameLbl.create();
 			
 			LabelField valueLbl = new LabelField();
 			valueLbl.setConfiguration(getLabelFieldConf("Value",PROP_LABEL_CSS,null,null));
@@ -57,14 +57,14 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			addValueImgField.configure();
 			addValueImgField.create();
 			
-			propValuePanel.setWidget(valuePanelRow, 0, valueLbl);
-			propValuePanel.setWidget(valuePanelRow, 3, isDefLbl);
-			propValuePanel.setWidget(valuePanelRow, 5, addValueImgField);
+			propValuePanel.setWidget(valuePanelRow, 0, propNameLbl);
+			propValuePanel.setWidget(valuePanelRow, 3, valueLbl);
+			propValuePanel.setWidget(valuePanelRow, 5, isDefLbl);
+			propValuePanel.setWidget(valuePanelRow, 7, addValueImgField);
 			
 			//TODO check if property is new i.e no value is set to property then add default prop.
 			addNewPropertyValue();
 			
-			add(propNameField);
 			add(propValuePanel);
 			
 			setStylePrimaryName(PROPPANEL_CSS);
@@ -112,33 +112,6 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 		return conf;
 	}
 	
-	/**
-	 * Method creates the property name field configuration object and return.
-	 * @return Configuration instance
-	 */
-	private Configuration getPropNameFieldConf(String propName){
-		Configuration configuration = new Configuration();
-		
-		try {
-			configuration.setPropertyByName(TextFieldConstant.TF_TYPE, TextFieldConstant.TFTYPE_TXTBOX);
-			
-			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
-			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter property name");
-			
-			if(propName!=null)
-				configuration.setPropertyByName(TextFieldConstant.BF_DEFVAL, propName);
-			
-			configuration.setPropertyByName(TextFieldConstant.BF_ID, propName);
-			
-			configuration.setPropertyByName(TextFieldConstant.BF_BLANK_TEXT,"Property can't be empty");
-			configuration.setPropertyByName(TextFieldConstant.BF_ALLOWBLNK,false);
-			configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS,TextFieldConstant.BF_ERRINLINE);
-			
-		} catch (Exception e) {
-		}
-		return configuration;
-	}
-
 	@Override
 	public void onFieldEvent(FieldEvent event) {
 		try {

@@ -4,9 +4,6 @@
 package in.appops.showcase.web.gwt.registercomponent.client;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
 import in.appops.client.common.config.field.ButtonField;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
 import in.appops.client.common.config.field.LabelField;
@@ -21,16 +18,19 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.core.entity.Entity;
-import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -38,14 +38,18 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  *
  */
 public class RegisterComponentForm extends Composite implements FieldEventHandler{
-
-	private final String PREVIEW_BTN_PCLS = "saveCompBtnCss";
+	
 	private VerticalPanel basePanel;
-	private final String ENTERSCHEMANAMETBCSS = "registerCompHeaderLbl";
 	private TextField nameTf ;
 	private TextField descTf ;
 	private TextField typeTf ;
 	private ButtonField saveBtnFld;
+	
+	private final String FORMLBL_CSS = "compRegisterLabelCss";
+	private final String SAVECOMP_BTN_PCLS = "saveCompBtnCss";
+	private final String COMPHEADER_LBL_CSS = "registerCompHeaderLbl";
+	private final String COMPFORM_PANEL_CSS = "componentFormPanel";
+	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
 	
 	public RegisterComponentForm(){
 		initialize();
@@ -53,12 +57,8 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 
 	public void createUi() {
 		try{
-			basePanel.setWidth("100%");
-			
+					
 			FlexTable containerTable = new FlexTable();
-			containerTable.setWidth("100%");
-			containerTable.setBorderWidth(1);
-			
 			LabelField fieldNameLbl = new LabelField();
 			Configuration fldNameConfig = getNameLblConfig();
 		
@@ -115,11 +115,35 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 			
 			containerTable.setWidget(3, 1, saveBtnFld);
 			
+			LabelField headerLbl = new LabelField();
+			Configuration headerLblConfig = getHeaderLblConfig();
+		
+			headerLbl.setConfiguration(headerLblConfig);
+			headerLbl.configure();
+			headerLbl.create();
+			
+			basePanel.add(headerLbl);
+			basePanel.setCellHorizontalAlignment(headerLbl, HorizontalPanel.ALIGN_CENTER);
+			
 			basePanel.add(containerTable);
+			basePanel.addStyleName(COMPFORM_PANEL_CSS);
 		}
 		catch (Exception e) {	
 			e.printStackTrace();
 		}
+	}
+	
+	private Configuration getHeaderLblConfig() {
+		Configuration configuration = null;	
+		try{
+			configuration = new Configuration();
+			configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Component Form ");
+			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, HEADERLBL_CSS);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return configuration;
 	}
 
 	private Configuration getSaveBtnConfig() {
@@ -127,7 +151,7 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 		try{
 			configuration = new Configuration();
 			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Save component");
-			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,PREVIEW_BTN_PCLS);
+			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,SAVECOMP_BTN_PCLS);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_ENABLED, true);
 
 		}
@@ -142,7 +166,7 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 		try{
 			configuration = new Configuration();
 			configuration.setPropertyByName(TextFieldConstant.TF_TYPE, TextFieldConstant.TFTYPE_TXTBOX);
-			configuration.setPropertyByName(TextFieldConstant.BF_PCLS, ENTERSCHEMANAMETBCSS);
+			configuration.setPropertyByName(TextFieldConstant.BF_PCLS, COMPHEADER_LBL_CSS);
 			configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, false);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_BINDPROP, "name");
 
@@ -158,7 +182,7 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 		try{
 			configuration = new Configuration();
 			configuration.setPropertyByName(TextFieldConstant.TF_TYPE, TextFieldConstant.TFTYPE_TXTBOX);
-			configuration.setPropertyByName(TextFieldConstant.BF_PCLS, ENTERSCHEMANAMETBCSS);
+			configuration.setPropertyByName(TextFieldConstant.BF_PCLS, COMPHEADER_LBL_CSS);
 			configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, false);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_BINDPROP, "description");
 
@@ -174,7 +198,7 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 		try{
 			configuration = new Configuration();
 			configuration.setPropertyByName(TextFieldConstant.TF_TYPE, TextFieldConstant.TFTYPE_TXTBOX);
-			configuration.setPropertyByName(TextFieldConstant.BF_PCLS, ENTERSCHEMANAMETBCSS);
+			configuration.setPropertyByName(TextFieldConstant.BF_PCLS, COMPHEADER_LBL_CSS);
 			configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, false);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_BINDPROP, "type");
 
@@ -190,6 +214,7 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 		try{
 			configuration = new Configuration();
 			configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Component name: ");
+			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, FORMLBL_CSS);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -202,6 +227,7 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 		try{
 			configuration = new Configuration();
 			configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Description: ");
+			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, FORMLBL_CSS);
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -214,6 +240,7 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 		try{
 			configuration = new Configuration();
 			configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Type: ");
+			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, FORMLBL_CSS);
 		}
 		catch(Exception e){
 			e.printStackTrace();

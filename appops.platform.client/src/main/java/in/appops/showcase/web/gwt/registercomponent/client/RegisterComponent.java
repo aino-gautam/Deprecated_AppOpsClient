@@ -10,7 +10,7 @@ public class RegisterComponent implements EntryPoint {
 		try{
 			RegisterComponentManager compManager = new RegisterComponentManager();
 			compManager.createUi();
-			RootPanel.get().add(compManager);
+			RootPanel.get("componentregister").add(compManager);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
