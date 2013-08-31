@@ -1696,38 +1696,6 @@ td.datePickerMonth {
 	width: 400px;
 }
 
-.addNewPropertyImage{
-	width: 15px;
-	cursor: pointer;
-	cursor: hand;
-	margin-top: 6px;
-	margin-left: 7px;
-	 
-}
-
-.propValueLabelCss{
-	color: #333;
-	font-family: 'Ubuntu', sans-serif;
-	font-size: 14px;
-}
-
-.properyPanelCss{
-	border: 1px solid;
-}
-
-.saveConfigButton{
-	border: 1px solid #DCDCDC;
-	margin: 0px 3px;
-	font-family: 'Ubuntu', sans-serif;
-	-webkit-box-shadow: 1px 1px 1px 0px #8F8C8C;
-    box-shadow: 1px 1px 1px 0 #8F8C8C;
-    color: #333333;
-    font-family: 'Ubuntu',sans-serif;
-    height: 25px;
-    margin-top: 4px;
-    cursor: hand;
-    cursor: pointer;
-}
 
 /*********** product  entity snippet css ****/
 .cartImageCss{
