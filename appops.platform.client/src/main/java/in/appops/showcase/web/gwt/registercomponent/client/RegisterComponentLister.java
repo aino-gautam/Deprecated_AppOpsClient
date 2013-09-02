@@ -10,10 +10,12 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
+import in.appops.platform.server.ems.hibernate.domain.constants.TypesPojoConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,13 +36,16 @@ public class RegisterComponentLister extends Composite {
 	private FlexTable compListPanel;
 	private int componentRow = 0;
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
+	private Entity libraryEntity;
 	
 	public RegisterComponentLister(){
 		initialize();
 	}
 
-	void createUi() {
-		populate(getDummyList());
+	void createUi(Entity libEntity) {
+		this.libraryEntity = libEntity;
+		populateComponents();
+		//populate(getDummyList());
 	}
 
 	private void initialize() {
@@ -82,12 +87,17 @@ public class RegisterComponentLister extends Composite {
 			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 			
 			Query queryObj = new Query();
-			queryObj.setQueryName("");
+			queryObj.setQueryName("getComponentDefOfLibrary");
+			
+			HashMap<String, Object> queryParam = new HashMap<String, Object>();
+			Long libId = ((Key<Long>)libraryEntity.getPropertyByName("id")).getKeyValue();
+			queryParam.put("libraryId", libId);
+			queryObj.setQueryParameterMap(queryParam);
 						
 			Map parameterMap = new HashMap();
 			parameterMap.put("query", queryObj);
 			
-			StandardAction action = new StandardAction(EntityList.class, "", parameterMap);
+			StandardAction action = new StandardAction(EntityList.class, "appdefinition.AppDefinitionService.getComponentDefinitions", parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
 
 				@Override
@@ -119,6 +129,13 @@ public class RegisterComponentLister extends Composite {
 		}
 	}
 	
+	public void addComponent(Entity component) {
+		ComponentPanel componentPanel = new ComponentPanel(component);
+		componentPanel.createUi();
+		compListPanel.setWidget(componentRow, 0, componentPanel);
+		componentRow++;
+	}
+	
 	private EntityList getDummyList(){
 		Entity labelField = new Entity();
 		labelField.setPropertyByName("name","LabelField");
@@ -133,5 +150,13 @@ public class RegisterComponentLister extends Composite {
 		list.add(dateLabelField);
 		return list;
 		
+	}
+
+	public Entity getLibraryEntity() {
+		return libraryEntity;
+	}
+
+	public void setLibraryEntity(Entity libraryEntity) {
+		this.libraryEntity = libraryEntity;
 	}
 }

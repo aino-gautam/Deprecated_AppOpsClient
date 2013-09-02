@@ -2,6 +2,8 @@ package in.appops.showcase.web.gwt.registercomponent.client;
 
 import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 
@@ -24,7 +26,9 @@ public class ComponentPanel extends HorizontalPanel implements ClickHandler{
 	}
 	
 	public void createUi(){
+		
 		addHandler(this, ClickEvent.getType());
+		
 		LabelField nameLbl = new LabelField();
 		Configuration headerLblConfig = getLblConfig(componentEntity.getPropertyByName("name").toString());
 	
@@ -33,7 +37,7 @@ public class ComponentPanel extends HorizontalPanel implements ClickHandler{
 		nameLbl.create();
 		
 		LabelField descLbl = new LabelField();
-		Configuration descLblConfig = getLblConfig(componentEntity.getPropertyByName("desc").toString());
+		Configuration descLblConfig = getLblConfig(componentEntity.getPropertyByName("description").toString());
 	
 		descLbl.setConfiguration(descLblConfig);
 		descLbl.configure();
@@ -61,7 +65,9 @@ public class ComponentPanel extends HorizontalPanel implements ClickHandler{
 
 	@Override
 	public void onClick(ClickEvent event) {
-		
+		FieldEvent fieldEvent = new FieldEvent(FieldEvent.CLICKED, componentEntity);
+		fieldEvent.setEventSource(this);
+		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 	}
 	
 

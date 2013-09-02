@@ -1,17 +1,20 @@
 package in.appops.showcase.web.gwt.registercomponent.client;
 
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import java.util.ArrayList;
+
 import in.appops.client.common.config.field.ImageField;
-import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
+import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
-import in.appops.client.common.fields.TextField;
-import in.appops.client.common.fields.TextField.TextFieldConstant;
+import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.EntityList;
+
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * 
@@ -27,14 +30,17 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	
 	private FlexTable propValuePanel;
 	private int valuePanelRow = 0;
-	
-	public ConfPropertyEditor(String propName) {
-		ADD_NEW_PROPVAL_IMGID = propName;
+	private Entity componentDefEnt;
+	private  EntityList componentDeflist;
+	private ArrayList<PropertyValueEditor> propValueList;
+		
+	public ConfPropertyEditor(Entity componentDefEnt, EntityList componentDeflist) {
+		this.componentDefEnt = componentDefEnt;
+		this.componentDeflist = componentDeflist;
 	}
 	
 	public void createUi(){
 		try {
-			
 			propValuePanel = new FlexTable();
 			
 			LabelField propNameLbl = new LabelField();
@@ -42,10 +48,15 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			propNameLbl.configure();
 			propNameLbl.create();
 			
-			LabelField valueLbl = new LabelField();
-			valueLbl.setConfiguration(getLabelFieldConf("Value",PROP_LABEL_CSS,null,null));
-			valueLbl.configure();
-			valueLbl.create();
+			LabelField strValLbl = new LabelField();
+			strValLbl.setConfiguration(getLabelFieldConf("StringValue",PROP_LABEL_CSS,null,null));
+			strValLbl.configure();
+			strValLbl.create();
+			
+			LabelField intValLbl = new LabelField();
+			intValLbl.setConfiguration(getLabelFieldConf("IntValue",PROP_LABEL_CSS,null,null));
+			intValLbl.configure();
+			intValLbl.create();
 			
 			LabelField isDefLbl = new LabelField();
 			isDefLbl.setConfiguration(getLabelFieldConf("isDefault",PROP_LABEL_CSS,null,null));
@@ -58,17 +69,24 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			addValueImgField.create();
 			
 			propValuePanel.setWidget(valuePanelRow, 0, propNameLbl);
-			propValuePanel.setWidget(valuePanelRow, 3, valueLbl);
-			propValuePanel.setWidget(valuePanelRow, 5, isDefLbl);
-			propValuePanel.setWidget(valuePanelRow, 7, addValueImgField);
+			propValuePanel.setWidget(valuePanelRow, 3, intValLbl);
+			propValuePanel.setWidget(valuePanelRow, 5, intValLbl);
+			propValuePanel.setWidget(valuePanelRow, 7, isDefLbl);
+			propValuePanel.setWidget(valuePanelRow, 9, addValueImgField);
 			
-			//TODO check if property is new i.e no value is set to property then add default prop.
-			addNewPropertyValue();
+			for(Entity confEnt:componentDeflist){
+				valuePanelRow++;
+				PropertyValueEditor propValueEditor = new PropertyValueEditor(propValuePanel, valuePanelRow, confEnt);
+				propValueEditor.createUi();
+				
+				if(propValueList == null){
+					propValueList = new ArrayList<PropertyValueEditor>();
+				}
+				propValueList.add(propValueEditor);
+			}
 			
 			add(propValuePanel);
-			
 			setStylePrimaryName(PROPPANEL_CSS);
-			
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
 			
 		} catch (Exception e) {
@@ -78,8 +96,8 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	
 	private void addNewPropertyValue(){
 		valuePanelRow++;
-		PropertyValueEditor propValueEditor = new PropertyValueEditor(propValuePanel, valuePanelRow, ADD_NEW_PROPVAL_IMGID);
-		propValueEditor.createUi(null, true);
+		PropertyValueEditor propValueEditor = new PropertyValueEditor(propValuePanel, valuePanelRow, null);
+		propValueEditor.createUi();
 	}
 	
 	/**
@@ -135,4 +153,12 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 		}
 	}
 	
+	public EntityList getConfDefList(){
+		EntityList list = new EntityList();
+		for(int i = 0; i< propValueList.size() ; i++){
+			Entity confDef = propValueList.get(i).getConfigDefEntity();
+			list.add(confDef);
+		}
+		return list;
+	}
 }

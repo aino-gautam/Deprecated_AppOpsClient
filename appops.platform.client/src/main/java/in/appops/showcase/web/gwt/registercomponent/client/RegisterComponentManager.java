@@ -3,14 +3,29 @@
  */
 package in.appops.showcase.web.gwt.registercomponent.client;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
+import in.appops.client.common.config.field.SelectedItem;
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
+import in.appops.platform.core.entity.query.Query;
+import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.EntityList;
 
-import java.util.ArrayList;
-
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -19,7 +34,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author mahes@ensarm.com
  *
  */
-public class RegisterComponentManager extends Composite{
+public class RegisterComponentManager extends Composite implements FieldEventHandler{
 	
 	private VerticalPanel basePanel;
 	private RegisterComponentForm regCompForm;
@@ -31,6 +46,8 @@ public class RegisterComponentManager extends Composite{
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
 	private final String LIBPANEL_CSS = "libraryPanel";
 	
+	private final String LIBRARYBOX_ID = "libraryBoxFieldId";
+	
 	public RegisterComponentManager(){
 		initialize();
 	}
@@ -41,7 +58,6 @@ public class RegisterComponentManager extends Composite{
 			
 			HorizontalPanel formListHolder = new HorizontalPanel();
 			regCompForm.createUi();
-			regCompList.createUi();
 			
 			formListHolder.add(regCompForm);
 			formListHolder.add(regCompList);
@@ -72,8 +88,7 @@ public class RegisterComponentManager extends Composite{
 			basePanel.add(formListHolder);
 			formListHolder.setStylePrimaryName(FORMLIST_HOLDER_CSS);
 			libraryPanel.setStylePrimaryName(LIBPANEL_CSS);
-			
-			configEditor.createEditor();
+						
 			basePanel.add(configEditor);
 			
 			basePanel.setCellHorizontalAlignment(configEditor, HorizontalPanel.ALIGN_CENTER);
@@ -86,25 +101,14 @@ public class RegisterComponentManager extends Composite{
 	private Configuration getLibraryListBoxConfiguration() {
 		Configuration configuration = new Configuration();
 		try {
-			
-			/*configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_OPRTION,"spacemanagement.SpaceManagementService.getEntityList");
-			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_QUERYNAME,"getAllSpaces");
+			configuration.setPropertyByName(ListBoxFieldConstant.BF_ID,LIBRARYBOX_ID);
+			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_OPRTION,"appdefinition.AppDefinitionService.getLibraries");
+			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_QUERYNAME,"getAllLibraries");
 			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ENTPROP,"name");
-			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_QUERY_MAXRESULT,10);*/
-			
-			ArrayList<String> items = new ArrayList<String>();
-			items.add("library1");
-			items.add("library2");
-			items.add("library3");
-			
-			
-			configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"library1");
-			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,items);
-			
+			//configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"Select library");
 		} catch (Exception e) {
 			
 		}
-		
 		return configuration;
 	}
 
@@ -127,10 +131,99 @@ public class RegisterComponentManager extends Composite{
 			regCompForm = new RegisterComponentForm();
 			regCompList = new RegisterComponentLister();
 			configEditor = new ConfigurationEditor();
+			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
 			initWidget(basePanel);
 		}
 		catch (Exception e) {	
 			e.printStackTrace();
+		}
+	}
+	
+	private void intializeFormListHolder(Entity libEntity){
+		try {
+			regCompList.createUi(libEntity);
+			regCompForm.setLibraryEntity(libEntity);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		
+		int eventType = event.getEventType();
+		Object eventSource = event.getEventSource();
+		
+		try {
+			if(eventType == FieldEvent.VALUECHANGED){
+				if(eventSource instanceof ListBoxField){
+					
+					ListBoxField listBoxField = (ListBoxField) eventSource;
+					if(listBoxField.getBaseFieldId().equalsIgnoreCase(LIBRARYBOX_ID)){
+						SelectedItem selectedItem = (SelectedItem) event.getEventData();
+						Entity libEntity = selectedItem.getAssociatedEntity();
+						if(libEntity!=null){
+							intializeFormListHolder(libEntity);
+						}
+					}
+				}
+			}else if(eventType == FieldEvent.CLICKED){
+				if(eventSource instanceof ComponentPanel){
+					Entity componentEtity = (Entity) event.getEventData();
+						if(componentEtity!=null){
+							populateComponentConfiguration(componentEtity);
+						}
+					
+				}
+			}else if(eventType == FieldEvent.ADDCOMPONENT){
+				Entity componentEtity = (Entity) event.getEventData();
+				if(componentEtity!=null){
+					regCompList.addComponent(componentEtity);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void populateComponentConfiguration(final Entity componentDefEntity) {
+		try {
+			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+			
+			Query queryObj = new Query();
+			queryObj.setQueryName("getConfigurationdefOfComponent");
+			
+			HashMap<String, Object> queryParam = new HashMap<String, Object>();
+			Long libId = ((Key<Long>)componentDefEntity.getPropertyByName("id")).getKeyValue();
+			queryParam.put("confdefId", libId);
+			queryObj.setQueryParameterMap(queryParam);
+						
+			Map parameterMap = new HashMap();
+			parameterMap.put("query", queryObj);
+			
+			StandardAction action = new StandardAction(EntityList.class, "appdefinition.AppDefinitionService.getComponentDefinitions", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(Result<EntityList> result) {
+					if(result!=null){
+						EntityList confDeflist   = result.getOperationResult();
+						if(!confDeflist.isEmpty()){
+							configEditor.createEditor(componentDefEntity, confDeflist);
+						}
+					}
+				}
+			});
+		} catch (Exception e) {
 		}
 	}
 }

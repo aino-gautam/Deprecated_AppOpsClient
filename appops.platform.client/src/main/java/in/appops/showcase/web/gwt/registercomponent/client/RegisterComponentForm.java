@@ -21,7 +21,6 @@ import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
-import in.appops.platform.core.util.EntityList;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,13 +42,15 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 	private TextField nameTf ;
 	private TextField descTf ;
 	private TextField typeTf ;
-	private ButtonField saveBtnFld;
+	private ButtonField saveComponentBtnFld;
+	private Entity libraryEntity;
 	
 	private final String FORMLBL_CSS = "compRegisterLabelCss";
 	private final String SAVECOMP_BTN_PCLS = "saveCompBtnCss";
 	private final String COMPHEADER_LBL_CSS = "registerCompHeaderLbl";
 	private final String COMPFORM_PANEL_CSS = "componentFormPanel";
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
+	private static String SAVECOMPONENT_BTN_ID = "saveCompBtnId";
 	
 	public RegisterComponentForm(){
 		initialize();
@@ -98,11 +99,11 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 			typeTf.configure();
 			typeTf.create();
 			
-			saveBtnFld = new ButtonField();
+			saveComponentBtnFld = new ButtonField();
 			Configuration savebTnConfig = getSaveBtnConfig();
-			saveBtnFld.setConfiguration(savebTnConfig);
-			saveBtnFld.configure();
-			saveBtnFld.create();
+			saveComponentBtnFld.setConfiguration(savebTnConfig);
+			saveComponentBtnFld.configure();
+			saveComponentBtnFld.create();
 			
 			containerTable.setWidget(0, 0, fieldNameLbl);
 			containerTable.setWidget(0, 1, nameTf);
@@ -113,7 +114,7 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 			containerTable.setWidget(2, 0, typeLbl);
 			containerTable.setWidget(2, 1, typeTf);
 			
-			containerTable.setWidget(3, 1, saveBtnFld);
+			containerTable.setWidget(3, 1, saveComponentBtnFld);
 			
 			LabelField headerLbl = new LabelField();
 			Configuration headerLblConfig = getHeaderLblConfig();
@@ -153,6 +154,7 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Save component");
 			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,SAVECOMP_BTN_PCLS);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_ENABLED, true);
+			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, SAVECOMPONENT_BTN_ID);
 
 		}
 		catch(Exception e){
@@ -262,9 +264,16 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 	@Override
 	public void onFieldEvent(FieldEvent event) {
 		try{
+			int eventType = event.getEventType();
+			Object eventSource = event.getEventSource();
+			
 			if (event.getEventType() == FieldEvent.CLICKED) {
-				if (event.getSource() instanceof ButtonField){
-					saveComponent();
+				if (event.getEventSource() instanceof ButtonField){
+					ButtonField saveCompBtnField = (ButtonField) eventSource;
+					if (saveCompBtnField.getBaseFieldId().equals(SAVECOMPONENT_BTN_ID)) {
+						saveComponent();
+					}
+					
 				}
 			}
 		}
@@ -282,9 +291,10 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 			Entity entity = getPopulatedEntity();
 						
 			Map parameterMap = new HashMap();
-			parameterMap.put("entity", entity);
+			parameterMap.put("componentEnt", entity);
+			parameterMap.put("update", false);
 			
-			StandardAction action = new StandardAction(EntityList.class, "", parameterMap);
+			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveComponentDefinition", parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
 
 				@Override
@@ -298,6 +308,8 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 						Entity savedEntity   = result.getOperationResult();
 						if(savedEntity!=null){
 							Window.alert("Component Saved...");
+							FieldEvent fieldEvent = new FieldEvent(FieldEvent.ADDCOMPONENT, savedEntity);
+							AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 						}
 					}
 				}
@@ -321,5 +333,13 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 			e.printStackTrace();
 		}
 		return entity;
+	}
+
+	public Entity getLibraryEntity() {
+		return libraryEntity;
+	}
+
+	public void setLibraryEntity(Entity libraryEntity) {
+		this.libraryEntity = libraryEntity;
 	}
 }

@@ -1,45 +1,50 @@
 package in.appops.showcase.web.gwt.registercomponent.client;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import in.appops.client.common.config.field.ButtonField;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
-import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
-import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
-
-import com.google.gwt.dom.client.Document;
+import in.appops.platform.core.util.EntityList;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
- * take configuration instance ,iterate map and add confpropertyeditor instance for each property.
  * @author pallavi@ensarm.com
  *
  */
 public class ConfigurationEditor extends Composite implements FieldEventHandler{
 	
 	private VerticalPanel basePanel;
-	private FlexTable propertyPanel;
-	private int propertyPanelRow = 2;
+	private ConfPropertyEditor confPropertyEditor;
 	
-	private static String ADD_NEW_PROP_IMGID = "addNewPropImgId";
 	private static String SAVE_BTN_PCLS = "saveConfigButton";
-	private static String SAVE_BTN_ID = "saveConfigBtnId";
+	private static String SAVECONFIGURATION_BTN_ID = "saveConfigBtnId";
 	private static String BASEPANEL_CSS = "confEditorPanel";
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
 	
 	public ConfigurationEditor() {
-		
+		basePanel = new VerticalPanel();
+		initWidget(basePanel);
 	}
 	
-	public void createEditor(){
+	public void createEditor(Entity componentDefEnt, EntityList confDeflist){
 		
-		basePanel = new VerticalPanel();
+		
 		basePanel.setStylePrimaryName(BASEPANEL_CSS);
 		
 		LabelField headerLbl = new LabelField();
@@ -54,8 +59,7 @@ public class ConfigurationEditor extends Composite implements FieldEventHandler{
 		saveConfigBtn.configure();
 		saveConfigBtn.create();
 		
-		String propId = Document.get().createUniqueId();
-		ConfPropertyEditor confPropertyEditor = new ConfPropertyEditor(propId);
+		confPropertyEditor = new ConfPropertyEditor(componentDefEnt, confDeflist);
 		confPropertyEditor.createUi();
 		
 		basePanel.add(headerLbl);
@@ -64,8 +68,7 @@ public class ConfigurationEditor extends Composite implements FieldEventHandler{
 		
 		basePanel.setCellHorizontalAlignment(headerLbl, HorizontalPanel.ALIGN_CENTER);
 		
-		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
-		initWidget(basePanel);
+		
 	}
 	
 	private Configuration getHeaderLblConfig() {
@@ -91,21 +94,12 @@ public class ConfigurationEditor extends Composite implements FieldEventHandler{
 			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Save configuration");
 			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,SAVE_BTN_PCLS);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_ENABLED, true);
-			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, SAVE_BTN_ID);
+			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, SAVECONFIGURATION_BTN_ID);
 		} catch (Exception e) {
 			
 		}
 		return configuration;
 	}
-	
-	private void addNewConfigurationProperty(){
-		String propId = Document.get().createUniqueId();
-		ConfPropertyEditor confPropertyEditor = new ConfPropertyEditor(propId);
-		confPropertyEditor.createUi();
-		propertyPanelRow++;
-		propertyPanel.setWidget(propertyPanelRow, 0, confPropertyEditor);
-	}
-	
 
 	@Override
 	public void onFieldEvent(FieldEvent event) {
@@ -114,10 +108,10 @@ public class ConfigurationEditor extends Composite implements FieldEventHandler{
 			Object eventSource = event.getEventSource();
 			switch (eventType) {
 			case FieldEvent.CLICKED: {
-				if (eventSource instanceof ImageField) {
-					ImageField imageField = (ImageField) eventSource;
-					if (imageField.getBaseFieldId().equals(ADD_NEW_PROP_IMGID)) {
-						addNewConfigurationProperty();
+				if (eventSource instanceof ButtonField) {
+					ButtonField saveConfBtnField = (ButtonField) eventSource;
+					if (saveConfBtnField.getBaseFieldId().equals(SAVECONFIGURATION_BTN_ID)) {
+						saveConfDefinition();
 					}
 				}
 				break;
@@ -128,5 +122,36 @@ public class ConfigurationEditor extends Composite implements FieldEventHandler{
 		} catch (Exception e) {
 			
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void saveConfDefinition() {
+		try {
+			EntityList confDefList = confPropertyEditor.getConfDefList();
+			
+			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+						
+			Map parameterMap = new HashMap();
+			parameterMap.put("confEnt", null);
+			
+			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveConfigurationDefinition", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(Result<Entity> result) {
+					if(result!=null){
+						Window.alert("Configurations saved successfully");
+					}
+				}
+			});
+		} catch (Exception e) {
+		}
+		
 	}
 }
