@@ -3,10 +3,9 @@ package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.event.AppUtils;
-import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.ConfigEvent;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -14,6 +13,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 public class ComponentPanel extends HorizontalPanel implements ClickHandler{
 	
 	private Entity componentEntity;
+	
+	/** CSS styles **/
 	private final String COMPLISTLBL_CSS = "compRegisterLabelCss";
 	private final String COMPPANEL_CSS = "compPanelCss";
 	
@@ -69,9 +70,9 @@ public class ComponentPanel extends HorizontalPanel implements ClickHandler{
 
 	@Override
 	public void onClick(ClickEvent event) {
-		FieldEvent fieldEvent = new FieldEvent(FieldEvent.CLICKED, componentEntity);
-		fieldEvent.setEventSource(this);
-		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		ConfigEvent configEvent = new ConfigEvent(ConfigEvent.COMPONENTSELECTED, componentEntity, this);
+		configEvent.setEventSource(this);
+		AppUtils.EVENT_BUS.fireEvent(configEvent);
 	}
 	
 

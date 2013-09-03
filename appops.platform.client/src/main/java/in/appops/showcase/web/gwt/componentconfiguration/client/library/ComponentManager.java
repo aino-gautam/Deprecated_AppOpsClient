@@ -3,8 +3,6 @@
  */
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
-import in.appops.client.common.config.field.ListBoxField;
-import in.appops.client.common.config.field.SelectedItem;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
@@ -17,13 +15,12 @@ import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.util.EntityList;
-
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -33,64 +30,37 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class ComponentManager extends Composite implements FieldEventHandler{
 	
 	private VerticalPanel basePanel;
-	private RegisterComponentForm regCompForm;
-	private ComponentListDisplayer regCompList;
-		
-	private final String FORMLIST_HOLDER_CSS = "formListHolder";
+	private ComponentRegistrationForm compRegForm;
+	private ComponentListDisplayer compListDisplayer;
+	private Logger logger = Logger.getLogger("ComponentManager");
+
+	/**CSS styles **/
 	private final String BASEPANEL_CSS = "componentManager";
 	
-	private final String LIBRARYBOX_ID = "libraryBoxFieldId";
-	
 	public ComponentManager(){
-		initialize();
+		
 	}
 
 	public void createUi() {
 		try{
+			basePanel = new VerticalPanel();
 			basePanel.setStylePrimaryName(BASEPANEL_CSS);
 			
-			HorizontalPanel formListHolder = new HorizontalPanel();
-			regCompForm.createUi();
+			compRegForm = new ComponentRegistrationForm();
+			compRegForm.createUi();
 			
-			formListHolder.add(regCompForm);
-			formListHolder.add(regCompList);
+			compListDisplayer = new ComponentListDisplayer();
+			compListDisplayer.createUi();
 			
-			formListHolder.setCellWidth(regCompForm, "55%");
-			formListHolder.setCellWidth(regCompList, "40%");
+			basePanel.add(compRegForm);
+			basePanel.add(compListDisplayer);
 			
-			formListHolder.setCellHorizontalAlignment(regCompForm, HorizontalPanel.ALIGN_CENTER);
-			
-			basePanel.add(formListHolder);
-			formListHolder.setStylePrimaryName(FORMLIST_HOLDER_CSS);
-			
-			
-		}
-		catch (Exception e) {	
-			e.printStackTrace();
-		}
-	}
-	
-
-	private void initialize() {
-		try{
-			basePanel = new VerticalPanel();
-			regCompForm = new RegisterComponentForm();
-			regCompList = new ComponentListDisplayer();
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
 			initWidget(basePanel);
+							
 		}
 		catch (Exception e) {	
-			e.printStackTrace();
-		}
-	}
-	
-	private void intializeFormListHolder(Entity libEntity){
-		try {
-			regCompList.createUi(libEntity);
-			regCompForm.setLibraryEntity(libEntity);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "ComponentManager :: createUi :: Exception", e);
 		}
 	}
 
@@ -101,19 +71,7 @@ public class ComponentManager extends Composite implements FieldEventHandler{
 		Object eventSource = event.getEventSource();
 		
 		try {
-			if(eventType == FieldEvent.VALUECHANGED){
-				if(eventSource instanceof ListBoxField){
-					
-					ListBoxField listBoxField = (ListBoxField) eventSource;
-					if(listBoxField.getBaseFieldId().equalsIgnoreCase(LIBRARYBOX_ID)){
-						SelectedItem selectedItem = (SelectedItem) event.getEventData();
-						Entity libEntity = selectedItem.getAssociatedEntity();
-						if(libEntity!=null){
-							intializeFormListHolder(libEntity);
-						}
-					}
-				}
-			}else if(eventType == FieldEvent.CLICKED){
+			if(eventType == FieldEvent.CLICKED){
 				if(eventSource instanceof ComponentPanel){
 					Entity componentEtity = (Entity) event.getEventData();
 						if(componentEtity!=null){
@@ -124,11 +82,11 @@ public class ComponentManager extends Composite implements FieldEventHandler{
 			}else if(eventType == FieldEvent.ADDCOMPONENT){
 				Entity componentEtity = (Entity) event.getEventData();
 				if(componentEtity!=null){
-					regCompList.addComponent(componentEtity);
+					compListDisplayer.addComponent(componentEtity);
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "ComponentManager :: onFieldEvent :: Exception", e);
 		}
 		
 	}
@@ -169,6 +127,8 @@ public class ComponentManager extends Composite implements FieldEventHandler{
 				}
 			});
 		} catch (Exception e) {
+			logger.log(Level.SEVERE, "ComponentManager :: populateComponentConfiguration :: Exception", e);
 		}
 	}
+
 }

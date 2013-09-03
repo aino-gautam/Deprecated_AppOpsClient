@@ -5,6 +5,13 @@ package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
 import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
+import in.appops.client.common.config.field.ListBoxField;
+import in.appops.client.common.config.field.SelectedItem;
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.ConfigEvent;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.ConfigEventHandler;
+import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -18,57 +25,58 @@ import in.appops.platform.core.util.EntityList;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * @author pallavi@ensarm.com
  *
  */
-public class ComponentListDisplayer extends Composite {
+public class ComponentListDisplayer extends Composite implements FieldEventHandler,ConfigEventHandler{
 
 	private VerticalPanel basePanel;
-	private ScrollPanel scrollPanel;
 	private FlexTable compListPanel;
 	private int componentRow = 0;
-	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
 	private Entity libraryEntity;
+	private Logger logger = Logger.getLogger("ComponentListDisplayer");
+	
+	/** CSS styles **/
+	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
 	
 	public ComponentListDisplayer(){
-		initialize();
+		
 	}
 
-	void createUi(Entity libEntity) {
-		this.libraryEntity = libEntity;
-		populateComponents();
-		//populate(getDummyList());
-	}
+	public void createUi() {
+		try {
+			basePanel = new VerticalPanel();
+						
+			compListPanel = new FlexTable();
+			LabelField compListLbl = new LabelField();
+			Configuration compListLblConfig = getCompListLblConfig();
 
-	private void initialize() {
-		basePanel = new VerticalPanel();
-		scrollPanel = new ScrollPanel();
-		scrollPanel.setHeight("177px");
-		
-		compListPanel = new FlexTable();
-		LabelField compListLbl = new LabelField();
-		Configuration compListLblConfig = getCompListLblConfig();
-	
-		compListLbl.setConfiguration(compListLblConfig);
-		compListLbl.configure();
-		compListLbl.create();
-		
-		basePanel.add(compListLbl);
-		basePanel.add(compListPanel);
-		
-		basePanel.setCellHorizontalAlignment(compListLbl, HorizontalPanel.ALIGN_CENTER);
-		//scrollPanel.add(basePanel);
-		
-		initWidget(basePanel);
+			compListLbl.setConfiguration(compListLblConfig);
+			compListLbl.configure();
+			compListLbl.create();
+			
+			basePanel.add(compListLbl);
+			basePanel.add(compListPanel);
+			
+			basePanel.setCellHorizontalAlignment(compListLbl, HorizontalPanel.ALIGN_CENTER);
+			
+			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
+			
+			initWidget(basePanel);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "ComponentListDisplayer :: createUi :: Exception", e);
+		}
 	}
 	
 	private Configuration getCompListLblConfig() {
@@ -79,7 +87,7 @@ public class ComponentListDisplayer extends Composite {
 			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, HEADERLBL_CSS);
 		}
 		catch(Exception e){
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "ComponentListDisplayer :: getCompListLblConfig :: Exception", e);
 		}
 		return configuration;
 	}
@@ -120,24 +128,32 @@ public class ComponentListDisplayer extends Composite {
 				}
 			});
 		} catch (Exception e) {
+			logger.log(Level.SEVERE, "ComponentListDisplayer :: populateComponents :: Exception", e);
 		}
 	}
 	
 	private void populate(EntityList componentlist) {
-		
-		for(Entity comp:componentlist){
-			ComponentPanel componentPanel = new ComponentPanel(comp);
-			componentPanel.createUi();
-			compListPanel.setWidget(componentRow, 0, componentPanel);
-			componentRow++;
+		try {
+			for(Entity comp:componentlist){
+				ComponentPanel componentPanel = new ComponentPanel(comp);
+				componentPanel.createUi();
+				compListPanel.setWidget(componentRow, 0, componentPanel);
+				componentRow++;
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "ComponentListDisplayer :: populate :: Exception", e);
 		}
 	}
 	
 	public void addComponent(Entity component) {
-		ComponentPanel componentPanel = new ComponentPanel(component);
-		componentPanel.createUi();
-		compListPanel.setWidget(componentRow, 0, componentPanel);
-		componentRow++;
+		try {
+			ComponentPanel componentPanel = new ComponentPanel(component);
+			componentPanel.createUi();
+			compListPanel.setWidget(componentRow, 0, componentPanel);
+			componentRow++;
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "ComponentListDisplayer :: addComponent :: Exception", e);
+		}
 	}
 	
 	private EntityList getDummyList(){
@@ -153,7 +169,6 @@ public class ComponentListDisplayer extends Composite {
 		list.add(labelField);
 		list.add(dateLabelField);
 		return list;
-		
 	}
 
 	public Entity getLibraryEntity() {
@@ -162,5 +177,45 @@ public class ComponentListDisplayer extends Composite {
 
 	public void setLibraryEntity(Entity libraryEntity) {
 		this.libraryEntity = libraryEntity;
+	}
+	
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		try{
+			int eventType = event.getEventType();
+			Object eventSource = event.getEventSource();
+			
+			if(eventType == FieldEvent.VALUECHANGED){
+				if(eventSource instanceof ListBoxField){
+					ListBoxField listBoxField = (ListBoxField) eventSource;
+					if(listBoxField.getBaseFieldId().equalsIgnoreCase(LibraryComponentManager.LIBRARYLISTBOX_ID)){
+						SelectedItem selectedItem = (SelectedItem) event.getEventData();
+						Entity libEntity = selectedItem.getAssociatedEntity();
+						libraryEntity = libEntity;
+						populateComponents();
+					}
+				}
+			}
+		}
+		catch (Exception e) {
+			logger.log(Level.SEVERE, "ComponentListDisplayer :: onFieldEvent :: Exception", e);
+		}
+	}
+
+	@Override
+	public void onConfigEvent(ConfigEvent event) {
+		try{
+			int eventType = event.getEventType();
+			Object eventSource = event.getEventSource();
+			
+			if(eventType == ConfigEvent.ADDCOMPONENTTOLIST){
+				Entity componentEntity = (Entity) event.getEventData();
+				addComponent(componentEntity);
+			}
+		}
+		catch (Exception e) {
+			logger.log(Level.SEVERE, "ComponentListDisplayer :: onConfigEvent :: Exception", e);
+		}
+		
 	}
 }

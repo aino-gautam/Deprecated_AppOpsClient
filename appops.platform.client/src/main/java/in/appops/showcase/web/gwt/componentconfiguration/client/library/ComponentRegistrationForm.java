@@ -8,7 +8,10 @@ import in.appops.client.common.config.field.ButtonField;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
 import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
+import in.appops.client.common.config.field.ListBoxField;
+import in.appops.client.common.config.field.SelectedItem;
 import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.ConfigEvent;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
@@ -24,6 +27,8 @@ import in.appops.platform.core.shared.Configuration;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -36,7 +41,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author mahesh@ensarm.com
  *
  */
-public class RegisterComponentForm extends Composite implements FieldEventHandler{
+public class ComponentRegistrationForm extends Composite implements FieldEventHandler{
 	
 	private VerticalPanel basePanel;
 	private TextField nameTf ;
@@ -44,15 +49,19 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 	private TextField typeTf ;
 	private ButtonField saveComponentBtnFld;
 	private Entity libraryEntity;
-	
+	private Logger logger = Logger.getLogger("ComponentRegistrationForm");
+		
+	/** CSS styles **/
 	private final String FORMLBL_CSS = "compRegisterLabelCss";
 	private final String SAVECOMP_BTN_PCLS = "saveCompBtnCss";
 	private final String COMPHEADER_LBL_CSS = "registerCompHeaderLbl";
 	private final String COMPFORM_PANEL_CSS = "componentFormPanel";
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
+	
+	/** Field ID **/
 	private static String SAVECOMPONENT_BTN_ID = "saveCompBtnId";
 	
-	public RegisterComponentForm(){
+	public ComponentRegistrationForm(){
 		initialize();
 	}
 
@@ -130,7 +139,7 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 			basePanel.addStyleName(COMPFORM_PANEL_CSS);
 		}
 		catch (Exception e) {	
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "ComponentRegistrationForm :: createUi :: Exception", e);
 		}
 	}
 	
@@ -142,7 +151,7 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, HEADERLBL_CSS);
 		}
 		catch(Exception e){
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "ComponentRegistrationForm :: getHeaderLblConfig :: Exception", e);
 		}
 		return configuration;
 	}
@@ -158,7 +167,7 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 
 		}
 		catch(Exception e){
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "ComponentRegistrationForm :: getSaveBtnConfig :: Exception", e);
 		}
 		return configuration;
 	}
@@ -174,7 +183,7 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 
 		}
 		catch(Exception e){
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "ComponentRegistrationForm :: getNameTfConfig :: Exception", e);
 		}
 		return configuration;
 	}
@@ -187,10 +196,9 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 			configuration.setPropertyByName(TextFieldConstant.BF_PCLS, COMPHEADER_LBL_CSS);
 			configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, false);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_BINDPROP, "description");
-
 		}
 		catch(Exception e){
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "ComponentRegistrationForm :: getDescTfConfig :: Exception", e);
 		}
 		return configuration;
 	}
@@ -203,10 +211,9 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 			configuration.setPropertyByName(TextFieldConstant.BF_PCLS, COMPHEADER_LBL_CSS);
 			configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, false);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_BINDPROP, "type");
-
 		}
 		catch(Exception e){
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "ComponentRegistrationForm :: getTypeTfConfig :: Exception", e);
 		}
 		return configuration;
 	}
@@ -219,7 +226,7 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, FORMLBL_CSS);
 		}
 		catch(Exception e){
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "ComponentRegistrationForm :: getNameLblConfig :: Exception", e);
 		}
 		return configuration;
 	}
@@ -232,7 +239,7 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, FORMLBL_CSS);
 		}
 		catch(Exception e){
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "ComponentRegistrationForm :: getDescNameLblConfig :: Exception", e);
 		}
 		return configuration;
 	}
@@ -245,7 +252,7 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, FORMLBL_CSS);
 		}
 		catch(Exception e){
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "ComponentRegistrationForm :: getTypeLblConfig :: Exception", e);
 		}
 		return configuration;
 	}
@@ -257,7 +264,7 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 		}
 		catch (Exception e) {	
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "ComponentRegistrationForm :: initialize :: Exception", e);
 		}
 	}
 
@@ -271,14 +278,26 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 				if (event.getEventSource() instanceof ButtonField){
 					ButtonField saveCompBtnField = (ButtonField) eventSource;
 					if (saveCompBtnField.getBaseFieldId().equals(SAVECOMPONENT_BTN_ID)) {
-						saveComponent();
+						if(libraryEntity!=null){
+							saveComponent();
+						}else{
+							Window.alert("Please select a linbrary");
+						}
 					}
-					
+				}
+			}else if(eventType == FieldEvent.VALUECHANGED){
+				if(eventSource instanceof ListBoxField){
+					ListBoxField listBoxField = (ListBoxField) eventSource;
+					if(listBoxField.getBaseFieldId().equalsIgnoreCase(LibraryComponentManager.LIBRARYLISTBOX_ID)){
+						SelectedItem selectedItem = (SelectedItem) event.getEventData();
+						Entity libEntity = selectedItem.getAssociatedEntity();
+						libraryEntity = libEntity;
+					}
 				}
 			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "ComponentRegistrationForm :: onFieldEvent :: Exception", e);
 		}
 	}
 
@@ -289,7 +308,6 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 			
 			Entity entity = getPopulatedEntity();
-						
 			Map parameterMap = new HashMap();
 			parameterMap.put("componentEnt", entity);
 			parameterMap.put("update", false);
@@ -308,13 +326,14 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 						Entity savedEntity   = result.getOperationResult();
 						if(savedEntity!=null){
 							Window.alert("Component Saved...");
-							FieldEvent fieldEvent = new FieldEvent(FieldEvent.ADDCOMPONENT, savedEntity);
-							AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.ADDCOMPONENTTOLIST, savedEntity,this);
+							AppUtils.EVENT_BUS.fireEvent(configEvent);
 						}
 					}
 				}
 			});
 		} catch (Exception e) {
+			logger.log(Level.SEVERE, "ComponentRegistrationForm :: saveComponent :: Exception", e);
 		}
 
 	}
@@ -337,7 +356,7 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 			return compLibEntity;
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			logger.log(Level.SEVERE, "ComponentRegistrationForm :: getPopulatedEntity :: Exception", e);
 		}
 		return null;
 		
@@ -350,4 +369,5 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 	public void setLibraryEntity(Entity libraryEntity) {
 		this.libraryEntity = libraryEntity;
 	}
+
 }
