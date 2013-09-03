@@ -79,11 +79,6 @@ public class ComponentManager extends Composite implements FieldEventHandler{
 						}
 					
 				}
-			}else if(eventType == FieldEvent.ADDCOMPONENT){
-				Entity componentEtity = (Entity) event.getEventData();
-				if(componentEtity!=null){
-					compListDisplayer.addComponent(componentEtity);
-				}
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "ComponentManager :: onFieldEvent :: Exception", e);
