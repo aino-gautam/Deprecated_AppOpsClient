@@ -1,6 +1,9 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
+import java.util.ArrayList;
+
 import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
+import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.RadioButtonField;
 import in.appops.client.common.config.field.RadioButtonField.RadionButtonFieldConstant;
 import in.appops.client.common.fields.TextField;
@@ -16,9 +19,8 @@ public class PropertyValueEditor {
 	private FlexTable propValuePanel;
 	private int valuePanelRow;
 	private Entity confDefEntity;
-	private TextField propNameField;
-	private TextField stringValueField;
-	private TextField intValueField;
+	private TextField valueField;
+	private ListBoxField typeField;
 	private RadioButtonField isDefaultValueField;
 	
 	/*******************  Fields ID *****************************/
@@ -39,32 +41,45 @@ public class PropertyValueEditor {
 
 	public void createUi(){
 				
-		propNameField = new TextField();
-		propNameField.setConfiguration(getPropNameFieldConf());
-		propNameField.configure();
-		propNameField.create();
+		valueField = new TextField();
+		valueField.setConfiguration(getStringValueFieldConf());
+		valueField.configure();
+		valueField.create();
 		
-		stringValueField = new TextField();
-		stringValueField.setConfiguration(getStringValueFieldConf());
-		stringValueField.configure();
-		stringValueField.create();
-		
-		intValueField = new TextField();
-		intValueField.setConfiguration(getIntValueFieldConf());
-		intValueField.configure();
-		intValueField.create();
-		
+		typeField = new ListBoxField();
+		typeField.setConfiguration(getTypeBoxConfig());
+		typeField.configure();
+		typeField.create();
+				
 		isDefaultValueField = new RadioButtonField();
 		
 		isDefaultValueField.setConfiguration(getIsDefRadioBtnFieldConf());
 		isDefaultValueField.configure();
 		isDefaultValueField.create();
 		
-		propValuePanel.setWidget(valuePanelRow, 0, propNameField);
-		propValuePanel.setWidget(valuePanelRow, 3, intValueField);
-		propValuePanel.setWidget(valuePanelRow, 5, stringValueField);
+		propValuePanel.setWidget(valuePanelRow, 3, valueField);
+		propValuePanel.setWidget(valuePanelRow, 5, typeField);
 		propValuePanel.setWidget(valuePanelRow, 7, isDefaultValueField);
 		
+	}
+	
+	private Configuration getTypeBoxConfig() {
+		Configuration configuration = new Configuration();
+		try {
+			ArrayList<String> items = new ArrayList<String>();
+			items.add("Integer");
+			items.add("String");
+			items.add("configuration");
+			items.add("Boolean");
+			
+			configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"---Select the type ---");
+			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,items);
+			
+		} catch (Exception e) {
+			
+		}
+		
+		return configuration;
 	}
 	
 	/**
@@ -180,9 +195,9 @@ public class PropertyValueEditor {
 			confDefEntity.setType(new MetaType("Configurationdef"));
 		}
 		
-		confDefEntity.setPropertyByName("key", Integer.parseInt(intValueField.getValue().toString()));
-		confDefEntity.setPropertyByName("intvalue", Integer.parseInt(intValueField.getValue().toString()));
-		confDefEntity.setPropertyByName("stringvalue", Integer.parseInt(stringValueField.getValue().toString()));
+		confDefEntity.setPropertyByName("key", Integer.parseInt(valueField.getValue().toString()));
+		confDefEntity.setPropertyByName("intvalue", Integer.parseInt(typeField.getValue().toString()));
+		confDefEntity.setPropertyByName("stringvalue", Integer.parseInt(valueField.getValue().toString()));
 		confDefEntity.setPropertyByName("isdefault", isDefaultValueField.getValue().toString());
 		return confDefEntity;
 		

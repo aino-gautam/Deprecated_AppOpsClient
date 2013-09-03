@@ -30,7 +30,6 @@
 }
 
 .compRegisterLabelCss{
-	color: #333;
 	font-family: 'Ubuntu', sans-serif;
 	font-size: 14px;
 }
@@ -97,3 +96,32 @@
 	margin-top: 7px;
 	width: 300px;
 }
+/*************************/
+
+.managerHomePanel{
+	border: 1px solid;
+}
+
+.managerHomeButton {
+	width: 130px;
+	height: 50px;
+	border: 1px solid #DCDCDC;
+	margin: 5px 5px 5px 5px;
+	font-family: 'Ubuntu', sans-serif;
+	-webkit-box-shadow: 1px 1px 1px 0px #8F8C8C;
+	box-shadow: 1px 1px 1px 0 rgb(99, 85, 85);
+	color: #333333;
+	cursor: hand;
+	cursor: pointer;
+	font-size: 13px;
+	font-weight: bold;
+}
+
+.buttonToolbar{
+	border-right: 1px solid;
+}
+
+.contentPanel{
+	margin: 5px 5px 5px 5px;
+}
+

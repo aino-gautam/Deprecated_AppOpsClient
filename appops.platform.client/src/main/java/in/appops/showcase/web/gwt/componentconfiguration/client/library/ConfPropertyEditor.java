@@ -9,6 +9,8 @@ import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
+import in.appops.client.common.fields.TextField;
+import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
@@ -29,6 +31,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	private String PROP_LABEL_CSS = "compRegisterLabelCss";
 	
 	private FlexTable propValuePanel;
+	private TextField propNameField;
 	private int valuePanelRow = 0;
 	private Entity componentDefEnt;
 	private  EntityList componentDeflist;
@@ -43,42 +46,24 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 		try {
 			propValuePanel = new FlexTable();
 			
-			LabelField propNameLbl = new LabelField();
-			propNameLbl.setConfiguration(getLabelFieldConf("Property Name",PROP_LABEL_CSS,null,null));
-			propNameLbl.configure();
-			propNameLbl.create();
-			
-			LabelField strValLbl = new LabelField();
-			strValLbl.setConfiguration(getLabelFieldConf("StringValue",PROP_LABEL_CSS,null,null));
-			strValLbl.configure();
-			strValLbl.create();
-			
-			LabelField intValLbl = new LabelField();
-			intValLbl.setConfiguration(getLabelFieldConf("IntValue",PROP_LABEL_CSS,null,null));
-			intValLbl.configure();
-			intValLbl.create();
-			
-			LabelField isDefLbl = new LabelField();
-			isDefLbl.setConfiguration(getLabelFieldConf("isDefault",PROP_LABEL_CSS,null,null));
-			isDefLbl.configure();
-			isDefLbl.create();
+			TextField propNameField = new TextField();
+			propNameField.setConfiguration(getPropNameFieldConf(null));
+			propNameField.configure();
+			propNameField.create();
 			
 			ImageField addValueImgField = new ImageField();
 			addValueImgField.setConfiguration(getPlusImageConfiguration());
 			addValueImgField.configure();
 			addValueImgField.create();
 			
-			propValuePanel.setWidget(valuePanelRow, 0, propNameLbl);
-			propValuePanel.setWidget(valuePanelRow, 3, intValLbl);
-			propValuePanel.setWidget(valuePanelRow, 5, strValLbl);
-			propValuePanel.setWidget(valuePanelRow, 7, isDefLbl);
-			propValuePanel.setWidget(valuePanelRow, 9, addValueImgField);
+			propValuePanel.setWidget(valuePanelRow, 0, propNameField);
+			
+			propValuePanel.setWidget(valuePanelRow, 7, addValueImgField);
 			
 			for(Entity confEnt:componentDeflist){
-				valuePanelRow++;
 				PropertyValueEditor propValueEditor = new PropertyValueEditor(propValuePanel, valuePanelRow, confEnt);
 				propValueEditor.createUi();
-				
+				valuePanelRow++;
 				if(propValueList == null){
 					propValueList = new ArrayList<PropertyValueEditor>();
 				}
@@ -92,6 +77,33 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 		} catch (Exception e) {
 			
 		}
+	}
+	
+	/**
+	 * Method creates the property name field configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getPropNameFieldConf(String propName){
+		Configuration configuration = new Configuration();
+		
+		try {
+			configuration.setPropertyByName(TextFieldConstant.TF_TYPE, TextFieldConstant.TFTYPE_TXTBOX);
+			
+			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
+			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter property name");
+			
+			if(propName!=null)
+				configuration.setPropertyByName(TextFieldConstant.BF_DEFVAL, propName);
+			
+			configuration.setPropertyByName(TextFieldConstant.BF_ID, propName);
+			
+			configuration.setPropertyByName(TextFieldConstant.BF_BLANK_TEXT,"Property can't be empty");
+			configuration.setPropertyByName(TextFieldConstant.BF_ALLOWBLNK,false);
+			configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS,TextFieldConstant.BF_ERRINLINE);
+			
+		} catch (Exception e) {
+		}
+		return configuration;
 	}
 	
 	private void addNewPropertyValue(){

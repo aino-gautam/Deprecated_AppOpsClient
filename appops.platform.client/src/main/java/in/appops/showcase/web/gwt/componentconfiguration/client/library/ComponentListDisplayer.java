@@ -48,6 +48,7 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 	
 	/** CSS styles **/
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
+	private final String LISTPANEL = "componentFormPanel";
 	
 	public ComponentListDisplayer(){
 		
@@ -69,6 +70,7 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 			basePanel.add(compListPanel);
 			
 			basePanel.setCellHorizontalAlignment(compListLbl, HorizontalPanel.ALIGN_CENTER);
+			compListPanel.setStylePrimaryName(LISTPANEL);
 			
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
@@ -83,7 +85,7 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 		Configuration configuration = null;	
 		try{
 			configuration = new Configuration();
-			configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Component List ");
+			configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Components");
 			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, HEADERLBL_CSS);
 		}
 		catch(Exception e){

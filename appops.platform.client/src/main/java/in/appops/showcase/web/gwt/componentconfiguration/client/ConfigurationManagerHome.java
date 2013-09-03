@@ -1,8 +1,5 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import in.appops.client.common.config.field.ButtonField;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
 import in.appops.client.common.event.FieldEvent;
@@ -11,6 +8,10 @@ import in.appops.platform.core.shared.Configuration;
 import in.appops.showcase.web.gwt.componentconfiguration.client.library.LibraryComponentManager;
 import in.appops.showcase.web.gwt.componentconfiguration.client.page.PageManager;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -18,11 +19,15 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class ConfigurationManagerHome extends Composite implements FieldEventHandler{
 	
 	private HorizontalPanel basePanel;
+	private VerticalPanel contentPanel;
 	private Logger logger = Logger.getLogger("ConfigurationManagerHome");
 	
 	/** CSS styles used **/
 	private static String HOME_BTN_PCLS = "managerHomeButton";
 	private static String HOME_BTN_DCLS = "managerHomeSelectedButton";
+	private static String TOOLBAR_PCLS = "buttonToolbar";
+	private static String CONTENTPANEL_PCLS = "contentPanel";
+	private static String BASEPANEL_PCLS = "managerHomePanel";
 	
 	/** Field id **/
 	private static String MANAGELIB_BTN_ID = "manageLibBtnId";
@@ -41,8 +46,6 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 	public void createUi(){
 				
 		try {
-			VerticalPanel btnPanel = new VerticalPanel();
-			
 			ButtonField manageLibBtn = new ButtonField();
 			manageLibBtn.setConfiguration(getLibraryBtnConf());
 			manageLibBtn.configure();
@@ -58,15 +61,31 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 			createSnippetBtn.configure();
 			createSnippetBtn.create();
 			
+			VerticalPanel toolbar = new VerticalPanel();
+			VerticalPanel btnPanel = new VerticalPanel();
 			btnPanel.add(manageLibBtn);
 			btnPanel.add(createPageBtn);
 			btnPanel.add(createSnippetBtn);
+			toolbar.add(btnPanel);
 			
 			LibraryComponentManager libraryComponentManager = new LibraryComponentManager();
 			libraryComponentManager.initialize();
-									
-			basePanel.add(btnPanel);
-			basePanel.add(libraryComponentManager);
+								
+			contentPanel = new VerticalPanel();
+			contentPanel.add(libraryComponentManager);
+			basePanel.add(toolbar);
+			basePanel.add(contentPanel);
+			
+			toolbar.setStylePrimaryName(TOOLBAR_PCLS);
+			contentPanel.setStylePrimaryName(CONTENTPANEL_PCLS);
+			basePanel.setStylePrimaryName(BASEPANEL_PCLS);
+			
+			int width = Window.getClientWidth() - 100;
+			int height = Window.getClientHeight() - 120;
+			
+			int toolBarWidth = (width/7);
+			toolbar.setSize(toolBarWidth+"px", height+"px");
+			basePanel.setSize((width-toolBarWidth)+"px", height+"px");
 			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "ConfigurationManagerHome :: createUi :: Exception", e);
@@ -170,6 +189,8 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 						PageManager pageManager = new PageManager();
 						pageManager.initialize();
 						basePanel.add(pageManager);
+					}else if (btnField.getBaseFieldId().equals(CREATESNIPPET_BTN_ID)) {
+						basePanel.clear();
 					}
 				}
 				break;
