@@ -18,12 +18,15 @@ public class LibraryComponentManager extends Composite {
 	private final String LIBPANEL_CSS = "libraryPanel";
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
 	
+	/** Field id**/
+	private final String LIBRARYBOX_ID = "libraryBoxFieldId";
+	
 	
 	public LibraryComponentManager() {
-		initialize();
+		
 	}
 
-	private void initialize() {
+	public void initialize() {
 		basePanel = new VerticalPanel();
 		
 		HorizontalPanel libraryPanel = new HorizontalPanel();

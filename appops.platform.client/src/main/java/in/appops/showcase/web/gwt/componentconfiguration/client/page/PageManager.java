@@ -8,10 +8,10 @@ public class PageManager extends Composite {
 	private VerticalPanel basePanel;
 
 	public PageManager() {
-		initialize();
+		
 	}
 
-	private void initialize() {
+	public void initialize() {
 		basePanel = new VerticalPanel();
 		initWidget(basePanel);
 	}
