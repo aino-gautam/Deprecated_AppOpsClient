@@ -38,7 +38,7 @@ public class ComponentPanel extends HorizontalPanel implements ClickHandler{
 		nameLbl.create();
 		
 		LabelField descLbl = new LabelField();
-		Configuration descLblConfig = getLblConfig("description");
+		Configuration descLblConfig = getLblConfig("htmldescription");
 	
 		descLbl.setConfiguration(descLblConfig);
 		descLbl.configure();
