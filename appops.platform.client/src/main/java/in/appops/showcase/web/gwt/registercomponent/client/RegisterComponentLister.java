@@ -15,7 +15,6 @@ import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
-import in.appops.platform.server.ems.hibernate.domain.constants.TypesPojoConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +23,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class RegisterComponentLister extends Composite {
 
 	private VerticalPanel basePanel;
+	private ScrollPanel scrollPanel;
 	private FlexTable compListPanel;
 	private int componentRow = 0;
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
@@ -50,6 +51,8 @@ public class RegisterComponentLister extends Composite {
 
 	private void initialize() {
 		basePanel = new VerticalPanel();
+		scrollPanel = new ScrollPanel();
+		scrollPanel.setHeight("177px");
 		
 		compListPanel = new FlexTable();
 		LabelField compListLbl = new LabelField();
@@ -63,6 +66,7 @@ public class RegisterComponentLister extends Composite {
 		basePanel.add(compListPanel);
 		
 		basePanel.setCellHorizontalAlignment(compListLbl, HorizontalPanel.ALIGN_CENTER);
+		//scrollPanel.add(basePanel);
 		
 		initWidget(basePanel);
 	}

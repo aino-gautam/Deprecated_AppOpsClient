@@ -70,7 +70,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			
 			propValuePanel.setWidget(valuePanelRow, 0, propNameLbl);
 			propValuePanel.setWidget(valuePanelRow, 3, intValLbl);
-			propValuePanel.setWidget(valuePanelRow, 5, intValLbl);
+			propValuePanel.setWidget(valuePanelRow, 5, strValLbl);
 			propValuePanel.setWidget(valuePanelRow, 7, isDefLbl);
 			propValuePanel.setWidget(valuePanelRow, 9, addValueImgField);
 			

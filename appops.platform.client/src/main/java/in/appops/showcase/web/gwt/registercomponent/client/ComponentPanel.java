@@ -30,14 +30,14 @@ public class ComponentPanel extends HorizontalPanel implements ClickHandler{
 		addHandler(this, ClickEvent.getType());
 		
 		LabelField nameLbl = new LabelField();
-		Configuration headerLblConfig = getLblConfig(componentEntity.getPropertyByName("name").toString());
+		Configuration headerLblConfig = getLblConfig("name");
 	
 		nameLbl.setConfiguration(headerLblConfig);
 		nameLbl.configure();
 		nameLbl.create();
 		
 		LabelField descLbl = new LabelField();
-		Configuration descLblConfig = getLblConfig(componentEntity.getPropertyByName("description").toString());
+		Configuration descLblConfig = getLblConfig("description");
 	
 		descLbl.setConfiguration(descLblConfig);
 		descLbl.configure();
@@ -50,11 +50,15 @@ public class ComponentPanel extends HorizontalPanel implements ClickHandler{
 		
 	}
 	
-	private Configuration getLblConfig(String componentName) {
+	private Configuration getLblConfig(String propertyName) {
 		Configuration configuration = null;	
 		try{
+			String displayText = "";
 			configuration = new Configuration();
-			configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, componentName);
+			if(componentEntity.getPropertyByName(propertyName)!=null){
+				displayText = componentEntity.getPropertyByName(propertyName).toString();
+			}
+			configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, displayText);
 			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, COMPLISTLBL_CSS);
 		}
 		catch(Exception e){

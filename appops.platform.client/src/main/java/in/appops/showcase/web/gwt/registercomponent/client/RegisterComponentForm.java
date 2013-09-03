@@ -320,19 +320,27 @@ public class RegisterComponentForm extends Composite implements FieldEventHandle
 	}
 
 	private Entity getPopulatedEntity() {
-		Entity entity = null;
+		
 		try{
-			entity = new Entity();
-			entity.setType(new MetaType("Componentdefinition"));
+			Entity compLibEntity = new Entity();
+			compLibEntity.setType(new MetaType("Componentlibrary"));
+			
+			Entity compEntity = new Entity();
+			compEntity.setType(new MetaType("Componentdefinition"));
 
-			entity.setPropertyByName(nameTf.getBindProperty(), nameTf.getValue().toString());
-			entity.setPropertyByName(typeTf.getBindProperty(), typeTf.getValue().toString());
-			entity.setPropertyByName(descTf.getBindProperty(), descTf.getValue().toString());
+			compEntity.setPropertyByName(nameTf.getBindProperty(), nameTf.getValue().toString());
+			compEntity.setPropertyByName(typeTf.getBindProperty(), typeTf.getValue().toString());
+			compEntity.setPropertyByName(descTf.getBindProperty(), descTf.getValue().toString());
+			
+			compLibEntity.setPropertyByName("library", getLibraryEntity());
+			compLibEntity.setPropertyByName("componentdefinition", compEntity);
+			return compLibEntity;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		return entity;
+		return null;
+		
 	}
 
 	public Entity getLibraryEntity() {

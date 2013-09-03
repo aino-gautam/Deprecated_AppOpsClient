@@ -92,6 +92,7 @@ public class RegisterComponentManager extends Composite implements FieldEventHan
 			basePanel.add(configEditor);
 			
 			basePanel.setCellHorizontalAlignment(configEditor, HorizontalPanel.ALIGN_CENTER);
+			
 		}
 		catch (Exception e) {	
 			e.printStackTrace();
