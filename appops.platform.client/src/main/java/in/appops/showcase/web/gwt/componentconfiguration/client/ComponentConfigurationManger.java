@@ -10,7 +10,7 @@ public class ComponentConfigurationManger implements EntryPoint {
 		try{
 			ConfigurationManagerHome confManagerHome = new ConfigurationManagerHome();
 			confManagerHome.createUi();
-			RootPanel.get("componentconfiguration").add(confManagerHome);
+			RootPanel.get().add(confManagerHome);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

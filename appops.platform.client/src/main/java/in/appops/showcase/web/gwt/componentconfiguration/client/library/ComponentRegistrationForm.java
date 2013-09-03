@@ -281,7 +281,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 						if(libraryEntity!=null){
 							saveComponent();
 						}else{
-							Window.alert("Please select a linbrary");
+							Window.alert("Please select a library");
 						}
 					}
 				}

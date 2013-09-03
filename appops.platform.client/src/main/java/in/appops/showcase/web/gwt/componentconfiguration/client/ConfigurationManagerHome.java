@@ -12,11 +12,12 @@ import in.appops.showcase.web.gwt.componentconfiguration.client.library.LibraryC
 import in.appops.showcase.web.gwt.componentconfiguration.client.page.PageManager;
 
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class ConfigurationManagerHome extends Composite implements FieldEventHandler{
 	
-	private VerticalPanel basePanel;
+	private HorizontalPanel basePanel;
 	private Logger logger = Logger.getLogger("ConfigurationManagerHome");
 	
 	/** CSS styles used **/
@@ -26,19 +27,22 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 	/** Field id **/
 	private static String MANAGELIB_BTN_ID = "manageLibBtnId";
 	private static String CREATEPAGE_BTN_ID = "createPageBtnId";
+	private static String CREATESNIPPET_BTN_ID = "createSnippetBtnId";
 	
 	public ConfigurationManagerHome() {
 		initialize();
 	}
 
 	private void initialize() {
-		basePanel = new VerticalPanel();
+		basePanel = new HorizontalPanel();
 		initWidget(basePanel);
 	}
 	
 	public void createUi(){
 				
 		try {
+			VerticalPanel btnPanel = new VerticalPanel();
+			
 			ButtonField manageLibBtn = new ButtonField();
 			manageLibBtn.setConfiguration(getLibraryBtnConf());
 			manageLibBtn.configure();
@@ -49,9 +53,19 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 			createPageBtn.configure();
 			createPageBtn.create();
 			
+			ButtonField createSnippetBtn = new ButtonField();
+			createSnippetBtn.setConfiguration(getCreateSnippetBtnConf());
+			createSnippetBtn.configure();
+			createSnippetBtn.create();
+			
+			btnPanel.add(manageLibBtn);
+			btnPanel.add(createPageBtn);
+			btnPanel.add(createSnippetBtn);
+			
 			LibraryComponentManager libraryComponentManager = new LibraryComponentManager();
 			libraryComponentManager.initialize();
 									
+			basePanel.add(btnPanel);
 			basePanel.add(libraryComponentManager);
 			
 		} catch (Exception e) {
@@ -93,10 +107,26 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 	}
 	
 	/**
+	 * Creates the create snippet button configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getCreateSnippetBtnConf(){
+		Configuration configuration = new Configuration();
+		try {
+			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Create a snippet");
+			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,HOME_BTN_PCLS);
+			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, CREATESNIPPET_BTN_ID);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "ConfigurationManagerHome :: getCreateSnippetBtnConf :: Exception", e);
+		}
+		return configuration;
+	}
+	
+	/**
 	 * Method add dependent css property to the existing configuration and return.
 	 * @param configuration
 	 * @return modified configuration instance.
-	 */
+	 *//*
 	private Configuration getSelectedBtnConf(Configuration configuration){
 		
 		try {
@@ -107,11 +137,11 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 		return configuration;
 	}
 
-	/**
+	*//**
 	 * Method removes dependent css property from the existing configuration and return.
 	 * @param configuration
 	 * @return modified configuration instance.
-	 */
+	 *//*
 	private Configuration getDeselectedBtnConf(Configuration configuration){
 		
 		try {
@@ -120,7 +150,7 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 			logger.log(Level.SEVERE, "ConfigurationManagerHome :: getLibraryBtnConf :: Exception", e);
 		}
 		return configuration;
-	}
+	}*/
 	@Override
 	public void onFieldEvent(FieldEvent event) {
 		try {

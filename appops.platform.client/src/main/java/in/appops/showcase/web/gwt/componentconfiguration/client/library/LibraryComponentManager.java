@@ -3,10 +3,8 @@ package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
 import in.appops.platform.core.shared.Configuration;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
