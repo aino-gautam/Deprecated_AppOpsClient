@@ -20,6 +20,7 @@ import in.appops.platform.core.util.EntityList;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -62,6 +63,12 @@ public class ConfigurationEditor extends Composite implements FieldEventHandler{
 				
 		basePanel.setCellHorizontalAlignment(headerLbl, HorizontalPanel.ALIGN_CENTER);
 		
+		ConfigurationListDisplayer configurationListDisplayer = new ConfigurationListDisplayer();
+		EntityList entityList = configurationListDisplayer.getDummyList();
+		configurationListDisplayer.createUi(entityList);
+		
+		basePanel.add(configurationListDisplayer);
+		basePanel.setCellHorizontalAlignment(configurationListDisplayer, HasHorizontalAlignment.ALIGN_CENTER);
 		
 	}
 	

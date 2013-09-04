@@ -6,7 +6,9 @@ import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
 import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.ConfigEvent;
 import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.ConfigEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
@@ -24,7 +26,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author pallavi@ensarm.com
  *
  */
-public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandler{
+public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandler,ConfigEventHandler{
 	
 	private String ADD_NEW_PROPVAL_IMGID = "addNewPropValImgId";
 	private String NEWVALUE_CSS = "addNewPropertyImage";
@@ -48,7 +50,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 		try {
 			propValuePanel = new FlexTable();
 			
-			TextField propNameField = new TextField();
+			propNameField = new TextField();
 			propNameField.setConfiguration(getPropNameFieldConf(null));
 			propNameField.configure();
 			propNameField.create();
@@ -86,7 +88,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			add(propValuePanel);
 			setStylePrimaryName(COMPFORM_PANEL_CSS);
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
-			
+			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
 		} catch (Exception e) {
 			
 		}
@@ -201,5 +203,29 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			list.add(confDef);
 		}
 		return list;
+	}
+
+	@Override
+	public void onConfigEvent(ConfigEvent event) {
+		try {
+			int eventType = event.getEventType();
+			Object eventSource = event.getEventSource();
+			switch (eventType) {
+			case ConfigEvent.PROPERTYSELECTED: {
+				if (eventSource instanceof ConfigurationListDisplayer) {
+					Entity entity=  (Entity) event.getEventData(); 
+					String name = entity.getPropertyByName("name");
+					propNameField.setFieldValue(name);
+				}
+				break;
+			}
+			default:
+				break;
+			}
+		} catch (Exception e) {
+			e.printStackTrace()
+			;
+		}
+		
 	}
 }

@@ -13,6 +13,7 @@ public class ConfigEvent extends GwtEvent<ConfigEventHandler> {
 	
 	public static final int ADDCOMPONENTTOLIST = 1;
 	public static final int COMPONENTSELECTED = 2;
+	public static final int PROPERTYSELECTED = 3;
 	
 	public ConfigEvent(int type, Object data ,Object eventSource) {
 		this.eventType = type;
