@@ -64,6 +64,7 @@ public class StateField extends BaseField {
 		try {
 			logger.log(Level.INFO, "[StateField] ::In configure method ");
 			appopsSuggestionBox = new AppopsSuggestionBox();
+			setSuggestionInline();
 			if(isStaticSuggestionBox()){
 				appopsSuggestionBox.setStaticSuggestionBox(isStaticSuggestionBox());
 				appopsSuggestionBox.setItemsToDisplay(getFieldItemList());
@@ -96,6 +97,18 @@ public class StateField extends BaseField {
 	@Override
 	public void reset() {
 		
+	}
+	
+	@Override
+	protected void setSuggestionInline () {
+		try {
+			
+			logger.log(Level.INFO, "[StateField] ::In setSuggestionInline method ");
+			if(getSuggestionText()!=null)
+				appopsSuggestionBox.getTextBox().getElement().setPropertyString("placeholder", getSuggestionText());
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception In setSuggestionInline method "+e);
+		}
 	}
 	
 	/****************************************************************************/

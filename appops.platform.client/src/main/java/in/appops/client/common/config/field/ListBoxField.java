@@ -72,7 +72,7 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	@Override
 	public void create() {
 		try {
-			if (getListQueryName() != null) {
+			if (getOperationName() != null) {
 				excuteListQuery();
 			} else {
 				if (getStaticListOfItems() != null) {
@@ -365,16 +365,22 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In excuteListQuery  method ");
-			Query queryObj = new Query();
-			queryObj.setQueryName(getListQueryName());
-			queryObj.setListSize(getQueryMaxResult());
-			if(getQueryRestrictions()!=null)
-				queryObj.setQueryParameterMap(getQueryRestrictions());
+			if(getListQueryName()!=null){
+				Query queryObj = new Query();
+				queryObj.setQueryName(getListQueryName());
+				queryObj.setListSize(getQueryMaxResult());
+				if(getQueryRestrictions()!=null)
+					queryObj.setQueryParameterMap(getQueryRestrictions());
+				
+				Map parameterMap = new HashMap();
+				parameterMap.put("query", queryObj);
+				executeOperation(parameterMap);
+			}else{
+				executeOperation(null);
+			}
 			
-			Map parameterMap = new HashMap();
-			parameterMap.put("query", queryObj);
 			
-			executeOperation(parameterMap);
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In excuteListQuery  method :"+e);
 		}
