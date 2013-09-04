@@ -252,7 +252,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			parameterMap.put("library", libraryEntity);
 			
 			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveComponentDefinition", parameterMap);
-			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
+			dispatch.execute(action, new AsyncCallback<Result<HashMap<String, Entity>>>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -260,12 +260,13 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 				}
 
 				@Override
-				public void onSuccess(Result<Entity> result) {
+				public void onSuccess(Result<HashMap<String, Entity>> result) {
 					if(result!=null){
-						Entity savedEntity   = result.getOperationResult();
-						if(savedEntity!=null){
+						HashMap<String, Entity> list = result.getOperationResult();
+						Entity compEntity   = list.get("component");
+						if(compEntity!=null){
 							Window.alert("Component Saved...");
-							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.ADDCOMPONENTTOLIST, savedEntity,this);
+							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.ADDCOMPONENTTOLIST, compEntity,this);
 							AppUtils.EVENT_BUS.fireEvent(configEvent);
 						}
 					}
