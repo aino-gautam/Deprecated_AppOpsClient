@@ -217,6 +217,18 @@
     		<artifactId>appdefinition</artifactId>
    	 		<version>04.09.2013</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>configuration</artifactId>
+			<version>04.09.2013</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>kiran_appops_platform</groupId>
+			<artifactId>htmlappservice</artifactId>
+			<version>07.08.2013</version>
+		</dependency>
 
 		<dependency>
 			<groupId>appops_platform</groupId>
@@ -236,12 +248,7 @@
 			<version>20.06.2013</version>
 		</dependency>
 
-		<dependency>
-			<groupId>vikram_appops_platform</groupId>
-			<artifactId>configuration</artifactId>
-			<version>20.06.2013</version>
-		</dependency>
-
+		
 		<dependency>
 			<groupId>vikram_appops_platform</groupId>
 			<artifactId>media</artifactId>
