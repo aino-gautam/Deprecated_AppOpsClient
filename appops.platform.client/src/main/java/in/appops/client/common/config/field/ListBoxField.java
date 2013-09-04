@@ -318,10 +318,7 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 			logger.log(Level.INFO,"[ListBoxField]:: In populateEntityList  method ");
 			if(nameVsEntity==null)
 				nameVsEntity = new HashMap<String, Entity>();
-			
-			String defaultValue = getDefaultValueName();
-			listBox.addItem(defaultValue);
-			
+									
 			for(Entity entity : entityList){
 				String item = entity.getPropertyByName(getEntPropToShow());
 				Key keyId = (Key)entity.getPropertyByName("id");
@@ -485,18 +482,15 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		}
 	}
 	
-	private String getDefaultValueName() {
-		String defaultName = null;
+	private String getSuggestionValueForListBox() {
+		String defaultName = "-- Select --";
 		try {
-			logger.log(Level.INFO,"[ListBoxField]:: In getDefaultValueName  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LISTBOX_DEFAULT_VALUE) != null) {
-				String value =(String) getConfigurationValue(ListBoxFieldConstant.LISTBOX_DEFAULT_VALUE);
-				defaultName = value;
-			} else {
-				defaultName = "-- Select --";
-			}
+			logger.log(Level.INFO,"[ListBoxField]:: In getSuggestionValueForListBox  method ");
+			if(getDefaultValue() != null) {
+				defaultName = (String) getDefaultValue();
+			} 
 		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getDefaultValueName  method :"+e);
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getSuggestionValueForListBox  method :"+e);
 		}
 		return defaultName;
 	}
@@ -525,8 +519,6 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		public static final String LSTFD_QUERY_RESTRICTION = "queryRestriction";
 		
 		public static final String LSTFD_SELECTED_TXT = "defaultSelectedText";
-		
-		public static final String LISTBOX_DEFAULT_VALUE = "listboxDefaultValue";
 		
 	}
 
