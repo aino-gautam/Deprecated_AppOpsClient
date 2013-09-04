@@ -215,13 +215,13 @@
 		<dependency>
     		<groupId>appops_platform</groupId>
     		<artifactId>appdefinition</artifactId>
-   	 		<version>02.09.2013</version>
+   	 		<version>04.09.2013</version>
 		</dependency>
 
 		<dependency>
-			<groupId>mahesh_appops_platform</groupId>
+			<groupId>appops_platform</groupId>
 			<artifactId>core</artifactId>
-			<version>18.07.2013</version>
+			<version>04.09.2013</version>
 		</dependency>
 
 		<dependency>
@@ -394,7 +394,7 @@
 				<version>2.4.0</version>
 
 				<configuration>
-					<runTarget>MasterShowcase.html</runTarget>
+					<runTarget>ComponentConfiguration.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 
 					<!-- what ever is needed to complie we can add them as below here. When 
