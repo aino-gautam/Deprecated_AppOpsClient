@@ -2,11 +2,13 @@ package in.appops.showcase.web.gwt.componentconfiguration.client;
 
 import in.appops.client.common.config.field.ButtonField;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
+import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.showcase.web.gwt.componentconfiguration.client.library.LibraryComponentManager;
 import in.appops.showcase.web.gwt.componentconfiguration.client.page.PageManager;
+import in.appops.showcase.web.gwt.componentconfiguration.client.page.SnippetManager;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,6 +41,7 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 	}
 
 	private void initialize() {
+		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 		basePanel = new HorizontalPanel();
 		initWidget(basePanel);
 	}
@@ -180,17 +183,20 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 				if (eventSource instanceof ButtonField) {
 					ButtonField btnField = (ButtonField) eventSource;
 					if (btnField.getBaseFieldId().equals(MANAGELIB_BTN_ID)) {
-						basePanel.clear();
+						contentPanel.clear();
 						LibraryComponentManager libraryComponentManager = new LibraryComponentManager();
 						libraryComponentManager.initialize();
-						basePanel.add(libraryComponentManager);
+						contentPanel.add(libraryComponentManager);
 					}else if (btnField.getBaseFieldId().equals(CREATEPAGE_BTN_ID)) {
-						basePanel.clear();
+						contentPanel.clear();
 						PageManager pageManager = new PageManager();
 						pageManager.initialize();
-						basePanel.add(pageManager);
+						contentPanel.add(pageManager);
 					}else if (btnField.getBaseFieldId().equals(CREATESNIPPET_BTN_ID)) {
-						basePanel.clear();
+						contentPanel.clear();
+						SnippetManager snippetManager = new SnippetManager();
+						snippetManager.initialize();
+						contentPanel.add(snippetManager);
 					}
 				}
 				break;
