@@ -53,9 +53,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 	private Logger logger = Logger.getLogger("ComponentRegistrationForm");
 		
 	/** CSS styles **/
-	private final String FORMLBL_CSS = "compRegisterLabelCss";
 	private final String SAVECOMP_BTN_PCLS = "saveCompBtnCss";
-	private final String COMPHEADER_LBL_CSS = "registerCompHeaderLbl";
 	private final String COMPFORM_PANEL_CSS = "componentFormPanel";
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
 	

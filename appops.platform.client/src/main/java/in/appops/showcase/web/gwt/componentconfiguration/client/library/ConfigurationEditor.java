@@ -34,6 +34,7 @@ public class ConfigurationEditor extends Composite implements FieldEventHandler{
 	
 	private static String BASEPANEL_CSS = "confEditorPanel";
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
+	private static String SAVECONFIGURATION_BTN_ID = "saveConfigBtnId";
 	
 	public ConfigurationEditor() {
 		basePanel = new VerticalPanel();
