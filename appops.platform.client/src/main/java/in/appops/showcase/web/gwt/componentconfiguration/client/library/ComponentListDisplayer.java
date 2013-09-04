@@ -18,7 +18,6 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispat
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
-import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
@@ -52,6 +51,8 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
 	private final String LISTPANEL = "componentFormPanel";
 	private final String COMPLISTLBL_CSS = "compRegisterLabelCss";
+	private final String COMPLISTROW_CSS = "componentListRow";
+	
 	private HashMap<Integer, Entity> componentList ;
 	
 	public ComponentListDisplayer(){
@@ -86,6 +87,9 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 			
 			compListPanel.setWidget(componentRow, 0, nameLbl);
 			compListPanel.setWidget(componentRow, 1, descLbl);
+			
+			compListPanel.getRowFormatter().setStylePrimaryName(componentRow, COMPLISTROW_CSS);
+			
 			componentRow++;
 			
 			basePanel.add(compListLbl);
@@ -201,6 +205,7 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 		compListPanel.setWidget(componentRow, 1, descLbl);
 		
 		componentList.put(componentRow,componentEntity);
+		compListPanel.getRowFormatter().setStylePrimaryName(componentRow, COMPLISTROW_CSS);
 		
 		componentRow++;
 			
@@ -291,8 +296,8 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 			Object eventSource = event.getEventSource();
 			
 			if(eventType == ConfigEvent.ADDCOMPONENTTOLIST){
-				//Entity componentEntity = (Entity) event.getEventData();
-				//addComponent(componentEntity);
+				Entity componentEntity = (Entity) event.getEventData();
+				addComponent(componentEntity);
 			}
 		}
 		catch (Exception e) {

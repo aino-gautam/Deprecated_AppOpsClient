@@ -100,6 +100,17 @@ public class StateField extends BaseField {
 	}
 	
 	@Override
+	public Object getValue() {
+		String suggestion = null;
+		if(appopsSuggestionBox.getSelectedSuggestion() != null){
+			suggestion = appopsSuggestionBox.getSelectedSuggestion().getDisplayString();
+		}else{
+			suggestion = appopsSuggestionBox.getSuggestBox().getText();
+		}
+		return suggestion;
+	}
+	
+	@Override
 	protected void setSuggestionInline () {
 		try {
 			

@@ -246,10 +246,10 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 			
-			Entity entity = getPopulatedEntity();
+			Entity componentDefEnt = getPopulatedEntity();
 			Map parameterMap = new HashMap();
-			parameterMap.put("componentEnt", entity);
-			parameterMap.put("update", false);
+			parameterMap.put("componentDefinition", componentDefEnt);
+			parameterMap.put("library", libraryEntity);
 			
 			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveComponentDefinition", parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
@@ -280,18 +280,16 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 	private Entity getPopulatedEntity() {
 		
 		try{
-			Entity compLibEntity = new Entity();
-			compLibEntity.setType(new MetaType("Componentlibrary"));
-			
 			Entity compEntity = new Entity();
 			compEntity.setType(new MetaType("Componentdefinition"));
 
-			compEntity.setPropertyByName(componentNameField.getBindProperty(), componentNameField.getValue().toString());
-			compEntity.setPropertyByName(componentTypeField.getBindProperty(), componentTypeField.getValue().toString());
+			compEntity.setPropertyByName("name", componentNameField.getValue().toString());
 			
-			compLibEntity.setPropertyByName("library", getLibraryEntity());
-			compLibEntity.setPropertyByName("componentdefinition", compEntity);
-			return compLibEntity;
+			Entity typeEnt =  componentTypeField.getAssociatedEntity(componentTypeField.getValue().toString());
+			Long typeId = ((Key<Long>)typeEnt.getPropertyByName("id")).getKeyValue();
+			compEntity.setPropertyByName("typeId",typeId);
+			
+			return compEntity;
 		}
 		catch (Exception e) {
 			logger.log(Level.SEVERE, "ComponentRegistrationForm :: getPopulatedEntity :: Exception", e);
