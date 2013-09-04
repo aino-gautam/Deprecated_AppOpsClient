@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -38,7 +40,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author pallavi@ensarm.com
  *
  */
-public class ComponentListDisplayer extends Composite implements FieldEventHandler,ConfigEventHandler{
+public class ComponentListDisplayer extends Composite implements FieldEventHandler,ConfigEventHandler,ClickHandler{
 
 	private VerticalPanel basePanel;
 	private FlexTable compListPanel;
@@ -49,6 +51,8 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 	/** CSS styles **/
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
 	private final String LISTPANEL = "componentFormPanel";
+	private final String COMPLISTLBL_CSS = "compRegisterLabelCss";
+	private HashMap<Integer, Entity> componentList ;
 	
 	public ComponentListDisplayer(){
 		
@@ -92,6 +96,7 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 			
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
+			compListPanel.addClickHandler(this);
 			
 			initWidget(basePanel);
 		} catch (Exception e) {
@@ -131,18 +136,12 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 			
-			Query queryObj = new Query();
-			queryObj.setQueryName("getComponentDefOfLibrary");
-			
-			HashMap<String, Object> queryParam = new HashMap<String, Object>();
 			Long libId = ((Key<Long>)libraryEntity.getPropertyByName("id")).getKeyValue();
-			queryParam.put("libraryId", libId);
-			queryObj.setQueryParameterMap(queryParam);
-						
+									
 			Map parameterMap = new HashMap();
-			parameterMap.put("query", queryObj);
+			parameterMap.put("libraryId", libId);
 			
-			StandardAction action = new StandardAction(EntityList.class, "appdefinition.AppDefinitionService.getComponentDefinitions", parameterMap);
+			StandardAction action = new StandardAction(EntityList.class, "appdefinition.AppDefinitionService.listComponentDefinitions", parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
 
 				@Override
@@ -168,22 +167,72 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 	private void populate(EntityList componentlist) {
 		try {
 			for(Entity comp:componentlist){
-				ComponentPanel componentPanel = new ComponentPanel(comp);
-				componentPanel.createUi();
-				compListPanel.setWidget(componentRow, 0, componentPanel);
-				componentRow++;
+				//ComponentPanel componentPanel = new ComponentPanel(comp);
+				//componentPanel.createUi();
+				//compListPanel.setWidget(componentRow, 0, componentPanel);
+				//componentRow++;
+				createComponentRow(comp);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "ComponentListDisplayer :: populate :: Exception", e);
 		}
 	}
 	
+	public void createComponentRow(Entity componentEntity){
+		
+		LabelField nameLbl = new LabelField();
+		Configuration headerLblConfig = getLblConfig("name",componentEntity);
+	
+		nameLbl.setConfiguration(headerLblConfig);
+		nameLbl.configure();
+		nameLbl.create();
+		
+		LabelField descLbl = new LabelField();
+		Configuration descLblConfig = getLblConfig("htmldescription",componentEntity);
+	
+		descLbl.setConfiguration(descLblConfig);
+		descLbl.configure();
+		descLbl.create();
+		
+		if(componentList == null)
+			componentList = new HashMap<Integer, Entity>();
+		
+		compListPanel.setWidget(componentRow, 0, nameLbl);
+		compListPanel.setWidget(componentRow, 1, descLbl);
+		
+		componentList.put(componentRow,componentEntity);
+		
+		componentRow++;
+			
+	}
+	
+	private Configuration getLblConfig(String propertyName, Entity componentEntity) {
+		Configuration configuration = null;	
+		try{
+			String displayText = "Description not available";
+			configuration = new Configuration();
+			if(componentEntity.getPropertyByName(propertyName)!=null){
+				displayText = componentEntity.getPropertyByName(propertyName).toString();
+			}else{
+				
+			}
+			configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, displayText);
+			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, COMPLISTLBL_CSS);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return configuration;
+	}
+	
 	public void addComponent(Entity component) {
 		try {
-			ComponentPanel componentPanel = new ComponentPanel(component);
-			componentPanel.createUi();
-			compListPanel.setWidget(componentRow, 0, componentPanel);
-			componentRow++;
+			//ComponentPanel componentPanel = new ComponentPanel(component);
+			//componentPanel.createUi();
+			//compListPanel.setWidget(componentRow, 0, componentPanel);
+			//componentRow++;
+			createComponentRow(component);
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "ComponentListDisplayer :: addComponent :: Exception", e);
 		}
@@ -192,11 +241,11 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 	private EntityList getDummyList(){
 		Entity labelField = new Entity();
 		labelField.setPropertyByName("name","LabelField");
-		labelField.setPropertyByName("desc","   Display text");
+		labelField.setPropertyByName("htmldescription","   Display text");
 		
 		Entity dateLabelField = new Entity();
 		dateLabelField.setPropertyByName("name","DateLabelField");
-		dateLabelField.setPropertyByName("desc","   Display date in different formats");
+		dateLabelField.setPropertyByName("htmldescription","   Display date in different formats");
 		
 		EntityList list = new EntityList();
 		list.add(labelField);
@@ -242,13 +291,26 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 			Object eventSource = event.getEventSource();
 			
 			if(eventType == ConfigEvent.ADDCOMPONENTTOLIST){
-				Entity componentEntity = (Entity) event.getEventData();
-				addComponent(componentEntity);
+				//Entity componentEntity = (Entity) event.getEventData();
+				//addComponent(componentEntity);
 			}
 		}
 		catch (Exception e) {
 			logger.log(Level.SEVERE, "ComponentListDisplayer :: onConfigEvent :: Exception", e);
 		}
 		
+	}
+
+	@Override
+	public void onClick(ClickEvent event) {
+		if(event.getSource() instanceof FlexTable){
+			FlexTable flex = (FlexTable) event.getSource();
+			int cellIndex = flex.getCellForEvent(event).getCellIndex();
+	        int rowIndex = flex.getCellForEvent(event).getRowIndex();
+	        
+	        ConfigEvent configEvent = new ConfigEvent(ConfigEvent.COMPONENTSELECTED, componentList.get(rowIndex), this);
+			configEvent.setEventSource(this);
+			AppUtils.EVENT_BUS.fireEvent(configEvent);
+		}
 	}
 }

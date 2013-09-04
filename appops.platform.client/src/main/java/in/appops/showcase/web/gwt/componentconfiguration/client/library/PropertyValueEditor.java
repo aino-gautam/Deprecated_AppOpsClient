@@ -9,8 +9,10 @@ import in.appops.client.common.config.field.RadioButtonField.RadionButtonFieldCo
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.EntityList;
 
 import com.google.gwt.user.client.ui.FlexTable;
 
@@ -65,18 +67,42 @@ public class PropertyValueEditor {
 		
 	}
 	
+	private EntityList getDummyTypeList(){
+		Entity inte = new Entity();
+		Key<Long> key1 = new Key<Long>(2L);
+		inte.setPropertyByName("id",key1);
+		inte.setPropertyByName("name","Integer");
+		
+		Entity str = new Entity();
+		Key<Long> key2 = new Key<Long>(3L);
+		str.setPropertyByName("id",key2);
+		str.setPropertyByName("name","String");
+		
+		Entity bool = new Entity();
+		Key<Long> key3 = new Key<Long>(22L);
+		bool.setPropertyByName("id",key3);
+		bool.setPropertyByName("name","Boolean");
+		
+		Entity conf = new Entity();
+		Key<Long> key4 = new Key<Long>(199L);
+		conf.setPropertyByName("id",key4);
+		conf.setPropertyByName("name","Configuration");
+						
+		EntityList list = new EntityList();
+		list.add(inte);
+		list.add(str);
+		list.add(bool);
+		list.add(conf);
+		return list;
+	}
+	
 	private Configuration getTypeBoxConfig() {
 		Configuration configuration = new Configuration();
 		try {
-			ArrayList<String> items = new ArrayList<String>();
-			items.add("Integer");
-			items.add("String");
-			items.add("configuration");
-			items.add("Boolean");
-			
+						
 			configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"---Select the type ---");
-			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,items);
-			
+			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,getDummyTypeList());
+			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ENTPROP,"name");
 		} catch (Exception e) {
 			
 		}

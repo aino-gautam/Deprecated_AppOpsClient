@@ -26,8 +26,8 @@ import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.EntityList;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -59,6 +59,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 	
 	/** Field ID **/
 	private static String SAVECOMPONENT_BTN_ID = "saveCompBtnId";
+	public final String COMPONENTTYPELISTBOX_ID = "componenttTypeListBoxId";
 	
 	public ComponentRegistrationForm(){
 		initialize();
@@ -111,19 +112,34 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 	private Configuration getTypeBoxConfig() {
 		Configuration configuration = new Configuration();
 		try {
-			ArrayList<String> items = new ArrayList<String>();
-			items.add("LabelField");
-			items.add("ButtonField");
-			items.add("ListBoxField");
-			
 			configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"---Select the type of component---");
-			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,items);
+			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,getDummyTypeList());
+			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ENTPROP,"name");
+			configuration.setPropertyByName(ListBoxFieldConstant.BF_ID,COMPONENTTYPELISTBOX_ID);
 			
 		} catch (Exception e) {
 			
 		}
-		
 		return configuration;
+	}
+	
+	private EntityList getDummyTypeList(){
+		Entity labelField = new Entity();
+		Key<Long> key1 = new Key<Long>(2L);
+		labelField.setPropertyByName("id",key1);
+		labelField.setPropertyByName("name","LabelField");
+		labelField.setPropertyByName("htmldescription","   Display text");
+		
+		Entity dateLabelField = new Entity();
+		Key<Long> key2 = new Key<Long>(2L);
+		dateLabelField.setPropertyByName("id",key2);
+		dateLabelField.setPropertyByName("name","DateLabelField");
+		dateLabelField.setPropertyByName("htmldescription","   Display date in different formats");
+		
+		EntityList list = new EntityList();
+		list.add(labelField);
+		list.add(dateLabelField);
+		return list;
 	}
 	
 	private Configuration getComponentSuggestionFieldConf() {
@@ -136,6 +152,8 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			configuration.setPropertyByName(StateFieldConstant.STFD_ENTPROP,"name");
 			configuration.setPropertyByName(StateFieldConstant.STFD_QUERY_MAXRESULT,10);
 			configuration.setPropertyByName(StateFieldConstant.IS_AUTOSUGGESTION,false);
+			configuration.setPropertyByName(StateFieldConstant.BF_SUGGESTION_POS,StateFieldConstant.BF_SUGGESTION_INLINE);
+			configuration.setPropertyByName(StateFieldConstant.BF_SUGGESTION_TEXT,"Component Name");
 			HashMap<String, Object> paramMap = new HashMap<String, Object>();
 			Long libId = ((Key<Long>)libraryEntity.getPropertyByName("id")).getKeyValue();
 			paramMap.put("libraryId", libId);
@@ -206,10 +224,13 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			}else if(eventType == FieldEvent.VALUECHANGED){
 				if(eventSource instanceof ListBoxField){
 					ListBoxField listBoxField = (ListBoxField) eventSource;
+					SelectedItem selectedItem = (SelectedItem) event.getEventData();
 					if(listBoxField.getBaseFieldId().equalsIgnoreCase(LibraryComponentManager.LIBRARYLISTBOX_ID)){
-						SelectedItem selectedItem = (SelectedItem) event.getEventData();
 						Entity libEntity = selectedItem.getAssociatedEntity();
 						libraryEntity = libEntity;
+					}else if(listBoxField.getBaseFieldId().equalsIgnoreCase(COMPONENTTYPELISTBOX_ID)){
+						Entity typeEntity = selectedItem.getAssociatedEntity();
+						
 					}
 				}
 			}
