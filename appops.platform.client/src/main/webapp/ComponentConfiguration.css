@@ -128,4 +128,8 @@
 	margin: 5px 5px 5px 5px;
 }
 
+.componentListRow{
+	cursor: pointer;
+	border-bottom-style:dotted;
+}
 
