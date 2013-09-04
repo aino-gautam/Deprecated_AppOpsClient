@@ -1,10 +1,9 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
-import java.util.ArrayList;
-
+import in.appops.client.common.config.field.ButtonField;
 import in.appops.client.common.config.field.ImageField;
+import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
 import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
-import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
@@ -14,6 +13,8 @@ import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
+
+import java.util.ArrayList;
 
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -27,8 +28,9 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	
 	private String ADD_NEW_PROPVAL_IMGID = "addNewPropValImgId";
 	private String NEWVALUE_CSS = "addNewPropertyImage";
-	private String PROPPANEL_CSS = "properyPanelCss";
-	private String PROP_LABEL_CSS = "compRegisterLabelCss";
+	private final String COMPFORM_PANEL_CSS = "componentFormPanel";
+	private static String SAVE_BTN_PCLS = "saveConfigButton";
+	private static String SAVECONFIGURATION_BTN_ID = "saveConfigBtnId";
 	
 	private FlexTable propValuePanel;
 	private TextField propNameField;
@@ -56,11 +58,20 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			addValueImgField.configure();
 			addValueImgField.create();
 			
+			ButtonField saveConfigBtn = new ButtonField();
+			saveConfigBtn.setConfiguration(getSaveConfigurationBtnConf());
+			saveConfigBtn.configure();
+			saveConfigBtn.create();
+			
 			propValuePanel.setWidget(valuePanelRow, 0, propNameField);
 			
 			propValuePanel.setWidget(valuePanelRow, 7, addValueImgField);
 			
-			for(Entity confEnt:componentDeflist){
+			valuePanelRow+=2;
+			
+			propValuePanel.setWidget(valuePanelRow, 0, saveConfigBtn);
+			
+			/*for(Entity confEnt:componentDeflist){
 				PropertyValueEditor propValueEditor = new PropertyValueEditor(propValuePanel, valuePanelRow, confEnt);
 				propValueEditor.createUi();
 				valuePanelRow++;
@@ -68,15 +79,34 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 					propValueList = new ArrayList<PropertyValueEditor>();
 				}
 				propValueList.add(propValueEditor);
-			}
+			}*/
+			
+			addNewPropertyValue();
 			
 			add(propValuePanel);
-			setStylePrimaryName(PROPPANEL_CSS);
+			setStylePrimaryName(COMPFORM_PANEL_CSS);
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
 			
 		} catch (Exception e) {
 			
 		}
+	}
+	
+	/**
+	 * Creates the save button configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getSaveConfigurationBtnConf(){
+		Configuration configuration = new Configuration();
+		try {
+			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Save configuration");
+			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,SAVE_BTN_PCLS);
+			configuration.setPropertyByName(ButtonFieldConstant.BF_ENABLED, true);
+			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, SAVECONFIGURATION_BTN_ID);
+		} catch (Exception e) {
+			
+		}
+		return configuration;
 	}
 	
 	/**
@@ -107,7 +137,6 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	}
 	
 	private void addNewPropertyValue(){
-		valuePanelRow++;
 		PropertyValueEditor propValueEditor = new PropertyValueEditor(propValuePanel, valuePanelRow, null);
 		propValueEditor.createUi();
 	}

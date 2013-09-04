@@ -75,7 +75,7 @@ public class ComponentManager extends Composite implements FieldEventHandler{
 				if(eventSource instanceof ComponentPanel){
 					Entity componentEtity = (Entity) event.getEventData();
 						if(componentEtity!=null){
-							populateComponentConfiguration(componentEtity);
+							populateConfigurationDef(componentEtity);
 						}
 					
 				}
@@ -87,7 +87,7 @@ public class ComponentManager extends Composite implements FieldEventHandler{
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void populateComponentConfiguration(final Entity componentDefEntity) {
+	private void populateConfigurationDef(final Entity componentDefEntity) {
 		try {
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);

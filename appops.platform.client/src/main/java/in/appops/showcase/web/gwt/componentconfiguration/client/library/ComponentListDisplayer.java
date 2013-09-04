@@ -66,6 +66,24 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 			compListLbl.configure();
 			compListLbl.create();
 			
+			LabelField nameLbl = new LabelField();
+			Configuration headerLblConfig = getHeaderLblConfig("Name");
+		
+			nameLbl.setConfiguration(headerLblConfig);
+			nameLbl.configure();
+			nameLbl.create();
+			
+			LabelField descLbl = new LabelField();
+			Configuration descLblConfig = getHeaderLblConfig("Description");
+		
+			descLbl.setConfiguration(descLblConfig);
+			descLbl.configure();
+			descLbl.create();
+			
+			compListPanel.setWidget(componentRow, 0, nameLbl);
+			compListPanel.setWidget(componentRow, 1, descLbl);
+			componentRow++;
+			
 			basePanel.add(compListLbl);
 			basePanel.add(compListPanel);
 			
@@ -79,6 +97,19 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "ComponentListDisplayer :: createUi :: Exception", e);
 		}
+	}
+	
+	private Configuration getHeaderLblConfig(String displayTxt) {
+		Configuration configuration = null;	
+		try{
+			configuration = new Configuration();
+			configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, displayTxt);
+			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, HEADERLBL_CSS);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return configuration;
 	}
 	
 	private Configuration getCompListLblConfig() {

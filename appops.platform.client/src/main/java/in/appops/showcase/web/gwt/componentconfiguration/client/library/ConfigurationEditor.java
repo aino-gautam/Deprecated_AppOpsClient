@@ -32,8 +32,6 @@ public class ConfigurationEditor extends Composite implements FieldEventHandler{
 	private VerticalPanel basePanel;
 	private ConfPropertyEditor confPropertyEditor;
 	
-	private static String SAVE_BTN_PCLS = "saveConfigButton";
-	private static String SAVECONFIGURATION_BTN_ID = "saveConfigBtnId";
 	private static String BASEPANEL_CSS = "confEditorPanel";
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
 	
@@ -43,10 +41,6 @@ public class ConfigurationEditor extends Composite implements FieldEventHandler{
 	}
 	
 	public void createUi(){
-		
-	}
-	
-	public void createEditor(Entity componentDefEnt, EntityList confDeflist){
 		
 		
 		basePanel.setStylePrimaryName(BASEPANEL_CSS);
@@ -58,18 +52,13 @@ public class ConfigurationEditor extends Composite implements FieldEventHandler{
 		headerLbl.configure();
 		headerLbl.create();
 						
-		ButtonField saveConfigBtn = new ButtonField();
-		saveConfigBtn.setConfiguration(getSaveConfigurationBtnConf());
-		saveConfigBtn.configure();
-		saveConfigBtn.create();
 		
-		confPropertyEditor = new ConfPropertyEditor(componentDefEnt, confDeflist);
+		confPropertyEditor = new ConfPropertyEditor(null, null);
 		confPropertyEditor.createUi();
 		
 		basePanel.add(headerLbl);
 		basePanel.add(confPropertyEditor);
-		basePanel.add(saveConfigBtn);
-		
+				
 		basePanel.setCellHorizontalAlignment(headerLbl, HorizontalPanel.ALIGN_CENTER);
 		
 		
@@ -79,7 +68,7 @@ public class ConfigurationEditor extends Composite implements FieldEventHandler{
 		Configuration configuration = null;	
 		try{
 			configuration = new Configuration();
-			configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Configuration Editor ");
+			configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Add configurations");
 			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, HEADERLBL_CSS);
 		}
 		catch(Exception e){
@@ -88,22 +77,6 @@ public class ConfigurationEditor extends Composite implements FieldEventHandler{
 		return configuration;
 	}
 	
-	/**
-	 * Creates the save button configuration object and return.
-	 * @return Configuration instance
-	 */
-	private Configuration getSaveConfigurationBtnConf(){
-		Configuration configuration = new Configuration();
-		try {
-			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Save configuration");
-			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,SAVE_BTN_PCLS);
-			configuration.setPropertyByName(ButtonFieldConstant.BF_ENABLED, true);
-			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, SAVECONFIGURATION_BTN_ID);
-		} catch (Exception e) {
-			
-		}
-		return configuration;
-	}
 
 	@Override
 	public void onFieldEvent(FieldEvent event) {

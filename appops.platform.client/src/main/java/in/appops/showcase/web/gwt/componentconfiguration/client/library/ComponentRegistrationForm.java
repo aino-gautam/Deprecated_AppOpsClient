@@ -102,8 +102,8 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			basePanel.add(headerLbl);
 			basePanel.setCellHorizontalAlignment(headerLbl, HorizontalPanel.ALIGN_CENTER);
 			basePanel.add(containerTable);
+			containerTable.addStyleName(COMPFORM_PANEL_CSS);
 			
-			basePanel.addStyleName(COMPFORM_PANEL_CSS);
 		}
 		catch (Exception e) {	
 			logger.log(Level.SEVERE, "ComponentRegistrationForm :: createUi :: Exception", e);

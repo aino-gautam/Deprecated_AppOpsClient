@@ -57,6 +57,8 @@ public class PropertyValueEditor {
 		isDefaultValueField.configure();
 		isDefaultValueField.create();
 		
+		propValuePanel.insertRow(valuePanelRow);
+		
 		propValuePanel.setWidget(valuePanelRow, 3, valueField);
 		propValuePanel.setWidget(valuePanelRow, 5, typeField);
 		propValuePanel.setWidget(valuePanelRow, 7, isDefaultValueField);
