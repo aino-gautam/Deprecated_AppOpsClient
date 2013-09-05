@@ -86,11 +86,14 @@ public class SuggestionOracle extends SuggestOracle {
 						for (String key : restrictionMap.keySet())
 							map.put(key, restrictionMap.get(key));
 					}
-					//map.put("searchChar", search+"*");
-					map.put("searchChar", "%" + search + "%");
+					map.put("searchChar", search+"*");
 				}else if(restrictionMap != null){
 					for (String key : restrictionMap.keySet())
 						map.put(key, restrictionMap.get(key));
+					
+					map.put("searchChar", "%" + search + "%");
+				}else {
+					map.put("searchChar", "%" + search + "%");
 				}
 				
 				if(!map.isEmpty())

@@ -170,7 +170,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			}case FieldEvent.EDITCOMPLETED: {
 				if (eventSource instanceof RadioButtonField) {
 					RadioButtonField radioBtnField = (RadioButtonField) eventSource;
-					if(radioBtnField.getBaseFieldId().equals(PropertyValueEditor.ISDEF_RADIOBTN_GROUP_ID)){
+					if(radioBtnField.getBaseFieldId().equals(PropertyValueEditor.ISDEF_RADIOBTN_ID)){
 						saveConfTypeEntity();
 					}
 				}
@@ -188,13 +188,13 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	@SuppressWarnings("unchecked")
 	private void saveConfTypeEntity() {
 		try {
-			Entity confTypeEntity = propValueList.get(valueRow).getConfigTypeEntity();
+			Entity confTypeEntity = propValueList.get(valueRow).getPopulatedConfigTypeEntity();
 			
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 						
 			Map parameterMap = new HashMap();
-			parameterMap.put("confEnt", confTypeEntity);
+			parameterMap.put("configTypeEnt", confTypeEntity);
 			parameterMap.put("update", false);
 			
 			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveConfigurationType", parameterMap);
@@ -208,7 +208,9 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				@Override
 				public void onSuccess(Result<Entity> result) {
 					if(result!=null){
+						Entity confEnt = result.getOperationResult();
 						Window.alert("Property saved successfully");
+						propValueList.get(valueRow).setConfTypeEntity(confEnt);
 						insertEmptyRecord();
 					}
 				}

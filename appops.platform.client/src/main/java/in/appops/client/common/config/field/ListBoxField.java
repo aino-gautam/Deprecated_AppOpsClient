@@ -49,7 +49,6 @@ configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,items);
 staticListBox.setConfiguration(conf);<br>
 staticListBox.configure();<br>
 staticListBox.create();<br>
-
 </p>*/
 public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler{
 
@@ -396,7 +395,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 	}
 	
 	/**
-	 * Method returns associated entity of the item text.
+	 * Method returns associated entity of the selected text.
 	 * @param itemText
 	 * @return
 	 */
@@ -515,6 +514,10 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		return defaultName;
 	}
 	
+	/**
+	 * Method returns id of the selected entity in the listbox.
+	 * @return
+	 */
 	public Object getSelectedValue() {
 		String selectedValue = listBox.getValue(listBox.getSelectedIndex());
 		return selectedValue;

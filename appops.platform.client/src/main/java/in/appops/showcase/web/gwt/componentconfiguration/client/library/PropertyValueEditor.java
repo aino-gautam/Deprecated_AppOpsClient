@@ -1,11 +1,9 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
-import java.util.ArrayList;
-
-import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
-import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
 import in.appops.client.common.config.field.ImageField;
+import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
 import in.appops.client.common.config.field.ListBoxField;
+import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
 import in.appops.client.common.config.field.RadioButtonField;
 import in.appops.client.common.config.field.RadioButtonField.RadionButtonFieldConstant;
 import in.appops.client.common.fields.TextField;
@@ -33,6 +31,7 @@ public class PropertyValueEditor {
 	public final String INTVAL_FIELD_ID = "intValFieldId";
 	public final String STRINGVAL_FIELD_ID = "stringValFieldId";
 	public static final String ISDEF_RADIOBTN_GROUP_ID = "isDefaultRadioBtnGroup";
+	public static final String ISDEF_RADIOBTN_ID = "isDefaultRadioBtnId";
 	
 	/** CSS styles **/
 	public static final String REMOVEPROP_IMGID = "removePropImgId";
@@ -181,22 +180,32 @@ public class PropertyValueEditor {
 			}
 			configuration.setPropertyByName(RadionButtonFieldConstant.RF_CHECKED, isDefault);
 			configuration.setPropertyByName(RadionButtonFieldConstant.RF_GROUPID, ISDEF_RADIOBTN_GROUP_ID);
-			
+			configuration.setPropertyByName(RadionButtonFieldConstant.BF_ID, ISDEF_RADIOBTN_ID);
 		} catch (Exception e) {
 			
 		}
 		return configuration;
 	}
 	
-	public Entity getConfigTypeEntity(){
+	public Entity getPopulatedConfigTypeEntity(){
 		if (confTypeEntity == null) {
-			confTypeEntity = new Entity();
+			Entity confTypeEntity = new Entity();
 			confTypeEntity.setType(new MetaType("Configtype"));
+			confTypeEntity.setPropertyByName("keyname", propName);
+			confTypeEntity.setPropertyByName("keyvalue", valueField.getValue().toString());
+			confTypeEntity.setPropertyByName("emstypeId",  Long.parseLong(typeField.getSelectedValue().toString()));
+			confTypeEntity.setPropertyByName("isdefault", Boolean.valueOf(isDefaultValueField.getValue().toString()));
+			return confTypeEntity;
 		}
-		confTypeEntity.setPropertyByName("keyname", propName);
-		confTypeEntity.setPropertyByName("keyvalue", valueField.getValue().toString());
-		confTypeEntity.setPropertyByName("emstypeId",  Long.parseLong(typeField.getValue().toString()));
-		confTypeEntity.setPropertyByName("isdefault", Boolean.valueOf(isDefaultValueField.getValue().toString()));
 		return confTypeEntity;
+		
+	}
+
+	public Entity getConfTypeEntity() {
+		return confTypeEntity;
+	}
+
+	public void setConfTypeEntity(Entity confTypeEntity) {
+		this.confTypeEntity = confTypeEntity;
 	}
 }
