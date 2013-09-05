@@ -128,6 +128,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 				setFieldValue(getDefaultValue().toString());
 			}
 			
+			
+			
 			if (getBasePanelPrimCss() != null)
 				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
 			if (getBasePanelDependentCss() != null)
@@ -148,32 +150,25 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		logger.log(Level.INFO, "[TextField] ::In createTextBox method ");         
 		
 		try {
-			                                  
-		textBox = new TextBox();
-		textBox.setReadOnly(isReadOnly());
-		if(getBaseFieldPrimCss()!= null)
-			textBox.setStylePrimaryName(getBaseFieldPrimCss());
-		if(getBaseFieldDependentCss() != null)
-			textBox.addStyleName(getBaseFieldDependentCss());
-		
-		textBox.setMaxLength(getFieldMaxLength());
-		
-		if(getTabIndex()!=null)
-			textBox.setTabIndex(getTabIndex());
-		
-		keyPressHandler = textBox.addKeyPressHandler(this);
-		
-		//In case of simple textbox no validation is required.
-			if(isValidateOnBlur()){
-				blurHandler = textBox.addBlurHandler(this);
-			}
-			if(isValidateOnChange()){
-				keyUpHandler =textBox.addKeyUpHandler(this);
-			}
-			
+			textBox = new TextBox();
+			textBox.setReadOnly(isReadOnly());
+			if (getBaseFieldPrimCss() != null)
+				textBox.setStylePrimaryName(getBaseFieldPrimCss());
+			if (getBaseFieldDependentCss() != null)
+				textBox.addStyleName(getBaseFieldDependentCss());
+
+			textBox.setMaxLength(getFieldMaxLength());
+
+			if (getTabIndex() != null)
+				textBox.setTabIndex(getTabIndex());
+
+			keyPressHandler = textBox.addKeyPressHandler(this);
+			blurHandler = textBox.addBlurHandler(this);
+			keyUpHandler = textBox.addKeyUpHandler(this);
+
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "[TextField] ::Exception In createTextBox method "+e);
-			
+			logger.log(Level.SEVERE,"[TextField] ::Exception In createTextBox method " + e);
+
 		}
 	}
 	
@@ -196,6 +191,11 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 				textArea.addStyleName(getBaseFieldDependentCss());
 			if(getFieldCharWidth()!=null)
 				textArea.setCharacterWidth(getFieldCharWidth());
+			
+			keyPressHandler = textArea.addKeyPressHandler(this);
+			blurHandler = textArea.addBlurHandler(this);
+			keyUpHandler = textArea.addKeyUpHandler(this);
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[TextField] ::Exception In createTextArea method "+e);
 	
@@ -223,13 +223,9 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			/*** Events fired by passwordTextBox ****/
 
 			keyPressHandler = passwordTextBox.addKeyPressHandler(this);
-
-			if (isValidateOnBlur()) {
-				blurHandler = passwordTextBox.addBlurHandler(this);
-			}
-			if (isValidateOnChange()) {
-				keyUpHandler = passwordTextBox.addKeyUpHandler(this);
-			}
+			blurHandler = passwordTextBox.addBlurHandler(this);
+			keyUpHandler = passwordTextBox.addKeyUpHandler(this);
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[TextField] ::Exception In createPasswordBox method " + e);
 
@@ -242,8 +238,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 */
 	private void createNumericTextBox(){
 		try {
-			logger.log(Level.INFO,
-					"[TextField] ::In createNumericTextBox method ");
+			logger.log(Level.INFO,	"[TextField] ::In createNumericTextBox method ");
 			numericTextbox = new NumericTextbox(this);
 			numericTextbox.setConfiguration(getConfiguration());
 			numericTextbox.setReadOnly(isReadOnly());
@@ -260,11 +255,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			/*** Events fired by passwordTextBox ****/
 
 			keyPressHandler = numericTextbox.addKeyPressHandler(numericTextbox);
-
-			if (isValidateOnChange()) {
-				keyUpHandler = numericTextbox.addKeyUpHandler(this);
-			}
-
+			keyUpHandler = numericTextbox.addKeyUpHandler(this);
 			blurHandler = numericTextbox.addBlurHandler(this);
 		} catch (Exception e) {
 
@@ -277,10 +268,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 */
 	@Override
 	public void reset() {
-		
-		
 		try {
-			
 			logger.log(Level.INFO, "[TextField] ::In reset method ");
 			String fieldType = getTextFieldType();
 			if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX)  ) {
@@ -824,9 +812,11 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			Integer keycode= event.getNativeKeyCode();
 			if(keycode.equals(KeyCodes.KEY_BACKSPACE) || keycode.equals(KeyCodes.KEY_TAB)|| keycode.equals(KeyCodes.KEY_DELETE)){
 				if(isValidateField()){
-					if(validate())
-						setValue(getValue());
-					setFocus();
+					if(isValidateOnChange()){
+						if(validate())
+							setValue(getValue());
+						setFocus();
+					}
 				}else{
 					setValue(getValue());
 				}
@@ -835,10 +825,14 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 					FieldEvent fieldEvent = new FieldEvent();
 					fieldEvent.setEventSource(this);
 					fieldEvent.setEventData(getValue());
-					fieldEvent.setEventType(FieldEvent.EDITINPROGRESS);
+					
+					if(keycode.equals(KeyCodes.KEY_TAB)){
+						fieldEvent.setEventType(FieldEvent.EDITCOMPLETED);
+					}else{
+						fieldEvent.setEventType(FieldEvent.EDITINPROGRESS);
+					}
 					AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 				}
-				
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[TextField] ::Exception In onKeyUp method "+e);
@@ -851,9 +845,11 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		try {
 			logger.log(Level.INFO, "[TextField] ::In onBlur method ");
 			if(isValidateField()){
-				if(validate()){
-					if(numericTextbox!=null && numericTextbox.isAllowDecimal()){
-						setValue(numericTextbox.fixPrecision());
+				if(isValidateOnBlur()){
+					if(validate()){
+						if(numericTextbox!=null && numericTextbox.isAllowDecimal()){
+							setValue(numericTextbox.fixPrecision());
+						}
 					}
 				}
 			}else{
