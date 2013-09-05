@@ -825,12 +825,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 					FieldEvent fieldEvent = new FieldEvent();
 					fieldEvent.setEventSource(this);
 					fieldEvent.setEventData(getValue());
-					
-					if(keycode.equals(KeyCodes.KEY_TAB)){
-						fieldEvent.setEventType(FieldEvent.EDITCOMPLETED);
-					}else{
-						fieldEvent.setEventType(FieldEvent.EDITINPROGRESS);
-					}
+					fieldEvent.setEventType(FieldEvent.EDITINPROGRESS);
 					AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 				}
 			}
@@ -855,6 +850,13 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			}else{
 				setValue(getValue());
 			}
+			
+			FieldEvent fieldEvent = new FieldEvent();
+			fieldEvent.setEventSource(this);
+			fieldEvent.setEventData(getValue());
+			fieldEvent.setEventType(FieldEvent.EDITCOMPLETED);
+			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[TextField] ::Exception In onBlur method "+e);
 		}
