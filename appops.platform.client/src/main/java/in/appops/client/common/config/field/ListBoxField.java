@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -49,13 +51,14 @@ staticListBox.configure();<br>
 staticListBox.create();<br>
 
 </p>*/
-public class ListBoxField extends BaseField implements ChangeHandler{
+public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler{
 
 	private ListBox listBox;
 	private HashMap<String, Entity> nameVsEntity  = null;
 	private final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 	private HandlerRegistration selectionHandler = null ;
+	private HandlerRegistration blurHandler = null ;
 	private Logger logger = Logger.getLogger(getClass().getName());
 	public ListBoxField(){
 		listBox = new ListBox();
@@ -124,6 +127,8 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 				getBasePanel().addStyleName(getBasePanelDependentCss());
 
 				selectionHandler = listBox.addChangeHandler(this);
+				blurHandler = listBox.addBlurHandler(this);
+				
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In configure  method :" + e);
 		}
@@ -147,6 +152,10 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	public void removeRegisteredHandlers() {
 		if(selectionHandler!=null)
 			selectionHandler.removeHandler();
+		
+		if(blurHandler!=null)
+			blurHandler.removeHandler();
+		
 	}
 	
 	@Override
@@ -393,8 +402,13 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	 */
 	public Entity getAssociatedEntity(String itemText){
 		logger.log(Level.INFO,"[ListBoxField]:: In getAssociatedEntity  method ");
-		if(nameVsEntity !=null)
-		  return nameVsEntity.get(itemText);
+		
+		for (Entity ent  : nameVsEntity.values()) {
+			String propValue = ent.getPropertyByName(getEntPropToShow()).toString();
+			if(propValue.equals(itemText)){
+				return ent;
+			}
+		}
 		return null;
 		
 	}
@@ -488,7 +502,7 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		}
 	}
 	
-	private String getSuggestionValueForListBox() {
+	public String getSuggestionValueForListBox() {
 		String defaultName = "-- Select --";
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getSuggestionValueForListBox  method ");
@@ -504,6 +518,19 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	public Object getSelectedValue() {
 		String selectedValue = listBox.getValue(listBox.getSelectedIndex());
 		return selectedValue;
+	}
+	
+	@Override
+	public void onBlur(BlurEvent event) {
+		try {
+			FieldEvent fieldEvent = new FieldEvent();
+			fieldEvent.setEventSource(this);
+			fieldEvent.setEventData(getValue());
+			fieldEvent.setEventType(FieldEvent.EDITCOMPLETED);
+			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In onBlur  method :"+e);
+		}
 	}
 	
 	public interface ListBoxFieldConstant extends BaseFieldConstant{
