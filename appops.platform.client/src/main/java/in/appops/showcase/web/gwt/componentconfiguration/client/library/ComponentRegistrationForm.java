@@ -9,24 +9,22 @@ import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
 import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.config.field.ListBoxField;
-import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
 import in.appops.client.common.config.field.SelectedItem;
 import in.appops.client.common.config.field.StateField;
 import in.appops.client.common.config.field.StateField.StateFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.ConfigEvent;
 import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.ConfigEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.core.entity.Entity;
-import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
-import in.appops.platform.core.util.EntityList;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,13 +41,12 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author mahesh@ensarm.com
  *
  */
-public class ComponentRegistrationForm extends Composite implements FieldEventHandler{
+public class ComponentRegistrationForm extends Composite implements FieldEventHandler, ConfigEventHandler{
 	
 	private VerticalPanel basePanel;
 	private Entity libraryEntity;
 	private StateField componentNameField;
-	private ListBoxField componentTypeField;
-	
+	private Entity compEntityToUpdate;
 	private Logger logger = Logger.getLogger("ComponentRegistrationForm");
 		
 	/** CSS styles **/
@@ -75,12 +72,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			componentNameField.setConfiguration(stateFieldConfig);
 			componentNameField.configure();
 			componentNameField.create();	
-			
-			componentTypeField = new ListBoxField();
-			componentTypeField.setConfiguration(getTypeBoxConfig());
-			componentTypeField.configure();
-			componentTypeField.create();
-					
+								
 			ButtonField saveComponentBtnFld = new ButtonField();
 			Configuration savebTnConfig = getSaveBtnConfig();
 			saveComponentBtnFld.setConfiguration(savebTnConfig);
@@ -88,7 +80,6 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			saveComponentBtnFld.create();
 			
 			containerTable.add(componentNameField);
-			containerTable.add(componentTypeField);
 			containerTable.add(saveComponentBtnFld);
 						
 			LabelField headerLbl = new LabelField();
@@ -108,57 +99,21 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			logger.log(Level.SEVERE, "ComponentRegistrationForm :: createUi :: Exception", e);
 		}
 	}
-	
-	private Configuration getTypeBoxConfig() {
-		Configuration configuration = new Configuration();
-		try {
-			configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"---Select the type of component---");
-			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,getDummyTypeList());
-			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ENTPROP,"name");
-			configuration.setPropertyByName(ListBoxFieldConstant.BF_ID,COMPONENTTYPELISTBOX_ID);
-			
-		} catch (Exception e) {
-			
-		}
-		return configuration;
-	}
-	
-	private EntityList getDummyTypeList(){
-		Entity labelField = new Entity();
-		Key<Long> key1 = new Key<Long>(2L);
-		labelField.setPropertyByName("id",key1);
-		labelField.setPropertyByName("name","LabelField");
-		labelField.setPropertyByName("htmldescription","   Display text");
 		
-		Entity dateLabelField = new Entity();
-		Key<Long> key2 = new Key<Long>(2L);
-		dateLabelField.setPropertyByName("id",key2);
-		dateLabelField.setPropertyByName("name","DateLabelField");
-		dateLabelField.setPropertyByName("htmldescription","   Display date in different formats");
-		
-		EntityList list = new EntityList();
-		list.add(labelField);
-		list.add(dateLabelField);
-		return list;
-	}
-	
 	private Configuration getComponentSuggestionFieldConf() {
 
 		Configuration configuration = new Configuration();
 		try {
 			configuration.setPropertyByName(StateFieldConstant.IS_STATIC_BOX,false);
-			configuration.setPropertyByName(StateFieldConstant.STFD_OPRTION,"appdefinition.AppDefinitionService.getComponentDefinitions");
-			configuration.setPropertyByName(StateFieldConstant.STFD_QUERYNAME,"getComponentDefOfLibrary");
+			configuration.setPropertyByName(StateFieldConstant.STFD_OPRTION,"appdefinition.AppDefinitionService.getEntityList");
+			configuration.setPropertyByName(StateFieldConstant.STFD_QUERYNAME,"getAllComponentDefinition");
 			configuration.setPropertyByName(StateFieldConstant.STFD_ENTPROP,"name");
 			configuration.setPropertyByName(StateFieldConstant.STFD_QUERY_MAXRESULT,10);
 			configuration.setPropertyByName(StateFieldConstant.IS_AUTOSUGGESTION,false);
 			configuration.setPropertyByName(StateFieldConstant.BF_SUGGESTION_POS,StateFieldConstant.BF_SUGGESTION_INLINE);
 			configuration.setPropertyByName(StateFieldConstant.BF_SUGGESTION_TEXT,"Component Name");
-			HashMap<String, Object> paramMap = new HashMap<String, Object>();
-			Long libId = ((Key<Long>)libraryEntity.getPropertyByName("id")).getKeyValue();
-			paramMap.put("libraryId", libId);
-			configuration.setPropertyByName(StateFieldConstant.STFD_QUERY_RESTRICTION,paramMap);
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		return configuration;
@@ -185,7 +140,6 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,SAVECOMP_BTN_PCLS);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_ENABLED, true);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, SAVECOMPONENT_BTN_ID);
-
 		}
 		catch(Exception e){
 			logger.log(Level.SEVERE, "ComponentRegistrationForm :: getSaveBtnConfig :: Exception", e);
@@ -198,9 +152,30 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			basePanel = new VerticalPanel();
 			initWidget(basePanel);
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
 		}
 		catch (Exception e) {	
 			logger.log(Level.SEVERE, "ComponentRegistrationForm :: initialize :: Exception", e);
+		}
+	}
+	@Override
+	public void onConfigEvent(ConfigEvent event) {
+		try {
+			int eventType = event.getEventType();
+			Object eventSource = event.getEventSource();
+			switch (eventType) {
+			case ConfigEvent.COMPONENTSELECTED: {
+				if (eventSource instanceof ConfigurationListDisplayer) {
+					Entity componentEnt=  (Entity) event.getEventData(); 
+					this.compEntityToUpdate = componentEnt;
+				}
+				break;
+			}
+			default:
+				break;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -214,7 +189,10 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 				if (event.getEventSource() instanceof ButtonField){
 					ButtonField saveCompBtnField = (ButtonField) eventSource;
 					if (saveCompBtnField.getBaseFieldId().equals(SAVECOMPONENT_BTN_ID)) {
-						if(libraryEntity!=null){
+						
+						if(compEntityToUpdate!=null){
+							
+						}else if(libraryEntity!=null){
 							saveComponent();
 						}else{
 							Window.alert("Please select a library");
@@ -275,7 +253,40 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "ComponentRegistrationForm :: saveComponent :: Exception", e);
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void updateComponent() {
+		try{
+			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+			
+			Entity componentDefEnt = getPopulatedEntity();
+			Map parameterMap = new HashMap();
+			parameterMap.put("componentDefinition", componentDefEnt);
+			
+			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.updateComponentDefinition", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
 
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(Result<Entity> result) {
+					if(result!=null){
+						Entity compEntity = result.getOperationResult();
+						if(compEntity!=null){
+							Window.alert("Component updated successfully...");
+							
+						}
+					}
+				}
+			});
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "ComponentRegistrationForm :: updateComponent :: Exception", e);
+		}
 	}
 
 	private Entity getPopulatedEntity() {
@@ -283,13 +294,9 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 		try{
 			Entity compEntity = new Entity();
 			compEntity.setType(new MetaType("Componentdefinition"));
-
 			compEntity.setPropertyByName("name", componentNameField.getValue().toString());
-			
-			Entity typeEnt =  componentTypeField.getAssociatedEntity(componentTypeField.getValue().toString());
-			Long typeId = ((Key<Long>)typeEnt.getPropertyByName("id")).getKeyValue();
-			compEntity.setPropertyByName("typeId",typeId);
-			
+			//compEntity.setPropertyByName("typeId", 2L);
+								
 			return compEntity;
 		}
 		catch (Exception e) {

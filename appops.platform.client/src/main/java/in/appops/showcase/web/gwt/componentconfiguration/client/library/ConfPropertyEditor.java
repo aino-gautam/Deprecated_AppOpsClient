@@ -1,10 +1,8 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
 import in.appops.client.common.config.field.ButtonField;
-import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
-import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
-import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
+import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.ConfigEvent;
 import in.appops.client.common.event.FieldEvent;
@@ -12,12 +10,20 @@ import in.appops.client.common.event.handlers.ConfigEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -28,22 +34,18 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandler,ConfigEventHandler{
 	
-	private String ADD_NEW_PROPVAL_IMGID = "addNewPropValImgId";
-	private String NEWVALUE_CSS = "addNewPropertyImage";
 	private final String COMPFORM_PANEL_CSS = "componentFormPanel";
 	private static String SAVE_BTN_PCLS = "saveConfigButton";
-	private static String SAVECONFIGURATION_BTN_ID = "saveConfigBtnId";
+	private final String SAVECONFIGURATION_BTN_ID = "saveConfigBtnId";
 	
 	private FlexTable propValuePanel;
 	private TextField propNameField;
-	private int valuePanelRow = 0;
-	private Entity componentDefEnt;
-	private  EntityList componentDeflist;
-	private ArrayList<PropertyValueEditor> propValueList;
+	private int valueRow = 0;
+	private HashMap<Integer, PropertyValueEditor> propValueList;
+	private Entity confTypeEnt;
 		
 	public ConfPropertyEditor(Entity componentDefEnt, EntityList componentDeflist) {
-		this.componentDefEnt = componentDefEnt;
-		this.componentDeflist = componentDeflist;
+		
 	}
 	
 	public void createUi(){
@@ -55,23 +57,14 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			propNameField.configure();
 			propNameField.create();
 			
-			ImageField addValueImgField = new ImageField();
-			addValueImgField.setConfiguration(getPlusImageConfiguration());
-			addValueImgField.configure();
-			addValueImgField.create();
-			
 			ButtonField saveConfigBtn = new ButtonField();
 			saveConfigBtn.setConfiguration(getSaveConfigurationBtnConf());
 			saveConfigBtn.configure();
 			saveConfigBtn.create();
 			
-			propValuePanel.setWidget(valuePanelRow, 0, propNameField);
+			propValuePanel.setWidget(valueRow, 0, propNameField);
 			
-			propValuePanel.setWidget(valuePanelRow, 7, addValueImgField);
-			
-			valuePanelRow+=2;
-			
-			propValuePanel.setWidget(valuePanelRow, 0, saveConfigBtn);
+			propValuePanel.setWidget(valueRow+2, 0, saveConfigBtn);
 			
 			/*for(Entity confEnt:componentDeflist){
 				PropertyValueEditor propValueEditor = new PropertyValueEditor(propValuePanel, valuePanelRow, confEnt);
@@ -83,7 +76,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				propValueList.add(propValueEditor);
 			}*/
 			
-			addNewPropertyValue();
+			insertEmptyRecord();
 			
 			add(propValuePanel);
 			setStylePrimaryName(COMPFORM_PANEL_CSS);
@@ -138,41 +131,22 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 		return configuration;
 	}
 	
-	private void addNewPropertyValue(){
-		PropertyValueEditor propValueEditor = new PropertyValueEditor(propValuePanel, valuePanelRow, null);
-		propValueEditor.createUi();
-	}
-	
-	/**
-	 * Creates the plus image field configuration object and return.
-	 * @return Configuration instance
-	 */
-	private Configuration getPlusImageConfiguration(){
-		Configuration configuration = new Configuration();
+	private void insertEmptyRecord(){
+		
 		try {
-			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, "images/plus-icon.png");
-			configuration.setPropertyByName(ImageFieldConstant.BF_PCLS,NEWVALUE_CSS);
-			configuration.setPropertyByName(ImageFieldConstant.IMGFD_TITLE, "Add new property value");
-			configuration.setPropertyByName(ImageFieldConstant.BF_ID, ADD_NEW_PROPVAL_IMGID);
-		} catch (Exception e) {
+			PropertyValueEditor propValueEditor = new PropertyValueEditor(propNameField.getValue().toString(), propValuePanel, valueRow, null);
+			propValueEditor.createUi();
+			if(propValueList == null){
+				propValueList = new HashMap<Integer, PropertyValueEditor>();
+			}
+			propValueList.put(valueRow, propValueEditor);
 			
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return configuration;
 	}
 	
-	private Configuration getLabelFieldConf(String displayText , String primaryCss , String dependentCss ,String propEditorLblPanelCss){
-		Configuration conf = new Configuration();
-		try {
-			conf.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, displayText);
-			conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
-			conf.setPropertyByName(LabelFieldConstant.BF_DCLS, dependentCss);
-			conf.setPropertyByName(LabelFieldConstant.BF_BASEPANEL_PCLS, propEditorLblPanelCss);
-		} catch (Exception e) {
-			
-		}
-		return conf;
-	}
-	
+
 	@Override
 	public void onFieldEvent(FieldEvent event) {
 		try {
@@ -182,28 +156,67 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			case FieldEvent.CLICKED: {
 				if (eventSource instanceof ImageField) {
 					ImageField imageField = (ImageField) eventSource;
-					if (imageField.getBaseFieldId().equals(ADD_NEW_PROPVAL_IMGID)) {
-						addNewPropertyValue();
+					if(imageField.getBaseFieldId().equals(PropertyValueEditor.REMOVEPROP_IMGID)){
+						//remove property.
+					}if (eventSource instanceof ButtonField) {
+						ButtonField btnField = (ButtonField) eventSource;
+						if(btnField.getBaseFieldId().equals(SAVECONFIGURATION_BTN_ID)){
+							saveConfTypeEntity();
+						}
 					}
 				}
 				break;
-			}
-			default:
+			}case FieldEvent.EDITCOMPLETED: {
+				if (eventSource instanceof TextField) {
+					TextField txtField = (TextField) eventSource;
+					if(txtField.getBaseFieldId().equals(PropertyValueEditor.ISDEF_RADIOBTN_GROUP_ID)){
+						saveConfTypeEntity();
+					}
+				}
+				break;
+			}default:
+				
 				break;
 			}
 		} catch (Exception e) {
 			
 		}
 	}
+		
 	
-	public EntityList getConfDefList(){
-		EntityList list = new EntityList();
-		for(int i = 0; i< propValueList.size() ; i++){
-			Entity confDef = propValueList.get(i).getConfigDefEntity();
-			list.add(confDef);
+	@SuppressWarnings("unchecked")
+	private void saveConfTypeEntity() {
+		try {
+			Entity confTypeEntity = propValueList.get(valueRow).getConfigTypeEntity();
+			
+			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+						
+			Map parameterMap = new HashMap();
+			parameterMap.put("confEnt", confTypeEntity);
+			parameterMap.put("update", false);
+			
+			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveConfigurationType", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(Result<Entity> result) {
+					if(result!=null){
+						Window.alert("Property saved successfully");
+						insertEmptyRecord();
+					}
+				}
+			});
+		} catch (Exception e) {
 		}
-		return list;
+		
 	}
+	
 
 	@Override
 	public void onConfigEvent(ConfigEvent event) {
@@ -223,9 +236,15 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				break;
 			}
 		} catch (Exception e) {
-			e.printStackTrace()
-			;
+			e.printStackTrace();
 		}
-		
+	}
+
+	public Entity getConfTypeEnt() {
+		return confTypeEnt;
+	}
+
+	public void setConfTypeEnt(Entity confTypeEnt) {
+		this.confTypeEnt = confTypeEnt;
 	}
 }

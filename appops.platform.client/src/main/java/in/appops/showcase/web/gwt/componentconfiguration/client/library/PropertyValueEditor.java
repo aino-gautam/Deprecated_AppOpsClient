@@ -2,7 +2,9 @@ package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
 import java.util.ArrayList;
 
+import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
 import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
+import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.RadioButtonField;
 import in.appops.client.common.config.field.RadioButtonField.RadionButtonFieldConstant;
@@ -20,7 +22,8 @@ public class PropertyValueEditor {
 	
 	private FlexTable propValuePanel;
 	private int valuePanelRow;
-	private Entity confDefEntity;
+	private Entity confTypeEntity;
+	private String propName;
 	private TextField valueField;
 	private ListBoxField typeField;
 	private RadioButtonField isDefaultValueField;
@@ -29,20 +32,24 @@ public class PropertyValueEditor {
 	public final String PROPNAME_FIELD_ID = "attributeFieldId";
 	public final String INTVAL_FIELD_ID = "intValFieldId";
 	public final String STRINGVAL_FIELD_ID = "stringValFieldId";
-	public final String ISDEF_RADIOBTN_GROUP_ID = "isDefaultRadioBtnGroup";
+	public static final String ISDEF_RADIOBTN_GROUP_ID = "isDefaultRadioBtnGroup";
+	
+	/** CSS styles **/
+	public static final String REMOVEPROP_IMGID = "removePropImgId";
+	private final String CROSSIMG_CSS = "removePropertyImage";
 	
 	public PropertyValueEditor() {
 		
 	}
 
-	public PropertyValueEditor(FlexTable propValuePanel, int valuePanelRow ,Entity confDefEntity) {
-		this.confDefEntity = confDefEntity;
+	public PropertyValueEditor(String propName, FlexTable propValuePanel, int valuePanelRow ,Entity confTypeEntity) {
+		this.propName = propName;
+		this.confTypeEntity = confTypeEntity;
 		this.propValuePanel = propValuePanel;
 		this.valuePanelRow = valuePanelRow;
 	}
 
 	public void createUi(){
-				
 		valueField = new TextField();
 		valueField.setConfiguration(getStringValueFieldConf());
 		valueField.configure();
@@ -59,12 +66,33 @@ public class PropertyValueEditor {
 		isDefaultValueField.configure();
 		isDefaultValueField.create();
 		
-		propValuePanel.insertRow(valuePanelRow);
+		ImageField crossImgField = new ImageField();
+		crossImgField.setConfiguration(getCrossImageConfiguration());
+		crossImgField.configure();
+		crossImgField.create();
 		
-		propValuePanel.setWidget(valuePanelRow, 3, valueField);
-		propValuePanel.setWidget(valuePanelRow, 5, typeField);
-		propValuePanel.setWidget(valuePanelRow, 7, isDefaultValueField);
+		propValuePanel.setWidget(valuePanelRow, 1, valueField);
+		propValuePanel.setWidget(valuePanelRow, 2, typeField);
+		propValuePanel.setWidget(valuePanelRow, 3, isDefaultValueField);
+		propValuePanel.setWidget(valuePanelRow, 4, crossImgField);
 		
+	}
+	
+	/**
+	 * Creates the cross image field configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getCrossImageConfiguration(){
+		Configuration configuration = new Configuration();
+		try {
+			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, "images/cross.png");
+			configuration.setPropertyByName(ImageFieldConstant.BF_PCLS,CROSSIMG_CSS);
+			configuration.setPropertyByName(ImageFieldConstant.IMGFD_TITLE, "Remove property");
+			configuration.setPropertyByName(ImageFieldConstant.BF_ID, REMOVEPROP_IMGID);
+		} catch (Exception e) {
+			
+		}
+		return configuration;
 	}
 	
 	private EntityList getDummyTypeList(){
@@ -110,35 +138,7 @@ public class PropertyValueEditor {
 		return configuration;
 	}
 	
-	/**
-	 * Method creates the property name field configuration object and return.
-	 * @return Configuration instance
-	 */
-	private Configuration getPropNameFieldConf(){
-		Configuration configuration = new Configuration();
-		
-		try {
-			configuration.setPropertyByName(TextFieldConstant.TF_TYPE, TextFieldConstant.TFTYPE_TXTBOX);
-			
-			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
-			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter property name");
-			
-			if(confDefEntity!=null){
-				configuration.setPropertyByName(TextFieldConstant.BF_DEFVAL, confDefEntity.getPropertyByName("key").toString());
-			}
-			
-			configuration.setPropertyByName(TextFieldConstant.BF_ID, PROPNAME_FIELD_ID);
-			
-			configuration.setPropertyByName(TextFieldConstant.BF_BLANK_TEXT,"Property can't be empty");
-			configuration.setPropertyByName(TextFieldConstant.BF_ALLOWBLNK,false);
-			configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS,TextFieldConstant.BF_ERRINLINE);
-			
-		} catch (Exception e) {
-		}
-		return configuration;
-	}
 
-	
 	/**
 	 * Method creates the string value field configuration object and return.
 	 * @return Configuration instance
@@ -152,8 +152,8 @@ public class PropertyValueEditor {
 			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
 			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Add string value");
 			
-			if(confDefEntity!=null)
-				configuration.setPropertyByName(TextFieldConstant.BF_DEFVAL, confDefEntity.getPropertyByName("stringvalue").toString());
+			if(confTypeEntity!=null)
+				configuration.setPropertyByName(TextFieldConstant.BF_DEFVAL, confTypeEntity.getPropertyByName("stringvalue").toString());
 			
 			configuration.setPropertyByName(TextFieldConstant.BF_ID, STRINGVAL_FIELD_ID);
 			
@@ -167,35 +167,6 @@ public class PropertyValueEditor {
 	}
 	
 	/**
-	 * Method creates the int value field configuration object and return.
-	 * @return Configuration instance
-	 */
-	private Configuration getIntValueFieldConf(){
-				
-		Configuration configuration = new Configuration();
-		try {
-			configuration.setPropertyByName(ListBoxFieldConstant.BF_ID,INTVAL_FIELD_ID);
-			configuration.setPropertyByName(TextFieldConstant.TF_TYPE, TextFieldConstant.TFTYPE_NUMERIC);
-			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
-			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Add int value");
-			configuration.setPropertyByName(TextFieldConstant.MINVALUE,0);
-			configuration.setPropertyByName(TextFieldConstant.BF_DEFVAL,0);
-			configuration.setPropertyByName(TextFieldConstant.ALLOWDEC,false);
-			
-			//configuration.setPropertyByName(TextFieldConstant.BF_BLANK_TEXT,"Size can't be empty");
-			//configuration.setPropertyByName(TextFieldConstant.BF_ALLOWBLNK,false);
-			//configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS,TextFieldConstant.BF_ERRINLINE);
-			
-			if(confDefEntity!=null)
-				configuration.setPropertyByName(TextFieldConstant.BF_DEFVAL, confDefEntity.getPropertyByName("intvalue").toString());
-						
-		} catch (Exception e) {
-			
-		}
-		return configuration;
-	}
-	
-	/**
 	 * Method creates the is default radio button field configuration object and return.
 	 * @return Configuration instance
 	 */
@@ -203,10 +174,10 @@ public class PropertyValueEditor {
 		Configuration configuration = new Configuration();
 		
 		try {
-			boolean isDefault = false;
+			boolean isDefault = true;
 			
-			if(confDefEntity!=null){
-				isDefault = Boolean.valueOf(confDefEntity.getPropertyByName("isdefault").toString());
+			if(confTypeEntity!=null){
+				isDefault = Boolean.valueOf(confTypeEntity.getPropertyByName("isdefault").toString());
 			}
 			configuration.setPropertyByName(RadionButtonFieldConstant.RF_CHECKED, isDefault);
 			configuration.setPropertyByName(RadionButtonFieldConstant.RF_GROUPID, ISDEF_RADIOBTN_GROUP_ID);
@@ -217,18 +188,15 @@ public class PropertyValueEditor {
 		return configuration;
 	}
 	
-	public Entity getConfigDefEntity(){
-		if (confDefEntity == null) {
-			confDefEntity = new Entity();
-			confDefEntity.setType(new MetaType("Configurationdef"));
+	public Entity getConfigTypeEntity(){
+		if (confTypeEntity == null) {
+			confTypeEntity = new Entity();
+			confTypeEntity.setType(new MetaType("Configtype"));
 		}
-		
-		confDefEntity.setPropertyByName("key", Integer.parseInt(valueField.getValue().toString()));
-		confDefEntity.setPropertyByName("intvalue", Integer.parseInt(typeField.getValue().toString()));
-		confDefEntity.setPropertyByName("stringvalue", Integer.parseInt(valueField.getValue().toString()));
-		confDefEntity.setPropertyByName("isdefault", isDefaultValueField.getValue().toString());
-		return confDefEntity;
-		
-		
+		confTypeEntity.setPropertyByName("keyname", propName);
+		confTypeEntity.setPropertyByName("keyvalue", valueField.getValue().toString());
+		confTypeEntity.setPropertyByName("emstypeId",  Long.parseLong(typeField.getValue().toString()));
+		confTypeEntity.setPropertyByName("isdefault", Boolean.valueOf(isDefaultValueField.getValue().toString()));
+		return confTypeEntity;
 	}
 }
