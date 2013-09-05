@@ -191,7 +191,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 					if (saveCompBtnField.getBaseFieldId().equals(SAVECOMPONENT_BTN_ID)) {
 						
 						if(compEntityToUpdate!=null){
-							
+							updateComponent();
 						}else if(libraryEntity!=null){
 							saveComponent();
 						}else{
@@ -206,9 +206,6 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 					if(listBoxField.getBaseFieldId().equalsIgnoreCase(LibraryComponentManager.LIBRARYLISTBOX_ID)){
 						Entity libEntity = selectedItem.getAssociatedEntity();
 						libraryEntity = libEntity;
-					}else if(listBoxField.getBaseFieldId().equalsIgnoreCase(COMPONENTTYPELISTBOX_ID)){
-						Entity typeEntity = selectedItem.getAssociatedEntity();
-						
 					}
 				}
 			}
@@ -244,6 +241,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 						Entity compEntity   = list.get("component");
 						if(compEntity!=null){
 							Window.alert("Component Saved...");
+							componentNameField.reset();
 							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.ADDCOMPONENTTOLIST, compEntity,this);
 							AppUtils.EVENT_BUS.fireEvent(configEvent);
 						}
@@ -261,7 +259,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 			
-			Entity componentDefEnt = getPopulatedEntity();
+			Entity componentDefEnt = getUpdatedComponentEntity();
 			Map parameterMap = new HashMap();
 			parameterMap.put("componentDefinition", componentDefEnt);
 			
@@ -295,9 +293,19 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			Entity compEntity = new Entity();
 			compEntity.setType(new MetaType("Componentdefinition"));
 			compEntity.setPropertyByName("name", componentNameField.getValue().toString());
-			//compEntity.setPropertyByName("typeId", 2L);
-								
 			return compEntity;
+		}
+		catch (Exception e) {
+			logger.log(Level.SEVERE, "ComponentRegistrationForm :: getPopulatedEntity :: Exception", e);
+		}
+		return null;
+		
+	}
+	
+	private Entity getUpdatedComponentEntity() {
+		try{
+			compEntityToUpdate.setPropertyByName("name", componentNameField.getValue().toString());
+			return compEntityToUpdate;
 		}
 		catch (Exception e) {
 			logger.log(Level.SEVERE, "ComponentRegistrationForm :: getPopulatedEntity :: Exception", e);

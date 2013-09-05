@@ -3,6 +3,7 @@ package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 import in.appops.client.common.config.field.ButtonField;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
 import in.appops.client.common.config.field.ImageField;
+import in.appops.client.common.config.field.RadioButtonField;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.ConfigEvent;
 import in.appops.client.common.event.FieldEvent;
@@ -167,9 +168,9 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				}
 				break;
 			}case FieldEvent.EDITCOMPLETED: {
-				if (eventSource instanceof TextField) {
-					TextField txtField = (TextField) eventSource;
-					if(txtField.getBaseFieldId().equals(PropertyValueEditor.ISDEF_RADIOBTN_GROUP_ID)){
+				if (eventSource instanceof RadioButtonField) {
+					RadioButtonField radioBtnField = (RadioButtonField) eventSource;
+					if(radioBtnField.getBaseFieldId().equals(PropertyValueEditor.ISDEF_RADIOBTN_GROUP_ID)){
 						saveConfTypeEntity();
 					}
 				}

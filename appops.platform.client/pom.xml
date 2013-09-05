@@ -221,7 +221,7 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>configuration</artifactId>
-			<version>04.09.2013</version>
+			<version>05.09.2013</version>
 		</dependency>
 		
 		<dependency>
