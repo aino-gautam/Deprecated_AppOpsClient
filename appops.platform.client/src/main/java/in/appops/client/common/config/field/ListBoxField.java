@@ -323,7 +323,7 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 				String item = entity.getPropertyByName(getEntPropToShow());
 				Key keyId = (Key)entity.getPropertyByName("id");
 				Long id = (Long) keyId.getKeyValue();
-				nameVsEntity.put(item, entity);
+				nameVsEntity.put(id.toString(), entity);
 				listBox.addItem(item, id.toString());
 			}
 			
@@ -442,7 +442,7 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 				FieldEvent fieldEvent = new FieldEvent();
 				String selectedItem = getValue().toString();
 				String selectedValue = getSelectedValue().toString();
-				Entity entity = nameVsEntity.get(selectedItem);
+				Entity entity = nameVsEntity.get(selectedValue);
 				SelectedItem selectedEntity = new SelectedItem();
 				selectedEntity.setItemString(selectedItem);
 				if(nameVsEntity!=null){

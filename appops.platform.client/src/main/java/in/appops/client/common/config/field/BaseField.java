@@ -57,7 +57,7 @@ public class BaseField extends Composite implements Field {
 		public static final String BF_SHOW_VALID_FIELD = "showValidField";
 		
 		/** Specifies the position of the error marker. viz. {@link BaseFieldConstant#BF_SIDE}, {@link BaseFieldConstant#BF_TOP}, {@link BaseFieldConstant#BF_BOTTOM}
-		 *  Defaults to {@link BaseFieldConstant#SP_ERRINLINE} **/
+		 *  Defaults to {@link BaseFieldConstant#BF_ERRINLINE} **/
 		public static final String BF_ERRPOS = "errorPosition";
 		
 		/** Specifies the position of the suggestion. viz. {@link BaseFieldConstant#BF_SIDE}, {@link BaseFieldConstant#BF_TOP}, {@link BaseFieldConstant#BF_BOTTOM}
@@ -79,7 +79,7 @@ public class BaseField extends Composite implements Field {
 		/** Suggestion to be shown inline of field. {@link BaseFieldConstant#BF_ERRPOS} **/
 		public static final String BF_SUGGESTION_INLINE = "suggestionInline";
 		
-		/** Suggestion text to be shown. {@link BaseFieldConstant#BF_ERRPOS} **/
+		/** Suggestion text to be shown. **/
 		public static final String BF_SUGGESTION_TEXT = "suggestionText";
 		
 		/** Blank field error text to be shown.**/
@@ -89,7 +89,7 @@ public class BaseField extends Composite implements Field {
 		 * Specifies whether the field be disabled.
 		 * Defaults to <code>false</code>
 		 */
-		public static final String BF_ENABLED = "disabled";
+		public static final String BF_ENABLED = "enabled";
 		
 		/** Specifies whether this field should be validated immediately whenever a change in its value is detected. 
 		 *  When set to true, it would allow the field to show feedback about the validity of its contents immediately as the user is typing.
@@ -117,7 +117,7 @@ public class BaseField extends Composite implements Field {
 		public static final String BF_ERRMSGICONCLS = "errorMsgIconCls";
 		
 		/** Set the fields suggestion msg css class **/
-		public static final String BF_SUGGESTION_MSG_CLS = "sugegstionMsgCls";
+		public static final String BF_SUGGESTION_MSG_CLS = "suggestionMsgCls";
 		
 		/** Set the field tab index **/
 		public static final String BF_TABINDEX = "tabIndex";
