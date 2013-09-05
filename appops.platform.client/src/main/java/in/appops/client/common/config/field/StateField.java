@@ -89,6 +89,7 @@ public class StateField extends BaseField {
 			
 			appopsSuggestionBox.setAutoSuggestion(isAutosuggestion());
 			appopsSuggestionBox.createUi();
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in configure method :"+e);
 		}
