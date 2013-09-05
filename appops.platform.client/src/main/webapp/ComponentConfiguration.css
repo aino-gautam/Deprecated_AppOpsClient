@@ -20,8 +20,8 @@
     cursor: pointer;
 }
 
-.addNewPropertyImage{
-	width: 15px;
+.removePropertyImage{
+	width: 20px;
 	cursor: pointer;
 	cursor: hand;
 	margin-top: 6px;
