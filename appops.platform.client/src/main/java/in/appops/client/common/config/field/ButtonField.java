@@ -1,11 +1,13 @@
 package in.appops.client.common.config.field;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -33,10 +35,11 @@ btnField.configure();<br>
 btnField.create();<br>
 
 </p>*/
-public class ButtonField extends BaseField implements ClickHandler{
+public class ButtonField extends BaseField implements ClickHandler, BlurHandler{
 	
 	private Button button ;
 	private HandlerRegistration clickHandler = null ;
+	private HandlerRegistration blurHandler = null ;
 	private Logger logger = Logger.getLogger(getClass().getName());
 
 	public ButtonField() {
@@ -52,6 +55,7 @@ public class ButtonField extends BaseField implements ClickHandler{
 		
 		try {
 			clickHandler = button.addClickHandler(this);
+			blurHandler = button.addBlurHandler(this);
 			getBasePanel().add(button,DockPanel.CENTER);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ButtonField]::Exception In create  method :"+e);
@@ -120,6 +124,9 @@ public class ButtonField extends BaseField implements ClickHandler{
 		
 		if(clickHandler!=null)
 			clickHandler.removeHandler();
+		
+		if(blurHandler!=null)
+			blurHandler.removeHandler();
 	}
 	
 	/**
@@ -213,6 +220,20 @@ public class ButtonField extends BaseField implements ClickHandler{
 		
 	}
 	
+	@Override
+	public void onBlur(BlurEvent event) {
+		try {
+			FieldEvent fieldEvent = new FieldEvent();
+			fieldEvent.setEventSource(this);
+			fieldEvent.setEventData(getValue());
+			fieldEvent.setEventType(FieldEvent.EDITCOMPLETED);
+			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ButtonField]::Exception In onBlur  method :"+e);
+		}
+		
+	}
+	
 	/*********************************************************************************/
 	
 	public interface ButtonFieldConstant extends BaseFieldConstant{
@@ -227,5 +248,7 @@ public class ButtonField extends BaseField implements ClickHandler{
 		public static final String BTNFD_CLICK_EVENT = "clickEvent";
 		
 	}
+
+	
 
 }

@@ -1,22 +1,25 @@
 package in.appops.client.common.config.field;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 
-public class RadioButtonField extends BaseField implements ValueChangeHandler{
+public class RadioButtonField extends BaseField implements ValueChangeHandler, BlurHandler{
 
 	private RadioButton radioBtn;
 	private Logger logger = Logger.getLogger(getClass().getName());
 	private HandlerRegistration changeHandler  =  null;
+	private HandlerRegistration blurHandler  =  null;
 	
 	/*******************  Fields ID *****************************/
 	
@@ -31,7 +34,7 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 		logger.log(Level.INFO, "[RadioButtonField] ::In create method ");
 		try {
 			changeHandler = radioBtn.addValueChangeHandler(this);
-			
+			blurHandler = radioBtn.addBlurHandler(this);
 			getBasePanel().add(radioBtn,DockPanel.CENTER);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[RadioButtonField] ::Exception in create method :"+e);
@@ -100,6 +103,9 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 		
 		if(changeHandler!=null)
 			changeHandler.removeHandler();
+		
+		if(blurHandler!=null)
+			blurHandler.removeHandler();
 	}
 
 	@Override
@@ -161,6 +167,20 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 		fieldEvent.setEventType(FieldEvent.RADIOBUTTON_SELECTED);
 		fieldEvent.setEventSource(this);
 		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		
+	}
+	
+	@Override
+	public void onBlur(BlurEvent event) {
+		try {
+			FieldEvent fieldEvent = new FieldEvent();
+			fieldEvent.setEventSource(this);
+			fieldEvent.setEventData(getValue());
+			fieldEvent.setEventType(FieldEvent.EDITCOMPLETED);
+			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[RadioButtonField]::Exception In onBlur  method :"+e);
+		}
 		
 	}
 	
