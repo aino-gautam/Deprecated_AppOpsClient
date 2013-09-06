@@ -101,7 +101,7 @@ public class StateField extends BaseField {
 	}
 	
 	@Override
-	protected void clear() {
+	public void clear() {
 		appopsSuggestionBox.clearSuggestionTextBox();
 	}
 	
