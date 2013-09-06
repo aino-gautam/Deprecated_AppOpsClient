@@ -47,6 +47,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 	private Entity libraryEntity;
 	private StateField componentNameField;
 	private Entity compEntityToUpdate;
+	private int componnetEntRow;
 	private Logger logger = Logger.getLogger("ComponentRegistrationForm");
 		
 	/** CSS styles **/
@@ -165,11 +166,11 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			Object eventSource = event.getEventSource();
 			switch (eventType) {
 			case ConfigEvent.COMPONENTSELECTED: {
-				if (eventSource instanceof ConfigurationListDisplayer) {
-					Entity componentEnt=  (Entity) event.getEventData(); 
-					this.compEntityToUpdate = componentEnt;
-					fillRegistrationForm();
-				}
+				 HashMap<String,Object> rowVsCompEnt  = (HashMap<String, Object>) event.getEventData();
+				Entity componentEnt = (Entity) rowVsCompEnt.get("component");
+				this.compEntityToUpdate = componentEnt;
+				this.componnetEntRow = (Integer) rowVsCompEnt.get("row");
+				fillRegistrationForm();
 				break;
 			}
 			default:
@@ -242,12 +243,12 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 				@Override
 				public void onSuccess(Result<HashMap<String, Entity>> result) {
 					if(result!=null){
-						HashMap<String, Entity> list = result.getOperationResult();
-						Entity compEntity   = list.get("component");
+						HashMap<String, Entity> map = result.getOperationResult();
+						Entity compEntity   = map.get("component");
 						if(compEntity!=null){
 							Window.alert("Component Saved...");
-							componentNameField.reset();
-							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.ADDCOMPONENTTOLIST, compEntity,this);
+							componentNameField.clear();
+							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.NEW_COMPONENT_SAVED, map,this);
 							AppUtils.EVENT_BUS.fireEvent(configEvent);
 						}
 					}
@@ -282,6 +283,14 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 						Entity compEntity = result.getOperationResult();
 						if(compEntity!=null){
 							Window.alert("Component updated successfully...");
+							
+							HashMap<String,Object> rowVsCompEnt = new HashMap<String,Object>();
+					        rowVsCompEnt.put("row", componnetEntRow);
+					        rowVsCompEnt.put("component", compEntity);
+					        
+					        ConfigEvent configEvent = new ConfigEvent(ConfigEvent.UPDATECOMPONENT_FROM_LIST,rowVsCompEnt , this);
+							configEvent.setEventSource(this);
+							AppUtils.EVENT_BUS.fireEvent(configEvent);
 							
 						}
 					}

@@ -54,7 +54,7 @@ public class ConfigurationEditor extends Composite{
 		headerLbl.create();
 						
 		
-		confPropertyEditor = new ConfPropertyEditor(null, null);
+		confPropertyEditor = new ConfPropertyEditor();
 		confPropertyEditor.createUi();
 		
 		basePanel.add(headerLbl);

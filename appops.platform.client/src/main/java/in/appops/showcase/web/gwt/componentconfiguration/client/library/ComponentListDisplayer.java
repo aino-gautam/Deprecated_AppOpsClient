@@ -168,9 +168,18 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 		}
 	}
 	
-	private void populate(EntityList componentlist) {
+	private void populate(EntityList list) {
 		try {
-			for(Entity comp:componentlist){
+			
+			if(componentList!=null ){
+				componentList.clear();
+			}
+			
+			if(compListPanel!=null){
+				compListPanel.clear();
+			}
+			
+			for(Entity comp:list){
 				//ComponentPanel componentPanel = new ComponentPanel(comp);
 				//componentPanel.createUi();
 				//compListPanel.setWidget(componentRow, 0, componentPanel);
@@ -243,21 +252,23 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 		}
 	}
 	
-	private EntityList getDummyList(){
-		Entity labelField = new Entity();
-		labelField.setPropertyByName("name","LabelField");
-		labelField.setPropertyByName("htmldescription","   Display text");
-		
-		Entity dateLabelField = new Entity();
-		dateLabelField.setPropertyByName("name","DateLabelField");
-		dateLabelField.setPropertyByName("htmldescription","   Display date in different formats");
-		
-		EntityList list = new EntityList();
-		list.add(labelField);
-		list.add(dateLabelField);
-		return list;
+	public void updateExistingComponent(int row, Entity component) {
+		try {
+			
+			LabelField nameLbl = (LabelField) compListPanel.getWidget(row, 0);
+			nameLbl.setValue(component.getPropertyByName("name"));		
+			
+			LabelField descLbl = (LabelField) compListPanel.getWidget(row, 1);
+			descLbl.setValue(component.getPropertyByName("htmldescription"));		
+			
+			componentList.put(row,component);
+			compListPanel.getRowFormatter().setStylePrimaryName(componentRow, COMPLISTROW_CSS);
+			
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "ComponentListDisplayer :: addComponent :: Exception", e);
+		}
 	}
-
+	
 	public Entity getLibraryEntity() {
 		return libraryEntity;
 	}
@@ -293,11 +304,18 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 	public void onConfigEvent(ConfigEvent event) {
 		try{
 			int eventType = event.getEventType();
-			Object eventSource = event.getEventSource();
 			
-			if(eventType == ConfigEvent.ADDCOMPONENTTOLIST){
-				Entity componentEntity = (Entity) event.getEventData();
-				addComponent(componentEntity);
+			if(eventType == ConfigEvent.NEW_COMPONENT_SAVED){
+				
+				HashMap<String, Entity> map = (HashMap<String, Entity>) event.getEventData();
+				Entity compEntity   = map.get("component");
+				addComponent(compEntity);
+			}else if(eventType == ConfigEvent.UPDATECOMPONENT_FROM_LIST){
+				HashMap<String,Object> rowVsCompEnt  = (HashMap<String, Object>) event.getEventData();
+				Entity componentEnt = (Entity) rowVsCompEnt.get("component");
+				int componnetEntRow = (Integer) rowVsCompEnt.get("row");
+				updateExistingComponent(componnetEntRow, componentEnt);
+				
 			}
 		}
 		catch (Exception e) {
@@ -313,7 +331,11 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 			int cellIndex = flex.getCellForEvent(event).getCellIndex();
 	        int rowIndex = flex.getCellForEvent(event).getRowIndex();
 	        
-	        ConfigEvent configEvent = new ConfigEvent(ConfigEvent.COMPONENTSELECTED, componentList.get(rowIndex), this);
+	        HashMap<String,Object> rowVsCompEnt = new HashMap<String,Object>();
+	        rowVsCompEnt.put("row", rowIndex);
+	        rowVsCompEnt.put("component", componentList.get(rowIndex));
+	        
+	        ConfigEvent configEvent = new ConfigEvent(ConfigEvent.COMPONENTSELECTED,rowVsCompEnt , this);
 			configEvent.setEventSource(this);
 			AppUtils.EVENT_BUS.fireEvent(configEvent);
 		}

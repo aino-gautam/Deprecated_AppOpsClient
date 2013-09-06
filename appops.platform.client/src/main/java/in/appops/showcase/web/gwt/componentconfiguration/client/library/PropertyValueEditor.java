@@ -6,6 +6,10 @@ import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
 import in.appops.client.common.config.field.RadioButtonField;
 import in.appops.client.common.config.field.RadioButtonField.RadionButtonFieldConstant;
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.ConfigEvent;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.platform.core.entity.Entity;
@@ -16,12 +20,11 @@ import in.appops.platform.core.util.EntityList;
 
 import com.google.gwt.user.client.ui.FlexTable;
 
-public class PropertyValueEditor {
+public class PropertyValueEditor implements FieldEventHandler {
 	
 	private FlexTable propValuePanel;
 	private int valuePanelRow;
 	private Entity confTypeEntity;
-	private String propName;
 	private TextField valueField;
 	private ListBoxField typeField;
 	private RadioButtonField isDefaultValueField;
@@ -32,17 +35,17 @@ public class PropertyValueEditor {
 	public final String STRINGVAL_FIELD_ID = "stringValFieldId";
 	public static final String ISDEF_RADIOBTN_GROUP_ID = "isDefaultRadioBtnGroup";
 	public static final String ISDEF_RADIOBTN_ID = "isDefaultRadioBtnId";
+	public static final String REMOVEPROP_IMGID = "removePropImgId";
 	
 	/** CSS styles **/
-	public static final String REMOVEPROP_IMGID = "removePropImgId";
 	private final String CROSSIMG_CSS = "removePropertyImage";
 	
 	public PropertyValueEditor() {
 		
 	}
 
-	public PropertyValueEditor(String propName, FlexTable propValuePanel, int valuePanelRow ,Entity confTypeEntity) {
-		this.propName = propName;
+	public PropertyValueEditor(FlexTable propValuePanel, int valuePanelRow ,Entity confTypeEntity) {
+		
 		this.confTypeEntity = confTypeEntity;
 		this.propValuePanel = propValuePanel;
 		this.valuePanelRow = valuePanelRow;
@@ -74,6 +77,8 @@ public class PropertyValueEditor {
 		propValuePanel.setWidget(valuePanelRow, 2, typeField);
 		propValuePanel.setWidget(valuePanelRow, 3, isDefaultValueField);
 		propValuePanel.setWidget(valuePanelRow, 4, crossImgField);
+		
+		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
 		
 	}
 	
@@ -173,7 +178,7 @@ public class PropertyValueEditor {
 		Configuration configuration = new Configuration();
 		
 		try {
-			boolean isDefault = true;
+			boolean isDefault = false;
 			
 			if(confTypeEntity!=null){
 				isDefault = Boolean.valueOf(confTypeEntity.getPropertyByName("isdefault").toString());
@@ -187,7 +192,7 @@ public class PropertyValueEditor {
 		return configuration;
 	}
 	
-	public Entity getPopulatedConfigTypeEntity(){
+	public Entity getPopulatedConfigTypeEntity(String propName){
 		if (confTypeEntity == null) {
 			Entity confTypeEntity = new Entity();
 			confTypeEntity.setType(new MetaType("Configtype"));
@@ -207,5 +212,29 @@ public class PropertyValueEditor {
 
 	public void setConfTypeEntity(Entity confTypeEntity) {
 		this.confTypeEntity = confTypeEntity;
+	}
+	
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		try {
+			int eventType = event.getEventType();
+			Object eventSource = event.getEventSource();
+			switch (eventType) {
+			case FieldEvent.CLICKED: {
+				if (eventSource instanceof ImageField) {
+					ImageField imageField = (ImageField) eventSource;
+					if(imageField.getBaseFieldId().equals(REMOVEPROP_IMGID)){
+						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.PROPERTYREMOVED, this, valuePanelRow);
+						AppUtils.EVENT_BUS.fireEvent(configEvent);
+					}
+				}
+				break;
+			}default:
+				
+				break;
+			}
+		} catch (Exception e) {
+			
+		}
 	}
 }

@@ -2,7 +2,6 @@ package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
 import in.appops.client.common.config.field.ButtonField;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
-import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.RadioButtonField;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.ConfigEvent;
@@ -18,7 +17,6 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.Defa
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
-import in.appops.platform.core.util.EntityList;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,9 +41,9 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	private TextField propNameField;
 	private int valueRow = 0;
 	private HashMap<Integer, PropertyValueEditor> propValueList;
-	private Entity confTypeEnt;
+	private Entity parentConfTypeEnt;
 		
-	public ConfPropertyEditor(Entity componentDefEnt, EntityList componentDeflist) {
+	public ConfPropertyEditor() {
 		
 	}
 	
@@ -58,14 +56,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			propNameField.configure();
 			propNameField.create();
 			
-			ButtonField saveConfigBtn = new ButtonField();
-			saveConfigBtn.setConfiguration(getSaveConfigurationBtnConf());
-			saveConfigBtn.configure();
-			saveConfigBtn.create();
-			
 			propValuePanel.setWidget(valueRow, 0, propNameField);
-			
-			propValuePanel.setWidget(valueRow+2, 0, saveConfigBtn);
 			
 			/*for(Entity confEnt:componentDeflist){
 				PropertyValueEditor propValueEditor = new PropertyValueEditor(propValuePanel, valuePanelRow, confEnt);
@@ -77,7 +68,14 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				propValueList.add(propValueEditor);
 			}*/
 			
-			insertEmptyRecord();
+			createNewRecord();
+			
+			ButtonField saveConfigBtn = new ButtonField();
+			saveConfigBtn.setConfiguration(getSaveConfigurationBtnConf());
+			saveConfigBtn.configure();
+			saveConfigBtn.create();
+			valueRow++;
+			propValuePanel.setWidget(valueRow, 0, saveConfigBtn);
 			
 			add(propValuePanel);
 			setStylePrimaryName(COMPFORM_PANEL_CSS);
@@ -88,6 +86,21 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 		}
 	}
 	
+	private void createNewRecord() {
+		try {
+			PropertyValueEditor propValueEditor = new PropertyValueEditor(propValuePanel, valueRow, null);
+			propValueEditor.createUi();
+			if(propValueList == null){
+				propValueList = new HashMap<Integer, PropertyValueEditor>();
+			}
+			propValueList.put(valueRow, propValueEditor);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+
 	/**
 	 * Creates the save button configuration object and return.
 	 * @return Configuration instance
@@ -135,12 +148,17 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	private void insertEmptyRecord(){
 		
 		try {
-			PropertyValueEditor propValueEditor = new PropertyValueEditor(propNameField.getValue().toString(), propValuePanel, valueRow, null);
+			
+			propValuePanel.insertRow(valueRow);
+			
+			PropertyValueEditor propValueEditor = new PropertyValueEditor(propValuePanel, valueRow, null);
 			propValueEditor.createUi();
 			if(propValueList == null){
 				propValueList = new HashMap<Integer, PropertyValueEditor>();
 			}
 			propValueList.put(valueRow, propValueEditor);
+			
+			valueRow++;
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -155,15 +173,10 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			Object eventSource = event.getEventSource();
 			switch (eventType) {
 			case FieldEvent.CLICKED: {
-				if (eventSource instanceof ImageField) {
-					ImageField imageField = (ImageField) eventSource;
-					if(imageField.getBaseFieldId().equals(PropertyValueEditor.REMOVEPROP_IMGID)){
-						//remove property.
-					}if (eventSource instanceof ButtonField) {
-						ButtonField btnField = (ButtonField) eventSource;
-						if(btnField.getBaseFieldId().equals(SAVECONFIGURATION_BTN_ID)){
-							saveConfTypeEntity();
-						}
+				if (eventSource instanceof ButtonField) {
+					ButtonField btnField = (ButtonField) eventSource;
+					if (btnField.getBaseFieldId().equals(SAVECONFIGURATION_BTN_ID)) {
+						saveConfTypeEntity();
 					}
 				}
 				break;
@@ -188,7 +201,8 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	@SuppressWarnings("unchecked")
 	private void saveConfTypeEntity() {
 		try {
-			Entity confTypeEntity = propValueList.get(valueRow).getPopulatedConfigTypeEntity();
+			Entity confTypeEntity = propValueList.get(valueRow-1).getPopulatedConfigTypeEntity(propNameField.getValue().toString());
+			confTypeEntity.setProperty("parentId", parentConfTypeEnt);
 			
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
@@ -210,8 +224,41 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 					if(result!=null){
 						Entity confEnt = result.getOperationResult();
 						Window.alert("Property saved successfully");
-						propValueList.get(valueRow).setConfTypeEntity(confEnt);
+						propValueList.get(valueRow-1).setConfTypeEntity(confEnt);
 						insertEmptyRecord();
+					}
+				}
+			});
+		} catch (Exception e) {
+		}
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void deleteConfigType(Entity configTypeEnt) {
+		try {
+						
+			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+						
+			Map parameterMap = new HashMap();
+			parameterMap.put("configTypeEnt", configTypeEnt);
+					
+			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.deleteConfigurationType", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert("Property removing failed...");
+				}
+
+				@Override
+				public void onSuccess(Result<Entity> result) {
+					if(result!=null){
+						Entity confEnt = result.getOperationResult();
+						Window.alert("Property removed successfully");
+						propValueList.remove(valueRow-1);
+						propValuePanel.removeRow(valueRow-1);
 					}
 				}
 			});
@@ -225,15 +272,22 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	public void onConfigEvent(ConfigEvent event) {
 		try {
 			int eventType = event.getEventType();
-			Object eventSource = event.getEventSource();
 			switch (eventType) {
 			case ConfigEvent.PROPERTYSELECTED: {
-				if (eventSource instanceof ConfigurationListDisplayer) {
-					Entity entity=  (Entity) event.getEventData(); 
-					String name = entity.getPropertyByName("name");
-					propNameField.setFieldValue(name);
-				}
+				Entity entity = (Entity) event.getEventData();
+				String name = entity.getPropertyByName("name");
+				propNameField.setFieldValue(name);
 				break;
+			}
+			case ConfigEvent.PROPERTYREMOVED: {
+				Integer row = (Integer) event.getEventData();
+				Entity configTypeEnt = propValueList.get(row).getConfTypeEntity();
+				deleteConfigType(configTypeEnt);
+				break;
+			}case ConfigEvent.NEW_COMPONENT_SAVED: {
+				HashMap<String, Entity> map = (HashMap<String, Entity>) event.getEventData();
+				Entity configTypeEntity   = map.get("componentConfigType");
+				parentConfTypeEnt = configTypeEntity;
 			}
 			default:
 				break;
@@ -243,11 +297,12 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 		}
 	}
 
-	public Entity getConfTypeEnt() {
-		return confTypeEnt;
+	public Entity getParentConfTypeEnt() {
+		return parentConfTypeEnt;
 	}
 
-	public void setConfTypeEnt(Entity confTypeEnt) {
-		this.confTypeEnt = confTypeEnt;
+	public void setParentConfTypeEnt(Entity parentConfTypeEnt) {
+		this.parentConfTypeEnt = parentConfTypeEnt;
 	}
+	
 }
