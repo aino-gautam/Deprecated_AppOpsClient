@@ -117,6 +117,21 @@ public class StateField extends BaseField {
 	}
 	
 	@Override
+	public void setValue(Object value) {
+		
+		try { 
+			logger.log(Level.INFO, "[StateField] ::In setValue method ");
+			super.setValue(value);
+			clear();
+			appopsSuggestionBox.getSuggestBox().setText(value.toString());
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception In setValue method "+e);
+			
+		}
+		
+	}
+	
+	@Override
 	protected void setSuggestionInline () {
 		try {
 			
