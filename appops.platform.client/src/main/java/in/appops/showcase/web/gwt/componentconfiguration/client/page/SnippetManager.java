@@ -30,6 +30,7 @@ import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.server.core.service.appdefinition.domain.Componentdefinition;
 import in.appops.showcase.web.gwt.componentconfiguration.client.library.ConfigurationEditor;
+import in.appops.showcase.web.gwt.componentconfiguration.client.library.HTMLSnippetConfigurationEditor;
 import in.appops.showcase.web.gwt.componentconfiguration.client.library.LibraryComponentManager;
 
 import com.google.gwt.dom.client.Element;
@@ -143,7 +144,8 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	 */
 	public void createConfigurationEditorUI(HashMap<String, Entity> list){
 		VerticalPanel vp = new VerticalPanel();
-		
+		vp.setWidth("100%");
+
 		HTML html = new HTML("<hr style=\"border-bottom : 1px dotted gray;\" \"width:100%;\"/>");
 		
 		LabelField headerLbl = new LabelField();
@@ -168,12 +170,10 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		vp.add(headerLbl);
 		vp.add(hpSpanSelection);
 		
-		configurationEditor = new ConfigurationEditor();
-		
-		vp.add(configurationEditor);
+		HTMLSnippetConfigurationEditor configEditor = new HTMLSnippetConfigurationEditor();
+		vp.add(configEditor);
 		
 		basePanel.add(vp);
-		
 	}
 	
 	private boolean validateHTML(){

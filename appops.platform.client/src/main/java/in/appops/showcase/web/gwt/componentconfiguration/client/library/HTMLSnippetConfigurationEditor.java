@@ -7,6 +7,7 @@ import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -17,7 +18,7 @@ import com.google.gwt.user.client.ui.Widget;
  * Each of this is represented by one tab, where specific configurations are added, edited and displayed.
  * @author nitish@ensarm.com
  */
-public class HTMLSnippetConfigurationEditor {
+public class HTMLSnippetConfigurationEditor extends Composite{
 	private TabPanel configuratorBasePanel;
 	private VerticalPanel configuratorEditorPanel;
 	private Entity modelConfigurationType;
@@ -31,6 +32,7 @@ public class HTMLSnippetConfigurationEditor {
 	public void initialize() {
 		configuratorBasePanel = new TabPanel();
 		configuratorEditorPanel = new VerticalPanel();
+		initWidget(configuratorBasePanel);
 	}
 	
 	public void createUi() {
@@ -38,12 +40,12 @@ public class HTMLSnippetConfigurationEditor {
 		
 		// Create each editor and add one in each tab.
 		configuratorBasePanel.add(getModelEditor(), MODEL);
-		configuratorBasePanel.add(null, VIEW);
+		configuratorBasePanel.add(getViewEditor(), VIEW);
 		configuratorBasePanel.add(null, PRESENTER);
 	}
 	
 	private Widget getModelEditor() {
-		VerticalPanel modelEditorPanel = new VerticalPanel();
+/*		VerticalPanel modelEditorPanel = new VerticalPanel();
 		
 		TextField valueField = new TextField();
 		valueField.setConfiguration(getStringValueFieldConf());
@@ -55,12 +57,18 @@ public class HTMLSnippetConfigurationEditor {
 		nameField.configure();
 		nameField.create();
 
-		return modelEditorPanel;
+		return modelEditorPanel;*/
+		
+		ModelConfigurationEditor modConfigEditor = new ModelConfigurationEditor();
+		modConfigEditor.createUi();
+		return modConfigEditor;
 	}
 	
 	private Widget getViewEditor() {
-		VerticalPanel viewEditorPanel = new VerticalPanel();
-		return viewEditorPanel;
+		/*VerticalPanel viewEditorPanel = new VerticalPanel();
+		return viewEditorPanel;*/
+		ViewConfigurationEditor viewConfigEditor = new ViewConfigurationEditor();
+		return viewConfigEditor;
 	}
 	
 	private Widget getPresenterEditor() {
