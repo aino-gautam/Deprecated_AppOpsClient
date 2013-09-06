@@ -163,3 +163,70 @@
   
   background: lightgray;
 }
+
+.pageCreationBasePanel {
+	width: 100%;
+}
+
+.selectPagePanel {
+	width: 100%;
+}
+
+.createPageButtonPanel {
+	width: 100%;
+	margin-top: 5px;
+}
+
+.editPagePanel {
+	width: 100%;
+	margin-top: 5px;
+}
+
+.pageConfigurationBasePanel {
+	width: 100%;
+}
+
+.spanSelectionPanel {
+	width: 100%;
+	margin-top: 10px;
+}
+
+.editPageLabel {
+	font-weight: bold;
+}
+
+.configTitleLabel {
+	font-weight: bold;
+}
+
+.newPageNamePanel {
+	width: 100%;
+}
+
+.newPageTitleLabel {
+	font-weight: bold;
+}
+
+.processPageButton {
+	border: 1px solid #DCDCDC;
+	font-family: 'Ubuntu', sans-serif;
+	-webkit-box-shadow: 1px 1px 1px 0px #8F8C8C;
+    box-shadow: 1px 1px 1px 0 #8F8C8C;
+    color: #333333;
+    font-family: 'Ubuntu',sans-serif;
+    height: 25px;
+	cursor: pointer;
+	cursor: hand;
+}
+
+.createPageButton {
+	border: 1px solid #DCDCDC;
+	font-family: 'Ubuntu', sans-serif;
+	-webkit-box-shadow: 1px 1px 1px 0px #8F8C8C;
+    box-shadow: 1px 1px 1px 0 #8F8C8C;
+    color: #333333;
+    font-family: 'Ubuntu',sans-serif;
+    height: 25px;
+	cursor: pointer;
+	cursor: hand;
+}

@@ -16,6 +16,9 @@ public class ConfigEvent extends GwtEvent<ConfigEventHandler> {
 	public static final int COMPONENTSELECTED = 3;
 	public static final int PROPERTYSELECTED = 4;
 	public static final int PROPERTYREMOVED = 5;
+	public static final int POPULATESPANS = 6;
+	public static final int SHOWPAGECONFIGURATION = 7;
+	public static final int HIDEPAGECONFIGURATION = 8;
 	
 	public ConfigEvent(int type, Object data ,Object eventSource) {
 		this.eventType = type;

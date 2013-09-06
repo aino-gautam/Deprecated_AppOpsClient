@@ -1,7 +1,11 @@
 package in.appops.client.common.config.field;
 
 
+import in.appops.client.common.config.field.suggestion.AppopsSuggestion;
 import in.appops.client.common.config.field.suggestion.AppopsSuggestionBox;
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,13 +41,13 @@ stateField.create();<br>
 
 </p>*/
 
-public class StateField extends BaseField {
+public class StateField extends BaseField implements FieldEventHandler {
 
 	private AppopsSuggestionBox appopsSuggestionBox;
 	private Logger logger = Logger.getLogger(getClass().getName());
 
 	public StateField(){
-		
+		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 	}
 	
 	/****************************************** *******************************/
@@ -330,5 +334,19 @@ public class StateField extends BaseField {
 		public static final String IS_SEARCH_QUERY = "isSearchQuery";
 		
 		public static final String IS_AUTOSUGGESTION = "isAutoSuggestion";
+	}
+	
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		int eventType = event.getEventType();
+		if(eventType == FieldEvent.VALUE_SELECTED) {
+			if(event.getEventData() instanceof AppopsSuggestion) {
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventData(event.getEventData());
+				fieldEvent.setEventSource(this);
+				fieldEvent.setEventType(FieldEvent.SUGGESTION_SELECTED);
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+			}
+		}
 	}
 }

@@ -81,11 +81,13 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 					Object obj = getStaticListOfItems();
 					if (obj instanceof ArrayList) {
 						ArrayList<Object> staticList = (ArrayList<Object>) obj;
-						if (staticList.get(0) instanceof String) {
-							populateList((ArrayList<String>) obj);
-						} else if (staticList.get(0) instanceof Entity) {
-							EntityList list = (EntityList) obj;
-							populateEntityList(list);
+						if(!staticList.isEmpty()) {
+							if (staticList.get(0) instanceof String) {
+								populateList((ArrayList<String>) obj);
+							} else if (staticList.get(0) instanceof Entity) {
+								EntityList list = (EntityList) obj;
+								populateEntityList(list);
+							}
 						}
 					} else if (obj instanceof EntityList) {
 						EntityList list = (EntityList) obj;
@@ -107,6 +109,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 	@Override
 	public void configure() {
 		try {
+			listBox.clear();
 			listBox.setVisibleItemCount(getVisibleItemCount());
 			listBox.setEnabled(isEnabled());
 
@@ -326,7 +329,13 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 			logger.log(Level.INFO,"[ListBoxField]:: In populateEntityList  method ");
 			if(nameVsEntity==null)
 				nameVsEntity = new HashMap<String, Entity>();
-									
+						
+			listBox.clear();
+			if (getDefaultValue() != null) {
+				listBox.insertItem(getDefaultValue().toString(), 0);
+				listBox.setSelectedIndex(0);
+			}
+			
 			for(Entity entity : entityList){
 				String item = entity.getPropertyByName(getEntPropToShow());
 				Key keyId = (Key)entity.getPropertyByName("id");
@@ -440,32 +449,20 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In onChange  method ");
-			boolean fireEvent = true;
-			
-			if(getDefaultValue()!=null){
-				if(!getValue().toString().equals(getDefaultValue().toString())){
-					fireEvent = true;
-				}else{
-					fireEvent = false;
-				}
-			}
-			
-			if(fireEvent){
 				
-				FieldEvent fieldEvent = new FieldEvent();
-				String selectedItem = getValue().toString();
-				String selectedValue = getSelectedValue().toString();
-				Entity entity = nameVsEntity.get(selectedValue);
-				SelectedItem selectedEntity = new SelectedItem();
-				selectedEntity.setItemString(selectedItem);
-				if(nameVsEntity!=null){
-					selectedEntity.setAssociatedEntity(entity);
-				}
-				fieldEvent.setEventSource(this);
-				fieldEvent.setEventData(selectedEntity);
-				fieldEvent.setEventType(FieldEvent.VALUECHANGED);
-				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+			FieldEvent fieldEvent = new FieldEvent();
+			String selectedItem = getValue().toString();
+			String selectedValue = getSelectedValue().toString();
+			Entity entity = nameVsEntity.get(selectedValue);
+			SelectedItem selectedEntity = new SelectedItem();
+			selectedEntity.setItemString(selectedItem);
+			if(nameVsEntity!=null){
+				selectedEntity.setAssociatedEntity(entity);
 			}
+			fieldEvent.setEventSource(this);
+			fieldEvent.setEventData(selectedEntity);
+			fieldEvent.setEventType(FieldEvent.VALUECHANGED);
+			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In onChange  method :"+e);
 		}

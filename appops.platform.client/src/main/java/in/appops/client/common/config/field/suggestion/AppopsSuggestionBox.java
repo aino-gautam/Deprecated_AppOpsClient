@@ -236,7 +236,7 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 			
 			FieldEvent fieldEvent = new FieldEvent();
 			fieldEvent.setEventData(selectedSuggestion);
-			fieldEvent.setEventType(FieldEvent.SUGGESTION_SELECTED);
+			fieldEvent.setEventType(FieldEvent.VALUE_SELECTED);
 			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in onSelection method :"+e);
