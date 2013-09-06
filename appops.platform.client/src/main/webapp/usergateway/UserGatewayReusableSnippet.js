@@ -39,5 +39,36 @@ blogArticleSnippet: "<div class=\"art-vmenublockheader\">"+
 "						</td>" +
 "					</tr>" +
 "				</tbody>" +
-"			</table>",				
+"			</table>",
+
+augsActionSnippet: "<div class=\"art-vmenublockheader\">"+ 
+"			</div>" +
+"			<table cellspacing=\"1\" cellpadding=\"0\">" +
+"				<tbody>" +
+"					<tr>" +
+"						<td align=\"left\" style=\"vertical-align: top; \">" +
+"							<span id=\"augsActnImgFld\" appopsField=\"true\" widgetType= \"imageField\" data-config=\"augActnImgFldConfig\"></span>" +
+"						</td>" +
+"						<td align=\"left\" style=\"vertical-align: top; \">" +
+"							<span id=\"augsActnNameLbl\" appopsField=\"true\" widgetType= \"labelField\" data-config=\"augsActnNameLblConfig\"></span>" +
+"						</td>" +
+"					</tr>" +
+"				</tbody>" +
+"			</table>",	
+
+augsActionBarListSnippet:"<div class=\"art-vmenublockheader\">"+ 
+"				<h3 class=\"t\">Action Bar</h3>"+ 
+"			</div>" +
+"			<table cellspacing=\"1\" cellpadding=\"0\" style=\"width: 100%;\">" +
+"				<tbody>" +
+"					<tr>" +
+"						<td align=\"left\" style=\"vertical-align: top; \">" +
+"							<span id=\"homeActionField\" appopsField=\"true\" widgetType= \"listBoxField\" data-config=\"blogListBoxField\"></span>" +
+"						</td>" +
+"						<td align=\"left\" style=\"vertical-align: top; \">" +
+"							<span id=\"createBlogLink\" appopsField=\"true\" widgetType= \"actionField\" data-config=\"newBlogLinkConfig\"></span>" +
+"						</td>" +
+"					</tr>" +
+"				</tbody>" +
+"			</table>",
 }; 
