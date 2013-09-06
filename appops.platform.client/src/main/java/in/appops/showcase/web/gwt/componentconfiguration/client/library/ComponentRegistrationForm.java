@@ -168,6 +168,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 				if (eventSource instanceof ConfigurationListDisplayer) {
 					Entity componentEnt=  (Entity) event.getEventData(); 
 					this.compEntityToUpdate = componentEnt;
+					fillRegistrationForm();
 				}
 				break;
 			}
@@ -177,6 +178,10 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void fillRegistrationForm() {
+		componentNameField.setValue(compEntityToUpdate.getPropertyByName("name").toString());
 	}
 
 	@Override
