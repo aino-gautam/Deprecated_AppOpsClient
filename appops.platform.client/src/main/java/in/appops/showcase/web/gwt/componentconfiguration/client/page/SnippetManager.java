@@ -1,14 +1,16 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.page;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import in.appops.client.common.config.dsnip.HTMLProcessor;
-import in.appops.client.common.config.field.BaseField;
 import in.appops.client.common.config.field.ButtonField;
 import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.ListBoxField;
+import in.appops.client.common.config.field.SelectedItem;
 import in.appops.client.common.config.field.BaseField.BaseFieldConstant;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
@@ -18,12 +20,22 @@ import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.type.MetaType;
+import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.server.core.service.appdefinition.domain.Componentdefinition;
 import in.appops.showcase.web.gwt.componentconfiguration.client.library.ConfigurationEditor;
 import in.appops.showcase.web.gwt.componentconfiguration.client.library.LibraryComponentManager;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
@@ -44,6 +56,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	private ConfigurationEditor configurationEditor;
 	private ListBoxField libraryBox;
 	private ListBoxField spanListBox;
+	private Entity libraryEntity;
 	
 	private Logger logger = Logger.getLogger("SnippetManager");
 	
@@ -79,6 +92,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	 */
 	private void createSnippetRegistrationUI(){
 		FlexTable containerTable = new FlexTable();
+		spanListBox = new ListBoxField();
 		
 		/* list box for library selection */
 		libraryBox = new ListBoxField();
@@ -127,7 +141,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	/**
 	 * initializes the configuration editing component and lists the span elements available.
 	 */
-	public void createConfigurationEditorUI(){
+	public void createConfigurationEditorUI(HashMap<String, Entity> list){
 		VerticalPanel vp = new VerticalPanel();
 		
 		HTML html = new HTML("<hr style=\"border-bottom : 1px dotted gray;\" \"width:100%;\"/>");
@@ -147,11 +161,6 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		subHeaderLbl.configure();
 		subHeaderLbl.create();
 		
-		spanListBox = new ListBoxField();
-		spanListBox.setConfiguration(getSpansListBoxConfiguration());
-		spanListBox.configure();
-		spanListBox.create();
-		
 		hpSpanSelection.add(subHeaderLbl);
 		hpSpanSelection.add(spanListBox);
 		
@@ -167,24 +176,40 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		
 	}
 	
-	private void validateHTML(){
+	private boolean validateHTML(){
 		String htmlStr = snippetHtmlTextArea.getFieldText();
 		NodeList<Element> spans = HTMLProcessor.getSpanElementsFromHTML(htmlStr);
 		if(spans != null){
 			ArrayList<Element> appopsFields = HTMLProcessor.getAppopsFieldElements(spans);
 			if(appopsFields != null){
-				populateSpansListBox(appopsFields);
+				try{
+					populateSpansListBox(appopsFields);
+					return true;
+				}catch(Exception e){
+					logger.log(Level.SEVERE, "SnippetManager :: validateHTML Error in populating spans list :: Exception", e);
+					return false;
+				}
 			}
-		}else{
-			
 		}
+			
+		return false;
 	}
 	
 	private void populateSpansListBox(ArrayList<Element> spansList){
+		ArrayList<String> widgetList = new ArrayList<String>();
 		for(Element ele : spansList){
-			// populate listbox
+			String widgetType = ele.getAttribute("widgetType");
+			widgetList.add(widgetType);
 		}
+
+		Configuration conf = getSpansListBoxConfiguration();
+		conf.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS, widgetList);
+			
+		spanListBox.setConfiguration(conf);
+		spanListBox.configure();
+		spanListBox.create();
 	}
+	
 	/**
 	 * method for setting configuration properties for the library listbox
 	 * @return
@@ -198,7 +223,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ENTPROP,"name");
 			configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"--- Please select a library---");
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "LibraryComponentManager :: getLibraryListBoxConfiguration :: Exception", e);
+			logger.log(Level.SEVERE, "SnippetManager :: getLibraryListBoxConfiguration :: Exception", e);
 		}
 		return configuration;
 	}
@@ -220,6 +245,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		}
 		catch(Exception e){
 			e.printStackTrace();
+			logger.log(Level.SEVERE, "SnippetManager :: getSnippetNameTextBoxConfig :: Exception", e);
 		}
 		return configuration;
 	}
@@ -244,6 +270,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		}
 		catch(Exception e){
 			e.printStackTrace();
+			logger.log(Level.SEVERE, "SnippetManager :: getSnippetHtmlTextAreaConfig :: Exception", e);
 		}
 		return configuration;
 	}
@@ -260,6 +287,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		}
 		catch(Exception e){
 			e.printStackTrace();
+			logger.log(Level.SEVERE, "SnippetManager :: getSaveAndProcessBtnConfig :: Exception", e);
 		}
 		return configuration;
 	}
@@ -278,6 +306,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		}
 		catch(Exception e){
 			e.printStackTrace();
+			logger.log(Level.SEVERE, "SnippetManager :: getHeaderLblConfig :: Exception", e);
 		}
 		return configuration;
 	}
@@ -296,6 +325,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		}
 		catch(Exception e){
 			e.printStackTrace();
+			logger.log(Level.SEVERE, "SnippetManager :: getLblConfig :: Exception", e);
 		}
 		return configuration;
 	}
@@ -310,7 +340,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 			configuration.setPropertyByName(ListBoxFieldConstant.BF_ID,"spanListBoxField");
 			configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"Select a span element");
 		} catch (Exception e) {
-			
+			logger.log(Level.SEVERE, "SnippetManager :: getSpansListBoxConfiguration :: Exception", e);
 		}
 		return configuration;
 	}
@@ -325,19 +355,98 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 				if (eventSource instanceof ButtonField) {
 					ButtonField btnField = (ButtonField) eventSource;
 					if (btnField.getBaseFieldId().equals(SAVECOMPONENT_BTN_ID)) {
-						// TODO process the html
-						// make a server call to save the component
-						validateHTML();
-						createConfigurationEditorUI();
+						if(libraryEntity!=null){
+							boolean isValid = validateHTML();
+							if(isValid){
+								saveComponent();
+							}
+							
+						}else{
+							Window.alert("Please select a library");
+						}
 					}
 				}
 				break;
+			}
+			case FieldEvent.VALUECHANGED:{
+				if(eventSource instanceof ListBoxField){
+					ListBoxField listBoxField = (ListBoxField) eventSource;
+					SelectedItem selectedItem = (SelectedItem) event.getEventData();
+					if(listBoxField.getBaseFieldId().equalsIgnoreCase(LibraryComponentManager.LIBRARYLISTBOX_ID)){
+						Entity libEntity = selectedItem.getAssociatedEntity();
+						libraryEntity = libEntity;
+					}
+				}
 			}
 			default:
 				break;
 			}
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "ConfigurationManagerHome :: onFieldEvent :: Exception", e);
+			logger.log(Level.SEVERE, "SnippetManager :: onFieldEvent :: Exception", e);
 		}
+	}
+	
+	/**
+	 * Saves the html snippet 
+	 */
+	private void saveComponent() {
+		try{
+			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+			
+			Entity componentDefEnt = getComponentDefinitionEntity();
+			Map parameterMap = new HashMap();
+			parameterMap.put("componentDefinition", componentDefEnt);
+			parameterMap.put("library", libraryEntity);
+			
+			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveMVPComponentDefinition", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<HashMap<String, Entity>>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+					logger.log(Level.SEVERE, "SnippetManager :: saveComponent :: Exception", caught);
+				}
+
+				@Override
+				public void onSuccess(Result<HashMap<String, Entity>> result) {
+					if(result!=null){
+						HashMap<String, Entity> list = result.getOperationResult();
+						Entity compEntity   = list.get("component");
+						if(compEntity!=null){
+							Window.alert("Component Saved...");
+							createConfigurationEditorUI(list);
+							// pass the result set map to the html snippet configuration editor
+						}
+					}
+				}
+			});
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "ComponentRegistrationForm :: saveComponent :: Exception", e);
+		}
+
+	}
+	
+	/**
+	 * creates the componentDefinition entity that needs to be saved.
+	 * @return {@link Componentdefinition}
+	 */
+	private Entity getComponentDefinitionEntity() {
+		
+		try{
+			Entity compEntity = new Entity();
+			compEntity.setType(new MetaType("Componentdefinition"));
+
+			compEntity.setPropertyByName("name", snippetNameTextBox.getValue().toString());
+			compEntity.setPropertyByName("htmldescription", snippetHtmlTextArea.getValue().toString());
+			compEntity.setPropertyByName("typeId",159L); // ems typeId for html snipppet
+			
+			return compEntity;
+		}
+		catch (Exception e) {
+			logger.log(Level.SEVERE, "SnippetManager :: getComponentDefinitionEntity :: Exception", e);
+		}
+		return null;
+		
 	}
 }
