@@ -30,6 +30,7 @@ public class PropertyValueEditor implements FieldEventHandler {
 	private ListBoxField typeField;
 	private RadioButtonField isDefaultValueField;
 	private ImageField crossImgField;
+	private long entityId = 0;
 	
 	/*******************  Fields ID *****************************/
 	public final String PROPNAME_FIELD_ID = "attributeFieldId";
@@ -38,10 +39,13 @@ public class PropertyValueEditor implements FieldEventHandler {
 	public static final String ISDEF_RADIOBTN_GROUP_ID = "isDefaultRadioBtnGroup";
 	public static final String ISDEF_RADIOBTN_ID = "isDefaultRadioBtnId";
 	private String REMOVEPROP_IMGID = "removePropImgId";
-	private long entityId = 0;
+	
 	
 	/** CSS styles **/
 	private final String CROSSIMG_CSS = "removePropertyImage";
+	private final String TYPEFIELD_PCLS = "emsTypeListBox";
+	private final String ISDEFAULT_PCLS = "isDefaultField";
+	private final String VALUEFIELD_PCLS = "propertyValueField";
 	
 	public PropertyValueEditor() {
 		
@@ -56,7 +60,7 @@ public class PropertyValueEditor implements FieldEventHandler {
 
 	public void createUi(){
 		valueField = new TextField();
-		valueField.setConfiguration(getStringValueFieldConf());
+		valueField.setConfiguration(getValueFieldConf());
 		valueField.configure();
 		valueField.create();
 		
@@ -159,6 +163,7 @@ public class PropertyValueEditor implements FieldEventHandler {
 			configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"---Select the type ---");
 			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,getDummyTypeList());
 			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ENTPROP,"name");
+			configuration.setPropertyByName(ListBoxFieldConstant.BF_PCLS, TYPEFIELD_PCLS);
 		} catch (Exception e) {
 			
 		}
@@ -168,17 +173,17 @@ public class PropertyValueEditor implements FieldEventHandler {
 	
 
 	/**
-	 * Method creates the string value field configuration object and return.
+	 * Method creates the value field configuration object and return.
 	 * @return Configuration instance
 	 */
-	private Configuration getStringValueFieldConf(){
+	private Configuration getValueFieldConf(){
 		Configuration configuration = new Configuration();
 		
 		try {
 			configuration.setPropertyByName(TextFieldConstant.TF_TYPE, TextFieldConstant.TFTYPE_TXTBOX);
 			
 			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
-			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Add string value");
+			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter a value for the property");
 			
 			/*if(confTypeEntity!=null)
 			configuration.setPropertyByName(TextFieldConstant.BF_DEFVAL, confTypeEntity.getPropertyByName("stringvalue").toString());*/
@@ -190,6 +195,7 @@ public class PropertyValueEditor implements FieldEventHandler {
 				configuration.setPropertyByName(TextFieldConstant.BF_DEFVAL, "--");
 			
 			configuration.setPropertyByName(TextFieldConstant.BF_ID, STRINGVAL_FIELD_ID);
+			configuration.setPropertyByName(TextFieldConstant.BF_PCLS, VALUEFIELD_PCLS);
 			
 			//configuration.setPropertyByName(TextFieldConstant.BF_BLANK_TEXT,"Attribute can't be empty");
 			//configuration.setPropertyByName(TextFieldConstant.BF_ALLOWBLNK,false);
@@ -214,8 +220,11 @@ public class PropertyValueEditor implements FieldEventHandler {
 				isDefault = Boolean.valueOf(confTypeEntity.getPropertyByName("isdefault").toString());
 			}
 			configuration.setPropertyByName(RadionButtonFieldConstant.RF_CHECKED, isDefault);
+			configuration.setPropertyByName(RadionButtonFieldConstant.RF_DISPLAYTEXT, "Default");
 			configuration.setPropertyByName(RadionButtonFieldConstant.RF_GROUPID, ISDEF_RADIOBTN_GROUP_ID);
 			configuration.setPropertyByName(RadionButtonFieldConstant.BF_ID, ISDEF_RADIOBTN_ID);
+			configuration.setPropertyByName(RadionButtonFieldConstant.BF_PCLS, ISDEFAULT_PCLS);
+			//configuration.setPropertyByName(RadionButtonFieldConstant.BF_TABINDEX, 3);
 		} catch (Exception e) {
 			
 		}
