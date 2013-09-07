@@ -1,8 +1,6 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
-import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
-import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
@@ -25,13 +23,20 @@ public class HTMLSnippetConfigurationEditor extends Composite{
 	private Entity viewConfigurationType;
 	private Entity presenterConfigurationType;
 	
+	private ViewConfigurationEditor viewConfigEditor;
+	
 	private final String MODEL = "model";
 	private final String VIEW = "view";
 	private final String PRESENTER = "presenter";
 	
+	public HTMLSnippetConfigurationEditor(){
+		initialize();
+	}
+	
 	public void initialize() {
 		configuratorBasePanel = new TabPanel();
 		configuratorEditorPanel = new VerticalPanel();
+		viewConfigEditor = new ViewConfigurationEditor();
 		initWidget(configuratorBasePanel);
 	}
 	
@@ -64,10 +69,7 @@ public class HTMLSnippetConfigurationEditor extends Composite{
 		return modConfigEditor;
 	}
 	
-	private Widget getViewEditor() {
-		/*VerticalPanel viewEditorPanel = new VerticalPanel();
-		return viewEditorPanel;*/
-		ViewConfigurationEditor viewConfigEditor = new ViewConfigurationEditor();
+	public ViewConfigurationEditor getViewEditor() {
 		return viewConfigEditor;
 	}
 	

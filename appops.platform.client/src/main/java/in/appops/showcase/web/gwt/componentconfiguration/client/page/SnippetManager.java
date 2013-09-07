@@ -56,7 +56,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	private ButtonField saveAndProcessButton;
 	private ConfigurationEditor configurationEditor;
 	private ListBoxField libraryBox;
-	private ListBoxField spanListBox;
+	//private ListBoxField spanListBox;
 	private Entity libraryEntity;
 	
 	private Logger logger = Logger.getLogger("SnippetManager");
@@ -93,7 +93,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	 */
 	private void createSnippetRegistrationUI(){
 		FlexTable containerTable = new FlexTable();
-		spanListBox = new ListBoxField();
+	//	spanListBox = new ListBoxField();
 		
 		/* list box for library selection */
 		libraryBox = new ListBoxField();
@@ -142,7 +142,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	/**
 	 * initializes the configuration editing component and lists the span elements available.
 	 */
-	public void createConfigurationEditorUI(HashMap<String, Entity> list){
+	public void createConfigurationEditorUI(HashMap<String, Entity> list, ArrayList<Element> spansList){
 		VerticalPanel vp = new VerticalPanel();
 		vp.setWidth("100%");
 
@@ -154,61 +154,36 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		headerLbl.configure();
 		headerLbl.create();
 		
-		
-		HorizontalPanel hpSpanSelection = new HorizontalPanel();
-		
-		LabelField subHeaderLbl = new LabelField();
-		Configuration subHeaderLblConfig = getLblConfig(" Select a span element ");
-		subHeaderLbl.setConfiguration(subHeaderLblConfig);
-		subHeaderLbl.configure();
-		subHeaderLbl.create();
-		
-		hpSpanSelection.add(subHeaderLbl);
-		hpSpanSelection.add(spanListBox);
-		
 		vp.add(html);
 		vp.add(headerLbl);
-		vp.add(hpSpanSelection);
+		//vp.add(hpSpanSelection);
 		
 		HTMLSnippetConfigurationEditor configEditor = new HTMLSnippetConfigurationEditor();
+		Entity viewConfigEntity   = list.get("view");
+		Entity modelConfigEntity   = list.get("model");
+		configEditor.setModelConfigurationType(modelConfigEntity);
+		configEditor.setViewConfigurationType(viewConfigEntity);
+		configEditor.createUi();
+		configEditor.getViewEditor().populateSpansListBox(spansList);
+		
 		vp.add(configEditor);
 		
 		basePanel.add(vp);
 	}
 	
-	private boolean validateHTML(){
+	private ArrayList<Element> validateHTML(){
 		String htmlStr = snippetHtmlTextArea.getFieldText();
 		NodeList<Element> spans = HTMLProcessor.getSpanElementsFromHTML(htmlStr);
 		if(spans != null){
 			ArrayList<Element> appopsFields = HTMLProcessor.getAppopsFieldElements(spans);
 			if(appopsFields != null){
-				try{
-					populateSpansListBox(appopsFields);
-					return true;
-				}catch(Exception e){
-					logger.log(Level.SEVERE, "SnippetManager :: validateHTML Error in populating spans list :: Exception", e);
-					return false;
-				}
+				return appopsFields;
 			}
 		}
-			
-		return false;
+		return null;
 	}
 	
-	private void populateSpansListBox(ArrayList<Element> spansList){
-		ArrayList<String> widgetList = new ArrayList<String>();
-		for(Element ele : spansList){
-			String widgetType = ele.getAttribute("widgetType");
-			widgetList.add(widgetType);
-		}
 
-		Configuration conf = getSpansListBoxConfiguration();
-		conf.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS, widgetList);
-			
-		spanListBox.setConfiguration(conf);
-		spanListBox.configure();
-		spanListBox.create();
-	}
 	
 	/**
 	 * method for setting configuration properties for the library listbox
@@ -330,21 +305,6 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		return configuration;
 	}
 
-	/**
-	 * method for configuration settings of the list box displaying the span elements fetched after parsing the snippet html
-	 * @return
-	 */
-	private Configuration getSpansListBoxConfiguration() {
-		Configuration configuration = new Configuration();
-		try {
-			configuration.setPropertyByName(ListBoxFieldConstant.BF_ID,"spanListBoxField");
-			configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"Select a span element");
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "SnippetManager :: getSpansListBoxConfiguration :: Exception", e);
-		}
-		return configuration;
-	}
-
 	@Override
 	public void onFieldEvent(FieldEvent event) {
 		try {
@@ -356,9 +316,9 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 					ButtonField btnField = (ButtonField) eventSource;
 					if (btnField.getBaseFieldId().equals(SAVECOMPONENT_BTN_ID)) {
 						if(libraryEntity!=null){
-							boolean isValid = validateHTML();
-							if(isValid){
-								saveComponent();
+							ArrayList<Element> spansList = validateHTML();
+							if(spansList != null){
+								saveComponent(spansList);
 							}
 							
 						}else{
@@ -389,7 +349,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	/**
 	 * Saves the html snippet 
 	 */
-	private void saveComponent() {
+	private void saveComponent(final ArrayList<Element> spanList) {
 		try{
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
@@ -415,7 +375,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 						Entity compEntity   = list.get("component");
 						if(compEntity!=null){
 							Window.alert("Component Saved...");
-							createConfigurationEditorUI(list);
+							createConfigurationEditorUI(list, spanList);
 							// pass the result set map to the html snippet configuration editor
 						}
 					}
