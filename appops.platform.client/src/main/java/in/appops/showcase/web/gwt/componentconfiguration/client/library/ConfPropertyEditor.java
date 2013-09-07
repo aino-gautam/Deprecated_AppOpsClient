@@ -20,8 +20,10 @@ import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.EntityList;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -56,7 +58,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	private Entity parentConfTypeEnt;
 	private int currentSeletedRow = -1;
 	private Entity deletedConfigEntity = null;
-		
+	private Entity confTypeEnt;	
 	public ConfPropertyEditor() {
 		
 	}
@@ -292,11 +294,35 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	public void onConfigEvent(ConfigEvent event) {
 		try {
 			int eventType = event.getEventType();
+			Object eventSource = event.getEventSource();
 			switch (eventType) {
 			case ConfigEvent.PROPERTYSELECTED: {
-				Entity entity = (Entity) event.getEventData();
-				String name = entity.getPropertyByName("name");
-				propNameField.setFieldValue(name);
+				if (eventSource instanceof ConfigurationListDisplayer) {
+					HashMap<String, EntityList> configTypeHashMap=  (HashMap<String, EntityList>) event.getEventData(); 
+					Iterator iterator = configTypeHashMap.entrySet().iterator();
+					while(iterator.hasNext()){
+						
+						Map.Entry mapEntry = (Map.Entry) iterator.next();
+						String keyname= (String) mapEntry.getKey();
+						
+						
+						EntityList typesList = (EntityList) mapEntry.getValue();
+						
+						//remove(propValuePanel);
+						clear();
+						
+						populateEditor();
+						//propValuePanel.removeRow(valueRow);
+						propNameField.setFieldValue(keyname);
+						for(Entity entity : typesList){
+							confTypeEnt = entity;
+							
+							populateConfFormEditor();
+							valueRow++;
+						}
+						valueRow=0;
+					}
+				}
 				break;
 			}
 			case ConfigEvent.PROPERTYREMOVED: {
@@ -384,5 +410,59 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 		}
 		return conf;
 	}
+	public void populateConfFormEditor(){
+		try {
+			PropertyValueEditor propValueEditor;
+			if(confTypeEnt!=null){
+				 propValueEditor = new PropertyValueEditor(propValuePanel, valueRow, confTypeEnt);
+				propValueEditor.createUi();
+			}else{
+				 propValueEditor = new PropertyValueEditor(propValuePanel, valueRow, null);
+				propValueEditor.createUi();
+			}
+			
+			/*PropertyValueEditor propValueEditor = new PropertyValueEditor(propNameField.getValue().toString(), propValuePanel, valueRow, null);
+			propValueEditor.createUi();*/
+			if(propValueList == null){
+				propValueList = new HashMap<Integer, PropertyValueEditor>();
+			}
+			propValueList.put(valueRow, propValueEditor);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void populateEditor() {
+		try {
+			propValuePanel = new FlexTable();
+			
+			propNameField = new TextField();
+			propNameField.setConfiguration(getPropNameFieldConf(null));
+			propNameField.configure();
+			propNameField.create();
+			
+			ButtonField saveConfigBtn = new ButtonField();
+			saveConfigBtn.setConfiguration(getSaveConfigurationBtnConf());
+			saveConfigBtn.configure();
+			saveConfigBtn.create();
+			
+			propValuePanel.setWidget(valueRow, 0, propNameField);
+			
+			propValuePanel.setWidget(valueRow+5, 0, saveConfigBtn);
+				
+			
+			insertEmptyRecord();
+			
+			add(propValuePanel);
+			setStylePrimaryName(COMPFORM_PANEL_CSS);
+			
+		} catch (Exception e) {
+			
+		}
+			
+		
+	}
+
 	
 }

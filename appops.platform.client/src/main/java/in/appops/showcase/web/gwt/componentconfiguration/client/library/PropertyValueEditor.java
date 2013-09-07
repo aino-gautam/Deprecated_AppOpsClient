@@ -180,8 +180,14 @@ public class PropertyValueEditor implements FieldEventHandler {
 			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
 			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Add string value");
 			
-			if(confTypeEntity!=null)
-				configuration.setPropertyByName(TextFieldConstant.BF_DEFVAL, confTypeEntity.getPropertyByName("stringvalue").toString());
+			/*if(confTypeEntity!=null)
+			configuration.setPropertyByName(TextFieldConstant.BF_DEFVAL, confTypeEntity.getPropertyByName("stringvalue").toString());*/
+		
+		if(confTypeEntity!=null)
+			if(confTypeEntity.getPropertyByName("keyvalue")!=null)
+			   configuration.setPropertyByName(TextFieldConstant.BF_DEFVAL, confTypeEntity.getPropertyByName("keyvalue").toString());
+			else
+				configuration.setPropertyByName(TextFieldConstant.BF_DEFVAL, "--");
 			
 			configuration.setPropertyByName(TextFieldConstant.BF_ID, STRINGVAL_FIELD_ID);
 			

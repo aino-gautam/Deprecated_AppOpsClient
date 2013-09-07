@@ -21,7 +21,9 @@ import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,80 +33,162 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ConfigurationListDisplayer extends Composite  implements FieldEventHandler,ConfigEventHandler,ClickHandler{
 
 	private VerticalPanel basePanel;
+	private ScrollPanel propertyConfListScrollPanel;
 	private FlexTable configurationListTable;
 	private Entity entity;
-	private HashMap<Integer, Entity> hashMap = new HashMap<Integer, Entity>();
+	private HashMap<Long, HashMap<String, EntityList>> hashMap = new HashMap<Long, HashMap<String, EntityList>>();
+	private HashMap<Long, HashMap<String, EntityList>> afterDeletionOfRowHashMap = new HashMap<Long, HashMap<String, EntityList>>();
+	
+	private HashMap<Long, HashMap<Long, Integer>> rowVsRowListSizeMap = new HashMap<Long, HashMap<Long,Integer>>();
 	private int i=0;
+	private final String PROPERTYLISTROW_CSS = "componentListRow";
+	private final String FLEXTABEL_HEADER = "FlexTable-headerBar";
+	private Long rowEntityId;
+	private int cellIndex ;
+    int rowIndex;
 	public ConfigurationListDisplayer(){
 		initialize();
 		
 	}
 
-	public  void createUi(EntityList entityList) {
-		
-		String name;
-		String value;
-		int row= 1;
-		int col=0;
-		
-		LabelField propertyNameField = createLabelField("Property Name","componentSectionHeaderLbl","");
-		LabelField propertyValueField = createLabelField("Value(s)","componentSectionHeaderLbl","");
-		LabelField valueField = createLabelField(" ","componentSectionHeaderLbl","");
-		
-		
-		
-		try{
+	public  void createUi(Entity configPropertyEntity) {
+		basePanel.clear();
+			String name;
+			String value;
+			Boolean isDefault;
+			int row= 1;
+			int col=0;
 			
+			LabelField propertyNameField = createLabelField("Property Name","componentSectionHeaderLbl","");
+			LabelField propertyValueField = createLabelField("Value(s)","componentSectionHeaderLbl","");
+			LabelField valueField = createLabelField(" ","componentSectionHeaderLbl","");
 			
-			configurationListTable.setWidget(0, 0, propertyNameField);
-			configurationListTable.setWidget(0, 1, propertyValueField);
-			configurationListTable.setWidget(0, 2, valueField);
-			configurationListTable.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
-			configurationListTable.getCellFormatter().setAlignment(0, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
-			
-			configurationListTable.getRowFormatter().addStyleName(0, "FlexTable-headerBar"); 
-			//HTMLTable.RowFormatter rf = configurationListTable.getRowFormatter();
-			//rf.addStyleName(0, "FlexTable-OddRow");
-			//configurationListTable.getRowFormatter().addStyleName(0, "configurationPropertyGrid");
-			//configurationListTable.getCellFormatter().addStyleName(0,0,"configurationPropertyGrid");
-			for(Entity entity:entityList){
-				col = 0;
-				name = entity.getPropertyByName("name");
-				value = entity.getPropertyByName("value");
+			try{
+				if(configPropertyEntity.getPropertyByName("configtypes")!=null){
+					ArrayList<Entity> entityList = configPropertyEntity.getPropertyByName("configtypes");
+					HashMap<String, EntityList> configTypeHashMap = new HashMap<String, EntityList>();
+					
+					for(Entity configTypeEntity:entityList){
+						
+						
+						name = configTypeEntity.getPropertyByName("keyname");
+						
+						if(configTypeHashMap.containsKey(name)){
+							
+							EntityList existingConfigTypeList =  configTypeHashMap.get(name);
+							existingConfigTypeList.add(configTypeEntity);
+							configTypeHashMap.put(name, existingConfigTypeList);
+						}else{
+							EntityList arrayList = new EntityList();
+							arrayList.add(configTypeEntity);
+							configTypeHashMap.put(name, arrayList);
+						}
+						
+						
+						
+					}
+									
+				configurationListTable.setWidget(0, 0, propertyNameField);
+				configurationListTable.setWidget(0, 1, propertyValueField);
+				configurationListTable.setWidget(0, 2, valueField);
+				configurationListTable.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
+				configurationListTable.getCellFormatter().setAlignment(0, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
 				
-				configurationListTable.setWidget(row, col, createLabelField(name,"",""));
+				configurationListTable.getRowFormatter().addStyleName(0, FLEXTABEL_HEADER); 
+				 
 				
-				configurationListTable.setWidget(row, col+1, createLabelField(value,"",""));
-				configurationListTable.setWidget(row, col+2, createImageField(row));
-				
-				/*configurationListTable.getFlexCellFormatter().setRowSpan(row, col, 2);
-				String[] values = value.split(",");
-				col++;
-				for(int i=0;i<values.length;i++){
-				   configurationListTable.setWidget(row, col, createLabelField(values[i],"",""));
-				   configurationListTable.setWidget(row, col+1, createImageField());
-				}*/
-				configurationListTable.getCellFormatter().setAlignment(row, col, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
-				configurationListTable.getCellFormatter().setAlignment(row, col+1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
-				configurationListTable.getCellFormatter().setAlignment(row, col+2, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
-				//configurationListTable.getRowFormatter().addStyleName(row, "configurationPropertyGrid"); 
-				configurationListTable.setCellSpacing(2);
+				Iterator iterator2 = configTypeHashMap.entrySet().iterator();
+				while(iterator2.hasNext()){
+					HashMap<String, EntityList> configTypeHashMapForStore  = new HashMap<String, EntityList>();
+					Map.Entry mapEntry = (Map.Entry) iterator2.next();
+					String keyname= (String) mapEntry.getKey();
+					configurationListTable.setWidget(row, col, createLabelField(keyname,"compRegisterLabelCss",""));
+					EntityList typesList = (EntityList) mapEntry.getValue();
+					configTypeHashMapForStore.put(keyname, typesList);
+					HashMap<Long, Integer>rowVsListSize = new HashMap<Long, Integer>();
+					
+					VerticalPanel panel = new VerticalPanel();
+					VerticalPanel panel1 = null ;
+					ImageField imageField = null;
+					configurationListTable.setWidget(row, col+1, panel);
+					
+					
+					for(Entity entity : typesList){
+						Key<Serializable> key = (Key<Serializable>) entity.getProperty("id").getValue();
+						Long configTypeId=  (Long) key.getKeyValue();
+						rowVsListSize.put(configTypeId, typesList.size());
+						col = 0;
+						if(entity.getPropertyByName("keyname")!=null){
+						   name = entity.getPropertyByName("keyname");
+						}else{
+							name = "-";
+						}
+						
+						if(entity.getPropertyByName("keyvalue")!=null){
+							value = entity.getPropertyByName("keyvalue");
+						}else{
+							value = "-";
+						}
+						
+						if(entity.getPropertyByName("isdefault")!=null){
+						  isDefault = entity.getPropertyByName("isdefault");
+						  if(isDefault){
+							  if(entity.getPropertyByName("keyvalue")!=null)
+							   value = value+" "+" (default)";
+						  }
+						}
+						
+						
+						//configurationListTable.getFlexCellFormatter().setRowSpan(row, col+1,typesList.size());
+						panel.add(createLabelField(value,"compRegisterLabelCss",""));
+						panel1 =  new VerticalPanel();
+						imageField = (ImageField) createImageField(configTypeId);
+						
+						configurationListTable.setWidget(row, col+2, panel1);
+						
+						configurationListTable.getCellFormatter().setAlignment(row, col, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_TOP);
+						configurationListTable.getCellFormatter().setAlignment(row, col+1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
+						configurationListTable.getCellFormatter().setAlignment(row, col+2, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
+						//configurationListTable.getRowFormatter().addStyleName(row, "configurationPropertyGrid"); 
+						configurationListTable.setCellSpacing(2);
+						
+												
+						configurationListTable.getRowFormatter().setStylePrimaryName(row, PROPERTYLISTROW_CSS);
+						configurationListTable.setBorderWidth(1);
+						//configurationListTable.getRowFormatter().addStyleName(row, "configurationPropertyGrid");
+						hashMap.put(configTypeId, configTypeHashMapForStore);
+						
+						/*maintain the row v/s hash map of the initial row v/s list size*/
+						rowVsRowListSizeMap.put(configTypeId, rowVsListSize);
+						
+						
+					}
+					row++;
+					panel1.add(imageField);
+				}
 				configurationListTable.addClickHandler(this);
-				//configurationListTable.getRowFormatter().addStyleName(row, "configurationPropertyGrid");
-				hashMap.put(row, entity);
-				row++;
+				
+				
+				//configurationListTable.setSize("950px", "100%");
+				propertyConfListScrollPanel.setHeight("300px");
+				basePanel.add(configurationListTable);
+				propertyConfListScrollPanel.setStylePrimaryName("propertyConfListScrollPanel");
+				configurationListTable.setStylePrimaryName("configurationListTable");
+			}else{
+				LabelField notificationMessageField = createLabelField("No configurations available ","componentSectionHeaderLbl","");
+				basePanel.add(notificationMessageField);
+				basePanel.setCellHorizontalAlignment(notificationMessageField, HasHorizontalAlignment.ALIGN_CENTER);
+				propertyConfListScrollPanel.setStylePrimaryName("propertyConfListScrollPanel");
+				configurationListTable.setStylePrimaryName("configurationListTable");
 			}
-			
-			configurationListTable.setSize("950px", "100%");
-			
-			basePanel.add(configurationListTable);
-			
+		
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -118,7 +202,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 		
 	}
 	
-	private Widget createImageField(int row) {
+	private Widget createImageField(Long row) {
 		   ImageField crossImageField = new ImageField();
 		   
 		   try{
@@ -179,10 +263,13 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 	private void initialize() {
 		basePanel = new VerticalPanel();
 		configurationListTable = new FlexTable();
-		initWidget(basePanel);
+		propertyConfListScrollPanel = new ScrollPanel(basePanel);
+		initWidget(propertyConfListScrollPanel);
+		
 		
 		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
 		AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
+		
 	}
 
 	public Entity getEntity() {
@@ -209,8 +296,8 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 			Map parameterMap = new HashMap();
 			parameterMap.put("configTypeId", key.getKeyValue());
 			
-			StandardAction action = new StandardAction(EntityList.class, "configuration.ConfigurationService.getConfigTypeFromKey", parameterMap);
-			dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
+			StandardAction action = new StandardAction(Entity.class, "configuration.ConfigurationService.getConfigTypeFromKey", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -219,11 +306,11 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 				}
 
 				@Override
-				public void onSuccess(Result<EntityList> result) {
+				public void onSuccess(Result<Entity> result) {
 					if(result!=null){
-						EntityList propertyConfigList   = result.getOperationResult();
-						if(!propertyConfigList.isEmpty()){
-							createUi(propertyConfigList);
+						Entity propertyConfig   = result.getOperationResult();
+						if(propertyConfig!=null){
+							createUi(propertyConfig);
 						}
 					}
 					
@@ -236,26 +323,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 		
 	}
 	
-	
-	public EntityList getDummyList(){
-		Entity labelField = new Entity();
 		
-		
-		labelField.setPropertyByName("name","Error Position");
-		labelField.setPropertyByName("value","Bottom(default),Top,Inline");
-		
-		
-		Entity dateLabelField = new Entity();
-		dateLabelField.setPropertyByName("name","DisplayText");
-		dateLabelField.setPropertyByName("value","Name,Title(default)");
-		
-		EntityList list = new EntityList();
-		list.add(labelField);
-		list.add(dateLabelField);
-		return list;
-		
-	}
-
 	@Override
 	public void onFieldEvent(FieldEvent event) {
 		try {
@@ -265,9 +333,19 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 			case FieldEvent.CLICKED: {
 				if (eventSource instanceof ImageField) {
 					ImageField imageField = (ImageField) eventSource;
-					int row= Integer.parseInt(imageField.getBaseFieldId());
-					configurationListTable.removeRow(row);
+					rowEntityId= Long.parseLong(imageField.getBaseFieldId());
+					
+					EntityList typesList = null;
+					HashMap<String, EntityList> nameVsListValues = hashMap.get(rowEntityId);
+					Iterator iterator = nameVsListValues.entrySet().iterator();
+					while(iterator.hasNext()){
+							
+						Map.Entry mapEntry = (Map.Entry) iterator.next();
+					    typesList = (EntityList) mapEntry.getValue();
+				    }	 
+					  deletePropertyConfig(typesList,rowIndex);	
 				}
+					
 				break;
 			}
 			default:
@@ -276,6 +354,48 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 		} catch (Exception e) {
 			
 		}
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	private void deletePropertyConfig(EntityList typesList, final int row) {
+		
+		try {
+			
+			
+			
+			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+						
+			Map parameterMap = new HashMap();
+			parameterMap.put("configTypeEntList", typesList);
+			
+			StandardAction action = new StandardAction(EntityList.class, "configuration.ConfigurationService.deleteConfigurationTypeList", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+					
+				}
+
+				@Override
+				public void onSuccess(Result<EntityList> result) {
+					if(result!=null){
+						EntityList configTypeEntList   = result.getOperationResult();
+						if(configTypeEntList!=null){
+							
+							 configurationListTable.removeRow(rowIndex);
+							 				 
+						}
+					}
+					
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		
 	}
 
@@ -289,10 +409,10 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 				if (eventSource instanceof ConfigurationListDisplayer) {
 					Entity entity=  (Entity) event.getEventData(); 
 					
-				}/*else if(eventSource instanceof ComponentListDisplayer){
+				}else if(eventSource instanceof ComponentListDisplayer){
 					Entity entity=  (Entity) event.getEventData(); 
 					getPropertyConfigList(entity);
-				}*/
+				}
 				break;
 			}
 			default:
@@ -311,16 +431,25 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 	    if(i % 2 == 0){
 		  if(sender instanceof FlexTable){	 
 			if(configurationListTable.getCellForEvent(event)!=null){
-				int cellIndex = configurationListTable.getCellForEvent(event).getCellIndex();
-	            int rowIndex = configurationListTable.getCellForEvent(event).getRowIndex();
-	            Entity entity = hashMap.get(rowIndex);
-	            ConfigEvent configEvent = new ConfigEvent(ConfigEvent.PROPERTYSELECTED, entity, this);
-				configEvent.setEventSource(this);
-				AppUtils.EVENT_BUS.fireEvent(configEvent);
+				 cellIndex = configurationListTable.getCellForEvent(event).getCellIndex();
+	             rowIndex = configurationListTable.getCellForEvent(event).getRowIndex();
+	            //TODO:need to implement for editing
+	             // Long value = (long)rowIndex;
+	           // HashMap<String, EntityList> storedConfigTypeMap = hashMap.get(value);
+	            
+	            if(cellIndex < 2){
+		            /*ConfigEvent configEvent = new ConfigEvent(ConfigEvent.PROPERTYSELECTED, storedConfigTypeMap, this);
+					configEvent.setEventSource(this);
+					AppUtils.EVENT_BUS.fireEvent(configEvent);*/
+	            }else if(cellIndex == 2){
+	            	
+					     	
+					
+	            }
 			}
 		  }
 			
 		}
-	    i++;
+	    i+=2;
 	}
 }

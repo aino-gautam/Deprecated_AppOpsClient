@@ -63,9 +63,7 @@ public class ConfigurationEditor extends Composite{
 		basePanel.setCellHorizontalAlignment(headerLbl, HorizontalPanel.ALIGN_CENTER);
 		
 		ConfigurationListDisplayer configurationListDisplayer = new ConfigurationListDisplayer();
-		EntityList entityList = configurationListDisplayer.getDummyList();
-		configurationListDisplayer.createUi(entityList);
-		
+				
 		basePanel.add(configurationListDisplayer);
 		basePanel.setCellHorizontalAlignment(configurationListDisplayer, HasHorizontalAlignment.ALIGN_CENTER);
 		
