@@ -15,15 +15,19 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -31,7 +35,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author pallavi@ensarm.com
  *
  */
-public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandler,ConfigEventHandler{
+public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandler,ConfigEventHandler, ClickHandler{
 	
 	private final String COMPFORM_PANEL_CSS = "componentFormPanel";
 	private static String SAVE_BTN_PCLS = "saveConfigButton";
@@ -41,7 +45,10 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	private TextField propNameField;
 	private int valueRow = 0;
 	private HashMap<Integer, PropertyValueEditor> propValueList;
+	private HashMap<Long, Entity> idVsConfigTypeEntity;
 	private Entity parentConfTypeEnt;
+	private int currentSeletedRow = -1;
+	private Entity deletedConfigEntity = null;
 		
 	public ConfPropertyEditor() {
 		
@@ -49,6 +56,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	
 	public void createUi(){
 		try {
+			HorizontalPanel horizontalPanel = new HorizontalPanel();
 			propValuePanel = new FlexTable();
 			
 			propNameField = new TextField();
@@ -56,31 +64,24 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			propNameField.configure();
 			propNameField.create();
 			
-			propValuePanel.setWidget(valueRow, 0, propNameField);
-			
-			/*for(Entity confEnt:componentDeflist){
-				PropertyValueEditor propValueEditor = new PropertyValueEditor(propValuePanel, valuePanelRow, confEnt);
-				propValueEditor.createUi();
-				valuePanelRow++;
-				if(propValueList == null){
-					propValueList = new ArrayList<PropertyValueEditor>();
-				}
-				propValueList.add(propValueEditor);
-			}*/
-			
+			horizontalPanel.add(propNameField);
+			horizontalPanel.add(propValuePanel);		
+					
 			createNewRecord();
 			
 			ButtonField saveConfigBtn = new ButtonField();
 			saveConfigBtn.setConfiguration(getSaveConfigurationBtnConf());
 			saveConfigBtn.configure();
 			saveConfigBtn.create();
-			valueRow++;
-			propValuePanel.setWidget(valueRow, 0, saveConfigBtn);
 			
-			add(propValuePanel);
+			
+			add(horizontalPanel);
+			add(saveConfigBtn);
 			setStylePrimaryName(COMPFORM_PANEL_CSS);
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
 			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
+			
+			propValuePanel.addClickHandler(this);
 		} catch (Exception e) {
 			
 		}
@@ -148,17 +149,13 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	private void insertEmptyRecord(){
 		
 		try {
-			
-			propValuePanel.insertRow(valueRow);
-			
+			valueRow++;
 			PropertyValueEditor propValueEditor = new PropertyValueEditor(propValuePanel, valueRow, null);
 			propValueEditor.createUi();
 			if(propValueList == null){
 				propValueList = new HashMap<Integer, PropertyValueEditor>();
 			}
 			propValueList.put(valueRow, propValueEditor);
-			
-			valueRow++;
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -201,7 +198,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	@SuppressWarnings("unchecked")
 	private void saveConfTypeEntity() {
 		try {
-			Entity confTypeEntity = propValueList.get(valueRow-1).getPopulatedConfigTypeEntity(propNameField.getValue().toString());
+			Entity confTypeEntity = propValueList.get(valueRow).getPopulatedConfigTypeEntity(propNameField.getValue().toString());
 			confTypeEntity.setProperty("parentId", parentConfTypeEnt);
 			
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
@@ -221,10 +218,17 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 
 				@Override
 				public void onSuccess(Result<Entity> result) {
-					if(result!=null){
+					if (result != null) {
 						Entity confEnt = result.getOperationResult();
 						Window.alert("Property saved successfully");
-						propValueList.get(valueRow-1).setConfTypeEntity(confEnt);
+						
+						propValueList.get(valueRow).setConfTypeEntity(confEnt);
+						Key key = (Key) confEnt.getProperty("id").getValue();
+						long id = (Long) key.getKeyValue();
+						propValueList.get(valueRow).setEntityIdToCrossImage(id);
+						if(idVsConfigTypeEntity==null)
+							idVsConfigTypeEntity = new HashMap<Long, Entity>();
+						idVsConfigTypeEntity.put(id, confEnt);
 						insertEmptyRecord();
 					}
 				}
@@ -235,7 +239,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void deleteConfigType(Entity configTypeEnt) {
+	private void deleteConfigType(Entity configTypeEnt ) {
 		try {
 						
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
@@ -257,17 +261,26 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 					if(result!=null){
 						Entity confEnt = result.getOperationResult();
 						Window.alert("Property removed successfully");
-						propValueList.remove(valueRow-1);
-						propValuePanel.removeRow(valueRow-1);
+						deletedConfigEntity = confEnt;
+						deleteRowFromUi();
+						
 					}
 				}
 			});
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
 	}
 	
-
+	private void deleteRowFromUi(){
+		if (currentSeletedRow != -1 && deletedConfigEntity != null) {
+			propValuePanel.removeRow(currentSeletedRow);
+			valueRow--;
+			currentSeletedRow = -1;
+			deletedConfigEntity= null;
+		}
+	}
+	
 	@Override
 	public void onConfigEvent(ConfigEvent event) {
 		try {
@@ -280,8 +293,8 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				break;
 			}
 			case ConfigEvent.PROPERTYREMOVED: {
-				Integer row = (Integer) event.getEventData();
-				Entity configTypeEnt = propValueList.get(row).getConfTypeEntity();
+				long entityId = (Long) event.getEventData();
+				Entity configTypeEnt = idVsConfigTypeEntity.get(entityId);
 				deleteConfigType(configTypeEnt);
 				break;
 			}case ConfigEvent.NEW_COMPONENT_SAVED: {
@@ -303,6 +316,20 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 
 	public void setParentConfTypeEnt(Entity parentConfTypeEnt) {
 		this.parentConfTypeEnt = parentConfTypeEnt;
+	}
+
+	@Override
+	public void onClick(ClickEvent event) {
+		if(event.getSource() instanceof FlexTable){
+			FlexTable flexTable = (FlexTable) event.getSource();
+			 int cellIndex = flexTable.getCellForEvent(event).getCellIndex();
+			 currentSeletedRow = flexTable.getCellForEvent(event).getRowIndex();
+			 if(cellIndex==4 && currentSeletedRow!=valueRow){
+				 deleteRowFromUi();
+			 }
+				 
+		}
+		
 	}
 	
 }

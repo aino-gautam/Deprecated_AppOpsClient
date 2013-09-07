@@ -18,6 +18,7 @@ import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 
+import com.emitrom.lienzo.client.core.mediator.IMediator;
 import com.google.gwt.user.client.ui.FlexTable;
 
 public class PropertyValueEditor implements FieldEventHandler {
@@ -28,6 +29,7 @@ public class PropertyValueEditor implements FieldEventHandler {
 	private TextField valueField;
 	private ListBoxField typeField;
 	private RadioButtonField isDefaultValueField;
+	private ImageField crossImgField;
 	
 	/*******************  Fields ID *****************************/
 	public final String PROPNAME_FIELD_ID = "attributeFieldId";
@@ -35,7 +37,8 @@ public class PropertyValueEditor implements FieldEventHandler {
 	public final String STRINGVAL_FIELD_ID = "stringValFieldId";
 	public static final String ISDEF_RADIOBTN_GROUP_ID = "isDefaultRadioBtnGroup";
 	public static final String ISDEF_RADIOBTN_ID = "isDefaultRadioBtnId";
-	public static final String REMOVEPROP_IMGID = "removePropImgId";
+	private String REMOVEPROP_IMGID = "removePropImgId";
+	private long entityId = 0;
 	
 	/** CSS styles **/
 	private final String CROSSIMG_CSS = "removePropertyImage";
@@ -68,7 +71,8 @@ public class PropertyValueEditor implements FieldEventHandler {
 		isDefaultValueField.configure();
 		isDefaultValueField.create();
 		
-		ImageField crossImgField = new ImageField();
+				
+		crossImgField = new ImageField();
 		crossImgField.setConfiguration(getCrossImageConfiguration());
 		crossImgField.configure();
 		crossImgField.create();
@@ -77,6 +81,7 @@ public class PropertyValueEditor implements FieldEventHandler {
 		propValuePanel.setWidget(valuePanelRow, 2, typeField);
 		propValuePanel.setWidget(valuePanelRow, 3, isDefaultValueField);
 		propValuePanel.setWidget(valuePanelRow, 4, crossImgField);
+		
 		
 		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
 		
@@ -97,6 +102,25 @@ public class PropertyValueEditor implements FieldEventHandler {
 			
 		}
 		return configuration;
+	}
+	
+	
+	public void setEntityIdToCrossImage(long id){
+		
+		try {
+			entityId= id;
+			Configuration configuration = crossImgField.getConfiguration();
+			REMOVEPROP_IMGID = REMOVEPROP_IMGID+"_"+String.valueOf(id);
+			
+			configuration.setPropertyByName(ImageFieldConstant.BF_ID, REMOVEPROP_IMGID);
+			crossImgField.removeRegisteredHandlers();
+			crossImgField.setConfiguration(configuration);
+			crossImgField.configure();
+			crossImgField.create();
+		} catch (Exception e) {
+			
+		}
+		
 	}
 	
 	private EntityList getDummyTypeList(){
@@ -224,8 +248,10 @@ public class PropertyValueEditor implements FieldEventHandler {
 				if (eventSource instanceof ImageField) {
 					ImageField imageField = (ImageField) eventSource;
 					if(imageField.getBaseFieldId().equals(REMOVEPROP_IMGID)){
-						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.PROPERTYREMOVED, this, valuePanelRow);
-						AppUtils.EVENT_BUS.fireEvent(configEvent);
+						if(entityId!=0){
+							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.PROPERTYREMOVED, entityId, this);
+							AppUtils.EVENT_BUS.fireEvent(configEvent);
+						}
 					}
 				}
 				break;

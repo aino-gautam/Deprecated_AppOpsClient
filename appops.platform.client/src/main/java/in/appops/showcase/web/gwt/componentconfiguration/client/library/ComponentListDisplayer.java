@@ -33,6 +33,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -42,6 +43,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class ComponentListDisplayer extends Composite implements FieldEventHandler,ConfigEventHandler,ClickHandler{
 
 	private VerticalPanel basePanel;
+	private ScrollPanel scrollPanel;
 	private FlexTable compListPanel;
 	private int componentRow = 0;
 	private Entity libraryEntity;
@@ -49,7 +51,8 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 	
 	/** CSS styles **/
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
-	private final String LISTPANEL = "componentFormPanel";
+	private final String SCROLLPANELCSS = "componentFormPanel";
+	private final String LISTPANEL_CSS = "componentListPanel";
 	private final String COMPLISTLBL_CSS = "compRegisterLabelCss";
 	private final String COMPLISTROW_CSS = "componentListRow";
 	
@@ -62,8 +65,15 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 	public void createUi() {
 		try {
 			basePanel = new VerticalPanel();
-						
+			scrollPanel = new ScrollPanel();	
 			compListPanel = new FlexTable();
+			
+			addHeaderLabel();
+			
+			scrollPanel.add(compListPanel);
+			
+			scrollPanel.setHeight("150px");
+			
 			LabelField compListLbl = new LabelField();
 			Configuration compListLblConfig = getCompListLblConfig();
 
@@ -71,32 +81,12 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 			compListLbl.configure();
 			compListLbl.create();
 			
-			LabelField nameLbl = new LabelField();
-			Configuration headerLblConfig = getHeaderLblConfig("Name");
-		
-			nameLbl.setConfiguration(headerLblConfig);
-			nameLbl.configure();
-			nameLbl.create();
-			
-			LabelField descLbl = new LabelField();
-			Configuration descLblConfig = getHeaderLblConfig("Description");
-		
-			descLbl.setConfiguration(descLblConfig);
-			descLbl.configure();
-			descLbl.create();
-			
-			compListPanel.setWidget(componentRow, 0, nameLbl);
-			compListPanel.setWidget(componentRow, 1, descLbl);
-			
-			compListPanel.getRowFormatter().setStylePrimaryName(componentRow, COMPLISTROW_CSS);
-			
-			componentRow++;
-			
 			basePanel.add(compListLbl);
-			basePanel.add(compListPanel);
+			basePanel.add(scrollPanel);
 			
 			basePanel.setCellHorizontalAlignment(compListLbl, HorizontalPanel.ALIGN_CENTER);
-			compListPanel.setStylePrimaryName(LISTPANEL);
+			scrollPanel.setStylePrimaryName(SCROLLPANELCSS);
+			compListPanel.setStylePrimaryName(LISTPANEL_CSS);
 			
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
@@ -106,6 +96,31 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "ComponentListDisplayer :: createUi :: Exception", e);
 		}
+	}
+	
+	private void addHeaderLabel(){
+		
+		
+		LabelField nameLbl = new LabelField();
+		Configuration headerLblConfig = getHeaderLblConfig("Name");
+	
+		nameLbl.setConfiguration(headerLblConfig);
+		nameLbl.configure();
+		nameLbl.create();
+		
+		LabelField descLbl = new LabelField();
+		Configuration descLblConfig = getHeaderLblConfig("Description");
+	
+		descLbl.setConfiguration(descLblConfig);
+		descLbl.configure();
+		descLbl.create();
+		
+		compListPanel.setWidget(componentRow, 0, nameLbl);
+		compListPanel.setWidget(componentRow, 1, descLbl);
+		
+		compListPanel.getRowFormatter().setStylePrimaryName(componentRow, COMPLISTROW_CSS);
+		
+		componentRow++;
 	}
 	
 	private Configuration getHeaderLblConfig(String displayTxt) {
@@ -170,14 +185,16 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 	
 	private void populate(EntityList list) {
 		try {
-			
+			componentRow = 0;
 			if(componentList!=null ){
 				componentList.clear();
 			}
 			
 			if(compListPanel!=null){
 				compListPanel.clear();
+				addHeaderLabel();
 			}
+			
 			
 			for(Entity comp:list){
 				//ComponentPanel componentPanel = new ComponentPanel(comp);

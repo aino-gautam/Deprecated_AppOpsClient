@@ -210,8 +210,13 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 					ListBoxField listBoxField = (ListBoxField) eventSource;
 					SelectedItem selectedItem = (SelectedItem) event.getEventData();
 					if(listBoxField.getBaseFieldId().equalsIgnoreCase(LibraryComponentManager.LIBRARYLISTBOX_ID)){
-						Entity libEntity = selectedItem.getAssociatedEntity();
-						libraryEntity = libEntity;
+						if(selectedItem!=null){
+							Entity libEntity = selectedItem.getAssociatedEntity();
+							libraryEntity = libEntity;
+						}else{
+							libraryEntity = null;
+						}
+						
 					}
 				}
 			}
@@ -248,6 +253,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 						if(compEntity!=null){
 							Window.alert("Component Saved...");
 							componentNameField.clear();
+							
 							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.NEW_COMPONENT_SAVED, map,this);
 							AppUtils.EVENT_BUS.fireEvent(configEvent);
 						}
@@ -283,7 +289,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 						Entity compEntity = result.getOperationResult();
 						if(compEntity!=null){
 							Window.alert("Component updated successfully...");
-							
+							compEntityToUpdate = null;
 							HashMap<String,Object> rowVsCompEnt = new HashMap<String,Object>();
 					        rowVsCompEnt.put("row", componnetEntRow);
 					        rowVsCompEnt.put("component", compEntity);
