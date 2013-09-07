@@ -60,7 +60,7 @@
 }
 
 .componentListPanel{
-	width: 50%;
+	margin-left: 15px;
 }
 .formListHolder{
 	border-bottom: 1px solid;
@@ -230,3 +230,4 @@
 	cursor: pointer;
 	cursor: hand;
 }
+
