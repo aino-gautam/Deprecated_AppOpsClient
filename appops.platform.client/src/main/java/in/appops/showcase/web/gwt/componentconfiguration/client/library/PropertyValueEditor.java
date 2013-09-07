@@ -94,7 +94,7 @@ public class PropertyValueEditor implements FieldEventHandler {
 	private Configuration getCrossImageConfiguration(){
 		Configuration configuration = new Configuration();
 		try {
-			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, "images/cross.png");
+			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, "images/minus-icon.jpg");
 			configuration.setPropertyByName(ImageFieldConstant.BF_PCLS,CROSSIMG_CSS);
 			configuration.setPropertyByName(ImageFieldConstant.IMGFD_TITLE, "Remove property");
 			configuration.setPropertyByName(ImageFieldConstant.BF_ID, REMOVEPROP_IMGID);

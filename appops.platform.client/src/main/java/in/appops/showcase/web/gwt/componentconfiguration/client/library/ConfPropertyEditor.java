@@ -2,6 +2,8 @@ package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
 import in.appops.client.common.config.field.ButtonField;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.config.field.RadioButtonField;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.ConfigEvent;
@@ -28,6 +30,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -40,6 +43,10 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	private final String COMPFORM_PANEL_CSS = "componentFormPanel";
 	private static String SAVE_BTN_PCLS = "saveConfigButton";
 	private final String SAVECONFIGURATION_BTN_ID = "saveConfigBtnId";
+	
+	private final String POPUPGLASSPANELCSS = "popupGlassPanel";
+	private final String POPUP_CSS = "popupCss";
+	private final String POPUP_LBL_PCLS = "popupLbl";
 	
 	private FlexTable propValuePanel;
 	private TextField propNameField;
@@ -199,7 +206,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	private void saveConfTypeEntity() {
 		try {
 			Entity confTypeEntity = propValueList.get(valueRow).getPopulatedConfigTypeEntity(propNameField.getValue().toString());
-			confTypeEntity.setProperty("parentId", parentConfTypeEnt);
+			confTypeEntity.setProperty("configtype", parentConfTypeEnt);
 			
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
@@ -220,7 +227,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				public void onSuccess(Result<Entity> result) {
 					if (result != null) {
 						Entity confEnt = result.getOperationResult();
-						Window.alert("Property saved successfully");
+						showPopup(confEnt.getPropertyByName("keyvalue").toString()+ " added ");
 						
 						propValueList.get(valueRow).setConfTypeEntity(confEnt);
 						Key key = (Key) confEnt.getProperty("id").getValue();
@@ -260,7 +267,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				public void onSuccess(Result<Entity> result) {
 					if(result!=null){
 						Entity confEnt = result.getOperationResult();
-						Window.alert("Property removed successfully");
+						showPopup(confEnt.getPropertyByName("keyvalue").toString()+ " removed successfully");
 						deletedConfigEntity = confEnt;
 						deleteRowFromUi();
 						
@@ -330,6 +337,52 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				 
 		}
 		
+	}
+	
+	/**
+	 * Used to show popup at perticular position.
+	 * @param popuplabel
+	 */
+	private void showPopup(String popuplabel){
+		try {
+			LabelField popupLbl = new LabelField();
+			popupLbl.setConfiguration(getLabelFieldConf(popuplabel,POPUP_LBL_PCLS,null,null));
+			popupLbl.configure();
+			popupLbl.create();
+					
+			PopupPanel popup = new PopupPanel();
+			popup.setAnimationEnabled(true);
+			popup.setAutoHideEnabled(true);
+			popup.setGlassEnabled(true);
+			popup.setGlassStyleName(POPUPGLASSPANELCSS);
+			popup.setStylePrimaryName(POPUP_CSS);
+			popup.add(popupLbl);
+			popup.setPopupPosition(542, 70);
+			popup.show();
+		} catch (Exception e) {
+			
+		}
+	}
+	
+	/**
+	 * Creates the table name label field configuration object and return.
+	 * @param displayText
+	 * @param primaryCss
+	 * @param dependentCss
+	 * @param propEditorLblPanelCss
+	 * @return Configuration instance
+	 */
+	private Configuration getLabelFieldConf(String displayText , String primaryCss , String dependentCss ,String propEditorLblPanelCss){
+		Configuration conf = new Configuration();
+		try {
+			conf.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, displayText);
+			conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+			conf.setPropertyByName(LabelFieldConstant.BF_DCLS, dependentCss);
+			conf.setPropertyByName(LabelFieldConstant.BF_BASEPANEL_PCLS, propEditorLblPanelCss);
+		} catch (Exception e) {
+			
+		}
+		return conf;
 	}
 	
 }

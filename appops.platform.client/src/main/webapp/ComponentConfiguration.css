@@ -231,3 +231,25 @@
 	cursor: hand;
 }
 
+.popupCss{
+	left: 542px;
+	top: 70px;
+	visibility: visible;
+	position: absolute;
+	overflow: visible;
+	height: 20px;
+	text-align: center;
+	background-color: lightyellow;
+	padding: 7px;
+}
+
+.popupGlassPanel{
+ 	background-color: #FFFFFF;
+    opacity: 0.3;
+}
+
+.popupLbl{
+	font-family: 'Ubuntu',sans-serif;
+	color: #585858;
+}
+

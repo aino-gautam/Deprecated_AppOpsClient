@@ -810,7 +810,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		try {
 			logger.log(Level.INFO, "[TextField] ::In onKeyUp method ");
 			Integer keycode= event.getNativeKeyCode();
-			if(keycode.equals(KeyCodes.KEY_BACKSPACE) || keycode.equals(KeyCodes.KEY_TAB)|| keycode.equals(KeyCodes.KEY_DELETE)){
+			if(keycode.equals(KeyCodes.KEY_BACKSPACE) || keycode.equals(KeyCodes.KEY_DELETE)){
 				if(isValidateField()){
 					if(isValidateOnChange()){
 						if(validate())

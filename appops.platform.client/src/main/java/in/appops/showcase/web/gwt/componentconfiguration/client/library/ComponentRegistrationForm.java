@@ -35,6 +35,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -54,6 +55,9 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 	private final String SAVECOMP_BTN_PCLS = "saveCompBtnCss";
 	private final String COMPFORM_PANEL_CSS = "componentFormPanel";
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
+	private final String POPUPGLASSPANELCSS = "popupGlassPanel";
+	private final String POPUP_CSS = "popupCss";
+	private final String POPUP_LBL_PCLS = "popupLbl";
 	
 	/** Field ID **/
 	private static String SAVECOMPONENT_BTN_ID = "saveCompBtnId";
@@ -201,7 +205,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 						}else if(libraryEntity!=null){
 							saveComponent();
 						}else{
-							Window.alert("Please select a library");
+							showPopup("Please select a library");
 						}
 					}
 				}
@@ -251,7 +255,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 						HashMap<String, Entity> map = result.getOperationResult();
 						Entity compEntity   = map.get("component");
 						if(compEntity!=null){
-							Window.alert("Component Saved...");
+							showPopup(compEntity.getPropertyByName("name").toString()+" saved succesfully...");
 							componentNameField.clear();
 							
 							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.NEW_COMPONENT_SAVED, map,this);
@@ -288,7 +292,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 					if(result!=null){
 						Entity compEntity = result.getOperationResult();
 						if(compEntity!=null){
-							Window.alert("Component updated successfully...");
+							showPopup(compEntity.getPropertyByName("name").toString()+" updated successfully...");
 							compEntityToUpdate = null;
 							HashMap<String,Object> rowVsCompEnt = new HashMap<String,Object>();
 					        rowVsCompEnt.put("row", componnetEntRow);
@@ -340,6 +344,52 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 
 	public void setLibraryEntity(Entity libraryEntity) {
 		this.libraryEntity = libraryEntity;
+	}
+	
+	/**
+	 * Used to show popup at perticular position.
+	 * @param popuplabel
+	 */
+	private void showPopup(String popuplabel){
+		try {
+			LabelField popupLbl = new LabelField();
+			popupLbl.setConfiguration(getLabelFieldConf(popuplabel,POPUP_LBL_PCLS,null,null));
+			popupLbl.configure();
+			popupLbl.create();
+					
+			PopupPanel popup = new PopupPanel();
+			popup.setAnimationEnabled(true);
+			popup.setAutoHideEnabled(true);
+			popup.setGlassEnabled(true);
+			popup.setGlassStyleName(POPUPGLASSPANELCSS);
+			popup.setStylePrimaryName(POPUP_CSS);
+			popup.add(popupLbl);
+			popup.setPopupPosition(542, 70);
+			popup.show();
+		} catch (Exception e) {
+			
+		}
+	}
+	
+	/**
+	 * Creates the table name label field configuration object and return.
+	 * @param displayText
+	 * @param primaryCss
+	 * @param dependentCss
+	 * @param propEditorLblPanelCss
+	 * @return Configuration instance
+	 */
+	private Configuration getLabelFieldConf(String displayText , String primaryCss , String dependentCss ,String propEditorLblPanelCss){
+		Configuration conf = new Configuration();
+		try {
+			conf.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, displayText);
+			conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+			conf.setPropertyByName(LabelFieldConstant.BF_DCLS, dependentCss);
+			conf.setPropertyByName(LabelFieldConstant.BF_BASEPANEL_PCLS, propEditorLblPanelCss);
+		} catch (Exception e) {
+			
+		}
+		return conf;
 	}
 
 }
