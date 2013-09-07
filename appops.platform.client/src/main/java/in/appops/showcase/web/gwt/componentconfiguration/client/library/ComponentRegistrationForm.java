@@ -58,6 +58,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 	private final String POPUPGLASSPANELCSS = "popupGlassPanel";
 	private final String POPUP_CSS = "popupCss";
 	private final String POPUP_LBL_PCLS = "popupLbl";
+	private final String SUGGESTIONBOX_PCLS = "componentNameSuggestionBox";
 	
 	/** Field ID **/
 	private static String SAVECOMPONENT_BTN_ID = "saveCompBtnId";
@@ -95,7 +96,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			headerLbl.create();
 			
 			basePanel.add(headerLbl);
-			basePanel.setCellHorizontalAlignment(headerLbl, HorizontalPanel.ALIGN_CENTER);
+			basePanel.setCellHorizontalAlignment(headerLbl, HorizontalPanel.ALIGN_LEFT);
 			basePanel.add(containerTable);
 			containerTable.addStyleName(COMPFORM_PANEL_CSS);
 			
@@ -117,6 +118,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			configuration.setPropertyByName(StateFieldConstant.IS_AUTOSUGGESTION,false);
 			configuration.setPropertyByName(StateFieldConstant.BF_SUGGESTION_POS,StateFieldConstant.BF_SUGGESTION_INLINE);
 			configuration.setPropertyByName(StateFieldConstant.BF_SUGGESTION_TEXT,"Component Name");
+			configuration.setPropertyByName(StateFieldConstant.BF_PCLS,SUGGESTIONBOX_PCLS);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -293,6 +295,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 						Entity compEntity = result.getOperationResult();
 						if(compEntity!=null){
 							showPopup(compEntity.getPropertyByName("name").toString()+" updated successfully...");
+							componentNameField.clear();
 							compEntityToUpdate = null;
 							HashMap<String,Object> rowVsCompEnt = new HashMap<String,Object>();
 					        rowVsCompEnt.put("row", componnetEntRow);
