@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Image;
 
@@ -33,6 +34,7 @@ imageField.create();<br>
 public class ImageField extends BaseField implements ClickHandler{
 
 	private Image image ;
+	private HandlerRegistration clickHandler = null ;
 	private Logger logger = Logger.getLogger(getClass().getName());
 
 	public ImageField(){
@@ -47,7 +49,7 @@ public class ImageField extends BaseField implements ClickHandler{
 	public void create() {
 		try {
 			logger.log(Level.INFO, "[ImageField] ::In create method ");
-			image.addClickHandler(this);
+			clickHandler = image.addClickHandler(this);
 			getBasePanel().add(image,DockPanel.CENTER);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ImageField] ::Exception in create method :"+e);
@@ -79,6 +81,17 @@ public class ImageField extends BaseField implements ClickHandler{
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ImageField] ::Exception in configure method :"+e);
 		}
+	}
+	
+	/**
+	 * Method removed registered handlers from field
+	 */
+	@Override
+	public void removeRegisteredHandlers() {
+		
+		if(clickHandler!=null)
+			clickHandler.removeHandler();
+		
 	}
 	
 	/**
