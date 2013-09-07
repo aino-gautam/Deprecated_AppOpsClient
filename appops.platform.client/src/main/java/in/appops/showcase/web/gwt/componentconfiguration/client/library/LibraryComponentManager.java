@@ -3,8 +3,10 @@ package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
 import in.appops.platform.core.shared.Configuration;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -15,6 +17,7 @@ public class LibraryComponentManager extends Composite{
 	
 	/** Field id**/
 	public static final String LIBRARYLISTBOX_ID = "libraryListBoxId";
+	public final String LIBRARYLISTBOX_PCLS = "libraryListBoxField";
 	
 	public LibraryComponentManager() {
 		
@@ -50,8 +53,8 @@ public class LibraryComponentManager extends Composite{
 		try {
 			configuration.setPropertyByName(ListBoxFieldConstant.BF_ID,LIBRARYLISTBOX_ID);
 			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_OPRTION,"appdefinition.AppDefinitionService.getLibraries");
-			//configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_QUERYNAME,"getAllLibraries");
 			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ENTPROP,"name");
+			configuration.setPropertyByName(ListBoxFieldConstant.BF_PCLS,LIBRARYLISTBOX_PCLS);
 			configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"--- Please select a library---");
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "LibraryComponentManager :: getLibraryListBoxConfiguration :: Exception", e);
