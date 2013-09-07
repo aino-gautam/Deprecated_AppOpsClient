@@ -10,28 +10,29 @@
 .saveCompBtnCss{
 	height: 30px;
 	border: 1px solid #DCDCDC;
-	margin: 0px 3px;
+	margin: 10px;
 	font-family: 'Ubuntu', sans-serif;
 	-webkit-box-shadow: 1px 1px 1px 0px #8F8C8C;
     box-shadow: 1px 1px 1px 0 #8F8C8C;
     color: #333333;
-    margin-top: 4px;
+    margin-top: 10px;
     cursor: hand;
     cursor: pointer;
 }
 
-.removePropertyImage{
-	width: 20px;
+.removePropertyImage {
+	width: 17px;
 	cursor: pointer;
 	cursor: hand;
-	margin-top: 6px;
+	margin-top: 8px;
 	margin-left: 7px;
-	 
 }
 
 .compRegisterLabelCss{
 	font-family: 'Ubuntu', sans-serif;
 	font-size: 14px;
+	margin-top: 10px;
+	background-color: rgb(224, 224, 224);
 }
 
 .properyPanelCss{
@@ -39,14 +40,13 @@
 }
 
 .saveConfigButton{
+	height: 30px;
 	border: 1px solid #DCDCDC;
-	margin: 0px 3px;
+	margin: 10px;
 	font-family: 'Ubuntu', sans-serif;
 	-webkit-box-shadow: 1px 1px 1px 0px #8F8C8C;
     box-shadow: 1px 1px 1px 0 #8F8C8C;
     color: #333333;
-    font-family: 'Ubuntu',sans-serif;
-    height: 25px;
     margin-top: 4px;
     cursor: hand;
     cursor: pointer;
@@ -54,8 +54,9 @@
 
 .componentFormPanel{
 	border: 1px solid;
-	width: 1000px;
-	margin-top: 15px;
+	width: 930px;
+	margin-top: 4px;
+	margin-left: 10px;
 	
 }
 
@@ -91,8 +92,8 @@
 	font-weight: bold;
 	font-family: 'Ubuntu', sans-serif;
 	font-size: 14px;
-	margin-bottom: 7px;
-	margin-top: 10px;
+	margin-top: 15px;
+	margin-left: 10px;
 }
 
 .libraryPanel{
@@ -252,6 +253,47 @@
 	font-family: 'Ubuntu',sans-serif;
 	color: #585858;
 }
+
+.componentNameSuggestionBox{
+	margin: 10px 0px 0px 10px;
+	padding: 3px;
+}
+
+.propertNameField{
+	margin: 14px 0px 0px 10px;
+	padding: 3px;
+}
+
+.propertyValueField{
+	margin: 9px 0px 0px 10px;
+	padding: 3px;
+}
+
+.emsTypeListBox {
+	margin-top: 10px;
+	margin-left: 5px;
+	border: 1px solid grey;
+	color: #585858;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 12px;
+	padding: 3px;
+}
+
+.isDefaultField{
+	margin-top: 11px;
+	
+}
+
+.libraryListBoxField {
+	margin-top: 11px;
+	border: 1px solid grey;
+	color: #585858;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 13px;
+	padding: 3px;
+	margin-left: 10px;
+}
+
 .configurationPropertyGrid{
 	border-bottom: 1px solid black;
 }
