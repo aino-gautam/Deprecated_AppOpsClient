@@ -60,7 +60,7 @@ public class ConfigurationEditor extends Composite{
 		basePanel.add(headerLbl);
 		basePanel.add(confPropertyEditor);
 				
-		basePanel.setCellHorizontalAlignment(headerLbl, HorizontalPanel.ALIGN_CENTER);
+		basePanel.setCellHorizontalAlignment(headerLbl, HorizontalPanel.ALIGN_LEFT);
 		
 		ConfigurationListDisplayer configurationListDisplayer = new ConfigurationListDisplayer();
 				
