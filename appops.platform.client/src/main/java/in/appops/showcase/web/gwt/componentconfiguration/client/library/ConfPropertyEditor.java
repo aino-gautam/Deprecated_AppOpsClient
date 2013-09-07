@@ -42,10 +42,11 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandler,ConfigEventHandler, ClickHandler{
 	
+	/**CSS styles **/
 	private final String COMPFORM_PANEL_CSS = "componentFormPanel";
 	private static String SAVE_BTN_PCLS = "saveConfigButton";
 	private final String SAVECONFIGURATION_BTN_ID = "saveConfigBtnId";
-	
+	private final String PROPNAMEFIELD_PCLS = "propertNameField";
 	private final String POPUPGLASSPANELCSS = "popupGlassPanel";
 	private final String POPUP_CSS = "popupCss";
 	private final String POPUP_LBL_PCLS = "popupLbl";
@@ -118,7 +119,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	private Configuration getSaveConfigurationBtnConf(){
 		Configuration configuration = new Configuration();
 		try {
-			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Save configuration");
+			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Save Configuration");
 			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,SAVE_BTN_PCLS);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_ENABLED, true);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, SAVECONFIGURATION_BTN_ID);
@@ -139,16 +140,17 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			configuration.setPropertyByName(TextFieldConstant.TF_TYPE, TextFieldConstant.TFTYPE_TXTBOX);
 			
 			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
-			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter property name");
+			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter the property name");
 			
 			if(propName!=null)
 				configuration.setPropertyByName(TextFieldConstant.BF_DEFVAL, propName);
 			
 			configuration.setPropertyByName(TextFieldConstant.BF_ID, propName);
+			configuration.setPropertyByName(TextFieldConstant.BF_PCLS, PROPNAMEFIELD_PCLS);
 			
-			configuration.setPropertyByName(TextFieldConstant.BF_BLANK_TEXT,"Property can't be empty");
+			/*configuration.setPropertyByName(TextFieldConstant.BF_BLANK_TEXT,"Property can't be empty");
 			configuration.setPropertyByName(TextFieldConstant.BF_ALLOWBLNK,false);
-			configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS,TextFieldConstant.BF_ERRINLINE);
+			configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS,TextFieldConstant.BF_ERRINLINE);*/
 			
 		} catch (Exception e) {
 		}
@@ -229,7 +231,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				public void onSuccess(Result<Entity> result) {
 					if (result != null) {
 						Entity confEnt = result.getOperationResult();
-						showPopup(confEnt.getPropertyByName("keyvalue").toString()+ " added ");
+						showPopup(confEnt.getPropertyByName("keyvalue").toString()+ " property added successfully... ");
 						
 						propValueList.get(valueRow).setConfTypeEntity(confEnt);
 						Key key = (Key) confEnt.getProperty("id").getValue();
