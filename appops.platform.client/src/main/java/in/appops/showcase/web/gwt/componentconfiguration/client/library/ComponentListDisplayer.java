@@ -84,7 +84,7 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 			basePanel.add(compListLbl);
 			basePanel.add(scrollPanel);
 			
-			basePanel.setCellHorizontalAlignment(compListLbl, HorizontalPanel.ALIGN_CENTER);
+			basePanel.setCellHorizontalAlignment(compListLbl, HorizontalPanel.ALIGN_LEFT);
 			scrollPanel.setStylePrimaryName(SCROLLPANELCSS);
 			compListPanel.setStylePrimaryName(LISTPANEL_CSS);
 			
@@ -116,7 +116,7 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 		descLbl.create();
 		
 		compListPanel.setWidget(componentRow, 0, nameLbl);
-		compListPanel.setWidget(componentRow, 1, descLbl);
+		compListPanel.setWidget(componentRow, 3, descLbl);
 		
 		compListPanel.getRowFormatter().setStylePrimaryName(componentRow, COMPLISTROW_CSS);
 		
@@ -228,11 +228,10 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 			componentList = new HashMap<Integer, Entity>();
 		
 		compListPanel.setWidget(componentRow, 0, nameLbl);
-		compListPanel.setWidget(componentRow, 1, descLbl);
+		compListPanel.setWidget(componentRow, 3, descLbl);
 		
 		componentList.put(componentRow,componentEntity);
 		compListPanel.getRowFormatter().setStylePrimaryName(componentRow, COMPLISTROW_CSS);
-		
 		componentRow++;
 			
 	}
