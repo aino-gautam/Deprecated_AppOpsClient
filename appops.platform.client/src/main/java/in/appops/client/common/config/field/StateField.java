@@ -82,9 +82,9 @@ public class StateField extends BaseField implements FieldEventHandler {
 			}
 			
 			if (getBaseFieldPrimCss() != null)
-				appopsSuggestionBox.setStylePrimaryName(getBaseFieldPrimCss());
+				appopsSuggestionBox.getTextBox().setStylePrimaryName(getBaseFieldPrimCss());
 			if (getBaseFieldDependentCss() != null)
-				appopsSuggestionBox.addStyleName(getBaseFieldDependentCss());
+				appopsSuggestionBox.getTextBox().addStyleName(getBaseFieldDependentCss());
 
 			if (getBasePanelPrimCss() != null)
 				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());

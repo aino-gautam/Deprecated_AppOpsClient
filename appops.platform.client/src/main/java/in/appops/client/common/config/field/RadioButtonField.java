@@ -148,6 +148,8 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler, B
 				radioBtn.setStylePrimaryName(getBaseFieldPrimCss());
 			if(getBaseFieldDependentCss()!=null)
 				radioBtn.addStyleName(getBaseFieldDependentCss());
+			if(getTabIndex()!=null)
+				radioBtn.setTabIndex(getTabIndex());
 			
 			if (getBasePanelPrimCss() != null)
 				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
