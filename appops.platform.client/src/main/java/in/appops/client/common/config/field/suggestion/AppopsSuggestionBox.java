@@ -36,7 +36,6 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 
 	public AppopsSuggestionBox() {
 		basePanel = new VerticalPanel();
-		createUi();
 		initWidget(basePanel);
 	}
 	
