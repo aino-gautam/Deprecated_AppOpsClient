@@ -19,7 +19,8 @@ public class ConfigEvent extends GwtEvent<ConfigEventHandler> {
 	public static final int POPULATESPANS = 6;
 	public static final int SHOWPAGECONFIGURATION = 7;
 	public static final int HIDEPAGECONFIGURATION = 8;
-	
+	public static final int SAVEPROPVALUEADDWIDGET = 9;
+
 	public ConfigEvent(int type, Object data ,Object eventSource) {
 		this.eventType = type;
 		this.eventData = data;
