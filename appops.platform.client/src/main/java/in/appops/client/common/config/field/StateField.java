@@ -98,6 +98,19 @@ public class StateField extends BaseField implements FieldEventHandler {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in configure method :"+e);
 		}
 	}
+	
+	/**
+	 * Method removed registered handlers from field
+	 */
+	@Override
+	public void removeRegisteredHandlers() {
+		
+		try {
+			appopsSuggestionBox.removeRegisteredHandlers();
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception in removeRegisteredHandlers method :"+e);
+		}
+	}
 
 	@Override
 	public void reset() {

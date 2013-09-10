@@ -129,7 +129,6 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			}
 			
 			
-			
 			if (getBasePanelPrimCss() != null)
 				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
 			if (getBasePanelDependentCss() != null)
@@ -152,6 +151,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		try {
 			textBox = new TextBox();
 			textBox.setReadOnly(isReadOnly());
+			textBox.setEnabled(isEnabled());
+			
 			if (getBaseFieldPrimCss() != null)
 				textBox.setStylePrimaryName(getBaseFieldPrimCss());
 			if (getBaseFieldDependentCss() != null)
@@ -184,6 +185,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			Integer visibleLines = getNoOfVisibleLines();
 			textArea.setVisibleLines(visibleLines);
 			textArea.setReadOnly(isReadOnly());
+			textArea.setEnabled(isEnabled());
 
 			if(getBaseFieldPrimCss() != null)
 				textArea.setStylePrimaryName(getBaseFieldPrimCss());
@@ -191,6 +193,9 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 				textArea.addStyleName(getBaseFieldDependentCss());
 			if(getFieldCharWidth()!=null)
 				textArea.setCharacterWidth(getFieldCharWidth());
+			
+			if (getTabIndex() != null)
+				textArea.setTabIndex(getTabIndex());
 			
 			keyPressHandler = textArea.addKeyPressHandler(this);
 			blurHandler = textArea.addBlurHandler(this);
@@ -211,6 +216,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			logger.log(Level.INFO, "[TextField] ::In createPasswordBox method ");
 			passwordTextBox = new PasswordTextBox();
 			passwordTextBox.setReadOnly(isReadOnly());
+			passwordTextBox.setEnabled(isEnabled());
 			if (getBaseFieldPrimCss() != null)
 				passwordTextBox.setStylePrimaryName(getBaseFieldPrimCss());
 			if (getBaseFieldDependentCss() != null)
@@ -242,6 +248,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			numericTextbox = new NumericTextbox(this);
 			numericTextbox.setConfiguration(getConfiguration());
 			numericTextbox.setReadOnly(isReadOnly());
+			numericTextbox.setEnabled(isEnabled());
 			if (getBaseFieldPrimCss() != null)
 				numericTextbox.setStylePrimaryName(getBaseFieldPrimCss());
 			if (getBaseFieldDependentCss() != null)
@@ -321,8 +328,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		if(blurHandler!=null)
 			blurHandler.removeHandler();
 		
-		if(blurHandler!=null)
-			blurHandler.removeHandler();
+		if(keyPressHandler!=null)
+			keyPressHandler.removeHandler();
 	}
 	
 	/**
@@ -810,6 +817,9 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		try {
 			logger.log(Level.INFO, "[TextField] ::In onKeyUp method ");
 			Integer keycode= event.getNativeKeyCode();
+			FieldEvent fieldEvent = new FieldEvent();
+			fieldEvent.setEventSource(this);
+			fieldEvent.setEventData(getValue());
 			if(keycode.equals(KeyCodes.KEY_BACKSPACE) || keycode.equals(KeyCodes.KEY_DELETE)){
 				if(isValidateField()){
 					if(isValidateOnChange()){
@@ -822,13 +832,14 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 				}
 				
 				if(isDirty()){
-					FieldEvent fieldEvent = new FieldEvent();
-					fieldEvent.setEventSource(this);
-					fieldEvent.setEventData(getValue());
 					fieldEvent.setEventType(FieldEvent.EDITINPROGRESS);
-					AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 				}
+			}else if(keycode.equals(KeyCodes.KEY_TAB)){
+				fieldEvent.setEventType(FieldEvent.TAB_KEY_PRESSED);
 			}
+			
+			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[TextField] ::Exception In onKeyUp method "+e);
 		}

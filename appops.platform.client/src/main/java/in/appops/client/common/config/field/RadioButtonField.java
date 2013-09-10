@@ -8,18 +8,22 @@ import java.util.logging.Logger;
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 
-public class RadioButtonField extends BaseField implements ValueChangeHandler, BlurHandler{
+public class RadioButtonField extends BaseField implements ValueChangeHandler, BlurHandler,KeyUpHandler{
 
 	private RadioButton radioBtn;
 	private Logger logger = Logger.getLogger(getClass().getName());
 	private HandlerRegistration changeHandler  =  null;
 	private HandlerRegistration blurHandler  =  null;
+	private HandlerRegistration keyUpHandler  = null;
 	
 	/*******************  Fields ID *****************************/
 	
@@ -35,6 +39,7 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler, B
 		try {
 			changeHandler = radioBtn.addValueChangeHandler(this);
 			blurHandler = radioBtn.addBlurHandler(this);
+			keyUpHandler = radioBtn.addKeyUpHandler(this);
 			getBasePanel().add(radioBtn,DockPanel.CENTER);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[RadioButtonField] ::Exception in create method :"+e);
@@ -106,6 +111,10 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler, B
 		
 		if(blurHandler!=null)
 			blurHandler.removeHandler();
+		
+		if(keyUpHandler!=null)
+			keyUpHandler.removeHandler();
+		
 	}
 
 	@Override
@@ -173,6 +182,22 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler, B
 	}
 	
 	@Override
+	public void onKeyUp(KeyUpEvent event) {
+		try {
+			Integer keycode= event.getNativeKeyCode();
+			if(keycode.equals(KeyCodes.KEY_TAB)){
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventSource(this);
+				fieldEvent.setEventData(getValue());
+				fieldEvent.setEventType(FieldEvent.TAB_KEY_PRESSED);
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[RadioButtonField] ::Exception In onKeyUp method "+e);
+		}
+	}
+	
+	@Override
 	public void onBlur(BlurEvent event) {
 		try {
 			FieldEvent fieldEvent = new FieldEvent();
@@ -198,5 +223,7 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler, B
 		public static final String RF_GROUPID = "groupId";
 		
 	}
+
+
 
 }

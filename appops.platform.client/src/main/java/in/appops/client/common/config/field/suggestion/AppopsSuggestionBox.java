@@ -14,6 +14,7 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
@@ -28,6 +29,9 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	private SuggestionOracle oracle = new SuggestionOracle();
 	private SuggestBox suggestBox = new SuggestBox(oracle);
 	private Boolean isAutoSuggestion = false;
+	private HandlerRegistration clickHandler = null ;
+	private HandlerRegistration focusHandler = null ;
+	private HandlerRegistration selectionHandler = null ;
 	private Logger logger = Logger.getLogger(getClass().getName());
 
 	public AppopsSuggestionBox() {
@@ -41,12 +45,32 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 		try {
 			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In createUi method ");
 			this.basePanel.add(suggestBox);
-			suggestBox.addSelectionHandler(this);
-			suggestBox.getTextBox().addClickHandler(this);
-			suggestBox.getTextBox().addFocusHandler(this);
+			selectionHandler = suggestBox.addSelectionHandler(this);
+			clickHandler = suggestBox.getTextBox().addClickHandler(this);
+			focusHandler = suggestBox.getTextBox().addFocusHandler(this);
 			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in createUi method :"+e);
+		}
+	}
+	
+	/**
+	 * Method removes registered handlers.
+	 */
+	
+	public void removeRegisteredHandlers() {
+		
+		try {
+			if(clickHandler!=null)
+				clickHandler.removeHandler();
+			
+			if(focusHandler!=null)
+				focusHandler.removeHandler();
+			
+			if(selectionHandler!=null)
+				selectionHandler.removeHandler();
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in removeRegisteredHandlers method :"+e);
 		}
 	}
 	
@@ -73,6 +97,19 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	
 	
 	/****************************** ************************************************************/
+	
+	/**
+	 *  Methods sets enable property to the suggestion box.
+	 * @param isEnabled
+	 */
+	public void setEnabled(Boolean isEnabled) {
+		try {
+			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setEnabled method ");
+			suggestBox.getTextBox().setEnabled(isEnabled);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setEnabled method :"+e);
+		}
+	}
 	
 	/**
 	 * Methods sets the query name to oracle..
