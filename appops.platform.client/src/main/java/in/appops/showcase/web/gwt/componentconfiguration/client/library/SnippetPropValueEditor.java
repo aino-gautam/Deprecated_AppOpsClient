@@ -2,22 +2,31 @@ package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
 import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.ConfigEvent;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.shared.Configuration;
 
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 
 /**
  * @author mahesh@ensarm.com
  *
  */
-public class SnippetPropValueEditor {
+public class SnippetPropValueEditor extends Composite implements FieldEventHandler{
 
+	private String snipPropValEditorId;
+
+	public SnippetPropValueEditor reference;
+	
 	private FlexTable propValuePanel;
-	private int valuePanelRow;
+	private int valuePanelRow=0;
 	private Entity confInstanceEntity;
 	private TextField paramNameField;
 	private TextField paramValueField;
@@ -28,14 +37,20 @@ public class SnippetPropValueEditor {
 	
 	/*******************  Fields ID *****************************/
 	private final String PARANAME_FIELD_ID = "paramNameFieldId";
-	private final String PARAMVALUE_FLD_ID = "paramValFldId";
-	private final String REMOVEPROP_IMGID = "removePropImgId";
+	private final String QUERYPARAMVALUE_FLD_ID = "qryParamValFldId";
+	private final String OPERATIONPARAMVALUE_FLD_ID = "opParamValFldId";
+	private final String REMOVEPROP_IMGID = "removePropValueImgId";
 	
-	public SnippetPropValueEditor() {
-		
+	public SnippetPropValueEditor(String querymode) {
+		propValuePanel = new FlexTable();
+		snipPropValEditorId = querymode;
+		reference = this;
+		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+		initWidget(propValuePanel);
+		createUi();
 	}
 
-	public void createUi(){
+	private void createUi(){
 				
 		paramNameField = new TextField();
 		paramNameField.setConfiguration(getParamNameFldConfig());
@@ -52,12 +67,13 @@ public class SnippetPropValueEditor {
 		removePropImgFld.configure();
 		removePropImgFld.create();
 		
-		propValuePanel.insertRow(valuePanelRow);
+		//propValuePanel.insertRow(valuePanelRow);
 		
 		propValuePanel.setWidget(valuePanelRow, 3, paramNameField);
 		propValuePanel.setWidget(valuePanelRow, 5, paramValueField);
 		propValuePanel.setWidget(valuePanelRow, 7, removePropImgFld);
 		
+		propValuePanel.setStylePrimaryName("propNameValContainerFlex");
 	}
 	
 	/**
@@ -115,7 +131,10 @@ public class SnippetPropValueEditor {
 			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
 			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Param Value");
 			
-			configuration.setPropertyByName(TextFieldConstant.BF_ID, PARAMVALUE_FLD_ID);
+			if(snipPropValEditorId.equals(ModelConfigurationEditor.QUERYMODE))
+				configuration.setPropertyByName(TextFieldConstant.BF_ID, QUERYPARAMVALUE_FLD_ID);
+			else
+				configuration.setPropertyByName(TextFieldConstant.BF_ID, OPERATIONPARAMVALUE_FLD_ID);
 			
 			configuration.setPropertyByName(TextFieldConstant.BF_BLANK_TEXT,"Value can't be empty");
 			configuration.setPropertyByName(TextFieldConstant.BF_ALLOWBLNK,false);
@@ -129,26 +148,52 @@ public class SnippetPropValueEditor {
 	
 	public Entity getConfigDefEntity(){
 		try{
-/*			if (confDefEntity == null) {
-				confDefEntity = new Entity();
-				confDefEntity.setType(new MetaType("Configurationdef"));
-			}
-
-			confDefEntity.setPropertyByName("key", Integer.parseInt(paramNameField.getValue().toString()));
-			confDefEntity.setPropertyByName("intvalue", Integer.parseInt(typeField.getValue().toString()));
-			confDefEntity.setPropertyByName("stringvalue", Integer.parseInt(paramNameField.getValue().toString()));
-			confDefEntity.setPropertyByName("isdefault", isDefaultValueField.getValue().toString());*/
+			Entity configDefEnt = new Entity();
+			configDefEnt.setType(new MetaType("Configurationdef"));
 			
-			Entity configInstance = new Entity();
-			configInstance.setType(new MetaType("Configinstance"));
+			configDefEnt.setPropertyByName("name", paramNameField.getValue().toString());
+			configDefEnt.setPropertyByName("instancevalue", paramValueField.getValue().toString());
+			configDefEnt.setProperty("parentId", confInstanceEntity);
+			configDefEnt.setPropertyByName("isdefault", true);
 			
-			configInstance.setPropertyByName("name", paramNameField.getValue().toString());
-			configInstance.setPropertyByName("instancevalue", paramValueField.getValue().toString());
-			configInstance.setProperty("parentId", confInstanceEntity);
-
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		return confInstanceEntity;
+	}
+
+	/**
+	 * @return the snipPropValEditorId
+	 */
+	public String getSnipPropValEditorId() {
+		return snipPropValEditorId;
+	}
+
+	/**
+	 * @param snipPropValEditorId the snipPropValEditorId to set
+	 */
+	public void setSnipPropValEditorId(String snipPropValEditorId) {
+		this.snipPropValEditorId = snipPropValEditorId;
+	}
+
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		try{
+			if(event.getEventSource() instanceof TextField){
+				if(event.getEventType() == FieldEvent.EDITCOMPLETED){
+					if(((TextField)event.getEventSource()).equals(paramValueField)){
+						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SAVEPROPVALUEADDWIDGET, getConfigDefEntity(), reference);
+						AppUtils.EVENT_BUS.fireEvent(configEvent);
+					}
+					/*else if(((TextField)event.getEventSource()).getBaseFieldId().equals(OPERATIONPARAMVALUE_FLD_ID)){
+						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SAVEPROPVALUEADDWIDGET, getConfigDefEntity(), reference);
+						AppUtils.EVENT_BUS.fireEvent(configEvent);
+					}*/
+				}
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

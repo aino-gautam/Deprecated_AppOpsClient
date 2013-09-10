@@ -1,13 +1,10 @@
+
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
-import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
-import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.platform.core.entity.Entity;
-import in.appops.platform.core.shared.Configuration;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -18,7 +15,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class HTMLSnippetConfigurationEditor extends Composite{
 	private TabPanel configuratorBasePanel;
-	private VerticalPanel configuratorEditorPanel;
 	private Entity modelConfigurationType;
 	private Entity viewConfigurationType;
 	private Entity presenterConfigurationType;
@@ -27,57 +23,35 @@ public class HTMLSnippetConfigurationEditor extends Composite{
 	
 	private final String MODEL = "model";
 	private final String VIEW = "view";
-	private final String PRESENTER = "presenter";
 	
-	public HTMLSnippetConfigurationEditor(){
+	public HTMLSnippetConfigurationEditor() {
 		initialize();
 	}
 	
 	public void initialize() {
 		configuratorBasePanel = new TabPanel();
-		configuratorEditorPanel = new VerticalPanel();
 		viewConfigEditor = new ViewConfigurationEditor();
 		initWidget(configuratorBasePanel);
 	}
 	
 	public void createUi() {
-		// TODO Create instances of Property Editor for model, view and presenter
-		
-		// Create each editor and add one in each tab.
+		configuratorBasePanel.setStylePrimaryName("fullWidth");
 		configuratorBasePanel.add(getModelEditor(), MODEL);
 		configuratorBasePanel.add(getViewEditor(), VIEW);
-		configuratorBasePanel.add(null, PRESENTER);
+		configuratorBasePanel.selectTab(0);
 	}
 	
 	private Widget getModelEditor() {
-/*		VerticalPanel modelEditorPanel = new VerticalPanel();
-		
-		TextField valueField = new TextField();
-		valueField.setConfiguration(getStringValueFieldConf());
-		valueField.configure();
-		valueField.create();
-		
-		LabelField nameField = new LabelField();
-		nameField.setConfiguration(getLabelFieldConf(""));
-		nameField.configure();
-		nameField.create();
-
-		return modelEditorPanel;*/
-		
 		ModelConfigurationEditor modConfigEditor = new ModelConfigurationEditor();
 		modConfigEditor.createUi();
 		return modConfigEditor;
 	}
 	
 	public ViewConfigurationEditor getViewEditor() {
+		ViewConfigurationEditor viewConfigEditor = new ViewConfigurationEditor();
 		return viewConfigEditor;
 	}
 	
-	private Widget getPresenterEditor() {
-		VerticalPanel presenterEditorPanel = new VerticalPanel();
-		return presenterEditorPanel;
-	}
-
 	public void setModelConfigurationType(Entity modelConfigurationType) {
 		this.modelConfigurationType = modelConfigurationType;
 	}
@@ -85,44 +59,5 @@ public class HTMLSnippetConfigurationEditor extends Composite{
 	public void setViewConfigurationType(Entity viewConfigurationType) {
 		this.viewConfigurationType = viewConfigurationType;
 	}
-	
-	private Configuration getStringValueFieldConf() {
-		final String STRINGVAL_FIELD_ID = "stringValFieldId";
-		Configuration configuration = null;	
-
-		try {
-			configuration = new Configuration();
-
-			configuration.setPropertyByName(TextFieldConstant.TF_TYPE, TextFieldConstant.TFTYPE_TXTBOX);
-			
-			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
-			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Add string value");
-			
-			configuration.setPropertyByName(TextFieldConstant.BF_ID, STRINGVAL_FIELD_ID);
-			
-		} catch (Exception e) {
-
-		}
-		return configuration;
-	}
-
-	private Configuration getLabelFieldConf(String displayText) {
-		final String COMPLISTLBL_CSS = "compRegisterLabelCss";
-
-		Configuration configuration = null;	
-		try{
-			configuration = new Configuration();
-
-			configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, displayText);
-			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, COMPLISTLBL_CSS);
-
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
-		return configuration;
-	}
-	
-	
 
 }
