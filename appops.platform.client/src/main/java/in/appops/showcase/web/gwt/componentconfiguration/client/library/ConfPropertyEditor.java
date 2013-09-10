@@ -309,13 +309,8 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 						
 						
 						EntityList typesList = (EntityList) mapEntry.getValue();
-						
-						//remove(propValuePanel);
-						clear();
-						
-						populateEditor();
-						//propValuePanel.removeRow(valueRow);
 						propNameField.setFieldValue(keyname);
+						propValuePanel.clear();
 						for(Entity entity : typesList){
 							confTypeEnt = entity;
 							
@@ -435,36 +430,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 		}
 	}
 	
-	private void populateEditor() {
-		try {
-			propValuePanel = new FlexTable();
-			
-			propNameField = new TextField();
-			propNameField.setConfiguration(getPropNameFieldConf(null));
-			propNameField.configure();
-			propNameField.create();
-			
-			ButtonField saveConfigBtn = new ButtonField();
-			saveConfigBtn.setConfiguration(getSaveConfigurationBtnConf());
-			saveConfigBtn.configure();
-			saveConfigBtn.create();
-			
-			propValuePanel.setWidget(valueRow, 0, propNameField);
-			
-			propValuePanel.setWidget(valueRow+5, 0, saveConfigBtn);
-				
-			
-			insertEmptyRecord();
-			
-			add(propValuePanel);
-			setStylePrimaryName(COMPFORM_PANEL_CSS);
-			
-		} catch (Exception e) {
-			
-		}
-			
-		
-	}
+	
 
 	
 }
