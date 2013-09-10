@@ -103,7 +103,7 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 	private Configuration getLibraryBtnConf(){
 		Configuration configuration = new Configuration();
 		try {
-			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Manage library");
+			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Manage Components");
 			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,HOME_BTN_PCLS);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, MANAGELIB_BTN_ID);
 		} catch (Exception e) {
