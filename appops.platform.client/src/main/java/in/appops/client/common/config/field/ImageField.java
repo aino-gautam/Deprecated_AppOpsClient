@@ -64,6 +64,9 @@ public class ImageField extends BaseField implements ClickHandler{
 	public void configure() {
 		try {
 			logger.log(Level.INFO, "[ImageField] ::In configure method ");
+			
+			image.setVisible(isFieldVisible());
+			
 			if(getImageBlobId()!=null)
 				image.setUrl(getImageBlobId());
 			if(getImageTitle()!=null)

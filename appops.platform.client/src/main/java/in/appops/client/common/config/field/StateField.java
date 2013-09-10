@@ -47,6 +47,7 @@ public class StateField extends BaseField implements FieldEventHandler {
 	private Logger logger = Logger.getLogger(getClass().getName());
 
 	public StateField(){
+		appopsSuggestionBox = new AppopsSuggestionBox();
 		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 	}
 	
@@ -67,7 +68,7 @@ public class StateField extends BaseField implements FieldEventHandler {
 	public void configure() {
 		try {
 			logger.log(Level.INFO, "[StateField] ::In configure method ");
-			appopsSuggestionBox = new AppopsSuggestionBox();
+			
 			setSuggestionInline();
 			if(isStaticSuggestionBox()){
 				appopsSuggestionBox.setStaticSuggestionBox(isStaticSuggestionBox());
@@ -93,6 +94,8 @@ public class StateField extends BaseField implements FieldEventHandler {
 			
 			appopsSuggestionBox.setAutoSuggestion(isAutosuggestion());
 			appopsSuggestionBox.createUi();
+			
+			appopsSuggestionBox.setEnabled(isEnabled());
 			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in configure method :"+e);

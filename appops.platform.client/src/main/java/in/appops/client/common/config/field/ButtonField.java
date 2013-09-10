@@ -103,6 +103,9 @@ public class ButtonField extends BaseField implements ClickHandler, BlurHandler,
 		try {
 			logger.log(Level.INFO,"[ButtonField]:: In configure  method ");
 			setFieldValue(getDisplayText());
+			
+			button.setEnabled(isEnabled());
+			
 			if(getBtnTitle()!=null)
 				button.setTitle(getBtnTitle());
 			
@@ -116,7 +119,7 @@ public class ButtonField extends BaseField implements ClickHandler, BlurHandler,
 			if (getBasePanelDependentCss() != null)
 				getBasePanel().addStyleName(getBasePanelDependentCss());
 			
-			button.setEnabled(isEnabled());
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ButtonField]::Exception In configure  method :"+e);
 		}
