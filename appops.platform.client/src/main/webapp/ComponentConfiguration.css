@@ -232,6 +232,52 @@
 	cursor: hand;
 }
 
+.fullWidth{
+	width: 100%;
+}
+
+.queryDetailHolderCss{
+	border: 1px solid black;
+	padding: 10px;
+}
+
+.opDetailHolderCss{
+	border: 1px solid black;
+	padding: 10px;
+}
+
+.gwt-TabPanelBottom {
+	border-color: black !important;
+	border-width: 1px !important;
+	overflow: hidden;
+	padding: 6px;
+}
+
+.gwt-TabBar .gwt-TabBarItem-selected {
+	cursor: default;
+	background: grey !important !important;
+	border-left : 2px orange solid;
+	border-right : 2px orange solid;
+	border-top : 2px orange solid;
+    opacity : 0.4;
+}
+
+.gwt-TabBar .gwt-TabBarItem {
+	padding: 4px 10px !important;
+	color: white !important;
+	font-weight: normal !important;
+	background: black !important;
+	border-radius: 3px 3px 0 0 !important;
+}
+
+.propNameValContainerFlex{
+	margin-left: -20px;
+}
+
+.modelLblCss{
+	margin-top: 5px;
+}
+
 .popupCss{
 	left: 542px;
 	top: 70px;
