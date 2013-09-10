@@ -16,7 +16,10 @@
     box-shadow: 1px 1px 1px 0 #8F8C8C;
     color: #333333;
     margin-top: 10px;
-    cursor: hand;
+}
+
+.saveCompBtnDependentcss{
+	cursor: hand;
     cursor: pointer;
 }
 
@@ -32,7 +35,6 @@
 	font-family: 'Ubuntu', sans-serif;
 	font-size: 14px;
 	margin-top: 10px;
-	background-color: rgb(224, 224, 224);
 }
 
 .properyPanelCss{
@@ -357,4 +359,11 @@
 .configurationListTable{
 	width: 900px;
 	height: 100%;
+}
+
+.noComponentAvailLbl {
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 14px;
+	margin-top: 15px;
+	margin-left: 10px;
 }
