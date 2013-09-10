@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -47,12 +46,14 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 	private VerticalPanel basePanel;
 	private Entity libraryEntity;
 	private StateField componentNameField;
+	private ButtonField saveComponentBtnFld;
 	private Entity compEntityToUpdate;
 	private int componnetEntRow;
 	private Logger logger = Logger.getLogger("ComponentRegistrationForm");
 		
 	/** CSS styles **/
 	private final String SAVECOMP_BTN_PCLS = "saveCompBtnCss";
+	private final String SAVECOMP_BTN_DCLS = "saveCompBtnDependentcss";
 	private final String COMPFORM_PANEL_CSS = "componentFormPanel";
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
 	private final String POPUPGLASSPANELCSS = "popupGlassPanel";
@@ -74,13 +75,13 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			VerticalPanel containerTable = new VerticalPanel();
 			
 			componentNameField = new StateField();
-			Configuration stateFieldConfig = getComponentSuggestionFieldConf();
+			Configuration stateFieldConfig = getComponentSuggestionFieldConf(false);
 			componentNameField.setConfiguration(stateFieldConfig);
 			componentNameField.configure();
 			componentNameField.create();	
 								
-			ButtonField saveComponentBtnFld = new ButtonField();
-			Configuration savebTnConfig = getSaveBtnConfig();
+			saveComponentBtnFld = new ButtonField();
+			Configuration savebTnConfig = getSaveBtnConfig(false);
 			saveComponentBtnFld.setConfiguration(savebTnConfig);
 			saveComponentBtnFld.configure();
 			saveComponentBtnFld.create();
@@ -106,7 +107,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 		}
 	}
 		
-	private Configuration getComponentSuggestionFieldConf() {
+	private Configuration getComponentSuggestionFieldConf(Boolean isEnabled) {
 
 		Configuration configuration = new Configuration();
 		try {
@@ -119,6 +120,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			configuration.setPropertyByName(StateFieldConstant.BF_SUGGESTION_POS,StateFieldConstant.BF_SUGGESTION_INLINE);
 			configuration.setPropertyByName(StateFieldConstant.BF_SUGGESTION_TEXT,"Component Name");
 			configuration.setPropertyByName(StateFieldConstant.BF_PCLS,SUGGESTIONBOX_PCLS);
+			configuration.setPropertyByName(StateFieldConstant.BF_ENABLED,isEnabled);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -139,14 +141,16 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 		return configuration;
 	}
 
-	private Configuration getSaveBtnConfig() {
+	private Configuration getSaveBtnConfig(Boolean isEnabled) {
 		Configuration configuration = null;	
 		try{
 			configuration = new Configuration();
 			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Register");
 			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,SAVECOMP_BTN_PCLS);
-			configuration.setPropertyByName(ButtonFieldConstant.BF_ENABLED, true);
+			if(isEnabled)
+				configuration.setPropertyByName(ButtonFieldConstant.BF_DCLS,SAVECOMP_BTN_DCLS);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, SAVECOMPONENT_BTN_ID);
+			configuration.setPropertyByName(ButtonFieldConstant.BF_ENABLED,isEnabled);
 		}
 		catch(Exception e){
 			logger.log(Level.SEVERE, "ComponentRegistrationForm :: getSaveBtnConfig :: Exception", e);
@@ -219,8 +223,10 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 						if(selectedItem!=null){
 							Entity libEntity = selectedItem.getAssociatedEntity();
 							libraryEntity = libEntity;
+							enableRegistrationForm(true);
 						}else{
 							libraryEntity = null;
+							enableRegistrationForm(false);
 						}
 						
 					}
@@ -230,6 +236,20 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 		catch (Exception e) {
 			logger.log(Level.SEVERE, "ComponentRegistrationForm :: onFieldEvent :: Exception", e);
 		}
+	}
+	
+	private void enableRegistrationForm(Boolean isEnable){
+		componentNameField.removeRegisteredHandlers();
+		Configuration stateFieldConfig = getComponentSuggestionFieldConf(isEnable);
+		componentNameField.setConfiguration(stateFieldConfig);
+		componentNameField.configure();
+		componentNameField.create();	
+							
+		saveComponentBtnFld.removeRegisteredHandlers();
+		Configuration savebTnConfig = getSaveBtnConfig(isEnable);
+		saveComponentBtnFld.setConfiguration(savebTnConfig);
+		saveComponentBtnFld.configure();
+		saveComponentBtnFld.create();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -260,7 +280,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 							showPopup(compEntity.getPropertyByName("name").toString()+" saved succesfully...");
 							componentNameField.clear();
 							
-							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.NEW_COMPONENT_SAVED, map,this);
+							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.NEW_COMPONENT_REGISTERED, map,this);
 							AppUtils.EVENT_BUS.fireEvent(configEvent);
 						}
 					}

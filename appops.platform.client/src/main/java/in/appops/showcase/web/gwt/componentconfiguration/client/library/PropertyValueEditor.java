@@ -18,7 +18,6 @@ import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 
-import com.emitrom.lienzo.client.core.mediator.IMediator;
 import com.google.gwt.user.client.ui.FlexTable;
 
 public class PropertyValueEditor implements FieldEventHandler {
@@ -30,14 +29,15 @@ public class PropertyValueEditor implements FieldEventHandler {
 	private ListBoxField typeField;
 	private RadioButtonField isDefaultValueField;
 	private ImageField crossImgField;
+	private ImageField savedImgField;
 	private long entityId = 0;
 	
 	/*******************  Fields ID *****************************/
 	public final String PROPNAME_FIELD_ID = "attributeFieldId";
-	public final String INTVAL_FIELD_ID = "intValFieldId";
-	public final String STRINGVAL_FIELD_ID = "stringValFieldId";
+	public final String VALUE_FIELD_ID = "stringValFieldId";
 	public static final String ISDEF_RADIOBTN_GROUP_ID = "isDefaultRadioBtnGroup";
 	public static final String ISDEF_RADIOBTN_ID = "isDefaultRadioBtnId";
+	public static final String TYPEFIELD_ID = "typeFieldId";
 	private String REMOVEPROP_IMGID = "removePropImgId";
 	
 	
@@ -81,6 +81,8 @@ public class PropertyValueEditor implements FieldEventHandler {
 		crossImgField.configure();
 		crossImgField.create();
 		
+		
+		
 		propValuePanel.setWidget(valuePanelRow, 1, valueField);
 		propValuePanel.setWidget(valuePanelRow, 2, typeField);
 		propValuePanel.setWidget(valuePanelRow, 3, isDefaultValueField);
@@ -106,6 +108,36 @@ public class PropertyValueEditor implements FieldEventHandler {
 			
 		}
 		return configuration;
+	}
+	
+	/**
+	 * Creates the check image field configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getCheckImageConfiguration(){
+		Configuration configuration = new Configuration();
+		try {
+			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, "images/check-icon.jpg");
+			configuration.setPropertyByName(ImageFieldConstant.BF_PCLS,CROSSIMG_CSS);
+			configuration.setPropertyByName(ImageFieldConstant.IMGFD_TITLE, "property saved.");
+			configuration.setPropertyByName(ImageFieldConstant.BF_ID, REMOVEPROP_IMGID);
+			configuration.setPropertyByName(ImageFieldConstant.BF_VISIBLE, true);
+		} catch (Exception e) {
+			
+		}
+		return configuration;
+	}
+	
+	public void showCheckImage(){
+		try {
+			savedImgField = new ImageField();
+			savedImgField.setConfiguration(getCheckImageConfiguration());
+			savedImgField.configure();
+			savedImgField.create();
+			propValuePanel.setWidget(valuePanelRow, 5, savedImgField);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -164,6 +196,7 @@ public class PropertyValueEditor implements FieldEventHandler {
 			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,getDummyTypeList());
 			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ENTPROP,"name");
 			configuration.setPropertyByName(ListBoxFieldConstant.BF_PCLS, TYPEFIELD_PCLS);
+			configuration.setPropertyByName(ListBoxFieldConstant.BF_ID, TYPEFIELD_ID);
 		} catch (Exception e) {
 			
 		}
@@ -194,7 +227,7 @@ public class PropertyValueEditor implements FieldEventHandler {
 			else
 				configuration.setPropertyByName(TextFieldConstant.BF_DEFVAL, "--");
 			
-			configuration.setPropertyByName(TextFieldConstant.BF_ID, STRINGVAL_FIELD_ID);
+			configuration.setPropertyByName(TextFieldConstant.BF_ID, VALUE_FIELD_ID);
 			configuration.setPropertyByName(TextFieldConstant.BF_PCLS, VALUEFIELD_PCLS);
 			
 			//configuration.setPropertyByName(TextFieldConstant.BF_BLANK_TEXT,"Attribute can't be empty");
@@ -266,6 +299,36 @@ public class PropertyValueEditor implements FieldEventHandler {
 						if(entityId!=0){
 							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.PROPERTYREMOVED, entityId, this);
 							AppUtils.EVENT_BUS.fireEvent(configEvent);
+						}
+					}
+				}
+				break;
+			}case FieldEvent.VALUECHANGED: {
+				if (eventSource instanceof ListBoxField) {
+					ListBoxField listboxField = (ListBoxField) eventSource;
+					if(listboxField.getBaseFieldId().equals(TYPEFIELD_ID)){
+						if(entityId!=0){
+							
+						}
+					}
+				}
+				break;
+			}case FieldEvent.EDITINPROGRESS: {
+				if (eventSource instanceof TextField) {
+					TextField listboxField = (TextField) eventSource;
+					if(listboxField.getBaseFieldId().equals(TYPEFIELD_ID)){
+						if(entityId!=0){
+							
+						}
+					}
+				}
+				break;
+			}case FieldEvent.VALUE_SELECTED: {
+				if (eventSource instanceof TextField) {
+					TextField listboxField = (TextField) eventSource;
+					if(listboxField.getBaseFieldId().equals(TYPEFIELD_ID)){
+						if(entityId!=0){
+							
 						}
 					}
 				}

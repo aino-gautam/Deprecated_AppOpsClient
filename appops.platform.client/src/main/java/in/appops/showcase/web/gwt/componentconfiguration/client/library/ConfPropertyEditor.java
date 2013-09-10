@@ -18,6 +18,8 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispat
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
+import in.appops.platform.core.entity.Property;
+import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
@@ -60,8 +62,10 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	private int currentSeletedRow = -1;
 	private Entity deletedConfigEntity = null;
 	private Entity confTypeEnt;	
-	public ConfPropertyEditor() {
-		
+	private EntityList configTypeList ;
+	
+	public ConfPropertyEditor(Entity configType) {
+		this.parentConfTypeEnt = configType;
 	}
 	
 	public void createUi(){
@@ -119,7 +123,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	private Configuration getSaveConfigurationBtnConf(){
 		Configuration configuration = new Configuration();
 		try {
-			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Save Configuration");
+			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Add Configuration");
 			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,SAVE_BTN_PCLS);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_ENABLED, true);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, SAVECONFIGURATION_BTN_ID);
@@ -184,11 +188,12 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				if (eventSource instanceof ButtonField) {
 					ButtonField btnField = (ButtonField) eventSource;
 					if (btnField.getBaseFieldId().equals(SAVECONFIGURATION_BTN_ID)) {
-						saveConfTypeEntity();
+						clearPropertyValueFields();
+						updateConfypeEntity();
 					}
 				}
 				break;
-			}case FieldEvent.EDITCOMPLETED: {
+			}case FieldEvent.TAB_KEY_PRESSED: {
 				if (eventSource instanceof RadioButtonField) {
 					RadioButtonField radioBtnField = (RadioButtonField) eventSource;
 					if(radioBtnField.getBaseFieldId().equals(PropertyValueEditor.ISDEF_RADIOBTN_ID)){
@@ -206,6 +211,21 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	}
 		
 	
+	private void updateConfypeEntity() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void clearPropertyValueFields() {
+		try {
+			propNameField.clear();
+			propValuePanel.clear();
+			createNewRecord();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	private void saveConfTypeEntity() {
 		try {
@@ -231,8 +251,6 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				public void onSuccess(Result<Entity> result) {
 					if (result != null) {
 						Entity confEnt = result.getOperationResult();
-						showPopup(confEnt.getPropertyByName("keyvalue").toString()+ " property added successfully... ");
-						
 						propValueList.get(valueRow).setConfTypeEntity(confEnt);
 						Key key = (Key) confEnt.getProperty("id").getValue();
 						long id = (Long) key.getKeyValue();
@@ -240,6 +258,11 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 						if(idVsConfigTypeEntity==null)
 							idVsConfigTypeEntity = new HashMap<Long, Entity>();
 						idVsConfigTypeEntity.put(id, confEnt);
+						
+						if(configTypeList == null)
+							configTypeList = new EntityList();
+						
+						propValueList.get(valueRow).showCheckImage();
 						insertEmptyRecord();
 					}
 				}
@@ -327,10 +350,22 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				Entity configTypeEnt = idVsConfigTypeEntity.get(entityId);
 				deleteConfigType(configTypeEnt);
 				break;
-			}case ConfigEvent.NEW_COMPONENT_SAVED: {
+			}case ConfigEvent.NEW_COMPONENT_REGISTERED: {
 				HashMap<String, Entity> map = (HashMap<String, Entity>) event.getEventData();
 				Entity configTypeEntity   = map.get("componentConfigType");
 				parentConfTypeEnt = configTypeEntity;
+			}case ConfigEvent.COMPONENTSELECTED: {
+				HashMap<String, Object> map = (HashMap<String, Object>) event.getEventData();
+				Entity componentEntity   = (Entity) map.get("component");
+				Entity configTypeEnt = new Entity();
+				configTypeEnt.setType(new MetaType("Configtype"));
+				
+				Key key = (Key)componentEntity.getPropertyByName("id");
+				Property<Key<Long>> keyProp = new Property<Key<Long>>();
+				keyProp.setValue(key);
+				configTypeEnt.setProperty("id", keyProp);
+				
+				parentConfTypeEnt = configTypeEnt;
 			}
 			default:
 				break;
@@ -429,7 +464,6 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			e.printStackTrace();
 		}
 	}
-	
 	
 
 	

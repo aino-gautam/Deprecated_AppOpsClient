@@ -55,6 +55,7 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 	private final String LISTPANEL_CSS = "componentListPanel";
 	private final String COMPLISTLBL_CSS = "compRegisterLabelCss";
 	private final String COMPLISTROW_CSS = "componentListRow";
+	private final String NOCOMPLBL_CSS = "noComponentAvailLbl";
 	
 	private HashMap<Integer, Entity> componentList ;
 	
@@ -74,8 +75,11 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 			
 			scrollPanel.setHeight("150px");
 			
+			LabelField labelField = getNoComponentAvailLabel();
+			compListPanel.setWidget(4,2,labelField);
+			
 			LabelField compListLbl = new LabelField();
-			Configuration compListLblConfig = getCompListLblConfig();
+			Configuration compListLblConfig = getCompListLblConfig("Components",HEADERLBL_CSS);
 
 			compListLbl.setConfiguration(compListLblConfig);
 			compListLbl.configure();
@@ -98,8 +102,22 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 		}
 	}
 	
+	private LabelField getNoComponentAvailLabel() {
+		try {
+			LabelField noCompLbl = new LabelField();
+			Configuration noCompLblConfig = getCompListLblConfig("No componnets available", NOCOMPLBL_CSS);
+
+			noCompLbl.setConfiguration(noCompLblConfig);
+			noCompLbl.configure();
+			noCompLbl.create();
+			return noCompLbl;
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"ComponentListDisplayer :: addNoComponentAvailLabel :: Exception",e);
+		}
+		return null;
+	}
+
 	private void addHeaderLabel(){
-		
 		
 		LabelField nameLbl = new LabelField();
 		Configuration headerLblConfig = getHeaderLblConfig("Name");
@@ -136,12 +154,12 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 		return configuration;
 	}
 	
-	private Configuration getCompListLblConfig() {
+	private Configuration getCompListLblConfig(String displayTxt , String primaryCss) {
 		Configuration configuration = null;	
 		try{
 			configuration = new Configuration();
-			configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Components");
-			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, HEADERLBL_CSS);
+			configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, displayTxt);
+			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
 		}
 		catch(Exception e){
 			logger.log(Level.SEVERE, "ComponentListDisplayer :: getCompListLblConfig :: Exception", e);
@@ -321,7 +339,7 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 		try{
 			int eventType = event.getEventType();
 			
-			if(eventType == ConfigEvent.NEW_COMPONENT_SAVED){
+			if(eventType == ConfigEvent.NEW_COMPONENT_REGISTERED){
 				
 				HashMap<String, Entity> map = (HashMap<String, Entity>) event.getEventData();
 				Entity compEntity   = map.get("component");
