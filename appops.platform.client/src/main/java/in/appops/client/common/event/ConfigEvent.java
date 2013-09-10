@@ -11,7 +11,7 @@ public class ConfigEvent extends GwtEvent<ConfigEventHandler> {
 	protected Object eventSource = null;
 	public static Type<ConfigEventHandler> TYPE = new Type<ConfigEventHandler>();
 	
-	public static final int NEW_COMPONENT_SAVED = 1;
+	public static final int NEW_COMPONENT_REGISTERED = 1;
 	public static final int UPDATECOMPONENT_FROM_LIST = 2;
 	public static final int COMPONENTSELECTED = 3;
 	public static final int PROPERTYSELECTED = 4;
