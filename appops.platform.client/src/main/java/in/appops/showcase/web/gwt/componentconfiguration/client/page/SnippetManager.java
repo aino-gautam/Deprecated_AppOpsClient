@@ -137,6 +137,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		containerTable.setWidget(4, 0, saveAndProcessButton);
 		
 		basePanel.add(containerTable);
+		createConfigurationEditorUI(null, new ArrayList<Element>());
 	}
 
 	/**
@@ -159,15 +160,16 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		//vp.add(hpSpanSelection);
 		
 		HTMLSnippetConfigurationEditor configEditor = new HTMLSnippetConfigurationEditor();
-		Entity viewConfigEntity   = list.get("view");
-		Entity modelConfigEntity   = list.get("model");
-		configEditor.setModelConfigurationType(modelConfigEntity);
-		configEditor.setViewConfigurationType(viewConfigEntity);
+	//	Entity viewConfigEntity   = list.get("view");
+	//	Entity modelConfigEntity   = list.get("model");
+	//	configEditor.setModelConfigurationType(modelConfigEntity);
+	//	configEditor.setViewConfigurationType(viewConfigEntity);
 		configEditor.createUi();
-		configEditor.getViewEditor().populateSpansListBox(spansList);
+	//	configEditor.getViewEditor().populateSpansListBox(spansList);
 		
 		vp.add(configEditor);
 		
+		//createConfigurationEditorUI(list, new ArrayList<Element>());
 		basePanel.add(vp);
 	}
 	
@@ -349,6 +351,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	/**
 	 * Saves the html snippet 
 	 */
+	@SuppressWarnings("unchecked")
 	private void saveComponent(final ArrayList<Element> spanList) {
 		try{
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
