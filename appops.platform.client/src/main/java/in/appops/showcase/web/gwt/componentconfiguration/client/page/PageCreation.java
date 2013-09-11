@@ -384,7 +384,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter field value");
 			configuration.setPropertyByName(TextFieldConstant.BF_VALIDATEONCHANGE, true);
 			configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
-			configuration.setPropertyByName(TextFieldConstant.TF_MAXLENGTH, 50);
+			configuration.setPropertyByName(TextFieldConstant.TF_MAXLENGTH, 100);
 			configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, true);
 			return configuration;
 		} catch (Exception e) {

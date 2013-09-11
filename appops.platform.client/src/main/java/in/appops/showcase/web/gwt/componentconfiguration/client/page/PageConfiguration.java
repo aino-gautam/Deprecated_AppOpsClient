@@ -1,46 +1,76 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.page;
 
+import in.appops.client.common.config.field.ButtonField;
+import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
+import in.appops.client.common.config.field.GroupField;
+import in.appops.client.common.config.field.GroupField.GroupFieldConstant;
+import in.appops.client.common.config.field.ImageField;
+import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
 import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
+import in.appops.client.common.config.field.RadioButtonField;
+import in.appops.client.common.config.field.RadioButtonField.RadionButtonFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.ConfigEvent;
+import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.ConfigEventHandler;
+import in.appops.client.common.event.handlers.FieldEventHandler;
+import in.appops.client.common.fields.TextField;
+import in.appops.client.common.fields.TextField.TextFieldConstant;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.client.EntityContext;
+import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.type.MetaType;
+import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class PageConfiguration extends Composite implements ConfigEventHandler {
+public class PageConfiguration extends Composite implements ConfigEventHandler,FieldEventHandler {
 	
 	private VerticalPanel basePanel;
 	private VerticalPanel addConfigPanel;
-	private static final String SPAN_LISTBOX_ID = "spanListBoxFieldId";
-	
-	private static String CONFIG_TITLE_LABEL_CSS = "configTitleLabel";
-	private static String SPAN_SELECTION_LABEL_CSS = "spanSelectionLabel";
-	private static String SPAN_SELECTION_PANEL_CSS = "spanSelectionPanel";
-	private static String PAGE_CONFIGURATION_BASEPANEL_CSS = "pageConfigurationBasePanel";
-	
 	private ListBoxField spanListbox;
+	private VerticalPanel updateConfigurationPanel;
+	private GroupField isTransformWidgetGrField;
+	private GroupField isUpdateConfigGrField;
+	private TextField eventNametextField;
+	private ListBoxField transformToListbox;
+	private Entity parentEventEntity;
+	private int index;
+	private Map<String, TextField> configMap = new HashMap<String, TextField>();
+	private Map<String, Entity> transformMap = new HashMap<String, Entity>();
+	private TextField transformInstanceTextField;
 	
 	public PageConfiguration() {
 		initialize();
 		createUI();
 		initWidget(basePanel);
 		AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
+		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 	}
 
 	private void initialize() {
 		basePanel = new VerticalPanel();
 		addConfigPanel = new VerticalPanel();
+		updateConfigurationPanel = new VerticalPanel();
 	}
 	
 	public void createUI() {
@@ -194,4 +224,807 @@ public class PageConfiguration extends Composite implements ConfigEventHandler {
 		spanListbox.configure();
 		spanListbox.create();
 	}
+	
+	public void createPropertyConfigUI() {
+		addConfigPanel.clear();
+		
+		LabelField propConfigTitleLabel = new LabelField();
+		propConfigTitleLabel.setConfiguration(getPropConfigTitleLabelConfiguration());
+		propConfigTitleLabel.configure();
+		propConfigTitleLabel.create();
+		addConfigPanel.add(propConfigTitleLabel);
+		
+		HorizontalPanel eventNamePanel = createEventNamePanel();
+		addConfigPanel.add(eventNamePanel);
+		
+		HorizontalPanel isTransformWidgetPanel = createIsTransformWidgetPanel();
+		addConfigPanel.add(isTransformWidgetPanel);
+		
+		HorizontalPanel transformTypePanel = createtransformTypePanel();
+		addConfigPanel.add(transformTypePanel);
+		
+		HorizontalPanel transformToPanel = createtransformToPanel();
+		addConfigPanel.add(transformToPanel);
+		
+		HorizontalPanel transformInstancePanel = createtransformInstancePanel();
+		addConfigPanel.add(transformInstancePanel);
+		
+		HorizontalPanel isUpdateConfigPanel = createIsUpdateConfigPanel();
+		addConfigPanel.add(isUpdateConfigPanel);
+		
+		HorizontalPanel updateConfigurationBasePanel = createUpdateConfigPanel();
+		addConfigPanel.add(updateConfigurationBasePanel);
+		
+		HorizontalPanel buttonPanel = createButtonPanel();
+		addConfigPanel.add(buttonPanel);
+		
+		addConfigPanel.setStylePrimaryName(ADD_PAGE_CONFIGURATION_BASEPANEL_CSS);
+	}
+	
+	public HorizontalPanel createButtonPanel() {
+		HorizontalPanel buttonPanel = new HorizontalPanel();
+		
+		ButtonField configureButton = new ButtonField();
+		configureButton.setConfiguration(getConfigureButtonConfiguration());
+		configureButton.configure();
+		configureButton.create();
+		buttonPanel.add(configureButton);
+		
+		buttonPanel.setWidth("100%");
+		buttonPanel.setCellHorizontalAlignment(configureButton, HasHorizontalAlignment.ALIGN_RIGHT);
+		return buttonPanel;
+	}
+	
+	/**
+	 * Creates the next Config button configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getNextConfigButtonConfiguration() {
+		try {
+			Configuration configuration = new Configuration();
+			try {
+				configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Next Configuration");
+				configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,NEXT_BUTTON_CSS);
+				configuration.setPropertyByName(ButtonFieldConstant.BF_ENABLED, true);
+				configuration.setPropertyByName(ButtonFieldConstant.BF_ID, NEXT_BUTTON_ID);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return configuration;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private HorizontalPanel createtransformToPanel() {
+		HorizontalPanel transformToPanel = new HorizontalPanel();
+		
+		LabelField transformToLabel = new LabelField();
+		transformToLabel.setConfiguration(getTransformToLabelConfiguration());
+		transformToLabel.configure();
+		transformToLabel.create();
+		transformToPanel.add(transformToLabel);
+		
+		transformToListbox = new ListBoxField();
+		transformToListbox.setConfiguration(getTransformToListBoxConfiguration(null));
+		transformToListbox.configure();
+		transformToListbox.create();
+		transformToPanel.add(transformToListbox);
+		
+		transformToPanel.setStylePrimaryName(TRANSFORM_TO_PANEL_CSS);
+		transformToPanel.setCellWidth(transformToLabel, "172px");
+		transformToPanel.setCellVerticalAlignment(transformToLabel, HasVerticalAlignment.ALIGN_MIDDLE);
+		return transformToPanel;
+	}
+
+	/**
+	 * Creates the Transform To Listbox configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getTransformToListBoxConfiguration(HashMap<String, Object> paramMap) {
+		try {
+			Configuration configuration = new Configuration();
+			configuration.setPropertyByName(ListBoxFieldConstant.BF_ID,TRANSFORM_TO_LISTBOX_ID);
+			configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"--Select transform to--");
+			
+			if(paramMap != null) {
+				configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_OPRTION,"appdefinition.AppDefinitionService.getEntityList");
+				configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_QUERYNAME,"getComponentDefinationForIsMvp");
+				configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ENTPROP,"name");
+				configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_QUERY_RESTRICTION,paramMap);
+			} else {
+				ArrayList<String> items = new ArrayList<String>();
+				configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,items);
+			}
+			
+			return configuration;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * Creates the transform to Label configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getTransformToLabelConfiguration() {
+		try {
+			Configuration configuration = null;	
+			try{
+				configuration = new Configuration();
+				configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Transform To");
+				configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, TRANSFORM_TO_LABEL_CSS);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+			return configuration;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private HorizontalPanel createtransformTypePanel() {
+		HorizontalPanel transformTypePanel = new HorizontalPanel();
+		
+		LabelField transformTypeLabel = new LabelField();
+		transformTypeLabel.setConfiguration(getTransformTypeLabelConfiguration());
+		transformTypeLabel.configure();
+		transformTypeLabel.create();
+		transformTypePanel.add(transformTypeLabel);
+		
+		ListBoxField transformTypeListbox = new ListBoxField();
+		transformTypeListbox.setConfiguration(getTransformTypeListBoxConfiguration());
+		transformTypeListbox.configure();
+		transformTypeListbox.create();
+		transformTypePanel.add(transformTypeListbox);
+		
+		transformTypePanel.setStylePrimaryName(TRANSFORM_TYPE_PANEL_CSS);
+		transformTypePanel.setCellWidth(transformTypeLabel, "172px");
+		transformTypePanel.setCellVerticalAlignment(transformTypeLabel, HasVerticalAlignment.ALIGN_MIDDLE);
+		return transformTypePanel;
+	}
+
+	/**
+	 * Creates the Transform Type Listbox configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getTransformTypeListBoxConfiguration() {
+		try {
+			Configuration configuration = new Configuration();
+			configuration.setPropertyByName(ListBoxFieldConstant.BF_ID,TRANSFORM_TYPE_LISTBOX_ID);
+			configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"--Select type--");
+			ArrayList<String> configList = new ArrayList<String>();
+			configList.add("Component");
+			configList.add("HtmlSnippet");
+			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,configList);
+			return configuration;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * Creates the transform type Label configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getTransformTypeLabelConfiguration() {
+		try {
+			Configuration configuration = null;	
+			try{
+				configuration = new Configuration();
+				configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Transform Type");
+				configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, TRANSFORM_TYPE_LABEL_CSS);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+			return configuration;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private HorizontalPanel createtransformInstancePanel() {
+		HorizontalPanel transformInstancePanel = new HorizontalPanel();
+		
+		LabelField transformInstanceLabel = new LabelField();
+		transformInstanceLabel.setConfiguration(getTransformInstanceLabelConfiguration());
+		transformInstanceLabel.configure();
+		transformInstanceLabel.create();
+		transformInstancePanel.add(transformInstanceLabel);
+		
+		transformInstanceTextField = new TextField();
+		transformInstanceTextField.setConfiguration(getTextFieldConfiguration(TRANSFORM_INSTANCE_TEXTFIELD_ID));
+		transformInstanceTextField.configure();
+		transformInstanceTextField.create();
+		transformInstancePanel.add(transformInstanceTextField);
+		
+		transformInstancePanel.setStylePrimaryName(TRANSFORM_INSTANCE_PANEL_CSS);
+		transformInstancePanel.setCellWidth(transformInstanceLabel, "172px");
+		transformInstancePanel.setCellVerticalAlignment(transformInstanceLabel, HasVerticalAlignment.ALIGN_MIDDLE);
+		return transformInstancePanel;
+	}
+	
+	/**
+	 * Creates the transform instance Label configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getTransformInstanceLabelConfiguration() {
+		try {
+			Configuration configuration = null;	
+			try{
+				configuration = new Configuration();
+				configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Transform Instance");
+				configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, TRANSFORM_INSTANCE_LABEL_CSS);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+			return configuration;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private HorizontalPanel createIsTransformWidgetPanel() {
+		HorizontalPanel isTransformWidgetPanel = new HorizontalPanel();
+		
+		LabelField isTransformWidgetLabel = new LabelField();
+		isTransformWidgetLabel.setConfiguration(getIsTransformWidgetLabelConfiguration());
+		isTransformWidgetLabel.configure();
+		isTransformWidgetLabel.create();
+		isTransformWidgetPanel.add(isTransformWidgetLabel);
+		
+		isTransformWidgetGrField = createGroupField(IS_TRANSFORM_WIDGET_GROUP_ID);
+		isTransformWidgetPanel.add(isTransformWidgetGrField);
+		
+		isTransformWidgetPanel.setStylePrimaryName(IS_TRANSFORM_WIDGET_PANEL_CSS);
+		isTransformWidgetPanel.setCellWidth(isTransformWidgetLabel, "165px");
+		isTransformWidgetPanel.setCellVerticalAlignment(isTransformWidgetLabel, HasVerticalAlignment.ALIGN_MIDDLE);
+		return isTransformWidgetPanel;
+	}
+
+	/**
+	 * Creates the is Transform Widget Label configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getIsTransformWidgetLabelConfiguration() {
+		try {
+			Configuration configuration = null;	
+			try{
+				configuration = new Configuration();
+				configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Is Transform Widget");
+				configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, IS_UPDATE_CONFIG_LABEL_CSS);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+			return configuration;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private HorizontalPanel createUpdateConfigPanel() {
+		HorizontalPanel updateConfigurationBasePanel = new HorizontalPanel();
+		VerticalPanel updateConfigPanelWithButton = new VerticalPanel();
+		
+		LabelField updateConfigLabel = new LabelField();
+		updateConfigLabel.setConfiguration(getUpdateConfigLabelConfiguration());
+		updateConfigLabel.configure();
+		updateConfigLabel.create();
+		updateConfigurationBasePanel.add(updateConfigLabel);
+		
+		updateConfigurationPanel.clear();
+		createUpdateConfigRow(false);
+		updateConfigPanelWithButton.add(updateConfigurationPanel);
+		updateConfigurationBasePanel.add(updateConfigPanelWithButton);
+		
+		updateConfigPanelWithButton.setWidth("100%");
+		
+		updateConfigurationPanel.setStylePrimaryName(UPDATE_CONFIGURATION_PANEL_CSS);
+		updateConfigurationBasePanel.setStylePrimaryName(UPDATE_CONFIGURATION_BASEPANEL_CSS);
+		updateConfigurationBasePanel.setCellWidth(updateConfigLabel, "172px");
+		return updateConfigurationBasePanel;
+	}
+
+	private void createUpdateConfigRow(boolean isSetFocus) {
+		HorizontalPanel innerUpdateConfigPanel = new HorizontalPanel();
+		
+		TextField updateConfigKeyTextField = new TextField();
+		updateConfigKeyTextField.setConfiguration(getTextFieldConfiguration(UPDATE_CONFIG_KEY_TEXTFIELD_ID));
+		updateConfigKeyTextField.configure();
+		updateConfigKeyTextField.create();
+		innerUpdateConfigPanel.add(updateConfigKeyTextField);
+		
+		if(isSetFocus) {
+			updateConfigKeyTextField.setFocus();
+		}
+		
+		TextField updateConfigValueTextField = new TextField();
+		updateConfigValueTextField.setConfiguration(getTextFieldConfiguration(UPDATE_CONFIG_VALUE_TEXTFIELD_ID));
+		updateConfigValueTextField.configure();
+		updateConfigValueTextField.create();
+		innerUpdateConfigPanel.add(updateConfigValueTextField);
+		((TextBox) updateConfigValueTextField.getWidget()).setName(UPDATE_CONFIG_VALUE_TEXTFIELD_ID + index);
+		
+		ImageField minusIconField = new ImageField();
+		minusIconField.setConfiguration(getMinusIconFieldConfiguration());
+		minusIconField.configure();
+		minusIconField.create();
+		innerUpdateConfigPanel.add(minusIconField);
+		
+		innerUpdateConfigPanel.setStylePrimaryName(INNER_UPDATE_CONFIGURATION_PANEL_CSS);
+		updateConfigurationPanel.add(innerUpdateConfigPanel);
+		
+		configMap.put(UPDATE_CONFIG_VALUE_TEXTFIELD_ID + index, updateConfigKeyTextField);
+		index++;
+	}
+
+	/**
+	 * Creates the Configure button configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getConfigureButtonConfiguration() {
+		try {
+			Configuration configuration = new Configuration();
+			try {
+				configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Configure transform widget");
+				configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,CONFIGURE_BUTTON_CSS);
+				configuration.setPropertyByName(ButtonFieldConstant.BF_ENABLED, true);
+				configuration.setPropertyByName(ButtonFieldConstant.BF_ID, CONFIGURE_BUTTON_ID);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return configuration;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * Creates the Image Field configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getMinusIconFieldConfiguration(){
+		Configuration configuration = new Configuration();
+		try {
+			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, "images/minus-icon.jpg");
+			configuration.setPropertyByName(ImageFieldConstant.BF_PCLS, MINUS_ICONFIELD_CSS);
+			configuration.setPropertyByName(ImageFieldConstant.IMGFD_TITLE, "Delete");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return configuration;
+	}
+
+	/**
+	 * Creates the Update Config Label configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getUpdateConfigLabelConfiguration() {
+		try {
+			Configuration configuration = null;	
+			try{
+				configuration = new Configuration();
+				configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Update Configuration");
+				configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, IS_UPDATE_CONFIG_LABEL_CSS);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+			return configuration;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private HorizontalPanel createIsUpdateConfigPanel() {
+		HorizontalPanel isUpdateConfigPanel = new HorizontalPanel();
+		
+		LabelField isUpdateConfigLabel = new LabelField();
+		isUpdateConfigLabel.setConfiguration(getIsUpdateConfigLabelConfiguration());
+		isUpdateConfigLabel.configure();
+		isUpdateConfigLabel.create();
+		isUpdateConfigPanel.add(isUpdateConfigLabel);
+		
+		isUpdateConfigGrField = createGroupField(IS_UPDATE_CONFIG_GROUP_ID);
+		isUpdateConfigPanel.add(isUpdateConfigGrField);
+		
+		isUpdateConfigPanel.setStylePrimaryName(IS_UPDATE_CONFIG_PANEL_CSS);
+		isUpdateConfigPanel.setCellWidth(isUpdateConfigLabel, "165px");
+		isUpdateConfigPanel.setCellVerticalAlignment(isUpdateConfigLabel, HasVerticalAlignment.ALIGN_MIDDLE);
+		return isUpdateConfigPanel;
+	}
+
+	private GroupField createGroupField(String groupId) {
+		try {
+			GroupField groupField = new GroupField();
+			Configuration groupFieldConfig = new Configuration();
+			groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_ID,groupId);
+			groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_TYPE,GroupFieldConstant.GFTYPE_SINGLE_SELECT);
+			groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_ALIGNMENT,GroupFieldConstant.GF_ALIGN_HORIZONTAL);
+			groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_LIMIT,2);
+			
+			ArrayList<String> listOfItems = new ArrayList<String>();
+			listOfItems.add("radio1");
+			listOfItems.add("radio2");
+			groupFieldConfig.setPropertyByName(GroupFieldConstant.GF_LIST_OF_ITEMS,listOfItems);
+			
+			Configuration childConfig1 = new Configuration();
+			childConfig1.setPropertyByName(RadionButtonFieldConstant.BF_PCLS, "appops-CheckBoxField");
+			childConfig1.setPropertyByName(RadionButtonFieldConstant.RF_DISPLAYTEXT, "true");
+			childConfig1.setPropertyByName(RadionButtonFieldConstant.RF_CHECKED, true);
+			
+			Configuration childConfig2 = new Configuration();
+			childConfig2.setPropertyByName(RadionButtonFieldConstant.BF_PCLS, "appops-CheckBoxField");
+			childConfig2.setPropertyByName(RadionButtonFieldConstant.RF_DISPLAYTEXT, "false");
+			
+			groupFieldConfig.setPropertyByName("radio1",childConfig1);
+			groupFieldConfig.setPropertyByName("radio2",childConfig2);
+			
+			groupField.setConfiguration(groupFieldConfig);
+			groupField.configure();
+			groupField.create();
+			return groupField;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * Creates the is Update Config Label configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getIsUpdateConfigLabelConfiguration() {
+		try {
+			Configuration configuration = null;	
+			try{
+				configuration = new Configuration();
+				configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Is Update Configuration");
+				configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, IS_UPDATE_CONFIG_LABEL_CSS);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+			return configuration;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	private HorizontalPanel createEventNamePanel() {
+		HorizontalPanel eventNamePanel = new HorizontalPanel();
+		
+		LabelField eventNameLabel = new LabelField();
+		eventNameLabel.setConfiguration(getEventNameLabelConfiguration());
+		eventNameLabel.configure();
+		eventNameLabel.create();
+		eventNamePanel.add(eventNameLabel);
+		
+		eventNametextField = new TextField();
+		eventNametextField.setConfiguration(getTextFieldConfiguration(EVENT_NAME_TEXTFIELD_ID));
+		eventNametextField.configure();
+		eventNametextField.create();
+		eventNamePanel.add(eventNametextField);
+		
+		eventNamePanel.setStylePrimaryName(EVENT_NAME_PANEL_CSS);
+		eventNamePanel.setCellWidth(eventNameLabel, "172px");
+		eventNamePanel.setCellVerticalAlignment(eventNameLabel, HasVerticalAlignment.ALIGN_MIDDLE);
+		return eventNamePanel;
+	}
+
+	/**
+	 * Creates the Event Name Label configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getEventNameLabelConfiguration() {
+		try {
+			Configuration configuration = null;	
+			try{
+				configuration = new Configuration();
+				configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Event Name");
+				configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, EVENT_NAME_LABEL_CSS);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+			return configuration;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * Creates the Property Config Title Label configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getPropConfigTitleLabelConfiguration() {
+		try {
+			Configuration configuration = null;	
+			try{
+				configuration = new Configuration();
+				configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Interested Event");
+				configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, PROP_CONFIG_TITLE_LABEL_CSS);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+			return configuration;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * Creates the TextField configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getTextFieldConfiguration(String textFieldId) {
+		try {
+			Configuration configuration = new Configuration();
+			configuration.setPropertyByName(TextFieldConstant.BF_ID, textFieldId);
+			configuration.setPropertyByName(TextFieldConstant.TF_VISLINES, 1);
+			configuration.setPropertyByName(TextFieldConstant.BF_READONLY, false);
+			configuration.setPropertyByName(TextFieldConstant.TF_TYPE, TextFieldConstant.TFTYPE_TXTBOX);
+			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
+			configuration.setPropertyByName(TextFieldConstant.BF_VALIDATEONCHANGE, true);
+			configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
+			configuration.setPropertyByName(TextFieldConstant.TF_MAXLENGTH, 100);
+			configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, true);
+			return configuration;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		try {
+			int eventType = event.getEventType();
+			switch (eventType) {
+			case FieldEvent.TAB_KEY_PRESSED: {
+				if(event.getEventSource() instanceof TextField) {
+					TextField source = (TextField) event.getEventSource();
+					String fieldId = source.getBaseFieldId();
+					if(fieldId.equals(EVENT_NAME_TEXTFIELD_ID)) {
+						saveConfigInstance(getConfiginstanceEntity(eventNametextField.getFieldValue(), eventNametextField.getFieldValue(), null, null), true);
+					} else if(fieldId.equals(UPDATE_CONFIG_KEY_TEXTFIELD_ID)) {
+						
+					} else if(fieldId.equals(UPDATE_CONFIG_VALUE_TEXTFIELD_ID)) {
+						String value = (String) event.getEventData();
+						if(!value.equals("")) {
+							createUpdateConfigRow(true);
+							Entity entity = createEntityWithInfo(source);
+							saveConfigInstance(entity, false);
+						}
+					} else if(fieldId.equals(TRANSFORM_INSTANCE_TEXTFIELD_ID)) {
+						String value = (String) event.getEventData();
+						if(!value.equals("")) {
+							saveConfigInstance(getConfiginstanceEntity("transformInstance", "transformInstance", value, parentEventEntity), false);
+						}
+					}
+				} else if(event.getEventSource() instanceof GroupField) {
+					GroupField source = (GroupField) event.getEventSource();
+					String fieldId = source.getBaseFieldId();
+					if(fieldId.equals(IS_TRANSFORM_WIDGET_GROUP_ID)) {
+						
+					} else if(fieldId.equals(IS_UPDATE_CONFIG_GROUP_ID)) {
+						
+					}
+				}
+				break;
+			}
+			case FieldEvent.CLICKED: {
+				if(event.getEventSource() instanceof ButtonField) {
+					ButtonField source = (ButtonField) event.getEventSource();
+					String fieldId = source.getBaseFieldId();
+					if(fieldId.equals(CONFIGURE_BUTTON_ID)) {
+						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.CONFIGURATION_COMPLETED, transformMap, this);
+						AppUtils.EVENT_BUS.fireEvent(configEvent);
+					} else if(fieldId.equals(NEXT_BUTTON_ID)) {
+						createPropertyConfigUI();
+					}
+				}
+				break;
+			}
+			case FieldEvent.VALUE_SELECTED: {
+				if(event.getEventSource() instanceof GroupField) {
+					GroupField source = (GroupField) event.getEventSource();
+					String fieldId = source.getGroupId();
+					ArrayList<Widget> selectedItem = (ArrayList<Widget>) source.getValue();
+					RadioButtonField radioButton = (RadioButtonField) selectedItem.get(0);
+					String text = radioButton.getDisplayText();
+					if(fieldId.equals(IS_TRANSFORM_WIDGET_GROUP_ID)) {
+						saveConfigInstance(getConfiginstanceEntity("isTransformWidget", "isTransformWidget", text, parentEventEntity), false);
+					} else if(fieldId.equals(IS_UPDATE_CONFIG_GROUP_ID)) {
+						saveConfigInstance(getConfiginstanceEntity("isUpdateConfiguration", "isUpdateConfiguration", text, parentEventEntity), false);
+					}
+				}
+				break;
+			}
+			case FieldEvent.VALUECHANGED: {
+				if(event.getEventSource() instanceof ListBoxField) {
+					ListBoxField source = (ListBoxField) event.getEventSource();
+					String fieldId = source.getBaseFieldId();
+					if(fieldId.equals(TRANSFORM_TYPE_LISTBOX_ID)) {
+						String value = (String) source.getValue();
+						fetchTransformToList(value);
+						
+						String instanceValue = null;
+						if(value.equals("Component")) {
+							instanceValue = String.valueOf(1);
+						} else if(value.equals("HtmlSnippet")) {
+							instanceValue = String.valueOf(2);
+						}
+						
+						saveConfigInstance(getConfiginstanceEntity("transformType", "transformType", instanceValue, parentEventEntity), false);
+					} else if(fieldId.equals(TRANSFORM_TO_LISTBOX_ID)) {
+						String value = (String) source.getValue();
+						isUpdateConfigGrField.setFieldFocus();
+						saveConfigInstance(getConfiginstanceEntity("transformTo", "transformTo", value, parentEventEntity), false);
+						Entity entity = source.getAssociatedEntity(value);
+						transformMap.put(transformInstanceTextField.getFieldValue(), entity);
+					} else if(fieldId.equals(SPAN_LISTBOX_ID)) {
+						
+					}
+				}
+				break;
+			}
+			default:
+				break;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private Entity createEntityWithInfo(TextField source) {
+		String name = ((TextBox) source.getWidget()).getName();
+		TextField textField = configMap.get(name);
+		Entity entity = getConfiginstanceEntity(textField.getFieldValue(), textField.getFieldValue(), source.getFieldValue(), parentEventEntity);
+		return entity;
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void saveConfigInstance(Entity configinstanceEntity, final boolean isParentInstance) {
+
+		try{
+			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+			
+			Map parameterMap = new HashMap();
+			parameterMap.put("confInstEnt", configinstanceEntity);
+			
+			EntityContext context  = new EntityContext();
+			parameterMap.put("entityContext", context);
+			
+			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveConfigurationInstance", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(Result<Entity> result) {
+					if(result!=null){
+						Entity ent = result.getOperationResult();
+						if(ent != null) {
+							if(isParentInstance) {
+								parentEventEntity = ent;
+							}
+						}
+					}
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void fetchTransformToList(String value) {
+		
+		byte isMvp = 0;
+		if(value.equals("Component")) {
+			isMvp = 1;
+		} else if(value.equals("HtmlSnippet")) {
+			isMvp = 0;
+		}
+		
+		HashMap map = new HashMap();
+		map.put("isMvp", isMvp);
+		
+		transformToListbox.setConfiguration(getTransformToListBoxConfiguration(map));
+		transformToListbox.configure();
+		transformToListbox.create();
+	}
+
+	public Entity getConfiginstanceEntity(String instanceName, String configKeyName, String instanceValue, Entity parent) {
+		try{
+			Entity configInstEntity = new Entity();
+			configInstEntity.setType(new MetaType("Configinstance"));
+			configInstEntity.setPropertyByName("instancename", instanceName);
+			configInstEntity.setPropertyByName("configkeyname", configKeyName);
+			if(instanceValue != null) {
+				configInstEntity.setPropertyByName("instancevalue", instanceValue);
+			}
+			if(parent != null) {
+				configInstEntity.setProperty("configinstance", parent);
+			}
+			return configInstEntity;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Entity createComponentInstance(String value) {
+		try{
+			Entity configInstEntity = new Entity();
+			configInstEntity.setType(new MetaType("Componentinstance"));
+			configInstEntity.setPropertyByName("instancename", value);
+			return configInstEntity;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	private static final String SPAN_LISTBOX_ID = "spanListBoxFieldId";
+	private static final String TRANSFORM_TO_LISTBOX_ID = "transformToListboxId";
+	private static final String TRANSFORM_TYPE_LISTBOX_ID = "transformTypeListboxId";
+	private static final String TRANSFORM_INSTANCE_TEXTFIELD_ID = "transformInstanceTextFieldId";
+	private static final String UPDATE_CONFIG_KEY_TEXTFIELD_ID = "updateConfigKeyTextFieldId";
+	private static final String UPDATE_CONFIG_VALUE_TEXTFIELD_ID = "updateConfigValueTextFieldId";
+	private static final String EVENT_NAME_TEXTFIELD_ID = "eventNameTextFieldId";
+	private static final String CONFIGURE_BUTTON_ID = "configureButtonId";
+	private static final String IS_UPDATE_CONFIG_GROUP_ID = "isUpdateConfigGroupId";
+	private static final String IS_TRANSFORM_WIDGET_GROUP_ID = "isTransformWidgetGroupId";
+	private static final String NEXT_BUTTON_ID = "nextButtonId";
+	
+	private static String CONFIG_TITLE_LABEL_CSS = "configTitleLabel";
+	private static String SPAN_SELECTION_LABEL_CSS = "spanSelectionLabel";
+	private static String SPAN_SELECTION_PANEL_CSS = "spanSelectionPanel";
+	private static String PAGE_CONFIGURATION_BASEPANEL_CSS = "pageConfigurationBasePanel";
+	private static String PROP_CONFIG_TITLE_LABEL_CSS = "propConfigTitleLabel";
+	private static String EVENT_NAME_LABEL_CSS = "eventNameLabel";
+	private static String EVENT_NAME_PANEL_CSS = "eventNamePanel";
+	private static String IS_UPDATE_CONFIG_LABEL_CSS = "isUpdateConfigLabel";
+	private static String IS_UPDATE_CONFIG_PANEL_CSS = "isUpdateConfigPanel";
+	private static String UPDATE_CONFIGURATION_BASEPANEL_CSS = "updateConfigurationBasePanel";
+	private static String UPDATE_CONFIGURATION_PANEL_CSS = "updateConfigurationPanel";
+	private static String MINUS_ICONFIELD_CSS = "minusIconField";
+	private static String INNER_UPDATE_CONFIGURATION_PANEL_CSS = "innerUpdateConfigurationPanel";
+	private static String IS_TRANSFORM_WIDGET_PANEL_CSS = "isTransformWidgetPanel";
+	private static String TRANSFORM_INSTANCE_PANEL_CSS = "transformInstancePanel";
+	private static String TRANSFORM_INSTANCE_LABEL_CSS = "transformInstanceLabel";
+	private static String TRANSFORM_TYPE_PANEL_CSS = "transformTypePanel";
+	private static String TRANSFORM_TYPE_LABEL_CSS = "transformTypeLabel";
+	private static String TRANSFORM_TO_PANEL_CSS = "transformToPanel";
+	private static String TRANSFORM_TO_LABEL_CSS = "transformToLabel";
+	private static String ADD_PAGE_CONFIGURATION_BASEPANEL_CSS = "addPageConfigBasePanel";
+	private static String CONFIGURE_BUTTON_CSS = "configureButton";
+	private static String NEXT_BUTTON_CSS = "nextButton";
 }

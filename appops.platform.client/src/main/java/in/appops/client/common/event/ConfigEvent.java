@@ -24,6 +24,7 @@ public class ConfigEvent extends GwtEvent<ConfigEventHandler> {
 	public static final int CONFIGTYPE_UPDATED = 11;
 	public static final int DEFAULT_PROP_SELECTED = 12;
 	public static final int DEFAULT_PROP_DESELECTED = 13;
+	public static final int CONFIGURATION_COMPLETED = 14;
 	
 	public ConfigEvent() {
 		// TODO Auto-generated constructor stub

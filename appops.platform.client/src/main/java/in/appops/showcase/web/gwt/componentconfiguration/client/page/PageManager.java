@@ -29,7 +29,8 @@ public class PageManager extends Composite implements ConfigEventHandler{
 		
 		pageConfig = new PageConfiguration();
 		basePanel.add(pageConfig);
-		pageConfig.setVisible(false);
+		pageConfig.setVisible(true);
+		pageConfig.createPropertyConfigUI();
 		basePanel.setWidth("100%");
 	}
 
@@ -42,6 +43,7 @@ public class PageManager extends Composite implements ConfigEventHandler{
 			case ConfigEvent.SHOWPAGECONFIGURATION: {
 				if(pageConfig != null) {
 					pageConfig.setVisible(true);
+					pageConfig.createPropertyConfigUI();
 				}
 				break;
 			}

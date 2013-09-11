@@ -224,4 +224,7 @@ public class CheckboxField extends BaseField implements ValueChangeHandler, Blur
 		
 	}
 	
+	public void setFieldFocus() {
+		checkBox.setFocus(true);
+	}
 }

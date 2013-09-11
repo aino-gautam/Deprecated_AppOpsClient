@@ -365,3 +365,82 @@
 	margin-top: 15px;
 	margin-left: 10px;
 }
+
+.minusIconField {
+	width: 20px;
+	cursor: pointer;
+	cursor: hand;
+}
+
+.propConfigTitleLabel {
+	font-weight: bold;
+	font-size: 14px;
+}
+
+.eventNameLabel {
+	font-weight: bold;
+}
+
+.eventNamePanel {
+	margin-top: 5px;
+	width: 100%;
+}
+
+.isUpdateConfigLabel {
+	font-weight: bold;
+}
+
+.isUpdateConfigPanel {
+	width: 100%;
+	margin-top: 3px;
+}
+
+.updateConfigurationBasePanel {
+	width: 100%;
+	margin-top: 3px;
+}
+
+.updateConfigurationPanel {
+	width: 100%;
+}
+
+.innerUpdateConfigurationPanel {
+	width: 100%;
+}
+
+.isTransformWidgetPanel {
+	width: 100%;
+	margin-top: 3px;
+}
+
+.transformInstancePanel {
+	width: 100%;
+	margin-top: 3px;
+}
+
+.transformInstanceLabel {
+	font-weight: bold;
+}
+
+.transformTypePanel {
+	width: 100%;
+	margin-top: 3px;
+}
+
+.transformTypeLabel {
+	font-weight: bold;
+}
+
+.transformToPanel {
+	width: 100%;
+	margin-top: 3px;
+}
+
+.transformToLabel {
+	font-weight: bold;
+}
+
+.addPageConfigBasePanel {
+	width: 100%;
+	margin-top: 10px;
+}

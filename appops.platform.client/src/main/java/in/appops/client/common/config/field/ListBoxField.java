@@ -458,10 +458,10 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 			FieldEvent fieldEvent = new FieldEvent();
 			String selectedItem = getValue().toString();
 			String selectedValue = getSelectedValue().toString();
-			Entity entity = nameVsEntity.get(selectedValue);
 			SelectedItem selectedEntity = new SelectedItem();
 			selectedEntity.setItemString(selectedItem);
 			if(nameVsEntity!=null){
+				Entity entity = nameVsEntity.get(selectedValue);
 				selectedEntity.setAssociatedEntity(entity);
 			}
 			fieldEvent.setEventSource(this);

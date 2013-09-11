@@ -2,18 +2,19 @@ package in.appops.client.common.config.field;
 
 import in.appops.client.common.config.field.CheckboxField.CheckBoxFieldConstant;
 import in.appops.client.common.config.field.RadioButtonField.RadionButtonFieldConstant;
+import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -69,6 +70,7 @@ public class GroupField extends BaseField implements FieldEventHandler{
 
 	public GroupField() {
 		 flexTable = new FlexTable();
+		 AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 	}
 
 	@Override
@@ -451,8 +453,38 @@ public class GroupField extends BaseField implements FieldEventHandler{
 			}
 			case FieldEvent.RADIOBUTTON_SELECTED: {
 				selectedItems.clear();
-				RadioButton radioButton = (RadioButton) event.getEventData();
+				RadioButtonField radioButton = (RadioButtonField) event.getEventSource();
 				selectedItems.add(radioButton);
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventType(FieldEvent.VALUE_SELECTED);
+				fieldEvent.setEventSource(this);
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+				break;
+			}
+			case FieldEvent.TAB_KEY_PRESSED: {
+				if(event.getEventSource() instanceof RadioButtonField) {
+					RadioButtonField radioButton = (RadioButtonField) event.getEventSource();
+					if (getGroupFieldType().equals(GroupFieldConstant.GFTYPE_SINGLE_SELECT)) {
+						if(fieldItems.contains(radioButton)) {
+							Iterator<Widget> iterator = fieldItems.iterator();
+							while(iterator.hasNext()) {
+								RadioButtonField radioButtonFld = (RadioButtonField) iterator.next();
+								if(radioButtonFld.equals(radioButton)) {
+									break;
+								}
+							}
+							if(iterator.hasNext()) {
+								RadioButtonField radioButtonFld = (RadioButtonField) iterator.next();
+								radioButtonFld.setFieldFocus();
+							} else {
+								FieldEvent fieldEvent = new FieldEvent();
+								fieldEvent.setEventSource(this);
+								fieldEvent.setEventType(FieldEvent.TAB_KEY_PRESSED);
+								AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+							}
+						}
+					}
+				}
 				break;
 			}
 			default:
@@ -463,6 +495,18 @@ public class GroupField extends BaseField implements FieldEventHandler{
 		}
 		
 	}
+	
+	public void setFieldFocus() {
+		String groupFieldType = getGroupFieldType();
+		if (groupFieldType.equals(GroupFieldConstant.GFTYPE_MULTISELECT)) {
+			CheckboxField chkBoxField = (CheckboxField) fieldItems.get(0);
+			chkBoxField.setFieldFocus();
+		} else if (groupFieldType.equals(GroupFieldConstant.GFTYPE_SINGLE_SELECT)) {
+			RadioButtonField radioButton = (RadioButtonField) fieldItems.get(0);
+			radioButton.setFieldFocus();
+		}
+	}
+	
 	/***********************************************************************************/
 
 	public interface GroupFieldConstant extends BaseFieldConstant{

@@ -9,21 +9,21 @@ import java.util.logging.Logger;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 
-public class RadioButtonField extends BaseField implements ValueChangeHandler, BlurHandler,KeyUpHandler{
+public class RadioButtonField extends BaseField implements ValueChangeHandler, BlurHandler,KeyDownHandler{
 
 	private RadioButton radioBtn;
 	private Logger logger = Logger.getLogger(getClass().getName());
 	private HandlerRegistration changeHandler  =  null;
 	private HandlerRegistration blurHandler  =  null;
-	private HandlerRegistration keyUpHandler  = null;
+	private HandlerRegistration keyDownHandler  = null;
 	
 	/*******************  Fields ID *****************************/
 	
@@ -39,7 +39,7 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler, B
 		try {
 			changeHandler = radioBtn.addValueChangeHandler(this);
 			blurHandler = radioBtn.addBlurHandler(this);
-			keyUpHandler = radioBtn.addKeyUpHandler(this);
+			keyDownHandler = radioBtn.addKeyDownHandler(this);
 			getBasePanel().add(radioBtn,DockPanel.CENTER);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[RadioButtonField] ::Exception in create method :"+e);
@@ -112,8 +112,8 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler, B
 		if(blurHandler!=null)
 			blurHandler.removeHandler();
 		
-		if(keyUpHandler!=null)
-			keyUpHandler.removeHandler();
+		if(keyDownHandler!=null)
+			keyDownHandler.removeHandler();
 		
 	}
 
@@ -182,7 +182,7 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler, B
 	}
 	
 	@Override
-	public void onKeyUp(KeyUpEvent event) {
+	public void onKeyDown(KeyDownEvent event) {
 		try {
 			Integer keycode= event.getNativeKeyCode();
 			if(keycode.equals(KeyCodes.KEY_TAB)){
@@ -209,6 +209,10 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler, B
 			logger.log(Level.SEVERE,"[RadioButtonField]::Exception In onBlur  method :"+e);
 		}
 		
+	}
+	
+	public void setFieldFocus() {
+		radioBtn.setFocus(true);
 	}
 	
 	public interface RadionButtonFieldConstant extends BaseFieldConstant{
