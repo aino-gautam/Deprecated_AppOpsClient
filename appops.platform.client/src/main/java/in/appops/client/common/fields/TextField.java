@@ -14,6 +14,8 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -67,7 +69,7 @@ emailTextField.configure();<br>
 emailTextField.create();
 </p>*/
 
-public class TextField extends BaseField implements BlurHandler, KeyUpHandler,KeyPressHandler{
+public class TextField extends BaseField implements BlurHandler, KeyUpHandler,KeyPressHandler,KeyDownHandler{
 
 	private TextBox textBox;
 	private PasswordTextBox passwordTextBox;
@@ -76,6 +78,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	private HandlerRegistration keyPressHandler  = null;
 	private HandlerRegistration keyUpHandler  = null;
 	private HandlerRegistration blurHandler  = null;
+	private HandlerRegistration keyDownHandler  = null;
 	public Logger logger = Logger.getLogger(getClass().getName());
 	private FieldEvent fieldEvent;
 	
@@ -166,7 +169,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			keyPressHandler = textBox.addKeyPressHandler(this);
 			blurHandler = textBox.addBlurHandler(this);
 			keyUpHandler = textBox.addKeyUpHandler(this);
-
+			keyDownHandler = textBox.addKeyDownHandler(this);
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[TextField] ::Exception In createTextBox method " + e);
 
@@ -200,6 +204,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			keyPressHandler = textArea.addKeyPressHandler(this);
 			blurHandler = textArea.addBlurHandler(this);
 			keyUpHandler = textArea.addKeyUpHandler(this);
+			keyDownHandler = textBox.addKeyDownHandler(this);
 			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[TextField] ::Exception In createTextArea method "+e);
@@ -231,6 +236,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			keyPressHandler = passwordTextBox.addKeyPressHandler(this);
 			blurHandler = passwordTextBox.addBlurHandler(this);
 			keyUpHandler = passwordTextBox.addKeyUpHandler(this);
+			keyDownHandler = textBox.addKeyDownHandler(this);
 			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[TextField] ::Exception In createPasswordBox method " + e);
@@ -264,6 +270,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			keyPressHandler = numericTextbox.addKeyPressHandler(numericTextbox);
 			keyUpHandler = numericTextbox.addKeyUpHandler(this);
 			blurHandler = numericTextbox.addBlurHandler(this);
+			keyDownHandler = textBox.addKeyDownHandler(this);
+			
 		} catch (Exception e) {
 
 			logger.log(Level.SEVERE,"[TextField] ::Exception In createNumericTextBox method "+ e);
@@ -777,7 +785,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	/**
 	 * Method sets the focus to the field.
 	 */
-	private void setFocus(){
+	public void setFocus(){
 		
 		try {
 			logger.log(Level.INFO, "[TextField] ::In setFocus method ");
@@ -834,9 +842,11 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 				if(isDirty()){
 					fieldEvent.setEventType(FieldEvent.EDITINPROGRESS);
 				}
-			}else if(keycode.equals(KeyCodes.KEY_TAB)){
+			}/*
+			TODO : need validation focus goes to next tf and it become source
+			else if(keycode.equals(KeyCodes.KEY_TAB)){
 				fieldEvent.setEventType(FieldEvent.TAB_KEY_PRESSED);
-			}
+			}*/
 			
 			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 			
@@ -981,5 +991,26 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		/** Specifies whether field should be validated or not**/
 		public static final String VALIDATEFIELD = "validateField";
 		
+	}
+
+
+	@Override
+	public void onKeyDown(KeyDownEvent event) {
+		try{
+			logger.log(Level.INFO, "[TextField] ::In onKeyUp method ");
+			Integer keycode= event.getNativeKeyCode();
+			
+			if(keycode.equals(KeyCodes.KEY_TAB)){
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventSource(this);
+				fieldEvent.setEventData(getValue());
+				fieldEvent.setEventType(FieldEvent.TAB_KEY_PRESSED);
+				
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
