@@ -22,6 +22,9 @@ import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -50,7 +53,7 @@ staticListBox.setConfiguration(conf);<br>
 staticListBox.configure();<br>
 staticListBox.create();<br>
 </p>*/
-public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler{
+public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler, KeyDownHandler{
 
 	private ListBox listBox;
 	private HashMap<String, Entity> nameVsEntity  = null;
@@ -58,6 +61,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 	private HandlerRegistration selectionHandler = null ;
 	private HandlerRegistration blurHandler = null ;
+	private HandlerRegistration keyDownHandler = null ;
 	private Logger logger = Logger.getLogger(getClass().getName());
 	public ListBoxField(){
 		listBox = new ListBox();
@@ -130,6 +134,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 
 				selectionHandler = listBox.addChangeHandler(this);
 				blurHandler = listBox.addBlurHandler(this);
+				keyDownHandler = listBox.addKeyDownHandler(this);
 				
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In configure  method :" + e);
@@ -552,6 +557,24 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		public static final String LSTFD_QUERY_RESTRICTION = "queryRestriction";
 		
 		public static final String LSTFD_SELECTED_TXT = "defaultSelectedText";
+		
+	}
+
+	@Override
+	public void onKeyDown(KeyDownEvent event) {
+		try {
+			Integer keycode= event.getNativeKeyCode();
+			if(keycode.equals(KeyCodes.KEY_TAB)){
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventSource(this);
+				fieldEvent.setEventData(getValue());
+				fieldEvent.setEventType(FieldEvent.TAB_KEY_PRESSED);
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[ListBoxField] ::Exception In onKeyDown method "+e);
+		}
+		
 		
 	}
 
