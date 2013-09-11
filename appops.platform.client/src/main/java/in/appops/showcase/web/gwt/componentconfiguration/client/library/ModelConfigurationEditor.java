@@ -3,16 +3,31 @@
  */
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.ConfigEvent;
+import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.ConfigEventHandler;
+import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
+import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
+import in.appops.platform.core.entity.type.MetaType;
+import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.server.core.services.configuration.constant.ConfigTypeConstant;
 
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -22,11 +37,16 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author mahesh@ensarm.com	
  *
  */
-public class ModelConfigurationEditor extends Composite implements ConfigEventHandler{
+public class ModelConfigurationEditor extends Composite implements ConfigEventHandler, FieldEventHandler{
 
 	private Entity modelConfigType;
+	private Entity queryParamConfigEnt;
+	private Entity opParamConfigEnt;
+	private Entity queryNameConfigEntity;
+	private Entity operationNameConfigEntity;
+	
 	private HorizontalPanel basePanel;
-
+ 
 	private FlexTable queryParamFlex;
 	private FlexTable opParamFlex;
 	
@@ -37,17 +57,43 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 	
 	private final String MODELLBLCSS = "modelLblCss";
 	
+	private DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+	private DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+	
+	/*******************  Fields ID *****************************/
+	private final String QUERYNAMEFLD = "queryNameFieldId";
+	private final String OPERATIONNAMEFLD = "opNameFldId";
+	
+	private final String QUERYNAMEPROP = "queryname";
+	private final String OPERATIONNAMEPROP = "operationname";
+	private final String QUERYPARAMPROP = "queryParam";
+	private final String OPERATIONNPARAMPROP = "operationParam";
+	
+	private TextField qryNamevalFld;
+	private TextField opNamevalFld;
+	private VerticalPanel queryDetailHolder;
+	private VerticalPanel operationDetailHolder;
+	
+	
 	public ModelConfigurationEditor(){
 		initialize();
 	}
 
 	private void initialize() {
 		try{
+			//TODO: creating dummy model contype entity
+			
+			modelConfigType = new Entity();
+			modelConfigType.setType(new MetaType(""));
+			Key<Long> key = new Key<Long>(245L);
+			modelConfigType.setPropertyByName("id", key);
+			
 			basePanel = new HorizontalPanel();
 			initWidget(basePanel);
 			opParamFlex = new FlexTable();
 			queryParamFlex = new FlexTable();
 			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
+			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -57,15 +103,16 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 	public void createUi(){
 		try{
 			basePanel.setStylePrimaryName("fullWidth");
-			
+			opParamFlex.setStylePrimaryName("fullWidth");
+
 			VerticalPanel queryDetailHolder = getQryEditorUi();
 			queryDetailHolder.addStyleName("fullWidth");
 			
 			VerticalPanel operationDetailHolder = getOpEditorUi();
 			operationDetailHolder.addStyleName("fullWidth");
 			
-			basePanel.add(queryDetailHolder);
 			basePanel.add(operationDetailHolder);
+			basePanel.add(queryDetailHolder);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -73,7 +120,7 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 	}
 
 	private VerticalPanel getOpEditorUi() {
-		VerticalPanel operationDetailHolder = new VerticalPanel();
+		operationDetailHolder = new VerticalPanel();
 		try{
 			HorizontalPanel opNameHolder = new HorizontalPanel();
 			operationDetailHolder.setStylePrimaryName("opDetailHolderCss");
@@ -83,30 +130,15 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 			qryNameLblFld.configure();
 			qryNameLblFld.create();
 			
-			TextField qryNamevalFld = new TextField();
-			qryNamevalFld.setConfiguration(getQryNameValFldConf(false));
-			qryNamevalFld.configure();
-			qryNamevalFld.create();
+			opNamevalFld = new TextField();
+			opNamevalFld.setConfiguration(getQryNameValFldConf(false));
+			opNamevalFld.configure();
+			opNamevalFld.create();
 			
 			opNameHolder.add(qryNameLblFld);
-			opNameHolder.add(qryNamevalFld);
+			opNameHolder.add(opNamevalFld);
 			
 			operationDetailHolder.add(opNameHolder);
-			
-			LabelField opParamLblFld = new LabelField();
-			opParamLblFld.setConfiguration(getQryParamLblFldConf(false));
-			opParamLblFld.configure();
-			opParamLblFld.create();
-			
-			operationDetailHolder.add(opParamLblFld);
-			
-			opParamFlex.setStylePrimaryName("fullWidth");
-			operationDetailHolder.add(opParamFlex);
-			
-			SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(OPERATIONMODE);
-			snipPropValEditor.setSnipPropValEditorId(OPERATIONMODE);
-			opParamFlex.setWidget(opRow, 0, snipPropValEditor);
-			opRow++;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -115,7 +147,7 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 	}
 
 	private VerticalPanel getQryEditorUi() {
-		VerticalPanel queryDetailHolder = new VerticalPanel();
+		queryDetailHolder = new VerticalPanel();
 		try{
 			queryDetailHolder.setStylePrimaryName("queryDetailHolderCss");
 			
@@ -126,7 +158,7 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 			qryNameLblFld.configure();
 			qryNameLblFld.create();
 			
-			TextField qryNamevalFld = new TextField();
+			qryNamevalFld = new TextField();
 			qryNamevalFld.setConfiguration(getQryNameValFldConf(true));
 			qryNamevalFld.configure();
 			qryNamevalFld.create();
@@ -135,21 +167,6 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 			qryNameHolder.add(qryNamevalFld);
 			
 			queryDetailHolder.add(qryNameHolder);
-			
-			LabelField qryParamLblFld = new LabelField();
-			qryParamLblFld.setConfiguration(getQryParamLblFldConf(true));
-			qryParamLblFld.configure();
-			qryParamLblFld.create();
-			
-			queryDetailHolder.add(qryParamLblFld);
-
-			queryParamFlex.setStylePrimaryName("fullWidth");
-			queryDetailHolder.add(queryParamFlex);
-			
-			SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(QUERYMODE);
-			//snipPropValEditor.setSnipPropValEditorId(QUERYMODE);
-			queryParamFlex.setWidget(queryRow, 0, snipPropValEditor);
-			queryRow++;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -174,7 +191,7 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 		return configuration;
 	}
 
-	private Configuration getQryNameValFldConf(boolean isQueryOperationCall) {
+	private Configuration getQryNameValFldConf(boolean isQueryCall) {
 		Configuration configuration = null;
 		try{
 			configuration = new Configuration();
@@ -182,11 +199,15 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 			configuration.setPropertyByName(TextFieldConstant.TF_TYPE, TextFieldConstant.TFTYPE_TXTBOX);
 			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
 			
-			if(isQueryOperationCall)
+			if(isQueryCall){
 				configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Query name");
-			else
+				configuration.setPropertyByName(TextFieldConstant.BF_ID, QUERYNAMEFLD);
+				configuration.setPropertyByName(TextFieldConstant.BF_BINDPROP, QUERYNAMEPROP);
+			}else{
 				configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Operation name");
-		
+				configuration.setPropertyByName(TextFieldConstant.BF_ID, OPERATIONNAMEFLD);
+				configuration.setPropertyByName(TextFieldConstant.BF_BINDPROP, OPERATIONNAMEPROP);
+			}
 			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, MODELLBLCSS);
 		}
 		catch (Exception e) {
@@ -218,18 +239,34 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 			if(event.getEventType() == ConfigEvent.SAVEPROPVALUEADDWIDGET){
 				SnippetPropValueEditor snipPropValEditorSelected = (SnippetPropValueEditor) event.getEventSource();
 				if(snipPropValEditorSelected.getSnipPropValEditorId().equals(OPERATIONMODE)){
-					saveOperationParam();
-					SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(OPERATIONMODE);
+					saveParamValue(snipPropValEditorSelected.getConfigTypeEntity());
+					SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(OPERATIONMODE,opRow);
 					snipPropValEditor.setSnipPropValEditorId(OPERATIONMODE);
+					snipPropValEditor.setConfTypeEntity(opParamConfigEnt);
+					snipPropValEditor.getParamNameField().setFocus();
 					opParamFlex.setWidget(opRow, 0, snipPropValEditor);
 					opRow++;
 				}
 				else{
-					saveQueryParam();
-					SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(QUERYMODE);
+					saveParamValue(snipPropValEditorSelected.getConfigTypeEntity());
+					SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(QUERYMODE,queryRow);
 					snipPropValEditor.setSnipPropValEditorId(QUERYMODE);
+					snipPropValEditor.setConfTypeEntity(queryParamConfigEnt);
+					snipPropValEditor.getParamNameField().setFocus();
 					queryParamFlex.setWidget(queryRow, 0, snipPropValEditor);
 					queryRow++;
+				}
+			}
+			else if(event.getEventType() == ConfigEvent.REMOVEPARAMPROPERTYVALUE){
+				SnippetPropValueEditor snipPropValEditorSelected = (SnippetPropValueEditor) event.getEventSource();
+				deleteParamValueEntity(snipPropValEditorSelected.getConfigTypeEntity());
+				int rowToRemove = snipPropValEditorSelected.getValuePanelRow();
+
+				if(snipPropValEditorSelected.getSnipPropValEditorId().equals(OPERATIONMODE)){
+					opParamFlex.removeRow(rowToRemove);
+				}
+				else{
+					queryParamFlex.removeRow(rowToRemove);
 				}
 			}
 		}
@@ -238,21 +275,234 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 		}
 	}
 
-	private void saveQueryParam() {
+	private void deleteParamValueEntity(Entity configDefEntity) {
 		try{
-			
+			Window.alert("Entity to be deleted");
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void saveOperationParam() {
+	@SuppressWarnings("unchecked")
+	private void saveParamValue(Entity configDefEntity) {
+		try{
+			Map parameterMap = new HashMap();
+			parameterMap.put("configTypeEnt", configDefEntity);
+			parameterMap.put("update", false);
+			
+			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveConfigurationType", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(Result<Entity> result) {
+					Window.alert("Entity saved");
+				}
+			});
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/*private void saveOperationParam(Entity configDefEntity) {
 		try{
 			
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+	}*/
+
+	/**
+	 * @return the modelConfigType
+	 */
+	public Entity getModelConfigType() {
+		return modelConfigType;
+	}
+
+	/**
+	 * @param modelConfigType the modelConfigType to set
+	 */
+	public void setModelConfigType(Entity modelConfigType) {
+		this.modelConfigType = modelConfigType;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		try{
+			if(event.getEventSource() instanceof TextField){
+				if(event.getEventType() == FieldEvent.TAB_KEY_PRESSED){
+					if(((TextField)event.getEventSource()).equals(qryNamevalFld)){
+						String paramValue = ((TextField)event.getEventSource()).getValue().toString();
+						Entity configEntity = getQryOpNameEntity(paramValue, true);
+						saveQryOpName(configEntity, true);
+					}
+					else if(((TextField)event.getEventSource()).equals(opNamevalFld)){
+						String paramValue = ((TextField)event.getEventSource()).getValue().toString();
+						Entity configEntity = getQryOpNameEntity(paramValue, false);
+						saveQryOpName(configEntity, false);
+					}
+				}
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	@SuppressWarnings("unchecked")
+	private void saveQryOpName(Entity configEntity, final boolean isQueryCall) {
+		try{
+			Map parameterMap = new HashMap();
+			parameterMap.put("configTypeEnt", configEntity);
+			parameterMap.put("update", false);
+			
+			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveConfigurationType", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(Result<Entity> result) {
+					if(result!=null){
+						if(result.getOperationResult() !=null){
+							if(isQueryCall){
+								queryNameConfigEntity = result.getOperationResult();
+								if(queryNameConfigEntity!=null){
+									createAndSaveConfigEntity(true);
+								}
+							}
+							else{
+								operationNameConfigEntity = result.getOperationResult();
+								if(operationNameConfigEntity!=null){
+									createAndSaveConfigEntity(false);
+								}
+							}
+						}
+					}
+				}
+			});
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void createAndSaveConfigEntity(final boolean isQueryCall) {
+		try{
+			Entity paramValueEntity = new Entity();
+			paramValueEntity.setType(new MetaType("Configtype"));
+			
+			paramValueEntity.setPropertyByName(ConfigTypeConstant.EMSTYPEID,160);
+			paramValueEntity.setPropertyByName(ConfigTypeConstant.ISDEFAULT,false);
+			
+			if(isQueryCall){
+				paramValueEntity.setPropertyByName(ConfigTypeConstant.KEYNAME,QUERYPARAMPROP);
+			}
+			else{
+				paramValueEntity.setPropertyByName(ConfigTypeConstant.KEYNAME,OPERATIONNPARAMPROP);
+			}
+			
+			paramValueEntity.setPropertyByName("configtype", modelConfigType);
+
+			paramValueEntity.setPropertyByName(ConfigTypeConstant.SERVICEID, 10);
+			
+			Map parameterMap = new HashMap();
+			parameterMap.put("configTypeEnt", paramValueEntity);
+			parameterMap.put("update", false);
+			
+			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveConfigurationType", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(Result<Entity> result) {
+					if(result!=null){
+						if(result.getOperationResult()!=null){
+							if(isQueryCall){
+								queryParamConfigEnt = result.getOperationResult();
+								
+								LabelField qryParamLblFld = new LabelField();
+								qryParamLblFld.setConfiguration(getQryParamLblFldConf(true));
+								qryParamLblFld.configure();
+								qryParamLblFld.create();
+								
+								queryDetailHolder.add(qryParamLblFld);
+								queryDetailHolder.add(queryParamFlex);
+								
+								SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(QUERYMODE,queryRow);
+								snipPropValEditor.setConfTypeEntity(queryParamConfigEnt);
+								queryParamFlex.setWidget(queryRow, 0, snipPropValEditor);
+								queryRow++;
+							}
+							else{
+								opParamConfigEnt = result.getOperationResult();
+								
+								LabelField opParamLblFld = new LabelField();
+								opParamLblFld.setConfiguration(getQryParamLblFldConf(false));
+								opParamLblFld.configure();
+								opParamLblFld.create();
+								
+								operationDetailHolder.add(opParamLblFld);
+								operationDetailHolder.add(opParamFlex);
+								
+								SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(OPERATIONMODE,opRow);
+								snipPropValEditor.setConfTypeEntity(opParamConfigEnt);
+								opParamFlex.setWidget(opRow, 0, snipPropValEditor);
+								opRow++;
+							}
+						}
+					}
+				}
+			});
+				
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private Entity getQryOpNameEntity(String paramValue, boolean isQueryCall) {
+		Entity configTypeEnt = null;
+		try{
+			configTypeEnt = new Entity();
+			configTypeEnt.setType(new MetaType("Configtype"));
+			
+			configTypeEnt.setPropertyByName(ConfigTypeConstant.EMSTYPEID,3);
+			configTypeEnt.setPropertyByName(ConfigTypeConstant.ISDEFAULT,true);
+			
+			if(isQueryCall){
+				configTypeEnt.setPropertyByName(ConfigTypeConstant.KEYNAME,QUERYNAMEPROP);
+			}
+			else{
+				configTypeEnt.setPropertyByName(ConfigTypeConstant.KEYNAME,OPERATIONNAMEPROP);
+			}
+			
+			configTypeEnt.setPropertyByName(ConfigTypeConstant.KEYVALUE, paramValue);
+			configTypeEnt.setPropertyByName("configtype", modelConfigType);
+
+			configTypeEnt.setPropertyByName(ConfigTypeConstant.SERVICEID, 10);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return configTypeEnt;
 	}
 }
