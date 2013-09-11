@@ -105,7 +105,7 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 	private LabelField getNoComponentAvailLabel() {
 		try {
 			LabelField noCompLbl = new LabelField();
-			Configuration noCompLblConfig = getCompListLblConfig("No componnets available", NOCOMPLBL_CSS);
+			Configuration noCompLblConfig = getCompListLblConfig("No components available", NOCOMPLBL_CSS);
 
 			noCompLbl.setConfiguration(noCompLblConfig);
 			noCompLbl.configure();
