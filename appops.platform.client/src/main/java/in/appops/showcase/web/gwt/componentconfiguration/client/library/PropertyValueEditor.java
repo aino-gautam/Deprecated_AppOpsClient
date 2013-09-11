@@ -1,11 +1,13 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
+import java.util.HashMap;
+
+import in.appops.client.common.config.field.CheckboxField;
+import in.appops.client.common.config.field.CheckboxField.CheckBoxFieldConstant;
 import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
 import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
-import in.appops.client.common.config.field.RadioButtonField;
-import in.appops.client.common.config.field.RadioButtonField.RadionButtonFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.ConfigEvent;
 import in.appops.client.common.event.FieldEvent;
@@ -16,6 +18,7 @@ import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
 
 import com.google.gwt.user.client.ui.FlexTable;
@@ -27,18 +30,21 @@ public class PropertyValueEditor implements FieldEventHandler {
 	private Entity confTypeEntity;
 	private TextField valueField;
 	private ListBoxField typeField;
-	private RadioButtonField isDefaultValueField;
+	private CheckboxField isDefaultValueField;
 	private ImageField crossImgField;
 	private ImageField savedImgField;
 	private long entityId = 0;
 	
 	/*******************  Fields ID *****************************/
-	public final String PROPNAME_FIELD_ID = "attributeFieldId";
-	public final String VALUE_FIELD_ID = "stringValFieldId";
-	public static final String ISDEF_RADIOBTN_GROUP_ID = "isDefaultRadioBtnGroup";
-	public static final String ISDEF_RADIOBTN_ID = "isDefaultRadioBtnId";
-	public static final String TYPEFIELD_ID = "typeFieldId";
+	private String PROPNAME_FIELD_ID = "attributeFieldId";
+	private String VALUE_FIELD_ID = "stringValFieldId";
+	private  String TYPEFIELD_ID = "typeFieldId";
+	
+	public static final String ISDEF_CHKBOX_GROUP_ID = "isDefaultChkBoxGroup";
+	private String ISDEF_CHKBOX_ID = "isDefaultChkBoxId";
+	
 	private String REMOVEPROP_IMGID = "removePropImgId";
+	private String TYPEFIELD_DEFVAL ="---Select the type ---";
 	
 	
 	/** CSS styles **/
@@ -56,9 +62,16 @@ public class PropertyValueEditor implements FieldEventHandler {
 		this.confTypeEntity = confTypeEntity;
 		this.propValuePanel = propValuePanel;
 		this.valuePanelRow = valuePanelRow;
+		
 	}
 
 	public void createUi(){
+		
+		ISDEF_CHKBOX_ID = ISDEF_CHKBOX_ID + valuePanelRow;
+		PROPNAME_FIELD_ID = PROPNAME_FIELD_ID+valuePanelRow;
+		VALUE_FIELD_ID = VALUE_FIELD_ID+valuePanelRow;
+		TYPEFIELD_ID = TYPEFIELD_ID+valuePanelRow;
+		
 		valueField = new TextField();
 		valueField.setConfiguration(getValueFieldConf());
 		valueField.configure();
@@ -69,9 +82,9 @@ public class PropertyValueEditor implements FieldEventHandler {
 		typeField.configure();
 		typeField.create();
 				
-		isDefaultValueField = new RadioButtonField();
+		isDefaultValueField = new CheckboxField();
 		
-		isDefaultValueField.setConfiguration(getIsDefRadioBtnFieldConf());
+		isDefaultValueField.setConfiguration(getIsDefCheckBoxFieldConf());
 		isDefaultValueField.configure();
 		isDefaultValueField.create();
 		
@@ -81,13 +94,10 @@ public class PropertyValueEditor implements FieldEventHandler {
 		crossImgField.configure();
 		crossImgField.create();
 		
-		
-		
 		propValuePanel.setWidget(valuePanelRow, 1, valueField);
 		propValuePanel.setWidget(valuePanelRow, 2, typeField);
 		propValuePanel.setWidget(valuePanelRow, 3, isDefaultValueField);
 		propValuePanel.setWidget(valuePanelRow, 4, crossImgField);
-		
 		
 		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
 		
@@ -192,7 +202,7 @@ public class PropertyValueEditor implements FieldEventHandler {
 		Configuration configuration = new Configuration();
 		try {
 						
-			configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"---Select the type ---");
+			configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,TYPEFIELD_DEFVAL);
 			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,getDummyTypeList());
 			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ENTPROP,"name");
 			configuration.setPropertyByName(ListBoxFieldConstant.BF_PCLS, TYPEFIELD_PCLS);
@@ -243,7 +253,7 @@ public class PropertyValueEditor implements FieldEventHandler {
 	 * Method creates the is default radio button field configuration object and return.
 	 * @return Configuration instance
 	 */
-	private Configuration getIsDefRadioBtnFieldConf(){
+	private Configuration getIsDefCheckBoxFieldConf(){
 		Configuration configuration = new Configuration();
 		
 		try {
@@ -252,11 +262,11 @@ public class PropertyValueEditor implements FieldEventHandler {
 			if(confTypeEntity!=null){
 				isDefault = Boolean.valueOf(confTypeEntity.getPropertyByName("isdefault").toString());
 			}
-			configuration.setPropertyByName(RadionButtonFieldConstant.RF_CHECKED, isDefault);
-			configuration.setPropertyByName(RadionButtonFieldConstant.RF_DISPLAYTEXT, "Default");
-			configuration.setPropertyByName(RadionButtonFieldConstant.RF_GROUPID, ISDEF_RADIOBTN_GROUP_ID);
-			configuration.setPropertyByName(RadionButtonFieldConstant.BF_ID, ISDEF_RADIOBTN_ID);
-			configuration.setPropertyByName(RadionButtonFieldConstant.BF_PCLS, ISDEFAULT_PCLS);
+			configuration.setPropertyByName(CheckBoxFieldConstant.CF_CHECKED, isDefault);
+			configuration.setPropertyByName(CheckBoxFieldConstant.CF_DISPLAYTEXT, "Default");
+			configuration.setPropertyByName(CheckBoxFieldConstant.CF_GROUPID, ISDEF_CHKBOX_GROUP_ID);
+			configuration.setPropertyByName(CheckBoxFieldConstant.BF_ID, ISDEF_CHKBOX_ID);
+			configuration.setPropertyByName(CheckBoxFieldConstant.BF_PCLS, ISDEFAULT_PCLS);
 			//configuration.setPropertyByName(RadionButtonFieldConstant.BF_TABINDEX, 3);
 		} catch (Exception e) {
 			
@@ -264,18 +274,38 @@ public class PropertyValueEditor implements FieldEventHandler {
 		return configuration;
 	}
 	
-	public Entity getPopulatedConfigTypeEntity(String propName){
-		if (confTypeEntity == null) {
-			Entity confTypeEntity = new Entity();
+	public Entity getPopulatedConfigTypeEntity(String propName) throws AppOpsException {
+		try {
+			if (confTypeEntity == null) {
+				confTypeEntity = new Entity();
+			}
 			confTypeEntity.setType(new MetaType("Configtype"));
 			confTypeEntity.setPropertyByName("keyname", propName);
-			confTypeEntity.setPropertyByName("keyvalue", valueField.getValue().toString());
-			confTypeEntity.setPropertyByName("emstypeId",  Long.parseLong(typeField.getSelectedValue().toString()));
-			confTypeEntity.setPropertyByName("isdefault", Boolean.valueOf(isDefaultValueField.getValue().toString()));
+			
+			if(propName.equals("")){
+				throw new AppOpsException("keyname can't be empty");
+			}
+			
+			
+			if(valueField.getValue().toString().equals("")){
+				throw new AppOpsException("keyvalue value can't be empty");
+			}else{
+				confTypeEntity.setPropertyByName("keyvalue", valueField.getValue().toString());
+			}
+			
+			
+			if(typeField.getValue().toString().equals(TYPEFIELD_DEFVAL)){
+				throw new AppOpsException("Please select type");
+			}else{
+				confTypeEntity.setPropertyByName("emstypeId",Long.parseLong(typeField.getSelectedValue().toString()));
+			}
+			
+			confTypeEntity.setPropertyByName("isdefault",Boolean.valueOf(isDefaultValueField.getValue().toString()));
 			return confTypeEntity;
+		} catch (NumberFormatException e) {
+			throw e;
 		}
-		return confTypeEntity;
-		
+
 	}
 
 	public Entity getConfTypeEntity() {
@@ -308,7 +338,8 @@ public class PropertyValueEditor implements FieldEventHandler {
 					ListBoxField listboxField = (ListBoxField) eventSource;
 					if(listboxField.getBaseFieldId().equals(TYPEFIELD_ID)){
 						if(entityId!=0){
-							
+							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.CONFIGTYPE_UPDATED, confTypeEntity , this);
+							AppUtils.EVENT_BUS.fireEvent(configEvent);
 						}
 					}
 				}
@@ -316,20 +347,46 @@ public class PropertyValueEditor implements FieldEventHandler {
 			}case FieldEvent.EDITINPROGRESS: {
 				if (eventSource instanceof TextField) {
 					TextField listboxField = (TextField) eventSource;
-					if(listboxField.getBaseFieldId().equals(TYPEFIELD_ID)){
+					if(listboxField.getBaseFieldId().equals(VALUE_FIELD_ID)){
 						if(entityId!=0){
-							
+							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.CONFIGTYPE_UPDATED, confTypeEntity , this);
+							AppUtils.EVENT_BUS.fireEvent(configEvent);
 						}
 					}
 				}
 				break;
-			}case FieldEvent.VALUE_SELECTED: {
-				if (eventSource instanceof TextField) {
-					TextField listboxField = (TextField) eventSource;
-					if(listboxField.getBaseFieldId().equals(TYPEFIELD_ID)){
+			}case FieldEvent.CHECKBOX_SELECT: {
+				if (eventSource instanceof CheckboxField) {
+					CheckboxField chkField = (CheckboxField) eventSource;
+					if(chkField.getBaseFieldId().equals(ISDEF_CHKBOX_ID)){
+						HashMap<String, Object> map = new HashMap<String, Object>();
+						map.put("updated", false);
+						map.put("checkboxField", chkField);
+						
 						if(entityId!=0){
+							map.put("updated", true);
+						}
+						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.DEFAULT_PROP_SELECTED, map , this);
+						AppUtils.EVENT_BUS.fireEvent(configEvent);
+					}
+				}
+				break;
+			}case FieldEvent.CHECKBOX_DESELECT: {
+				if (eventSource instanceof CheckboxField) {
+					CheckboxField chkField = (CheckboxField) eventSource;
+					HashMap<String, Object> map = new HashMap<String, Object>();
+					if (chkField.getBaseFieldId().equals(ISDEF_CHKBOX_ID)) {
+						
+						map.put("updated", false);
+						map.put("checkboxField", chkField);
+						
+						if(entityId!=0){
+							map.put("updated", true);
 							
 						}
+						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.DEFAULT_PROP_DESELECTED, map , this);
+						AppUtils.EVENT_BUS.fireEvent(configEvent);
+						
 					}
 				}
 				break;
@@ -340,5 +397,13 @@ public class PropertyValueEditor implements FieldEventHandler {
 		} catch (Exception e) {
 			
 		}
+	}
+
+	public CheckboxField getIsDefaultValueField() {
+		return isDefaultValueField;
+	}
+
+	public void setIsDefaultValueField(CheckboxField isDefaultValueField) {
+		this.isDefaultValueField = isDefaultValueField;
 	}
 }
