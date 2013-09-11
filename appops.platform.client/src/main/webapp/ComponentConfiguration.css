@@ -125,6 +125,7 @@
 
 .buttonToolbar{
 	border-right: 1px solid;
+	border-bottom: 1px solid;
 }
 
 .contentPanel{
@@ -258,9 +259,6 @@
 .gwt-TabBar .gwt-TabBarItem-selected {
 	cursor: default;
 	background: grey !important !important;
-	border-left : 2px orange solid;
-	border-right : 2px orange solid;
-	border-top : 2px orange solid;
     opacity : 0.4;
 }
 
