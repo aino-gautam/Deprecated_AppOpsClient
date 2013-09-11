@@ -7,6 +7,7 @@
 	<inherits name='in.appops.client.Client'/>
 	<inherits name='com.google.gwt.maps.Maps' />
 	<inherits name="com.google.code.gwt.geolocation.Html5Geolocation" />
+	<inherits name="in.appops.platform.EntityConfigurationShared" />
 	<entry-point class='in.appops.showcase.web.gwt.componentconfiguration.client.ComponentConfigurationManger'/>
 	<source path='client'/>
 	<script src="http://maps.google.com/maps/api/js?sensor=false" />
