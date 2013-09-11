@@ -21,6 +21,13 @@ public class ConfigEvent extends GwtEvent<ConfigEventHandler> {
 	public static final int HIDEPAGECONFIGURATION = 8;
 	public static final int SAVEPROPVALUEADDWIDGET = 9;
 	public static int REMOVEPARAMPROPERTYVALUE = 10;
+	public static final int CONFIGTYPE_UPDATED = 11;
+	public static final int DEFAULT_PROP_SELECTED = 12;
+	public static final int DEFAULT_PROP_DESELECTED = 13;
+	
+	public ConfigEvent() {
+		// TODO Auto-generated constructor stub
+	}
 
 	public ConfigEvent(int type, Object data ,Object eventSource) {
 		this.eventType = type;
