@@ -21,6 +21,7 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.client.EntityContext;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
@@ -262,6 +263,10 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			Map parameterMap = new HashMap();
 			parameterMap.put("componentDefinition", componentDefEnt);
 			parameterMap.put("library", libraryEntity);
+			
+			//need to change the immediate context id.
+			EntityContext context  = new EntityContext();
+			parameterMap.put("context", context);
 			
 			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveComponentDefinition", parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<HashMap<String, Entity>>>() {
