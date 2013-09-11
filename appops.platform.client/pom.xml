@@ -215,13 +215,13 @@
 		<dependency>
     		<groupId>appops_platform</groupId>
     		<artifactId>appdefinition</artifactId>
-   	 		<version>06.09.2013</version>
+   	 		<version>11.09.2013</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>configuration</artifactId>
-			<version>06.09.2013</version>
+			<version>11.09.2013</version>
 		</dependency>
 		
 		<dependency>
@@ -373,6 +373,12 @@
 			<groupId>mahesh_appops_platform</groupId>
 			<artifactId>blogging</artifactId>
 			<version>26.08.2013</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>entityconf_shared</artifactId>
+			<version>05.09.2013</version>
 		</dependency>
 
 	</dependencies>
