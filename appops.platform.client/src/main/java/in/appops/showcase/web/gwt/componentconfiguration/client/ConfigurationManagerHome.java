@@ -80,17 +80,19 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 			
 			VerticalPanel toolbar = new VerticalPanel();
 			VerticalPanel btnPanel = new VerticalPanel();
-			btnPanel.add(manageLibBtn);
-			btnPanel.add(createPageBtn);
 			btnPanel.add(createServicetBtn);
 			btnPanel.add(createAppBtn);
+			btnPanel.add(manageLibBtn);
+			btnPanel.add(createSnippetBtn);
+			btnPanel.add(createPageBtn);
+		
 			toolbar.add(btnPanel);
 			
-			LibraryComponentManager libraryComponentManager = new LibraryComponentManager();
-			libraryComponentManager.initialize();
+		//	LibraryComponentManager libraryComponentManager = new LibraryComponentManager();
+		//	libraryComponentManager.initialize();
 								
 			contentPanel = new VerticalPanel();
-			contentPanel.add(libraryComponentManager);
+		//	contentPanel.add(libraryComponentManager);
 			basePanel.add(toolbar);
 			basePanel.add(contentPanel);
 			
@@ -118,7 +120,7 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 	private Configuration getCreateAppBtnConf() {
 		Configuration configuration = new Configuration();
 		try {
-			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Create a app");
+			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Create app");
 			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,HOME_BTN_PCLS);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, CREATEAPP_BTN_ID);
 		} catch (Exception e) {
@@ -134,7 +136,7 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 	private Configuration getCreateServiceBtnConf() {
 		Configuration configuration = new Configuration();
 		try {
-			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Create a service");
+			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Create service");
 			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,HOME_BTN_PCLS);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, CREATESERVICE_BTN_ID);
 		} catch (Exception e) {
@@ -166,7 +168,7 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 	private Configuration getCreatePageBtnConf(){
 		Configuration configuration = new Configuration();
 		try {
-			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Create a page");
+			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Create page");
 			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,HOME_BTN_PCLS);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, CREATEPAGE_BTN_ID);
 		} catch (Exception e) {
@@ -182,7 +184,7 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 	private Configuration getCreateSnippetBtnConf(){
 		Configuration configuration = new Configuration();
 		try {
-			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Create a snippet");
+			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Create snippet");
 			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,HOME_BTN_PCLS);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, CREATESNIPPET_BTN_ID);
 		} catch (Exception e) {
