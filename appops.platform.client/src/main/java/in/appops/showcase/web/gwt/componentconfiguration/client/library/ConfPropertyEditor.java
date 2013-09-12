@@ -73,12 +73,14 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	private boolean isDefaultSelected = false;
 	private ArrayList<CheckboxField> selectedCheckBoxes  = null;
 	
-	public ConfPropertyEditor(Entity configType) {
-		this.parentConfTypeEnt = configType;
+	public ConfPropertyEditor() {
+		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
+		AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
 	}
 	
 	public void createUi(){
 		try {
+			clear();
 			HorizontalPanel horizontalPanel = new HorizontalPanel();
 			propValuePanel = new FlexTable();
 			
@@ -199,8 +201,10 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 					ButtonField btnField = (ButtonField) eventSource;
 					if (btnField.getBaseFieldId().equals(SAVECONFIGURATION_BTN_ID)) {
 						
-						if(isDefaultSelected){
+						if(isDefaultSelected && updateConfiguration){
 							saveConfigTypeList();
+						} else if(isDefaultSelected && !updateConfiguration){
+							//configTypeList
 						}else{
 							showPopup("Please select atleast one default value");
 						}
@@ -239,6 +243,9 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 		try {
 			propNameField.clear();
 			propValuePanel.clear();
+			idVsConfigTypeEntity.clear();
+			valueRow=0;
+			propValueList.clear();
 			createNewRecord();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -399,6 +406,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				HashMap<String, Entity> map = (HashMap<String, Entity>) event.getEventData();
 				Entity configTypeEntity   = map.get("componentConfigType");
 				parentConfTypeEnt = configTypeEntity;
+				break;
 			}case ConfigEvent.COMPONENTSELECTED: {
 				HashMap<String, Object> map = (HashMap<String, Object>) event.getEventData();
 				Entity componentEntity   = (Entity) map.get("component");
@@ -411,6 +419,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				configTypeEnt.setProperty("id", keyProp);
 				
 				parentConfTypeEnt = configTypeEnt;
+				break;
 			}
 			case ConfigEvent.DEFAULT_PROP_SELECTED: {
 				HashMap<String, Object> map = (HashMap<String, Object>) event.getEventData();
@@ -501,8 +510,8 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			Map parameterMap = new HashMap();
 			parameterMap.put("configurationtypeList", list);
 			
-			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveConfigurationTypeList", parameterMap);
-			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
+			StandardAction action = new StandardAction(EntityList.class, "appdefinition.AppDefinitionService.saveConfigurationTypeList", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -510,10 +519,11 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				}
 
 				@Override
-				public void onSuccess(Result<Entity> result) {
+				public void onSuccess(Result<EntityList> result) {
 					if(result!=null){
 						showPopup("Configurations updated successfully");
 						clearPropertyValueFields();
+						
 					}
 				}
 			});

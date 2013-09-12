@@ -82,6 +82,7 @@ public class LibraryComponentManager extends Composite implements ConfigEventHan
 				HashMap<String, Entity> map = (HashMap<String, Entity>) event.getEventData();
 				Entity configTypeEntity   = map.get("componentConfigType");
 				parentConfTypeEnt = configTypeEntity;*/
+				break;
 			}case ConfigEvent.COMPONENTSELECTED: {
 				
 				HashMap<String, Object> map = (HashMap<String, Object>) event.getEventData();
@@ -94,6 +95,7 @@ public class LibraryComponentManager extends Composite implements ConfigEventHan
 				configTypeEnt.setPropertyByName("id", key);
 				
 				configurationEditor.createUi(componentEntity, configTypeEnt);
+				break;
 			}
 			default:
 				break;

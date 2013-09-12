@@ -19,7 +19,8 @@ public class ConfigurationEditor extends Composite{
 	private VerticalPanel basePanel;
 	private static String BASEPANEL_CSS = "confEditorPanel";
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
-	
+	private ConfigurationListDisplayer configurationListDisplayer = new ConfigurationListDisplayer();
+	private ConfPropertyEditor confPropertyEditor = new ConfPropertyEditor();
 	public ConfigurationEditor() {
 		basePanel = new VerticalPanel();
 		initWidget(basePanel);
@@ -39,7 +40,8 @@ public class ConfigurationEditor extends Composite{
 		headerLbl.configure();
 		headerLbl.create();
 		
-		ConfPropertyEditor confPropertyEditor = new ConfPropertyEditor(configType);
+		
+		confPropertyEditor.setParentConfTypeEnt(configType);
 		confPropertyEditor.createUi();
 		
 		basePanel.add(headerLbl);
@@ -47,7 +49,8 @@ public class ConfigurationEditor extends Composite{
 				
 		basePanel.setCellHorizontalAlignment(headerLbl, HorizontalPanel.ALIGN_LEFT);
 		
-		ConfigurationListDisplayer configurationListDisplayer = new ConfigurationListDisplayer();
+		configurationListDisplayer.initialize();
+		configurationListDisplayer.getConfigTypeList(configType);
 		//configurationListDisplayer.getPropertyConfigList(compDef);
 				
 		basePanel.add(configurationListDisplayer);

@@ -60,10 +60,18 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 	private final String POPUP_CSS = "popupCss";
 	private final String POPUP_LBL_PCLS = "popupLbl";
 	public ConfigurationListDisplayer(){
-		initialize();
+		basePanel = new VerticalPanel();
+		
+		propertyConfListScrollPanel = new ScrollPanel(basePanel);
+		initWidget(propertyConfListScrollPanel);
+		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
+		AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
 		
 	}
-
+	/**
+	 * This method creates the grid ui of propertyConfig
+	 * @param configPropertyEntity
+	 */
 	public  void createUi(Entity configPropertyEntity) {
 		basePanel.clear();
 			String name;
@@ -120,10 +128,10 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 					configTypeHashMapForStore.put(keyname, typesList);
 					HashMap<Long, Integer>rowVsListSize = new HashMap<Long, Integer>();
 					
-					VerticalPanel panel = new VerticalPanel();
-					VerticalPanel panel1 = null ;
+					VerticalPanel configValuePanel = new VerticalPanel();
+					VerticalPanel imagePanel = null ;
 					ImageField imageField = null;
-					configurationListTable.setWidget(row, col+1, panel);
+					configurationListTable.setWidget(row, col+1, configValuePanel);
 					
 					
 					for(Entity entity : typesList){
@@ -153,11 +161,11 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 						
 						
 						//configurationListTable.getFlexCellFormatter().setRowSpan(row, col+1,typesList.size());
-						panel.add(createLabelField(value,"compRegisterLabelCss",""));
-						panel1 =  new VerticalPanel();
+						configValuePanel.add(createLabelField(value,"compRegisterLabelCss",""));
+						imagePanel =  new VerticalPanel();
 						imageField = (ImageField) createImageField(configTypeId);
 						
-						configurationListTable.setWidget(row, col+2, panel1);
+						configurationListTable.setWidget(row, col+2, imagePanel);
 						
 						configurationListTable.getCellFormatter().setAlignment(row, col, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_TOP);
 						configurationListTable.getCellFormatter().setAlignment(row, col+1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
@@ -175,7 +183,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 						
 					}
 					row++;
-					panel1.add(imageField);
+					imagePanel.add(imageField);
 				}
 				configurationListTable.addClickHandler(this);
 				maxRow = row-1;
@@ -183,6 +191,10 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 				basePanel.add(configurationListTable);
 				propertyConfListScrollPanel.setStylePrimaryName("propertyConfListScrollPanel");
 				configurationListTable.setStylePrimaryName("configurationListTable");
+			}else{
+				showNotificationForListEmpty();
+				
+				
 			}
 		
 		}catch(Exception e){
@@ -191,13 +203,17 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 	}
 
 	
-	public void addSavedPropertyConfig(){
-		entity.getPropertyByName("name");
-		entity.getPropertyByName("value");
-		
+	
+	
+	private void showNotificationForListEmpty() {
+		basePanel.clear();
+		LabelField notificationMessageField = createLabelField("No configurations available ","componentSectionHeaderLbl","");
+		basePanel.add(notificationMessageField);
+		basePanel.setCellHorizontalAlignment(notificationMessageField, HasHorizontalAlignment.ALIGN_CENTER);
+		propertyConfListScrollPanel.setStylePrimaryName("propertyConfListScrollPanel");
+		configurationListTable.setStylePrimaryName("configurationListTable");
 		
 	}
-	
 	private Widget createImageField(Long row) {
 		   ImageField crossImageField = new ImageField();
 		   
@@ -256,15 +272,8 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 
 	}
 
-	private void initialize() {
-		basePanel = new VerticalPanel();
+	public void initialize() {
 		configurationListTable = new FlexTable();
-		propertyConfListScrollPanel = new ScrollPanel(basePanel);
-		initWidget(propertyConfListScrollPanel);
-		
-		
-		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
-		AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
 		
 	}
 
@@ -279,7 +288,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 	
 	
 	@SuppressWarnings("unchecked")
-	public EntityList getPropertyConfigList(Entity entity){
+	public EntityList getConfigTypeList(Entity entity){
 		
 		try {
 			Property<Serializable> componentProperty = (Property<Serializable>) entity.getProperty("id");
@@ -309,12 +318,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 							createUi(propertyConfig);
 						}
 					}else{
-						basePanel.clear();
-						LabelField notificationMessageField = createLabelField("No configurations available ","componentSectionHeaderLbl","");
-						basePanel.add(notificationMessageField);
-						basePanel.setCellHorizontalAlignment(notificationMessageField, HasHorizontalAlignment.ALIGN_CENTER);
-						propertyConfListScrollPanel.setStylePrimaryName("propertyConfListScrollPanel");
-						configurationListTable.setStylePrimaryName("configurationListTable");
+						showNotificationForListEmpty();
 						
 					}
 					
@@ -469,7 +473,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 			int eventType = event.getEventType();
 			Object eventSource = event.getEventSource();
 			switch (eventType) {
-			case ConfigEvent.COMPONENTSELECTED: {
+			/*case ConfigEvent.COMPONENTSELECTED: {
 				if (eventSource instanceof ConfigurationListDisplayer) {
 					Entity entity=  (Entity) event.getEventData(); 
 					
@@ -480,6 +484,12 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 					getPropertyConfigList(compEntity);
 				}
 				break;
+			}*/
+			case ConfigEvent.SAVEDCONFIGENTITY :{
+				if(eventSource instanceof ConfPropertyEditor){
+					Entity confEntity = (Entity) event.getEventData();
+					
+				}
 			}
 			default:
 				break;
