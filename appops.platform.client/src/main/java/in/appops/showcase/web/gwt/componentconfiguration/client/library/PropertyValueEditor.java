@@ -83,6 +83,7 @@ public class PropertyValueEditor implements FieldEventHandler {
 		typeField.create();
 				
 		isDefaultValueField = new CheckboxField();
+		isDefaultValueField.removeRegisteredHandlers();
 		
 		isDefaultValueField.setConfiguration(getIsDefCheckBoxFieldConf());
 		isDefaultValueField.configure();

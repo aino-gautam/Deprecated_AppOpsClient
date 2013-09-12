@@ -85,6 +85,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			propValuePanel = new FlexTable();
 			
 			propNameField = new TextField();
+			propNameField.removeRegisteredHandlers();
 			propNameField.setConfiguration(getPropNameFieldConf(null));
 			propNameField.configure();
 			propNameField.create();
@@ -103,9 +104,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			add(horizontalPanel);
 			add(saveConfigBtn);
 			setStylePrimaryName(COMPFORM_PANEL_CSS);
-			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
-			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
-			
+						
 			propValuePanel.addClickHandler(this);
 		} catch (Exception e) {
 			
@@ -205,6 +204,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 							saveConfigTypeList();
 						} else if(isDefaultSelected && !updateConfiguration){
 							//configTypeList
+							
 						}else{
 							showPopup("Please select atleast one default value");
 						}

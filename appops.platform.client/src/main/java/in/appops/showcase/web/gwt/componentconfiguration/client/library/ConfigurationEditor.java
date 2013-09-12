@@ -20,9 +20,10 @@ public class ConfigurationEditor extends Composite{
 	private static String BASEPANEL_CSS = "confEditorPanel";
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
 	private ConfigurationListDisplayer configurationListDisplayer = new ConfigurationListDisplayer();
-	private ConfPropertyEditor confPropertyEditor = new ConfPropertyEditor();
+	private ConfPropertyEditor confPropertyEditor ;
 	public ConfigurationEditor() {
 		basePanel = new VerticalPanel();
+		confPropertyEditor = new ConfPropertyEditor();
 		initWidget(basePanel);
 	}
 	
