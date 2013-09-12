@@ -402,8 +402,7 @@ public class PropertyValueEditor implements FieldEventHandler {
 	public  boolean checkIfRecordIsEmpty(){
 		boolean isEmpty = false;
 		
-		boolean isDef = Boolean.valueOf(isDefaultValueField.getValue().toString());
-		if(valueField.getValue().toString().equals("") && typeField.getValue().toString().equals(TYPEFIELD_DEFVAL) && !isDef){
+		if(valueField.getValue().toString().equals("") && typeField.getValue().toString().equals(TYPEFIELD_DEFVAL)){
 			isEmpty = true;
 		}
 		return isEmpty;

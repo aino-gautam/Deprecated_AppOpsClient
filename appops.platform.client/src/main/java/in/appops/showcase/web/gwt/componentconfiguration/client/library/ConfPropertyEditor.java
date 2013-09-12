@@ -488,9 +488,10 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				PropertyValueEditor valEditor = propValueList.get(i);
 				if(valEditor!=null){
 					Entity confEnt = valEditor.getPopulatedConfigTypeEntity(propNameField.getValue().toString());
-					if(confEnt!=null && confEnt.getPropertyByName("name")!=null ){
+					if(confEnt!=null && confEnt.getPropertyByName("keyname")!=null ){
 						EntityContext context  = new EntityContext();
 						confEnt.setPropertyByName("context", context);
+						confEnt.setProperty("configtype", parentConfTypeEnt);
 						list.add(confEnt);
 					}
 				}
