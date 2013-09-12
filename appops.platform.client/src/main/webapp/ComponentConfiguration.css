@@ -444,3 +444,29 @@
 	width: 100%;
 	margin-top: 10px;
 }
+.createAppBtn{
+	margin-top: 15px;
+	height: 30px;
+	border: 1px solid #DCDCDC;
+	font-family: 'Ubuntu', sans-serif;
+	-webkit-box-shadow: 1px 1px 1px 0px #8F8C8C;
+    box-shadow: 1px 1px 1px 0 #8F8C8C;
+    color: #333333;
+    cursor: hand;
+    cursor: pointer;
+}
+.createAppWidgetLabels{
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 14px;
+}
+.errorLabelCss{
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 12px;
+	color: red;
+}
+.createAppListBox{
+	border: 1px solid grey;
+	color: #585858;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 13px;
+}
