@@ -398,6 +398,16 @@ public class PropertyValueEditor implements FieldEventHandler {
 			
 		}
 	}
+	
+	public  boolean checkIfRecordIsEmpty(){
+		boolean isEmpty = false;
+		
+		boolean isDef = Boolean.valueOf(isDefaultValueField.getValue().toString());
+		if(valueField.getValue().toString().equals("") && typeField.getValue().toString().equals(TYPEFIELD_DEFVAL) && !isDef){
+			isEmpty = true;
+		}
+		return isEmpty;
+	}
 
 	public CheckboxField getIsDefaultValueField() {
 		return isDefaultValueField;
