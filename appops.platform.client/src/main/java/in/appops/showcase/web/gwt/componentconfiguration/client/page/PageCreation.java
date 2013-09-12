@@ -20,8 +20,10 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.client.EntityContext;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
+import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
@@ -437,7 +439,6 @@ public class PageCreation extends Composite implements FieldEventHandler {
 					pageNametextField.setValue("");
 					((TextBox) pageNametextField.getWidget()).setFocus(true);
 				} else if(fieldId.equals(PROCESS_PAGE_BUTTON_ID)) {
-					validateHTML();
 					saveComponentDef();
 				}
 			}
@@ -475,8 +476,8 @@ public class PageCreation extends Composite implements FieldEventHandler {
 						String pageName = pageEntity.getPropertyByName("name").toString();
 						pageNametextField.setValue(pageName);
 						fetchComponentDefinationEnt(pageEntity);
-						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SHOWPAGECONFIGURATION, null, this);
-						AppUtils.EVENT_BUS.fireEvent(configEvent);
+						/*ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SHOWPAGECONFIGURATION, null, this);
+						AppUtils.EVENT_BUS.fireEvent(configEvent);*/
 					}
 				}
 			}
@@ -499,13 +500,13 @@ public class PageCreation extends Composite implements FieldEventHandler {
 		}
 	}
 	
-	private Entity getComponentDefinationEntity() {
+	private Entity getComponentInstEntity() {
 		try{
 			Entity compEntity = new Entity();
-			compEntity.setType(new MetaType("Componentdefinition"));
-			compEntity.setPropertyByName("name", getPageName());
+			compEntity.setType(new MetaType("Componentinstance"));
+			compEntity.setPropertyByName("instancename", getPageName());
 			compEntity.setPropertyByName("htmldescription", htmltextArea.getValue().toString());
-			compEntity.setPropertyByName("typeId", 159L);
+			compEntity.setProperty("componentdefinition", getComponentDefinitionEnt());
 			return compEntity;
 		}
 		catch (Exception e) {
@@ -514,19 +515,39 @@ public class PageCreation extends Composite implements FieldEventHandler {
 		return null;
 	}
 	
+	private Entity getComponentDefinitionEnt() {
+		try{
+			Entity compoDefEntity = new Entity();
+			compoDefEntity.setType(new MetaType("Componentdefinition"));
+			Key<Long> key = new Key<Long>(65L);
+			Property<Key<Long>> keyProp = new Property<Key<Long>>(key);
+			compoDefEntity.setProperty("id", keyProp);
+			compoDefEntity.setPropertyByName("name", "Page");
+			compoDefEntity.setPropertyByName("typeId", 179L);
+			compoDefEntity.setPropertyByName("isMvp", 0);
+			return compoDefEntity;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void saveComponentDef() {
 		try{
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 			
-			Entity componentDefEnt = getComponentDefinationEntity();
+			Entity componentInstEnt = getComponentInstEntity();
 			Map parameterMap = new HashMap();
-			parameterMap.put("componentDefinition", componentDefEnt);
-			parameterMap.put("library", null);
+			parameterMap.put("componentInstEnt", componentInstEnt);
 			
-			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveComponentDefinition", parameterMap);
-			dispatch.execute(action, new AsyncCallback<Result<HashMap<String, Entity>>>() {
+			EntityContext context  = new EntityContext();
+			parameterMap.put("context", context);
+			
+			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.createPage", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -534,10 +555,11 @@ public class PageCreation extends Composite implements FieldEventHandler {
 				}
 
 				@Override
-				public void onSuccess(Result<HashMap<String, Entity>> result) {
+				public void onSuccess(Result<Entity> result) {
 					if(result!=null){
-						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SHOWPAGECONFIGURATION, null, this);
+						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SHOWPAGECONFIGURATION, result.getOperationResult(), this);
 						AppUtils.EVENT_BUS.fireEvent(configEvent);
+						validateHTML();
 					}
 				}
 			});

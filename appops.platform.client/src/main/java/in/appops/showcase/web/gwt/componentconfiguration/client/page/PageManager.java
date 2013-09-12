@@ -3,6 +3,7 @@ package in.appops.showcase.web.gwt.componentconfiguration.client.page;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.ConfigEvent;
 import in.appops.client.common.event.handlers.ConfigEventHandler;
+import in.appops.platform.core.entity.Entity;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -29,8 +30,7 @@ public class PageManager extends Composite implements ConfigEventHandler{
 		
 		pageConfig = new PageConfiguration();
 		basePanel.add(pageConfig);
-		pageConfig.setVisible(true);
-		pageConfig.createPropertyConfigUI();
+		pageConfig.setVisible(false);
 		basePanel.setWidth("100%");
 	}
 
@@ -38,12 +38,16 @@ public class PageManager extends Composite implements ConfigEventHandler{
 	public void onConfigEvent(ConfigEvent event) {
 		try {
 			int eventType = event.getEventType();
-			Object eventSource = event.getEventSource();
 			switch (eventType) {
 			case ConfigEvent.SHOWPAGECONFIGURATION: {
-				if(pageConfig != null) {
-					pageConfig.setVisible(true);
-					pageConfig.createPropertyConfigUI();
+				if(event.getEventData() != null) {
+					if(event.getEventData() instanceof Entity) {
+						Entity entity = (Entity) event.getEventData();
+						if(pageConfig != null) {
+							pageConfig.setVisible(true);
+							pageConfig.setPageComponentInstEntity(entity);
+						}
+					}
 				}
 				break;
 			}

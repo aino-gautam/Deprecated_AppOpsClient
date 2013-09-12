@@ -25,12 +25,15 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispat
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.client.EntityContext;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
+import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
@@ -55,9 +58,14 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	private ListBoxField transformToListbox;
 	private Entity parentEventEntity;
 	private int index;
-	private Map<String, TextField> configMap = new HashMap<String, TextField>();
-	private Map<String, Entity> transformMap = new HashMap<String, Entity>();
+	private Map<String, TextField> configMap;
+	private Map<String, Entity> transformMap;
 	private TextField transformInstanceTextField;
+	private Map<String, Map<String, Object>> containerCompoInstMap;
+	private Entity interestedEventEntity;
+	private Entity pageComponentInstEntity;
+	private boolean isNew;
+	private Entity updateConfigEntity;
 	
 	public PageConfiguration() {
 		initialize();
@@ -71,6 +79,9 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		basePanel = new VerticalPanel();
 		addConfigPanel = new VerticalPanel();
 		updateConfigurationPanel = new VerticalPanel();
+		configMap = new HashMap<String, TextField>();
+		transformMap = new HashMap<String, Entity>();
+		containerCompoInstMap = new HashMap<String, Map<String,Object>>();
 	}
 	
 	public void createUI() {
@@ -228,11 +239,8 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	public void createPropertyConfigUI() {
 		addConfigPanel.clear();
 		
-		LabelField propConfigTitleLabel = new LabelField();
-		propConfigTitleLabel.setConfiguration(getPropConfigTitleLabelConfiguration());
-		propConfigTitleLabel.configure();
-		propConfigTitleLabel.create();
-		addConfigPanel.add(propConfigTitleLabel);
+		HorizontalPanel titlePanel = createTitlePanel();
+		addConfigPanel.add(titlePanel);
 		
 		HorizontalPanel eventNamePanel = createEventNamePanel();
 		addConfigPanel.add(eventNamePanel);
@@ -261,6 +269,44 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		addConfigPanel.setStylePrimaryName(ADD_PAGE_CONFIGURATION_BASEPANEL_CSS);
 	}
 	
+	private HorizontalPanel createTitlePanel() {
+		HorizontalPanel titlePanel = new HorizontalPanel();
+		
+		LabelField propConfigTitleLabel = new LabelField();
+		propConfigTitleLabel.setConfiguration(getPropConfigTitleLabelConfiguration());
+		propConfigTitleLabel.configure();
+		propConfigTitleLabel.create();
+		titlePanel.add(propConfigTitleLabel);
+		
+		ImageField plusIconField = new ImageField();
+		plusIconField.setConfiguration(getPlusIconFieldConfiguration());
+		plusIconField.configure();
+		plusIconField.create();
+		titlePanel.add(plusIconField);
+		
+		titlePanel.setCellWidth(propConfigTitleLabel, "150px");
+		titlePanel.setCellHorizontalAlignment(plusIconField, HasHorizontalAlignment.ALIGN_RIGHT);
+		titlePanel.setWidth("100%");
+		return titlePanel;
+	}
+
+	/**
+	 * Creates the plus Image Field configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getPlusIconFieldConfiguration(){
+		Configuration configuration = new Configuration();
+		try {
+			configuration.setPropertyByName(ImageFieldConstant.BF_ID, PLUS_ICONFIELD_ID);
+			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, "images/plus-icon.png");
+			configuration.setPropertyByName(ImageFieldConstant.BF_PCLS, PLUS_ICONFIELD_CSS);
+			configuration.setPropertyByName(ImageFieldConstant.IMGFD_TITLE, "Add new");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return configuration;
+	}
+
 	public HorizontalPanel createButtonPanel() {
 		HorizontalPanel buttonPanel = new HorizontalPanel();
 		
@@ -514,6 +560,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	}
 
 	private HorizontalPanel createUpdateConfigPanel() {
+		isNew = true;
 		HorizontalPanel updateConfigurationBasePanel = new HorizontalPanel();
 		VerticalPanel updateConfigPanelWithButton = new VerticalPanel();
 		
@@ -601,6 +648,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, "images/minus-icon.jpg");
 			configuration.setPropertyByName(ImageFieldConstant.BF_PCLS, MINUS_ICONFIELD_CSS);
 			configuration.setPropertyByName(ImageFieldConstant.IMGFD_TITLE, "Delete");
+			configuration.setPropertyByName(ImageFieldConstant.BF_ID, MINUS_ICONFIELD_ID);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -664,7 +712,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 			Configuration childConfig1 = new Configuration();
 			childConfig1.setPropertyByName(RadionButtonFieldConstant.BF_PCLS, "appops-CheckBoxField");
 			childConfig1.setPropertyByName(RadionButtonFieldConstant.RF_DISPLAYTEXT, "true");
-			childConfig1.setPropertyByName(RadionButtonFieldConstant.RF_CHECKED, true);
+			//childConfig1.setPropertyByName(RadionButtonFieldConstant.RF_CHECKED, true);
 			
 			Configuration childConfig2 = new Configuration();
 			childConfig2.setPropertyByName(RadionButtonFieldConstant.BF_PCLS, "appops-CheckBoxField");
@@ -804,20 +852,26 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 					TextField source = (TextField) event.getEventSource();
 					String fieldId = source.getBaseFieldId();
 					if(fieldId.equals(EVENT_NAME_TEXTFIELD_ID)) {
-						saveConfigInstance(getConfiginstanceEntity(eventNametextField.getFieldValue(), eventNametextField.getFieldValue(), null, null), true);
+						saveConfigInstance(getConfiginstanceEntity(eventNametextField.getFieldValue(), eventNametextField.getFieldValue(), null, interestedEventEntity), true, null);
 					} else if(fieldId.equals(UPDATE_CONFIG_KEY_TEXTFIELD_ID)) {
 						
 					} else if(fieldId.equals(UPDATE_CONFIG_VALUE_TEXTFIELD_ID)) {
 						String value = (String) event.getEventData();
 						if(!value.equals("")) {
-							createUpdateConfigRow(true);
-							Entity entity = createEntityWithInfo(source);
-							saveConfigInstance(entity, false);
+							if(isNew) {
+								isNew = false;
+								createUpdateConfigRow(true);
+								saveConfigInstance(getConfiginstanceEntity("UpdateConfiguration", "UpdateConfiguration", null, parentEventEntity), false, source);
+							} else {
+								createUpdateConfigRow(true);
+								Entity entity = createEntityWithInfo(source);
+								saveConfigInstance(entity, false, null);
+							}
 						}
 					} else if(fieldId.equals(TRANSFORM_INSTANCE_TEXTFIELD_ID)) {
 						String value = (String) event.getEventData();
 						if(!value.equals("")) {
-							saveConfigInstance(getConfiginstanceEntity("transformInstance", "transformInstance", value, parentEventEntity), false);
+							saveConfigInstance(getConfiginstanceEntity("transformInstance", "transformInstance", value, parentEventEntity), false, null);
 						}
 					}
 				} else if(event.getEventSource() instanceof GroupField) {
@@ -841,6 +895,15 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 					} else if(fieldId.equals(NEXT_BUTTON_ID)) {
 						createPropertyConfigUI();
 					}
+				} else if(event.getSource() instanceof ImageField) {
+					ImageField source = (ImageField) event.getEventSource();
+					String fieldId = source.getBaseFieldId();
+					if(fieldId.equals(PLUS_ICONFIELD_ID)) {
+						createPropertyConfigUI();
+					} else if(fieldId.equals(MINUS_ICONFIELD_ID)) {
+						Widget panel = source.getParent();
+						panel.removeFromParent();
+					}
 				}
 				break;
 			}
@@ -852,9 +915,9 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 					RadioButtonField radioButton = (RadioButtonField) selectedItem.get(0);
 					String text = radioButton.getDisplayText();
 					if(fieldId.equals(IS_TRANSFORM_WIDGET_GROUP_ID)) {
-						saveConfigInstance(getConfiginstanceEntity("isTransformWidget", "isTransformWidget", text, parentEventEntity), false);
+						saveConfigInstance(getConfiginstanceEntity("isTransformWidget", "isTransformWidget", text, parentEventEntity), false, null);
 					} else if(fieldId.equals(IS_UPDATE_CONFIG_GROUP_ID)) {
-						saveConfigInstance(getConfiginstanceEntity("isUpdateConfiguration", "isUpdateConfiguration", text, parentEventEntity), false);
+						saveConfigInstance(getConfiginstanceEntity("isUpdateConfiguration", "isUpdateConfiguration", text, parentEventEntity), false, null);
 					}
 				}
 				break;
@@ -874,15 +937,19 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 							instanceValue = String.valueOf(2);
 						}
 						
-						saveConfigInstance(getConfiginstanceEntity("transformType", "transformType", instanceValue, parentEventEntity), false);
+						saveConfigInstance(getConfiginstanceEntity("transformType", "transformType", instanceValue, parentEventEntity), false, null);
 					} else if(fieldId.equals(TRANSFORM_TO_LISTBOX_ID)) {
 						String value = (String) source.getValue();
-						isUpdateConfigGrField.setFieldFocus();
-						saveConfigInstance(getConfiginstanceEntity("transformTo", "transformTo", value, parentEventEntity), false);
+						//isUpdateConfigGrField.setFieldFocus();
+						saveConfigInstance(getConfiginstanceEntity("transformTo", "transformTo", value, parentEventEntity), false, null);
 						Entity entity = source.getAssociatedEntity(value);
 						transformMap.put(transformInstanceTextField.getFieldValue(), entity);
 					} else if(fieldId.equals(SPAN_LISTBOX_ID)) {
-						
+						String value = (String) source.getValue();
+						if(!containerCompoInstMap.containsKey(value)) {
+							Entity entity = createComponentInstance(value);
+							saveComponentInstance(entity);
+						}
 					}
 				}
 				break;
@@ -895,16 +962,62 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void saveComponentInstance(final Entity entity) {
+
+		try{
+			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+			
+			Map parameterMap = new HashMap();
+			parameterMap.put("componentInstEnt", entity);
+			
+			EntityContext context  = new EntityContext();
+			parameterMap.put("entityContext", context);
+			
+			parameterMap.put("isUpdate", false);
+			
+			StandardAction action = new StandardAction(HashMap.class, "appdefinition.AppDefinitionService.saveComponentInstance", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<HashMap<String, Object>>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(Result<HashMap<String, Object>> result) {
+					if(result!=null){
+						HashMap<String, Object> map = result.getOperationResult();
+						String instanceName = entity.getPropertyByName("instancename");
+						containerCompoInstMap.put(instanceName, map);
+						ArrayList<Entity> childList = (ArrayList<Entity>) map.get("childConfigInstanceList");
+						Iterator<Entity> iterator = childList.iterator();
+						if(iterator.hasNext()) {
+							Entity entity = iterator.next();
+							String name = entity.getPropertyByName("instancename").toString();
+							if(name.equals("interestedEvents")) {
+								interestedEventEntity = entity;
+							}
+						}
+						createPropertyConfigUI();
+					}
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	private Entity createEntityWithInfo(TextField source) {
 		String name = ((TextBox) source.getWidget()).getName();
 		TextField textField = configMap.get(name);
-		Entity entity = getConfiginstanceEntity(textField.getFieldValue(), textField.getFieldValue(), source.getFieldValue(), parentEventEntity);
+		Entity entity = getConfiginstanceEntity(textField.getFieldValue(), textField.getFieldValue(), source.getFieldValue(), updateConfigEntity);
 		return entity;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void saveConfigInstance(Entity configinstanceEntity, final boolean isParentInstance) {
+	private void saveConfigInstance(Entity configinstanceEntity, final boolean isParentInstance, final TextField source) {
 
 		try{
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
@@ -931,6 +1044,11 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 						if(ent != null) {
 							if(isParentInstance) {
 								parentEventEntity = ent;
+							}
+							if(source != null) {
+								updateConfigEntity = ent;
+								Entity entity = createEntityWithInfo(source);
+								saveConfigInstance(entity, false, null);
 							}
 						}
 					}
@@ -984,6 +1102,8 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 			Entity configInstEntity = new Entity();
 			configInstEntity.setType(new MetaType("Componentinstance"));
 			configInstEntity.setPropertyByName("instancename", value);
+			configInstEntity.setProperty("componentdefinition", getCompoDefEnt());
+			configInstEntity.setProperty("componentinstance", this.pageComponentInstEntity);
 			return configInstEntity;
 		}
 		catch (Exception e) {
@@ -992,6 +1112,29 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		return null;
 	}
 	
+	private Entity getCompoDefEnt() {
+		try{
+			Entity compoDefEntity = new Entity();
+			compoDefEntity.setType(new MetaType("Componentdefinition"));
+			Key<Long> key = new Key<Long>(78L);
+			Property<Key<Long>> keyProp = new Property<Key<Long>>(key);
+			compoDefEntity.setProperty("id", keyProp);
+			compoDefEntity.setPropertyByName("name", "Container");
+			compoDefEntity.setPropertyByName("typeId", 189L);
+			compoDefEntity.setPropertyByName("configtypeId", 134L);
+			compoDefEntity.setPropertyByName("isMvp", 0);
+			return compoDefEntity;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public void setPageComponentInstEntity(Entity entity) {
+		this.pageComponentInstEntity = entity;
+	}
+
 	private static final String SPAN_LISTBOX_ID = "spanListBoxFieldId";
 	private static final String TRANSFORM_TO_LISTBOX_ID = "transformToListboxId";
 	private static final String TRANSFORM_TYPE_LISTBOX_ID = "transformTypeListboxId";
@@ -1003,6 +1146,8 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	private static final String IS_UPDATE_CONFIG_GROUP_ID = "isUpdateConfigGroupId";
 	private static final String IS_TRANSFORM_WIDGET_GROUP_ID = "isTransformWidgetGroupId";
 	private static final String NEXT_BUTTON_ID = "nextButtonId";
+	private static final String PLUS_ICONFIELD_ID = "plusIconFieldId";
+	private static final String MINUS_ICONFIELD_ID = "minusIconFieldId";
 	
 	private static String CONFIG_TITLE_LABEL_CSS = "configTitleLabel";
 	private static String SPAN_SELECTION_LABEL_CSS = "spanSelectionLabel";
@@ -1027,4 +1172,5 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	private static String ADD_PAGE_CONFIGURATION_BASEPANEL_CSS = "addPageConfigBasePanel";
 	private static String CONFIGURE_BUTTON_CSS = "configureButton";
 	private static String NEXT_BUTTON_CSS = "nextButton";
+	private static String PLUS_ICONFIELD_CSS = "plusIconField";
 }

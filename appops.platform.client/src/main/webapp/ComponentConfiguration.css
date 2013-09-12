@@ -470,3 +470,8 @@
 	font-family: 'Ubuntu', sans-serif;
 	font-size: 13px;
 }
+
+.plusIconField {
+	cursor: pointer;
+	cursor: hand;
+}

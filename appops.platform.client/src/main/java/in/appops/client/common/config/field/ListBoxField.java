@@ -132,6 +132,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 			if (getBasePanelDependentCss() != null)
 				getBasePanel().addStyleName(getBasePanelDependentCss());
 
+				removeRegisteredHandlers();
 				selectionHandler = listBox.addChangeHandler(this);
 				blurHandler = listBox.addBlurHandler(this);
 				keyDownHandler = listBox.addKeyDownHandler(this);
@@ -163,6 +164,8 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		if(blurHandler!=null)
 			blurHandler.removeHandler();
 		
+		if(keyDownHandler!=null)
+			keyDownHandler.removeHandler();
 	}
 	
 	@Override

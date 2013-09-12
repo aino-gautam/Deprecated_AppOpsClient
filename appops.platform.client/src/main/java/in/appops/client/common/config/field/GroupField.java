@@ -454,11 +454,13 @@ public class GroupField extends BaseField implements FieldEventHandler{
 			case FieldEvent.RADIOBUTTON_SELECTED: {
 				selectedItems.clear();
 				RadioButtonField radioButton = (RadioButtonField) event.getEventSource();
-				selectedItems.add(radioButton);
-				FieldEvent fieldEvent = new FieldEvent();
-				fieldEvent.setEventType(FieldEvent.VALUE_SELECTED);
-				fieldEvent.setEventSource(this);
-				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+				if(fieldItems.contains(radioButton)) {
+					selectedItems.add(radioButton);
+					FieldEvent fieldEvent = new FieldEvent();
+					fieldEvent.setEventType(FieldEvent.VALUE_SELECTED);
+					fieldEvent.setEventSource(this);
+					AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+				}
 				break;
 			}
 			case FieldEvent.TAB_KEY_PRESSED: {
