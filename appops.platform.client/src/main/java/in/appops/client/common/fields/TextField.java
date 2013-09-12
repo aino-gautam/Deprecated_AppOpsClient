@@ -204,7 +204,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			keyPressHandler = textArea.addKeyPressHandler(this);
 			blurHandler = textArea.addBlurHandler(this);
 			keyUpHandler = textArea.addKeyUpHandler(this);
-			keyDownHandler = textBox.addKeyDownHandler(this);
+			keyDownHandler = textArea.addKeyDownHandler(this);
 			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[TextField] ::Exception In createTextArea method "+e);

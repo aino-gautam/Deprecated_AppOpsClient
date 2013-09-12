@@ -6,6 +6,7 @@ import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.showcase.web.gwt.componentconfiguration.client.app.CreateAppWidget;
 import in.appops.showcase.web.gwt.componentconfiguration.client.library.LibraryComponentManager;
 import in.appops.showcase.web.gwt.componentconfiguration.client.page.PageManager;
 import in.appops.showcase.web.gwt.componentconfiguration.client.page.SnippetManager;
@@ -35,7 +36,8 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 	private static String MANAGELIB_BTN_ID = "manageLibBtnId";
 	private static String CREATEPAGE_BTN_ID = "createPageBtnId";
 	private static String CREATESNIPPET_BTN_ID = "createSnippetBtnId";
-	
+	private static String CREATESERVICE_BTN_ID = "createServiceBtnId";
+	private static String CREATEAPP_BTN_ID = "createAppBtnId";
 	public ConfigurationManagerHome() {
 		initialize();
 	}
@@ -64,11 +66,24 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 			createSnippetBtn.configure();
 			createSnippetBtn.create();
 			
+			ButtonField createServicetBtn = new ButtonField();
+			createServicetBtn.setConfiguration(getCreateServiceBtnConf());
+			createServicetBtn.configure();
+			createServicetBtn.create();
+			
+			ButtonField createAppBtn = new ButtonField();
+			createAppBtn.setConfiguration(getCreateAppBtnConf());
+			createAppBtn.configure();
+			createAppBtn.create();
+			
+			
+			
 			VerticalPanel toolbar = new VerticalPanel();
 			VerticalPanel btnPanel = new VerticalPanel();
 			btnPanel.add(manageLibBtn);
 			btnPanel.add(createPageBtn);
-			btnPanel.add(createSnippetBtn);
+			btnPanel.add(createServicetBtn);
+			btnPanel.add(createAppBtn);
 			toolbar.add(btnPanel);
 			
 			LibraryComponentManager libraryComponentManager = new LibraryComponentManager();
@@ -96,6 +111,38 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 		
 	}
 	
+	/**
+	 * This method for create configuration for the create app button field
+	 * @return
+	 */
+	private Configuration getCreateAppBtnConf() {
+		Configuration configuration = new Configuration();
+		try {
+			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Create a app");
+			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,HOME_BTN_PCLS);
+			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, CREATEAPP_BTN_ID);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "ConfigurationManagerHome :: getCreateAppBtnConf :: Exception", e);
+		}
+		return configuration;
+	}
+
+	/**
+	 * This method for create configuration for the create sevice button field
+	 * @return
+	 */
+	private Configuration getCreateServiceBtnConf() {
+		Configuration configuration = new Configuration();
+		try {
+			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Create a service");
+			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,HOME_BTN_PCLS);
+			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, CREATESERVICE_BTN_ID);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "ConfigurationManagerHome :: getCreateServiceBtnConf :: Exception", e);
+		}
+		return configuration;
+	}
+
 	/**
 	 * Creates the library button configuration object and return.
 	 * @return Configuration instance
@@ -197,6 +244,13 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 						SnippetManager snippetManager = new SnippetManager();
 						snippetManager.initialize();
 						contentPanel.add(snippetManager);
+					}else if(btnField.getBaseFieldId().equals(CREATEAPP_BTN_ID)){
+						contentPanel.clear();
+						CreateAppWidget createAppWidget = new CreateAppWidget();
+						createAppWidget.createUi();
+						contentPanel.add(createAppWidget);
+					}else if(btnField.getBaseFieldId().equals(CREATESERVICE_BTN_ID)){
+						
 					}
 				}
 				break;
