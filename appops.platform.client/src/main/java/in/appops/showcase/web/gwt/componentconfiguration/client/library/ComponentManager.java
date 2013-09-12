@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @author pallavi@ensarm.com
  *
  */
-public class ComponentManager extends Composite implements FieldEventHandler{
+public class ComponentManager extends Composite {
 	
 	private VerticalPanel basePanel;
 	private ComponentRegistrationForm compRegForm;
@@ -55,74 +55,11 @@ public class ComponentManager extends Composite implements FieldEventHandler{
 			basePanel.add(compRegForm);
 			basePanel.add(compListDisplayer);
 			
-			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
 			initWidget(basePanel);
 							
 		}
 		catch (Exception e) {	
 			logger.log(Level.SEVERE, "ComponentManager :: createUi :: Exception", e);
-		}
-	}
-
-	@Override
-	public void onFieldEvent(FieldEvent event) {
-		
-		int eventType = event.getEventType();
-		Object eventSource = event.getEventSource();
-		
-		try {
-			if(eventType == FieldEvent.CLICKED){
-				if(eventSource instanceof ComponentPanel){
-					Entity componentEtity = (Entity) event.getEventData();
-						if(componentEtity!=null){
-							populateConfigurationDef(componentEtity);
-						}
-					
-				}
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "ComponentManager :: onFieldEvent :: Exception", e);
-		}
-		
-	}
-	
-	@SuppressWarnings("unchecked")
-	private void populateConfigurationDef(final Entity componentDefEntity) {
-		try {
-			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
-			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
-			
-			Query queryObj = new Query();
-			queryObj.setQueryName("getConfigurationdefOfComponent");
-			
-			HashMap<String, Object> queryParam = new HashMap<String, Object>();
-			Long libId = ((Key<Long>)componentDefEntity.getPropertyByName("id")).getKeyValue();
-			queryParam.put("confdefId", libId);
-			queryObj.setQueryParameterMap(queryParam);
-						
-			Map parameterMap = new HashMap();
-			parameterMap.put("query", queryObj);
-			
-			StandardAction action = new StandardAction(EntityList.class, "appdefinition.AppDefinitionService.getComponentDefinitions", parameterMap);
-			dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
-
-				@Override
-				public void onFailure(Throwable caught) {
-					caught.printStackTrace();
-				}
-
-				@Override
-				public void onSuccess(Result<EntityList> result) {
-					if(result!=null){
-						EntityList confDeflist   = result.getOperationResult();
-						if(!confDeflist.isEmpty()){
-							
-						}
-					}
-				}
-			});
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "ComponentManager :: populateComponentConfiguration :: Exception", e);
 		}
 	}
 
