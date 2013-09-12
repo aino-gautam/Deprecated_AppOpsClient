@@ -397,13 +397,17 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 				if(event.getEventType() == FieldEvent.TAB_KEY_PRESSED){
 					if(((TextField)event.getEventSource()).equals(qryNamevalFld)){
 						String paramValue = ((TextField)event.getEventSource()).getValue().toString();
-						Entity configEntity = getQryOpNameEntity(paramValue, true);
-						saveQryOpName(configEntity, true);
+						if(!paramValue.trim().equals("")){
+							Entity configEntity = getQryOpNameEntity(paramValue, true);
+							saveQryOpName(configEntity, true);
+						}
 					}
 					else if(((TextField)event.getEventSource()).equals(opNamevalFld)){
 						String paramValue = ((TextField)event.getEventSource()).getValue().toString();
-						Entity configEntity = getQryOpNameEntity(paramValue, false);
-						saveQryOpName(configEntity, false);
+						if(!paramValue.trim().equals("")){
+							Entity configEntity = getQryOpNameEntity(paramValue, false);
+							saveQryOpName(configEntity, false);
+						}
 					}
 				}
 			}

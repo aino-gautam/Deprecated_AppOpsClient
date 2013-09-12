@@ -191,8 +191,10 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 			if(event.getEventSource() instanceof TextField){
 				if(event.getEventType() == FieldEvent.TAB_KEY_PRESSED){
 					if(((TextField)event.getEventSource()).equals(paramValueField)){
-						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SAVEPROPVALUEADDWIDGET, getConfigTypeEntity(), reference);
-						AppUtils.EVENT_BUS.fireEvent(configEvent);
+						if(!(paramValueField.getValue().toString().trim().equals("")) && !(paramNameField.getValue().toString().trim().equals(""))){
+							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SAVEPROPVALUEADDWIDGET, getConfigTypeEntity(), reference);
+							AppUtils.EVENT_BUS.fireEvent(configEvent);
+						}
 					}
 				}
 			}
