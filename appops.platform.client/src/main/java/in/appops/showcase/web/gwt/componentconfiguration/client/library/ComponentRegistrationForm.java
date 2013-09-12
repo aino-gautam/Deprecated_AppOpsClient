@@ -264,10 +264,6 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			parameterMap.put("componentDefinition", componentDefEnt);
 			parameterMap.put("library", libraryEntity);
 			
-			//need to change the immediate context id.
-			EntityContext context  = new EntityContext();
-			parameterMap.put("context", context);
-			
 			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveComponentDefinition", parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<HashMap<String, Entity>>>() {
 
