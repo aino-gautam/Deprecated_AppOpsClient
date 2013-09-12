@@ -19,6 +19,7 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.client.EntityContext;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.type.MetaType;
@@ -29,7 +30,6 @@ import in.appops.platform.server.core.services.configuration.constant.ConfigType
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -47,13 +47,13 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 	
 	private HorizontalPanel basePanel;
  
-	private FlexTable queryParamFlex;
-	private FlexTable opParamFlex;
+	private VerticalPanel queryParamFlex;
+	private VerticalPanel opParamFlex;
 	
 	public static final String QUERYMODE = "queryMode";
 	public static final String OPERATIONMODE = "operationMode";
 	
-	private int opRow,queryRow ;
+//	private int opRow,queryRow ;
 	
 	private final String MODELLBLCSS = "modelLblCss";
 	
@@ -82,16 +82,15 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 	private void initialize() {
 		try{
 			//TODO: creating dummy model contype entity
-			
-			modelConfigType = new Entity();
-			modelConfigType.setType(new MetaType(""));
+/*			modelConfigType = new Entity();
+			modelConfigType.setType(new MetaType("Configtype"));
 			Key<Long> key = new Key<Long>(245L);
-			modelConfigType.setPropertyByName("id", key);
+			modelConfigType.setPropertyByName("id", key);*/
 			
 			basePanel = new HorizontalPanel();
 			initWidget(basePanel);
-			opParamFlex = new FlexTable();
-			queryParamFlex = new FlexTable();
+			opParamFlex = new VerticalPanel();
+			queryParamFlex = new VerticalPanel();
 			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 		}
@@ -239,45 +238,94 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 			if(event.getEventType() == ConfigEvent.SAVEPROPVALUEADDWIDGET){
 				SnippetPropValueEditor snipPropValEditorSelected = (SnippetPropValueEditor) event.getEventSource();
 				if(snipPropValEditorSelected.getSnipPropValEditorId().equals(OPERATIONMODE)){
-					saveParamValue(snipPropValEditorSelected.getConfigTypeEntity());
-					SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(OPERATIONMODE,opRow);
+					saveParamValue(snipPropValEditorSelected);
+					SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(OPERATIONMODE);
 					snipPropValEditor.setSnipPropValEditorId(OPERATIONMODE);
-					snipPropValEditor.setConfTypeEntity(opParamConfigEnt);
+					snipPropValEditor.setParentConfTypeEntity(opParamConfigEnt);
 					snipPropValEditor.getParamNameField().setFocus();
-					opParamFlex.setWidget(opRow, 0, snipPropValEditor);
-					opRow++;
+					opParamFlex.add(snipPropValEditor);
+				/*	opParamFlex.setWidget(opRow, 0, snipPropValEditor);
+					opRow++;*/
 				}
 				else{
-					saveParamValue(snipPropValEditorSelected.getConfigTypeEntity());
-					SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(QUERYMODE,queryRow);
+					saveParamValue(snipPropValEditorSelected);
+					SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(QUERYMODE);
 					snipPropValEditor.setSnipPropValEditorId(QUERYMODE);
-					snipPropValEditor.setConfTypeEntity(queryParamConfigEnt);
+					snipPropValEditor.setParentConfTypeEntity(queryParamConfigEnt);
 					snipPropValEditor.getParamNameField().setFocus();
-					queryParamFlex.setWidget(queryRow, 0, snipPropValEditor);
-					queryRow++;
+					queryParamFlex.add(snipPropValEditor);
+
+					/*queryParamFlex.setWidget(queryRow, 0, snipPropValEditor);
+					queryRow++;*/
 				}
 			}
 			else if(event.getEventType() == ConfigEvent.REMOVEPARAMPROPERTYVALUE){
 				SnippetPropValueEditor snipPropValEditorSelected = (SnippetPropValueEditor) event.getEventSource();
-				deleteParamValueEntity(snipPropValEditorSelected.getConfigTypeEntity());
-				int rowToRemove = snipPropValEditorSelected.getValuePanelRow();
+				Entity entInContext = snipPropValEditorSelected.getConfigTypeEntity();
+				if(entInContext.getPropertyByName("id")!=null)
+					deleteParamValueEntity(entInContext);
+				
+				
+				snipPropValEditorSelected.removeFromParent();
 
+				//TODO  need to test following approach
 				if(snipPropValEditorSelected.getSnipPropValEditorId().equals(OPERATIONMODE)){
-					opParamFlex.removeRow(rowToRemove);
+					
+					if(opParamFlex.getWidgetCount() == 0){
+						SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(OPERATIONMODE);
+						snipPropValEditor.setParentConfTypeEntity(opParamConfigEnt);
+						opParamFlex.add(snipPropValEditor);
+					}
+				}
+				else if(snipPropValEditorSelected.getSnipPropValEditorId().equals(QUERYMODE)){
+					if(queryParamFlex.getWidgetCount()  == 0){
+						SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(QUERYMODE);
+						snipPropValEditor.setParentConfTypeEntity(queryParamConfigEnt);
+						queryParamFlex.add(snipPropValEditor);
+					}
+				}
+				
+				
+			//	int rowToRemove = snipPropValEditorSelected.getValuePanelRow();
+
+			/*	if(snipPropValEditorSelected.getSnipPropValEditorId().equals(OPERATIONMODE)){
+					
+					opParamFlex.removeCell(rowToRemove,0);
 				}
 				else{
-					queryParamFlex.removeRow(rowToRemove);
-				}
+					queryParamFlex.removeCell(rowToRemove,0);
+				}*/
 			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
-	private void deleteParamValueEntity(Entity configDefEntity) {
+	
+	@SuppressWarnings("unchecked")
+	private void deleteParamValueEntity(Entity configTypeEntity) {
 		try{
-			Window.alert("Entity to be deleted");
+			Map parameterMap = new HashMap();
+			parameterMap.put("configTypeEnt", configTypeEntity);
+			
+			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.deleteConfigurationType", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(Result<Entity> result) {
+					if(result!=null){
+						if(result.getOperationResult()!=null){
+							Window.alert("Entity deleted");
+						}
+					}
+				}
+				
+			});
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -285,11 +333,16 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 	}
 
 	@SuppressWarnings("unchecked")
-	private void saveParamValue(Entity configDefEntity) {
+	private void saveParamValue(final SnippetPropValueEditor snipPropValEditorSelected) {
 		try{
+			Entity configTypeEntity = snipPropValEditorSelected.getConfTypeParamValEnt();
 			Map parameterMap = new HashMap();
-			parameterMap.put("configTypeEnt", configDefEntity);
-			parameterMap.put("update", false);
+			parameterMap.put("configTypeEnt", configTypeEntity);
+			if(configTypeEntity.getPropertyByName("id")!=null)
+				parameterMap.put("update", true);
+			else
+				parameterMap.put("update", false);
+			parameterMap.put("context", null);
 			
 			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveConfigurationType", parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
@@ -301,7 +354,19 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 
 				@Override
 				public void onSuccess(Result<Entity> result) {
-					Window.alert("Entity saved");
+					if(result!=null){
+						if(result.getOperationResult() != null){
+							Entity savedEnt = result.getOperationResult();
+							snipPropValEditorSelected.setConfTypeParamValEnt(savedEnt);
+							/*int rowValue = snipPropValEditorSelected.getValuePanelRow();
+							if(snipPropValEditorSelected.getSnipPropValEditorId().equals(QUERYMODE)){
+								queryParamFlex.setWidget(rowValue, 0, snipPropValEditorSelected);
+							}
+							else if(snipPropValEditorSelected.getSnipPropValEditorId().equals(OPERATIONMODE)){
+								opParamFlex.setWidget(rowValue, 0, snipPropValEditorSelected);
+							}*/
+						}
+					}
 				}
 			});
 		}
@@ -309,15 +374,6 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 			e.printStackTrace();
 		}
 	}
-
-	/*private void saveOperationParam(Entity configDefEntity) {
-		try{
-			
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-	}*/
 
 	/**
 	 * @return the modelConfigType
@@ -359,11 +415,12 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 
 
 	@SuppressWarnings("unchecked")
-	private void saveQryOpName(Entity configEntity, final boolean isQueryCall) {
+	private void saveQryOpName(Entity configTypeEnt, final boolean isQueryCall) {
 		try{
 			Map parameterMap = new HashMap();
-			parameterMap.put("configTypeEnt", configEntity);
+			parameterMap.put("configTypeEnt", configTypeEnt);
 			parameterMap.put("update", false);
+			parameterMap.put("context", new EntityContext());
 			
 			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveConfigurationType", parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
@@ -415,13 +472,14 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 				paramValueEntity.setPropertyByName(ConfigTypeConstant.KEYNAME,OPERATIONNPARAMPROP);
 			}
 			
-			paramValueEntity.setPropertyByName("configtype", modelConfigType);
+			paramValueEntity.setProperty("configtype", modelConfigType);
 
 			paramValueEntity.setPropertyByName(ConfigTypeConstant.SERVICEID, 10);
 			
 			Map parameterMap = new HashMap();
 			parameterMap.put("configTypeEnt", paramValueEntity);
 			parameterMap.put("update", false);
+			parameterMap.put("context", null);
 			
 			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveConfigurationType", parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
@@ -446,10 +504,9 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 								queryDetailHolder.add(qryParamLblFld);
 								queryDetailHolder.add(queryParamFlex);
 								
-								SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(QUERYMODE,queryRow);
-								snipPropValEditor.setConfTypeEntity(queryParamConfigEnt);
-								queryParamFlex.setWidget(queryRow, 0, snipPropValEditor);
-								queryRow++;
+								SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(QUERYMODE);
+								snipPropValEditor.setParentConfTypeEntity(queryParamConfigEnt);
+								queryParamFlex.add( snipPropValEditor);
 							}
 							else{
 								opParamConfigEnt = result.getOperationResult();
@@ -462,10 +519,9 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 								operationDetailHolder.add(opParamLblFld);
 								operationDetailHolder.add(opParamFlex);
 								
-								SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(OPERATIONMODE,opRow);
-								snipPropValEditor.setConfTypeEntity(opParamConfigEnt);
-								opParamFlex.setWidget(opRow, 0, snipPropValEditor);
-								opRow++;
+								SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(OPERATIONMODE);
+								snipPropValEditor.setParentConfTypeEntity(opParamConfigEnt);
+								opParamFlex.add( snipPropValEditor);
 							}
 						}
 					}
@@ -496,7 +552,7 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 			}
 			
 			configTypeEnt.setPropertyByName(ConfigTypeConstant.KEYVALUE, paramValue);
-			configTypeEnt.setPropertyByName("configtype", modelConfigType);
+			configTypeEnt.setProperty("configtype", modelConfigType);
 
 			configTypeEnt.setPropertyByName(ConfigTypeConstant.SERVICEID, 10);
 		}

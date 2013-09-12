@@ -27,8 +27,10 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 	public SnippetPropValueEditor reference;
 	
 	private FlexTable propValuePanel;
-	private int valuePanelRow=0;
-	private Entity confTypeEntity;
+//	private int valuePanelRow=0;
+	private Entity parentConfTypeEntity;
+	private Entity confTypeParamValEnt;
+	
 	private TextField paramNameField;
 	private TextField paramValueField;
 	private final String CROSSIMG_CSS = "removePropertyImage";
@@ -42,11 +44,11 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 	private final String OPERATIONPARAMVALUE_FLD_ID = "opParamValFldId";
 	private final String REMOVEPROP_IMGID = "removePropValueImgId";
 	
-	public SnippetPropValueEditor(String querymode, int valPanelRow) {
+	public SnippetPropValueEditor(String querymode/*, int valPanelRow*/) {
 		propValuePanel = new FlexTable();
 		snipPropValEditorId = querymode;
 		reference = this;
-		setValuePanelRow(valPanelRow);
+	//	setValuePanelRow(valPanelRow);
 		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 		initWidget(propValuePanel);
 		createUi();
@@ -110,7 +112,7 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 			
 			configuration.setPropertyByName(TextFieldConstant.BF_ID, PARANAME_FIELD_ID);
 			
-			configuration.setPropertyByName(TextFieldConstant.BF_TABINDEX, 5);
+			//configuration.setPropertyByName(TextFieldConstant.BF_TABINDEX, 5);
 			
 			configuration.setPropertyByName(TextFieldConstant.BF_BLANK_TEXT,"name can't be empty");
 			configuration.setPropertyByName(TextFieldConstant.BF_ALLOWBLNK,false);
@@ -152,18 +154,21 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 	
 	public Entity getConfigTypeEntity(){
 		try{
-			Entity configTypeEnt = new Entity();
-			configTypeEnt.setType(new MetaType("Configtype"));
-			configTypeEnt.setPropertyByName(ConfigTypeConstant.EMSTYPEID,3);
-			configTypeEnt.setPropertyByName(ConfigTypeConstant.ISDEFAULT,true);
-			configTypeEnt.setPropertyByName(ConfigTypeConstant.KEYNAME,paramNameField.getValue().toString());
-			configTypeEnt.setPropertyByName(ConfigTypeConstant.KEYVALUE,paramValueField.getValue().toString());
-			configTypeEnt.setPropertyByName("configtype", getConfTypeEntity());
-			configTypeEnt.setPropertyByName(ConfigTypeConstant.SERVICEID, 10);
+			if(getConfTypeParamValEnt() ==null){
+				setConfTypeParamValEnt(new Entity());
+				getConfTypeParamValEnt().setType(new MetaType("Configtype"));
+			}
+			getConfTypeParamValEnt().setPropertyByName(ConfigTypeConstant.EMSTYPEID,3);
+			getConfTypeParamValEnt().setPropertyByName(ConfigTypeConstant.ISDEFAULT,true);
+			getConfTypeParamValEnt().setPropertyByName(ConfigTypeConstant.KEYNAME,paramNameField.getValue().toString());
+			getConfTypeParamValEnt().setPropertyByName(ConfigTypeConstant.KEYVALUE,paramValueField.getValue().toString());
+			getConfTypeParamValEnt().setProperty("configtype", parentConfTypeEntity);
+			getConfTypeParamValEnt().setPropertyByName(ConfigTypeConstant.SERVICEID, 10);
+			
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		return getConfTypeEntity();
+		return confTypeParamValEnt;
 	}
 
 	/**
@@ -222,28 +227,43 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 	/**
 	 * @return the valuePanelRow
 	 */
-	public int getValuePanelRow() {
+/*	public int getValuePanelRow() {
 		return valuePanelRow;
 	}
 
-	/**
+	*//**
 	 * @param valuePanelRow the valuePanelRow to set
-	 */
+	 *//*
 	public void setValuePanelRow(int valuePanelRow) {
 		this.valuePanelRow = valuePanelRow;
-	}
+	}*/
 
 	/**
 	 * @return the confTypeEntity
 	 */
-	public Entity getConfTypeEntity() {
-		return confTypeEntity;
+	public Entity getParentConfTypeEntity() {
+		return parentConfTypeEntity;
 	}
 
 	/**
 	 * @param confTypeEntity the confTypeEntity to set
 	 */
-	public void setConfTypeEntity(Entity confTypeEntity) {
-		this.confTypeEntity = confTypeEntity;
+	public void setParentConfTypeEntity(Entity confTypeEntity) {
+		this.parentConfTypeEntity = confTypeEntity;
 	}
+
+	/**
+	 * @return the confTypeParamValEnt
+	 */
+	public Entity getConfTypeParamValEnt() {
+		return confTypeParamValEnt;
+	}
+
+	/**
+	 * @param confTypeParamValEnt the confTypeParamValEnt to set
+	 */
+	public void setConfTypeParamValEnt(Entity confTypeParamValEnt) {
+		this.confTypeParamValEnt = confTypeParamValEnt;
+	}
+
 }
