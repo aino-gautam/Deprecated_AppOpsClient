@@ -43,12 +43,14 @@ public class HTMLSnippetConfigurationEditor extends Composite{
 	
 	private Widget getModelEditor() {
 		ModelConfigurationEditor modConfigEditor = new ModelConfigurationEditor();
+		modConfigEditor.setModelConfigType(modelConfigurationType);
 		modConfigEditor.createUi();
 		return modConfigEditor;
 	}
 	
 	public ViewConfigurationEditor getViewEditor() {
 		ViewConfigurationEditor viewConfigEditor = new ViewConfigurationEditor();
+		viewConfigEditor.setViewConfigTypeEntity(viewConfigurationType);
 		return viewConfigEditor;
 	}
 	
