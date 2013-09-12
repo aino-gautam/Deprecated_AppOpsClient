@@ -3,17 +3,9 @@
  */
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import in.appops.client.common.config.field.ButtonField;
 import in.appops.client.common.config.field.LabelField;
-import in.appops.client.common.config.field.ListBoxField;
-import in.appops.client.common.config.field.SelectedItem;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
+import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
@@ -25,8 +17,13 @@ import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -42,7 +39,8 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 	private final String REGULARLBL_CSS = "regularLabel";
 	private Logger logger = Logger.getLogger("ViewConfigurationEditor");
 	private ListBoxField spanListBox;
-
+	private Entity viewConfigTypeEntity;
+	
 	public ViewConfigurationEditor(){
 		initialize();
 	}
@@ -124,6 +122,7 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 		return configuration;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void fetchComponentConfig(String componentName){
 		
 		
@@ -174,6 +173,20 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 			logger.log(Level.SEVERE, "ViewConfigurationEditor :: onFieldEvent :: Exception", e);
 		}
 		
+	}
+
+	/**
+	 * @return the viewConfigTypeEntity
+	 */
+	public Entity getViewConfigTypeEntity() {
+		return viewConfigTypeEntity;
+	}
+
+	/**
+	 * @param viewConfigTypeEntity the viewConfigTypeEntity to set
+	 */
+	public void setViewConfigTypeEntity(Entity viewConfigTypeEntity) {
+		this.viewConfigTypeEntity = viewConfigTypeEntity;
 	}
 
 }
