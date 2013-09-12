@@ -58,8 +58,6 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	/**Field ID **/
 	private final String SAVECONFIGURATION_BTN_ID = "saveConfigBtnId";
 	private final String PROPNAME_FIELD_ID = "propeNameFieldId";
-	private String ISDEF_CHKBOX_ID = "isDefaultChkBoxId";
-	
 	private FlexTable propValuePanel;
 	private TextField propNameField;
 	private int valueRow = 0;
@@ -71,7 +69,6 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	private Entity confTypeEnt;	
 	private EntityList configTypeList ;
 	private boolean updateConfiguration = false;
-	private boolean allEntitiesSaved = true;
 	
 	private boolean isDefaultSelected = false;
 	private ArrayList<CheckboxField> selectedCheckBoxes  = null;
@@ -261,7 +258,6 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			parameterMap.put("configTypeEnt", confTypeEntity);
 			parameterMap.put("update", false);
 			
-						
 			//need to change the immediate context id.
 			//EntityContext context  = EntityContextGenerator.defineContext(confTypeEntity, 1L);
 			EntityContext context  = new EntityContext();
@@ -293,8 +289,6 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 							configTypeList = new EntityList();
 						
 						configTypeList.add(confEnt);
-						
-						allEntitiesSaved = true;
 						
 						propValueList.get(valueRow).showCheckImage();
 						insertEmptyRecord();
@@ -425,8 +419,6 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				boolean isUpdated = Boolean.valueOf(map.get("updated").toString());
 				if(isUpdated){
 					updateConfiguration = true;
-				}else{
-					allEntitiesSaved = false;
 				}
 
 				if (!isDefaultSelected) {
@@ -484,13 +476,15 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			EntityList list = new EntityList();
 			
 			int size  = 0 ;
-			if(allEntitiesSaved){
+						
+			PropertyValueEditor valEdit = propValueList.get(propValueList.size()-1);
+			if(valEdit.checkIfRecordIsEmpty()){
 				size = propValueList.size()-1;
 			}else{
 				size = propValueList.size();
 			}
 			
-			for(int i =0 ;i<propValueList.size()-1 ; i++){
+			for(int i =0 ;i<size ; i++){
 				PropertyValueEditor valEditor = propValueList.get(i);
 				if(valEditor!=null){
 					Entity confEnt = valEditor.getPopulatedConfigTypeEntity(propNameField.getValue().toString());
@@ -519,7 +513,6 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 					if(result!=null){
 						showPopup("Configurations updated successfully");
 						clearPropertyValueFields();
-						allEntitiesSaved = true;
 					}
 				}
 			});
