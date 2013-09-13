@@ -6,7 +6,10 @@ import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
+import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
 
 import com.google.gwt.user.client.ui.FlexTable;
@@ -96,8 +99,36 @@ public class InstanceEditor implements FieldEventHandler{
 
 	@Override
 	public void onFieldEvent(FieldEvent event) {
-		// TODO Auto-generated method stub
+		
 		
 	}
+	
+	public Entity getPopulatedConfigInstanceEntity() throws AppOpsException {
+		try {
+			Entity configInstance = new Entity();
+			configInstance.setType(new MetaType("Configinstance"));
 
+			
+			if (keyNameField.getValue().toString().equals("")) {
+				throw new AppOpsException("Instance name cannot be empty");
+			} else {
+				configInstance.setPropertyByName("instancename", keyNameField.getValue().toString());
+				configInstance.setPropertyByName("configkeyname", keyNameField.getValue().toString());
+			}
+
+			if (keyValueField.getValue().toString().equals("")) {
+				throw new AppOpsException("InstanceValue cannot be empty");
+			} else {
+				configInstance.setPropertyByName("instancevalue", keyValueField.getValue().toString());
+			}
+			return configInstance;
+
+		} catch (Exception e) {
+			if(e instanceof AppOpsException){
+				AppOpsException ex = (AppOpsException) e;
+				throw ex;
+			}
+		}
+		return null;
+	}
 }
