@@ -68,6 +68,136 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 		AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
 		
 	}
+	
+	public void createUi(ArrayList<Entity> configList){
+		basePanel.clear();
+		String name;
+		String value;
+		Boolean isDefault;
+		int row= 1;
+		int col=0;
+		
+		LabelField propertyNameField = createLabelField("Property Name","componentSectionHeaderLbl","");
+		LabelField propertyValueField = createLabelField("Value(s)","componentSectionHeaderLbl","");
+		LabelField valueField = createLabelField(" ","componentSectionHeaderLbl","");
+		
+		try{
+			if(configList != null){
+				HashMap<String, EntityList> configTypeHashMap = new HashMap<String, EntityList>();
+				
+				for(Entity configTypeEntity:configList){
+					
+					
+					name = configTypeEntity.getPropertyByName("keyname");
+					
+					if(configTypeHashMap.containsKey(name)){
+						
+						EntityList existingConfigTypeList =  configTypeHashMap.get(name);
+						existingConfigTypeList.add(configTypeEntity);
+						configTypeHashMap.put(name, existingConfigTypeList);
+					}else{
+						EntityList arrayList = new EntityList();
+						arrayList.add(configTypeEntity);
+						configTypeHashMap.put(name, arrayList);
+					}
+					
+					
+					
+				}
+								
+			configurationListTable.setWidget(0, 0, propertyNameField);
+			configurationListTable.setWidget(0, 1, propertyValueField);
+			configurationListTable.setWidget(0, 2, valueField);
+			configurationListTable.getCellFormatter().setAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
+			configurationListTable.getCellFormatter().setAlignment(0, 1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
+			
+			configurationListTable.getRowFormatter().addStyleName(0, FLEXTABEL_HEADER); 
+			 
+			
+			Iterator iterator2 = configTypeHashMap.entrySet().iterator();
+			while(iterator2.hasNext()){
+				HashMap<String, EntityList> configTypeHashMapForStore  = new HashMap<String, EntityList>();
+				Map.Entry mapEntry = (Map.Entry) iterator2.next();
+				String keyname= (String) mapEntry.getKey();
+				configurationListTable.setWidget(row, col, createLabelField(keyname,"compRegisterLabelCss",""));
+				EntityList typesList = (EntityList) mapEntry.getValue();
+				configTypeHashMapForStore.put(keyname, typesList);
+				HashMap<Long, Integer>rowVsListSize = new HashMap<Long, Integer>();
+				
+				VerticalPanel configValuePanel = new VerticalPanel();
+				VerticalPanel imagePanel = null ;
+				ImageField imageField = null;
+				configurationListTable.setWidget(row, col+1, configValuePanel);
+				
+				
+				for(Entity entity : typesList){
+					Key<Serializable> key = (Key<Serializable>) entity.getProperty("id").getValue();
+					Long configTypeId=  (Long) key.getKeyValue();
+					rowVsListSize.put(configTypeId, typesList.size());
+					col = 0;
+					if(entity.getPropertyByName("keyname")!=null){
+					   name = entity.getPropertyByName("keyname");
+					}else{
+						name = "-";
+					}
+					
+					if(entity.getPropertyByName("keyvalue")!=null){
+						value = entity.getPropertyByName("keyvalue");
+					}else{
+						value = "-";
+					}
+					
+					if(entity.getPropertyByName("isdefault")!=null){
+					  isDefault = entity.getPropertyByName("isdefault");
+					  if(isDefault){
+						  if(entity.getPropertyByName("keyvalue")!=null)
+						   value = value+" "+" (default)";
+					  }
+					}
+					
+					
+					//configurationListTable.getFlexCellFormatter().setRowSpan(row, col+1,typesList.size());
+					configValuePanel.add(createLabelField(value,"compRegisterLabelCss",""));
+					imagePanel =  new VerticalPanel();
+					imageField = (ImageField) createImageField(configTypeId);
+					
+					configurationListTable.setWidget(row, col+2, imagePanel);
+					
+					configurationListTable.getCellFormatter().setAlignment(row, col, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_TOP);
+					configurationListTable.getCellFormatter().setAlignment(row, col+1, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
+					configurationListTable.getCellFormatter().setAlignment(row, col+2, HasHorizontalAlignment.ALIGN_CENTER, HasVerticalAlignment.ALIGN_MIDDLE);
+					
+																	
+					configurationListTable.getRowFormatter().setStylePrimaryName(row, PROPERTYLISTROW_CSS);
+					configurationListTable.setBorderWidth(1);
+					//configurationListTable.getRowFormatter().addStyleName(row, "configurationPropertyGrid");
+					hashMap.put(configTypeId, configTypeHashMapForStore);
+					beforeDeletionOfRowHashMap.put(row,configTypeHashMapForStore );
+					/*maintain the row v/s hash map of the initial row v/s list size*/
+					rowVsRowListSizeMap.put(configTypeId, rowVsListSize);
+					
+					
+				}
+				row++;
+				imagePanel.add(imageField);
+			}
+			configurationListTable.addClickHandler(this);
+			maxRow = row-1;
+											
+			basePanel.add(configurationListTable);
+			propertyConfListScrollPanel.setStylePrimaryName("propertyConfListScrollPanel");
+			configurationListTable.setStylePrimaryName("configurationListTable");
+		}else{
+			showNotificationForListEmpty();
+			
+			
+		}
+	
+	}catch(Exception e){
+		e.printStackTrace();
+	}
+		
+	}
 	/**
 	 * This method creates the grid ui of propertyConfig
 	 * @param configPropertyEntity

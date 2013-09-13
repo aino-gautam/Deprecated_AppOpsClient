@@ -1,5 +1,7 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
+import java.util.ArrayList;
+
 import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.platform.core.entity.Entity;
@@ -17,14 +19,48 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class ConfigurationEditor extends Composite{
 	
 	private VerticalPanel basePanel;
+	private ConfPropertyEditor confPropertyEditor;
+	private ConfigurationListDisplayer configurationListDisplayer;
+	
 	private static String BASEPANEL_CSS = "confEditorPanel";
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
-	private ConfigurationListDisplayer configurationListDisplayer = new ConfigurationListDisplayer();
-	private ConfPropertyEditor confPropertyEditor ;
+	
 	public ConfigurationEditor() {
 		basePanel = new VerticalPanel();
 		confPropertyEditor = new ConfPropertyEditor();
+		configurationListDisplayer = new ConfigurationListDisplayer();
 		initWidget(basePanel);
+	}
+	
+	/**
+	 * This method is called when you have the entire configType entity with its children configtype properties 
+	 * @param configTypeEntity
+	 */
+	public void createUi(Entity configTypeEntity, ArrayList<Entity> configList){
+		if(basePanel!=null)
+			basePanel.clear();
+		
+		basePanel.setStylePrimaryName(BASEPANEL_CSS);
+		
+		LabelField headerLbl = new LabelField();
+		Configuration headerLblConfig = getHeaderLblConfig(null);
+	
+		headerLbl.setConfiguration(headerLblConfig);
+		headerLbl.configure();
+		headerLbl.create();
+		
+		confPropertyEditor.setParentConfTypeEnt(configTypeEntity);
+		confPropertyEditor.createUi();
+		
+		configurationListDisplayer.initialize();
+		configurationListDisplayer.createUi(configList);
+		
+		basePanel.add(headerLbl);
+		basePanel.add(confPropertyEditor);
+		basePanel.add(configurationListDisplayer);
+		
+		basePanel.setCellHorizontalAlignment(headerLbl, HorizontalPanel.ALIGN_LEFT);
+		basePanel.setCellHorizontalAlignment(configurationListDisplayer, HasHorizontalAlignment.ALIGN_CENTER);
 	}
 	
 	public void createUi(Entity compDef, Entity configType){
@@ -41,20 +77,18 @@ public class ConfigurationEditor extends Composite{
 		headerLbl.configure();
 		headerLbl.create();
 		
-		
 		confPropertyEditor.setParentConfTypeEnt(configType);
 		confPropertyEditor.createUi();
 		
-		basePanel.add(headerLbl);
-		basePanel.add(confPropertyEditor);
-				
-		basePanel.setCellHorizontalAlignment(headerLbl, HorizontalPanel.ALIGN_LEFT);
 		
 		configurationListDisplayer.initialize();
 		configurationListDisplayer.getConfigTypeList(configType);
-		//configurationListDisplayer.getPropertyConfigList(compDef);
-				
+		
+		basePanel.add(headerLbl);
+		basePanel.add(confPropertyEditor);
 		basePanel.add(configurationListDisplayer);
+		
+		basePanel.setCellHorizontalAlignment(headerLbl, HorizontalPanel.ALIGN_LEFT);
 		basePanel.setCellHorizontalAlignment(configurationListDisplayer, HasHorizontalAlignment.ALIGN_CENTER);
 		
 	}
@@ -63,7 +97,11 @@ public class ConfigurationEditor extends Composite{
 		Configuration configuration = null;	
 		try{
 			configuration = new Configuration();
-			configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Add configuration::"+ componentEntity.getPropertyByName("name").toString());
+			if(componentEntity != null)
+				configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Add configuration::"+ componentEntity.getPropertyByName("name").toString());
+			else
+				configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Add configuration:");
+			
 			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, HEADERLBL_CSS);
 		}
 		catch(Exception e){
@@ -71,7 +109,5 @@ public class ConfigurationEditor extends Composite{
 		}
 		return configuration;
 	}
-
-	
 
 }
