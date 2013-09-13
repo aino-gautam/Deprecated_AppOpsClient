@@ -10,6 +10,7 @@ import in.appops.showcase.web.gwt.componentconfiguration.client.app.CreateAppWid
 import in.appops.showcase.web.gwt.componentconfiguration.client.library.LibraryComponentManager;
 import in.appops.showcase.web.gwt.componentconfiguration.client.page.PageManager;
 import in.appops.showcase.web.gwt.componentconfiguration.client.page.SnippetManager;
+import in.appops.showcase.web.gwt.componentconfiguration.client.service.CreateServicePageWidget;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -252,7 +253,10 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 						createAppWidget.createUi();
 						contentPanel.add(createAppWidget);
 					}else if(btnField.getBaseFieldId().equals(CREATESERVICE_BTN_ID)){
-						
+						contentPanel.clear();
+						CreateServicePageWidget createServicePageWidget = new CreateServicePageWidget();
+						createServicePageWidget.createUi();
+						contentPanel.add(createServicePageWidget);
 					}
 				}
 				break;

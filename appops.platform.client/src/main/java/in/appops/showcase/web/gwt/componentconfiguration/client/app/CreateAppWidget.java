@@ -120,19 +120,19 @@ public class CreateAppWidget extends Composite implements FieldEventHandler{
 			 
 			 appCreationTable.setWidget(1, 0, appNameLabelField);
 			 appCreationTable.setWidget(1, 2, appNameTextField);
-			 //appCreationTable.getCellFormatter().setWidth(1, 0, "200px");
+			 
 			 
 			 appCreationTable.setWidget(3, 0, appUrlLabelField);
 			 appCreationTable.setWidget(3, 2, appUrlTextField);
-			// appCreationTable.getCellFormatter().setWidth(3, 0, "200px");
+			
 			 
 			 appCreationTable.setWidget(5, 0, appDeviceGroupLabelField);
 			 appCreationTable.setWidget(5, 2, deviceGroupBoxField);
-			// appCreationTable.getCellFormatter().setWidth(5, 0, "200px");
+			
 			 
 			 appCreationTable.setWidget(7, 0, appServicesLabelField);
 			 appCreationTable.setWidget(7, 2, servicesBoxField);
-			 //appCreationTable.getCellFormatter().setWidth(7, 0, "200px");
+			 
 			 
 			 basePanel.add(appCreationTable);
 			 basePanel.setCellHorizontalAlignment(appCreationTable, HasHorizontalAlignment.ALIGN_CENTER);

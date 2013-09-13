@@ -205,6 +205,14 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 						} else if(isDefaultSelected && !updateConfiguration){
 							//configTypeList
 							
+							if(configTypeList!=null){
+								/*ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SAVEDCONFIGENTITY , configTypeList, this);
+								configEvent.setEventSource(this);
+								AppUtils.EVENT_BUS.fireEvent(configEvent);*/
+							}/*else{
+								saveConfTypeEntity();
+							}*/
+							
 						}else{
 							showPopup("Please select atleast one default value");
 						}
@@ -299,6 +307,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 						
 						propValueList.get(valueRow).showCheckImage();
 						insertEmptyRecord();
+												
 					}
 				}
 			});
@@ -521,9 +530,12 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				@Override
 				public void onSuccess(Result<EntityList> result) {
 					if(result!=null){
+						EntityList entityList = result.getOperationResult();
 						showPopup("Configurations updated successfully");
 						clearPropertyValueFields();
-						
+						/*ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SAVEDCONFIGENTITY , entityList, this);
+						configEvent.setEventSource(this);
+						AppUtils.EVENT_BUS.fireEvent(configEvent);*/
 					}
 				}
 			});
