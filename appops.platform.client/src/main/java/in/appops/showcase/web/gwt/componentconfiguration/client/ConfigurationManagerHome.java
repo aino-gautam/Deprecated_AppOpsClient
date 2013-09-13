@@ -101,13 +101,14 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 			contentPanel.setStylePrimaryName(CONTENTPANEL_PCLS);
 			basePanel.setStylePrimaryName(BASEPANEL_PCLS);
 			
-			int width = Window.getClientWidth() - 100;
-			int height = Window.getClientHeight() - 120;
+			int width = Window.getClientWidth() - 70;
+			int height = Window.getClientHeight() - 100;
 			
 			int toolBarWidth = (width/7);
 			toolbar.setSize(toolBarWidth+"px", height+"px");
 			contentPanel.setSize((width-toolBarWidth)+"px", height+"px");
-			
+			basePanel.setSize((width-toolBarWidth)+"px", height+"px");
+						
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "ConfigurationManagerHome :: createUi :: Exception", e);
 		}
