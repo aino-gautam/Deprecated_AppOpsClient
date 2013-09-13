@@ -41,7 +41,7 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 	private ButtonField saveConfInstanceBtnFld;
 	private int currentRow = 0;
 	private Entity parentConfigInstance = null;
-	private Entity configTypeEntity = null;
+	private Entity configInstanceEntity = null;
 	private Image  loaderImage = null;
 	
 	/** Field ID **/
@@ -58,9 +58,9 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 		
 	}
 	
-	public ViewConfigurationInstanceEditor( Entity parentConfigInstance, Entity configTypeEntity) {
+	public ViewConfigurationInstanceEditor( Entity parentConfigInstance, Entity configInstanceEntity) {
 		this.parentConfigInstance = parentConfigInstance;
-		this.configTypeEntity = configTypeEntity;
+		this.configInstanceEntity = configInstanceEntity;
 	}
 	
 	public void createUi(){
@@ -91,8 +91,10 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 			basePanel.setHeight("100%");
 			
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+			
+			Entity configTypeEnt = (Entity) configInstanceEntity.getProperty("configtype");
 					
-			Long configTypeId = ((Key<Long>)configTypeEntity.getPropertyByName("id")).getKeyValue();
+			Long configTypeId = ((Key<Long>)configTypeEnt.getPropertyByName("id")).getKeyValue();
 			
 			getConfigTypeEntity(configTypeId);
 			
@@ -310,7 +312,7 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 				EntityContext context = new EntityContext();
 				instanceEnt.setPropertyByName("context", context);
 				instanceEnt.setProperty("configinstance", parentConfigInstance);
-				instanceEnt.setProperty("configtype", configTypeEntity);
+				instanceEnt.setProperty("configtype", configInstanceEntity);
 				
 				list.add(instanceEnt);
 			}

@@ -106,12 +106,16 @@ public class ConfigurationInstanceMVPEditor extends Composite{
 	}
 	
 	public void createUi() {
+		
+		if(configuratorInstanceBasePanel!=null)
+			configuratorInstanceBasePanel.clear();
+		
 		configuratorInstanceBasePanel.setStylePrimaryName("fullWidth");
 		if(modelInstanceEnt != null) {
 			configuratorInstanceBasePanel.add(getModelConfigInstanceEditor(), MODEL);
 		}
 		if(viewInstanceEnt != null) {
-			//	configuratorInstanceBasePanel.add(getViewConfigInstanceEditor(), VIEW);
+			configuratorInstanceBasePanel.add(getViewConfigInstanceEditor(), VIEW);
 		}
 		configuratorInstanceBasePanel.selectTab(0);
 	}

@@ -1181,7 +1181,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 							while(iterator.hasNext()) {
 								Entity entity = iterator.next();
 								String name = entity.getPropertyByName("instancename").toString();
-								if(name.equals("view")) {
+								if(name.contains(".view")) {
 									viewInstanceEnt = entity;
 								} else {
 									modelInstanceEnt = entity;
