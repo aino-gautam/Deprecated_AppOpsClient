@@ -515,7 +515,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 			Map parameterMap = new HashMap();
 			parameterMap.put("configTypeEntList", typesList);
 			
-			StandardAction action = new StandardAction(EntityList.class, "configuration.ConfigurationService.deleteConfigurationTypeList", parameterMap);
+			StandardAction action = new StandardAction(EntityList.class, "appdefinition.AppDefinitionService.deleteConfigurationTypeList", parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
 
 				@Override
@@ -652,7 +652,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 	}
 
 	private void addNewRowInGrid(EntityList confEntityList) {
-	 
+		 
 		for(Entity entity:confEntityList){
 			
         }
