@@ -481,3 +481,16 @@
 .serviceVersionTextField{
 	width: 125px;
 }
+
+.saveConfInstanceBtnCss{
+	height: 30px;
+	border: 1px solid #DCDCDC;
+	margin: 10px;
+	font-family: 'Ubuntu', sans-serif;
+	-webkit-box-shadow: 1px 1px 1px 0px #8F8C8C;
+    box-shadow: 1px 1px 1px 0 #8F8C8C;
+    color: #333333;
+    margin-top: 10px;
+    cursor: hand;
+    cursor: pointer;
+}
