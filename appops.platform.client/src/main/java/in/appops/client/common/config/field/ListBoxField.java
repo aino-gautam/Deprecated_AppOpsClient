@@ -281,7 +281,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 	 * @return
 	 */
 	private Integer getQueryMaxResult() {
-		Integer maxResult = 10;
+		Integer maxResult = 100;
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getQueryMaxResult  method ");
 			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_MAXRESULT) != null) {
@@ -459,18 +459,20 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 			logger.log(Level.INFO,"[ListBoxField]:: In onChange  method ");
 				
 			FieldEvent fieldEvent = new FieldEvent();
-			
-			if(nameVsEntity != null){
-				String selectedItem = getValue().toString();
-				String selectedValue = getSelectedValue().toString();
-				Entity entity = nameVsEntity.get(selectedValue);
-				SelectedItem selectedEntity = new SelectedItem();
-				selectedEntity.setItemString(selectedItem);
-				selectedEntity.setAssociatedEntity(entity);
-				fieldEvent.setEventData(selectedEntity);
-			}
+			String item = getValue().toString();
+			String value = getSelectedValue().toString();
+			SelectedItem selectedItem = new SelectedItem();
+			selectedItem.setItemString(item);
 
+			if(nameVsEntity != null && !nameVsEntity.isEmpty()) {
+				Entity entity = nameVsEntity.get(value);
+				if(nameVsEntity!=null){
+					selectedItem.setAssociatedEntity(entity);
+				}
+			}
+			
 			fieldEvent.setEventSource(this);
+			fieldEvent.setEventData(selectedItem);
 			fieldEvent.setEventType(FieldEvent.VALUECHANGED);
 			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 		} catch (Exception e) {
@@ -526,8 +528,12 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 	 * @return
 	 */
 	public Object getSelectedValue() {
-		String selectedValue = listBox.getValue(listBox.getSelectedIndex());
-		return selectedValue;
+		try {
+			String selectedValue = listBox.getValue(listBox.getSelectedIndex());
+			return selectedValue;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 	
 	@Override
