@@ -692,7 +692,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 * @return
 	 */
 	private Boolean isValidateField(){
-		Boolean validate = true;
+		Boolean validate = false;
 		try {
 			logger.log(Level.INFO, "[TextField] ::In isValidateField method ");
 			if (getConfigurationValue(TextFieldConstant.VALIDATEFIELD) != null) {
