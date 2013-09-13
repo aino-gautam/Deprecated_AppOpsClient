@@ -14,7 +14,9 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class LibraryComponentManager extends Composite implements ConfigEventHandler{
@@ -34,6 +36,7 @@ public class LibraryComponentManager extends Composite implements ConfigEventHan
 	public void initialize() {
 		try {
 			basePanel = new VerticalPanel();
+			ScrollPanel scrollPanel = new ScrollPanel(basePanel);
 			
 			ListBoxField libraryBox = new ListBoxField();
 			libraryBox.setConfiguration(getLibraryListBoxConfiguration());
@@ -49,8 +52,21 @@ public class LibraryComponentManager extends Composite implements ConfigEventHan
 			basePanel.add(componentManager);
 			basePanel.add(configurationEditor);
 			
+			
+			basePanel.setCellHeight(libraryBox, "10%");
+			basePanel.setCellHeight(componentManager, "45%");
+			basePanel.setCellHeight(configurationEditor, "45%");
+						
+			basePanel.setSize("100%", "100%");
+			
+			int width = Window.getClientWidth() - 70;
+			int height = Window.getClientHeight() - 100;
+			
+			int toolBarWidth = (width/7);
+			scrollPanel.setSize((width-toolBarWidth)+"px", height+"px");
+			
 			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
-			initWidget(basePanel);
+			initWidget(scrollPanel);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "LibraryComponentManager :: initialize :: Exception", e);
 		}
