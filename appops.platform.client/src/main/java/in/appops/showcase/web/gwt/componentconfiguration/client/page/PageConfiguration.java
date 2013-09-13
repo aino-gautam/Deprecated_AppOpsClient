@@ -30,6 +30,7 @@ import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.showcase.web.gwt.componentconfiguration.client.library.ConfigurationInstanceMVPEditor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,6 +67,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	private Entity pageComponentInstEntity;
 	private boolean isNew;
 	private Entity updateConfigEntity;
+	private Entity transWgtCompDefEnt;
 	
 	public PageConfiguration() {
 		initialize();
@@ -890,8 +892,9 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 					ButtonField source = (ButtonField) event.getEventSource();
 					String fieldId = source.getBaseFieldId();
 					if(fieldId.equals(CONFIGURE_BUTTON_ID)) {
-						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.CONFIGURATION_COMPLETED, transformMap, this);
-						AppUtils.EVENT_BUS.fireEvent(configEvent);
+//						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.CONFIGURATION_COMPLETED, transformMap, this);
+//						AppUtils.EVENT_BUS.fireEvent(configEvent);
+						saveTransformWidgetInstance();
 					} else if(fieldId.equals(NEXT_BUTTON_ID)) {
 						createPropertyConfigUI();
 					}
@@ -942,8 +945,8 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 						String value = (String) source.getValue();
 						//isUpdateConfigGrField.setFieldFocus();
 						saveConfigInstance(getConfiginstanceEntity("transformTo", "transformTo", value, parentEventEntity), false, null);
-						Entity entity = source.getAssociatedEntity(value);
-						transformMap.put(transformInstanceTextField.getFieldValue(), entity);
+						transWgtCompDefEnt = source.getAssociatedEntity(value);
+						//transformMap.put(transformInstanceTextField.getFieldValue(), entity);
 					} else if(fieldId.equals(SPAN_LISTBOX_ID)) {
 						String value = (String) source.getValue();
 						if(!containerCompoInstMap.containsKey(value)) {
@@ -1025,6 +1028,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 			
 			Map parameterMap = new HashMap();
 			parameterMap.put("confInstEnt", configinstanceEntity);
+			parameterMap.put("isUpdate", false);
 			
 			EntityContext context  = new EntityContext();
 			parameterMap.put("entityContext", context);
@@ -1135,6 +1139,69 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		this.pageComponentInstEntity = entity;
 	}
 
+	@SuppressWarnings("unchecked")
+	private void saveTransformWidgetInstance() {
+		try{
+			Entity compInstEntity = new Entity();
+			compInstEntity.setType(new MetaType("Componentinstance"));
+			compInstEntity.setPropertyByName("instancename", transformInstanceTextField.getFieldValue());
+			compInstEntity.setProperty("componentdefinition", transWgtCompDefEnt);
+			
+			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+			
+			Map parameterMap = new HashMap();
+			parameterMap.put("componentInstEnt", compInstEntity);
+			parameterMap.put("isUpdate", false);
+			parameterMap.put("entityContext", new EntityContext());
+
+			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveComponentInstance", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<HashMap<String, Object>>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(Result<HashMap<String, Object>> result) {
+					if(result!=null){
+						HashMap<String, Object> resMap = result.getOperationResult();
+						
+						if(resMap != null && !resMap.isEmpty()) {
+							Entity configInst = (Entity) resMap.get("configInstance");
+							Entity viewInstanceEnt = null;
+							Entity modelInstanceEnt = null;
+							
+							ArrayList<Entity> childList = (ArrayList<Entity>) resMap.get("childConfigInstanceList");
+							Iterator<Entity> iterator = childList.iterator();
+							while(iterator.hasNext()) {
+								Entity entity = iterator.next();
+								String name = entity.getPropertyByName("instancename").toString();
+								if(name.equals("view")) {
+									viewInstanceEnt = entity;
+								} else {
+									modelInstanceEnt = entity;
+								}
+							}
+							
+							ConfigurationInstanceMVPEditor instanceMVPEditor = new ConfigurationInstanceMVPEditor();
+							instanceMVPEditor.setConfigInstEnt(configInst);
+							instanceMVPEditor.setViewInstanceEnt(viewInstanceEnt);
+							instanceMVPEditor.setModelInstanceEnt(modelInstanceEnt);
+							instanceMVPEditor.createUi();
+							addConfigPanel.add(instanceMVPEditor);
+						}
+						
+					}
+				}
+			});
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}	
+	
 	private static final String SPAN_LISTBOX_ID = "spanListBoxFieldId";
 	private static final String TRANSFORM_TO_LISTBOX_ID = "transformToListboxId";
 	private static final String TRANSFORM_TYPE_LISTBOX_ID = "transformTypeListboxId";

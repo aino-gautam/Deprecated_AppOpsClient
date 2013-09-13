@@ -68,6 +68,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 	private ListBoxField pageListbox;
 	private TextField htmltextArea;
 	private TextField pageNametextField;
+	private ButtonField processPageButton;
 	
 	public PageCreation() {
 		initialize();
@@ -114,7 +115,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 			htmltextArea.create();
 			editPagePanel.add(htmltextArea);
 			
-			ButtonField processPageButton = new ButtonField();
+			processPageButton = new ButtonField();
 			processPageButton.setConfiguration(getProcessPageButtonConfiguration());
 			processPageButton.configure();
 			processPageButton.create();
@@ -438,7 +439,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 					htmltextArea.setValue("");
 					pageNametextField.setValue("");
 					((TextBox) pageNametextField.getWidget()).setFocus(true);
-				} else if(fieldId.equals(PROCESS_PAGE_BUTTON_ID)) {
+				} else if(source.equals(processPageButton)) {
 					saveComponentDef();
 				}
 			}
