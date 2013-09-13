@@ -475,3 +475,9 @@
 	cursor: pointer;
 	cursor: hand;
 }
+.serviceNameTextField{
+	width: 255px;
+}
+.serviceVersionTextField{
+	width: 125px;
+}
