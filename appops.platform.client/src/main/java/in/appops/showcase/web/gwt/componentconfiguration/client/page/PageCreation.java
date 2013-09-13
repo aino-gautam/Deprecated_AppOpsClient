@@ -69,6 +69,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 	private TextField htmltextArea;
 	private TextField pageNametextField;
 	private ButtonField processPageButton;
+	private ButtonField createPageButton;
 	
 	public PageCreation() {
 		initialize();
@@ -134,7 +135,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 		try {
 			HorizontalPanel createPageButtonPanel = new HorizontalPanel();
 			
-			ButtonField createPageButton = new ButtonField();
+			createPageButton = new ButtonField();
 			createPageButton.setConfiguration(getCreatePageButtonConfiguration());
 			createPageButton.configure();
 			createPageButton.create();
@@ -434,8 +435,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 		} else if(eventType == FieldEvent.CLICKED) {
 			if(event.getEventSource() instanceof ButtonField) {
 				ButtonField source = (ButtonField) event.getEventSource();
-				String fieldId = source.getBaseFieldId();
-				if(fieldId.equals(CREATE_PAGE_BUTTON_ID)) {
+				if(source.equals(createPageButton)) {
 					htmltextArea.setValue("");
 					pageNametextField.setValue("");
 					((TextBox) pageNametextField.getWidget()).setFocus(true);
@@ -446,8 +446,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 		} else if(eventType == FieldEvent.VALUECHANGED) {
 			if(event.getEventSource() instanceof ListBoxField) {
 				ListBoxField source = (ListBoxField) event.getEventSource();
-				String fieldId = source.getBaseFieldId();
-				if(fieldId.equals(APP_LISTBOX_ID)) {
+				if(source.equals(appListbox)) {
 					htmltextArea.setValue("");
 					pageNametextField.setValue("");
 					String value = (String) source.getValue();
@@ -465,7 +464,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 						pageListbox.configure();
 						pageListbox.create();
 					}
-				} else if(fieldId.equals(PAGE_LISTBOX_ID)) {
+				} else if(source.equals(pageListbox)) {
 					String value = (String) source.getValue();
 					if(value.equals(source.getSuggestionValueForListBox())) {
 						htmltextArea.setValue("");
