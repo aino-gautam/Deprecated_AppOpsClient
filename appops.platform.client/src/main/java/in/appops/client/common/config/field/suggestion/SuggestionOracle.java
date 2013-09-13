@@ -32,7 +32,7 @@ public class SuggestionOracle extends SuggestOracle {
 	private HashMap<String, Object> restrictionMap;
 	private Boolean isSearchQuery = false;
 	private Boolean isStaticSuggestionBox = false;
-	private ArrayList<String> itemsToDisplay;
+	private Object itemsToDisplay;
 	private Logger logger = Logger.getLogger(getClass().getName());
 
 	public SuggestionOracle() {
@@ -69,11 +69,9 @@ public class SuggestionOracle extends SuggestOracle {
 				callback.onSuggestionsReady(request, response);
 			} else if(isStaticSuggestionBox){
 				store = new LinkedList<AppopsSuggestion>();
-				for (String name : getItemsToDisplay()) {
-					AppopsSuggestion appopsSuggestion = new AppopsSuggestion();
-					appopsSuggestion.setDisplay(name);
-					store.add(appopsSuggestion);
-				}
+				populateStaticList(getItemsToDisplay());
+				response.setSuggestions(store);
+				callback.onSuggestionsReady(request, response);
 			}else{
 				
 				Query queryObj = new Query();
@@ -117,9 +115,11 @@ public class SuggestionOracle extends SuggestOracle {
 						EntityList entityList = (EntityList) result.getOperationResult();
 						if(entityList != null && !entityList.isEmpty()) {
 							for (Entity entity : entityList) {
-								AppopsSuggestion appopsSuggestion = new AppopsSuggestion(entity);
-								appopsSuggestion.setPropertToDisplay(entPropToDisplay);
-								store.add(appopsSuggestion);
+								if(entity.getProperty(entPropToDisplay).getValue()!=null){
+									AppopsSuggestion appopsSuggestion = new AppopsSuggestion(entity);
+									appopsSuggestion.setPropertToDisplay(entPropToDisplay);
+									store.add(appopsSuggestion);
+								}
 							}
 						}
 						
@@ -143,6 +143,41 @@ public class SuggestionOracle extends SuggestOracle {
 		}
 	}
 	
+	private void populateStaticList(Object obj){
+		
+		if (obj != null) {
+			if (obj instanceof ArrayList) {
+				ArrayList<Object> staticList = (ArrayList<Object>) obj;
+				if(!staticList.isEmpty()) {
+					if (staticList.get(0) instanceof String) {
+						ArrayList<String> suggestions = (ArrayList<String>) obj;
+						for (String name : suggestions) {
+							AppopsSuggestion appopsSuggestion = new AppopsSuggestion();
+							appopsSuggestion.setDisplay(name);
+							store.add(appopsSuggestion);
+						}
+					} else if (staticList.get(0) instanceof Entity) {
+						EntityList list = (EntityList) obj;
+						populateEntityList(list);
+					}
+				}
+			} else if (obj instanceof EntityList) {
+				EntityList list = (EntityList) obj;
+				populateEntityList(list);
+			}
+		}
+	}
+	
+	private void populateEntityList(EntityList list){
+		for (Entity entity : list) {
+			if(entity.getProperty(entPropToDisplay).getValue()!=null){
+				AppopsSuggestion appopsSuggestion = new AppopsSuggestion(entity);
+				appopsSuggestion.setPropertToDisplay(entPropToDisplay);
+				store.add(appopsSuggestion);
+			}
+			
+		}
+	}
 	
 	public void setMaxResult(int max) {
 		this.maxResult = max;
@@ -164,11 +199,11 @@ public class SuggestionOracle extends SuggestOracle {
 		this.isStaticSuggestionBox = val;
 	}
 
-	public ArrayList<String> getItemsToDisplay() {
+	public Object getItemsToDisplay() {
 		return itemsToDisplay;
 	}
 
-	public void setItemsToDisplay(ArrayList<String> itemsToDisplay) {
-		this.itemsToDisplay = itemsToDisplay;
+	public void setItemsToDisplay(Object object) {
+		this.itemsToDisplay = object;
 	}
 }

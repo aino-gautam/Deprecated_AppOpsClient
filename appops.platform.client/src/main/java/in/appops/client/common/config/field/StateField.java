@@ -73,6 +73,7 @@ public class StateField extends BaseField implements FieldEventHandler {
 			if(isStaticSuggestionBox()){
 				appopsSuggestionBox.setStaticSuggestionBox(isStaticSuggestionBox());
 				appopsSuggestionBox.setItemsToDisplay(getFieldItemList());
+				appopsSuggestionBox.setPropertyToDisplay(getEntPropToDisplay());
 			}else{
 				appopsSuggestionBox.setQueryName(getQueryName());
 				appopsSuggestionBox.setPropertyToDisplay(getEntPropToDisplay());
