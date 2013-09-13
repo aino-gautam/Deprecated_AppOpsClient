@@ -459,16 +459,18 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 			logger.log(Level.INFO,"[ListBoxField]:: In onChange  method ");
 				
 			FieldEvent fieldEvent = new FieldEvent();
-			String selectedItem = getValue().toString();
-			String selectedValue = getSelectedValue().toString();
-			SelectedItem selectedEntity = new SelectedItem();
-			selectedEntity.setItemString(selectedItem);
-			if(nameVsEntity!=null){
+			
+			if(nameVsEntity != null){
+				String selectedItem = getValue().toString();
+				String selectedValue = getSelectedValue().toString();
 				Entity entity = nameVsEntity.get(selectedValue);
+				SelectedItem selectedEntity = new SelectedItem();
+				selectedEntity.setItemString(selectedItem);
 				selectedEntity.setAssociatedEntity(entity);
+				fieldEvent.setEventData(selectedEntity);
 			}
+
 			fieldEvent.setEventSource(this);
-			fieldEvent.setEventData(selectedEntity);
 			fieldEvent.setEventType(FieldEvent.VALUECHANGED);
 			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 		} catch (Exception e) {
