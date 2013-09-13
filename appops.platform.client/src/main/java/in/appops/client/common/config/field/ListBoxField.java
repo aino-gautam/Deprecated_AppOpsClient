@@ -1,5 +1,7 @@
 package in.appops.client.common.config.field;
 
+import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
+import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
@@ -10,6 +12,7 @@ import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.operation.Result;
+import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 
 import java.util.ArrayList;
@@ -28,6 +31,8 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 
 /**
@@ -62,9 +67,13 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 	private HandlerRegistration selectionHandler = null ;
 	private HandlerRegistration blurHandler = null ;
 	private HandlerRegistration keyDownHandler = null ;
+	private HorizontalPanel boxPlusLoaderPanel ;
+	private ImageField imageField ;
 	private Logger logger = Logger.getLogger(getClass().getName());
 	public ListBoxField(){
 		listBox = new ListBox();
+		boxPlusLoaderPanel = new HorizontalPanel();
+		imageField = new ImageField();
 	}
 	
 	/******************************** ****************************************/
@@ -100,8 +109,12 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 
 				}
 			}
-
-			getBasePanel().add(listBox, DockPanel.CENTER);
+			boxPlusLoaderPanel.add(listBox);
+			boxPlusLoaderPanel.setCellWidth(listBox, "80%");
+			boxPlusLoaderPanel.add(imageField);
+			boxPlusLoaderPanel.setCellWidth(imageField, "20%");
+			boxPlusLoaderPanel.setCellVerticalAlignment(imageField, HasVerticalAlignment.ALIGN_MIDDLE);
+			getBasePanel().add(boxPlusLoaderPanel, DockPanel.CENTER);
 
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,
@@ -131,6 +144,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
 			if (getBasePanelDependentCss() != null)
 				getBasePanel().addStyleName(getBasePanelDependentCss());
+			
 
 				removeRegisteredHandlers();
 				selectionHandler = listBox.addChangeHandler(this);
@@ -335,6 +349,9 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 	private void populateEntityList(EntityList entityList){
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In populateEntityList  method ");
+			imageField.setConfiguration(getImageVisibleConfiguration());
+			imageField.configure();
+			imageField.create();
 			if(nameVsEntity==null)
 				nameVsEntity = new HashMap<String, Entity>();
 						
@@ -368,6 +385,9 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 	private void populateList(ArrayList<String> listOfItems){
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In populateList  method ");
+			imageField.setConfiguration(getImageVisibleConfiguration());
+			imageField.configure();
+			imageField.create();
 			for(int count = 0; count<listOfItems.size() ;count ++){
 				String item = listOfItems.get(count);
 				listBox.addItem(item);
@@ -486,6 +506,12 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 	private void executeOperation(Map parameterMap) {
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In executeOperation  method ");
+			
+			
+			imageField.setConfiguration(getImageConfiguration());
+			imageField.configure();
+			imageField.create();
+			
 			StandardAction action = new StandardAction(EntityList.class, getOperationName(), parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
 
@@ -496,7 +522,9 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 
 				@Override
 				public void onSuccess(Result<EntityList> result) {
-					
+					imageField.setConfiguration(getImageVisibleConfiguration());
+					imageField.configure();
+					imageField.create();
 					if(result!=null){
 						EntityList list   = result.getOperationResult();
 						if(!list.isEmpty())
@@ -504,6 +532,8 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 					}
 					
 				}
+
+				
 			});
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In executeOperation  method :"+e);
@@ -523,6 +553,55 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		return defaultName;
 	}
 	
+	public String getListBoxImageLoader() {
+		String defaultImageLoader = "images/defaultLoader.gif";
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getListBoxImageLoader  method ");
+			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_LOADERIMG_BLOBID) != null) {
+				defaultImageLoader = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_LOADERIMG_BLOBID);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getListBoxImageLoader  method :"+e);
+		}
+		return defaultImageLoader;
+	}
+	
+	public String getListBoxImageLoaderPcls() {
+		String defaultPcls = "appops-listBoxLoaderPcls";
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getListBoxImageLoaderPcls  method ");
+			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_LOADERIMG_PCLS) != null) {
+				defaultPcls = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_LOADERIMG_PCLS);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getListBoxImageLoaderPcls  method :"+e);
+		}
+		return defaultPcls;
+	}
+		
+	private Configuration getImageConfiguration(){
+		Configuration configuration = new Configuration();
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getImageConfiguration  method ");
+			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, getListBoxImageLoader());
+			configuration.setPropertyByName(ImageFieldConstant.BF_PCLS,getListBoxImageLoaderPcls());
+			
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getImageConfiguration  method :"+e);
+		}
+		return configuration;
+	}
+	
+	private Configuration getImageVisibleConfiguration() {
+		Configuration configuration = new Configuration();
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getImageVisibleConfiguration  method ");
+				configuration.setPropertyByName(ButtonFieldConstant.BF_VISIBLE, false);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getImageVisibleConfiguration  method :"+e);
+		}
+		return configuration;
+	}
 	/**
 	 * Method returns id of the selected entity in the listbox.
 	 * @return
@@ -568,6 +647,12 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		public static final String LSTFD_QUERY_RESTRICTION = "queryRestriction";
 		
 		public static final String LSTFD_SELECTED_TXT = "defaultSelectedText";
+		
+		public static final String LSTFD_LOADERIMG_BLOBID="loaderImgBlobId";
+		
+		public static final String LSTFD_LOADERIMG_PCLS ="loaderImgPrimarycss";
+		
+		public static final String LSTFD_LOADERIMG_DCLS="loaderImgSecondarycss";
 		
 	}
 
