@@ -125,7 +125,7 @@ public class ConfigurationInstanceMVPEditor extends Composite{
 	}
 	
 	public ViewConfigurationInstanceEditor getViewConfigInstanceEditor() {
-		ViewConfigurationInstanceEditor viewConfigInstanceEditor = new ViewConfigurationInstanceEditor();
+		ViewConfigurationInstanceEditor viewConfigInstanceEditor = new ViewConfigurationInstanceEditor(viewInstanceEnt, configInstEnt);
 		viewConfigInstanceEditor.createUi();
 		return viewConfigInstanceEditor;
 	}
