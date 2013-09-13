@@ -40,7 +40,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -56,7 +55,6 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	private ButtonField saveAndProcessButton;
 	private ConfigurationEditor configurationEditor;
 	private ListBoxField libraryBox;
-	//private ListBoxField spanListBox;
 	private Entity libraryEntity;
 	
 	private Logger logger = Logger.getLogger("SnippetManager");
@@ -93,7 +91,6 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	 */
 	private void createSnippetRegistrationUI(){
 		FlexTable containerTable = new FlexTable();
-	//	spanListBox = new ListBoxField();
 		
 		/* list box for library selection */
 		libraryBox = new ListBoxField();
@@ -137,7 +134,6 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		containerTable.setWidget(4, 0, saveAndProcessButton);
 		
 		basePanel.add(containerTable);
-	//	createConfigurationEditorUI(null, new ArrayList<Element>());
 	}
 
 	/**
@@ -164,8 +160,8 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		Entity modelConfigEntity   = list.get("modelConfigType");
 		configEditor.setModelConfigurationType(modelConfigEntity);
 		configEditor.setViewConfigurationType(viewConfigEntity);
+		configEditor.getViewEditor().populateSpansListBox(spansList);
 		configEditor.createUi();
-	//	configEditor.getViewEditor().populateSpansListBox(spansList);
 		
 		vp.add(configEditor);
 		
@@ -319,6 +315,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 					if (btnField.getBaseFieldId().equals(SAVECOMPONENT_BTN_ID)) {
 						if(libraryEntity!=null){
 							ArrayList<Element> spansList = validateHTML();
+							//createConfigurationEditorUI(null, spansList);
 							if(spansList != null){
 								saveComponent(spansList);
 							}
