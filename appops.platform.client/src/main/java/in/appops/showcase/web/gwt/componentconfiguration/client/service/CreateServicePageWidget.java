@@ -1,8 +1,10 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.service;
 
 import in.appops.client.common.config.field.ButtonField;
+import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
 import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.config.field.media.MediaField;
 import in.appops.client.common.config.field.media.MediaField.MediaFieldConstant;
@@ -29,6 +31,7 @@ import in.appops.platform.server.core.services.platform.coreplatformservice.cons
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
@@ -48,6 +51,7 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 	private TextField nameTextField;
 	private TextField versionTextField;
 	private ButtonField createServiceBtnField;
+	private ImageField imageField ;
 	public static String SERVICENAME_STRINGFIELD_ID = "appNameStringFieldId";
 	public static String CREATESERVICE_BTN_ID = "saveService";
 	public static String CREATESERVICEBTNCSS = "createAppBtn";
@@ -107,11 +111,11 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 			 createServiceBtnField.create();
 			 
 			 createMediaField();
-			 LabelField loadingLabelField = new LabelField();
-			 loadingLabelField.setConfiguration(getLabelFieldConfiguration("Loading..."));
-			 loadingLabelField.configure();
-			 loadingLabelField.create();
-			 mediaPanel.add(loadingLabelField);
+			 imageField = new ImageField();
+			 imageField.setConfiguration(getImageConfiguration());
+			 imageField.configure();
+			 imageField.create();
+			 mediaPanel.add(imageField);
 			 
 			 createServiceFlexTable.setWidget(1, 0, serviceNameLabelField);
 			 createServiceFlexTable.setWidget(1, 2, nameTextField);
@@ -201,6 +205,20 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 	
 	return configuration;
 }
+	
+	private Configuration getImageConfiguration(){
+		Configuration configuration = new Configuration();
+		try {
+			
+			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID,"images/defaultLoader.gif");
+			configuration.setPropertyByName(ImageFieldConstant.BF_PCLS,"appops-listBoxLoaderPcls");
+			
+		} catch (Exception e) {
+			
+		}
+		return configuration;
+	}
+	
 	private Configuration getCreateServiceBtnConfiguration() {
 		Configuration configuration = new Configuration();
 		try {

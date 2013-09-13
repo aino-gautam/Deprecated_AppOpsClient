@@ -421,6 +421,13 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 	public EntityList getConfigTypeList(Entity entity){
 		
 		try {
+			
+			ImageField imageField = new ImageField();
+			 imageField.setConfiguration(getImageConfiguration());
+			 imageField.configure();
+			 imageField.create();
+			 basePanel.add(imageField);
+			 basePanel.setCellVerticalAlignment(imageField, HasVerticalAlignment.ALIGN_BOTTOM);
 			Property<Serializable> componentProperty = (Property<Serializable>) entity.getProperty("id");
 			Key<Serializable> key  = (Key<Serializable>) componentProperty.getValue();
 			
@@ -597,6 +604,19 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 		return conf;
 	}
 	
+	private Configuration getImageConfiguration(){
+		Configuration configuration = new Configuration();
+		try {
+			
+			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID,"images/defaultLoader.gif");
+			configuration.setPropertyByName(ImageFieldConstant.BF_PCLS,"appops-listBoxLoaderPcls");
+			
+		} catch (Exception e) {
+			
+		}
+		return configuration;
+	}
+	
 	@Override
 	public void onConfigEvent(ConfigEvent event) {
 		try {
@@ -617,8 +637,9 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 			}*/
 			case ConfigEvent.SAVEDCONFIGENTITY :{
 				if(eventSource instanceof ConfPropertyEditor){
-					Entity confEntity = (Entity) event.getEventData();
-					
+					//TODO:not implemented yet
+					EntityList confEntityList = (EntityList) event.getEventData();
+					//addNewRowInGrid(confEntityList);
 				}
 			}
 			default:
@@ -627,6 +648,14 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+	}
+
+	private void addNewRowInGrid(EntityList confEntityList) {
+	 
+		for(Entity entity:confEntityList){
+			
+        }
 		
 	}
 
