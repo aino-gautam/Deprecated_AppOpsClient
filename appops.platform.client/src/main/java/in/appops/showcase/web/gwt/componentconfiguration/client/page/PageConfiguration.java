@@ -100,7 +100,6 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		updateConfigurationPanel = new VerticalPanel();
 		configMap = new HashMap<String, TextField>();
 		containerCompoInstMap = new HashMap<String, Map<String,Object>>();
-		configInstanceEntityMap = new HashMap<String, Entity>();
 	}
 	
 	public void createUI() {
@@ -257,6 +256,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	
 	public void createPropertyConfigUI() {
 		updateConfigTextFieldList = new ArrayList<TextField>();
+		configInstanceEntityMap = new HashMap<String, Entity>();
 		addConfigPanel.clear();
 		
 		HorizontalPanel titlePanel = createTitlePanel();
