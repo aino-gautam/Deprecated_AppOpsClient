@@ -30,6 +30,7 @@ import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.showcase.web.gwt.componentconfiguration.client.library.ComponentInstanceMVPEditor;
 import in.appops.showcase.web.gwt.componentconfiguration.client.library.ConfigurationInstanceMVPEditor;
 
 import java.util.ArrayList;
@@ -85,6 +86,10 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	private ListBoxField transformTypeListbox;
 	private Map<String, Entity> configInstanceEntityMap;
 	private boolean isUpdateConfigurationEntity;
+	
+	
+	private final String COMPONENT = "Component";
+	private final String SNIPPET = "HtmlSnippet";
 	
 	public PageConfiguration() {
 		initialize();
@@ -447,8 +452,8 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 			configuration.setPropertyByName(ListBoxFieldConstant.BF_ID,TRANSFORM_TYPE_LISTBOX_ID);
 			configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"--Select type--");
 			ArrayList<String> configList = new ArrayList<String>();
-			configList.add("Component");
-			configList.add("HtmlSnippet");
+			configList.add(COMPONENT);
+			configList.add(SNIPPET);
 			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,configList);
 			return configuration;
 		} catch (Exception e) {
@@ -1287,12 +1292,22 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 								}
 							}
 							
-							ConfigurationInstanceMVPEditor instanceMVPEditor = new ConfigurationInstanceMVPEditor();
-							instanceMVPEditor.setConfigInstEnt(configInst);
-							instanceMVPEditor.setViewInstanceEnt(viewInstanceEnt);
-							instanceMVPEditor.setModelInstanceEnt(modelInstanceEnt);
-							instanceMVPEditor.createUi();
-							addConfigPanel.add(instanceMVPEditor);
+							if(transformTypeListbox.getValue().toString().equals(SNIPPET)){
+								ConfigurationInstanceMVPEditor instanceMVPEditor = new ConfigurationInstanceMVPEditor();
+								instanceMVPEditor.setConfigInstEnt(configInst);
+								instanceMVPEditor.setViewInstanceEnt(viewInstanceEnt);
+								instanceMVPEditor.setModelInstanceEnt(modelInstanceEnt);
+								instanceMVPEditor.createUi();
+								addConfigPanel.add(instanceMVPEditor);
+							}
+							else if((transformTypeListbox.getValue().toString().equals(COMPONENT))){
+								ComponentInstanceMVPEditor instanceMVPEditor = new ComponentInstanceMVPEditor();
+								instanceMVPEditor.setConfigInstEnt(configInst);
+								instanceMVPEditor.setViewInstanceEnt(viewInstanceEnt);
+								instanceMVPEditor.setModelInstanceEnt(modelInstanceEnt);
+								instanceMVPEditor.createUi();
+								addConfigPanel.add(instanceMVPEditor);
+							}
 						}
 						
 					}
