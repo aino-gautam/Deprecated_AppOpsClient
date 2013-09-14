@@ -44,6 +44,12 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 	private final String OPERATIONPARAMVALUE_FLD_ID = "opParamValFldId";
 	private final String REMOVEPROP_IMGID = "removePropValueImgId";
 	
+	private boolean deletable;
+	private boolean instanceMode;
+	private Entity parentConfInstanceEntity;
+	private Entity confInstanceParamValEnt;
+
+	
 	public SnippetPropValueEditor(String querymode/*, int valPanelRow*/) {
 		propValuePanel = new FlexTable();
 		snipPropValEditorId = querymode;
@@ -51,10 +57,9 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 	//	setValuePanelRow(valPanelRow);
 		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 		initWidget(propValuePanel);
-		createUi();
 	}
 
-	private void createUi(){
+	public void createUi() {
 				
 		setParamNameField(new TextField());
 		getParamNameField().setConfiguration(getParamNameFldConfig());
@@ -65,18 +70,17 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 		paramValueField.setConfiguration(getParamValueFldConfig());
 		paramValueField.configure();
 		paramValueField.create();
-		
-		removePropImgFld = new ImageField();
-		removePropImgFld.setConfiguration(getCrossImageConfiguration());
-		removePropImgFld.configure();
-		removePropImgFld.create();
-		
-		//propValuePanel.insertRow(valuePanelRow);
-		
+
 		propValuePanel.setWidget(0, 3, getParamNameField());
 		propValuePanel.setWidget(0, 5, paramValueField);
-		propValuePanel.setWidget(0, 7, removePropImgFld);
-		
+
+		if(deletable) {
+			removePropImgFld = new ImageField();
+			removePropImgFld.setConfiguration(getCrossImageConfiguration());
+			removePropImgFld.configure();
+			removePropImgFld.create();
+			propValuePanel.setWidget(0, 7, removePropImgFld);
+		}
 		propValuePanel.setStylePrimaryName("propNameValContainerFlex");
 	}
 	
@@ -192,7 +196,12 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 				if(event.getEventType() == FieldEvent.TAB_KEY_PRESSED){
 					if(((TextField)event.getEventSource()).equals(paramValueField)){
 						if(!(paramValueField.getValue().toString().trim().equals("")) && !(paramNameField.getValue().toString().trim().equals(""))){
-							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SAVEPROPVALUEADDWIDGET, getConfigTypeEntity(), reference);
+							ConfigEvent configEvent = null;
+							if(isInstanceMode()) {
+								configEvent = new ConfigEvent(ConfigEvent.SAVEPROPVALUEADDWIDGET, getConfigTypeEntity(), reference);
+							} else {
+								configEvent = new ConfigEvent(ConfigEvent.SAVEPROPVALUEADDWIDGET, getConfInstanceParamValEnt(), reference);
+							}
 							AppUtils.EVENT_BUS.fireEvent(configEvent);
 						}
 					}
@@ -268,4 +277,55 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 		this.confTypeParamValEnt = confTypeParamValEnt;
 	}
 
+	public boolean isDeletable() {
+		return deletable;
+	}
+
+	public void setDeletable(boolean deletable) {
+		this.deletable = deletable;
+	}
+
+	public boolean isInstanceMode() {
+		return instanceMode;
+	}
+
+	public void setInstanceMode(boolean instanceMode) {
+		this.instanceMode = instanceMode;
+	}
+
+	public Entity getParentConfInstanceEntity() {
+		return parentConfInstanceEntity;
+	}
+
+	public void setParentConfInstanceEntity(Entity parentConfInstanceEntity) {
+		this.parentConfInstanceEntity = parentConfInstanceEntity;
+	}
+
+	public Entity getConfInstanceParamValEnt() {
+		if(confInstanceParamValEnt == null) {
+			confInstanceParamValEnt = new Entity();
+			confInstanceParamValEnt.setType(new MetaType("Configinstance"));
+		}
+
+		confInstanceParamValEnt.setPropertyByName("instancename", paramNameField.getValue().toString());
+		confInstanceParamValEnt.setPropertyByName("configkeyname", paramNameField.getValue().toString());
+		confInstanceParamValEnt.setProperty("configtype", confTypeParamValEnt);
+		confInstanceParamValEnt.setPropertyByName("instancevalue", paramValueField.getValue().toString());
+		confInstanceParamValEnt.setProperty("configinstance", parentConfInstanceEntity);
+		return confInstanceParamValEnt;
+	}
+
+	public void setConfInstanceParamValEnt(Entity confInstanceParamValEnt) {
+		this.confInstanceParamValEnt = confInstanceParamValEnt;
+	}
+
+	public void populate() {
+		if(isInstanceMode()) {
+			String paramKey = confTypeParamValEnt.getPropertyByName(ConfigTypeConstant.KEYNAME).toString();
+			String paramValue = confTypeParamValEnt.getPropertyByName(ConfigTypeConstant.KEYVALUE).toString();
+			
+			paramNameField.setValue(paramKey);
+			paramValueField.setValue(paramValue);
+		}
+	}
 }

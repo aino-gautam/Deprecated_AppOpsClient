@@ -274,6 +274,7 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 					if(opParamFlex.getWidgetCount() == 0){
 						SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(OPERATIONMODE);
 						snipPropValEditor.setParentConfTypeEntity(opParamConfigEnt);
+						snipPropValEditor.createUi();
 						opParamFlex.add(snipPropValEditor);
 					}
 				}
@@ -281,6 +282,7 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 					if(queryParamFlex.getWidgetCount()  == 0){
 						SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(QUERYMODE);
 						snipPropValEditor.setParentConfTypeEntity(queryParamConfigEnt);
+						snipPropValEditor.createUi();
 						queryParamFlex.add(snipPropValEditor);
 					}
 				}
@@ -510,6 +512,7 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 								
 								SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(QUERYMODE);
 								snipPropValEditor.setParentConfTypeEntity(queryParamConfigEnt);
+								snipPropValEditor.createUi();
 								queryParamFlex.add( snipPropValEditor);
 							}
 							else{
@@ -525,6 +528,7 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 								
 								SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(OPERATIONMODE);
 								snipPropValEditor.setParentConfTypeEntity(opParamConfigEnt);
+								snipPropValEditor.createUi();
 								opParamFlex.add( snipPropValEditor);
 							}
 						}
