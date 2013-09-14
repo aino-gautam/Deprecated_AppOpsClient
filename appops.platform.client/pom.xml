@@ -157,7 +157,7 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>13.09.2013</version>
+			<version>14.09.2013</version>
 		</dependency>
 
 		<dependency>
@@ -215,7 +215,7 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appdefinition</artifactId>
-			<version>13.09.2013</version>
+			<version>14.09.2013</version>
 		</dependency>
 		
 		<dependency>
