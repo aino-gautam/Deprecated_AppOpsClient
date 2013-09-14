@@ -106,8 +106,8 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 			
 			int toolBarWidth = (width/7);
 			toolbar.setSize(toolBarWidth+"px", height+"px");
-			contentPanel.setSize((width-toolBarWidth)+"px", height+"px");
-			basePanel.setSize((width-toolBarWidth)+"px", height+"px");
+			contentPanel.setWidth((width-toolBarWidth)+"px");
+			basePanel.setWidth((width-toolBarWidth)+"px");
 						
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "ConfigurationManagerHome :: createUi :: Exception", e);

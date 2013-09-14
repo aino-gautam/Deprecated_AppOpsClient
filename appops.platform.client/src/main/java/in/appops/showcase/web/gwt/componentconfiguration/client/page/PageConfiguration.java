@@ -352,7 +352,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		transformToPanel.add(transformToLabel);
 		
 		transformToListbox = new ListBoxField();
-		transformToListbox.setConfiguration(getTransformToListBoxConfiguration(null));
+		transformToListbox.setConfiguration(getTransformToListBoxConfiguration(null,false));
 		transformToListbox.configure();
 		transformToListbox.create();
 		transformToPanel.add(transformToListbox);
@@ -367,7 +367,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	 * Creates the Transform To Listbox configuration object and return.
 	 * @return Configuration instance
 	 */
-	private Configuration getTransformToListBoxConfiguration(HashMap<String, Object> paramMap) {
+	private Configuration getTransformToListBoxConfiguration(HashMap<String, Object> paramMap, boolean isHtmlSnippet) {
 		try {
 			Configuration configuration = new Configuration();
 			configuration.setPropertyByName(ListBoxFieldConstant.BF_ID,TRANSFORM_TO_LISTBOX_ID);
@@ -375,9 +375,13 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 			
 			if(paramMap != null) {
 				configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_OPRTION,"appdefinition.AppDefinitionService.getEntityList");
-				configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_QUERYNAME,"getComponentDefinationForIsMvp");
 				configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ENTPROP,"name");
 				configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_QUERY_RESTRICTION,paramMap);
+				if(isHtmlSnippet) {
+					configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_QUERYNAME,"getComponentDefinationForHtmlSnipp");
+				} else {
+					configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_QUERYNAME,"getComponentDefinationForComponent");
+				}
 			} else {
 				ArrayList<String> items = new ArrayList<String>();
 				configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,items);
@@ -1164,17 +1168,17 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void fetchTransformToList(String value) {
 		
-		byte isMvp = 0;
+		HashMap map = new HashMap();
 		if(value.equals("Component")) {
-			isMvp = 1;
+			byte isMvp = 1;
+			map.put("isMvp", isMvp);
+			map.put("typeId", 159L);
+			transformToListbox.setConfiguration(getTransformToListBoxConfiguration(map,false));
 		} else if(value.equals("HtmlSnippet")) {
-			isMvp = 0;
+			map.put("typeId", 159L);
+			transformToListbox.setConfiguration(getTransformToListBoxConfiguration(map,true));
 		}
 		
-		HashMap map = new HashMap();
-		map.put("isMvp", isMvp);
-		
-		transformToListbox.setConfiguration(getTransformToListBoxConfiguration(map));
 		transformToListbox.configure();
 		transformToListbox.create();
 	}

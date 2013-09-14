@@ -105,7 +105,8 @@
 /*************************/
 
 .managerHomePanel{
-	border: 1px solid;
+	border: 2px solid;
+	padding: 10px;
 }
 
 .managerHomeButton {
@@ -124,11 +125,14 @@
 }
 
 .buttonToolbar{
-	border-right: 1px solid;
+	border: 1px solid;
+	padding-left: 15px;
+	padding-top: 10px;
 }
 
 .contentPanel{
-	
+	border: 1px solid;
+	margin-left: 5px;
 }
 
 .componentListRow{
@@ -495,6 +499,6 @@
 }
 
 .PageManagerBasePanel {
-	padding-left: 20px;
+	padding-left: 30px;
 	padding-top: 10px;	
 }
