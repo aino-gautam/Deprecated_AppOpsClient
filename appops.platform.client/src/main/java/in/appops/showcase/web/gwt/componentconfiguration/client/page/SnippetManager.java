@@ -155,7 +155,6 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		
 		propConfigEditorVp.add(html);
 		propConfigEditorVp.add(headerLbl);
-		//vp.add(hpSpanSelection);
 		
 		HTMLSnippetConfigurationEditor configEditor = new HTMLSnippetConfigurationEditor();
 		Entity viewConfigEntity   = list.get("viewConfigType");
@@ -167,7 +166,6 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		
 		propConfigEditorVp.add(configEditor);
 		
-		//createConfigurationEditorUI(list, new ArrayList<Element>());
 	}
 	
 	private ArrayList<Element> validateHTML(){
@@ -316,16 +314,12 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 					if (btnField.getBaseFieldId().equals(SAVECOMPONENT_BTN_ID)) {
 						if(libraryEntity!=null){
 							ArrayList<Element> spansList = validateHTML();
-							//createConfigurationEditorUI(null, spansList);
-							if(spansList != null && !spansList.isEmpty()){
+							if(spansList != null && !spansList.isEmpty())
 								saveComponent(spansList);
-							}
-							else{
+							else
 								Window.alert("Html snippet not in proper format");
-							}
-						}else{
+						}else
 							Window.alert("Please select a library");
-						}
 					}
 				}
 				break;
