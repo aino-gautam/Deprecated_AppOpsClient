@@ -2,11 +2,14 @@ package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
 import in.appops.client.common.config.field.StateField;
 import in.appops.client.common.config.field.StateField.StateFieldConstant;
+import in.appops.client.common.config.field.suggestion.AppopsSuggestion;
+import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -22,20 +25,23 @@ public class InstanceEditor implements FieldEventHandler{
 	private StateField keyValueField;
 	private FlexTable propValuePanel;
 	private int valuePanelRow;
+	private Entity parentConfigInstanceEntity = null;
+	private Entity configEnt = null;
 	
 	/** Field ID **/
-	private String KEYNAME_FIELD_ID = "keyNameFieldId";
-	private String KEYVALUE_FIELD_ID = "keyvalueFieldId";
+	private String KEYNAME_FIELD_ID = "instanceNameFieldId";
+	private String KEYVALUE_FIELD_ID = "instanceValueFieldId";
 	private final String KEYNAME_FIELD_PCLS = "propertyValueField";
 	
 	/** CSS style **/
 	private final String SUGGESTIONBOX_PCLS = "componentNameSuggestionBox";
 	
-	public InstanceEditor(FlexTable propValuePanel, int valuePanelRow ,String keyName, EntityList list) {
+	public InstanceEditor(FlexTable propValuePanel, int valuePanelRow ,String keyName, EntityList list, Entity parentConfigInstanceEntity) {
 		this.keyName = keyName;
 		this.configList = list;
 		this.propValuePanel = propValuePanel;
 		this.valuePanelRow = valuePanelRow;
+		this.parentConfigInstanceEntity = parentConfigInstanceEntity;
 	}
 	
 	public void createUi(){
@@ -45,6 +51,9 @@ public class InstanceEditor implements FieldEventHandler{
 			keyNameField.configure();
 			keyNameField.create();
 			
+			Long configTypeId = ((Key<Long>)configList.get(0).getPropertyByName("id")).getKeyValue();
+			
+			KEYVALUE_FIELD_ID = KEYVALUE_FIELD_ID+ configTypeId;
 			keyValueField = new StateField();
 			keyValueField.setConfiguration(getKeyValueSuggestionFieldConf());
 			keyValueField.configure();
@@ -52,6 +61,8 @@ public class InstanceEditor implements FieldEventHandler{
 			
 			propValuePanel.setWidget(valuePanelRow, 0,keyNameField);
 			propValuePanel.setWidget(valuePanelRow, 1,keyValueField);
+			
+			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -99,7 +110,16 @@ public class InstanceEditor implements FieldEventHandler{
 
 	@Override
 	public void onFieldEvent(FieldEvent event) {
-		
+		int eventType = event.getEventType();
+		if(eventType == FieldEvent.SUGGESTION_SELECTED) {
+			if(event.getEventSource() instanceof StateField) {
+				StateField stateField = (StateField) event.getEventSource();
+				if(stateField.getBaseFieldId().equals(KEYVALUE_FIELD_ID)){
+					AppopsSuggestion appopsSuggestion = (AppopsSuggestion) event.getEventData();
+					configEnt = appopsSuggestion.getEntity();
+				}
+			}
+		}
 		
 	}
 	
@@ -116,11 +136,15 @@ public class InstanceEditor implements FieldEventHandler{
 				configInstance.setPropertyByName("configkeyname", keyNameField.getValue().toString());
 			}
 
-			if (keyValueField.getValue().toString().equals("")) {
-				throw new AppOpsException("InstanceValue cannot be empty");
+			if (configEnt!=null) {
+				throw new AppOpsException("Please select value from suggestion list");
 			} else {
 				configInstance.setPropertyByName("instancevalue", keyValueField.getValue().toString());
 			}
+			
+			configInstance.setProperty("configinstance", parentConfigInstanceEntity);
+			configInstance.setProperty("configtype", configEnt);
+			
 			return configInstance;
 
 		} catch (Exception e) {
