@@ -17,7 +17,6 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispat
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.client.EntityContext;
 import in.appops.platform.core.entity.Entity;
-import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
@@ -144,7 +143,7 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 			Entity compEntity = new Entity();
 			compEntity.setType(new MetaType("Configtype"));
 			compEntity.setPropertyByName("keyname", configName);
-			compEntity.setPropertyByName("parentId", getViewConfigTypeEntity()); // ems typeId for html snipppet
+			compEntity.setProperty("parentId", getViewConfigTypeEntity()); // ems typeId for html snipppet
 			return compEntity;
 		}
 		catch (Exception e) {
@@ -153,6 +152,7 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void fetchComponentConfig(Entity configTypeEntity, String typeName){
 		try{
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
