@@ -1306,6 +1306,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 								instanceMVPEditor.setConfigInstEnt(configInst);
 								instanceMVPEditor.setViewInstanceEnt(viewInstanceEnt);
 								instanceMVPEditor.setModelInstanceEnt(modelInstanceEnt);
+								instanceMVPEditor.setPageCompInstEntity(pageComponentInstEntity);
 								instanceMVPEditor.createUi();
 								addConfigPanel.add(instanceMVPEditor);
 							}

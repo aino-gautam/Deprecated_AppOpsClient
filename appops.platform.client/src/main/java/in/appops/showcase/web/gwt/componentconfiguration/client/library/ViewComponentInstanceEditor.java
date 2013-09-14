@@ -50,6 +50,8 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 	private Entity snippetTypeInstanceEntity;
 	private Entity snippetTypeEntity;
 	
+	private Entity parentCompInstanceEnt;
+	
 	private Entity snippetTypeConfigTypeEnt;
 	private Entity snippetInstnceConfigTypeEnt;
 
@@ -273,8 +275,8 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 				Entity snippetTypeEnt = new Entity();
 				snippetTypeEnt.setType(new MetaType("Configinstance"));
 
-				snippetTypeEnt.setPropertyByName("instancename", "snippetType");
-				snippetTypeEnt.setPropertyByName("configkeyname", "snippetType");
+				snippetTypeEnt.setPropertyByName("instancename", "snippetInstance");
+				snippetTypeEnt.setPropertyByName("configkeyname", "snippetInstance");
 				snippetTypeEnt.setProperty("configinstance", viewConfigInstnceEntity);
 				snippetTypeEnt.setProperty("configtype", snippetInstnceConfigTypeEnt);
 				snippetTypeEnt.setPropertyByName("instancevalue", value);
@@ -323,7 +325,8 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 			compInstEntity.setType(new MetaType("Componentinstance"));
 			compInstEntity.setPropertyByName("instancename", transformInstanceTextField.getFieldValue());
 			compInstEntity.setProperty("componentdefinition", transformToListbox.getAssociatedEntity(transformToListbox.getValue().toString()));
-			
+			compInstEntity.setProperty("componentinstance", parentCompInstanceEnt);
+
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 			
@@ -355,7 +358,7 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 							while(iterator.hasNext()) {
 								Entity entity = iterator.next();
 								String name = entity.getPropertyByName("instancename").toString();
-								if(name.equals(".view")) {
+								if(name.contains(".view")) {
 									viewInstanceEnt = entity;
 								} else {
 									modelInstanceEnt = entity;
@@ -515,5 +518,19 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 	 */
 	public void setViewConfigInstnceEntity(Entity viewConfigInstnceEntity) {
 		this.viewConfigInstnceEntity = viewConfigInstnceEntity;
+	}
+
+	/**
+	 * @return the parentCompInstanceEnt
+	 */
+	public Entity getParentCompInstanceEnt() {
+		return parentCompInstanceEnt;
+	}
+
+	/**
+	 * @param parentCompInstanceEnt the parentCompInstanceEnt to set
+	 */
+	public void setParentCompInstanceEnt(Entity parentCompInstanceEnt) {
+		this.parentCompInstanceEnt = parentCompInstanceEnt;
 	}
 }

@@ -309,9 +309,14 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 
 		confInstanceParamValEnt.setPropertyByName("instancename", paramNameField.getValue().toString());
 		confInstanceParamValEnt.setPropertyByName("configkeyname", paramNameField.getValue().toString());
-		confInstanceParamValEnt.setProperty("configtype", confTypeParamValEnt);
+		if(confTypeParamValEnt != null) {
+			confInstanceParamValEnt.setProperty("configtype", confTypeParamValEnt);
+		}
 		confInstanceParamValEnt.setPropertyByName("instancevalue", paramValueField.getValue().toString());
-		confInstanceParamValEnt.setProperty("configinstance", parentConfInstanceEntity);
+		if(parentConfInstanceEntity != null) {
+			confInstanceParamValEnt.setProperty("configinstance", parentConfInstanceEntity);
+		}
+		
 		return confInstanceParamValEnt;
 	}
 

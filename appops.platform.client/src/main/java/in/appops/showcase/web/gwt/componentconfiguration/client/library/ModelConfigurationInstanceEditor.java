@@ -500,7 +500,9 @@ public class ModelConfigurationInstanceEditor extends Composite implements Confi
 			public void onSuccess(Result<Entity> result) {
 				if(result != null) {
 					Entity paramConfigTypeEnt = result.getOperationResult();
-					populateParams(paramConfigTypeEnt, isQueryCall);
+					if(paramConfigTypeEnt != null) {
+						populateParams(paramConfigTypeEnt, isQueryCall);
+					}
 				}
 			}
 
@@ -515,29 +517,47 @@ public class ModelConfigurationInstanceEditor extends Composite implements Confi
 		} else {
 			operationDetailHolder.add(opParamFlex);
 		}
-		for(Entity childConfType : childConfTypeList) {
+		if(childConfTypeList != null && !childConfTypeList.isEmpty()) {
+			for(Entity childConfType : childConfTypeList) {
+				if(isQueryCall) {
+					SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(QUERYMODE);
+					snipPropValEditor.setDeletable(false);
+					snipPropValEditor.setInstanceMode(true);
+					snipPropValEditor.setParentConfInstanceEntity(queryParamConfigInstanceEnt);
+					snipPropValEditor.setConfTypeParamValEnt(childConfType);
+					snipPropValEditor.createUi();
+					snipPropValEditor.populate();
+					queryParamFlex.add(snipPropValEditor);
+					Entity paramConfigInsEnt = snipPropValEditor.getConfInstanceParamValEnt();
+					saveParamConfigIns(paramConfigInsEnt, snipPropValEditor);
+				} else {
+					SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(OPERATIONMODE);
+					snipPropValEditor.setDeletable(false);
+					snipPropValEditor.setInstanceMode(true);
+					snipPropValEditor.setParentConfInstanceEntity(opParamConfigInstanceEnt);
+					snipPropValEditor.setConfTypeParamValEnt(childConfType);
+					snipPropValEditor.createUi();
+					snipPropValEditor.populate();
+					opParamFlex.add(snipPropValEditor);
+					Entity paramConfigInsEnt = snipPropValEditor.getConfInstanceParamValEnt();
+					saveParamConfigIns(paramConfigInsEnt, snipPropValEditor);
+				}
+			}
+		} else {
 			if(isQueryCall) {
 				SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(QUERYMODE);
 				snipPropValEditor.setDeletable(false);
 				snipPropValEditor.setInstanceMode(true);
 				snipPropValEditor.setParentConfInstanceEntity(queryParamConfigInstanceEnt);
-				snipPropValEditor.setConfTypeParamValEnt(childConfType);
 				snipPropValEditor.createUi();
-				snipPropValEditor.populate();
 				queryParamFlex.add(snipPropValEditor);
-				Entity paramConfigInsEnt = snipPropValEditor.getConfInstanceParamValEnt();
-				saveParamConfigIns(paramConfigInsEnt, snipPropValEditor);
 			} else {
 				SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(OPERATIONMODE);
 				snipPropValEditor.setDeletable(false);
 				snipPropValEditor.setInstanceMode(true);
 				snipPropValEditor.setParentConfInstanceEntity(opParamConfigInstanceEnt);
-				snipPropValEditor.setConfTypeParamValEnt(childConfType);
 				snipPropValEditor.createUi();
-				snipPropValEditor.populate();
 				opParamFlex.add(snipPropValEditor);
-				Entity paramConfigInsEnt = snipPropValEditor.getConfInstanceParamValEnt();
-				saveParamConfigIns(paramConfigInsEnt, snipPropValEditor);
 			}
 		}
 	
