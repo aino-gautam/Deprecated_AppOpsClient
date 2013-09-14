@@ -256,7 +256,8 @@ public class ModelConfigurationInstanceEditor extends Composite implements Confi
 			public void onSuccess(Result<Entity> result) {
 				if(result != null) {
 					Entity modelConfigTypeEnt = result.getOperationResult();
-					populateModel(modelConfigTypeEnt);
+					if(modelConfigTypeEnt != null)
+						populateModel(modelConfigTypeEnt);
 				}
 			}
 
@@ -267,40 +268,41 @@ public class ModelConfigurationInstanceEditor extends Composite implements Confi
 	@SuppressWarnings("unchecked")
 	private void populateModel(Entity modelConfigTypeEnt) {
 		ArrayList<Entity> childConfTypeList = (ArrayList<Entity>) modelConfigTypeEnt.getPropertyByName("configtypes");
-		
-		for(Entity childConfType : childConfTypeList) {
-			String keyName = childConfType.getPropertyByName("keyname");
-			String keyValue = childConfType.getPropertyByName("keyvalue");
-			
-			if(keyName.equalsIgnoreCase("queryname")) {
-				qryNamevalFld.setValue(keyValue);
-				queryNameConfigTypeEnt = childConfType;
-				Entity configInstEntity = getQryOpNameInstanceEntity(keyValue, true);
-				saveQryOpNameInstance(configInstEntity, true);
-			} else if(keyName.equalsIgnoreCase("operationname")) {
-				opNamevalFld.setValue(keyValue);
-				opNameConfigTypeEnt = childConfType;
-				Entity configInstEntity = getQryOpNameInstanceEntity(keyValue, false);
-				saveQryOpNameInstance(configInstEntity, false);
-			}  else if(keyName.equalsIgnoreCase("queryparam")) {
-				LabelField qryParamLblFld = new LabelField();
-				qryParamLblFld.setConfiguration(getQryParamLblFldConf(true));
-				qryParamLblFld.configure();
-				qryParamLblFld.create();
-				queryDetailHolder.add(qryParamLblFld);
-				queryParamConfigTypeEnt = childConfType;
-				createAndSaveConfigInstanceEntity(true);
-			}  else if(keyName.equalsIgnoreCase("operationparam")) {
-				LabelField qryParamLblFld = new LabelField();
-				qryParamLblFld.setConfiguration(getQryParamLblFldConf(false));
-				qryParamLblFld.configure();
-				qryParamLblFld.create();
-				operationDetailHolder.add(qryParamLblFld);
-				opParamConfigTypeEnt = childConfType;
-				createAndSaveConfigInstanceEntity(false);		
+
+		if(childConfTypeList!=null){
+			for(Entity childConfType : childConfTypeList) {
+				String keyName = childConfType.getPropertyByName("keyname");
+				String keyValue = childConfType.getPropertyByName("keyvalue");
+
+				if(keyName.equalsIgnoreCase("queryname")) {
+					qryNamevalFld.setValue(keyValue);
+					queryNameConfigTypeEnt = childConfType;
+					Entity configInstEntity = getQryOpNameInstanceEntity(keyValue, true);
+					saveQryOpNameInstance(configInstEntity, true);
+				} else if(keyName.equalsIgnoreCase("operationname")) {
+					opNamevalFld.setValue(keyValue);
+					opNameConfigTypeEnt = childConfType;
+					Entity configInstEntity = getQryOpNameInstanceEntity(keyValue, false);
+					saveQryOpNameInstance(configInstEntity, false);
+				}  else if(keyName.equalsIgnoreCase("queryparam")) {
+					LabelField qryParamLblFld = new LabelField();
+					qryParamLblFld.setConfiguration(getQryParamLblFldConf(true));
+					qryParamLblFld.configure();
+					qryParamLblFld.create();
+					queryDetailHolder.add(qryParamLblFld);
+					queryParamConfigTypeEnt = childConfType;
+					createAndSaveConfigInstanceEntity(true);
+				}  else if(keyName.equalsIgnoreCase("operationparam")) {
+					LabelField qryParamLblFld = new LabelField();
+					qryParamLblFld.setConfiguration(getQryParamLblFldConf(false));
+					qryParamLblFld.configure();
+					qryParamLblFld.create();
+					operationDetailHolder.add(qryParamLblFld);
+					opParamConfigTypeEnt = childConfType;
+					createAndSaveConfigInstanceEntity(false);		
+				}
 			}
 		}
-		
 	}
 	
 	@SuppressWarnings("unchecked")
