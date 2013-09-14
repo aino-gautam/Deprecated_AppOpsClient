@@ -56,7 +56,8 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	private ConfigurationEditor configurationEditor;
 	private ListBoxField libraryBox;
 	private Entity libraryEntity;
-	
+	private VerticalPanel propConfigEditorVp = new VerticalPanel();
+
 	private Logger logger = Logger.getLogger("SnippetManager");
 	
 	private final String SAVECOMP_BTN_PCLS = "saveCompBtnCss";
@@ -134,14 +135,15 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		containerTable.setWidget(4, 0, saveAndProcessButton);
 		
 		basePanel.add(containerTable);
+		basePanel.add(propConfigEditorVp);
 	}
 
 	/**
 	 * initializes the configuration editing component and lists the span elements available.
 	 */
 	public void createConfigurationEditorUI(HashMap<String, Entity> list, ArrayList<Element> spansList){
-		VerticalPanel vp = new VerticalPanel();
-		vp.setWidth("100%");
+		propConfigEditorVp.setWidth("100%");
+		propConfigEditorVp.clear();
 
 		HTML html = new HTML("<hr style=\"border-bottom : 1px dotted gray;\" \"width:100%;\"/>");
 		
@@ -151,8 +153,8 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		headerLbl.configure();
 		headerLbl.create();
 		
-		vp.add(html);
-		vp.add(headerLbl);
+		propConfigEditorVp.add(html);
+		propConfigEditorVp.add(headerLbl);
 		//vp.add(hpSpanSelection);
 		
 		HTMLSnippetConfigurationEditor configEditor = new HTMLSnippetConfigurationEditor();
@@ -163,10 +165,9 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		configEditor.getViewEditor().populateSpansListBox(spansList);
 		configEditor.createUi();
 		
-		vp.add(configEditor);
+		propConfigEditorVp.add(configEditor);
 		
 		//createConfigurationEditorUI(list, new ArrayList<Element>());
-		basePanel.add(vp);
 	}
 	
 	private ArrayList<Element> validateHTML(){
@@ -316,10 +317,12 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 						if(libraryEntity!=null){
 							ArrayList<Element> spansList = validateHTML();
 							//createConfigurationEditorUI(null, spansList);
-							if(spansList != null){
+							if(spansList != null && !spansList.isEmpty()){
 								saveComponent(spansList);
 							}
-							
+							else{
+								Window.alert("Html snippet not in proper format");
+							}
 						}else{
 							Window.alert("Please select a library");
 						}
