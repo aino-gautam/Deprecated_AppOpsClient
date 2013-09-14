@@ -20,6 +20,7 @@ import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.server.core.services.configuration.constant.ConfigTypeConstant;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +45,7 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 	private Logger logger = Logger.getLogger("ViewConfigurationEditor");
 	private ListBoxField spanListBox;
 	private Entity viewConfigTypeEntity;
+	private HashMap<Entity, ArrayList<Entity>> configTypeEntityMap;
 	
 	public ViewConfigurationEditor(){
 		initialize();
@@ -53,6 +55,7 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 		try{
 			basePanel = new VerticalPanel();
 			spanListBox = new ListBoxField();
+			configTypeEntityMap = new HashMap<Entity, ArrayList<Entity>>();
 			initWidget(basePanel);
 			
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
@@ -110,7 +113,7 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 		}
 		catch(Exception e){
 			e.printStackTrace();
-			logger.log(Level.SEVERE, "SnippetManager :: getLblConfig :: Exception", e);
+			logger.log(Level.SEVERE, "ViewConfigurationEditor :: getLblConfig :: Exception", e);
 		}
 		return configuration;
 	}
@@ -126,7 +129,7 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 			configuration.setPropertyByName(ListBoxFieldConstant.BF_ID,"spanListBoxField");
 			configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"Select a span element");
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "SnippetManager :: getSpansListBoxConfiguration :: Exception", e);
+			logger.log(Level.SEVERE, "ViewConfigurationEditor :: getSpansListBoxConfiguration :: Exception", e);
 		}
 		return configuration;
 	}
@@ -142,18 +145,28 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 		try{
 			Entity compEntity = new Entity();
 			compEntity.setType(new MetaType("Configtype"));
-			compEntity.setPropertyByName("keyname", configName);
-			compEntity.setProperty("parentId", getViewConfigTypeEntity()); // ems typeId for html snipppet
+			compEntity.setPropertyByName(ConfigTypeConstant.KEYNAME, configName);
+			compEntity.setProperty(ConfigTypeConstant.PARENTCONFIGTYPE, getViewConfigTypeEntity());
 			return compEntity;
 		}
 		catch (Exception e) {
-			logger.log(Level.SEVERE, "SnippetManager :: getComponentDefinitionEntity :: Exception", e);
+			logger.log(Level.SEVERE, "ViewConfigurationEditor :: getConfigTypeEntity :: Exception", e);
 		}
 		return null;
 	}
 	
-	@SuppressWarnings("unchecked")
-	private void fetchComponentConfig(Entity configTypeEntity, String typeName){
+	private boolean fetchSnippetComponentConfigType(String configTypeKeyName){
+		for(Entity configTypeEnt : configTypeEntityMap.keySet()){
+			if(configTypeEnt.getPropertyByName(ConfigTypeConstant.KEYNAME).toString().equalsIgnoreCase(configTypeKeyName)){
+				ArrayList<Entity> configList = configTypeEntityMap.get(configTypeEnt);
+				showConfigurator(configTypeEnt, configList);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private void saveSnippetComponentConfigType(Entity configTypeEntity, String typeName){
 		try{
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
@@ -181,6 +194,7 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 						Entity propertyConfig   = (Entity)map.get("configType");
 						ArrayList<Entity> configList =  (ArrayList<Entity>)map.get("childConfigTypeList");
 						if(propertyConfig!=null){
+							configTypeEntityMap.put(propertyConfig, configList);
 							showConfigurator(propertyConfig, configList);
 						}
 					}
@@ -188,7 +202,7 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 				}
 			});
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, "ComponentRegistrationForm :: saveComponent :: Exception", e);
+			logger.log(Level.SEVERE, "ViewConfigurationEditor :: fetchComponentConfig :: Exception", e);
 		}
 	}
 	@Override
@@ -202,8 +216,12 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 					ListBoxField listBoxField = (ListBoxField) eventSource;
 					String selectedStr = listBoxField.getSelectedValue().toString().split(":")[0];
 					String configName = listBoxField.getSelectedValue().toString().split(":")[1];
-					Entity configTypeEnt  = getConfigTypeEntity(configName);
-					fetchComponentConfig(configTypeEnt, selectedStr);
+					
+					boolean entityExists = fetchSnippetComponentConfigType(configName);
+					if(!entityExists){
+						Entity configTypeEnt  = getConfigTypeEntity(configName);
+						saveSnippetComponentConfigType(configTypeEnt, selectedStr);
+					}
 				}
 			}
 			default:
