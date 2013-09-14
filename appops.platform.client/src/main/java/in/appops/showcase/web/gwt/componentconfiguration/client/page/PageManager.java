@@ -31,7 +31,7 @@ public class PageManager extends Composite implements ConfigEventHandler{
 		pageConfig = new PageConfiguration();
 		basePanel.add(pageConfig);
 		pageConfig.setVisible(false);
-		basePanel.setWidth("100%");
+		basePanel.setStylePrimaryName("PageManagerBasePanel");
 	}
 
 	@Override

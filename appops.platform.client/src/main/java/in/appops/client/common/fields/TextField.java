@@ -835,8 +835,6 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 							setValue(getValue());
 						setFocus();
 					}
-				}else{
-					setValue(getValue());
 				}
 				
 				if(isDirty()){
@@ -868,8 +866,6 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 						}
 					}
 				}
-			}else{
-				setValue(getValue());
 			}
 			
 			FieldEvent fieldEvent = new FieldEvent();
@@ -904,8 +900,6 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 								setValue(getValue());
 							setFocus();
 						}
-					} else {
-						setValue(getValue());
 					}
 					
 					if(isDirty()){
