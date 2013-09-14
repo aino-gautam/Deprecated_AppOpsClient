@@ -89,11 +89,12 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 		
 			toolbar.add(btnPanel);
 			
-		//	LibraryComponentManager libraryComponentManager = new LibraryComponentManager();
-		//	libraryComponentManager.initialize();
+			CreateServicePageWidget createServicePageWidget = new CreateServicePageWidget();
+			createServicePageWidget.createUi();
 								
 			contentPanel = new VerticalPanel();
-		//	contentPanel.add(libraryComponentManager);
+			contentPanel.add(createServicePageWidget);
+
 			basePanel.add(toolbar);
 			basePanel.add(contentPanel);
 			
