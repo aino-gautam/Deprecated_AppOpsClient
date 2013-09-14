@@ -1253,6 +1253,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 			compInstEntity.setType(new MetaType("Componentinstance"));
 			compInstEntity.setPropertyByName("instancename", transformInstanceTextField.getFieldValue());
 			compInstEntity.setProperty("componentdefinition", transWgtCompDefEnt);
+			compInstEntity.setProperty("componentinstance", this.pageComponentInstEntity);
 			
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
