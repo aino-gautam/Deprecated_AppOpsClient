@@ -416,20 +416,21 @@ public class PageCreation extends Composite implements FieldEventHandler {
 		int eventType = event.getEventType();
 		if(eventType == FieldEvent.SUGGESTION_SELECTED) {
 			if(event.getEventSource() instanceof StateField) {
-				if(event.getEventData() instanceof AppopsSuggestion) {
-					htmltextArea.setValue("");
-					pageNametextField.setValue("");
-					
-					AppopsSuggestion selectedSuggestion = (AppopsSuggestion) event.getEventData();
-					Entity serviceEntity = selectedSuggestion.getEntity();
-					Long serviceId = ((Key<Long>)serviceEntity.getPropertyByName(ServiceConstant.ID)).getKeyValue();
-					HashMap<String, Object> paramMap = new HashMap<String, Object>();
-					paramMap.put("serviceId", serviceId);
-					
-					appListbox.removeRegisteredHandlers();
-					appListbox.setConfiguration(getAppListBoxConfiguration(true,paramMap));
-					appListbox.configure();
-					appListbox.create();
+				if (event.getEventSource().equals(serviceSuggestionbox)) {
+					if (event.getEventData() instanceof AppopsSuggestion) {
+						htmltextArea.setValue("");
+						pageNametextField.setValue("");
+
+						AppopsSuggestion selectedSuggestion = (AppopsSuggestion) event.getEventData();
+						Entity serviceEntity = selectedSuggestion.getEntity();
+						Long serviceId = ((Key<Long>) serviceEntity.getPropertyByName(ServiceConstant.ID)).getKeyValue();
+						HashMap<String, Object> paramMap = new HashMap<String, Object>();
+						paramMap.put("serviceId", serviceId);
+
+						appListbox.setConfiguration(getAppListBoxConfiguration(true, paramMap));
+						appListbox.configure();
+						appListbox.create();
+					}
 				}
 			}
 		} else if(eventType == FieldEvent.CLICKED) {
