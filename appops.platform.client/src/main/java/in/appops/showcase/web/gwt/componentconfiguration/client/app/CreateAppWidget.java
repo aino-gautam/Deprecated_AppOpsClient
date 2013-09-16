@@ -132,15 +132,15 @@ public class CreateAppWidget extends Composite implements FieldEventHandler{
 			 
 			 appCreationTable.setWidget(7, 0, appServicesLabelField);
 			 appCreationTable.setWidget(7, 2, servicesBoxField);
+			 appCreationTable.setWidget(11, 2, createAppBtnField);
+			 
+			 appCreationTable.getCellFormatter().setAlignment(11, 2, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE);
 			 
 			 
 			 basePanel.add(appCreationTable);
 			 basePanel.setCellHorizontalAlignment(appCreationTable, HasHorizontalAlignment.ALIGN_CENTER);
 			 basePanel.setCellVerticalAlignment(appCreationTable, HasVerticalAlignment.ALIGN_MIDDLE);
 			 
-			 basePanel.add(createAppBtnField);
-			 basePanel.setCellHorizontalAlignment(createAppBtnField, HasHorizontalAlignment.ALIGN_RIGHT);
-			 basePanel.setCellVerticalAlignment(createAppBtnField, HasVerticalAlignment.ALIGN_BOTTOM);
 			 basePanel.setWidth("100%");
 		}catch(Exception e){
 			e.printStackTrace();

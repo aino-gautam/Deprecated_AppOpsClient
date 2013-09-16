@@ -127,14 +127,13 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 			 
 			 createServiceFlexTable.setWidget(4, 0, serviceBlobIdLabelField);
 			 createServiceFlexTable.setWidget(4, 2, mediaPanel);
+			 createServiceFlexTable.setWidget(7, 2, createServiceBtnField);
+			 createServiceFlexTable.getCellFormatter().setAlignment(7, 2, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE);
 			
 			 basePanel.add(createServiceFlexTable);
 			 basePanel.setCellHorizontalAlignment(createServiceFlexTable, HasHorizontalAlignment.ALIGN_CENTER);
 			 basePanel.setCellVerticalAlignment(createServiceFlexTable, HasVerticalAlignment.ALIGN_MIDDLE);
 			 
-			 basePanel.add(createServiceBtnField);
-			 basePanel.setCellHorizontalAlignment(createServiceBtnField, HasHorizontalAlignment.ALIGN_RIGHT);
-			 basePanel.setCellVerticalAlignment(createServiceBtnField, HasVerticalAlignment.ALIGN_BOTTOM);
 			 basePanel.setWidth("100%");
 			 AppUtils.EVENT_BUS.addHandler(AttachmentEvent.TYPE, this);
 			 
