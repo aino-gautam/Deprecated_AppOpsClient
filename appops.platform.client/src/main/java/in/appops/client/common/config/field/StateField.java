@@ -1,7 +1,6 @@
 package in.appops.client.common.config.field;
 
 
-import in.appops.client.common.config.field.suggestion.AppopsSuggestion;
 import in.appops.client.common.config.field.suggestion.AppopsSuggestionBox;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
@@ -93,6 +92,7 @@ public class StateField extends BaseField implements FieldEventHandler {
 			if (getBasePanelDependentCss() != null)
 				getBasePanel().addStyleName(getBasePanelDependentCss());
 			
+			removeRegisteredHandlers();
 			appopsSuggestionBox.setAutoSuggestion(isAutosuggestion());
 			appopsSuggestionBox.createUi();
 			
@@ -351,15 +351,21 @@ public class StateField extends BaseField implements FieldEventHandler {
 	
 	@Override
 	public void onFieldEvent(FieldEvent event) {
-		int eventType = event.getEventType();
-		if(eventType == FieldEvent.VALUE_SELECTED) {
-			if(event.getEventData() instanceof AppopsSuggestion) {
-				FieldEvent fieldEvent = new FieldEvent();
-				fieldEvent.setEventData(event.getEventData());
-				fieldEvent.setEventSource(this);
-				fieldEvent.setEventType(FieldEvent.SUGGESTION_SELECTED);
-				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		try {
+			int eventType = event.getEventType();
+			if (eventType == FieldEvent.VALUE_SELECTED) {
+				if (event.getEventSource() instanceof AppopsSuggestionBox) {
+					if(event.getEventSource().equals(appopsSuggestionBox)){
+						FieldEvent fieldEvent = new FieldEvent();
+						fieldEvent.setEventData(event.getEventData());
+						fieldEvent.setEventSource(this);
+						fieldEvent.setEventType(FieldEvent.SUGGESTION_SELECTED);
+						AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+					}
+				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }
