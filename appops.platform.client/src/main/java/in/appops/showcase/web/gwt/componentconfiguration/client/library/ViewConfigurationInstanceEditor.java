@@ -45,7 +45,6 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 	private ButtonField saveConfInstanceBtnFld;
 	private int currentRow = 0;
 	private Entity viewInstance = null;
-	private Entity configInstanceEntity = null;
 	private Image  loaderImage = null;
 	
 	/** Field ID **/
@@ -61,13 +60,9 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 	private String COMPONENTFIELD_DEFVAL ="---Select the Component ---";
 	private final String COMPONENTFIELD_PCLS = "emsTypeListBox";
 		
-	public ViewConfigurationInstanceEditor() {
 		
-	}
-	
-	public ViewConfigurationInstanceEditor( Entity viewInstance, Entity configInstanceEntity) {
+	public ViewConfigurationInstanceEditor( Entity viewInstance) {
 		this.viewInstance = viewInstance;
-		this.configInstanceEntity = configInstanceEntity;
 	}
 	
 	public void createUi(){
@@ -90,11 +85,10 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 			
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 			
-			Entity configTypeEnt = (Entity) configInstanceEntity.getProperty("configtype");
+			Entity configTypeEnt = (Entity) viewInstance.getProperty("configtype");
 			Long configTypeId = ((Key<Long>)configTypeEnt.getPropertyByName("id")).getKeyValue();
 			
-			getConfigTypeEntity(configTypeId);
-			//getViewChilds(configTypeId);
+			getViewChilds(configTypeId);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -116,25 +110,6 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 		return configuration;
 	}
 	
-	private void getViewConfigTypeAndChilds(Entity configTypeEntity){
-		try {
-			ArrayList<Entity> list = getChildEnitityList(configTypeEntity);
-			
-			Entity viewConfigtype = null;
-			for(int index = 0; index<list.size() ; index++){
-				viewConfigtype = list.get(index);
-				if(viewConfigtype!=null ){
-					if(viewConfigtype.getPropertyByName("keyname").toString().contains(".view")){
-						break;
-					}
-				}
-			}
-			Long configTypeId = ((Key<Long>)viewConfigtype.getPropertyByName("id")).getKeyValue();
-			getViewChilds(configTypeId);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
 	private ArrayList<Entity> getChildEnitityList(Entity configTypeEntity){
 		try {
@@ -323,8 +298,6 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 						Entity configType = result.getOperationResult();
 						if (configType != null) {
 							getComponentListOfView(configType);
-						}else{
-							showNotificationForEmptyConfList();
 						}
 					}
 
@@ -336,42 +309,7 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private void getConfigTypeEntity(Long configTypeId) {
-		try {
-			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
-			DispatchAsync dispatch = new StandardDispatchAsync(exceptionHandler);
 
-			Map parameterMap = new HashMap();
-			parameterMap.put("configurationId", configTypeId);
-
-			StandardAction action = new StandardAction(Entity.class,"appdefinition.AppDefinitionService.getConfigurationType",parameterMap);
-			
-			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
-
-				@Override
-				public void onFailure(Throwable caught) {
-					caught.printStackTrace();
-				}
-
-				@Override
-				public void onSuccess(Result<Entity> result) {
-					if (result != null) {
-						Entity configType = result.getOperationResult();
-						if (configType != null) {
-							getViewConfigTypeAndChilds(configType);
-						}else{
-							showNotificationForEmptyConfList();
-						}
-					}
-
-				}
-			});
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
 	@SuppressWarnings("unchecked")
 	private void getComponentConfigTypes(final Entity parentConfigInstanceEntity) {
 		try {
@@ -404,7 +342,7 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 						if (configType != null) {
 							initializeEditor(configType,parentConfigInstanceEntity);
 						}else{
-							showNotificationForEmptyConfList();
+							showNotificationForEmptyConfList("Configurations not available");
 						}
 					}
 
@@ -415,10 +353,10 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 		}
 	}
 	
-	private void showNotificationForEmptyConfList() {
+	private void showNotificationForEmptyConfList(String displayTxt) {
 		try {
 			innerPanel.clear();
-			LabelField notificationMessageField = createLabelField("No configurations available ","componentSectionHeaderLbl","");
+			LabelField notificationMessageField = createLabelField(displayTxt,"componentSectionHeaderLbl","");
 			innerPanel.add(notificationMessageField);
 			innerPanel.setCellHorizontalAlignment(notificationMessageField, HasHorizontalAlignment.ALIGN_CENTER);
 			scrollPanel.setStylePrimaryName("propertyConfListScrollPanel");
@@ -534,6 +472,8 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 						if (configInstanceList != null) {
 							if(showPopup){
 								showPopup("Configuration Instances saved successfully");
+								innerPanel.clear();
+								currentRow = 0;
 							}else{
 								initializeComponentInstanceListBox(configInstanceList);
 							}
