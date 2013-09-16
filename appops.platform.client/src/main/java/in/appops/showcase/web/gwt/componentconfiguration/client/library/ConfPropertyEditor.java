@@ -315,9 +315,6 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 							AppUtils.EVENT_BUS.fireEvent(configEvent);
 
 						}
-							
-												
-												
 					}
 				}
 			});
@@ -594,12 +591,9 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			PopupPanel popup = new PopupPanel();
 			popup.setAnimationEnabled(true);
 			popup.setAutoHideEnabled(true);
-			popup.setGlassEnabled(true);
-			popup.setGlassStyleName(POPUPGLASSPANELCSS);
 			popup.setStylePrimaryName(POPUP_CSS);
 			popup.add(popupLbl);
-			popup.setPopupPosition(542, 70);
-			popup.show();
+			popup.center();
 		} catch (Exception e) {
 			
 		}
