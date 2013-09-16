@@ -4,6 +4,7 @@ import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.ConfigEvent;
+import in.appops.client.common.event.ConfigInstanceEvent;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
@@ -13,6 +14,7 @@ import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.server.core.services.configuration.constant.ConfigTypeConstant;
 
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 
@@ -22,7 +24,7 @@ import com.google.gwt.user.client.ui.FlexTable;
  */
 public class SnippetPropValueEditor extends Composite implements FieldEventHandler{
 
-	private String snipPropValEditorId;
+	private String mode;
 
 	public SnippetPropValueEditor reference;
 	
@@ -52,7 +54,7 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 	
 	public SnippetPropValueEditor(String querymode/*, int valPanelRow*/) {
 		propValuePanel = new FlexTable();
-		snipPropValEditorId = querymode;
+		mode = querymode;
 		reference = this;
 	//	setValuePanelRow(valPanelRow);
 		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
@@ -141,7 +143,7 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
 			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Param Value");
 			
-			if(snipPropValEditorId.equals(ModelConfigurationEditor.QUERYMODE))
+			if(mode.equals(ModelConfigurationEditor.QUERYMODE))
 				configuration.setPropertyByName(TextFieldConstant.BF_ID, QUERYPARAMVALUE_FLD_ID);
 			else
 				configuration.setPropertyByName(TextFieldConstant.BF_ID, OPERATIONPARAMVALUE_FLD_ID);
@@ -178,15 +180,15 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 	/**
 	 * @return the snipPropValEditorId
 	 */
-	public String getSnipPropValEditorId() {
-		return snipPropValEditorId;
+	public String getMode() {
+		return mode;
 	}
 
 	/**
-	 * @param snipPropValEditorId the snipPropValEditorId to set
+	 * @param mode the snipPropValEditorId to set
 	 */
-	public void setSnipPropValEditorId(String snipPropValEditorId) {
-		this.snipPropValEditorId = snipPropValEditorId;
+	public void setMode(String mode) {
+		this.mode = mode;
 	}
 
 	@Override
@@ -196,11 +198,11 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 				if(event.getEventType() == FieldEvent.TAB_KEY_PRESSED){
 					if(((TextField)event.getEventSource()).equals(paramValueField)){
 						if(!(paramValueField.getValue().toString().trim().equals("")) && !(paramNameField.getValue().toString().trim().equals(""))){
-							ConfigEvent configEvent = null;
+							GwtEvent configEvent = null;
 							if(isInstanceMode()) {
-								configEvent = new ConfigEvent(ConfigEvent.SAVEPROPVALUEADDWIDGET, getConfigTypeEntity(), reference);
+								configEvent = new ConfigInstanceEvent(ConfigEvent.SAVEPROPVALUEADDWIDGET, reference);
 							} else {
-								configEvent = new ConfigEvent(ConfigEvent.SAVEPROPVALUEADDWIDGET, getConfInstanceParamValEnt(), reference);
+								configEvent = new ConfigEvent(ConfigEvent.SAVEPROPVALUEADDWIDGET, getConfigTypeEntity(), reference);
 							}
 							AppUtils.EVENT_BUS.fireEvent(configEvent);
 						}

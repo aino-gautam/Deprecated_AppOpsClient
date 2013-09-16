@@ -235,11 +235,11 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 		try{
 			if(event.getEventType() == ConfigEvent.SAVEPROPVALUEADDWIDGET){
 				SnippetPropValueEditor snipPropValEditorSelected = (SnippetPropValueEditor) event.getEventSource();
-				if(snipPropValEditorSelected.getSnipPropValEditorId().equals(OPERATIONMODE)){
+				if(snipPropValEditorSelected.getMode().equals(OPERATIONMODE)){
 					saveParamValue(snipPropValEditorSelected);
 					SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(OPERATIONMODE);
 					snipPropValEditor.setDeletable(true);
-					snipPropValEditor.setSnipPropValEditorId(OPERATIONMODE);
+					snipPropValEditor.setMode(OPERATIONMODE);
 					snipPropValEditor.setParentConfTypeEntity(opParamConfigEnt);
 					snipPropValEditor.getParamNameField().setFocus();
 					opParamFlex.add(snipPropValEditor);
@@ -250,7 +250,7 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 					saveParamValue(snipPropValEditorSelected);
 					SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(QUERYMODE);
 					snipPropValEditor.setDeletable(true);
-					snipPropValEditor.setSnipPropValEditorId(QUERYMODE);
+					snipPropValEditor.setMode(QUERYMODE);
 					snipPropValEditor.setParentConfTypeEntity(queryParamConfigEnt);
 					snipPropValEditor.getParamNameField().setFocus();
 					queryParamFlex.add(snipPropValEditor);
@@ -268,7 +268,7 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 				
 				snipPropValEditorSelected.removeFromParent();
 
-				if(snipPropValEditorSelected.getSnipPropValEditorId().equals(OPERATIONMODE)){
+				if(snipPropValEditorSelected.getMode().equals(OPERATIONMODE)){
 					
 					if(opParamFlex.getWidgetCount() == 0){
 						SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(OPERATIONMODE);
@@ -278,7 +278,7 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 						opParamFlex.add(snipPropValEditor);
 					}
 				}
-				else if(snipPropValEditorSelected.getSnipPropValEditorId().equals(QUERYMODE)){
+				else if(snipPropValEditorSelected.getMode().equals(QUERYMODE)){
 					if(queryParamFlex.getWidgetCount()  == 0){
 						SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(QUERYMODE);
 						snipPropValEditor.setDeletable(true);

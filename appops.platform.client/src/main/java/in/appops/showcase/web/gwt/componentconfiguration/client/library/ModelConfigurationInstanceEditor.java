@@ -4,8 +4,10 @@ import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.ConfigEvent;
+import in.appops.client.common.event.ConfigInstanceEvent;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.ConfigEventHandler;
+import in.appops.client.common.event.handlers.ConfigInstanceEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
@@ -29,14 +31,9 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class ModelConfigurationInstanceEditor extends Composite implements ConfigEventHandler,  FieldEventHandler {
+public class ModelConfigurationInstanceEditor extends Composite implements FieldEventHandler, ConfigInstanceEventHandler {
 
 	private Entity modelConfigInstance;
-//	private Entity queryParamConfigEnt;
-//	private Entity opParamConfigEnt;
-//	private Entity queryNameConfigEntity;
-//	private Entity operationNameConfigEntity;
-	
 	private HorizontalPanel basePanel;
  
 	private VerticalPanel queryParamFlex;
@@ -87,7 +84,7 @@ public class ModelConfigurationInstanceEditor extends Composite implements Confi
 			opParamFlex = new VerticalPanel();
 			queryParamFlex = new VerticalPanel();
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
-			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
+			AppUtils.EVENT_BUS.addHandler(ConfigInstanceEvent.TYPE, this);
  		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -377,7 +374,12 @@ public class ModelConfigurationInstanceEditor extends Composite implements Confi
 		try{
 			Map parameterMap = new HashMap();
 			parameterMap.put("confInstEnt", configInstEnt);
-			parameterMap.put("isUpdate", false);
+			
+			if(configInstEnt.getPropertyByName("id") != null) {
+				parameterMap.put("isUpdate", true);
+			} else {
+				parameterMap.put("isUpdate", false);
+			}
 			parameterMap.put("entityContext", new EntityContext());
 			
 			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveConfigurationInstance", parameterMap);
@@ -545,18 +547,10 @@ public class ModelConfigurationInstanceEditor extends Composite implements Confi
 			}
 		} else {
 			if(isQueryCall) {
-				SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(QUERYMODE);
-				snipPropValEditor.setDeletable(false);
-				snipPropValEditor.setInstanceMode(true);
-				snipPropValEditor.setParentConfInstanceEntity(queryParamConfigInstanceEnt);
-				snipPropValEditor.createUi();
+				SnippetPropValueEditor snipPropValEditor = getNewSnippetPropValueEditor(QUERYMODE, queryParamConfigInstanceEnt);
 				queryParamFlex.add(snipPropValEditor);
 			} else {
-				SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(OPERATIONMODE);
-				snipPropValEditor.setDeletable(false);
-				snipPropValEditor.setInstanceMode(true);
-				snipPropValEditor.setParentConfInstanceEntity(opParamConfigInstanceEnt);
-				snipPropValEditor.createUi();
+				SnippetPropValueEditor snipPropValEditor = getNewSnippetPropValueEditor(OPERATIONMODE, opParamConfigInstanceEnt);
 				opParamFlex.add(snipPropValEditor);
 			}
 		}
@@ -595,14 +589,37 @@ public class ModelConfigurationInstanceEditor extends Composite implements Confi
 			e.printStackTrace();
 		}
 	}
+	
+	private SnippetPropValueEditor getNewSnippetPropValueEditor(String mode, Entity paramParentConfigInstEnt) {
+		SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(mode);
+		snipPropValEditor.setDeletable(false);
+		snipPropValEditor.setInstanceMode(true);
+		snipPropValEditor.setParentConfInstanceEntity(paramParentConfigInstEnt);
+		snipPropValEditor.createUi();
+		return snipPropValEditor;
+	}
 
 	@Override
-	public void onConfigEvent(ConfigEvent event) {
+	public void onConfigInstanceEvent(ConfigInstanceEvent event) {
 		if(event.getEventType() == ConfigEvent.SAVEPROPVALUEADDWIDGET){
 			SnippetPropValueEditor snipPropValEditorSelected = (SnippetPropValueEditor) event.getEventSource();
 			Entity paramConfigEnt = snipPropValEditorSelected.getConfInstanceParamValEnt();
 			saveParamConfigIns(paramConfigEnt, snipPropValEditorSelected);
-		}		
+			
+			if(snipPropValEditorSelected.getMode().equals(QUERYMODE)) {
+				int index = queryParamFlex.getWidgetIndex(snipPropValEditorSelected);
+				if(index == (queryParamFlex.getWidgetCount() - 1)) {
+					SnippetPropValueEditor snipPropValEditor = getNewSnippetPropValueEditor(QUERYMODE, queryParamConfigInstanceEnt);
+					queryParamFlex.add(snipPropValEditor);
+				}
+			} else {
+				int index = opParamFlex.getWidgetIndex(snipPropValEditorSelected);
+				if(index == (opParamFlex.getWidgetCount() - 1)) {
+					SnippetPropValueEditor snipPropValEditor = getNewSnippetPropValueEditor(OPERATIONMODE, opParamConfigInstanceEnt);
+					opParamFlex.add(snipPropValEditor);
+				}
+			}
+		}			
 	}
 
 }
