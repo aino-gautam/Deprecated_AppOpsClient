@@ -69,6 +69,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	private Entity confTypeEnt;	
 	private EntityList configTypeList ;
 	private boolean updateConfiguration = false;
+	private Entity confTypeEntToRemove = null;
 	
 	private boolean isDefaultSelected = false;
 	private ArrayList<CheckboxField> selectedCheckBoxes  = null;
@@ -210,6 +211,8 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 								PropertyValueEditor valEdit = propValueList.get(propValueList.size()-1);
 								if(!valEdit.checkIfRecordIsEmpty()){
 									saveConfTypeEntity(true);
+								}else{
+									saveConfigTypeList();
 								}
 							}else{
 								saveConfTypeEntity(true);
@@ -224,9 +227,9 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			}case FieldEvent.TAB_KEY_PRESSED: {
 				if (eventSource instanceof CheckboxField) {
 					CheckboxField chkField = (CheckboxField) eventSource;
-					if(chkField.getBaseFieldId().equals(propValueList.get(valueRow).getIsDefaultValueField().getBaseFieldId())){
+					//if(chkField.getBaseFieldId().equals(propValueList.get(valueRow).getIsDefaultValueField().getBaseFieldId())){
 						saveConfTypeEntity(false);
-					}
+					//}
 				}
 				break;
 			}case FieldEvent.EDITINPROGRESS: {
@@ -307,7 +310,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 						
 						configTypeList.add(confEnt);
 						
-						propValueList.get(valueRow).showCheckImage();
+						propValueList.get(valueRow).showCheckImage(valueRow);
 						insertEmptyRecord();
 						if(isDisplayInGrid){
 							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SAVEDCONFIGENTITY , configTypeList, this);
@@ -330,7 +333,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	@SuppressWarnings("unchecked")
 	private void deleteConfigType(Entity configTypeEnt ) {
 		try {
-						
+			confTypeEntToRemove =configTypeEnt;			
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 						
@@ -367,9 +370,14 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			propValueList.remove(currentSeletedRow);
 			Key key = (Key) deletedConfigEntity.getProperty("id").getValue();
 			long id = (Long) key.getKeyValue();
+						
+			if(confTypeEntToRemove!=null){
+				configTypeList.remove(confTypeEntToRemove);
+				confTypeEntToRemove = null;
+			}
 			
 			idVsConfigTypeEntity.remove(id);
-			valueRow--;
+			//valueRow--;
 			currentSeletedRow = -1;
 			deletedConfigEntity= null;
 		}
@@ -411,12 +419,14 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				boolean isSelected  = Boolean.parseBoolean(valEditor.getIsDefaultValueField().getValue().toString());
 				
 				if(isSelected){
-					showPopup("Please select another default value...");
-				}else{
-					selectedCheckBoxes.remove(valEditor.getIsDefaultValueField());
-					isDefaultSelected = false;
-					deleteConfigType(configTypeEnt);
+					if(selectedCheckBoxes!=null){
+						selectedCheckBoxes.remove(valEditor.getIsDefaultValueField());
+						isDefaultSelected = false;
+					}
 				}
+				
+				deleteConfigType(configTypeEnt);
+				
 				break;
 			}case ConfigEvent.NEW_COMPONENT_REGISTERED: {
 				HashMap<String, Entity> map = (HashMap<String, Entity>) event.getEventData();

@@ -95,10 +95,16 @@ public class PropertyValueEditor implements FieldEventHandler {
 		crossImgField.configure();
 		crossImgField.create();
 		
+		savedImgField = new ImageField();
+		savedImgField.setConfiguration(getCheckImageConfiguration(false));
+		savedImgField.configure();
+		savedImgField.create();
+		
 		propValuePanel.setWidget(valuePanelRow, 1, valueField);
 		propValuePanel.setWidget(valuePanelRow, 2, typeField);
 		propValuePanel.setWidget(valuePanelRow, 3, isDefaultValueField);
 		propValuePanel.setWidget(valuePanelRow, 4, crossImgField);
+		propValuePanel.setWidget(valuePanelRow, 5, savedImgField);
 		
 		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
 		
@@ -125,27 +131,26 @@ public class PropertyValueEditor implements FieldEventHandler {
 	 * Creates the check image field configuration object and return.
 	 * @return Configuration instance
 	 */
-	private Configuration getCheckImageConfiguration(){
+	private Configuration getCheckImageConfiguration(boolean isVisible){
 		Configuration configuration = new Configuration();
 		try {
 			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, "images/check-icon.jpg");
 			configuration.setPropertyByName(ImageFieldConstant.BF_PCLS,CROSSIMG_CSS);
 			configuration.setPropertyByName(ImageFieldConstant.IMGFD_TITLE, "property saved.");
 			configuration.setPropertyByName(ImageFieldConstant.BF_ID, REMOVEPROP_IMGID);
-			configuration.setPropertyByName(ImageFieldConstant.BF_VISIBLE, true);
+			configuration.setPropertyByName(ImageFieldConstant.BF_VISIBLE, isVisible);
 		} catch (Exception e) {
 			
 		}
 		return configuration;
 	}
 	
-	public void showCheckImage(){
+	public void showCheckImage(int row){
 		try {
-			savedImgField = new ImageField();
-			savedImgField.setConfiguration(getCheckImageConfiguration());
+			savedImgField.removeRegisteredHandlers();
+			savedImgField.setConfiguration(getCheckImageConfiguration(true));
 			savedImgField.configure();
 			savedImgField.create();
-			propValuePanel.setWidget(valuePanelRow, 5, savedImgField);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
