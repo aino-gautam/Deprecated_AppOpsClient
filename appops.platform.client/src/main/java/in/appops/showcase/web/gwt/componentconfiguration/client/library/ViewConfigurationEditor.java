@@ -41,11 +41,13 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class ViewConfigurationEditor extends Composite implements FieldEventHandler {
 
 	private VerticalPanel basePanel;
+	private VerticalPanel compConatinerHolder;
 	private final String REGULARLBL_CSS = "regularLabel";
 	private Logger logger = Logger.getLogger("ViewConfigurationEditor");
 	private ListBoxField spanListBox;
 	private Entity viewConfigTypeEntity;
 	private HashMap<Entity, ArrayList<Entity>> configTypeEntityMap;
+	private LabelField subHeaderLbl ;
 	
 	public ViewConfigurationEditor(){
 		initialize();
@@ -54,8 +56,10 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 	private void initialize() {
 		try{
 			basePanel = new VerticalPanel();
+			compConatinerHolder = new VerticalPanel();
 			spanListBox = new ListBoxField();
 			configTypeEntityMap = new HashMap<Entity, ArrayList<Entity>>();
+			subHeaderLbl = new LabelField();
 			initWidget(basePanel);
 			
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
@@ -69,9 +73,9 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 	 * creates the UI for view configuration editing
 	 */
 	public void createUI(){
+		compConatinerHolder.clear();
 		HorizontalPanel hpSpanSelection = new HorizontalPanel();
 		
-		LabelField subHeaderLbl = new LabelField();
 		Configuration subHeaderLblConfig = getLblConfig(" Select a span element ");
 		subHeaderLbl.setConfiguration(subHeaderLblConfig);
 		subHeaderLbl.configure();
@@ -81,6 +85,7 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 		hpSpanSelection.add(spanListBox);
 		
 		basePanel.add(hpSpanSelection);
+		basePanel.add(compConatinerHolder);
 	}
 	
 	public void populateSpansListBox(ArrayList<Element> spansList){
@@ -135,9 +140,10 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 	}
 
 	private void showConfigurator(Entity configEntity, ArrayList<Entity> configList){
+		compConatinerHolder.clear();
 		ConfigurationEditor configEditor = new ConfigurationEditor();
 		configEditor.createUi(configEntity, configList);
-		basePanel.add(configEditor);
+		compConatinerHolder.add(configEditor);
 		
 	}
 
@@ -166,6 +172,7 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 		return false;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void saveSnippetComponentConfigType(Entity configTypeEntity, String typeName){
 		try{
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
