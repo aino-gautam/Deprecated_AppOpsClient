@@ -206,12 +206,14 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 							//configTypeList
 							
 							if(configTypeList!=null){
-								/*ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SAVEDCONFIGENTITY , configTypeList, this);
-								configEvent.setEventSource(this);
-								AppUtils.EVENT_BUS.fireEvent(configEvent);*/
-							}/*else{
-								saveConfTypeEntity();
-							}*/
+								
+								PropertyValueEditor valEdit = propValueList.get(propValueList.size()-1);
+								if(!valEdit.checkIfRecordIsEmpty()){
+									saveConfTypeEntity(true);
+								}
+							}else{
+								saveConfTypeEntity(true);
+							}
 							
 						}else{
 							showPopup("Please select atleast one default value");
@@ -223,7 +225,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				if (eventSource instanceof CheckboxField) {
 					CheckboxField chkField = (CheckboxField) eventSource;
 					if(chkField.getBaseFieldId().equals(propValueList.get(valueRow).getIsDefaultValueField().getBaseFieldId())){
-						saveConfTypeEntity();
+						saveConfTypeEntity(false);
 					}
 				}
 				break;
@@ -261,7 +263,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	}
 
 	@SuppressWarnings("unchecked")
-	private void saveConfTypeEntity() {
+	private void saveConfTypeEntity(final boolean isDisplayInGrid) {
 		try {
 			Entity confTypeEntity = propValueList.get(valueRow).getPopulatedConfigTypeEntity(propNameField.getValue().toString());
 			confTypeEntity.setProperty("configtype", parentConfTypeEnt);
@@ -307,6 +309,14 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 						
 						propValueList.get(valueRow).showCheckImage();
 						insertEmptyRecord();
+						if(isDisplayInGrid){
+							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SAVEDCONFIGENTITY , configTypeList, this);
+							configEvent.setEventSource(this);
+							AppUtils.EVENT_BUS.fireEvent(configEvent);
+
+						}
+							
+												
 												
 					}
 				}
@@ -533,9 +543,9 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 						EntityList entityList = result.getOperationResult();
 						showPopup("Configurations updated successfully");
 						clearPropertyValueFields();
-						/*ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SAVEDCONFIGENTITY , entityList, this);
+						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SAVEDCONFIGENTITY , entityList, this);
 						configEvent.setEventSource(this);
-						AppUtils.EVENT_BUS.fireEvent(configEvent);*/
+						AppUtils.EVENT_BUS.fireEvent(configEvent);
 					}
 				}
 			});
