@@ -212,7 +212,12 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 								if(!valEdit.checkIfRecordIsEmpty()){
 									saveConfTypeEntity(true);
 								}else{
-									saveConfigTypeList();
+									
+									clearPropertyValueFields();
+									ConfigEvent configEvent = new ConfigEvent(ConfigEvent.UPDATEDCONFIGENTITYLIST , configTypeList, this);
+									configEvent.setEventSource(this);
+									AppUtils.EVENT_BUS.fireEvent(configEvent);
+									//saveConfigTypeList();
 								}
 							}else{
 								saveConfTypeEntity(true);
@@ -259,6 +264,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			idVsConfigTypeEntity.clear();
 			valueRow=0;
 			propValueList.clear();
+			configTypeList.clear();
 			createNewRecord();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -313,7 +319,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 						propValueList.get(valueRow).showCheckImage(valueRow);
 						insertEmptyRecord();
 						if(isDisplayInGrid){
-							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SAVEDCONFIGENTITY , configTypeList, this);
+							ConfigEvent configEvent = new ConfigEvent(ConfigEvent.UPDATEDCONFIGENTITYLIST , configTypeList, this);
 							configEvent.setEventSource(this);
 							AppUtils.EVENT_BUS.fireEvent(configEvent);
 
@@ -391,6 +397,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			switch (eventType) {
 			case ConfigEvent.PROPERTYSELECTED: {
 				if (eventSource instanceof ConfigurationListDisplayer) {
+					System.out.println("Property selected------------");
 					HashMap<String, EntityList> configTypeHashMap=  (HashMap<String, EntityList>) event.getEventData(); 
 					Iterator iterator = configTypeHashMap.entrySet().iterator();
 					while(iterator.hasNext()){
@@ -399,14 +406,29 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 						String keyname= (String) mapEntry.getKey();
 						
 						EntityList typesList = (EntityList) mapEntry.getValue();
-						propNameField.setFieldValue(keyname);
+						propNameField.setValue(keyname);
 						propValuePanel.clear();
+						if(configTypeList == null)
+							configTypeList = new EntityList();
+						else 
+							configTypeList.clear();
+						
+						configTypeList = typesList; 
+											
 						for(Entity entity : typesList){
 							confTypeEnt = entity;
+							Key key = (Key) confTypeEnt.getProperty("id").getValue();
+							long id = (Long) key.getKeyValue();
 							
+							
+							if(idVsConfigTypeEntity==null)
+								idVsConfigTypeEntity = new HashMap<Long, Entity>();
+							idVsConfigTypeEntity.put(id, confTypeEnt);
 							populateConfFormEditor();
 							valueRow++;
 						}
+						//confTypeEnt = null;
+					//	populateConfFormEditor();
 						valueRow=0;
 					}
 				}
@@ -550,7 +572,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 						EntityList entityList = result.getOperationResult();
 						showPopup("Configurations updated successfully");
 						clearPropertyValueFields();
-						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SAVEDCONFIGENTITY , entityList, this);
+						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.UPDATEDCONFIGENTITYLIST , entityList, this);
 						configEvent.setEventSource(this);
 						AppUtils.EVENT_BUS.fireEvent(configEvent);
 					}

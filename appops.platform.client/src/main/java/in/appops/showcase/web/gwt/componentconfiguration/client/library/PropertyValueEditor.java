@@ -1,5 +1,6 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import in.appops.client.common.config.field.CheckboxField;
@@ -16,6 +17,7 @@ import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
+import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -120,7 +122,15 @@ public class PropertyValueEditor implements FieldEventHandler {
 			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, "images/minus-icon.jpg");
 			configuration.setPropertyByName(ImageFieldConstant.BF_PCLS,CROSSIMG_CSS);
 			configuration.setPropertyByName(ImageFieldConstant.IMGFD_TITLE, "Remove property");
-			configuration.setPropertyByName(ImageFieldConstant.BF_ID, REMOVEPROP_IMGID);
+			if(confTypeEntity!=null){
+				Key<Serializable> key = (Key<Serializable>) confTypeEntity.getProperty("id").getValue();
+				Long id = (Long) key.getKeyValue();
+				entityId= id;
+				REMOVEPROP_IMGID = REMOVEPROP_IMGID+"_"+String.valueOf(id);
+				configuration.setPropertyByName(ImageFieldConstant.BF_ID, REMOVEPROP_IMGID);
+			}else{
+			  configuration.setPropertyByName(ImageFieldConstant.BF_ID, REMOVEPROP_IMGID);
+			}
 		} catch (Exception e) {
 			
 		}
@@ -209,7 +219,27 @@ public class PropertyValueEditor implements FieldEventHandler {
 		try {
 						
 			configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,TYPEFIELD_DEFVAL);
-			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,getDummyTypeList());
+			if(confTypeEntity!=null){
+				EntityList entityList = getDummyTypeList();
+				configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,entityList);
+				Long value = confTypeEntity.getPropertyByName("emstypeId");
+				String typeValue = null;
+				for(Entity typesEntity :entityList){
+					HashMap<String, Property<? extends Serializable>> hashMap = typesEntity.getValue();
+					Property<? extends Serializable> id = hashMap.get("id");
+					Property<? extends Serializable> type= hashMap.get("name");
+					Key<Serializable> keyId = (Key<Serializable>) id.getValue();
+					
+					if(keyId.getKeyValue().equals(value)){
+						
+						typeValue =   (String) type.getValue();
+						
+					}
+				}
+				configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_SELECTED_TXT,typeValue);
+			}else{
+			 configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,getDummyTypeList());
+			}
 			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ENTPROP,"name");
 			configuration.setPropertyByName(ListBoxFieldConstant.BF_PCLS, TYPEFIELD_PCLS);
 			configuration.setPropertyByName(ListBoxFieldConstant.BF_ID, TYPEFIELD_ID);
