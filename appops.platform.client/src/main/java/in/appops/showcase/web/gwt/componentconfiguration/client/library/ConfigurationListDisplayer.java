@@ -274,7 +274,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 				}
 				
 				maxRow = row-1;
-												
+				configurationListTable.addClickHandler(this);								
 				basePanel.add(configurationListTable);
 				propertyConfListScrollPanel.setStylePrimaryName("propertyConfListScrollPanel");
 				configurationListTable.setStylePrimaryName("configurationListTable");
@@ -361,7 +361,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 
 	public void initialize() {
 		configurationListTable = new FlexTable();
-		configurationListTable.addClickHandler(this);
+		
 	}
 
 	public Entity getEntity() {
@@ -650,7 +650,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 						configurationListTable.setWidget(maxRow+1,col+1, configValuePanel);
 						populateGridRows(confEntityList, configTypeHashMapForStore,rowVsListSize,configValuePanel, true,maxRow,col);
 					}
-					
+					break;
 				//}
 			}
 			default:

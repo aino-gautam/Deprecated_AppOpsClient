@@ -427,8 +427,8 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 							populateConfFormEditor();
 							valueRow++;
 						}
-						//confTypeEnt = null;
-					//	populateConfFormEditor();
+						confTypeEnt = null;
+						populateConfFormEditor();
 						valueRow=0;
 					}
 				}
