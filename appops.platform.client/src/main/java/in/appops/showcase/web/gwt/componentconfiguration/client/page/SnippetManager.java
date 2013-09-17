@@ -68,7 +68,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	
 	/** Field id**/
 	public static final String LIBRARYLISTBOX_ID = "libraryListBoxId";
-	private static String SAVECOMPONENT_BTN_ID = "saveCompBtnId";
+	private static String SAVE_PROCESS_SNIPPET_BTN_ID = "saveProcessSnippetBtnId";
 	
 	/**
 	 * Constructor
@@ -254,7 +254,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Process and Save Snippet");
 			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,SAVECOMP_BTN_PCLS);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_ENABLED, true);
-			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, SAVECOMPONENT_BTN_ID);
+			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, SAVE_PROCESS_SNIPPET_BTN_ID);
 
 		}
 		catch(Exception e){
@@ -311,7 +311,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 			case FieldEvent.CLICKED: {
 				if (eventSource instanceof ButtonField) {
 					ButtonField btnField = (ButtonField) eventSource;
-					if (btnField.getBaseFieldId().equals(SAVECOMPONENT_BTN_ID)) {
+					if (btnField.getBaseFieldId().equals(SAVE_PROCESS_SNIPPET_BTN_ID)) {
 						if(libraryEntity!=null){
 							ArrayList<Element> spansList = validateHTML();
 							if(spansList != null && !spansList.isEmpty())
