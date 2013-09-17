@@ -136,10 +136,13 @@ public class InstanceEditor implements FieldEventHandler{
 				configInstance.setPropertyByName("configkeyname", keyNameField.getValue().toString());
 			}
 
-			if (keyValueField.getValue() == null) {
+			/*if (keyValueField.getValue() == null) {
 				throw new AppOpsException("Instance value cannot be empty");
-			} else {
-				configInstance.setPropertyByName("instancevalue", keyValueField.getValue().toString());
+			} else {*/
+			
+			if (keyValueField.getValue() != null) {
+				if(!keyValueField.getValue().toString().equals(""))
+					configInstance.setPropertyByName("instancevalue", keyValueField.getValue().toString());
 			}
 			
 			configInstance.setProperty("configinstance", parentConfigInstanceEntity);
