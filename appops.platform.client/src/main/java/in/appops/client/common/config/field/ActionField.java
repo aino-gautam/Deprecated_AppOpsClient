@@ -25,7 +25,6 @@ public class ActionField extends BaseField implements ClickHandler{
 		String AF_PAGE = "page";
 		int PAGE = 2;
 		int TOKEN = 1;
-		String ACSS = "acss";
 		String AF_WIDGETTYPE = "widgetType";
 		int AF_ANCHOR = 1;
 		int AF_BUTTON = 2;
@@ -70,14 +69,6 @@ public class ActionField extends BaseField implements ClickHandler{
 		return depCss;
 	}
 	
-	protected String getFieldPrimCss() {
-		String primaryCss = "appops-actionField";
-		if(getConfigurationValue(ActionFieldConstant.ACSS) != null) {
-			primaryCss = getConfigurationValue(ActionFieldConstant.ACSS).toString();
-		}
-		return primaryCss;
-	}
-	
 	private int getMode() {
 		if(getConfigurationValue(ActionFieldConstant.MODE) != null) {
 			return Integer.parseInt(getConfigurationValue(ActionFieldConstant.MODE).toString());
@@ -119,13 +110,13 @@ public class ActionField extends BaseField implements ClickHandler{
 			actionButton = new Button();
 		}	
 		
-		if(getFieldPrimCss()!=null) {
+		if(getBaseFieldPrimCss()!=null) {
 			if(widgetType == ActionFieldConstant.AF_LABEL){
-				actionLabel.setStylePrimaryName(getFieldPrimCss());
+				actionLabel.setStylePrimaryName(getBaseFieldPrimCss());
 			} else if(widgetType == ActionFieldConstant.AF_ANCHOR){
-				actionLink.setStylePrimaryName(getFieldPrimCss());
+				actionLink.setStylePrimaryName(getBaseFieldPrimCss());
 			} else if(widgetType == ActionFieldConstant.AF_BUTTON){
-				actionButton.setStylePrimaryName(getFieldPrimCss());
+				actionButton.setStylePrimaryName(getBaseFieldPrimCss());
 			}
 		}
 		
