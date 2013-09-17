@@ -293,12 +293,12 @@ public class PropertyValueEditor implements FieldEventHandler {
 			}
 			
 			
-			if(valueField.getValue().toString().equals("")){
-				throw new AppOpsException("keyvalue value can't be empty");
-			}else{
-				confTypeEntity.setPropertyByName("keyvalue", valueField.getValue().toString());
+			if(valueField.getValue()!=null){
+				if(!valueField.getValue().toString().equals("")){
+					confTypeEntity.setPropertyByName("keyvalue", valueField.getValue().toString());
+				}
 			}
-			
+				
 			
 			if(typeField.getValue().toString().equals(TYPEFIELD_DEFVAL)){
 				throw new AppOpsException("Please select type");
