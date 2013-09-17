@@ -580,13 +580,14 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		try {
 			
 			logger.log(Level.INFO, "[TextField] ::In getEmailRegex method ");
+			String regexExp = TextFieldConstant.EMAIL_REGEX_EXP;
 			if(getConfiguration()!=null){
 				
-				String regexExp =  getConfiguration().getPropertyByName(TextFieldConstant.EMAIL_REGEX_EXP);
+				regexExp =  getConfiguration().getPropertyByName(TextFieldConstant.EMAIL_REGEX);
 				if(regexExp !=null){
 					return regexExp; 
 				}else{
-					return TextFieldConstant.EMAIL_REGEX_EXP;
+					return TextFieldConstant.EMAIL_REGEX;
 				}
 			}
 		} catch (Exception e) {
@@ -957,7 +958,12 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		public static final String INVALID_EMAIL_TEXT = "invalidEmailText";
 		
 		/** Specifies email field regex **/
+		public static final String EMAIL_REGEX = "emailRegex";
+		
+		/** Specifies email field regex **/
 		public static final String EMAIL_REGEX_EXP = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+		
+		
 		
 		/** Specifies whether decimal to allow decimal value. Defaults to false **/
 		public static final String ALLOWDEC = "allowDecimal";
