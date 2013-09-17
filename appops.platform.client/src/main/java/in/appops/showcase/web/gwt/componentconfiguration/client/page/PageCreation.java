@@ -16,11 +16,13 @@ import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.client.EntityContext;
+import in.appops.platform.client.EntityContextGenerator;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.Property;
@@ -70,6 +72,8 @@ public class PageCreation extends Composite implements FieldEventHandler {
 	private TextField pageNametextField;
 	private ButtonField processPageButton;
 	private ButtonField createPageButton;
+	private Entity appEntity;
+	private Entity serviceEntity;
 	
 	public PageCreation() {
 		initialize();
@@ -422,7 +426,8 @@ public class PageCreation extends Composite implements FieldEventHandler {
 						pageNametextField.setValue("");
 
 						AppopsSuggestion selectedSuggestion = (AppopsSuggestion) event.getEventData();
-						Entity serviceEntity = selectedSuggestion.getEntity();
+						serviceEntity = selectedSuggestion.getEntity();
+						AppEnviornment.CURRENTSERVICE = serviceEntity;
 						Long serviceId = ((Key<Long>) serviceEntity.getPropertyByName(ServiceConstant.ID)).getKeyValue();
 						HashMap<String, Object> paramMap = new HashMap<String, Object>();
 						paramMap.put("serviceId", serviceId);
@@ -456,7 +461,8 @@ public class PageCreation extends Composite implements FieldEventHandler {
 						pageListbox.configure();
 						pageListbox.create();
 					} else {
-						Entity appEntity = source.getAssociatedEntity(value);
+						appEntity = source.getAssociatedEntity(value);
+						AppEnviornment.CURRENTAPP = appEntity;
 						Long appId = ((Key<Long>)appEntity.getPropertyByName("id")).getKeyValue();
 						HashMap<String, Object> paramMap = new HashMap<String, Object>();
 						paramMap.put("appId", appId);
@@ -544,7 +550,14 @@ public class PageCreation extends Composite implements FieldEventHandler {
 			Map parameterMap = new HashMap();
 			parameterMap.put("componentInstEnt", componentInstEnt);
 			
-			EntityContext context  = new EntityContext();
+			Key<Long> appKey = appEntity.getPropertyByName("id");
+			Long appId = appKey.getKeyValue();
+			EntityContext appContext  = EntityContextGenerator.defineContext(null, appId);
+
+			Key<Long> serviceKey = serviceEntity.getPropertyByName("id");
+			Long serviceId = serviceKey.getKeyValue();
+			EntityContext context  = appContext.defineContext(serviceId);
+
 			parameterMap.put("context", context);
 			
 			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.createPage", parameterMap);

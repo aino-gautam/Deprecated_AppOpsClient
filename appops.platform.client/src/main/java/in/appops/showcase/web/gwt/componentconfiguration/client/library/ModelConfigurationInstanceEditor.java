@@ -11,11 +11,13 @@ import in.appops.client.common.event.handlers.ConfigInstanceEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.client.EntityContext;
+import in.appops.platform.client.EntityContextGenerator;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.type.MetaType;
@@ -369,6 +371,17 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 		return configInstance;
 	}
 	
+	private EntityContext getEntityContextForModelPageAppService(EntityContext context) {
+		context = getEntityContext(context, modelConfigInstance);
+		Entity parentEnt = (Entity)modelConfigInstance.getProperty("configinstance");
+		context = getEntityContext(context, parentEnt);
+		Entity pageInstEnt = (Entity)parentEnt.getProperty("configinstance");
+		context = getEntityContext(context, pageInstEnt);
+		context = getEntityContext(context, AppEnviornment.CURRENTAPP);
+		context = getEntityContext(context, AppEnviornment.CURRENTSERVICE);
+		return context;
+	}
+	
 	@SuppressWarnings("unchecked")
 	private void saveQryOpNameInstance(Entity configInstEnt, final boolean isQueryCall) {
 		try{
@@ -380,7 +393,10 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 			} else {
 				parameterMap.put("isUpdate", false);
 			}
-			parameterMap.put("entityContext", new EntityContext());
+
+			EntityContext context = getEntityContextForModelPageAppService(null);
+			
+			parameterMap.put("entityContext", context);
 			
 			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveConfigurationInstance", parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
@@ -441,7 +457,10 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 			Map parameterMap = new HashMap();
 			parameterMap.put("confInstEnt", configInstance);
 			parameterMap.put("isUpdate", false);
-			parameterMap.put("entityContext", new EntityContext());
+			
+			
+			EntityContext context = getEntityContextForModelPageAppService(null);
+			parameterMap.put("entityContext", context);
 			
 			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveConfigurationInstance", parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
@@ -531,7 +550,11 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 					snipPropValEditor.populate();
 					queryParamFlex.add(snipPropValEditor);
 					Entity paramConfigInsEnt = snipPropValEditor.getConfInstanceParamValEnt();
-					saveParamConfigIns(paramConfigInsEnt, snipPropValEditor);
+					
+					EntityContext context = getEntityContext(null, queryParamConfigInstanceEnt);
+					context = getEntityContextForModelPageAppService(context);
+					
+					saveParamConfigIns(paramConfigInsEnt, snipPropValEditor, context);
 				} else {
 					SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(OPERATIONMODE);
 					snipPropValEditor.setDeletable(false);
@@ -542,7 +565,11 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 					snipPropValEditor.populate();
 					opParamFlex.add(snipPropValEditor);
 					Entity paramConfigInsEnt = snipPropValEditor.getConfInstanceParamValEnt();
-					saveParamConfigIns(paramConfigInsEnt, snipPropValEditor);
+					
+					EntityContext context = getEntityContext(null, opParamConfigInstanceEnt);
+					context = getEntityContextForModelPageAppService(context);
+					
+					saveParamConfigIns(paramConfigInsEnt, snipPropValEditor, context);
 				}
 			}
 		} else {
@@ -558,12 +585,12 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 	}
 
 	@SuppressWarnings("unchecked")
-	private void saveParamConfigIns(Entity configInstEnt, final SnippetPropValueEditor snippetPropValueEditor) {
+	private void saveParamConfigIns(Entity configInstEnt, final SnippetPropValueEditor snippetPropValueEditor, EntityContext entityContext) {
 		try{
 			Map parameterMap = new HashMap();
 			parameterMap.put("confInstEnt", configInstEnt);
 			parameterMap.put("isUpdate", false);
-			parameterMap.put("entityContext", new EntityContext());
+			parameterMap.put("entityContext", entityContext);
 			
 			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveConfigurationInstance", parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
@@ -604,7 +631,11 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 		if(event.getEventType() == ConfigEvent.SAVEPROPVALUEADDWIDGET){
 			SnippetPropValueEditor snipPropValEditorSelected = (SnippetPropValueEditor) event.getEventSource();
 			Entity paramConfigEnt = snipPropValEditorSelected.getConfInstanceParamValEnt();
-			saveParamConfigIns(paramConfigEnt, snipPropValEditorSelected);
+			
+			EntityContext context = getEntityContext(null, snipPropValEditorSelected.getParentConfInstanceEntity());
+			context = getEntityContextForModelPageAppService(context);
+			
+			saveParamConfigIns(paramConfigEnt, snipPropValEditorSelected, context);
 			
 			if(snipPropValEditorSelected.getMode().equals(QUERYMODE)) {
 				int index = queryParamFlex.getWidgetIndex(snipPropValEditorSelected);
@@ -620,6 +651,18 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 				}
 			}
 		}			
+	}
+	
+	private EntityContext getEntityContext(EntityContext context, Entity entity) {
+		Key<Long> key = entity.getPropertyByName("id");
+		Long id = key.getKeyValue();
+
+		if(context == null) {
+			context  = EntityContextGenerator.defineContext(null, id);
+		} else {
+			context = context.defineContext(id);;
+		}
+		return context;
 	}
 
 }

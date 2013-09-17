@@ -19,11 +19,13 @@ import in.appops.client.common.event.handlers.ConfigEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.client.EntityContext;
+import in.appops.platform.client.EntityContextGenerator;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.Property;
@@ -873,7 +875,19 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 								isUpdate = false;
 								entity = getConfiginstanceEntity(eventNametextField.getFieldValue(), eventNametextField.getFieldValue(), null, interestedEventEntity);
 							}
-							saveConfigInstance(entity, true, null, isUpdate);
+							
+							EntityContext context = getEntityContext(null, interestedEventEntity);
+							
+							Entity containerEnt = (Entity) interestedEventEntity.getProperty("configinstance");
+							context = getEntityContext(context, containerEnt);
+
+							Entity pageInstEnt = (Entity) containerEnt.getProperty("configinstance");
+							context = getEntityContext(context, pageInstEnt);
+							
+							context = getEntityContext(context, AppEnviornment.CURRENTAPP);
+							context = getEntityContext(context, AppEnviornment.CURRENTSERVICE);
+							
+							saveConfigInstance(entity, true, null, isUpdate, context);
 						}
 					} else if(fieldId.equals(UPDATE_CONFIG_VALUE_TEXTFIELD_ID)) {
 						if(updateConfigTextFieldList.contains(source)) {
@@ -882,12 +896,15 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 								if(isNew) {
 									isNew = false;
 									createUpdateConfigRow(true);
-									saveConfigInstance(getConfiginstanceEntity("UpdateConfiguration", "UpdateConfiguration", null, parentEventEntity), false, source, false);
+									EntityContext context = getEntityContextForEventChild(null);
+									saveConfigInstance(getConfiginstanceEntity("UpdateConfiguration", "UpdateConfiguration", null, parentEventEntity), false, source, false, context);
 								} else {
 									Entity entity = createEntityWithInfo(source);
 									createUpdateConfigRow(true);
 									if(entity != null) {
-										saveConfigInstance(entity, false, null, isUpdateConfigurationEntity);
+										EntityContext context = getEntityContext(null, updateConfigEntity);
+										context = getEntityContextForEventChild(context);
+										saveConfigInstance(entity, false, null, isUpdateConfigurationEntity, context);
 									}
 								}
 							}
@@ -905,7 +922,9 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 								isUpdate = false;
 								entity = getConfiginstanceEntity("transformInstance", "transformInstance", value, parentEventEntity);
 							}
-							saveConfigInstance(entity, false, null, isUpdate);
+							
+							EntityContext context = getEntityContextForEventChild(null);
+							saveConfigInstance(entity, false, null, isUpdate, context);
 						}
 					}
 				} else if(event.getEventSource() instanceof GroupField) {
@@ -960,7 +979,9 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 							isUpdate = false;
 							entity = getConfiginstanceEntity("isTransformWidget", "isTransformWidget", text, parentEventEntity);
 						}
-						saveConfigInstance(entity, false, null, isUpdate);
+						
+						EntityContext context = getEntityContextForEventChild(null);
+						saveConfigInstance(entity, false, null, isUpdate, context);
 						
 						if(text.equals("true")) {
 							showTranformWidgetUI();
@@ -978,7 +999,8 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 							isUpdate = false;
 							entity = getConfiginstanceEntity("isUpdateConfiguration", "isUpdateConfiguration", text, parentEventEntity);
 						}
-						saveConfigInstance(entity, false, null, isUpdate);
+						EntityContext context = getEntityContextForEventChild(null);
+						saveConfigInstance(entity, false, null, isUpdate, context);
 						
 						if(text.equals("true")) {
 							showUpdateConfigUI();
@@ -1013,7 +1035,8 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 							isUpdate = false;
 							entity = getConfiginstanceEntity("transformType", "transformType", instanceValue, parentEventEntity);
 						}
-						saveConfigInstance(entity, false, null, isUpdate);
+						EntityContext context = getEntityContextForEventChild(null);
+						saveConfigInstance(entity, false, null, isUpdate, context);
 					} else if(source.equals(transformToListbox)) {
 						String value = (String) source.getValue();
 						Entity entity = null;
@@ -1026,7 +1049,8 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 							isUpdate = false;
 							entity = getConfiginstanceEntity("transformTo", "transformTo", value, parentEventEntity);
 						}
-						saveConfigInstance(entity, false, null, isUpdate);
+						EntityContext context = getEntityContextForEventChild(null);
+						saveConfigInstance(entity, false, null, isUpdate, context);
 						transWgtCompDefEnt = source.getAssociatedEntity(value);
 						//transformMap.put(transformInstanceTextField.getFieldValue(), entity);
 					} else if(source.equals(spanListbox)) {
@@ -1059,7 +1083,10 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 			Map parameterMap = new HashMap();
 			parameterMap.put("componentInstEnt", entity);
 			
-			EntityContext context  = new EntityContext();
+			EntityContext context = getEntityContext(null, pageComponentInstEntity);
+			context = getEntityContext(context, AppEnviornment.CURRENTAPP);
+			context = getEntityContext(context, AppEnviornment.CURRENTSERVICE);
+
 			parameterMap.put("entityContext", context);
 			
 			parameterMap.put("isUpdate", false);
@@ -1121,7 +1148,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void saveConfigInstance(final Entity configinstanceEntity, final boolean isParentInstance, final TextField source, boolean isUpdate) {
+	private void saveConfigInstance(final Entity configinstanceEntity, final boolean isParentInstance, final TextField source, boolean isUpdate, EntityContext context) {
 
 		try{
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
@@ -1131,8 +1158,6 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 			parameterMap.put("confInstEnt", configinstanceEntity);
 			
 			parameterMap.put("isUpdate", isUpdate);
-			
-			EntityContext context  = new EntityContext();
 			parameterMap.put("entityContext", context);
 			
 			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveConfigurationInstance", parameterMap);
@@ -1158,7 +1183,9 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 								updateConfigEntity = ent;
 								Entity entity = createEntityWithInfo(source);
 								if(entity != null) {
-									saveConfigInstance(entity, false, null, isUpdateConfigurationEntity);
+									EntityContext context = getEntityContext(null, updateConfigEntity);
+									context = getEntityContextForEventChild(context);
+									saveConfigInstance(entity, false, null, isUpdateConfigurationEntity, context);
 								}
 							}
 						}
@@ -1261,7 +1288,20 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 			Map parameterMap = new HashMap();
 			parameterMap.put("componentInstEnt", compInstEntity);
 			parameterMap.put("isUpdate", false);
-			parameterMap.put("entityContext", new EntityContext());
+			
+			Key<Long> compKey = pageComponentInstEntity.getPropertyByName("id");
+			Long compId = compKey.getKeyValue();
+			EntityContext compContext  = EntityContextGenerator.defineContext(null, compId);
+
+			Key<Long> appKey = AppEnviornment.CURRENTAPP.getPropertyByName("id");
+			Long appId = appKey.getKeyValue();
+			EntityContext appContext  = compContext.defineContext(appId);
+
+			Key<Long> serviceKey = AppEnviornment.CURRENTSERVICE.getPropertyByName("id");
+			Long serviceId = serviceKey.getKeyValue();
+			EntityContext context  = appContext.defineContext(serviceId);
+			
+			parameterMap.put("entityContext", context);
 
 			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveComponentInstance", parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<HashMap<String, Object>>>() {
@@ -1357,6 +1397,35 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	private void hideUpdateConfigUI() {
 		updateConfigurationBasePanel.setVisible(false);
 	}
+	
+	private EntityContext getEntityContext(EntityContext context, Entity entity) {
+		Key<Long> key = entity.getPropertyByName("id");
+		Long id = key.getKeyValue();
+
+		if(context == null) {
+			context  = EntityContextGenerator.defineContext(null, id);
+		} else {
+			context = context.defineContext(id);;
+		}
+		return context;
+	}
+	
+	private EntityContext getEntityContextForEventChild(EntityContext context) {
+		context = getEntityContext(context, parentEventEntity);
+		context = getEntityContext(context, interestedEventEntity);
+		
+		Entity containerEnt = (Entity) interestedEventEntity.getProperty("configinstance");
+		context = getEntityContext(context, containerEnt);
+
+		Entity pageInstEnt = (Entity) containerEnt.getProperty("configinstance");
+		context = getEntityContext(context, pageInstEnt);
+		
+		context = getEntityContext(context, AppEnviornment.CURRENTAPP);
+		context = getEntityContext(context, AppEnviornment.CURRENTSERVICE);
+		
+		return context;
+	}
+	
 
 	private final String SPAN_LISTBOX_ID = "spanListBoxFieldId";
 	private final String TRANSFORM_TO_LISTBOX_ID = "transformToListboxId";
