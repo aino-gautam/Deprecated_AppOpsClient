@@ -5,6 +5,8 @@ import in.appops.client.common.event.ConfigEvent;
 import in.appops.client.common.event.handlers.ConfigEventHandler;
 import in.appops.platform.core.entity.Entity;
 
+import java.util.HashMap;
+
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -41,13 +43,17 @@ public class PageManager extends Composite implements ConfigEventHandler{
 			switch (eventType) {
 			case ConfigEvent.SHOWPAGECONFIGURATION: {
 				if(event.getEventData() != null) {
-					if(event.getEventData() instanceof Entity) {
-						Entity entity = (Entity) event.getEventData();
-						if(pageConfig != null) {
+					HashMap<String, Entity> entityMap = (HashMap<String, Entity>) event.getEventData();
+					if(entityMap != null && !entityMap.isEmpty()) {
+						Entity pageCompInstEnt = entityMap.get("pageCompInstEntity");
+						Entity pageEnt = entityMap.get("pageEntity");
+						if(pageCompInstEnt != null) {
 							pageConfig.setVisible(true);
-							pageConfig.setPageComponentInstEntity(entity);
+							pageConfig.setPageComponentInstEntity(pageCompInstEnt);
+							pageConfig.setPageEntity(pageEnt);
 						}
 					}
+					
 				}
 				break;
 			}

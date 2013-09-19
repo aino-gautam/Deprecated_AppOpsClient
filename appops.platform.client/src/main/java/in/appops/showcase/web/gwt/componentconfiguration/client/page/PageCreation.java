@@ -558,10 +558,10 @@ public class PageCreation extends Composite implements FieldEventHandler {
 			Long serviceId = serviceKey.getKeyValue();
 			EntityContext context  = appContext.defineContext(serviceId);
 
-			parameterMap.put("context", context);
+			parameterMap.put("context", appContext);
 			
-			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.createPage", parameterMap);
-			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
+			StandardAction action = new StandardAction(HashMap.class, "appdefinition.AppDefinitionService.createPage", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<HashMap<String, Entity>>>() {
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -569,7 +569,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 				}
 
 				@Override
-				public void onSuccess(Result<Entity> result) {
+				public void onSuccess(Result<HashMap<String, Entity>> result) {
 					if(result!=null){
 						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SHOWPAGECONFIGURATION, result.getOperationResult(), this);
 						AppUtils.EVENT_BUS.fireEvent(configEvent);

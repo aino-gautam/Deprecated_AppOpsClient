@@ -69,6 +69,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	private Map<String, Map<String, Object>> containerCompoInstMap;
 	private Entity interestedEventEntity;
 	private Entity pageComponentInstEntity;
+	private Entity pageEntity;
 	private boolean isNew;
 	private Entity updateConfigEntity;
 	private Entity transWgtCompDefEnt;
@@ -879,13 +880,15 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 							EntityContext context = getEntityContext(null, interestedEventEntity);
 							
 							Entity containerEnt = (Entity) interestedEventEntity.getProperty("configinstance");
-							context = getEntityContext(context, containerEnt);
+							EntityContext context1 = getEntityContext(context, containerEnt);
 
 							Entity pageInstEnt = (Entity) containerEnt.getProperty("configinstance");
-							context = getEntityContext(context, pageInstEnt);
+							EntityContext context2 = getEntityContext(context1, pageInstEnt);
+
+							EntityContext context3 = getEntityContext(context2, pageEntity);
 							
-							context = getEntityContext(context, AppEnviornment.CURRENTAPP);
-							context = getEntityContext(context, AppEnviornment.CURRENTSERVICE);
+							EntityContext context4 = getEntityContext(context3, AppEnviornment.CURRENTAPP);
+							EntityContext context5 = getEntityContext(context4, AppEnviornment.CURRENTSERVICE);
 							
 							saveConfigInstance(entity, true, null, isUpdate, context);
 						}
@@ -1084,8 +1087,9 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 			parameterMap.put("componentInstEnt", entity);
 			
 			EntityContext context = getEntityContext(null, pageComponentInstEntity);
-			context = getEntityContext(context, AppEnviornment.CURRENTAPP);
-			context = getEntityContext(context, AppEnviornment.CURRENTSERVICE);
+			EntityContext context1 = getEntityContext(context, pageEntity);
+			EntityContext context2 = getEntityContext(context1, AppEnviornment.CURRENTAPP);
+			EntityContext context3 = getEntityContext(context2, AppEnviornment.CURRENTSERVICE);
 
 			parameterMap.put("entityContext", context);
 			
@@ -1293,15 +1297,19 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 			Long compId = compKey.getKeyValue();
 			EntityContext compContext  = EntityContextGenerator.defineContext(null, compId);
 
+			Key<Long> pageEntKey = pageEntity.getPropertyByName("id");
+			Long pageEntId = pageEntKey.getKeyValue();
+			EntityContext pageEntContext  = compContext.defineContext(pageEntId);
+
 			Key<Long> appKey = AppEnviornment.CURRENTAPP.getPropertyByName("id");
 			Long appId = appKey.getKeyValue();
-			EntityContext appContext  = compContext.defineContext(appId);
+			EntityContext appContext  = pageEntContext.defineContext(appId);
 
 			Key<Long> serviceKey = AppEnviornment.CURRENTSERVICE.getPropertyByName("id");
 			Long serviceId = serviceKey.getKeyValue();
 			EntityContext context  = appContext.defineContext(serviceId);
 			
-			parameterMap.put("entityContext", context);
+			parameterMap.put("entityContext", compContext);
 
 			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveComponentInstance", parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<HashMap<String, Object>>>() {
@@ -1335,6 +1343,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 							
 							if(transformTypeListbox.getValue().toString().equals(SNIPPET)){
 								ConfigurationInstanceMVPEditor instanceMVPEditor = new ConfigurationInstanceMVPEditor();
+								instanceMVPEditor.setPageEntity(pageEntity);
 								instanceMVPEditor.setConfigInstEnt(configInst);
 								instanceMVPEditor.setViewInstanceEnt(viewInstanceEnt);
 								instanceMVPEditor.setModelInstanceEnt(modelInstanceEnt);
@@ -1343,6 +1352,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 							}
 							else if((transformTypeListbox.getValue().toString().equals(COMPONENT))){
 								ComponentInstanceMVPEditor instanceMVPEditor = new ComponentInstanceMVPEditor();
+								instanceMVPEditor.setPageEntity(pageEntity);
 								instanceMVPEditor.setConfigInstEnt(configInst);
 								instanceMVPEditor.setViewInstanceEnt(viewInstanceEnt);
 								instanceMVPEditor.setModelInstanceEnt(modelInstanceEnt);
@@ -1410,22 +1420,57 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		return context;
 	}
 	
+	/**
+	 * To be optimized
+	 * @param context
+	 * @return
+	 */
 	private EntityContext getEntityContextForEventChild(EntityContext context) {
-		context = getEntityContext(context, parentEventEntity);
-		context = getEntityContext(context, interestedEventEntity);
 		
-		Entity containerEnt = (Entity) interestedEventEntity.getProperty("configinstance");
-		context = getEntityContext(context, containerEnt);
-
-		Entity pageInstEnt = (Entity) containerEnt.getProperty("configinstance");
-		context = getEntityContext(context, pageInstEnt);
-		
-		context = getEntityContext(context, AppEnviornment.CURRENTAPP);
-		context = getEntityContext(context, AppEnviornment.CURRENTSERVICE);
-		
-		return context;
-	}
+		if(context == null) {
+			context = getEntityContext(context, parentEventEntity);
+			EntityContext context1 = getEntityContext(context, interestedEventEntity);
+			
+			Entity containerEnt = (Entity) interestedEventEntity.getProperty("configinstance");
+			EntityContext context2 = getEntityContext(context1, containerEnt);
 	
+			Entity pageInstEnt = (Entity) containerEnt.getProperty("configinstance");
+			EntityContext context3 = getEntityContext(context2, pageInstEnt);
+
+			EntityContext context4 = getEntityContext(context3, pageEntity);
+
+			EntityContext context5 = getEntityContext(context4, AppEnviornment.CURRENTAPP);
+			EntityContext context6 = getEntityContext(context5, AppEnviornment.CURRENTSERVICE);
+			
+			return context;
+		} else {
+			EntityContext extracontext = getEntityContext(context, parentEventEntity);
+			EntityContext context1 = getEntityContext(extracontext, interestedEventEntity);
+			
+			Entity containerEnt = (Entity) interestedEventEntity.getProperty("configinstance");
+			EntityContext context2 = getEntityContext(context1, containerEnt);
+	
+			Entity pageInstEnt = (Entity) containerEnt.getProperty("configinstance");
+			EntityContext context3 = getEntityContext(context2, pageInstEnt);
+			
+			EntityContext context4 = getEntityContext(context3, pageEntity);
+
+			EntityContext context5 = getEntityContext(context4, AppEnviornment.CURRENTAPP);
+			EntityContext context6 = getEntityContext(context5, AppEnviornment.CURRENTSERVICE);
+			
+			return context;
+			
+		}
+	}
+
+	public Entity getPageEntity() {
+		return pageEntity;
+	}
+
+	public void setPageEntity(Entity pageEntity) {
+		this.pageEntity = pageEntity;
+	}
+
 
 	private final String SPAN_LISTBOX_ID = "spanListBoxFieldId";
 	private final String TRANSFORM_TO_LISTBOX_ID = "transformToListboxId";
