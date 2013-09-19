@@ -45,7 +45,7 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In createUi method ");
 			this.basePanel.add(suggestBox);
 			selectionHandler = suggestBox.addSelectionHandler(this);
-			clickHandler = suggestBox.getTextBox().addClickHandler(this);
+	//		clickHandler = suggestBox.getTextBox().addClickHandler(this);
 			focusHandler = suggestBox.getTextBox().addFocusHandler(this);
 			
 		} catch (Exception e) {
