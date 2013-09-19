@@ -1263,6 +1263,8 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 			compoDefEntity.setProperty("id", keyProp);
 			compoDefEntity.setPropertyByName("name", "Container");
 			compoDefEntity.setPropertyByName("typeId", 189L);
+			
+			//TODO : hardcoded entity
 			compoDefEntity.setPropertyByName("configtypeId", 134L);
 			compoDefEntity.setPropertyByName("isMvp", 0);
 			return compoDefEntity;

@@ -371,6 +371,7 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 								instanceMVPEditor.setConfigInstEnt(configInst);
 								instanceMVPEditor.setViewInstanceEnt(viewInstanceEnt);
 								instanceMVPEditor.setModelInstanceEnt(modelInstanceEnt);
+								instanceMVPEditor.setPageEntity(pageEntity);
 								instanceMVPEditor.createUi();
 								baseVp.add(instanceMVPEditor);
 							}
