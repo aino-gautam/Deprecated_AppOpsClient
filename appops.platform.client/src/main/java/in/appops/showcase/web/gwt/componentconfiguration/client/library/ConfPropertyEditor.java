@@ -286,6 +286,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			
 			//need to change the immediate context id.
 			//EntityContext context  = EntityContextGenerator.defineContext(confTypeEntity, 1L);
+			//EntityContext context  = getEntityContext(null, parentConfTypeEnt);
 			EntityContext context  = new EntityContext();
 			parameterMap.put("context", context);
 			
