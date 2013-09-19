@@ -20,6 +20,7 @@ public class ComponentInstanceMVPEditor extends Composite {
 	private Entity viewInstanceEnt;
 	private Entity configInstEnt;
 	private Entity pageCompInstEntity;
+	private Entity pageEntity;
 	
 	
 	private final String MODEL = "model";
@@ -52,6 +53,7 @@ public class ComponentInstanceMVPEditor extends Composite {
 	private Widget getModelConfigInstanceEditor() {
 		ModelConfigurationInstanceEditor modConfigInstanceEditor = new ModelConfigurationInstanceEditor();
 		modConfigInstanceEditor.setModelConfigInstance(modelInstanceEnt);
+		modConfigInstanceEditor.setPageEntity(pageEntity);
 		modConfigInstanceEditor.createUi();
 		modConfigInstanceEditor.fetchModel();
 		return modConfigInstanceEditor;
@@ -59,6 +61,7 @@ public class ComponentInstanceMVPEditor extends Composite {
 	
 	public ViewComponentInstanceEditor getViewConfigInstanceEditor() {
 		ViewComponentInstanceEditor viewConfigInstanceEditor = new ViewComponentInstanceEditor();
+		viewConfigInstanceEditor.setPageEntity(pageEntity);
 		viewConfigInstanceEditor.setViewConfigInstnceEntity(viewInstanceEnt);
 		viewConfigInstanceEditor.setParentCompInstanceEnt(pageCompInstEntity);
 		viewConfigInstanceEditor.createUi();
@@ -101,6 +104,14 @@ public class ComponentInstanceMVPEditor extends Composite {
 	 */
 	public void setPageCompInstEntity(Entity pageCompInstEntity) {
 		this.pageCompInstEntity = pageCompInstEntity;
+	}
+
+	public Entity getPageEntity() {
+		return pageEntity;
+	}
+
+	public void setPageEntity(Entity pageEntity) {
+		this.pageEntity = pageEntity;
 	}
 	
 }

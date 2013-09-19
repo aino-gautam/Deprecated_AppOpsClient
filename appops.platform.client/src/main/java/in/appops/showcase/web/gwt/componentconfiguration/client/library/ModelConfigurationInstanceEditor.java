@@ -6,7 +6,6 @@ import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.ConfigEvent;
 import in.appops.client.common.event.ConfigInstanceEvent;
 import in.appops.client.common.event.FieldEvent;
-import in.appops.client.common.event.handlers.ConfigEventHandler;
 import in.appops.client.common.event.handlers.ConfigInstanceEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
@@ -74,6 +73,8 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 
 	private Entity queryParamConfigTypeEnt;
 	private Entity opParamConfigTypeEnt;
+
+	private Entity pageEntity;
 	
 	public ModelConfigurationInstanceEditor(){
 		initialize();
@@ -371,15 +372,36 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 		return configInstance;
 	}
 	
+	/**
+	 * TODO  To be optimized
+	 * @param context
+	 * @return
+	 */
 	private EntityContext getEntityContextForModelPageAppService(EntityContext context) {
-		context = getEntityContext(context, modelConfigInstance);
-		Entity parentEnt = (Entity)modelConfigInstance.getProperty("configinstance");
-		context = getEntityContext(context, parentEnt);
-		Entity pageInstEnt = (Entity)parentEnt.getProperty("configinstance");
-		context = getEntityContext(context, pageInstEnt);
-		context = getEntityContext(context, AppEnviornment.CURRENTAPP);
-		context = getEntityContext(context, AppEnviornment.CURRENTSERVICE);
-		return context;
+		if(context == null) {
+			context = getEntityContext(context, modelConfigInstance);
+			Entity parentEnt = (Entity)modelConfigInstance.getProperty("configinstance");
+			EntityContext context1 = getEntityContext(context, parentEnt);
+			Entity pageInstEnt = (Entity)parentEnt.getProperty("configinstance");
+			EntityContext context2 = getEntityContext(context1, pageInstEnt);
+			EntityContext context3 = getEntityContext(context2, pageEntity);
+			EntityContext context4 = getEntityContext(context3, AppEnviornment.CURRENTAPP);
+			EntityContext context5 = getEntityContext(context4, AppEnviornment.CURRENTSERVICE);
+			return context;
+
+		} else {
+			EntityContext extracontext = getEntityContext(context, modelConfigInstance);
+			Entity parentEnt = (Entity)modelConfigInstance.getProperty("configinstance");
+			EntityContext context1 = getEntityContext(extracontext, parentEnt);
+			Entity pageInstEnt = (Entity)parentEnt.getProperty("configinstance");
+			EntityContext context2 = getEntityContext(context1, pageInstEnt);
+			EntityContext context3 = getEntityContext(context2, pageEntity);
+			EntityContext context4 = getEntityContext(context3, AppEnviornment.CURRENTAPP);
+			EntityContext context5 = getEntityContext(context4, AppEnviornment.CURRENTSERVICE);
+			return context;
+	}
+		
+		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -663,6 +685,14 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 			context = context.defineContext(id);;
 		}
 		return context;
+	}
+
+	public Entity getPageEntity() {
+		return pageEntity;
+	}
+
+	public void setPageEntity(Entity pageEntity) {
+		this.pageEntity = pageEntity;
 	}
 
 }

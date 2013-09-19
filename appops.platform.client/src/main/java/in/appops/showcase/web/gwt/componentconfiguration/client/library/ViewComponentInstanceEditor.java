@@ -3,32 +3,34 @@
  */
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import in.appops.client.common.config.field.ButtonField;
-import in.appops.client.common.config.field.LabelField;
-import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
+import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
+import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.client.EntityContext;
+import in.appops.platform.client.EntityContextGenerator;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -40,7 +42,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * @author mahesh@ensarm.com	
- *
+ * Class for creating configurations for components like ListComponent etc.
  */
 public class ViewComponentInstanceEditor extends Composite implements FieldEventHandler{
 
@@ -54,6 +56,7 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 	
 	private Entity snippetTypeConfigTypeEnt;
 	private Entity snippetInstnceConfigTypeEnt;
+	private Entity pageEntity;
 
 	private ListBoxField transformToListbox;
 	private TextField transformInstanceTextField;
@@ -241,7 +244,7 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 			parameterMap.put("confInstEnt", configinstanceEntity);
 			parameterMap.put("isUpdate", false);
 			
-			EntityContext context  = new EntityContext();
+			EntityContext context  = getEntityContextForViewPageAppService(null);
 			parameterMap.put("entityContext", context);
 			
 			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveConfigurationInstance", parameterMap);
@@ -288,7 +291,7 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 				parameterMap.put("confInstEnt", snippetTypeEnt);
 				parameterMap.put("isUpdate", false);
 				
-				EntityContext context  = new EntityContext();
+				EntityContext context  = getEntityContextForViewPageAppService(null);
 				parameterMap.put("entityContext", context);
 				
 				StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveConfigurationInstance", parameterMap);
@@ -333,7 +336,9 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 			Map parameterMap = new HashMap();
 			parameterMap.put("componentInstEnt", compInstEntity);
 			parameterMap.put("isUpdate", false);
-			parameterMap.put("entityContext", new EntityContext());
+			
+			Entity parentComponentEnt = (Entity)viewConfigInstnceEntity.getProperty("configinstance");
+			parameterMap.put("entityContext", getEntityContextForPgInstPageAppService(null, parentComponentEnt));
 
 			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveComponentInstance", parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<HashMap<String, Object>>>() {
@@ -532,5 +537,52 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 	 */
 	public void setParentCompInstanceEnt(Entity parentCompInstanceEnt) {
 		this.parentCompInstanceEnt = parentCompInstanceEnt;
+	}
+	
+
+	private EntityContext getEntityContextForViewPageAppService(EntityContext context) {
+		context = getEntityContext(context, viewConfigInstnceEntity);
+		Entity parentComponentEnt = (Entity)viewConfigInstnceEntity.getProperty("configinstance");
+		EntityContext context1 =  getEntityContext(context, parentComponentEnt);
+		EntityContext contextPgInsPageAppSer =  getEntityContextForPgInstPageAppService(context1, parentComponentEnt);
+		return context;
+	}
+
+	/**
+	 * Returns entity context for page conf inst | Page | App | Service
+	 * @param context
+	 * @return
+	 */
+	private EntityContext getEntityContextForPgInstPageAppService(EntityContext context, Entity parentComponentEnt) {
+		Entity pageInstEnt = (Entity)parentComponentEnt.getProperty("configinstance");
+		EntityContext context1 = getEntityContext(context, pageInstEnt);
+		EntityContext context2 = getEntityContext(context1, pageEntity);
+		EntityContext context3 = getEntityContext(context2, AppEnviornment.CURRENTAPP);
+		EntityContext context4 = getEntityContext(context3, AppEnviornment.CURRENTSERVICE);
+		
+		if(context == null) {
+			return context1;
+		}
+		return context;
+	}
+	
+	private EntityContext getEntityContext(EntityContext context, Entity entity) {
+		Key<Long> key = entity.getPropertyByName("id");
+		Long id = key.getKeyValue();
+
+		if(context == null) {
+			context  = EntityContextGenerator.defineContext(null, id);
+		} else {
+			context = context.defineContext(id);;
+		}
+		return context;
+	}
+
+	public Entity getPageEntity() {
+		return pageEntity;
+	}
+
+	public void setPageEntity(Entity pageEntity) {
+		this.pageEntity = pageEntity;
 	}
 }
