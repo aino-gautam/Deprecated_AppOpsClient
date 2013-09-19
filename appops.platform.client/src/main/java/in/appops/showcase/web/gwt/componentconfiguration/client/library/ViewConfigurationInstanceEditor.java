@@ -10,11 +10,13 @@ import in.appops.client.common.config.field.SelectedItem;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.client.EntityContext;
+import in.appops.platform.client.EntityContextGenerator;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.type.MetaType;
@@ -197,7 +199,26 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 				if(componentList.get(i).getPropertyByName("keyvalue")!=null)
 				configInstance.setPropertyByName("instancevalue",  componentList.get(i).getPropertyByName("keyvalue").toString());
 				
-				EntityContext context = new EntityContext();
+				//EntityContext context = new EntityContext();
+				
+				Long id = ((Key<Long>)viewInstance.getPropertyByName("id")).getKeyValue();
+				EntityContext context  = EntityContextGenerator.defineContext(null, id);
+				
+				Entity transFormInstance = (Entity)viewInstance.getProperty("configinstance");
+				Long transFormInstanceId = ((Key<Long>)transFormInstance.getPropertyByName("id")).getKeyValue();
+				EntityContext context1 = context.defineContext(transFormInstanceId);
+				
+				Entity pageParentEnt = (Entity)transFormInstance.getProperty("configinstance");
+				Long pageId = ((Key<Long>)pageParentEnt.getPropertyByName("id")).getKeyValue();
+				EntityContext context2 = context1.defineContext(pageId);
+				
+				Long appId = ((Key<Long>)AppEnviornment.CURRENTAPP.getPropertyByName("id")).getKeyValue(); 
+				EntityContext context3 = context2.defineContext(appId);
+				
+				Long serviceId = ((Key<Long>)AppEnviornment.CURRENTSERVICE.getPropertyByName("id")).getKeyValue(); 
+				EntityContext context4 = context3.defineContext(serviceId);
+				
+				
 				configInstance.setPropertyByName("context", context);
 				configInstance.setProperty("configinstance", viewInstance);
 				configInstance.setProperty("configtype", componentList.get(i));
@@ -429,9 +450,29 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 			EntityList list = new EntityList();
 			for (int index = 0; index < editorList.size(); index++) {
 				InstanceEditor editor = editorList.get(index);
+				
 				Entity instanceEnt = editor.getPopulatedConfigInstanceEntity();
 				
-				EntityContext context = new EntityContext();
+				Long id = ((Key<Long>)editor.getParentConfigInstanceEntity().getPropertyByName("id")).getKeyValue();
+				EntityContext context  = EntityContextGenerator.defineContext(null, id);
+				
+				Long viewid = ((Key<Long>)viewInstance.getPropertyByName("id")).getKeyValue();
+				EntityContext context1  = context.defineContext(viewid);
+				
+				Entity transFormInstance = (Entity)viewInstance.getProperty("configinstance");
+				Long transFormInstanceId = ((Key<Long>)transFormInstance.getPropertyByName("id")).getKeyValue();
+				EntityContext context2 = context1.defineContext(transFormInstanceId);
+				
+				Entity pageParentEnt = (Entity)transFormInstance.getProperty("configinstance");
+				Long pageId = ((Key<Long>)pageParentEnt.getPropertyByName("id")).getKeyValue();
+				EntityContext context3 = context2.defineContext(pageId);
+				
+				Long appId = ((Key<Long>)AppEnviornment.CURRENTAPP.getPropertyByName("id")).getKeyValue(); 
+				EntityContext context4 = context3.defineContext(appId);
+				
+				Long serviceId = ((Key<Long>)AppEnviornment.CURRENTSERVICE.getPropertyByName("id")).getKeyValue(); 
+				EntityContext context5 = context4.defineContext(serviceId);
+				
 				instanceEnt.setPropertyByName("context", context);
 				
 				list.add(instanceEnt);
