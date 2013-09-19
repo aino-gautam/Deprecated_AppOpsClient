@@ -91,7 +91,7 @@ public class SuggestionOracle extends SuggestOracle {
 					
 					map.put("searchChar", "%" + search + "%");
 				}else {
-					map.put("searchChar", "%" + search + "%");
+					map.put("searchChar", "%" + search.trim() + "%");
 				}
 				
 				if(!map.isEmpty())
