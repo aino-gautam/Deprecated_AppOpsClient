@@ -251,7 +251,7 @@
         <dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>entityconf_shared</artifactId>
-			<version>05.09.2013</version>
+			<version>17.09.2013</version>
 		</dependency>
 
 		<dependency>
