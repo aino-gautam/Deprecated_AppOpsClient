@@ -1,11 +1,11 @@
 package in.appops.client.common.config.dsnip;
 
-import com.google.gwt.dom.client.Element;
-
 import in.appops.client.common.config.form.FormSnippetPresenter;
-import in.appops.client.common.config.util.Configurator;
 import in.appops.client.common.config.util.ReusableSnippetStore;
+import in.appops.client.common.config.util.Store;
 import in.appops.platform.core.shared.Configuration;
+
+import com.google.gwt.dom.client.Element;
 
 /**
  * @author nitish@ensarm.com	
@@ -26,7 +26,7 @@ public class SnippetGeneratorImpl implements SnippetGenerator {
 	public HTMLSnippetPresenter generateSnippet(String type, String instance) {
 		try{
 			String snippetDesc = ReusableSnippetStore.getSnippetDesc(type);
-			Configuration configuration = Configurator.getConfiguration(instance);
+			Configuration configuration = Store.getConfiguration(instance);
 
 			HTMLSnippetPresenter snippetPres;
 			HTMLSnippet snippet = new HTMLSnippet(snippetDesc);

@@ -3,7 +3,7 @@ package in.appops.client.common.config.dsnip;
 
 import in.appops.client.common.config.component.base.BaseComponentPresenter;
 import in.appops.client.common.config.component.base.BaseComponentView;
-import in.appops.client.common.config.util.Configurator;
+import in.appops.client.common.config.util.Store;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.client.common.util.JsonToEntityConverter;
 import in.appops.platform.core.entity.Entity;
@@ -122,12 +122,35 @@ public class Container extends SimplePanel implements Configurable, ValueChangeH
 			
 			Boolean isUpdateConf = (Boolean)conf.getPropertyByName("isUpdateConfiguration");
 			
+			// TODO need to do clean up here. After configuration editior is implemented.
+			
 			if(isUpdateConf != null && isUpdateConf) {
-				HashMap<String, Configuration> configToUpdateMap = (HashMap<String, Configuration>)conf.getPropertyByName("updateConfiguration");
+				Configuration updateConfiguration = (Configuration)conf.getPropertyByName("updateConfiguration");
+
+				Set<Entry<String, Property<? extends Serializable>>> updateConfigurationSet = updateConfiguration.getValue().entrySet();
+				HashMap<String, Configuration> updateValueMap = new HashMap<String, Configuration>();
 				
-				Set<Entry<String, Configuration>> confSet = configToUpdateMap.entrySet();
+				for(Entry<String, Property<? extends Serializable>> entry : updateConfigurationSet) {
+					String key = entry.getKey();
+					Serializable propvalue = entry.getValue().getValue();
+					
+					String instanceStr = key.substring(0, key.indexOf("."));
+					String propertyToUpdate = key.substring(key.indexOf(".") + 1);
+					
+					Configuration configurationForPropToUpdate = null;
+					if(updateValueMap.containsKey(instanceStr)) {
+						configurationForPropToUpdate = updateValueMap.get(instanceStr);
+						configurationForPropToUpdate.setPropertyByName(propertyToUpdate, propvalue);
+					} else {
+						configurationForPropToUpdate = new Configuration();
+						configurationForPropToUpdate.setPropertyByName(propertyToUpdate, propvalue);
+						updateValueMap.put(instanceStr, configurationForPropToUpdate);
+					}
+				}
 				
-				for(Entry<String, Configuration> entry : confSet) {
+				Set<Entry<String, Configuration>> updateValueMapSet = updateValueMap.entrySet();
+				
+				for(Entry<String, Configuration> entry : updateValueMapSet) {
 
 					String configInstance = entry.getKey();
 					Configuration updateConfig = entry.getValue();
@@ -137,7 +160,7 @@ public class Container extends SimplePanel implements Configurable, ValueChangeH
 						BaseComponentPresenter componentPresenter = componentMap.get(configInstance);
 						configToUpdate = componentPresenter.getConfiguration();
 						updateConfig(configToUpdate, updateConfig, eventData);
-						componentPresenter.init();
+						componentPresenter.load();
 
 					} else if(snippetMap.get(configInstance) != null) {
 						HTMLSnippetPresenter snippetPresenter = snippetMap.get(configInstance);
@@ -216,22 +239,21 @@ public class Container extends SimplePanel implements Configurable, ValueChangeH
 
 	private void createAddComponent(String transformTo, String transFormInstance) {
 		try {
-			ComponentFactory componentFactory = injector.getComponentFactory();
+			BaseComponentPresenter compPres = null;
 			
-			if(!componentMap.isEmpty()) {
-				BaseComponentPresenter prevComponent = componentMap.get(transformTo);
-				if(prevComponent != null) {
-					prevComponent.removeEventHandler();
-				}
-			}
+			//if(!componentMap.isEmpty() && componentMap.containsKey(transFormInstance)) {
+			//	compPres = componentMap.get(transFormInstance);
+			//} else {
+				ComponentFactory componentFactory = injector.getComponentFactory();
+				compPres = componentFactory.getComponent(transformTo);
+			//}
 			
-			BaseComponentPresenter compPres = componentFactory.getComponent(transformTo);
-
-			Configuration componentConfig = Configurator.getConfiguration(transFormInstance);
+			Configuration componentConfig = Store.getConfiguration(transFormInstance);
 			compPres.setConfiguration(componentConfig);
+			compPres.initialize();
 			compPres.configure();
 			
-			compPres.init();
+			compPres.load();
 			BaseComponentView component = compPres.getView();
 			this.clear();
 
@@ -265,18 +287,21 @@ public class Container extends SimplePanel implements Configurable, ValueChangeH
 		return null;
 	}
 	
-	@SuppressWarnings("unchecked")
-	protected HashMap<String, Configuration> getInterestedEvents() {
-		HashMap<String, Configuration> interestedEvents = new HashMap<String, Configuration>();
+	@SuppressWarnings({ "rawtypes" })
+	protected HashMap getInterestedEvents() {
+		HashMap interestedEvents = new HashMap();
 		if(getConfigurationValue(ContainerConstant.CT_INTRSDEVNTS) != null) {
-			interestedEvents = (HashMap<String, Configuration>) getConfigurationValue(ContainerConstant.CT_INTRSDEVNTS);
+			Configuration interestedEventConfig = (Configuration) getConfigurationValue(ContainerConstant.CT_INTRSDEVNTS); 
+			interestedEvents = (HashMap) interestedEventConfig.getValue();
 		}
 		return interestedEvents;
 	}
 	
 	
+	@SuppressWarnings({"rawtypes" })
 	public boolean isTypeInteresting(String eventName) {
-		HashMap<String, Configuration> interestedEvents = getInterestedEvents();
+		HashMap interestedEvents = getInterestedEvents();
+		@SuppressWarnings("unchecked")
 		Set<String> eventSet = interestedEvents.keySet();
 		
 		if(!eventSet.isEmpty()) {
@@ -288,10 +313,11 @@ public class Container extends SimplePanel implements Configurable, ValueChangeH
 	}
 	
 	private Configuration getEventConfiguration(String event) {
-		HashMap<String, Configuration> interestedEvents = getInterestedEvents();
+		@SuppressWarnings("rawtypes")
+		HashMap interestedEvents = getInterestedEvents();
 		
 		if(!interestedEvents.isEmpty() && interestedEvents.containsKey(event)) {
-			return interestedEvents.get(event);
+			return (Configuration) interestedEvents.get(event);
 		}
 		return null;
 	}
@@ -305,7 +331,7 @@ public class Container extends SimplePanel implements Configurable, ValueChangeH
 		// Should be some map of data.
 		Object eventData = appEvent.getPropertyByName(EventConstant.EVNT_DATA);
 		
-		if(isTypeInteresting(eventName)) {
+		if(isTypeInteresting(eventName)) { 
 			Configuration eventConf = getEventConfiguration(eventName);
 			
 			processEvent(eventConf, eventData);

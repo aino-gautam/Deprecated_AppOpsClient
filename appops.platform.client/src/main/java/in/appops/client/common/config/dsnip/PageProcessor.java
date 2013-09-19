@@ -1,6 +1,6 @@
 package in.appops.client.common.config.dsnip;
 
-import in.appops.client.common.config.util.Configurator;
+import in.appops.client.common.config.util.Store;
 import in.appops.platform.core.shared.Configuration;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class PageProcessor extends HTMLPanel {
 							Container container = new Container();
 							
 							String dataConfig = pageSpan.getAttribute("data-config");
-							Configuration configuration =  Configurator.getConfiguration(dataConfig);
+							Configuration configuration =  Store.getConfiguration(dataConfig);
 							container.setConfiguration(configuration);
 							container.configure();
 							container.setId(pageSpan.getId());

@@ -5,7 +5,7 @@ import in.appops.client.common.config.field.BaseField;
 import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.SelectedItem;
 import in.appops.client.common.config.model.EntityModel;
-import in.appops.client.common.config.util.Configurator;
+import in.appops.client.common.config.util.Store;
 import in.appops.client.common.core.EntityReceiver;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
@@ -16,6 +16,7 @@ import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.EntityGraphException;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,12 +24,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
-public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, EntityReceiver {
+public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, EntityReceiver, ClickHandler {
 
 	public interface HTMLSnippetConstant {
 		String HS_FIELDEVENTS = "interestedFieldEvents";
@@ -76,13 +81,10 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 		}
 		
 		model.setReceiver(this);
+		htmlSnippet.addClickHandler(this);
 		fieldEventRegistration = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 	}
 
-	public void removeFieldEventHandler() {
-		fieldEventRegistration.removeHandler();
-	}
-	
 	public void load() {
 		if(entity != null) {
 			populateFields();
@@ -148,15 +150,45 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 	}
 
 	public void populateFields() {
+		
+/*		Configuration populateFieldsConfig = configuration.getPropertyByName("populateFields");
+		
+		//TODO Implement populatefields
+		if(populateFieldsConfig != null) {
+
+			Set<Entry<String, Property<? extends Serializable>>> confSet = populateFieldsConfig.getValue().entrySet();
+	
+			for(Entry<String, Property<? extends Serializable>> entry : confSet) {
+				String key = entry.getKey();
+	
+				Serializable propvalue = entry.getValue().getValue();
+				if(propvalue != null) {
+					String propStrVal = propvalue.toString();
+	
+					if(propStrVal.indexOf(".") == -1) {
+						propvalue = entry.getValue().getValue();
+					}
+					else if(propStrVal.startsWith(FldProp)){
+						String fieldName = propStrVal.substring(propStrVal.indexOf(".") + 1);
+						BaseField field = (BaseField) htmlSnippet.getSnippetElementMap().get(fieldName);
+						propvalue = (Serializable) field.getValue();
+					}
+					entity.setPropertyByName(key, propvalue);
+				}
+			}
+		}*/
+		
 		Map<String, Widget> snippetEle = htmlSnippet.getSnippetElementMap();
 		for (Map.Entry<String, Widget> elementEntry : snippetEle.entrySet()) {
 			Widget element = elementEntry.getValue();
 	    	if(element instanceof BaseField) {
 	    		BaseField baseField = (BaseField)element;
 	    		
-				Key key = (Key)entity.getPropertyByName("id");
-				Long id = (Long)key.getKeyValue();
-				baseField.setBindId(id);
+	    		if(entity.getPropertyByName("id") != null) {
+					Key key = (Key)entity.getPropertyByName("id");
+					Long id = (Long)key.getKeyValue();
+					baseField.setBindId(id);
+	    		}
 
 				if(baseField.isFieldVisible()) {
 				
@@ -199,7 +231,7 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 				String appContextParam = fieldEventConf.getPropertyByName(FieldEventConstant.UP_AC_PROP);
 				
 				if(appContextParam != null) {
-					Configuration appContextConfig = Configurator.getConfiguration("applicationContext");
+					Configuration appContextConfig = Store.getConfiguration("applicationContext");
 					ArrayList<String> contextParamList = appContextConfig.getPropertyByName("contextparam");
 					
 					if(contextParamList.contains(appContextParam)) {
@@ -293,4 +325,38 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 		this.htmlSnippet = htmlSnippet;
 	}
 	
+	public void removeFieldEventHandler() {
+		fieldEventRegistration.removeHandler();
+	}
+
+	@Override
+	public void onClick(ClickEvent event) {
+		try {
+			Configuration clickConfig = (Configuration) configuration.getProperty("onClick");
+			if(clickConfig != null) {
+				String pageValue = clickConfig.getPropertyByName("page");
+				
+				// TODO String localActionValue = clickConfig.getPropertyByName("localAction");
+				// String appActionValue = clickConfig.getPropertyByName("appAction");
+				
+				if(pageValue != null) {
+					String page = null;
+					if(pageValue.toString().indexOf(".") == -1) {
+						page = pageValue;
+					} else if(pageValue.toString().startsWith("ent")){
+						String entityProp = pageValue.toString().substring(pageValue.toString().indexOf(".") + 1);
+						page = entity.getGraphPropertyValue(entityProp, entity);
+					}
+					if(page != null) {
+						String moduleUrl = GWT.getHostPageBaseURL();
+						String pageUrl = moduleUrl + page; // + "?gwt.codesvr=127.0.0.1:9997";
+						Window.open(pageUrl, "_self", "");
+					}
+				}
+			}
+		} catch (EntityGraphException e) {
+			e.printStackTrace();
+		}
+		
+	}
 }

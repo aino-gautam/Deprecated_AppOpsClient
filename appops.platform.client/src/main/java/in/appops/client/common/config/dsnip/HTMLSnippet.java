@@ -5,7 +5,7 @@ import in.appops.client.common.config.component.base.BaseComponentView;
 import in.appops.client.common.config.dsnip.HTMLSnippetPresenter.HTMLSnippetConstant;
 import in.appops.client.common.config.field.BaseField;
 import in.appops.client.common.config.field.BaseField.BaseFieldConstant;
-import in.appops.client.common.config.util.Configurator;
+import in.appops.client.common.config.util.Store;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
@@ -19,10 +19,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class HTMLSnippet extends HTMLPanel {
+public class HTMLSnippet extends HTMLPanel implements HasClickHandlers  {
 
 	private Entity entity;
 	private Configuration configuration;
@@ -60,15 +64,18 @@ public class HTMLSnippet extends HTMLPanel {
 								String dataConfig = spanElement.getAttribute("data-config");
 								if(dataConfig != null && !dataConfig.equals("")) {
 								
-									Configuration fieldConf = Configurator.getChildConfiguration(configuration, dataConfig);
-									fieldConf.setPropertyByName(BaseFieldConstant.BF_ID, spanElement.getId());
-									formField.setConfiguration(fieldConf);
+									Configuration fieldConf = Store.getChildConfiguration(configuration, dataConfig);
+									if(fieldConf != null) {
+										fieldConf.setPropertyByName(BaseFieldConstant.BF_ID, spanElement.getId());
+										formField.setConfiguration(fieldConf);
+										formField.configure();
+										formField.create();
+										snippetElementMap.put(spanElement.getId(), formField);
+										this.addAndReplaceElement(formField.asWidget(), spanElement);
+									}
 								}
 								
-								formField.configure();
-								formField.create();
-								snippetElementMap.put(spanElement.getId(), formField);
-								this.addAndReplaceElement(formField.asWidget(), spanElement);
+								
 
 /*								if(formField instanceof HtmlEditorField) {
 									RootPanel.get().add(formField);
@@ -84,7 +91,7 @@ public class HTMLSnippet extends HTMLPanel {
 						} else if(spanElement.hasAttribute("appopsComponent") && Boolean.valueOf(spanElement.getAttribute("appopsComponent"))) {
 							BaseComponentPresenter compPres = componentFactory.getComponent(spanElement.getAttribute("widgetType"));
 							String dataConfig = spanElement.getAttribute("data-config");
-							Configuration compConfig =  Configurator.getChildConfiguration(configuration, dataConfig);
+							Configuration compConfig =  Store.getChildConfiguration(configuration, dataConfig);
 							compPres.setConfiguration(compConfig);
 							
 							compPres.configure();
@@ -200,5 +207,10 @@ public class HTMLSnippet extends HTMLPanel {
 	public void setEntity(Entity entity) {
 		this.entity = entity;
 	}
+
+	@Override
+    public HandlerRegistration addClickHandler(ClickHandler handler) {
+        return addDomHandler(handler, ClickEvent.getType());
+    }
 
 }
