@@ -12,6 +12,7 @@ import in.appops.showcase.web.gwt.componentconfiguration.client.page.PageManager
 import in.appops.showcase.web.gwt.componentconfiguration.client.page.SnippetManager;
 import in.appops.showcase.web.gwt.componentconfiguration.client.service.CreateServicePageWidget;
 
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,6 +26,7 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 	private HorizontalPanel basePanel;
 	private VerticalPanel contentPanel;
 	private Logger logger = Logger.getLogger("ConfigurationManagerHome");
+	private ArrayList<SnippetManager> snippetManagerList;
 	
 	/** CSS styles used **/
 	private static String HOME_BTN_PCLS = "managerHomeButton";
@@ -246,8 +248,16 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 						contentPanel.add(pageManager);
 					}else if (btnField.getBaseFieldId().equals(CREATESNIPPET_BTN_ID)) {
 						contentPanel.clear();
+						if(snippetManagerList == null)
+							snippetManagerList = new ArrayList<SnippetManager>();
+						
+						deregisterSnippetManagerHandlers();
+						
 						SnippetManager snippetManager = new SnippetManager();
 						snippetManager.initialize();
+						
+						snippetManagerList.add(snippetManager);
+						
 						contentPanel.add(snippetManager);
 					}else if(btnField.getBaseFieldId().equals(CREATEAPP_BTN_ID)){
 						contentPanel.clear();
@@ -268,6 +278,12 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "ConfigurationManagerHome :: onFieldEvent :: Exception", e);
+		}
+	}
+	
+	private void deregisterSnippetManagerHandlers(){
+		for(SnippetManager snipMngr : snippetManagerList){
+			snipMngr.deregisterHandler();
 		}
 	}
 

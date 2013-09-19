@@ -29,12 +29,11 @@ import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.server.core.service.appdefinition.domain.Componentdefinition;
-import in.appops.showcase.web.gwt.componentconfiguration.client.library.ConfigurationEditor;
 import in.appops.showcase.web.gwt.componentconfiguration.client.library.HTMLSnippetConfigurationEditor;
-import in.appops.showcase.web.gwt.componentconfiguration.client.library.LibraryComponentManager;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
@@ -53,7 +52,6 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	private TextField snippetNameTextBox ;
 	private TextField snippetHtmlTextArea ;
 	private ButtonField saveAndProcessButton;
-	private ConfigurationEditor configurationEditor;
 	private ListBoxField libraryBox;
 	private Entity libraryEntity;
 	private VerticalPanel propConfigEditorVp = new VerticalPanel();
@@ -62,21 +60,26 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	
 	private final String SAVECOMP_BTN_PCLS = "saveCompBtnCss";
 	private final String HEADERLBL_CSS = "headerLabel";
-	private final String SUBHEADERLBL_CSS =	 "subHeaderLabel";
 	private final String REGULARLBL_CSS = "regularLabel";
 	private final String TEXTFIELD_CSS = "textField";
+	private HandlerRegistration handler;
 	
 	/** Field id**/
-	public static final String LIBRARYLISTBOX_ID = "libraryListBoxId";
+	public static final String LIBRARYLISTBOX_ID = "snippetLibraryListBoxId";
 	private static String SAVE_PROCESS_SNIPPET_BTN_ID = "saveProcessSnippetBtnId";
 	
 	/**
 	 * Constructor
 	 */
 	public SnippetManager() {
-		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+		if(handler == null)
+			handler = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 	}
 
+	public void deregisterHandler(){
+		handler.removeHandler();
+	}
+	
 	/**
 	 * initializes the widget
 	 */
@@ -328,7 +331,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 				if(eventSource instanceof ListBoxField){
 					ListBoxField listBoxField = (ListBoxField) eventSource;
 					SelectedItem selectedItem = (SelectedItem) event.getEventData();
-					if(listBoxField.getBaseFieldId().equalsIgnoreCase(LibraryComponentManager.LIBRARYLISTBOX_ID)){
+					if(listBoxField.getBaseFieldId().equalsIgnoreCase(SnippetManager.LIBRARYLISTBOX_ID)){
 						Entity libEntity = selectedItem.getAssociatedEntity();
 						libraryEntity = libEntity;
 					}
@@ -373,7 +376,6 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 						if(compEntity!=null){
 							Window.alert("Component Saved...");
 							createConfigurationEditorUI(list, spanList);
-							// pass the result set map to the html snippet configuration editor
 						}
 					}
 				}
