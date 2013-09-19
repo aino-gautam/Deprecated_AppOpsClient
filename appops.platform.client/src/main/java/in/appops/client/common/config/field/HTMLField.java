@@ -59,17 +59,12 @@ public class HTMLField extends BaseField implements ClickHandler  {
 	
 	@Override
 	public void configure() {
-		
+		super.configure();
 		setValue(getDisplayText());
 		htmlField.setTitle(getLblTitle());
-		
-		if(getBaseFieldPrimCss() != null)
-			getBasePanel().setStylePrimaryName(getBaseFieldPrimCss());
-		if(getBaseFieldDependentCss() != null)
-			getBasePanel().addStyleName(getBaseFieldDependentCss());
 
-		if(getHTMLFieldCss() != null)
-			htmlField.setStylePrimaryName(getHTMLFieldCss());
+		if(getBaseFieldPrimCss() != null)
+			htmlField.setStylePrimaryName(getBaseFieldPrimCss());
 		
 	}
 	
