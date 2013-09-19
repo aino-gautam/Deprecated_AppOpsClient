@@ -1,111 +1,33 @@
 package in.appops.client.common.config.component.list;
 
 import in.appops.client.common.config.component.base.BaseComponentPresenter;
-import in.appops.client.common.config.dsnip.Container.ContainerConstant;
-import in.appops.client.common.config.dsnip.EventConstant;
+import in.appops.client.common.config.model.ConfigurationListModel;
 import in.appops.client.common.config.model.EntityListModel;
 import in.appops.client.common.core.EntityListReceiver;
-/*import in.appops.client.common.event.HtmlSnippetEvent;
-import in.appops.client.common.event.handlers.HtmlSnippetEventHandler;*/
-import in.appops.client.common.util.JsonToEntityConverter;
 import in.appops.platform.core.entity.Entity;
-import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 
-import java.util.HashMap;
-import java.util.Set;
-
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-
-public class ListComponentPresenter extends BaseComponentPresenter implements EntityListReceiver/*,HtmlSnippetEventHandler*/ {
+public class ListComponentPresenter extends BaseComponentPresenter implements EntityListReceiver {
+	EntityListModel entityListModel;
 	
-	public ListComponentPresenter () {
-		model = new EntityListModel();
-		((EntityListModel)model).setReceiver(this);
+	@Override
+	public void initialize() {
+		if(isConfigDriven()) {
+			model = new ConfigurationListModel();
+		} else {
+			model = new EntityListModel();
+		}
+		entityListModel = (EntityListModel) model;
+		entityListModel.setReceiver(this);
 		view = new ListComponentView();
 	}
-	
-	@Override
-	public void configure() {
-		super.configure();
-		
-		model.setConfiguration(getModelConfiguration());
-		model.configure();
-		view.setConfiguration(getViewConfiguration());
-		
-		view.configure();
-		view.create();
-	}
-	
-	
-	@Override
-	public void init() {
-		super.init();
 
-		((EntityListModel)model).fetchEntityList();
-	}
-	
-	@SuppressWarnings("unchecked")
 	@Override
-	public void onValueChange(ValueChangeEvent<String> event) {
-		String appEventJson = event.getValue();
-		
-		Entity appEvent = new JsonToEntityConverter().convertjsonStringToEntity(appEventJson);
-		
-		String eventName = appEvent.getPropertyByName(EventConstant.EVNT_NAME);
-		Object eventData = appEvent.getPropertyByName(EventConstant.EVNT_DATA);
-
-		if(isTypeInteresting(eventName)) {
-			Configuration eventConf = getEventConfiguration(eventName);
-			processEvent(eventConf, eventData);
-		}
- 	}
-	
-	@SuppressWarnings("unchecked")
-	private void processEvent(Configuration conf, Object eventData) {
-//		try {
-//			Configuration updateConf =  conf.getPropertyByName("updateConfiguration");
-//			Set<String> confSet = updateConf.getValue().keySet();
-//			
-//			for(String confToUpdate : confSet) {
-//				Object confValue = updateConf.getPropertyByName(confToUpdate);
-//				configuration.setPropertyByName(confToUpdate, (Serializable)confValue);
-//			}
-//	
-//			ArrayList<Configuration> paramList = model.getQueryParamList();
-//			
-//			for(Configuration paramConfig : paramList) {
-//				Serializable value = null; paramConfig.getPropertyByName("value");
-//					String paramType = paramConfig.getPropertyByName("paramType");
-//					if(paramType == null) {
-//						value = paramConfig.getPropertyByName("value");
-//					} else {
-//						if(paramType.equals("entityParam")) {
-//							Entity entity = (Entity)eventData;
-//							String entityProp = paramConfig.getPropertyByName("entityProp");
-//							
-//							value = entity.getPropertyByName(entityProp);
-//						} else {
-//								String entityProp = paramConfig.getPropertyByName("entityProp");
-//								
-//								value = ApplicationContext.getInstance().getGraphPropertyValue(entityProp, null);
-//								
-//								if(value instanceof Key) {
-//									Key key = (Key)value;
-//									value = key.getKeyValue();
-//								}
-//						}
-//					}
-//					paramConfig.setPropertyByName("value", value);
-//			}
-//			
-//			init();
-//		} catch(Exception e) {
-//			
-//		}
+	public void load() {
+		entityListModel.fetchEntityList();
 	}
 	
-	
+/*	
 	@SuppressWarnings("unchecked")
 	protected HashMap<String, Configuration> getInterestedEvents() {
 		HashMap<String, Configuration> interestedEvents = new HashMap<String, Configuration>();
@@ -135,25 +57,10 @@ public class ListComponentPresenter extends BaseComponentPresenter implements En
 			return interestedEvents.get(event);
 		}
 		return null;
-	}
+	}*/
 	
 	
-	@Override
-	public void updateConfiguration(String confProp) {
-		/*super.updateConfiguration(confProp);
-		
-		String[] splitConf = confProp.split("\\."); 
-		if(splitConf != null && splitConf.length > 0) {
-			
-			if(splitConf[0].equals("model")) {
-				
-			} else if(splitConf[0].equals("view")) {
-				
-			} else {
-				
-			}
-		}*/
-	}
+	
 
 	@Override
 	public void noMoreData() {
@@ -182,11 +89,7 @@ public class ListComponentPresenter extends BaseComponentPresenter implements En
 		
 	}
 	
-	/*@Override
-	public void onHtmlSnippetEvent(HtmlSnippetEvent event) {
-		
-	}
-	*/
+	
 	public interface ListComponentConstant extends BaseComponentConstant {
 		String LC_LISTCLS = "listCss";
 		String LC_SNIPPETTYPE = "listSnippetType";

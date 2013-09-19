@@ -21,12 +21,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 
 public class GridComponentPresenter extends BaseComponentPresenter implements EntityListReceiver {
 	
-	public GridComponentPresenter () {
-		model = new EntityListModel();
-		((EntityListModel)model).setReceiver(this);
-		view = new GridComponentView();
-	}
-	
 	@Override
 	public void configure() {
 		super.configure();
@@ -39,41 +33,24 @@ public class GridComponentPresenter extends BaseComponentPresenter implements En
 		view.create();
 	}
 	
+	@Override
+	public void initialize() {
+		model = new EntityListModel();
+		((EntityListModel)model).setReceiver(this);
+		view = new GridComponentView();		
+	}
+	
 	
 	@Override
-	public void init() {
-		super.init();
+	public void load() {
 		//((EntityListModel)model).fetchEntityList();
 		EntityList entityList = getProductEntityList();
 		if(entityList != null && !entityList.isEmpty()) {
 			GridComponentView listView = (GridComponentView)view;
 			listView.setEntityList(entityList);
 			listView.populate();
-			
 		}
 	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public void onValueChange(ValueChangeEvent<String> event) {
-		String appEventJson = event.getValue();
-		
-		Entity appEvent = new JsonToEntityConverter().convertjsonStringToEntity(appEventJson);
-		
-		String eventName = appEvent.getPropertyByName(EventConstant.EVNT_NAME);
-		Object eventData = appEvent.getPropertyByName(EventConstant.EVNT_DATA);
-
-		if(isTypeInteresting(eventName)) {
-			Configuration eventConf = getEventConfiguration(eventName);
-			processEvent(eventConf, eventData);
-		}
- 	}
-	
-	@SuppressWarnings("unchecked")
-	private void processEvent(Configuration conf, Object eventData) {
-
-	}
-	
 	
 	@SuppressWarnings("unchecked")
 	protected HashMap<String, Configuration> getInterestedEvents() {
@@ -107,9 +84,6 @@ public class GridComponentPresenter extends BaseComponentPresenter implements En
 	}
 	
 	
-	@Override
-	public void updateConfiguration(String confProp) {
-	}
 
 	@Override
 	public void noMoreData() {
