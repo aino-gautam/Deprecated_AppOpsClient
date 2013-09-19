@@ -140,12 +140,20 @@ public class InstanceEditor implements FieldEventHandler{
 				throw new AppOpsException("Instance value cannot be empty");
 			} else {*/
 			
+			
+			configInstance.setProperty("configinstance", parentConfigInstanceEntity);
+			
+			if(configEnt ==null){
+				configEnt = getDefaultConfigType();
+				if(configEnt.getPropertyByName("keyvalue")!=null)
+					configInstance.setPropertyByName("instancevalue", configEnt.getPropertyByName("keyvalue").toString());
+			}
+			
 			if (keyValueField.getValue() != null) {
 				if(!keyValueField.getValue().toString().equals(""))
 					configInstance.setPropertyByName("instancevalue", keyValueField.getValue().toString());
 			}
 			
-			configInstance.setProperty("configinstance", parentConfigInstanceEntity);
 			configInstance.setProperty("configtype", configEnt);
 			
 			return configInstance;
@@ -157,6 +165,21 @@ public class InstanceEditor implements FieldEventHandler{
 			}
 		}
 		return null;
+	}
+
+	private Entity getDefaultConfigType() {
+		try {
+			for(int i=0; i<configList.size() ;i++){
+				Entity configTypeEnt = configList.get(i);
+				if(Boolean.parseBoolean(configTypeEnt.getPropertyByName("isdefault").toString())){
+					return configTypeEnt;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return configList.get(0);
 	}
 
 	public Entity getParentConfigInstanceEntity() {
