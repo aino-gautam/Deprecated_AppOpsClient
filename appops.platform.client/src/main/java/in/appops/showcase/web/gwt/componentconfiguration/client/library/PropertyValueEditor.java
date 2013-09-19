@@ -318,9 +318,9 @@ public class PropertyValueEditor implements FieldEventHandler {
 			confTypeEntity.setType(new MetaType("Configtype"));
 			confTypeEntity.setPropertyByName("keyname", propName);
 			
-			if(propName.equals("")){
+			/*if(propName.equals("")){
 				throw new AppOpsException("keyname can't be empty");
-			}
+			}*/
 			
 			
 			if(valueField.getValue()!=null){
