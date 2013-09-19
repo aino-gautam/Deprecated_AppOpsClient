@@ -209,16 +209,35 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 							if(configTypeList!=null){
 								
 								PropertyValueEditor valEdit = propValueList.get(propValueList.size()-1);
-								if(!valEdit.checkIfRecordIsEmpty()){
-									saveConfTypeEntity(true);
-								}else{
-									
-									clearPropertyValueFields();
-									ConfigEvent configEvent = new ConfigEvent(ConfigEvent.UPDATEDCONFIGENTITYLIST , configTypeList, this);
-									configEvent.setEventSource(this);
-									AppUtils.EVENT_BUS.fireEvent(configEvent);
-									//saveConfigTypeList();
-								}
+								 if(valEdit!=null){
+									if(!valEdit.checkIfRecordIsEmpty()){
+										saveConfTypeEntity(true);
+									}else{
+										
+										
+										ConfigEvent configEvent = new ConfigEvent(ConfigEvent.UPDATEDCONFIGENTITYLIST , configTypeList, this);
+										configEvent.setEventSource(this);
+										AppUtils.EVENT_BUS.fireEvent(configEvent);
+										clearPropertyValueFields(false);
+										//saveConfigTypeList();
+									}
+								 }else{
+									 
+									 valEdit = propValueList.get(propValueList.size());
+										if(valEdit!=null){
+											if(!valEdit.checkIfRecordIsEmpty()){
+												saveConfTypeEntity(true);
+											}else{
+												
+												
+												ConfigEvent configEvent = new ConfigEvent(ConfigEvent.UPDATEDCONFIGENTITYLIST , configTypeList, this);
+												configEvent.setEventSource(this);
+												AppUtils.EVENT_BUS.fireEvent(configEvent);
+												clearPropertyValueFields(false);
+												//saveConfigTypeList();
+											}
+										}
+								 }
 							}else{
 								saveConfTypeEntity(true);
 							}
@@ -252,20 +271,26 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				break;
 			}
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 	}
 		
 
-	private void clearPropertyValueFields() {
+	private void clearPropertyValueFields(boolean isEdit) {
 		try {
-			propNameField.clear();
-			propValuePanel.clear();
-			idVsConfigTypeEntity.clear();
-			valueRow=0;
-			propValueList.clear();
-			configTypeList.clear();
-			createNewRecord();
+			if(!isEdit){
+				propNameField.clear();
+				propValuePanel.clear();
+				idVsConfigTypeEntity.clear();
+				valueRow=0;
+				propValueList.clear();
+				configTypeList.clear();
+				createNewRecord();
+			}else{
+				valueRow=0;
+				propValuePanel.clear();
+				
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -402,21 +427,16 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 					HashMap<String, EntityList> configTypeHashMap=  (HashMap<String, EntityList>) event.getEventData(); 
 					Iterator iterator = configTypeHashMap.entrySet().iterator();
 					while(iterator.hasNext()){
-						
+						clearPropertyValueFields(true);
 						Map.Entry mapEntry = (Map.Entry) iterator.next();
 						String keyname= (String) mapEntry.getKey();
 						
-						EntityList typesList = (EntityList) mapEntry.getValue();
+						configTypeList = (EntityList) mapEntry.getValue();
 						propNameField.setValue(keyname);
-						propValuePanel.clear();
-						if(configTypeList == null)
-							configTypeList = new EntityList();
-						else 
-							configTypeList.clear();
 						
-						configTypeList = typesList; 
-											
-						for(Entity entity : typesList){
+						
+																	
+						for(Entity entity : configTypeList){
 							confTypeEnt = entity;
 							Key key = (Key) confTypeEnt.getProperty("id").getValue();
 							long id = (Long) key.getKeyValue();
@@ -430,7 +450,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 						}
 						confTypeEnt = null;
 						populateConfFormEditor();
-						valueRow=0;
+						
 					}
 				}
 				break;
@@ -536,12 +556,23 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			int size  = 0 ;
 						
 			PropertyValueEditor valEdit = propValueList.get(propValueList.size()-1);
-			if(valEdit.checkIfRecordIsEmpty()){
-				size = propValueList.size()-1;
+			if(valEdit!=null){
+				if(valEdit.checkIfRecordIsEmpty()){
+					size = propValueList.size()-1;
+				}else{
+					size = propValueList.size();
+				}
 			}else{
-				size = propValueList.size();
+				valEdit = propValueList.get(propValueList.size());
+				if(valEdit!=null){
+					if(valEdit.checkIfRecordIsEmpty()){
+						size = propValueList.size()-1;
+					}else{
+						size = propValueList.size();
+					}
+				}
+					
 			}
-			
 			for(int i =0 ;i<size ; i++){
 				PropertyValueEditor valEditor = propValueList.get(i);
 				if(valEditor!=null){
@@ -572,7 +603,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 					if(result!=null){
 						EntityList entityList = result.getOperationResult();
 						showPopup("Configurations updated successfully");
-						clearPropertyValueFields();
+						clearPropertyValueFields(false);
 						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.UPDATEDCONFIGENTITYLIST , entityList, this);
 						configEvent.setEventSource(this);
 						AppUtils.EVENT_BUS.fireEvent(configEvent);
@@ -611,7 +642,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	}
 	
 	/**
-	 * Used to show popup at perticular position.
+	 * Used to show popup at particular position.
 	 * @param popuplabel
 	 */
 	private void showPopup(String popuplabel){

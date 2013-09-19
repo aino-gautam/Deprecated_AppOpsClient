@@ -381,11 +381,12 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 			basePanel.clear();
 			
 			ImageField imageField = new ImageField();
-			 imageField.setConfiguration(getImageConfiguration());
-			 imageField.configure();
-			 imageField.create();
-			 basePanel.add(imageField);
-			 basePanel.setCellVerticalAlignment(imageField, HasVerticalAlignment.ALIGN_BOTTOM);
+			imageField.setConfiguration(getImageConfiguration());
+			imageField.configure();
+			imageField.create();
+			basePanel.add(imageField);
+			basePanel.setCellVerticalAlignment(imageField, HasVerticalAlignment.ALIGN_BOTTOM);
+			
 			Property<Serializable> componentProperty = (Property<Serializable>) entity.getProperty("id");
 			Key<Serializable> key  = (Key<Serializable>) componentProperty.getValue();
 			
@@ -420,6 +421,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 				}
 			});
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		return null;
@@ -455,7 +457,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 				break;
 			}
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 		
 	}
@@ -537,7 +539,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 			popup.setPopupPosition(542, 70);
 			popup.show();
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 		
 	}
@@ -557,7 +559,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 			conf.setPropertyByName(LabelFieldConstant.BF_DCLS, dependentCss);
 			conf.setPropertyByName(LabelFieldConstant.BF_BASEPANEL_PCLS, propEditorLblPanelCss);
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 		return conf;
 	}
@@ -570,7 +572,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 			configuration.setPropertyByName(ImageFieldConstant.BF_PCLS,"appops-listBoxLoaderPcls");
 			
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 		return configuration;
 	}
@@ -638,7 +640,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 								populateGridRows(confEntityList, configTypeHashMapForStore,rowVsListSize,configValuePanel, false,expectedRow,col);
 							}
 						}
-						//
+						
 					}else{
 						if(configTypeEntity.getPropertyByName("keyname")!=null){
 							   keyname = configTypeEntity.getPropertyByName("keyname");
@@ -730,14 +732,14 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 				configurationListTable.setBorderWidth(1);
 				//configurationListTable.getRowFormatter().addStyleName(row, "configurationPropertyGrid");
 				conFigTypesMainHashMap.put(configTypeId, configTypeHashMapForStore);
-				beforeDeletionOfRowHashMap.put(row,configTypeHashMapForStore );
+				
 				/*maintain the row v/s hash map of the initial row v/s list size*/
 				rowVsRowListSizeMap.put(configTypeId, rowVsListSize);
 			
 			}	
 		}
-		
-			imagePanel.add(imageField);
+		beforeDeletionOfRowHashMap.put(row,configTypeHashMapForStore );
+		imagePanel.add(imageField);
 				
 	}
 
@@ -752,7 +754,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 				 cellIndex = configurationListTable.getCellForEvent(event).getCellIndex();
 	             rowIndex = configurationListTable.getCellForEvent(event).getRowIndex();
 	             System.out.println("row selected------------"+rowIndex);
-	              int value = (int)rowIndex;
+	              int value = rowIndex;
 	              HashMap<String, EntityList> storedConfigTypeMap;
 	              if(afterDeletionOfRowHashMap.size()>0){
 	                  storedConfigTypeMap = afterDeletionOfRowHashMap.get(value);
