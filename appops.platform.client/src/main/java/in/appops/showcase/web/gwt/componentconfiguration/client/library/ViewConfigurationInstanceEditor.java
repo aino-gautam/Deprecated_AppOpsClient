@@ -47,6 +47,7 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 	private ButtonField saveConfInstanceBtnFld;
 	private int currentRow = 0;
 	private Entity viewInstance = null;
+	private Entity pageEntity = null;
 	private Image  loaderImage = null;
 	
 	/** Field ID **/
@@ -208,16 +209,18 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 				Long transFormInstanceId = ((Key<Long>)transFormInstance.getPropertyByName("id")).getKeyValue();
 				EntityContext context1 = context.defineContext(transFormInstanceId);
 				
-				Entity pageParentEnt = (Entity)transFormInstance.getProperty("configinstance");
-				Long pageId = ((Key<Long>)pageParentEnt.getPropertyByName("id")).getKeyValue();
-				EntityContext context2 = context1.defineContext(pageId);
+				Entity pageConfigInstEnt = (Entity)transFormInstance.getProperty("configinstance");
+				Long pageConfigInstId = ((Key<Long>)pageConfigInstEnt.getPropertyByName("id")).getKeyValue();
+				EntityContext context2 = context1.defineContext(pageConfigInstId);
+				
+				Long pageEntityId = ((Key<Long>)getPageEntity().getPropertyByName("id")).getKeyValue();
+				EntityContext context3 = context2.defineContext(pageEntityId);
 				
 				Long appId = ((Key<Long>)AppEnviornment.CURRENTAPP.getPropertyByName("id")).getKeyValue(); 
-				EntityContext context3 = context2.defineContext(appId);
+				EntityContext context4 = context3.defineContext(appId);
 				
 				Long serviceId = ((Key<Long>)AppEnviornment.CURRENTSERVICE.getPropertyByName("id")).getKeyValue(); 
-				EntityContext context4 = context3.defineContext(serviceId);
-				
+				EntityContext context5 = context4.defineContext(serviceId);
 				
 				configInstance.setPropertyByName("context", context);
 				configInstance.setProperty("configinstance", viewInstance);
@@ -463,15 +466,19 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 				Long transFormInstanceId = ((Key<Long>)transFormInstance.getPropertyByName("id")).getKeyValue();
 				EntityContext context2 = context1.defineContext(transFormInstanceId);
 				
-				Entity pageParentEnt = (Entity)transFormInstance.getProperty("configinstance");
-				Long pageId = ((Key<Long>)pageParentEnt.getPropertyByName("id")).getKeyValue();
-				EntityContext context3 = context2.defineContext(pageId);
+				Entity pageConfigInstanceEnt = (Entity)transFormInstance.getProperty("configinstance");
+				Long pageConfigInstanceId = ((Key<Long>)pageConfigInstanceEnt.getPropertyByName("id")).getKeyValue();
+				
+				EntityContext context3 = context2.defineContext(pageConfigInstanceId);
+				
+				Long pageEntityId = ((Key<Long>)getPageEntity().getPropertyByName("id")).getKeyValue();
+				EntityContext context4 = context3.defineContext(pageEntityId);
 				
 				Long appId = ((Key<Long>)AppEnviornment.CURRENTAPP.getPropertyByName("id")).getKeyValue(); 
-				EntityContext context4 = context3.defineContext(appId);
+				EntityContext context5 = context4.defineContext(appId);
 				
 				Long serviceId = ((Key<Long>)AppEnviornment.CURRENTSERVICE.getPropertyByName("id")).getKeyValue(); 
-				EntityContext context5 = context4.defineContext(serviceId);
+				EntityContext context6 = context5.defineContext(serviceId);
 				
 				instanceEnt.setPropertyByName("context", context);
 				
@@ -572,5 +579,13 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 			
 		}
 		return conf;
+	}
+
+	public Entity getPageEntity() {
+		return pageEntity;
+	}
+
+	public void setPageEntity(Entity pageEntity) {
+		this.pageEntity = pageEntity;
 	}
 }
