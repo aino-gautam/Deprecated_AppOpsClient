@@ -158,4 +158,12 @@ public class InstanceEditor implements FieldEventHandler{
 		}
 		return null;
 	}
+
+	public Entity getParentConfigInstanceEntity() {
+		return parentConfigInstanceEntity;
+	}
+
+	public void setParentConfigInstanceEntity(Entity parentConfigInstanceEntity) {
+		this.parentConfigInstanceEntity = parentConfigInstanceEntity;
+	}
 }
