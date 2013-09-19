@@ -78,18 +78,27 @@ public class EntityModel extends AppopsBaseModel {
 					query.setQueryName(queryName);
 					query.setQueryParameterMap(queryParamMap);
 					
+					String querypPointer = globalEntityCache.getQueryIdentifier(query);
+					if(!interestedQueryList.contains(querypPointer)) {
+						interestedQueryList.add(querypPointer);
+					}
+						
+					Entity entity = globalEntityCache.getEntity(query);
+					if(entity != null) {
+						receiver.onEntityReceived(entity);
+					}
 					executeQuery(query);
 				}
 			}
 		}
 	}
-	
+	/*
 	@SuppressWarnings("unchecked")
 	public void executeQuery(Query query) {
-		Map<String, Serializable> operationParam = new HashMap<String, Serializable>();
-		operationParam.put("query", query);
+		Map<String, Serializable> queryParam = new HashMap<String, Serializable>();
+		queryParam.put("query", query);
 		
-		StandardAction action = new StandardAction(EntityList.class, getOperationName(), operationParam);
+		StandardAction action = new StandardAction(EntityList.class, getOperationName(), queryParam);
 		dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
 
 			@Override
@@ -107,10 +116,19 @@ public class EntityModel extends AppopsBaseModel {
 			
 			}
 		});
-	}
+	}*/
 
 	public void setReceiver(EntityReceiver receiver) {
 		this.receiver = receiver;
+	}
+	
+	@Override
+	public void onQueryUpdated(String query, Serializable data) {
+
+		if(isInterestingQuery(query)) {
+			Entity entity = (Entity)data;
+			receiver.onEntityReceived(entity);
+		}
 	}
 	
 	public EntityReceiver getReceiver() {
