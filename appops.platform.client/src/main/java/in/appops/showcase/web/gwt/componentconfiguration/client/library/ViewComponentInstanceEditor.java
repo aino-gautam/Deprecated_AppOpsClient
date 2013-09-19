@@ -1,6 +1,3 @@
-/**
- * 
- */
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
 import in.appops.client.common.config.field.ButtonField;
@@ -49,8 +46,8 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 	private VerticalPanel baseVp;
 	
 	private Entity viewConfigInstnceEntity;
-	private Entity snippetTypeInstanceEntity;
-	private Entity snippetTypeEntity;
+	private Entity snippetInstanceConfigInstanceEntity;
+	private Entity snippetTypeConfigInstEntity;
 	
 	private Entity parentCompInstanceEnt;
 	
@@ -157,7 +154,7 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 		HorizontalPanel buttonPanel = new HorizontalPanel();
 		
 		configureButton = new ButtonField();
-		configureButton.setConfiguration(getConfigureButtonConfiguration());
+		configureButton.setConfiguration(getConfigureButtonConfiguration(true));
 		configureButton.configure();
 		configureButton.create();
 		buttonPanel.add(configureButton);
@@ -167,13 +164,17 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 		return buttonPanel;
 	}
 	
-	private Configuration getConfigureButtonConfiguration() {
+	private Configuration getConfigureButtonConfiguration(boolean isEnabled) {
 		try {
 			Configuration configuration = new Configuration();
 			try {
 				configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Configure transform widget");
 				configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,CONFIGURE_BUTTON_CSS);
-				configuration.setPropertyByName(ButtonFieldConstant.BF_ENABLED, true);
+				
+				if(isEnabled)
+					configuration.setPropertyByName(ButtonFieldConstant.BF_ENABLED, true);
+				else
+					configuration.setPropertyByName(ButtonFieldConstant.BF_ENABLED, false);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -191,20 +192,22 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 				if(event.getEventSource() instanceof ButtonField){
 					if(event.getEventSource().equals(configureButton)) {
 						String snippetInstanceName = transformInstanceTextField.getValue().toString().trim();
-						if(!snippetInstanceName.equals("")){
+						if(!snippetInstanceName.equals("") && !snippetInstanceName.equals("Instance name")){
 							String value = (String) transformToListbox.getValue();
 
 							if(!value.equals(DEFTEXTLISTBOX)){
-								Entity snippetTypeEnt = new Entity();
-								snippetTypeEnt.setType(new MetaType("Configinstance"));
+								if(snippetTypeConfigInstEntity == null){
+									snippetTypeConfigInstEntity = new Entity();
+									snippetTypeConfigInstEntity.setType(new MetaType("Configinstance"));
+								}
+
+								snippetTypeConfigInstEntity.setPropertyByName("instancename", "snippetType");
+								snippetTypeConfigInstEntity.setPropertyByName("configkeyname", "snippetType");
+								snippetTypeConfigInstEntity.setProperty("configinstance", viewConfigInstnceEntity);
+								snippetTypeConfigInstEntity.setProperty("configtype", snippetTypeConfigTypeEnt);
+								snippetTypeConfigInstEntity.setPropertyByName("instancevalue", value);
 								
-								snippetTypeEnt.setPropertyByName("instancename", "snippetType");
-								snippetTypeEnt.setPropertyByName("configkeyname", "snippetType");
-								snippetTypeEnt.setProperty("configinstance", viewConfigInstnceEntity);
-								snippetTypeEnt.setProperty("configtype", snippetTypeConfigTypeEnt);
-								snippetTypeEnt.setPropertyByName("instancevalue", value);
-								
-								saveSnippetTypeInstEnt(snippetTypeEnt);
+								saveSnippetTypeInstEnt(snippetTypeConfigInstEntity);
 							}
 							else
 								Window.alert("Please select snippet type");
@@ -218,19 +221,6 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	private Entity createConfigInstnceEntity(String instnceName, Entity configTypeEnt, Entity parentEntity) {
-		Entity configInstnceEntity = null;
-		try{
-			configInstnceEntity = new Entity();
-			configInstnceEntity.setType(new MetaType("Configinstance"));
-			
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		return configInstnceEntity;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -260,7 +250,7 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 					if(result!=null){
 						Entity ent = result.getOperationResult();
 						if(ent != null) {
-							snippetTypeEntity = ent;
+							snippetTypeConfigInstEntity = ent;
 							createSnippetInstConInstEntity();
 						}
 					}
@@ -275,20 +265,22 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 		try {
 			String value = transformInstanceTextField.getValue().toString().trim();
 			if(!value.equals("")){
-				Entity snippetTypeEnt = new Entity();
-				snippetTypeEnt.setType(new MetaType("Configinstance"));
-
-				snippetTypeEnt.setPropertyByName("instancename", "snippetInstance");
-				snippetTypeEnt.setPropertyByName("configkeyname", "snippetInstance");
-				snippetTypeEnt.setProperty("configinstance", viewConfigInstnceEntity);
-				snippetTypeEnt.setProperty("configtype", snippetInstnceConfigTypeEnt);
-				snippetTypeEnt.setPropertyByName("instancevalue", value);
+				if(snippetInstanceConfigInstanceEntity == null){
+					snippetInstanceConfigInstanceEntity = new Entity();
+					snippetInstanceConfigInstanceEntity.setType(new MetaType("Configinstance"));
+				}
+			
+				snippetInstanceConfigInstanceEntity.setPropertyByName("instancename", "snippetInstance");
+				snippetInstanceConfigInstanceEntity.setPropertyByName("configkeyname", "snippetInstance");
+				snippetInstanceConfigInstanceEntity.setProperty("configinstance", viewConfigInstnceEntity);
+				snippetInstanceConfigInstanceEntity.setProperty("configtype", snippetInstnceConfigTypeEnt);
+				snippetInstanceConfigInstanceEntity.setPropertyByName("instancevalue", value);
 				
 				DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 				DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 				
 				Map parameterMap = new HashMap();
-				parameterMap.put("confInstEnt", snippetTypeEnt);
+				parameterMap.put("confInstEnt", snippetInstanceConfigInstanceEntity);
 				parameterMap.put("isUpdate", false);
 				
 				EntityContext context  = getEntityContextForViewPageAppService(null);
@@ -307,7 +299,7 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 						if(result!=null){
 							Entity ent = result.getOperationResult();
 							if(ent != null) {
-								snippetTypeEntity = ent;
+								snippetInstanceConfigInstanceEntity = ent;
 								saveTransformWidgetInstance();
 							}
 						}
@@ -363,7 +355,7 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 							while(iterator.hasNext()) {
 								Entity entity = iterator.next();
 								String name = entity.getPropertyByName("instancename").toString();
-								if(name.contains(".view")) {
+								if(name.equals("view")) {
 									viewInstanceEnt = entity;
 								} else {
 									modelInstanceEnt = entity;
@@ -371,6 +363,10 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 							}
 							
 							if(true){
+								configureButton.setConfiguration(getConfigureButtonConfiguration(false));
+								configureButton.configure();
+								configureButton.create();
+								
 								ConfigurationInstanceMVPEditor instanceMVPEditor = new ConfigurationInstanceMVPEditor();
 								instanceMVPEditor.setConfigInstEnt(configInst);
 								instanceMVPEditor.setViewInstanceEnt(viewInstanceEnt);
