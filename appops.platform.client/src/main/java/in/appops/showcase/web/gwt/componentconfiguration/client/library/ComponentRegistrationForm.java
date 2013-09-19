@@ -21,7 +21,6 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
-import in.appops.platform.client.EntityContext;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
@@ -65,6 +64,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 	/** Field ID **/
 	private static String SAVECOMPONENT_BTN_ID = "saveCompBtnId";
 	public final String COMPONENTTYPELISTBOX_ID = "componenttTypeListBoxId";
+	private final String COMPONENT_NAME_STATEFIELD_ID = "componentNameStateFieldId";
 	
 	public ComponentRegistrationForm(){
 		initialize();
@@ -122,6 +122,7 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 			configuration.setPropertyByName(StateFieldConstant.BF_SUGGESTION_TEXT,"Component Name");
 			configuration.setPropertyByName(StateFieldConstant.BF_PCLS,SUGGESTIONBOX_PCLS);
 			configuration.setPropertyByName(StateFieldConstant.BF_ENABLED,isEnabled);
+			configuration.setPropertyByName(StateFieldConstant.BF_ID,COMPONENT_NAME_STATEFIELD_ID);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -233,6 +234,16 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 					}
 				}
 			}
+			//Following case is not added bcz all components in DB from all libraries are listed.
+			/*else if (eventType == FieldEvent.VALUE_SELECTED) {
+				if (event.getEventSource() instanceof StateField) {
+					StateField stateField = (StateField) event.getEventSource();
+					if(stateField.getBaseFieldId().equals(COMPONENT_NAME_STATEFIELD_ID)){
+						AppopsSuggestion selectedSuggestion = (AppopsSuggestion) event.getEventData();
+						compEntityToUpdate = selectedSuggestion.getEntity();
+					}
+				}
+			}*/
 		}
 		catch (Exception e) {
 			logger.log(Level.SEVERE, "ComponentRegistrationForm :: onFieldEvent :: Exception", e);
@@ -240,7 +251,6 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 	}
 	
 	private void enableRegistrationForm(Boolean isEnable){
-		componentNameField.removeRegisteredHandlers();
 		Configuration stateFieldConfig = getComponentSuggestionFieldConf(isEnable);
 		componentNameField.setConfiguration(stateFieldConfig);
 		componentNameField.configure();
