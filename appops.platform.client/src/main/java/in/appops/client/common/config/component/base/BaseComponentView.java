@@ -1,6 +1,7 @@
 package in.appops.client.common.config.component.base;
 
 import in.appops.client.common.config.component.base.BaseComponentPresenter.BaseComponentConstant;
+import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.shared.Configuration;
 
 import java.io.Serializable;
@@ -8,27 +9,16 @@ import java.io.Serializable;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 
-public class BaseComponentView extends Composite implements Component {
+public abstract class BaseComponentView extends Composite implements Configurable {
 
 	protected DockPanel basePanel;
 	
-	private Configuration configuration;
+	protected Configuration configuration;
 	
 	public BaseComponentView() {
 		initialize();
 	}
-	
-	@Override
-	public Configuration getConfiguration() {
-		return configuration;
-	}
 
-	@Override
-	public void setConfiguration(Configuration conf) {
-		this.configuration = conf;
-	}
-
-	@Override
 	public void configure() {
 		basePanel.setStylePrimaryName(getBaseComponentPrimCss());
 	}
@@ -37,11 +27,9 @@ public class BaseComponentView extends Composite implements Component {
 		basePanel = new DockPanel();
 	}
 
-	@Override
 	public void create() {
 		initWidget(basePanel);
 	}
-
 	
 	protected boolean hasConfiguration(String configKey) {
 		if(configuration != null && configuration.getPropertyByName(configKey) != null) {
@@ -63,6 +51,16 @@ public class BaseComponentView extends Composite implements Component {
 			primaryCss = getConfigurationValue(BaseComponentConstant.BC_PCLS).toString();
 		}
 		return primaryCss;
+	}
+	
+	@Override
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	@Override
+	public void setConfiguration(Configuration conf) {
+		this.configuration = conf;
 	}
 
 }

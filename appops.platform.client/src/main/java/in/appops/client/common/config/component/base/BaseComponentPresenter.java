@@ -6,34 +6,32 @@ import in.appops.platform.core.shared.Configuration;
 
 import java.io.Serializable;
 
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.History;
-
-public class BaseComponentPresenter implements Configurable, ValueChangeHandler<String>{
+public abstract class BaseComponentPresenter implements Configurable{
 	
 	protected Configuration configuration;
 	
 	protected BaseComponentView view;
 	protected AppopsBaseModel model;
 
-	private HandlerRegistration historyRegistration;
+	public BaseComponentPresenter() {	
 
-	public BaseComponentPresenter() {	}
+	}
 	
-	public void init() { }
+	public abstract void initialize();
+
+	public abstract void load();
 	
 	public void configure() {
-		historyRegistration = History.addValueChangeHandler(this);
+		model.setConfiguration(getModelConfiguration());
+		model.configure();
+		
+		view.setConfiguration(getViewConfiguration());
+		view.configure();
+		
+		view.create();
 	}
 	
-	public void load() {
-		
-	}
-
-
-	private boolean hasConfiguration(String configKey) {
+	protected boolean hasConfiguration(String configKey) {
 		if(configuration != null && configuration.getPropertyByName(configKey) != null) {
 			return true;
 		}
@@ -61,52 +59,33 @@ public class BaseComponentPresenter implements Configurable, ValueChangeHandler<
 		return new Configuration();
 	}
 	
-	@Override
-	public Configuration getConfiguration() {
-		return configuration;
+	protected Boolean isConfigDriven() {
+		if(getConfigurationValue(BaseComponentConstant.BC_CONFIG_DRIVEN) != null) {
+			return (Boolean)getConfigurationValue(BaseComponentConstant.BC_CONFIG_DRIVEN);
+		}
+		return false;
 	}
 
 	@Override
 	public void setConfiguration(Configuration conf) {
 		this.configuration = conf;
 	}
+	
+	@Override
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	public interface BaseComponentConstant {
+		String BC_PCLS = "basePrimaryCss";
+		String BC_DCLS = "baseDependentCss";
+		String BC_CONFIGMODEL = "model";
+		String BC_CONFIGVIEW = "view";
+		String BC_CONFIG_DRIVEN = "configDriven";
+	}
 
 	public BaseComponentView getView() {
 		return view;
 	}
-
-	public void setView(BaseComponentView view) {
-		this.view = view;
-	}
-
-	public AppopsBaseModel getModel() {
-		return model;
-	}
-
-	public void setModel(AppopsBaseModel model) {
-		this.model = model;
-	}
 	
-	public void updateConfiguration(String confProp) {
-		
-	}
-
-	@Override
-	public void onValueChange(ValueChangeEvent<String> event) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public void removeEventHandler() {
-		historyRegistration.removeHandler();
-	}
-	
-	public interface BaseComponentConstant {
-		String BC_ID = "component.id";
-		String BC_PCLS = "component.view.basePrimaryCss";
-		String BC_DCLS = "component.view.baseDependentCss";
-		String BC_CONFIGMODEL = "model";
-		String BC_CONFIGVIEW = "view";
-		String BC_INTERESTED_EVENTS = "interestedEvents";
-	}
 }
