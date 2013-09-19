@@ -66,6 +66,7 @@ public class TreeComponentView extends BaseComponentView {
 	protected void populate() {
 		TreeItem selectedTreeItem = root.getSelectedItem();
 		if(selectedTreeItem == null) {
+			root.clear();
 			for(Entity entity : entityList){
 				HTMLSnippetPresenter snippetPres  = getChildSnippet();
 				TreeItem item = root.addItem(snippetPres.getHTMLSnippet());
@@ -76,6 +77,7 @@ public class TreeComponentView extends BaseComponentView {
 				snippetPres.load();
 			}
 		} else {
+			selectedTreeItem.removeItems();
 			for(Entity entity : entityList){
 				HTMLSnippetPresenter snippetPres  = getChildSnippet();
 				TreeItem item = selectedTreeItem.addItem(snippetPres.getHTMLSnippet());
