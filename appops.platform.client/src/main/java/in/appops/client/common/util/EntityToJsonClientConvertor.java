@@ -40,12 +40,16 @@ public class EntityToJsonClientConvertor {
 	 protected static JSONObject encodeMap(HashMap<String, Object> data) {
 		    JSONObject jsobj = new JSONObject();
 		    for (String key : data.keySet()) {
-		      Object val = data.get(key);
+		    	Object val = data.get(key);
 		      if (val instanceof String) {
 		        jsobj.put(key, new JSONString(val.toString()));
 		      } else if(val instanceof Entity){
 		    	  JSONObject entJsonObj = createJsonFromEntity((Entity)val);
 		    	  jsobj.put(key, entJsonObj);
+		      } else if(val  instanceof ArrayList) {
+		    	  ArrayList arrayList = (ArrayList)val;
+		    	  JSONArray jsonArray = encodeList(arrayList);
+		    	  jsobj.put(key, jsonArray);
 		      }
 		    }
 		    return jsobj;

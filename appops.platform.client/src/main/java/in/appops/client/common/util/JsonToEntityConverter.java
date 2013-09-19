@@ -323,6 +323,9 @@ public class JsonToEntityConverter {
 	      } else if(j.isObject() != null){
 				Entity entity =  getConvertedEntity(j.isObject());
 		        map.put(key, entity);
+	      } else if(j.isArray() != null){
+				ArrayList<String> entity =  decodeJsonArrayStr(j.isArray());
+		        map.put(key, entity);
 	      }
 	    }
 	    return map;
