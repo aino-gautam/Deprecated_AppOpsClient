@@ -2,6 +2,10 @@ package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
 import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
+import in.appops.client.common.config.field.ListBoxField;
+import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.ConfigEvent;
 import in.appops.client.common.event.ConfigInstanceEvent;
@@ -10,13 +14,18 @@ import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
+import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.server.core.services.configuration.constant.ConfigTypeConstant;
 
+import java.util.ArrayList;
+
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.PopupPanel;
 
 /**
  * @author mahesh@ensarm.com
@@ -50,7 +59,21 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 	private boolean instanceMode;
 	private Entity parentConfInstanceEntity;
 	private Entity confInstanceParamValEnt;
-
+	private Entity configTypeEntity;
+	private ListBoxField configTypeListbox;
+	private boolean isConfigTypeListboxVisible;
+	
+	/*******************  Contants *****************************/
+	private final String STRING_CONFIGTYPE = "String";
+	private final String DOUBLE_CONFIGTYPE = "Double";
+	private final String LONG_CONFIGTYPE = "Long";
+	private final String INTEGER_CONFIGTYPE = "Integer";
+	private final String BOOLEAN_CONFIGTYPE = "Boolean";
+	private final String ENTITY_CONFIGTYPE = "Entity";
+	private final String CONFIGURATION_CONFIGTYPE = "Configuration";
+	private final String POPUP_CSS = "popupCss";
+	private final String POPUP_LBL_PCLS = "popupLbl";
+	
 	
 	public SnippetPropValueEditor(String querymode/*, int valPanelRow*/) {
 		propValuePanel = new FlexTable();
@@ -72,17 +95,26 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 		paramValueField.setConfiguration(getParamValueFldConfig());
 		paramValueField.configure();
 		paramValueField.create();
-
+		
 		propValuePanel.setWidget(0, 3, getParamNameField());
-		propValuePanel.setWidget(0, 5, paramValueField);
+		propValuePanel.setWidget(0, 7, paramValueField);
 
 		if(deletable) {
 			removePropImgFld = new ImageField();
 			removePropImgFld.setConfiguration(getCrossImageConfiguration());
 			removePropImgFld.configure();
 			removePropImgFld.create();
-			propValuePanel.setWidget(0, 7, removePropImgFld);
+			propValuePanel.setWidget(0, 9, removePropImgFld);
 		}
+		
+		if(isConfigTypeListboxVisible) {
+			configTypeListbox = new ListBoxField();
+			configTypeListbox.setConfiguration(getConfigTypeListBoxConfiguration());
+			configTypeListbox.configure();
+			configTypeListbox.create();
+			propValuePanel.setWidget(0, 5, configTypeListbox);
+		}
+		
 		propValuePanel.setStylePrimaryName("propNameValContainerFlex");
 	}
 	
@@ -197,14 +229,14 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 			if(event.getEventSource() instanceof TextField){
 				if(event.getEventType() == FieldEvent.TAB_KEY_PRESSED){
 					if(((TextField)event.getEventSource()).equals(paramValueField)){
-						if(!(paramValueField.getValue().toString().trim().equals("")) && !(paramNameField.getValue().toString().trim().equals(""))){
-							GwtEvent configEvent = null;
-							if(isInstanceMode()) {
-								configEvent = new ConfigInstanceEvent(ConfigEvent.SAVEPROPVALUEADDWIDGET, reference);
+						if(isConfigTypeListboxVisible) {
+							if(configTypeEntity != null) {
+								fireEvent();
 							} else {
-								configEvent = new ConfigEvent(ConfigEvent.SAVEPROPVALUEADDWIDGET, getConfigTypeEntity(), reference);
+								showPopup("Please select config type");
 							}
-							AppUtils.EVENT_BUS.fireEvent(configEvent);
+						} else {
+							fireEvent();
 						}
 					}
 				}
@@ -214,6 +246,19 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 					if(((ImageField)event.getEventSource()).equals(removePropImgFld)){
 						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.REMOVEPARAMPROPERTYVALUE, getConfigTypeEntity(), reference);
 						AppUtils.EVENT_BUS.fireEvent(configEvent);
+					}
+				}
+			}
+			else if(event.getEventSource() instanceof ListBoxField){
+				if(event.getEventType() == FieldEvent.VALUECHANGED){
+					ListBoxField source = (ListBoxField) event.getEventSource();
+					if(source.equals(configTypeListbox)) {
+						String value = (String) source.getValue();
+						if(value.equals(source.getSuggestionValueForListBox())) {
+							configTypeEntity = null;
+						} else {
+							configTypeEntity = getConfigTypeEnt(value);
+						}
 					}
 				}
 			}
@@ -311,9 +356,15 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 
 		confInstanceParamValEnt.setPropertyByName("instancename", paramNameField.getValue().toString());
 		confInstanceParamValEnt.setPropertyByName("configkeyname", paramNameField.getValue().toString());
-		if(confTypeParamValEnt != null) {
-			confInstanceParamValEnt.setProperty("configtype", confTypeParamValEnt);
+		
+		if(isConfigTypeListboxVisible) {
+			confInstanceParamValEnt.setProperty("configtype", configTypeEntity);
+		} else {
+			if(confTypeParamValEnt != null) {
+				confInstanceParamValEnt.setProperty("configtype", confTypeParamValEnt);
+			}
 		}
+		
 		confInstanceParamValEnt.setPropertyByName("instancevalue", paramValueField.getValue().toString());
 		if(parentConfInstanceEntity != null) {
 			confInstanceParamValEnt.setProperty("configinstance", parentConfInstanceEntity);
@@ -333,6 +384,124 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 			
 			paramNameField.setValue(paramKey);
 			paramValueField.setValue(paramValue);
+		}
+	}
+	
+	/**
+	 * Creates the config type Listbox configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getConfigTypeListBoxConfiguration() {
+		try {
+			Configuration configuration = new Configuration();
+			configuration.setPropertyByName(ListBoxFieldConstant.BF_DEFVAL,"--Please select a type--");
+			configuration.setPropertyByName(ListBoxFieldConstant.BF_ENABLED, true);
+			
+			ArrayList<String> items = new ArrayList<String>();
+			items.add(STRING_CONFIGTYPE);
+			items.add(DOUBLE_CONFIGTYPE);
+			items.add(LONG_CONFIGTYPE);
+			items.add(INTEGER_CONFIGTYPE);
+			items.add(BOOLEAN_CONFIGTYPE);
+			items.add(ENTITY_CONFIGTYPE);
+			items.add(CONFIGURATION_CONFIGTYPE);
+			configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,items);
+			
+			return configuration;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	//TODO : Hardcoded entity has been set
+	private Entity getConfigTypeEnt(String value) {
+		Long configTypeId = null;
+		
+		if(value.equals(STRING_CONFIGTYPE)) {
+			configTypeId = 809L;
+		} else if(value.equals(DOUBLE_CONFIGTYPE)) {
+			configTypeId = 810L;
+		} else if(value.equals(LONG_CONFIGTYPE)) {
+			configTypeId = 811L;
+		} else if(value.equals(INTEGER_CONFIGTYPE)) {
+			configTypeId = 812L;
+		} else if(value.equals(BOOLEAN_CONFIGTYPE)) {
+			configTypeId = 813L;
+		} else if(value.equals(ENTITY_CONFIGTYPE)) {
+			configTypeId = 814L;
+		} else if(value.equals(CONFIGURATION_CONFIGTYPE)) {
+			configTypeId = 815L;
+		}
+		
+		Entity configTypeEntity = new Entity();
+		configTypeEntity.setType(new MetaType("Configtype"));
+		Key<Long> key = new Key<Long>(configTypeId);
+		Property<Key<Long>> keyProp = new Property<Key<Long>>(key);
+		configTypeEntity.setProperty(ConfigTypeConstant.ID, keyProp);
+		return configTypeEntity;
+	}
+	
+	/**
+	 * Used to show popup at perticular position.
+	 * @param popuplabel
+	 */
+	private void showPopup(String popuplabel){
+		try {
+			LabelField popupLbl = new LabelField();
+			popupLbl.setConfiguration(getLabelFieldConf(popuplabel,POPUP_LBL_PCLS,null,null));
+			popupLbl.configure();
+			popupLbl.create();
+					
+			PopupPanel popup = new PopupPanel();
+			popup.setAnimationEnabled(true);
+			popup.setAutoHideEnabled(true);
+			popup.setStylePrimaryName(POPUP_CSS);
+			popup.add(popupLbl);
+			popup.center();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Creates the table name label field configuration object and return.
+	 * @param displayText
+	 * @param primaryCss
+	 * @param dependentCss
+	 * @param propEditorLblPanelCss
+	 * @return Configuration instance
+	 */
+	private Configuration getLabelFieldConf(String displayText , String primaryCss , String dependentCss ,String propEditorLblPanelCss){
+		Configuration conf = new Configuration();
+		try {
+			conf.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, displayText);
+			conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+			conf.setPropertyByName(LabelFieldConstant.BF_DCLS, dependentCss);
+			conf.setPropertyByName(LabelFieldConstant.BF_BASEPANEL_PCLS, propEditorLblPanelCss);
+		} catch (Exception e) {
+			
+		}
+		return conf;
+	}
+
+	public boolean isConfigTypeListboxVisible() {
+		return isConfigTypeListboxVisible;
+	}
+
+	public void setConfigTypeListboxVisible(boolean isConfigTypeListboxVisible) {
+		this.isConfigTypeListboxVisible = isConfigTypeListboxVisible;
+	}
+	
+	private void fireEvent() {
+		if(!(paramValueField.getValue().toString().trim().equals("")) && !(paramNameField.getValue().toString().trim().equals(""))){
+			GwtEvent configEvent = null;
+			if(isInstanceMode()) {
+				configEvent = new ConfigInstanceEvent(ConfigEvent.SAVEPROPVALUEADDWIDGET, reference);
+			} else {
+				configEvent = new ConfigEvent(ConfigEvent.SAVEPROPVALUEADDWIDGET, getConfigTypeEntity(), reference);
+			}
+			AppUtils.EVENT_BUS.fireEvent(configEvent);
 		}
 	}
 }
