@@ -79,6 +79,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 		int col=0;
 		beforeDeletionOfRowHashMap = new HashMap<Integer, HashMap<String,EntityList>>();
 		conFigTypesMainHashMap = new HashMap<Long, HashMap<String,EntityList>>();
+		rowVsRowListSizeMap = new HashMap<Long, HashMap<Long,Integer>>();
 		LabelField propertyNameField = createLabelField("Property Name","componentSectionHeaderLbl","");
 		LabelField propertyValueField = createLabelField("Value(s)","componentSectionHeaderLbl","");
 		LabelField valueField = createLabelField(" ","componentSectionHeaderLbl","");
@@ -652,6 +653,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 						configurationListTable.setWidget(maxRow+1,col+1, configValuePanel);
 						populateGridRows(confEntityList, configTypeHashMapForStore,rowVsListSize,configValuePanel, true,maxRow,col);
 					}
+					
 					break;
 				//}
 			}
