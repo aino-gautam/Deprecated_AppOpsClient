@@ -774,8 +774,15 @@ public class BaseField extends Composite implements Field {
 		/** Apply Css to the spinner base container, if not configured value default css applied **/
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In configure  method ");
-			basePanel.setStylePrimaryName(getBasePanelPrimCss());
-			basePanel.addStyleName(getBasePanelDependentCss());
+			if(getBasePanelPrimCss() != null) {
+				basePanel.setStylePrimaryName(getBasePanelPrimCss());
+			}
+			
+			if(getBasePanelDependentCss() != null) {
+				basePanel.addStyleName(getBasePanelDependentCss());
+			}
+			
+
 			basePanel.setVisible(isFieldVisible());
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In configure  method :"+e);

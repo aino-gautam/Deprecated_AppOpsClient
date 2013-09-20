@@ -180,7 +180,8 @@ public class ActionField extends BaseField implements ClickHandler{
 		} else if(getMode() == ActionFieldConstant.PAGE) {
 			String page = getPageValue(); 
 			String moduleUrl = GWT.getHostPageBaseURL();
-			String pageUrl = moduleUrl + page; // + "?gwt.codesvr=127.0.0.1:9997";
+			//String pageUrl = moduleUrl + page; // + "?gwt.codesvr=127.0.0.1:9997";
+			String pageUrl = moduleUrl + "render?viewPage=" + page;
 			Window.open(pageUrl, "_self", "");
 		}
 	}
