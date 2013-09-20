@@ -32,6 +32,7 @@ import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.server.core.services.configuration.constant.ConfigTypeConstant;
 import in.appops.showcase.web.gwt.componentconfiguration.client.library.ComponentInstanceMVPEditor;
 import in.appops.showcase.web.gwt.componentconfiguration.client.library.ConfigurationInstanceMVPEditor;
 
@@ -107,7 +108,6 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		addConfigPanel = new VerticalPanel();
 		updateConfigurationPanel = new VerticalPanel();
 		configMap = new HashMap<String, TextField>();
-		containerCompoInstMap = new HashMap<String, Map<String,Object>>();
 	}
 	
 	public void createUI() {
@@ -251,7 +251,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		}
 	}
 	
-	private void populateSpansListBox(ArrayList<Element> spansList){
+	public void populateSpansListBox(ArrayList<Element> spansList){
 		ArrayList<String> configList = new ArrayList<String>();
 		for(Element element : spansList){
 			String dataConfig = element.getAttribute("data-config");
@@ -260,6 +260,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		spanListbox.setConfiguration(getSpanListBoxConfiguration(configList));
 		spanListbox.configure();
 		spanListbox.create();
+		containerCompoInstMap = new HashMap<String, Map<String,Object>>();
 	}
 	
 	public void createPropertyConfigUI() {
@@ -845,7 +846,6 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 			configuration.setPropertyByName(TextFieldConstant.BF_VALIDATEONCHANGE, true);
 			configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
 			configuration.setPropertyByName(TextFieldConstant.TF_MAXLENGTH, 100);
-			configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, true);
 			return configuration;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -874,7 +874,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 								isUpdate = true;
 							} else {
 								isUpdate = false;
-								entity = getConfiginstanceEntity(eventNametextField.getFieldValue(), eventNametextField.getFieldValue(), null, interestedEventEntity);
+								entity = getConfiginstanceEntity(eventNametextField.getFieldValue(), eventNametextField.getFieldValue(), null, interestedEventEntity, 4L);
 							}
 							
 							EntityContext context = getEntityContext(null, interestedEventEntity);
@@ -900,7 +900,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 									isNew = false;
 									createUpdateConfigRow(true);
 									EntityContext context = getEntityContextForEventChild(null);
-									saveConfigInstance(getConfiginstanceEntity("UpdateConfiguration", "UpdateConfiguration", null, parentEventEntity), false, source, false, context);
+									saveConfigInstance(getConfiginstanceEntity("UpdateConfiguration", "UpdateConfiguration", null, parentEventEntity, 5L), false, source, false, context);
 								} else {
 									Entity entity = createEntityWithInfo(source);
 									createUpdateConfigRow(true);
@@ -923,7 +923,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 								isUpdate = true;
 							} else {
 								isUpdate = false;
-								entity = getConfiginstanceEntity("transformInstance", "transformInstance", value, parentEventEntity);
+								entity = getConfiginstanceEntity("transformInstance", "transformInstance", value, parentEventEntity, 6L);
 							}
 							
 							EntityContext context = getEntityContextForEventChild(null);
@@ -980,7 +980,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 							isUpdate = true;
 						} else {
 							isUpdate = false;
-							entity = getConfiginstanceEntity("isTransformWidget", "isTransformWidget", text, parentEventEntity);
+							entity = getConfiginstanceEntity("isTransformWidget", "isTransformWidget", text, parentEventEntity, 9L);
 						}
 						
 						EntityContext context = getEntityContextForEventChild(null);
@@ -1000,7 +1000,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 							isUpdate = true;
 						} else {
 							isUpdate = false;
-							entity = getConfiginstanceEntity("isUpdateConfiguration", "isUpdateConfiguration", text, parentEventEntity);
+							entity = getConfiginstanceEntity("isUpdateConfiguration", "isUpdateConfiguration", text, parentEventEntity, 10L);
 						}
 						EntityContext context = getEntityContextForEventChild(null);
 						saveConfigInstance(entity, false, null, isUpdate, context);
@@ -1036,7 +1036,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 							isUpdate = true;
 						} else {
 							isUpdate = false;
-							entity = getConfiginstanceEntity("transformType", "transformType", instanceValue, parentEventEntity);
+							entity = getConfiginstanceEntity("transformType", "transformType", instanceValue, parentEventEntity, 8L);
 						}
 						EntityContext context = getEntityContextForEventChild(null);
 						saveConfigInstance(entity, false, null, isUpdate, context);
@@ -1050,7 +1050,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 							isUpdate = true;
 						} else {
 							isUpdate = false;
-							entity = getConfiginstanceEntity("transformTo", "transformTo", value, parentEventEntity);
+							entity = getConfiginstanceEntity("transformTo", "transformTo", value, parentEventEntity, 7L);
 						}
 						EntityContext context = getEntityContextForEventChild(null);
 						saveConfigInstance(entity, false, null, isUpdate, context);
@@ -1058,11 +1058,15 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 						//transformMap.put(transformInstanceTextField.getFieldValue(), entity);
 					} else if(source.equals(spanListbox)) {
 						String value = (String) source.getValue();
-						if(!containerCompoInstMap.containsKey(value)) {
-							Entity entity = createComponentInstance(value);
-							saveComponentInstance(entity);
+						if(value.equals(source.getSuggestionValueForListBox())) {
+							addConfigPanel.clear();
 						} else {
-							initializeEditor(containerCompoInstMap.get(value));
+							if(!containerCompoInstMap.containsKey(value)) {
+								Entity entity = createComponentInstance(value);
+								saveComponentInstance(entity);
+							} else {
+								initializeEditor(containerCompoInstMap.get(value));
+							}
 						}
 					}
 				}
@@ -1145,7 +1149,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 				entity.setPropertyByName("instancevalue", source.getFieldValue());
 			} else {
 				isUpdateConfigurationEntity = false;
-				entity = getConfiginstanceEntity(textField.getFieldValue(), textField.getFieldValue(), source.getFieldValue(), updateConfigEntity);
+				entity = getConfiginstanceEntity(textField.getFieldValue(), textField.getFieldValue(), source.getFieldValue(), updateConfigEntity, null);
 			}
 		}
 		return entity;
@@ -1219,7 +1223,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		transformToListbox.create();
 	}
 
-	public Entity getConfiginstanceEntity(String instanceName, String configKeyName, String instanceValue, Entity parent) {
+	public Entity getConfiginstanceEntity(String instanceName, String configKeyName, String instanceValue, Entity parent, Long configTypeId) {
 		try{
 			Entity configInstEntity = new Entity();
 			configInstEntity.setType(new MetaType("Configinstance"));
@@ -1231,6 +1235,9 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 			if(parent != null) {
 				configInstEntity.setProperty("configinstance", parent);
 			}
+			if(configTypeId != null) {
+				configInstEntity.setProperty("configtype", getConfigType(configTypeId));
+			}
 			return configInstEntity;
 		}
 		catch (Exception e) {
@@ -1239,6 +1246,16 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		return null;
 	}
 	
+	//TODO : Hardcoded entity has been set
+	private Entity getConfigType(Long configTypeId) {
+		Entity configTypeEntity = new Entity();
+		configTypeEntity.setType(new MetaType("Configtype"));
+		Key<Long> key = new Key<Long>(configTypeId);
+		Property<Key<Long>> keyProp = new Property<Key<Long>>(key);
+		configTypeEntity.setProperty(ConfigTypeConstant.ID, keyProp);
+		return configTypeEntity;
+	}
+
 	public Entity createComponentInstance(String value) {
 		try{
 			Entity configInstEntity = new Entity();
@@ -1254,6 +1271,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		return null;
 	}
 	
+	//TODO : Hardcoded entity has been set
 	private Entity getCompoDefEnt() {
 		try{
 			Entity compoDefEntity = new Entity();

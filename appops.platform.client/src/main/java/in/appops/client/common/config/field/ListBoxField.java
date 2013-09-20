@@ -673,5 +673,9 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		
 		
 	}
+	
+	public boolean isFieldEnabled() {
+		return isEnabled();
+	}
 
 }

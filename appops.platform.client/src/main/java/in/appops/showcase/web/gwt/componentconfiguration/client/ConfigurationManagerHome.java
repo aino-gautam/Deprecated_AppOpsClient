@@ -8,7 +8,7 @@ import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.showcase.web.gwt.componentconfiguration.client.app.CreateAppWidget;
 import in.appops.showcase.web.gwt.componentconfiguration.client.library.LibraryComponentManager;
-import in.appops.showcase.web.gwt.componentconfiguration.client.page.PageManager;
+import in.appops.showcase.web.gwt.componentconfiguration.client.page.PageCreation;
 import in.appops.showcase.web.gwt.componentconfiguration.client.page.SnippetManager;
 import in.appops.showcase.web.gwt.componentconfiguration.client.service.CreateServicePageWidget;
 
@@ -243,9 +243,8 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 						contentPanel.add(libraryComponentManager);
 					}else if (btnField.getBaseFieldId().equals(CREATEPAGE_BTN_ID)) {
 						contentPanel.clear();
-						PageManager pageManager = new PageManager();
-						pageManager.initialize();
-						contentPanel.add(pageManager);
+						PageCreation pageCreation = new PageCreation();
+						contentPanel.add(pageCreation);
 					}else if (btnField.getBaseFieldId().equals(CREATESNIPPET_BTN_ID)) {
 						contentPanel.clear();
 						if(snippetManagerList == null)

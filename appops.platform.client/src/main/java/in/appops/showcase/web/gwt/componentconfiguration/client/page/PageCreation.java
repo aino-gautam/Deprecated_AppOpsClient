@@ -11,7 +11,6 @@ import in.appops.client.common.config.field.StateField;
 import in.appops.client.common.config.field.StateField.StateFieldConstant;
 import in.appops.client.common.config.field.suggestion.AppopsSuggestion;
 import in.appops.client.common.event.AppUtils;
-import in.appops.client.common.event.ConfigEvent;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
@@ -42,6 +41,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -65,6 +65,9 @@ public class PageCreation extends Composite implements FieldEventHandler {
 	private static String NEW_PAGE_TITLE_LABEL_CSS = "newPageTitleLabel";
 	private static String NEW_PAGE_NAME_PANEL_CSS = "newPageNamePanel";
 	
+	private final String POPUP_CSS = "popupCss";
+	private final String POPUP_LBL_PCLS = "popupLbl";
+	
 	private StateField serviceSuggestionbox;
 	private ListBoxField appListbox;
 	private ListBoxField pageListbox;
@@ -74,6 +77,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 	private ButtonField createPageButton;
 	private Entity appEntity;
 	private Entity serviceEntity;
+	private VerticalPanel pageConfigPanel;
 	
 	public PageCreation() {
 		initialize();
@@ -84,6 +88,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 	
 	public void initialize() {
 		basePanel = new VerticalPanel();
+		pageConfigPanel = new VerticalPanel();
 	}
 	
 	public void createUI() {
@@ -98,6 +103,8 @@ public class PageCreation extends Composite implements FieldEventHandler {
 			basePanel.add(createPageButtonPanel);
 			basePanel.add(newPageNamePanel);
 			basePanel.add(editPagePanel);
+			basePanel.add(pageConfigPanel);
+			pageConfigPanel.setWidth("100%");
 			basePanel.setStylePrimaryName(PAGECREATION_BASEPANEL_CSS);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -260,7 +267,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 				configuration.setPropertyByName(StateFieldConstant.STFD_QUERYNAME,"getAllServiceForSuggestion");
 				configuration.setPropertyByName(StateFieldConstant.STFD_ENTPROP,"name");
 				configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter service name");
-				configuration.setPropertyByName(StateFieldConstant.STFD_QUERY_MAXRESULT,10);
+				configuration.setPropertyByName(StateFieldConstant.STFD_QUERY_MAXRESULT,5);
 				configuration.setPropertyByName(StateFieldConstant.IS_AUTOSUGGESTION,true);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -393,7 +400,6 @@ public class PageCreation extends Composite implements FieldEventHandler {
 			configuration.setPropertyByName(TextFieldConstant.BF_VALIDATEONCHANGE, true);
 			configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
 			configuration.setPropertyByName(TextFieldConstant.TF_MAXLENGTH, 100);
-			configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, true);
 			return configuration;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -445,8 +451,24 @@ public class PageCreation extends Composite implements FieldEventHandler {
 					htmltextArea.setValue("");
 					pageNametextField.setValue("");
 					((TextBox) pageNametextField.getWidget()).setFocus(true);
+					pageListbox.setValue(pageListbox.getSuggestionValueForListBox());
 				} else if(source.equals(processPageButton)) {
-					saveComponentDef();
+					boolean isEnabled = appListbox.isFieldEnabled();
+					if(isEnabled) {
+						String value = (String) appListbox.getValue();
+						if(value.equals(appListbox.getSuggestionValueForListBox())) {
+							showPopup("Please select an App");
+						} else {
+							ArrayList<Element> appopsContainerFields = validateHTML();
+							if(appopsContainerFields != null) {
+								saveComponentDef(appopsContainerFields);
+							} else {
+								showPopup("Html format not valid");
+							}
+						}
+					} else {
+						showPopup("Please select an App");
+					}
 				}
 			}
 		} else if(eventType == FieldEvent.VALUECHANGED) {
@@ -476,8 +498,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 					if(value.equals(source.getSuggestionValueForListBox())) {
 						htmltextArea.setValue("");
 						pageNametextField.setValue("");
-						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.HIDEPAGECONFIGURATION, null, this);
-						AppUtils.EVENT_BUS.fireEvent(configEvent);
+						pageConfigPanel.clear();
 					} else {
 						Entity pageEntity = source.getAssociatedEntity(value);
 						String pageName = pageEntity.getPropertyByName("name").toString();
@@ -495,16 +516,16 @@ public class PageCreation extends Composite implements FieldEventHandler {
 		
 	}
 	
-	private void validateHTML(){
+	private ArrayList<Element> validateHTML(){
 		String htmlStr = htmltextArea.getFieldText();
 		NodeList<Element> spans = HTMLProcessor.getSpanElementsFromHTML(htmlStr);
 		if(spans != null){
 			ArrayList<Element> appopsContainerFields = HTMLProcessor.getContainerElements(spans);
 			if(appopsContainerFields != null){
-				ConfigEvent configEvent = new ConfigEvent(ConfigEvent.POPULATESPANS, appopsContainerFields,this);
-				AppUtils.EVENT_BUS.fireEvent(configEvent);
+				return appopsContainerFields;
 			}
 		}
+		return null;
 	}
 	
 	private Entity getComponentInstEntity() {
@@ -514,6 +535,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 			compEntity.setPropertyByName("instancename", getPageName());
 			compEntity.setPropertyByName("htmldescription", htmltextArea.getValue().toString());
 			compEntity.setProperty("componentdefinition", getComponentDefinitionEnt());
+			compEntity.setProperty("appEnt", appEntity);
 			return compEntity;
 		}
 		catch (Exception e) {
@@ -541,7 +563,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void saveComponentDef() {
+	private void saveComponentDef(final ArrayList<Element> appopsContainerFields) {
 		try{
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
@@ -571,9 +593,20 @@ public class PageCreation extends Composite implements FieldEventHandler {
 				@Override
 				public void onSuccess(Result<HashMap<String, Entity>> result) {
 					if(result!=null){
-						ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SHOWPAGECONFIGURATION, result.getOperationResult(), this);
-						AppUtils.EVENT_BUS.fireEvent(configEvent);
-						validateHTML();
+						pageConfigPanel.clear();
+						PageConfiguration pageConfig = new PageConfiguration();
+						pageConfigPanel.add(pageConfig);
+						
+						HashMap<String, Entity> entityMap = result.getOperationResult();
+						if(entityMap != null && !entityMap.isEmpty()) {
+							Entity pageCompInstEnt = entityMap.get("pageCompInstEntity");
+							Entity pageEnt = entityMap.get("pageEntity");
+							if(pageCompInstEnt != null) {
+								pageConfig.setPageComponentInstEntity(pageCompInstEnt);
+								pageConfig.setPageEntity(pageEnt);
+							}
+						}
+						pageConfig.populateSpansListBox(appopsContainerFields);
 					}
 				}
 			});
@@ -594,5 +627,48 @@ public class PageCreation extends Composite implements FieldEventHandler {
 			name = name.replace(" ", "_");
 		}
 		return name;
+	}
+	
+	/**
+	 * Used to show popup at perticular position.
+	 * @param popuplabel
+	 */
+	private void showPopup(String popuplabel){
+		try {
+			LabelField popupLbl = new LabelField();
+			popupLbl.setConfiguration(getLabelFieldConf(popuplabel,POPUP_LBL_PCLS,null,null));
+			popupLbl.configure();
+			popupLbl.create();
+					
+			PopupPanel popup = new PopupPanel();
+			popup.setAnimationEnabled(true);
+			popup.setAutoHideEnabled(true);
+			popup.setStylePrimaryName(POPUP_CSS);
+			popup.add(popupLbl);
+			popup.center();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Creates the table name label field configuration object and return.
+	 * @param displayText
+	 * @param primaryCss
+	 * @param dependentCss
+	 * @param propEditorLblPanelCss
+	 * @return Configuration instance
+	 */
+	private Configuration getLabelFieldConf(String displayText , String primaryCss , String dependentCss ,String propEditorLblPanelCss){
+		Configuration conf = new Configuration();
+		try {
+			conf.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, displayText);
+			conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+			conf.setPropertyByName(LabelFieldConstant.BF_DCLS, dependentCss);
+			conf.setPropertyByName(LabelFieldConstant.BF_BASEPANEL_PCLS, propEditorLblPanelCss);
+		} catch (Exception e) {
+			
+		}
+		return conf;
 	}
 }
