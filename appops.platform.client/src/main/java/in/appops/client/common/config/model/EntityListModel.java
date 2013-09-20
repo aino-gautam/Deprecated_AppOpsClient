@@ -27,19 +27,21 @@ public class EntityListModel extends AppopsBaseModel {
 		String queryName = getQueryName();
 		HashMap<String, Object> queryParamMap = null;
 
-		if(hasQueryParam()) {
+		//if(hasQueryParam()) {
 			Configuration queryParam = getQueryParam();
 			
-			queryParamMap = new HashMap<String, Object>();
 			
 			Set<Entry<String, Property<? extends Serializable>>> confSet = queryParam.getValue().entrySet();
 			
-			for(Entry<String, Property<? extends Serializable>> entry : confSet) {
-				String paramName = entry.getKey();
-				Serializable value = entry.getValue().getValue();
-					queryParamMap.put(paramName, value);
+			if(confSet != null && !confSet.isEmpty()) {
+				queryParamMap = new HashMap<String, Object>();
+				for(Entry<String, Property<? extends Serializable>> entry : confSet) {
+					String paramName = entry.getKey();
+					Serializable value = entry.getValue().getValue();
+						queryParamMap.put(paramName, value);
+				}
 			}
-		}
+		//}
 		if(queryParamMap == null || (queryParamMap != null && !queryParamMap.isEmpty())) {
 			Query query = new Query();
 			query.setQueryName(queryName);
