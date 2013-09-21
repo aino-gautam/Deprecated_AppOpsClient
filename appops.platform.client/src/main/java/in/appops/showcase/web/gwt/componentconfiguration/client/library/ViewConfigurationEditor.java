@@ -9,7 +9,9 @@ import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
 import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.ConfigEvent;
 import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.ConfigEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
@@ -17,13 +19,16 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispat
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.client.EntityContext;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.configuration.constant.ConfigTypeConstant;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,12 +38,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author mahesh@ensarm.com
  *
  */
-public class ViewConfigurationEditor extends Composite implements FieldEventHandler {
+public class ViewConfigurationEditor extends Composite implements FieldEventHandler,ConfigEventHandler {
 
 	private VerticalPanel basePanel;
 	private VerticalPanel compConatinerHolder;
@@ -63,6 +69,7 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 			initWidget(basePanel);
 			
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -141,7 +148,7 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 
 	private void showConfigurator(Entity configEntity, ArrayList<Entity> configList){
 		compConatinerHolder.clear();
-		ConfigurationEditor configEditor = new ConfigurationEditor();
+		ConfigurationEditor configEditor = new ConfigurationEditor(this);
 		configEditor.createUi(configEntity, configList);
 		compConatinerHolder.add(configEditor);
 		
@@ -252,6 +259,101 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 	 */
 	public void setViewConfigTypeEntity(Entity viewConfigTypeEntity) {
 		this.viewConfigTypeEntity = viewConfigTypeEntity;
+	}
+
+	@Override
+	public void onConfigEvent(ConfigEvent event) {
+		int eventType = event.getEventType();
+		Object eventSource = event.getEventSource();
+		switch (eventType) {
+		case ConfigEvent.UPDATEDCONFIGENTITYLIST: {
+			  HashMap<String, Object> map = (HashMap<String, Object>) event.getEventData();
+			  Widget parentContainer = (Widget) map.get("parentContainer");
+			  if(parentContainer instanceof ViewConfigurationEditor){
+				  EntityList configTypeList = (EntityList) map.get("configTypeList");
+				  Entity parentConftypeEnt =  (Entity) map.get("parentConfTypeEnt");
+				  updateConfigurationList(configTypeList,parentConftypeEnt);
+			  }
+			break;
+		}default:
+			break;
+		}
+		
+	}
+	
+	private void updateConfigurationList(EntityList newEntityList,Entity parentConfTypeEnt){
+		try {
+			if(newEntityList!=null && !newEntityList.isEmpty()){
+				Key key = (Key) parentConfTypeEnt.getPropertyByName("id");
+				long parentConfigTypeId = (Long) key.getKeyValue();
+				
+				 Iterator it = configTypeEntityMap.entrySet().iterator();
+				    while (it.hasNext()) {
+				        Map.Entry pairs = (Map.Entry)it.next();
+				        Entity parentConfigTypeFromMap = (Entity) pairs.getKey();
+				        
+				        ArrayList<Entity> existingList = (ArrayList<Entity>) pairs.getValue();
+				        Key configTypeEntKey = (Key)parentConfigTypeFromMap.getProperty("id").getValue();
+						long configTypeIdFromMap = (Long) configTypeEntKey.getKeyValue();
+						if(parentConfigTypeId == configTypeIdFromMap){
+							
+							 boolean isConfPropertyExist = checkIfPropertyAlreadyExist(existingList, newEntityList.get(0));
+							 if(!isConfPropertyExist){
+								 newEntityList.addAll(existingList);
+							 }else{
+								 newEntityList = getUpdatedList(newEntityList,existingList);
+							 }
+							 configTypeEntityMap.put(parentConfigTypeFromMap, newEntityList);
+							 break;
+						}
+				    }
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	private EntityList getUpdatedList(EntityList newEntityList,ArrayList<Entity> existingEntityList){
+		
+		for (int i = 0; i < newEntityList.size(); i++) {
+			
+			Key key = (Key) newEntityList.get(i).getPropertyByName("id");
+			long id = (Long) key.getKeyValue();
+			int index = getIndexOfEntityToRemove(existingEntityList, id);
+			if(index!=-1)
+				existingEntityList.remove(index);
+		}
+		newEntityList.addAll(existingEntityList);
+		
+		return newEntityList;
+	}
+	
+	private int getIndexOfEntityToRemove(ArrayList<Entity> existingEntityList ,long id){
+		
+		for (int index = 0; index < existingEntityList.size(); index++) {
+			Key key1 = (Key) existingEntityList.get(index).getPropertyByName("id");
+			long id1 = (Long) key1.getKeyValue();
+			if(id == id1){
+				return index;
+			}
+		}
+		return -1;
+	}
+	
+	private boolean checkIfPropertyAlreadyExist(ArrayList<Entity> existingList, Entity newEntity){
+		
+		String newKeyName = newEntity.getPropertyByName("keyname");
+		
+		for(int i=0; i< existingList.size(); i++){
+			Entity existingEnt  = existingList.get(i);
+			String existingKeyName = existingEnt.getPropertyByName("keyname");
+			if(newKeyName.equalsIgnoreCase(existingKeyName)){
+				return true;
+			}
+		}
+		return false;
+		
 	}
 
 }
