@@ -27,6 +27,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -57,11 +58,21 @@ public class CreateAppWidget extends Composite implements FieldEventHandler{
 	private final String POPUPGLASSPANELCSS = "popupGlassPanel";
 	private final String POPUP_CSS = "popupCss";
 	private final String POPUP_LBL_PCLS = "popupLbl";
+	private HandlerRegistration fieldEventhandler = null;
 	
 	public CreateAppWidget() {
 		initialize();
 		initWidget(basePanel);
-		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+		if(fieldEventhandler == null)
+			fieldEventhandler = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+	}
+	
+	public void deregisterHandler(){
+		try {
+			fieldEventhandler.removeHandler();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void initialize() {
