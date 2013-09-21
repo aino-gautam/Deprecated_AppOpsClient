@@ -62,7 +62,7 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 	private final String POPUP_LBL_PCLS = "popupLbl";
 	private final String SERVICENAME_TEXTFIELDCSS="serviceNameTextField";
 	private final String SERVCEVERSION_TEXTFIELDCSS="serviceVersionTextField";
-	private final String CREATESERVICEHEADERLBL="createServiceHeaderLbl";
+	private final String CREATESERVICEHEADERLBL="createAppPlusServiceHeaderLbl";
 	private String serviceBlobId;
 	private HandlerRegistration fieldEventhandler = null;
 	 

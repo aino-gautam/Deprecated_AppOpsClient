@@ -59,7 +59,7 @@ public class CreateAppWidget extends Composite implements FieldEventHandler{
 	private final String POPUP_CSS = "popupCss";
 	private final String POPUP_LBL_PCLS = "popupLbl";
 	private HandlerRegistration fieldEventhandler = null;
-	private final String CREATEAPPHEADERLBL="createServiceHeaderLbl";
+	private final String CREATEAPPHEADERLBL="createAppPlusServiceHeaderLbl";
 	public CreateAppWidget() {
 		initialize();
 		initWidget(basePanel);
