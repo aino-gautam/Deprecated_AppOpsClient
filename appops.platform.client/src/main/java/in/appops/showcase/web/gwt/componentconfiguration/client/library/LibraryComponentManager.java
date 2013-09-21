@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -24,6 +25,8 @@ public class LibraryComponentManager extends Composite implements ConfigEventHan
 	private VerticalPanel basePanel;
 	private ConfigurationEditor configurationEditor;
 	private Logger logger = Logger.getLogger("LibraryComponentManager");
+	private ComponentManager componentManager = null;
+	private HandlerRegistration configEventhandler;
 	
 	/** Field id**/
 	public static final String LIBRARYLISTBOX_ID = "libraryListBoxId";
@@ -31,6 +34,17 @@ public class LibraryComponentManager extends Composite implements ConfigEventHan
 	
 	public LibraryComponentManager() {
 		
+	}
+	
+	public void deregisterHandler(){
+		try {
+			if(componentManager!=null)
+				componentManager.deregisterHandler();
+			if(configurationEditor!=null)
+				configurationEditor.deregisterHandler();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void initialize() {
@@ -43,10 +57,10 @@ public class LibraryComponentManager extends Composite implements ConfigEventHan
 			libraryBox.configure();
 			libraryBox.create();
 									
-			ComponentManager componentManager = new ComponentManager();
+			componentManager = new ComponentManager();
 			componentManager.createUi();
 			
-			configurationEditor = new ConfigurationEditor();
+			configurationEditor = new ConfigurationEditor(this);
 			
 			basePanel.add(libraryBox);
 			basePanel.add(componentManager);
@@ -65,7 +79,8 @@ public class LibraryComponentManager extends Composite implements ConfigEventHan
 			int toolBarWidth = (width/7);
 			scrollPanel.setSize((width-toolBarWidth)+"px", height+"px");
 			
-			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
+			if(configEventhandler==null)
+				configEventhandler = AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
 			initWidget(scrollPanel);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "LibraryComponentManager :: initialize :: Exception", e);
