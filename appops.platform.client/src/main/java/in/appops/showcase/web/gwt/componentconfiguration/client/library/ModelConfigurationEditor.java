@@ -43,8 +43,8 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 	private Entity opParamConfigEnt;
 	private Entity queryNameConfigEntity;
 	private Entity operationNameConfigEntity;
-	private LabelField qryParamLblFld;
-	private LabelField opParamLblFld;
+//	private LabelField qryParamLblFld;
+//	private LabelField opParamLblFld;
 	
 	private HorizontalPanel basePanel;
  
@@ -83,13 +83,15 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 	private void initialize() {
 		try{
 			basePanel = new HorizontalPanel();
-			qryParamLblFld = new LabelField();
-			opParamLblFld = new LabelField();
+		//	qryParamLblFld = new LabelField();
+		//	opParamLblFld = new LabelField();
 			
 			initWidget(basePanel);
 			opParamFlex = new VerticalPanel();
 			queryParamFlex = new VerticalPanel();
-			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
+			
+			//TODO : need to analyse and decide
+		//	AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 		}
 		catch (Exception e) {
@@ -243,8 +245,6 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 					snipPropValEditor.setParentConfTypeEntity(opParamConfigEnt);
 					snipPropValEditor.getParamNameField().setFocus();
 					opParamFlex.add(snipPropValEditor);
-				/*	opParamFlex.setWidget(opRow, 0, snipPropValEditor);
-					opRow++;*/
 				}
 				else{
 					saveParamValue(snipPropValEditorSelected);
@@ -254,9 +254,6 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 					snipPropValEditor.setParentConfTypeEntity(queryParamConfigEnt);
 					snipPropValEditor.getParamNameField().setFocus();
 					queryParamFlex.add(snipPropValEditor);
-
-					/*queryParamFlex.setWidget(queryRow, 0, snipPropValEditor);
-					queryRow++;*/
 				}
 			}
 			else if(event.getEventType() == ConfigEvent.REMOVEPARAMPROPERTYVALUE){
@@ -287,17 +284,6 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 						queryParamFlex.add(snipPropValEditor);
 					}
 				}
-				
-				
-			//	int rowToRemove = snipPropValEditorSelected.getValuePanelRow();
-
-			/*	if(snipPropValEditorSelected.getSnipPropValEditorId().equals(OPERATIONMODE)){
-					
-					opParamFlex.removeCell(rowToRemove,0);
-				}
-				else{
-					queryParamFlex.removeCell(rowToRemove,0);
-				}*/
 			}
 		}
 		catch (Exception e) {
@@ -361,13 +347,6 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 						if(result.getOperationResult() != null){
 							Entity savedEnt = result.getOperationResult();
 							snipPropValEditorSelected.setConfTypeParamValEnt(savedEnt);
-							/*int rowValue = snipPropValEditorSelected.getValuePanelRow();
-							if(snipPropValEditorSelected.getSnipPropValEditorId().equals(QUERYMODE)){
-								queryParamFlex.setWidget(rowValue, 0, snipPropValEditorSelected);
-							}
-							else if(snipPropValEditorSelected.getSnipPropValEditorId().equals(OPERATIONMODE)){
-								opParamFlex.setWidget(rowValue, 0, snipPropValEditorSelected);
-							}*/
 						}
 					}
 				}
@@ -520,7 +499,7 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 					if(result!=null){
 						if(result.getOperationResult()!=null){
 							if(isQueryCall){
-								queryParamConfigEnt = result.getOperationResult();
+							/*	queryParamConfigEnt = result.getOperationResult();
 								
 								qryParamLblFld.setConfiguration(getQryParamLblFldConf(true));
 								qryParamLblFld.configure();
@@ -533,10 +512,10 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 								snipPropValEditor.setDeletable(true);
 								snipPropValEditor.setParentConfTypeEntity(queryParamConfigEnt);
 								snipPropValEditor.createUi();
-								queryParamFlex.add( snipPropValEditor);
+								queryParamFlex.add( snipPropValEditor);*/
 							}
 							else{
-								opParamConfigEnt = result.getOperationResult();
+								/*opParamConfigEnt = result.getOperationResult();
 								
 								opParamLblFld.setConfiguration(getQryParamLblFldConf(false));
 								opParamLblFld.configure();
@@ -549,7 +528,7 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 								snipPropValEditor.setDeletable(true);
 								snipPropValEditor.setParentConfTypeEntity(opParamConfigEnt);
 								snipPropValEditor.createUi();
-								opParamFlex.add( snipPropValEditor);
+								opParamFlex.add( snipPropValEditor);*/
 							}
 						}
 					}
