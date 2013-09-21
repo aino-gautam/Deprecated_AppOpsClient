@@ -29,6 +29,7 @@ import java.util.Map.Entry;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -60,14 +61,31 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
     private final String POPUPGLASSPANELCSS = "popupGlassPanel";
 	private final String POPUP_CSS = "popupCss";
 	private final String POPUP_LBL_PCLS = "popupLbl";
+	
+	private HandlerRegistration configEventhandler = null;
+	private HandlerRegistration fieldEventhandler = null;
+	
 	public ConfigurationListDisplayer(){
 		basePanel = new VerticalPanel();
 		
 		propertyConfListScrollPanel = new ScrollPanel(basePanel);
 		initWidget(propertyConfListScrollPanel);
-		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
-		AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
 		
+		if(fieldEventhandler ==null)
+			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+		
+		if(configEventhandler ==null)
+			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
+		
+	}
+	
+	public void deregisterHandler(){
+		try {
+			configEventhandler.removeHandler();
+			fieldEventhandler.removeHandler();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void createUi(ArrayList<Entity> configList){
@@ -77,6 +95,7 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 		Boolean isDefault;
 		int row= 1;
 		int col=0;
+		afterDeletionOfRowHashMap = new  HashMap<Integer, HashMap<String,EntityList>>();
 		beforeDeletionOfRowHashMap = new HashMap<Integer, HashMap<String,EntityList>>();
 		conFigTypesMainHashMap = new HashMap<Long, HashMap<String,EntityList>>();
 		rowVsRowListSizeMap = new HashMap<Long, HashMap<Long,Integer>>();
@@ -586,76 +605,13 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 			switch (eventType) {
 					
 			  case ConfigEvent.UPDATEDCONFIGENTITYLIST :{
-				//if(eventSource instanceof ConfPropertyEditor){
-					
-					int col = 0;
-					Integer expectedRow = null;
-					String keyname; 
-					VerticalPanel configValuePanel = new VerticalPanel();
-					HashMap<String, EntityList> configTypeHashMapForStore  = new HashMap<String, EntityList>();
-					HashMap<Long, Integer>rowVsListSize = new HashMap<Long, Integer>();
-					EntityList confEntityList = (EntityList) event.getEventData();
-					Entity configTypeEntity = confEntityList.get(0);
-					Key<Serializable> key = (Key<Serializable>) configTypeEntity.getProperty("id").getValue();
-					Long configTypeId = (Long) key.getKeyValue();
-					if(conFigTypesMainHashMap.containsKey(configTypeId)){
-						HashMap<String, EntityList> hashMap = conFigTypesMainHashMap.get(configTypeId); 
-						if(afterDeletionOfRowHashMap.size()>0){
-							if(afterDeletionOfRowHashMap.containsValue(hashMap)){
-								for(Entry<Integer, HashMap<String, EntityList>> entry:afterDeletionOfRowHashMap.entrySet()){
-									if(hashMap.equals(entry.getValue())){
-										expectedRow = entry.getKey();
-										
-									}
-								}
-								if(configTypeEntity.getPropertyByName("keyname")!=null){
-									   keyname = configTypeEntity.getPropertyByName("keyname");
-									}else{
-										keyname = "-";
-									}
-								configTypeHashMapForStore.put(keyname, confEntityList);
-								
-								
-								 
-								configurationListTable.setWidget(expectedRow,col, createLabelField(keyname,"compRegisterLabelCss",""));
-								configurationListTable.setWidget(expectedRow,col+1, configValuePanel);
-								populateGridRows(confEntityList, configTypeHashMapForStore,rowVsListSize,configValuePanel, false,expectedRow,col);
-							}
-						}else{
-							if(beforeDeletionOfRowHashMap.containsValue(hashMap)){
-								for(Entry<Integer, HashMap<String, EntityList>> entry:beforeDeletionOfRowHashMap.entrySet()){
-									if(hashMap.equals(entry.getValue())){
-										expectedRow = entry.getKey();
-										
-									}
-								}
-								if(configTypeEntity.getPropertyByName("keyname")!=null){
-									   keyname = configTypeEntity.getPropertyByName("keyname");
-									}else{
-										keyname = "-";
-									}
-								configTypeHashMapForStore.put(keyname, confEntityList);
-								 
-								configurationListTable.setWidget(expectedRow,col, createLabelField(keyname,"compRegisterLabelCss",""));
-								configurationListTable.setWidget(expectedRow,col+1, configValuePanel);
-								populateGridRows(confEntityList, configTypeHashMapForStore,rowVsListSize,configValuePanel, false,expectedRow,col);
-							}
-						}
-						
-					}else{
-						if(configTypeEntity.getPropertyByName("keyname")!=null){
-							   keyname = configTypeEntity.getPropertyByName("keyname");
-						}else{
-								keyname = "-";
-						}
-						configTypeHashMapForStore.put(keyname, confEntityList);
-						configurationListTable.setWidget(maxRow+1,col, createLabelField(keyname,"compRegisterLabelCss",""));
-						configurationListTable.setWidget(maxRow+1,col+1, configValuePanel);
-						populateGridRows(confEntityList, configTypeHashMapForStore,rowVsListSize,configValuePanel, true,maxRow,col);
-					}
-					
-					break;
-				//}
+				  HashMap<String, Object> map = (HashMap<String, Object>) event.getEventData();
+				  Widget parentContainer = (Widget) map.get("parentContainer");
+				  if(parentContainer instanceof LibraryComponentManager){
+					  EntityList configTypeList = (EntityList) map.get("configTypeList");
+					  updateListDisplayer(configTypeList);
+				  }
+				  break;
 			}
 			default:
 				break;
@@ -665,6 +621,80 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 		}
 		
 	}
+	
+	
+	private void updateListDisplayer(EntityList confEntityList){
+		try {
+			int col = 0;
+			Integer expectedRow = null;
+			String keyname; 
+			VerticalPanel configValuePanel = new VerticalPanel();
+			HashMap<String, EntityList> configTypeHashMapForStore  = new HashMap<String, EntityList>();
+			HashMap<Long, Integer>rowVsListSize = new HashMap<Long, Integer>();
+			Entity configTypeEntity = confEntityList.get(0);
+			Key<Serializable> key = (Key<Serializable>) configTypeEntity.getProperty("id").getValue();
+			Long configTypeId = (Long) key.getKeyValue();
+			if(conFigTypesMainHashMap.containsKey(configTypeId)){
+				HashMap<String, EntityList> hashMap = conFigTypesMainHashMap.get(configTypeId); 
+				if(afterDeletionOfRowHashMap.size()>0){
+					if(afterDeletionOfRowHashMap.containsValue(hashMap)){
+						for(Entry<Integer, HashMap<String, EntityList>> entry:afterDeletionOfRowHashMap.entrySet()){
+							if(hashMap.equals(entry.getValue())){
+								expectedRow = entry.getKey();
+								
+							}
+						}
+						if(configTypeEntity.getPropertyByName("keyname")!=null){
+							   keyname = configTypeEntity.getPropertyByName("keyname");
+							}else{
+								keyname = "-";
+							}
+						configTypeHashMapForStore.put(keyname, confEntityList);
+						
+						
+						 
+						configurationListTable.setWidget(expectedRow,col, createLabelField(keyname,"compRegisterLabelCss",""));
+						configurationListTable.setWidget(expectedRow,col+1, configValuePanel);
+						populateGridRows(confEntityList, configTypeHashMapForStore,rowVsListSize,configValuePanel, false,expectedRow,col);
+					}
+				}else{
+					if(beforeDeletionOfRowHashMap.containsValue(hashMap)){
+						for(Entry<Integer, HashMap<String, EntityList>> entry:beforeDeletionOfRowHashMap.entrySet()){
+							if(hashMap.equals(entry.getValue())){
+								expectedRow = entry.getKey();
+								
+							}
+						}
+						if(configTypeEntity.getPropertyByName("keyname")!=null){
+							   keyname = configTypeEntity.getPropertyByName("keyname");
+							}else{
+								keyname = "-";
+							}
+						configTypeHashMapForStore.put(keyname, confEntityList);
+						 
+						configurationListTable.setWidget(expectedRow,col, createLabelField(keyname,"compRegisterLabelCss",""));
+						configurationListTable.setWidget(expectedRow,col+1, configValuePanel);
+						populateGridRows(confEntityList, configTypeHashMapForStore,rowVsListSize,configValuePanel, false,expectedRow,col);
+					}
+				}
+				
+			}else{
+				if(configTypeEntity.getPropertyByName("keyname")!=null){
+					   keyname = configTypeEntity.getPropertyByName("keyname");
+				}else{
+						keyname = "-";
+				}
+				configTypeHashMapForStore.put(keyname, confEntityList);
+				configurationListTable.setWidget(maxRow+1,col, createLabelField(keyname,"compRegisterLabelCss",""));
+				configurationListTable.setWidget(maxRow+1,col+1, configValuePanel);
+				populateGridRows(confEntityList, configTypeHashMapForStore,rowVsListSize,configValuePanel, true,maxRow,col);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
     /***
      * This method populate the values of confProperty  plus delete image in grid.  
      * @param typesList
