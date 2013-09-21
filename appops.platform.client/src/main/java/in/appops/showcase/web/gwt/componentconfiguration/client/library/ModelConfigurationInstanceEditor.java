@@ -75,6 +75,7 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 	private Entity opParamConfigTypeEnt;
 
 	private Entity pageEntity;
+	private ArrayList<SnippetPropValueEditor> snippetPropValueEditors;
 	
 	public ModelConfigurationInstanceEditor(){
 		initialize();
@@ -86,6 +87,7 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 			initWidget(basePanel);
 			opParamFlex = new VerticalPanel();
 			queryParamFlex = new VerticalPanel();
+			snippetPropValueEditors = new ArrayList<SnippetPropValueEditor>();
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 			AppUtils.EVENT_BUS.addHandler(ConfigInstanceEvent.TYPE, this);
  		}
@@ -564,8 +566,10 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 			for(Entity childConfType : childConfTypeList) {
 				if(isQueryCall) {
 					SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(QUERYMODE);
+					snippetPropValueEditors.add(snipPropValEditor);
 					snipPropValEditor.setDeletable(false);
 					snipPropValEditor.setInstanceMode(true);
+					snipPropValEditor.setConfigTypeListboxVisible(true);
 					snipPropValEditor.setParentConfInstanceEntity(queryParamConfigInstanceEnt);
 					snipPropValEditor.setConfTypeParamValEnt(childConfType);
 					snipPropValEditor.createUi();
@@ -579,8 +583,10 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 					saveParamConfigIns(paramConfigInsEnt, snipPropValEditor, context);
 				} else {
 					SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(OPERATIONMODE);
+					snippetPropValueEditors.add(snipPropValEditor);
 					snipPropValEditor.setDeletable(false);
 					snipPropValEditor.setInstanceMode(true);
+					snipPropValEditor.setConfigTypeListboxVisible(true);
 					snipPropValEditor.setParentConfInstanceEntity(opParamConfigInstanceEnt);
 					snipPropValEditor.setConfTypeParamValEnt(childConfType);
 					snipPropValEditor.createUi();
@@ -597,9 +603,11 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 		} else {
 			if(isQueryCall) {
 				SnippetPropValueEditor snipPropValEditor = getNewSnippetPropValueEditor(QUERYMODE, queryParamConfigInstanceEnt);
+				snippetPropValueEditors.add(snipPropValEditor);
 				queryParamFlex.add(snipPropValEditor);
 			} else {
 				SnippetPropValueEditor snipPropValEditor = getNewSnippetPropValueEditor(OPERATIONMODE, opParamConfigInstanceEnt);
+				snippetPropValueEditors.add(snipPropValEditor);
 				opParamFlex.add(snipPropValEditor);
 			}
 		}
@@ -629,6 +637,23 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 						if(result.getOperationResult() !=null){
 							Entity paramConfigInsEntity = result.getOperationResult();
 							snippetPropValueEditor.setConfInstanceParamValEnt(paramConfigInsEntity);
+							
+							if(snippetPropValueEditor.getMode().equals(QUERYMODE)) {
+								int index = queryParamFlex.getWidgetIndex(snippetPropValueEditor);
+								if(index == (queryParamFlex.getWidgetCount() - 1)) {
+									SnippetPropValueEditor snipPropValEditor = getNewSnippetPropValueEditor(QUERYMODE, queryParamConfigInstanceEnt);
+									snippetPropValueEditors.add(snipPropValEditor);
+									queryParamFlex.add(snipPropValEditor);
+								}
+							} else {
+								int index = opParamFlex.getWidgetIndex(snippetPropValueEditor);
+								if(index == (opParamFlex.getWidgetCount() - 1)) {
+									SnippetPropValueEditor snipPropValEditor = getNewSnippetPropValueEditor(OPERATIONMODE, opParamConfigInstanceEnt);
+									snippetPropValueEditors.add(snipPropValEditor);
+									opParamFlex.add(snipPropValEditor);
+								}
+							}
+							
 						}
 					}
 				}
@@ -643,6 +668,7 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 		SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(mode);
 		snipPropValEditor.setDeletable(false);
 		snipPropValEditor.setInstanceMode(true);
+		snipPropValEditor.setConfigTypeListboxVisible(true);
 		snipPropValEditor.setParentConfInstanceEntity(paramParentConfigInstEnt);
 		snipPropValEditor.createUi();
 		return snipPropValEditor;
@@ -652,25 +678,13 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 	public void onConfigInstanceEvent(ConfigInstanceEvent event) {
 		if(event.getEventType() == ConfigEvent.SAVEPROPVALUEADDWIDGET){
 			SnippetPropValueEditor snipPropValEditorSelected = (SnippetPropValueEditor) event.getEventSource();
-			Entity paramConfigEnt = snipPropValEditorSelected.getConfInstanceParamValEnt();
-			
-			EntityContext context = getEntityContext(null, snipPropValEditorSelected.getParentConfInstanceEntity());
-			context = getEntityContextForModelPageAppService(context);
-			
-			saveParamConfigIns(paramConfigEnt, snipPropValEditorSelected, context);
-			
-			if(snipPropValEditorSelected.getMode().equals(QUERYMODE)) {
-				int index = queryParamFlex.getWidgetIndex(snipPropValEditorSelected);
-				if(index == (queryParamFlex.getWidgetCount() - 1)) {
-					SnippetPropValueEditor snipPropValEditor = getNewSnippetPropValueEditor(QUERYMODE, queryParamConfigInstanceEnt);
-					queryParamFlex.add(snipPropValEditor);
-				}
-			} else {
-				int index = opParamFlex.getWidgetIndex(snipPropValEditorSelected);
-				if(index == (opParamFlex.getWidgetCount() - 1)) {
-					SnippetPropValueEditor snipPropValEditor = getNewSnippetPropValueEditor(OPERATIONMODE, opParamConfigInstanceEnt);
-					opParamFlex.add(snipPropValEditor);
-				}
+			if(	snippetPropValueEditors.contains(snipPropValEditorSelected)) {
+				Entity paramConfigEnt = snipPropValEditorSelected.getConfInstanceParamValEnt();
+				
+				EntityContext context = getEntityContext(null, snipPropValEditorSelected.getParentConfInstanceEntity());
+				context = getEntityContextForModelPageAppService(context);
+				
+				saveParamConfigIns(paramConfigEnt, snipPropValEditorSelected, context);
 			}
 		}			
 	}

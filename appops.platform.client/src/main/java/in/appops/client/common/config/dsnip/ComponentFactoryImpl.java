@@ -24,7 +24,7 @@ public class ComponentFactoryImpl implements ComponentFactory {
 	private final String HTMLFIELD = "htmlField";
 	private final String TEXTFIELD = "textField";
 	private final String HTMLEDTFIELD = "htmlEditorField";
-	private final String DATETIMEFIELD = "dateTimeFieldField";
+	private final String DATELABELFIELD = "dateLabelField";
 	private final String LISTBOXFIELD = "listBoxField";
 	private final String BUTTONFIELD = "buttonField";
 	private final String IMAGEFIELD = "imageField";
@@ -45,7 +45,7 @@ public class ComponentFactoryImpl implements ComponentFactory {
 			return new TextField();
 		} else if(type.equalsIgnoreCase(HTMLEDTFIELD)) {
 			return new HtmlEditorField();
-		} else if(type.equalsIgnoreCase(DATETIMEFIELD)) {
+		} else if(type.equalsIgnoreCase(DATELABELFIELD)) {
 			return new DateLabelField();
 		} else if(type.equalsIgnoreCase(LISTBOXFIELD)) {
 			return new ListBoxField();
