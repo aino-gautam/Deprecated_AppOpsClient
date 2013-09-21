@@ -81,7 +81,7 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 		try {
 			baseVp = new VerticalPanel();
 			if(fieldEventHandler ==null)
-				AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+				fieldEventHandler = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 			initWidget(baseVp);
 		} catch (Exception e) {
 			e.printStackTrace();
