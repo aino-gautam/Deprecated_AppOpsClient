@@ -65,6 +65,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 	private static String PAGECREATION_BASEPANEL_CSS = "pageCreationBasePanel";
 	private static String NEW_PAGE_TITLE_LABEL_CSS = "newPageTitleLabel";
 	private static String NEW_PAGE_NAME_PANEL_CSS = "newPageNamePanel";
+	private static String PAGE_TITLE_LABEL_CSS = "pageTitleLabel";
 	
 	private final String POPUP_CSS = "popupCss";
 	private final String POPUP_LBL_PCLS = "popupLbl";
@@ -101,11 +102,13 @@ public class PageCreation extends Composite implements FieldEventHandler {
 	public void createUI() {
 		try {
 			basePanel.clear();
+			HorizontalPanel titlePanel = createTitlePanel();
 			HorizontalPanel panelToSelectPage = createPanelToSelectPage();
 			HorizontalPanel createPageButtonPanel = createPageButtonPanel();
 			HorizontalPanel newPageNamePanel = createNewPageNamePanel();
 			VerticalPanel editPagePanel = createEditPagePanel();
 			
+			basePanel.add(titlePanel);
 			basePanel.add(panelToSelectPage);
 			basePanel.add(createPageButtonPanel);
 			basePanel.add(newPageNamePanel);
@@ -116,6 +119,41 @@ public class PageCreation extends Composite implements FieldEventHandler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private HorizontalPanel createTitlePanel() {
+		HorizontalPanel titlePanel = new HorizontalPanel();
+		LabelField pageTitleLabelField = new LabelField();
+		pageTitleLabelField.setConfiguration(getPageTitleLabelConfig());
+		pageTitleLabelField.configure();
+		pageTitleLabelField.create();
+		titlePanel.add(pageTitleLabelField);
+		
+		titlePanel.setWidth("100%");
+		titlePanel.setCellHorizontalAlignment(pageTitleLabelField, HasHorizontalAlignment.ALIGN_CENTER);
+		return titlePanel;
+	}
+
+	/**
+	 * Creates the Page title label configuration object and return.
+	 * @return Configuration instance
+	 */
+	private Configuration getPageTitleLabelConfig() {
+		try {
+			Configuration configuration = null;	
+			try{
+				configuration = new Configuration();
+				configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Page Creation");
+				configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, PAGE_TITLE_LABEL_CSS);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+			return configuration;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	private VerticalPanel createEditPagePanel() {
@@ -342,7 +380,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 				configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
 				configuration.setPropertyByName(TextFieldConstant.BF_ID, TEXTAREA_FIELD_ID);
 				configuration.setPropertyByName(TextFieldConstant.TF_VISLINES, 15);
-				configuration.setPropertyByName(TextFieldConstant.TF_CHARWIDTH, 80);
+				configuration.setPropertyByName(TextFieldConstant.TF_CHARWIDTH, 86);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -569,7 +607,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 		return null;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked", "rawtypes", "unused" })
 	private void saveComponentDef(final ArrayList<Element> appopsContainerFields) {
 		try{
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();

@@ -14,8 +14,10 @@ import in.appops.client.common.config.field.RadioButtonField;
 import in.appops.client.common.config.field.RadioButtonField.RadionButtonFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.ConfigEvent;
+import in.appops.client.common.event.ConfigInstanceEvent;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.ConfigEventHandler;
+import in.appops.client.common.event.handlers.ConfigInstanceEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.TextField;
 import in.appops.client.common.fields.TextField.TextFieldConstant;
@@ -35,6 +37,7 @@ import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.server.core.services.configuration.constant.ConfigTypeConstant;
 import in.appops.showcase.web.gwt.componentconfiguration.client.library.ComponentInstanceMVPEditor;
 import in.appops.showcase.web.gwt.componentconfiguration.client.library.ConfigurationInstanceMVPEditor;
+import in.appops.showcase.web.gwt.componentconfiguration.client.library.SnippetPropValueEditor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,11 +50,10 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class PageConfiguration extends Composite implements ConfigEventHandler,FieldEventHandler {
+public class PageConfiguration extends Composite implements ConfigEventHandler,FieldEventHandler, ConfigInstanceEventHandler {
 	
 	private VerticalPanel basePanel;
 	private VerticalPanel addConfigPanel;
@@ -64,14 +66,11 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	private ListBoxField transformToListbox;
 	private Entity parentEventEntity;
 	
-	private int index;
-	private Map<String, TextField> configMap;
 	private TextField transformInstanceTextField;
 	private Map<String, Map<String, Object>> containerCompoInstMap;
 	private Entity interestedEventEntity;
 	private Entity pageComponentInstEntity;
 	private Entity pageEntity;
-	private boolean isNew;
 	private Entity updateConfigEntity;
 	private Entity transWgtCompDefEnt;
 	
@@ -83,14 +82,12 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	private HorizontalPanel updateConfigurationBasePanel;
 	private HorizontalPanel buttonPanel;
 	
-	private ArrayList<TextField> updateConfigTextFieldList;
 	private ButtonField configureButton;
 	private ImageField plusIconField;
 	private ImageField minusIconField;
 	private ListBoxField transformTypeListbox;
 	private Map<String, Entity> configInstanceEntityMap;
-	private boolean isUpdateConfigurationEntity;
-	
+	private ArrayList<SnippetPropValueEditor> SnippetPropValueEditorList;
 	
 	private final String COMPONENT = "Component";
 	private final String SNIPPET = "HtmlSnippet";
@@ -101,13 +98,13 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		initWidget(basePanel);
 		AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
 		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+		AppUtils.EVENT_BUS.addHandler(ConfigInstanceEvent.TYPE, this);
 	}
 
 	private void initialize() {
 		basePanel = new VerticalPanel();
 		addConfigPanel = new VerticalPanel();
 		updateConfigurationPanel = new VerticalPanel();
-		configMap = new HashMap<String, TextField>();
 	}
 	
 	public void createUI() {
@@ -264,7 +261,6 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	}
 	
 	public void createPropertyConfigUI() {
-		updateConfigTextFieldList = new ArrayList<TextField>();
 		configInstanceEntityMap = new HashMap<String, Entity>();
 		addConfigPanel.clear();
 		
@@ -572,7 +568,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	}
 
 	private HorizontalPanel createUpdateConfigPanel() {
-		isNew = true;
+		SnippetPropValueEditorList = new ArrayList<SnippetPropValueEditor>();
 		HorizontalPanel updateConfigurationBasePanel = new HorizontalPanel();
 		VerticalPanel updateConfigPanelWithButton = new VerticalPanel();
 		
@@ -583,7 +579,6 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		updateConfigurationBasePanel.add(updateConfigLabel);
 		
 		updateConfigurationPanel.clear();
-		createUpdateConfigRow(false);
 		updateConfigPanelWithButton.add(updateConfigurationPanel);
 		updateConfigurationBasePanel.add(updateConfigPanelWithButton);
 		
@@ -593,40 +588,6 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		updateConfigurationBasePanel.setStylePrimaryName(UPDATE_CONFIGURATION_BASEPANEL_CSS);
 		updateConfigurationBasePanel.setCellWidth(updateConfigLabel, "172px");
 		return updateConfigurationBasePanel;
-	}
-
-	private void createUpdateConfigRow(boolean isSetFocus) {
-		HorizontalPanel innerUpdateConfigPanel = new HorizontalPanel();
-		
-		TextField updateConfigKeyTextField = new TextField();
-		updateConfigKeyTextField.setConfiguration(getTextFieldConfiguration(UPDATE_CONFIG_KEY_TEXTFIELD_ID));
-		updateConfigKeyTextField.configure();
-		updateConfigKeyTextField.create();
-		innerUpdateConfigPanel.add(updateConfigKeyTextField);
-		
-		if(isSetFocus) {
-			updateConfigKeyTextField.setFocus();
-		}
-		
-		TextField updateConfigValueTextField = new TextField();
-		updateConfigValueTextField.setConfiguration(getTextFieldConfiguration(UPDATE_CONFIG_VALUE_TEXTFIELD_ID));
-		updateConfigValueTextField.configure();
-		updateConfigValueTextField.create();
-		innerUpdateConfigPanel.add(updateConfigValueTextField);
-		((TextBox) updateConfigValueTextField.getWidget()).setName(UPDATE_CONFIG_VALUE_TEXTFIELD_ID + index);
-		
-		minusIconField = new ImageField();
-		minusIconField.setConfiguration(getMinusIconFieldConfiguration());
-		minusIconField.configure();
-		minusIconField.create();
-		innerUpdateConfigPanel.add(minusIconField);
-		
-		innerUpdateConfigPanel.setStylePrimaryName(INNER_UPDATE_CONFIGURATION_PANEL_CSS);
-		updateConfigurationPanel.add(innerUpdateConfigPanel);
-		
-		configMap.put(UPDATE_CONFIG_VALUE_TEXTFIELD_ID + index, updateConfigKeyTextField);
-		index++;
-		updateConfigTextFieldList.add(updateConfigValueTextField);
 	}
 
 	/**
@@ -651,23 +612,6 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		return null;
 	}
 	
-	/**
-	 * Creates the Image Field configuration object and return.
-	 * @return Configuration instance
-	 */
-	private Configuration getMinusIconFieldConfiguration(){
-		Configuration configuration = new Configuration();
-		try {
-			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, "images/minus-icon.jpg");
-			configuration.setPropertyByName(ImageFieldConstant.BF_PCLS, MINUS_ICONFIELD_CSS);
-			configuration.setPropertyByName(ImageFieldConstant.IMGFD_TITLE, "Delete");
-			configuration.setPropertyByName(ImageFieldConstant.BF_ID, MINUS_ICONFIELD_ID);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return configuration;
-	}
-
 	/**
 	 * Creates the Update Config Label configuration object and return.
 	 * @return Configuration instance
@@ -853,7 +797,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "unused" })
 	@Override
 	public void onFieldEvent(FieldEvent event) {
 		try {
@@ -862,7 +806,6 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 			case FieldEvent.TAB_KEY_PRESSED: {
 				if(event.getEventSource() instanceof TextField) {
 					TextField source = (TextField) event.getEventSource();
-					String fieldId = source.getBaseFieldId();
 					if(source.equals(eventNametextField)) {
 						if(!eventNametextField.getFieldValue().trim().equals("")) {
 							Entity entity = null;
@@ -890,27 +833,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 							EntityContext context4 = getEntityContext(context3, AppEnviornment.CURRENTAPP);
 							EntityContext context5 = getEntityContext(context4, AppEnviornment.CURRENTSERVICE);
 							
-							saveConfigInstance(entity, true, null, isUpdate, context);
-						}
-					} else if(fieldId.equals(UPDATE_CONFIG_VALUE_TEXTFIELD_ID)) {
-						if(updateConfigTextFieldList.contains(source)) {
-							String value = (String) event.getEventData();
-							if(!value.trim().equals("")) {
-								if(isNew) {
-									isNew = false;
-									createUpdateConfigRow(true);
-									EntityContext context = getEntityContextForEventChild(null);
-									saveConfigInstance(getConfiginstanceEntity("UpdateConfiguration", "UpdateConfiguration", null, parentEventEntity, 5L), false, source, false, context);
-								} else {
-									Entity entity = createEntityWithInfo(source);
-									createUpdateConfigRow(true);
-									if(entity != null) {
-										EntityContext context = getEntityContext(null, updateConfigEntity);
-										context = getEntityContextForEventChild(context);
-										saveConfigInstance(entity, false, null, isUpdateConfigurationEntity, context);
-									}
-								}
-							}
+							saveConfigInstance(entity, true, false, isUpdate, context);
 						}
 					} else if(source.equals(transformInstanceTextField)) {
 						String value = (String) event.getEventData();
@@ -927,7 +850,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 							}
 							
 							EntityContext context = getEntityContextForEventChild(null);
-							saveConfigInstance(entity, false, null, isUpdate, context);
+							saveConfigInstance(entity, false, false, isUpdate, context);
 						}
 					}
 				} else if(event.getEventSource() instanceof GroupField) {
@@ -984,7 +907,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 						}
 						
 						EntityContext context = getEntityContextForEventChild(null);
-						saveConfigInstance(entity, false, null, isUpdate, context);
+						saveConfigInstance(entity, false, false, isUpdate, context);
 						
 						if(text.equals("true")) {
 							showTranformWidgetUI();
@@ -1003,13 +926,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 							entity = getConfiginstanceEntity("isUpdateConfiguration", "isUpdateConfiguration", text, parentEventEntity, 10L);
 						}
 						EntityContext context = getEntityContextForEventChild(null);
-						saveConfigInstance(entity, false, null, isUpdate, context);
-						
-						if(text.equals("true")) {
-							showUpdateConfigUI();
-						} else {
-							hideUpdateConfigUI();
-						}
+						saveConfigInstance(entity, false, false, isUpdate, context);
 					}
 				}
 				break;
@@ -1039,7 +956,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 							entity = getConfiginstanceEntity("transformType", "transformType", instanceValue, parentEventEntity, 8L);
 						}
 						EntityContext context = getEntityContextForEventChild(null);
-						saveConfigInstance(entity, false, null, isUpdate, context);
+						saveConfigInstance(entity, false, false, isUpdate, context);
 					} else if(source.equals(transformToListbox)) {
 						String value = (String) source.getValue();
 						Entity entity = null;
@@ -1053,7 +970,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 							entity = getConfiginstanceEntity("transformTo", "transformTo", value, parentEventEntity, 7L);
 						}
 						EntityContext context = getEntityContextForEventChild(null);
-						saveConfigInstance(entity, false, null, isUpdate, context);
+						saveConfigInstance(entity, false, false, isUpdate, context);
 						transWgtCompDefEnt = source.getAssociatedEntity(value);
 						//transformMap.put(transformInstanceTextField.getFieldValue(), entity);
 					} else if(source.equals(spanListbox)) {
@@ -1080,7 +997,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		}
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked", "rawtypes", "unused" })
 	private void saveComponentInstance(final Entity entity) {
 
 		try{
@@ -1136,27 +1053,8 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		createPropertyConfigUI();
 	}
 
-	private Entity createEntityWithInfo(TextField source) {
-		Entity entity = null;
-		String name = ((TextBox) source.getWidget()).getName();
-		TextField textField = configMap.get(name);
-		if(!textField.getFieldValue().trim().equals("")) {
-			if(configInstanceEntityMap.containsKey(textField.getFieldValue())) {
-				isUpdateConfigurationEntity = true;
-				entity = configInstanceEntityMap.get(textField.getFieldValue());
-				entity.setPropertyByName("instancename", textField.getFieldValue());
-				entity.setPropertyByName("configkeyname", textField.getFieldValue());
-				entity.setPropertyByName("instancevalue", source.getFieldValue());
-			} else {
-				isUpdateConfigurationEntity = false;
-				entity = getConfiginstanceEntity(textField.getFieldValue(), textField.getFieldValue(), source.getFieldValue(), updateConfigEntity, null);
-			}
-		}
-		return entity;
-	}
-
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void saveConfigInstance(final Entity configinstanceEntity, final boolean isParentInstance, final TextField source, boolean isUpdate, EntityContext context) {
+	private void saveConfigInstance(final Entity configinstanceEntity, final boolean isParentInstance, final boolean isUpdateConfigEntSaved, boolean isUpdate, EntityContext context) {
 
 		try{
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
@@ -1187,14 +1085,14 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 								parentEventEntity = ent;
 								showPanels();
 							}
-							if(source != null) {
+							if(isUpdateConfigEntSaved) {
 								updateConfigEntity = ent;
-								Entity entity = createEntityWithInfo(source);
-								if(entity != null) {
-									EntityContext context = getEntityContext(null, updateConfigEntity);
-									context = getEntityContextForEventChild(context);
-									saveConfigInstance(entity, false, null, isUpdateConfigurationEntity, context);
-								}
+								showUpdateConfigUI();
+								createNewSnippetPropValueEditor();
+							}
+							if(name.equals("isUpdateConfiguration")) {
+								String instancevalue = configinstanceEntity.getPropertyByName("instancevalue").toString();
+								checkUpdateValue(instancevalue);
 							}
 						}
 					}
@@ -1297,7 +1195,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		this.pageComponentInstEntity = entity;
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked", "rawtypes", "unused" })
 	private void saveTransformWidgetInstance() {
 		try{
 			Entity compInstEntity = new Entity();
@@ -1445,6 +1343,7 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	 * @param context
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	private EntityContext getEntityContextForEventChild(EntityContext context) {
 		
 		if(context == null) {
@@ -1490,20 +1389,59 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	public void setPageEntity(Entity pageEntity) {
 		this.pageEntity = pageEntity;
 	}
-
+	
+	private void checkUpdateValue(String instancevalue) {
+		if(instancevalue.equals("true")) {
+			if(!configInstanceEntityMap.containsKey("UpdateConfiguration")) {
+				EntityContext updateContext = getEntityContextForEventChild(null);
+				saveConfigInstance(getConfiginstanceEntity("UpdateConfiguration", "UpdateConfiguration", null, parentEventEntity, 5L), false, true, false, updateContext);
+			} else {
+				showUpdateConfigUI();
+			}
+		} else {
+			hideUpdateConfigUI();
+		}
+	}
+	
+	private void createNewSnippetPropValueEditor() {
+		SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor("queryMode");
+		snipPropValEditor.setDeletable(false);
+		snipPropValEditor.setInstanceMode(true);
+		snipPropValEditor.setParentConfInstanceEntity(updateConfigEntity);
+		snipPropValEditor.setConfigTypeListboxVisible(true);
+		snipPropValEditor.createUi();
+		updateConfigurationPanel.add(snipPropValEditor);
+		SnippetPropValueEditorList.add(snipPropValEditor);
+	}
+	
+	@Override
+	public void onConfigInstanceEvent(ConfigInstanceEvent event) {
+		if(event.getEventType() == ConfigEvent.SAVEPROPVALUEADDWIDGET){
+			if(event.getEventSource() instanceof SnippetPropValueEditor) {
+				SnippetPropValueEditor snipPropValEditorSelected = (SnippetPropValueEditor) event.getEventSource();
+				if(SnippetPropValueEditorList != null) {
+					if(SnippetPropValueEditorList.contains(snipPropValEditorSelected)) {
+						boolean isUpdate = snipPropValEditorSelected.isUpdate();
+						Entity entity = snipPropValEditorSelected.getConfInstanceParamValEnt();
+						EntityContext context = getEntityContext(null, updateConfigEntity);
+						context = getEntityContextForEventChild(context);
+						saveConfigInstance(entity, false, false, isUpdate, context);
+						createNewSnippetPropValueEditor();
+					}
+				}
+			}
+		}
+	}
 
 	private final String SPAN_LISTBOX_ID = "spanListBoxFieldId";
 	private final String TRANSFORM_TO_LISTBOX_ID = "transformToListboxId";
 	private final String TRANSFORM_TYPE_LISTBOX_ID = "transformTypeListboxId";
 	private final String TRANSFORM_INSTANCE_TEXTFIELD_ID = "transformInstanceTextFieldId";
-	private final String UPDATE_CONFIG_KEY_TEXTFIELD_ID = "updateConfigKeyTextFieldId";
-	private final String UPDATE_CONFIG_VALUE_TEXTFIELD_ID = "updateConfigValueTextFieldId";
 	private final String EVENT_NAME_TEXTFIELD_ID = "eventNameTextFieldId";
 	private final String CONFIGURE_BUTTON_ID = "configureButtonId";
 	private final String IS_UPDATE_CONFIG_GROUP_ID = "isUpdateConfigGroupId";
 	private final String IS_TRANSFORM_WIDGET_GROUP_ID = "isTransformWidgetGroupId";
 	private final String PLUS_ICONFIELD_ID = "plusIconFieldId";
-	private final String MINUS_ICONFIELD_ID = "minusIconFieldId";
 	
 	private final String CONFIG_TITLE_LABEL_CSS = "configTitleLabel";
 	private final String SPAN_SELECTION_LABEL_CSS = "spanSelectionLabel";
@@ -1516,8 +1454,6 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	private final String IS_UPDATE_CONFIG_PANEL_CSS = "isUpdateConfigPanel";
 	private final String UPDATE_CONFIGURATION_BASEPANEL_CSS = "updateConfigurationBasePanel";
 	private final String UPDATE_CONFIGURATION_PANEL_CSS = "updateConfigurationPanel";
-	private final String MINUS_ICONFIELD_CSS = "minusIconField";
-	private final String INNER_UPDATE_CONFIGURATION_PANEL_CSS = "innerUpdateConfigurationPanel";
 	private final String IS_TRANSFORM_WIDGET_PANEL_CSS = "isTransformWidgetPanel";
 	private final String TRANSFORM_INSTANCE_PANEL_CSS = "transformInstancePanel";
 	private final String TRANSFORM_INSTANCE_LABEL_CSS = "transformInstanceLabel";

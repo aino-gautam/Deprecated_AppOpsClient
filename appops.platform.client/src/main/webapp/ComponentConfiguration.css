@@ -502,3 +502,9 @@
 	padding-left: 30px;
 	padding-top: 10px;	
 }
+
+.pageTitleLabel {
+	font-weight: bold;
+	font-size: 15px;
+	margin-bottom: 10px;
+}

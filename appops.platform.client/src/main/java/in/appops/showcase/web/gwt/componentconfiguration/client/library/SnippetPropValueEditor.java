@@ -252,7 +252,7 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 			else if(event.getEventSource() instanceof ListBoxField){
 				if(event.getEventType() == FieldEvent.VALUECHANGED){
 					ListBoxField source = (ListBoxField) event.getEventSource();
-					if(source.equals(configTypeListbox)) {
+					if(((ListBoxField)event.getEventSource()).equals(configTypeListbox)) {
 						String value = (String) source.getValue();
 						if(value.equals(source.getSuggestionValueForListBox())) {
 							configTypeEntity = null;
@@ -502,6 +502,14 @@ public class SnippetPropValueEditor extends Composite implements FieldEventHandl
 				configEvent = new ConfigEvent(ConfigEvent.SAVEPROPVALUEADDWIDGET, getConfigTypeEntity(), reference);
 			}
 			AppUtils.EVENT_BUS.fireEvent(configEvent);
+		}
+	}
+	
+	public boolean isUpdate() {
+		if(confInstanceParamValEnt == null) {
+			return false;
+		} else {
+			return true;
 		}
 	}
 }
