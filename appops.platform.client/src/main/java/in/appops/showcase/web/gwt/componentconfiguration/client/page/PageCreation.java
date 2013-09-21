@@ -80,18 +80,29 @@ public class PageCreation extends Composite implements FieldEventHandler {
 	private Entity appEntity;
 	private Entity serviceEntity;
 	private VerticalPanel pageConfigPanel;
-	private HandlerRegistration handler = null;
+	private HandlerRegistration fieldEventHandler = null;
+	private ArrayList<PageConfiguration> pageConfigurationInstanceList = null;
 	
 	public PageCreation() {
 		initialize();
 		createUI();
 		initWidget(basePanel);
-		if(handler == null)
-			handler = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+		if(fieldEventHandler == null)
+			fieldEventHandler = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 	}
 	
 	public void deregisterHandler(){
-		handler.removeHandler();
+		try {
+			fieldEventHandler.removeHandler();
+			if(pageConfigurationInstanceList!=null){
+				for(PageConfiguration pageConfig :pageConfigurationInstanceList){
+					pageConfig.deregisterHandler();
+				}
+				pageConfigurationInstanceList.clear();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void initialize() {
@@ -640,6 +651,18 @@ public class PageCreation extends Composite implements FieldEventHandler {
 					if(result!=null){
 						pageConfigPanel.clear();
 						PageConfiguration pageConfig = new PageConfiguration();
+						
+						if(pageConfigurationInstanceList ==null)
+							pageConfigurationInstanceList = new ArrayList<PageConfiguration>();
+						
+						for(PageConfiguration pgConfig :pageConfigurationInstanceList){
+							pgConfig.deregisterHandler();
+						}
+						
+						pageConfigurationInstanceList.clear();
+						
+						pageConfigurationInstanceList.add(pageConfig);
+						
 						pageConfigPanel.add(pageConfig);
 						
 						HashMap<String, Entity> entityMap = result.getOperationResult();

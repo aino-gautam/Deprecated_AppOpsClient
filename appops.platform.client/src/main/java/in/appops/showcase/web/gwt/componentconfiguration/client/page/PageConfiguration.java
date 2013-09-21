@@ -45,6 +45,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -89,6 +90,9 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	private Map<String, Entity> configInstanceEntityMap;
 	private ArrayList<SnippetPropValueEditor> SnippetPropValueEditorList;
 	
+	private HandlerRegistration fieldEventHandler = null;
+	private HandlerRegistration configEventHandler = null;
+	private ArrayList<Widget> instanceMVPEditorsList = null;
 	private final String COMPONENT = "Component";
 	private final String SNIPPET = "HtmlSnippet";
 	
@@ -96,8 +100,20 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		initialize();
 		createUI();
 		initWidget(basePanel);
-		AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
-		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+		
+		if(configEventHandler == null)
+			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
+		
+		if(fieldEventHandler == null)
+			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+	}
+	
+	public void deregisterHandler(){
+		fieldEventHandler.removeHandler();
+		configEventHandler.removeHandler();
+		
+		if(instanceMVPEditorsList != null)
+			deregisterPreviousInstances();
 		AppUtils.EVENT_BUS.addHandler(ConfigInstanceEvent.TYPE, this);
 	}
 
@@ -1259,6 +1275,9 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 								}
 							}
 							
+							if(instanceMVPEditorsList ==null)
+								instanceMVPEditorsList = new ArrayList<Widget>();
+							
 							if(transformTypeListbox.getValue().toString().equals(SNIPPET)){
 								ConfigurationInstanceMVPEditor instanceMVPEditor = new ConfigurationInstanceMVPEditor();
 								instanceMVPEditor.setPageEntity(pageEntity);
@@ -1266,6 +1285,9 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 								instanceMVPEditor.setViewInstanceEnt(viewInstanceEnt);
 								instanceMVPEditor.setModelInstanceEnt(modelInstanceEnt);
 								instanceMVPEditor.createUi();
+								deregisterPreviousInstances();
+								instanceMVPEditorsList.add(instanceMVPEditor);
+								
 								addConfigPanel.add(instanceMVPEditor);
 							}
 							else if((transformTypeListbox.getValue().toString().equals(COMPONENT))){
@@ -1276,6 +1298,9 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 								instanceMVPEditor.setModelInstanceEnt(modelInstanceEnt);
 								instanceMVPEditor.setPageCompInstEntity(pageComponentInstEntity);
 								instanceMVPEditor.createUi();
+								deregisterPreviousInstances();
+								instanceMVPEditorsList.add(instanceMVPEditor);
+								
 								addConfigPanel.add(instanceMVPEditor);
 							}
 						}
@@ -1287,6 +1312,17 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void deregisterPreviousInstances(){
+		for(Widget mvpInstance :instanceMVPEditorsList){
+			if(mvpInstance instanceof ConfigurationInstanceMVPEditor){
+				((ConfigurationInstanceMVPEditor)mvpInstance).deregisterHandler();
+			}else if(mvpInstance instanceof ComponentInstanceMVPEditor){
+				((ComponentInstanceMVPEditor)mvpInstance).deregisterHandler();
+			}
+		}
+		instanceMVPEditorsList.clear();
 	}
 	
 	private void hidePanels() {
