@@ -36,6 +36,7 @@ import java.util.Map;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -78,12 +79,18 @@ public class PageCreation extends Composite implements FieldEventHandler {
 	private Entity appEntity;
 	private Entity serviceEntity;
 	private VerticalPanel pageConfigPanel;
+	private HandlerRegistration handler = null;
 	
 	public PageCreation() {
 		initialize();
 		createUI();
 		initWidget(basePanel);
-		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+		if(handler == null)
+			handler = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+	}
+	
+	public void deregisterHandler(){
+		handler.removeHandler();
 	}
 	
 	public void initialize() {

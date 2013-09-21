@@ -7,6 +7,7 @@ import in.appops.platform.core.entity.Entity;
 
 import java.util.HashMap;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -14,11 +15,21 @@ public class PageManager extends Composite implements ConfigEventHandler{
 	
 	private VerticalPanel basePanel;
 	private PageConfiguration pageConfig;
+	private HandlerRegistration configEventhandler = null;
 
 	public PageManager() {
 		init();
 		initWidget(basePanel);
-		AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
+		if(configEventhandler == null)
+			configEventhandler = AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
+	}
+	
+	public void deregisterHandler(){
+		try {
+			configEventhandler.removeHandler();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void init() {

@@ -62,7 +62,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	private final String HEADERLBL_CSS = "headerLabel";
 	private final String REGULARLBL_CSS = "regularLabel";
 	private final String TEXTFIELD_CSS = "textField";
-	private HandlerRegistration handler;
+	private HandlerRegistration handler =  null;
 	
 	/** Field id**/
 	public static final String LIBRARYLISTBOX_ID = "snippetLibraryListBoxId";
