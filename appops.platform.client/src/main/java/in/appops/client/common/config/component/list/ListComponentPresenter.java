@@ -92,8 +92,8 @@ public class ListComponentPresenter extends BaseComponentPresenter implements En
 	
 	public interface ListComponentConstant extends BaseComponentConstant {
 		String LC_LISTCLS = "listCss";
-		String LC_SNIPPETTYPE = "listSnippetType";
-		String LC_INSTANCETYPE = "listSnippetInstanceType";
+		String LC_SNIPPETTYPE = "snippetType";
+		String LC_INSTANCETYPE = "snippetInstance";
 	}
 
 }
