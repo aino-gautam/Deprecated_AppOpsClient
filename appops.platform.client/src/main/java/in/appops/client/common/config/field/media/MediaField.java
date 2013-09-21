@@ -71,7 +71,12 @@ public class MediaField extends BaseField implements FieldEventHandler{
 			logger.log(Level.INFO, "[MediaField] ::In create method ");
 			mediaAttachWidget.createUi();
 			mediaAttachWidget.createAttachmentUi();
-			mediaAttachWidget.collapse();
+			if(!isMediaImageVisible()){
+				mediaAttachWidget.isMediaImageVisible(false);
+				mediaAttachWidget.expand();
+			}else{
+			   mediaAttachWidget.collapse();
+			}
 			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
 			basePanel.add(mediaAttachWidget);
 			getBasePanel().add(basePanel,DockPanel.CENTER);
@@ -95,6 +100,7 @@ public class MediaField extends BaseField implements FieldEventHandler{
 				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
 			if (getBasePanelDependentCss() != null)
 				getBasePanel().addStyleName(getBasePanelDependentCss());
+			
 			
 			mediaAttachWidget.setProfileImage(isProfileImage());
 			mediaAttachWidget.setExtensionList(getExtensionList());

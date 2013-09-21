@@ -175,7 +175,7 @@ public class WebMediaAttachWidget extends MediaAttachWidget implements FieldEven
 			logger.log(Level.INFO, "[WebMediaAttachWidget] ::In createAttachmentUi method ");
 			basePanel.add(fileUploadPanel);
 			fileUploadPanel.setStylePrimaryName(getFileUploadPanelCss());
-			fileUploadPanel.setSpacing(10);
+			//fileUploadPanel.setSpacing(10);
 			
 			multiUploader = getMultiUploader();
 			fileUploadPanel.add(multiUploader);
