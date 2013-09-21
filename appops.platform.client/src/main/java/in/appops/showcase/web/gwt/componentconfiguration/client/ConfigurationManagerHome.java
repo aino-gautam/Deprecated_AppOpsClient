@@ -9,6 +9,7 @@ import in.appops.platform.core.shared.Configuration;
 import in.appops.showcase.web.gwt.componentconfiguration.client.app.CreateAppWidget;
 import in.appops.showcase.web.gwt.componentconfiguration.client.library.LibraryComponentManager;
 import in.appops.showcase.web.gwt.componentconfiguration.client.page.PageCreation;
+import in.appops.showcase.web.gwt.componentconfiguration.client.page.PageManager;
 import in.appops.showcase.web.gwt.componentconfiguration.client.page.SnippetManager;
 import in.appops.showcase.web.gwt.componentconfiguration.client.service.CreateServicePageWidget;
 
@@ -20,13 +21,14 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class ConfigurationManagerHome extends Composite implements FieldEventHandler{
 	
 	private HorizontalPanel basePanel;
 	private VerticalPanel contentPanel;
 	private Logger logger = Logger.getLogger("ConfigurationManagerHome");
-	private ArrayList<SnippetManager> snippetManagerList;
+	private ArrayList<Widget> widgetList  = null;
 	
 	/** CSS styles used **/
 	private static String HOME_BTN_PCLS = "managerHomeButton";
@@ -41,6 +43,7 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 	private static String CREATESNIPPET_BTN_ID = "createSnippetBtnId";
 	private static String CREATESERVICE_BTN_ID = "createServiceBtnId";
 	private static String CREATEAPP_BTN_ID = "createAppBtnId";
+	
 	public ConfigurationManagerHome() {
 		initialize();
 	}
@@ -93,6 +96,11 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 			
 			CreateServicePageWidget createServicePageWidget = new CreateServicePageWidget();
 			createServicePageWidget.createUi();
+			
+			if(widgetList == null)
+				widgetList = new ArrayList<Widget>();
+			
+			widgetList.add(createServicePageWidget);
 								
 			contentPanel = new VerticalPanel();
 			contentPanel.add(createServicePageWidget);
@@ -232,41 +240,47 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 		try {
 			int eventType = event.getEventType();
 			Object eventSource = event.getEventSource();
+			//deregisterWidgetHandlers(); method called for each button click instead once bcz for other btn events this class listen to it. 
 			switch (eventType) {
 			case FieldEvent.CLICKED: {
+				
 				if (eventSource instanceof ButtonField) {
 					ButtonField btnField = (ButtonField) eventSource;
 					if (btnField.getBaseFieldId().equals(MANAGELIB_BTN_ID)) {
 						contentPanel.clear();
+						deregisterWidgetHandlers();
 						LibraryComponentManager libraryComponentManager = new LibraryComponentManager();
 						libraryComponentManager.initialize();
+						widgetList.add(libraryComponentManager);
 						contentPanel.add(libraryComponentManager);
 					}else if (btnField.getBaseFieldId().equals(CREATEPAGE_BTN_ID)) {
 						contentPanel.clear();
+						deregisterWidgetHandlers();
 						PageCreation pageCreation = new PageCreation();
+						widgetList.add(pageCreation);
 						contentPanel.add(pageCreation);
 					}else if (btnField.getBaseFieldId().equals(CREATESNIPPET_BTN_ID)) {
 						contentPanel.clear();
-						if(snippetManagerList == null)
-							snippetManagerList = new ArrayList<SnippetManager>();
-						
-						deregisterSnippetManagerHandlers();
-						
+						deregisterWidgetHandlers();
 						SnippetManager snippetManager = new SnippetManager();
 						snippetManager.initialize();
 						
-						snippetManagerList.add(snippetManager);
+						widgetList.add(snippetManager);
 						
 						contentPanel.add(snippetManager);
 					}else if(btnField.getBaseFieldId().equals(CREATEAPP_BTN_ID)){
 						contentPanel.clear();
+						deregisterWidgetHandlers();
 						CreateAppWidget createAppWidget = new CreateAppWidget();
 						createAppWidget.createUi();
+						widgetList.add(createAppWidget);
 						contentPanel.add(createAppWidget);
 					}else if(btnField.getBaseFieldId().equals(CREATESERVICE_BTN_ID)){
 						contentPanel.clear();
+						deregisterWidgetHandlers();
 						CreateServicePageWidget createServicePageWidget = new CreateServicePageWidget();
 						createServicePageWidget.createUi();
+						widgetList.add(createServicePageWidget);
 						contentPanel.add(createServicePageWidget);
 					}
 				}
@@ -280,9 +294,20 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 		}
 	}
 	
-	private void deregisterSnippetManagerHandlers(){
-		for(SnippetManager snipMngr : snippetManagerList){
-			snipMngr.deregisterHandler();
+	
+	private void deregisterWidgetHandlers(){
+		for(Widget w : widgetList){
+			if(w instanceof LibraryComponentManager){
+				((LibraryComponentManager)w).deregisterHandler();
+			}else if(w instanceof PageManager){
+				((PageManager)w).deregisterHandler();
+			}else if(w instanceof SnippetManager){
+				((SnippetManager)w).deregisterHandler();
+			}else if(w instanceof CreateAppWidget){
+				((CreateAppWidget)w).deregisterHandler();
+			}else if(w instanceof CreateServicePageWidget){
+				((CreateServicePageWidget)w).deregisterHandler();
+			}
 		}
 	}
 
