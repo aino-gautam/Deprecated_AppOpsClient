@@ -26,6 +26,7 @@ import in.appops.platform.server.core.services.configuration.constant.ConfigType
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
@@ -75,6 +76,8 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 	private VerticalPanel queryDetailHolder;
 	private VerticalPanel operationDetailHolder;
 	
+	private HandlerRegistration fieldEventHandler = null;
+	
 	
 	public ModelConfigurationEditor(){
 		initialize();
@@ -92,11 +95,17 @@ public class ModelConfigurationEditor extends Composite implements ConfigEventHa
 			
 			//TODO : need to analyse and decide
 		//	AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
-			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+			
+			if(fieldEventHandler ==null)
+				fieldEventHandler = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void deregisterHandler(){
+		fieldEventHandler.removeHandler();
 	}
 	
 	public void createUi(){

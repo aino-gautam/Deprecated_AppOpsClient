@@ -1,5 +1,7 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
+import java.util.ArrayList;
+
 import in.appops.platform.core.entity.Entity;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -19,6 +21,7 @@ public class HTMLSnippetConfigurationEditor extends Composite implements Selecti
 	private Entity modelConfigurationType;
 	private Entity viewConfigurationType;
 	private Entity presenterConfigurationType;
+	private ArrayList<Widget> editorList = null;
 	
 	private ViewConfigurationEditor viewConfigEditor;
 	
@@ -29,6 +32,10 @@ public class HTMLSnippetConfigurationEditor extends Composite implements Selecti
 		initialize();
 	}
 	
+	public void deregisterHandler(){
+		deregisterPreviousInstances();
+	}
+	
 	public void initialize() {
 		configuratorBasePanel = new TabPanel();
 		viewConfigEditor = new ViewConfigurationEditor();
@@ -36,8 +43,27 @@ public class HTMLSnippetConfigurationEditor extends Composite implements Selecti
 		initWidget(configuratorBasePanel);
 	}
 	
+	private void deregisterPreviousInstances(){
+		for(Widget editorInstance :editorList){
+			if(editorInstance instanceof ModelConfigurationEditor){
+				((ModelConfigurationEditor)editorInstance).deregisterHandler();
+			}else if(editorInstance instanceof ViewConfigurationEditor){
+				((ViewConfigurationEditor)editorInstance).deregisterHandler();
+			}
+		}
+		editorList.clear();
+	}
+	
 	public void createUi() {
+		
+		if(editorList ==null)
+			editorList = new ArrayList<Widget>();
+		
+		deregisterPreviousInstances();
+		
 		viewConfigEditor.setViewConfigTypeEntity(viewConfigurationType);
+		editorList.add(viewConfigEditor);
+		
 		configuratorBasePanel.setStylePrimaryName("fullWidth");
 		configuratorBasePanel.add(getModelEditor(), MODEL);
 		configuratorBasePanel.add(getViewEditor(), VIEW);
@@ -48,6 +74,7 @@ public class HTMLSnippetConfigurationEditor extends Composite implements Selecti
 		ModelConfigurationEditor modConfigEditor = new ModelConfigurationEditor();
 		modConfigEditor.setModelConfigType(modelConfigurationType);
 		modConfigEditor.createUi();
+		editorList.add(modConfigEditor);
 		return modConfigEditor;
 	}
 	

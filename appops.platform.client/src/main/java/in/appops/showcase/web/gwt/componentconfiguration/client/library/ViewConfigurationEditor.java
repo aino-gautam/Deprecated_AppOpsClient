@@ -34,6 +34,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -55,6 +56,9 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 	private HashMap<Entity, ArrayList<Entity>> configTypeEntityMap;
 	private LabelField subHeaderLbl ;
 	
+	private HandlerRegistration fieldEventHandler = null;
+	private HandlerRegistration configEventHandler = null;
+	
 	public ViewConfigurationEditor(){
 		initialize();
 	}
@@ -68,12 +72,19 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 			subHeaderLbl = new LabelField();
 			initWidget(basePanel);
 			
-			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
-			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
+			if(fieldEventHandler == null)
+				fieldEventHandler = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+			if(configEventHandler == null)
+				configEventHandler = AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void deregisterHandler(){
+		fieldEventHandler.removeHandler();
+		configEventHandler.removeHandler();
 	}
 	
 	/**
