@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
@@ -69,6 +70,8 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 	
 	private DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	private DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+	private HandlerRegistration fieldEventHandler = null;
+	
 	
 	public ViewComponentInstanceEditor(){
 		initialize();
@@ -77,11 +80,16 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 	private void initialize() {
 		try {
 			baseVp = new VerticalPanel();
-			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+			if(fieldEventHandler ==null)
+				AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 			initWidget(baseVp);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void deregisterHandler(){
+		fieldEventHandler.removeHandler();
 	}
 	
 	public void createUi(){

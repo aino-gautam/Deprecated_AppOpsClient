@@ -1,5 +1,7 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
+import java.util.ArrayList;
+
 import in.appops.platform.core.entity.Entity;
 
 import com.google.gwt.user.client.ui.Composite;
@@ -13,11 +15,17 @@ public class ConfigurationInstanceMVPEditor extends Composite{
 	private Entity configInstEnt;
 	private Entity pageEntity;
 	
+	private ArrayList<Widget> instanceMVPEditorsList = null;
+	
 	private final String MODEL = "model";
 	private final String VIEW = "view";
 	
 	public ConfigurationInstanceMVPEditor() {
 		initialize();
+	}
+	
+	public void deregisterHandler(){
+		deregisterPreviousInstances();
 	}
 	
 	public void initialize() {
@@ -31,12 +39,19 @@ public class ConfigurationInstanceMVPEditor extends Composite{
 			configuratorInstanceBasePanel.clear();
 		
 		configuratorInstanceBasePanel.setStylePrimaryName("fullWidth");
+		
+		if(instanceMVPEditorsList ==null)
+			instanceMVPEditorsList = new ArrayList<Widget>();
+		
+		deregisterPreviousInstances();
+		
 		if(modelInstanceEnt != null) {
 			configuratorInstanceBasePanel.add(getModelConfigInstanceEditor(), MODEL);
 		}
 		if(viewInstanceEnt != null) {
 			configuratorInstanceBasePanel.add(getViewConfigInstanceEditor(), VIEW);
 		}
+		
 		configuratorInstanceBasePanel.selectTab(0);
 	}
 	
@@ -46,6 +61,7 @@ public class ConfigurationInstanceMVPEditor extends Composite{
 		modConfigInstanceEditor.setPageEntity(pageEntity);
 		modConfigInstanceEditor.createUi();
 		modConfigInstanceEditor.fetchModel();
+		instanceMVPEditorsList.add(modConfigInstanceEditor);
 		return modConfigInstanceEditor;
 	}
 	
@@ -53,7 +69,19 @@ public class ConfigurationInstanceMVPEditor extends Composite{
 		ViewConfigurationInstanceEditor viewConfigInstanceEditor = new ViewConfigurationInstanceEditor(viewInstanceEnt);
 		viewConfigInstanceEditor.setPageEntity(pageEntity);
 		viewConfigInstanceEditor.createUi();
+		instanceMVPEditorsList.add(viewConfigInstanceEditor);
 		return viewConfigInstanceEditor;
+	}
+	
+	private void deregisterPreviousInstances(){
+		for(Widget mvpInstance :instanceMVPEditorsList){
+			if(mvpInstance instanceof ModelConfigurationInstanceEditor){
+				((ModelConfigurationInstanceEditor)mvpInstance).deregisterHandler();
+			}else if(mvpInstance instanceof ViewConfigurationInstanceEditor){
+				((ViewConfigurationInstanceEditor)mvpInstance).deregisterHandler();
+			}
+		}
+		instanceMVPEditorsList.clear();
 	}
 
 	public Entity getModelInstanceEnt() {

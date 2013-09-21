@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -77,6 +78,9 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 	private Entity pageEntity;
 	private ArrayList<SnippetPropValueEditor> snippetPropValueEditors;
 	
+	private HandlerRegistration fieldEventHandler = null;
+	private HandlerRegistration configEventHandler = null;
+	
 	public ModelConfigurationInstanceEditor(){
 		initialize();
 	}
@@ -88,12 +92,21 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 			opParamFlex = new VerticalPanel();
 			queryParamFlex = new VerticalPanel();
 			snippetPropValueEditors = new ArrayList<SnippetPropValueEditor>();
-			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
-			AppUtils.EVENT_BUS.addHandler(ConfigInstanceEvent.TYPE, this);
+			
+			if(fieldEventHandler == null)
+				fieldEventHandler = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+			if(configEventHandler == null)
+				configEventHandler = AppUtils.EVENT_BUS.addHandler(ConfigInstanceEvent.TYPE, this);
  		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	public void deregisterHandler(){
+		fieldEventHandler.removeHandler();
+		configEventHandler.removeHandler();
 	}
 	
 	public void createUi() {

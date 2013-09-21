@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -49,6 +51,7 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 	private Entity viewInstance = null;
 	private Entity pageEntity = null;
 	private Image  loaderImage = null;
+	private HandlerRegistration fieldEventHandler = null;
 	
 	/** Field ID **/
 	private static String SAVECONFINSTANCE_BTN_ID = "saveConfInstanceBtnId";
@@ -86,7 +89,8 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 			basePanel.setWidth("100%");
 			basePanel.setHeight("100%");
 			
-			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+			if(fieldEventHandler == null)
+				fieldEventHandler = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 			
 			Entity configTypeEnt = (Entity) viewInstance.getProperty("configtype");
 			Long configTypeId = ((Key<Long>)configTypeEnt.getPropertyByName("id")).getKeyValue();
@@ -96,6 +100,10 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void deregisterHandler(){
+		fieldEventHandler.removeHandler();
 	}
 	
 	private Configuration getDoneBtnConfig() {
