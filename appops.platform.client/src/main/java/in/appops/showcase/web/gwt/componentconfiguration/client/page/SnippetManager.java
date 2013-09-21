@@ -39,6 +39,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -52,6 +53,7 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	private TextField snippetNameTextBox ;
 	private TextField snippetHtmlTextArea ;
 	private ButtonField saveAndProcessButton;
+	private LabelField headerLf;
 	private ListBoxField libraryBox;
 	private Entity libraryEntity;
 	private VerticalPanel propConfigEditorVp = new VerticalPanel();
@@ -130,6 +132,11 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		saveAndProcessButton.configure();
 		saveAndProcessButton.create();
 		
+		headerLf = new LabelField();
+		headerLf.setConfiguration(getHeaderLblConfig("Snippet Creation"));
+		headerLf.configure();
+		headerLf.create();
+		
 		
 		containerTable.setWidget(0, 0, libraryBox);
 		containerTable.setWidget(1, 0, snippetNameTextBox);
@@ -137,6 +144,8 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		containerTable.setWidget(3, 0, snippetHtmlTextArea);
 		containerTable.setWidget(4, 0, saveAndProcessButton);
 		
+		basePanel.add(headerLf);
+		basePanel.setCellHorizontalAlignment(headerLf, HorizontalPanel.ALIGN_CENTER);
 		basePanel.add(containerTable);
 		basePanel.add(propConfigEditorVp);
 	}

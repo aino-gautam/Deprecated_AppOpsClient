@@ -1,6 +1,8 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
+import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.ListBoxField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.ConfigEvent;
@@ -17,12 +19,14 @@ import java.util.logging.Logger;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class LibraryComponentManager extends Composite implements ConfigEventHandler{
 	
 	private VerticalPanel basePanel;
+	private LabelField headerLf;
 	private ConfigurationEditor configurationEditor;
 	private Logger logger = Logger.getLogger("LibraryComponentManager");
 	private ComponentManager componentManager = null;
@@ -62,6 +66,14 @@ public class LibraryComponentManager extends Composite implements ConfigEventHan
 			
 			configurationEditor = new ConfigurationEditor(this);
 			
+			
+			headerLf = new LabelField();
+			headerLf.setConfiguration(getHeaderLblConfig());
+			headerLf.configure();
+			headerLf.create();
+					
+			basePanel.add(headerLf);
+			basePanel.setCellHorizontalAlignment(headerLf, HorizontalPanel.ALIGN_CENTER);
 			basePanel.add(libraryBox);
 			basePanel.add(componentManager);
 			basePanel.add(configurationEditor);
@@ -87,6 +99,18 @@ public class LibraryComponentManager extends Composite implements ConfigEventHan
 		}
 	}
 	
+	private Configuration getHeaderLblConfig() {
+		Configuration configuration = new Configuration();
+		try {
+			configuration = new Configuration();
+			configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, "Component Editor");
+			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, "headerLabel");
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "LibraryComponentManager :: getHeaderLblConfig :: Exception", e);
+		}
+		return configuration;
+	}
+
 	private Configuration getLibraryListBoxConfiguration() {
 		Configuration configuration = new Configuration();
 		try {
