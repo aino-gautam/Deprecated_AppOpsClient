@@ -291,19 +291,24 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 
 	private void clearPropertyValueFields(boolean isEdit) {
 		try {
-			if(!isEdit){
+			
 				propNameField.clear();
 				propValuePanel.clear();
-				idVsConfigTypeEntity.clear();
+				
+			   if(idVsConfigTypeEntity!=null)
+				 idVsConfigTypeEntity.clear();
+				
 				valueRow=0;
 				propValueList.clear();
-				configTypeList.clear();
-				createNewRecord();
-			}else{
-				valueRow=0;
-				propValuePanel.clear();
 				
-			}
+				if(configTypeList!=null)
+				   configTypeList.clear();
+				
+				
+				if(!isEdit){
+					
+					createNewRecord();
+			    }
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -459,8 +464,9 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 						Map.Entry mapEntry = (Map.Entry) iterator.next();
 						String keyname= (String) mapEntry.getKey();
 						
-						configTypeList = (EntityList) mapEntry.getValue();
+						EntityList typeList = (EntityList) mapEntry.getValue();
 						propNameField.setValue(keyname);
+						configTypeList = (EntityList) typeList.clone();
 						
 						
 																	
@@ -716,6 +722,13 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			if(confTypeEnt!=null){
 				 propValueEditor = new PropertyValueEditor(propValuePanel, valueRow, confTypeEnt);
 				propValueEditor.createUi();
+				boolean isDefault = Boolean.valueOf(confTypeEnt.getPropertyByName("isdefault").toString());
+				if(isDefault){
+					isDefaultSelected = true;
+					if (selectedCheckBoxes == null)
+						selectedCheckBoxes = new ArrayList<CheckboxField>();
+					selectedCheckBoxes.add(propValueEditor.getIsDefaultValueField());
+				}
 			}else{
 				 propValueEditor = new PropertyValueEditor(propValuePanel, valueRow, null);
 				propValueEditor.createUi();

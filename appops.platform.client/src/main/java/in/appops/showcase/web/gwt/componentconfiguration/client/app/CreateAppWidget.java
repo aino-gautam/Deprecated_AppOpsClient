@@ -59,7 +59,7 @@ public class CreateAppWidget extends Composite implements FieldEventHandler{
 	private final String POPUP_CSS = "popupCss";
 	private final String POPUP_LBL_PCLS = "popupLbl";
 	private HandlerRegistration fieldEventhandler = null;
-	
+	private final String CREATEAPPHEADERLBL="createServiceHeaderLbl";
 	public CreateAppWidget() {
 		initialize();
 		initWidget(basePanel);
@@ -83,6 +83,11 @@ public class CreateAppWidget extends Composite implements FieldEventHandler{
 	
 	public void createUi(){
 		try{
+			LabelField appCreationHeaderLabelField = new LabelField();
+			 appCreationHeaderLabelField.setConfiguration(getAppCreationLabelFieldConfiguration("App Creation"));
+			 appCreationHeaderLabelField.configure();
+			 appCreationHeaderLabelField.create();
+			
 			 LabelField appNameLabelField = new LabelField();
 			 appNameLabelField.setConfiguration(getLabelFieldConfiguration("App name :"));
 			 appNameLabelField.configure();
@@ -148,6 +153,10 @@ public class CreateAppWidget extends Composite implements FieldEventHandler{
 			 appCreationTable.getCellFormatter().setAlignment(11, 2, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE);
 			 
 			 
+			 basePanel.add(appCreationHeaderLabelField);
+			 basePanel.setCellHorizontalAlignment(appCreationHeaderLabelField, HasHorizontalAlignment.ALIGN_CENTER);
+			 basePanel.setCellVerticalAlignment(appCreationHeaderLabelField, HasVerticalAlignment.ALIGN_MIDDLE);
+			 
 			 basePanel.add(appCreationTable);
 			 basePanel.setCellHorizontalAlignment(appCreationTable, HasHorizontalAlignment.ALIGN_CENTER);
 			 basePanel.setCellVerticalAlignment(appCreationTable, HasVerticalAlignment.ALIGN_MIDDLE);
@@ -161,7 +170,7 @@ public class CreateAppWidget extends Composite implements FieldEventHandler{
 	private Configuration getCreateAppBtnConfiguration() {
 		Configuration configuration = new Configuration();
 		try {
-			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Create a app");
+			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Create app");
 			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,CREATEAPPBTNCSS);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, CREATEAPP_BTN_ID);
 		} catch (Exception e) {
@@ -170,6 +179,21 @@ public class CreateAppWidget extends Composite implements FieldEventHandler{
 		return configuration;
 	}
 
+	private Configuration getAppCreationLabelFieldConfiguration(String displayText) {
+		Configuration configuration = null;	
+		try{
+			
+			configuration = new Configuration();
+			
+			configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, displayText);
+			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, CREATEAPPHEADERLBL);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return configuration;
+	}
+	
 	
 	private Configuration getLabelFieldConfiguration(String displayText) {
 		Configuration configuration = null;	

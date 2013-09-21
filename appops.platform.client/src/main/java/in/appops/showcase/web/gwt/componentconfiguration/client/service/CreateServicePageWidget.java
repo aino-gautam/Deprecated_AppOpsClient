@@ -62,6 +62,7 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 	private final String POPUP_LBL_PCLS = "popupLbl";
 	private final String SERVICENAME_TEXTFIELDCSS="serviceNameTextField";
 	private final String SERVCEVERSION_TEXTFIELDCSS="serviceVersionTextField";
+	private final String CREATESERVICEHEADERLBL="createServiceHeaderLbl";
 	private String serviceBlobId;
 	private HandlerRegistration fieldEventhandler = null;
 	 
@@ -91,6 +92,12 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 	public void createUi(){
 		try{
 			
+			
+			 LabelField serviceCreationLabelField = new LabelField();
+			 serviceCreationLabelField.setConfiguration(getHeaderLabelFieldConfiguration("Service Creation"));
+			 serviceCreationLabelField.configure();
+			 serviceCreationLabelField.create();
+			
 			 LabelField serviceNameLabelField = new LabelField();
 			 serviceNameLabelField.setConfiguration(getLabelFieldConfiguration("Service name :"));
 			 serviceNameLabelField.configure();
@@ -112,7 +119,7 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 			 versionTextField.create();
 			 
 			 LabelField serviceBlobIdLabelField = new LabelField();
-			 serviceBlobIdLabelField.setConfiguration(getLabelFieldConfiguration("Service blobId :"));
+			 serviceBlobIdLabelField.setConfiguration(getLabelFieldConfiguration("Service Icon :"));
 			 serviceBlobIdLabelField.configure();
 			 serviceBlobIdLabelField.create();
 			 
@@ -129,22 +136,26 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 			 imageField.create();
 			 mediaPanel.add(imageField);
 			 
-			 createServiceFlexTable.setWidget(1, 0, serviceNameLabelField);
-			 createServiceFlexTable.setWidget(1, 2, nameTextField);
+			 createServiceFlexTable.setWidget(2, 0, serviceNameLabelField);
+			 createServiceFlexTable.setWidget(2, 2, nameTextField);
 			 
 			 
-			 createServiceFlexTable.setWidget(3, 0, serviceVersionLabelField);
-			 createServiceFlexTable.setWidget(3, 2, versionTextField);
+			 createServiceFlexTable.setWidget(5, 0, serviceVersionLabelField);
+			 createServiceFlexTable.setWidget(5, 2, versionTextField);
 			
 			 
-			 createServiceFlexTable.setWidget(4, 0, serviceBlobIdLabelField);
-			 createServiceFlexTable.setWidget(4, 2, mediaPanel);
-			 createServiceFlexTable.setWidget(7, 2, createServiceBtnField);
-			 createServiceFlexTable.getCellFormatter().setAlignment(7, 2, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE);
-			
+			 createServiceFlexTable.setWidget(8, 0, serviceBlobIdLabelField);
+			 createServiceFlexTable.setWidget(8, 2, mediaPanel);
+			 createServiceFlexTable.setWidget(11, 2, createServiceBtnField);
+			 createServiceFlexTable.getCellFormatter().setAlignment(11, 2, HasHorizontalAlignment.ALIGN_RIGHT, HasVerticalAlignment.ALIGN_MIDDLE);
+			 createServiceFlexTable.setCellSpacing(5);
+			 basePanel.add(serviceCreationLabelField);
 			 basePanel.add(createServiceFlexTable);
 			 basePanel.setCellHorizontalAlignment(createServiceFlexTable, HasHorizontalAlignment.ALIGN_CENTER);
 			 basePanel.setCellVerticalAlignment(createServiceFlexTable, HasVerticalAlignment.ALIGN_MIDDLE);
+			 
+			 basePanel.setCellHorizontalAlignment(serviceCreationLabelField, HasHorizontalAlignment.ALIGN_CENTER);
+			 basePanel.setCellVerticalAlignment(serviceCreationLabelField, HasVerticalAlignment.ALIGN_MIDDLE);
 			 
 			 basePanel.setWidth("100%");
 			 AppUtils.EVENT_BUS.addHandler(AttachmentEvent.TYPE, this);
@@ -152,6 +163,21 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+	}
+
+	private Configuration getHeaderLabelFieldConfiguration(String displayText) {
+		Configuration configuration = null;	
+		try{
+			
+			configuration = new Configuration();
+			
+			configuration.setPropertyByName(LabelFieldConstant.LBLFD_DISPLAYTXT, displayText);
+			configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, CREATESERVICEHEADERLBL);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return configuration;
 	}
 
 	public void createMediaField() {
@@ -203,6 +229,8 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 		configuration.setPropertyByName(MediaFieldConstant.MF_MEDIAIMG_DCLS, "fadeInUp");
 		configuration.setPropertyByName(MediaFieldConstant.MF_ISPROFILE_IMG, true);
 		configuration.setPropertyByName(MediaFieldConstant.MF_FILEUPLOADER_CLS, "appops-webMediaAttachment");
+		configuration.setPropertyByName(MediaFieldConstant.MF_ISMEDIAIMG_VISIBLE, false);
+		
 		
 		ArrayList<String> extensions = new ArrayList<String>();
 		extensions.add("jpg");
@@ -233,7 +261,7 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 	private Configuration getCreateServiceBtnConfiguration() {
 		Configuration configuration = new Configuration();
 		try {
-			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Create a service");
+			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Create service");
 			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,CREATESERVICEBTNCSS);
 			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, CREATESERVICE_BTN_ID);
 		} catch (Exception e) {
@@ -421,6 +449,8 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 			}
 			errorlabelHorizontalPanel.add(errorLabelField);
 			basePanel.add(errorlabelHorizontalPanel);
+			basePanel.setCellHorizontalAlignment(errorlabelHorizontalPanel, HasHorizontalAlignment.ALIGN_CENTER);
+			basePanel.setCellVerticalAlignment(errorlabelHorizontalPanel, HasVerticalAlignment.ALIGN_MIDDLE);
 		}
 		
 		
