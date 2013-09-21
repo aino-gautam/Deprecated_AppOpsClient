@@ -299,8 +299,8 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 		for(Widget w : widgetList){
 			if(w instanceof LibraryComponentManager){
 				((LibraryComponentManager)w).deregisterHandler();
-			}else if(w instanceof PageManager){
-				((PageManager)w).deregisterHandler();
+			}else if(w instanceof PageCreation){
+				((PageCreation)w).deregisterHandler();
 			}else if(w instanceof SnippetManager){
 				((SnippetManager)w).deregisterHandler();
 			}else if(w instanceof CreateAppWidget){
