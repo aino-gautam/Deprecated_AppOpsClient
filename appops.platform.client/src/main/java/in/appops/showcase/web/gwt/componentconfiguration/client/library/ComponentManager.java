@@ -3,23 +3,9 @@
  */
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
-import in.appops.client.common.event.AppUtils;
-import in.appops.client.common.event.FieldEvent;
-import in.appops.client.common.event.handlers.FieldEventHandler;
-import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
-import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
-import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
-import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
-import in.appops.platform.core.entity.Entity;
-import in.appops.platform.core.entity.Key;
-import in.appops.platform.core.entity.query.Query;
-import in.appops.platform.core.operation.Result;
-import in.appops.platform.core.util.EntityList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -39,6 +25,17 @@ public class ComponentManager extends Composite {
 	
 	public ComponentManager(){
 		
+	}
+	
+	public void deregisterHandler(){
+		try {
+			if(compRegForm !=null)
+				compRegForm.deregisterHandler();
+			if(compListDisplayer !=null)
+				compListDisplayer.deregisterHandler();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void createUi() {

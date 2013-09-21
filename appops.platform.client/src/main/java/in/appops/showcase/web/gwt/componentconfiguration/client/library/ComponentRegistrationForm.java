@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -50,6 +51,8 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 	private Entity compEntityToUpdate;
 	private int componnetEntRow;
 	private Logger logger = Logger.getLogger("ComponentRegistrationForm");
+	private HandlerRegistration configEventhandler = null;
+	private HandlerRegistration fieldEventhandler = null;
 		
 	/** CSS styles **/
 	private final String SAVECOMP_BTN_PCLS = "saveCompBtnCss";
@@ -68,6 +71,15 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 	
 	public ComponentRegistrationForm(){
 		initialize();
+	}
+	
+	public void deregisterHandler(){
+		try {
+			configEventhandler.removeHandler();
+			fieldEventhandler.removeHandler();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void createUi() {
@@ -164,8 +176,12 @@ public class ComponentRegistrationForm extends Composite implements FieldEventHa
 		try{
 			basePanel = new VerticalPanel();
 			initWidget(basePanel);
-			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
-			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
+			
+			if(fieldEventhandler == null)
+				fieldEventhandler = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+			
+			if(configEventhandler == null)
+				configEventhandler = AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
 		}
 		catch (Exception e) {	
 			logger.log(Level.SEVERE, "ComponentRegistrationForm :: initialize :: Exception", e);
