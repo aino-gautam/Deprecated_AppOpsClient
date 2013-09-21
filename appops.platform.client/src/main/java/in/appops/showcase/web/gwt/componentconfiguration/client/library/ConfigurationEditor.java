@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author pallavi@ensarm.com
@@ -22,14 +23,28 @@ public class ConfigurationEditor extends Composite{
 	private ConfPropertyEditor confPropertyEditor;
 	private ConfigurationListDisplayer configurationListDisplayer;
 	
+	
 	private static String BASEPANEL_CSS = "confEditorPanel";
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
 	
-	public ConfigurationEditor() {
+	public ConfigurationEditor(Widget parentContainer) {
+		
 		basePanel = new VerticalPanel();
-		confPropertyEditor = new ConfPropertyEditor();
+		confPropertyEditor = new ConfPropertyEditor(parentContainer);
 		configurationListDisplayer = new ConfigurationListDisplayer();
 		initWidget(basePanel);
+	}
+	
+	public void deregisterHandler() {
+		try {
+			if(confPropertyEditor !=null)
+				confPropertyEditor.deregisterHandler();
+			if(configurationListDisplayer !=null)
+				configurationListDisplayer.deregisterHandler();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	/**
@@ -109,5 +124,6 @@ public class ConfigurationEditor extends Composite{
 		}
 		return configuration;
 	}
+
 
 }
