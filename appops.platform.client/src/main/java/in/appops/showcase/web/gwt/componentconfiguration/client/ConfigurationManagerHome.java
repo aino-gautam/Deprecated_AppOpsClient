@@ -309,6 +309,8 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 				((CreateServicePageWidget)w).deregisterHandler();
 			}
 		}
+		
+		widgetList.clear();
 	}
 
 }
