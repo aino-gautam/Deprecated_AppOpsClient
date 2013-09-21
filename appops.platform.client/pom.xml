@@ -215,13 +215,13 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appdefinition</artifactId>
-			<version>20.09.2013</version>
+			<version>21.09.2013</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>appops_platform</groupId>
-			<artifactId>configuration</artifactId>
-			<version>16.09.2013</version>
+			<artifactId> configuration</artifactId>
+			<version>21.09.2013</version>
 		</dependency>
 		
 		<dependency>
@@ -257,7 +257,7 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>entitystore</artifactId>
-			<version>26.06.2013</version>
+			<version>20.09.2013</version>
 		</dependency>
 
 		<dependency>
@@ -442,7 +442,7 @@
 						<module>in.appops.showcase.web.gwt.chat.chat</module>
 						<module>in.appops.showcase.web.gwt.search.search</module> 
 						<module>in.appops.showcase.web.gwt.snippets.snippets</module> -->  
-						<!-- <module>in.appops.showcase.web.gwt.dynamicsnippet.dynamicsnippet</module> -->
+						<module>in.appops.showcase.web.gwt.dynamicsnippet.dynamicsnippet</module>
 						<module>in.appops.showcase.web.gwt.componentconfiguration.componentconfiguration</module>
 					</modules>
 				</configuration>
