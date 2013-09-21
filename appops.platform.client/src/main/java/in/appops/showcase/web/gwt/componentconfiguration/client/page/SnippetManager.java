@@ -1,20 +1,14 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.page;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import in.appops.client.common.config.dsnip.HTMLProcessor;
-import in.appops.client.common.config.field.ButtonField;
-import in.appops.client.common.config.field.LabelField;
-import in.appops.client.common.config.field.ListBoxField;
-import in.appops.client.common.config.field.SelectedItem;
 import in.appops.client.common.config.field.BaseField.BaseFieldConstant;
+import in.appops.client.common.config.field.ButtonField;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
+import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
+import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
+import in.appops.client.common.config.field.SelectedItem;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
@@ -30,6 +24,12 @@ import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.server.core.service.appdefinition.domain.Componentdefinition;
 import in.appops.showcase.web.gwt.componentconfiguration.client.library.HTMLSnippetConfigurationEditor;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NodeList;
@@ -64,7 +64,8 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	private final String HEADERLBL_CSS = "headerLabel";
 	private final String REGULARLBL_CSS = "regularLabel";
 	private final String TEXTFIELD_CSS = "textField";
-	private HandlerRegistration handler =  null;
+	private HandlerRegistration fieldEventHandler =  null;
+	private ArrayList<HTMLSnippetConfigurationEditor> htmlEditorList = null;
 	
 	/** Field id**/
 	public static final String LIBRARYLISTBOX_ID = "snippetLibraryListBoxId";
@@ -74,12 +75,22 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	 * Constructor
 	 */
 	public SnippetManager() {
-		if(handler == null)
-			handler = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+		if(fieldEventHandler == null)
+			fieldEventHandler = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 	}
 
 	public void deregisterHandler(){
-		handler.removeHandler();
+		fieldEventHandler.removeHandler();
+		
+		if(htmlEditorList!= null)
+			deregisterPreviousInstances();
+	}
+	
+	private void deregisterPreviousInstances(){
+		for(HTMLSnippetConfigurationEditor htmlConfigurationEditor :htmlEditorList){
+			htmlConfigurationEditor.deregisterHandler();
+		}
+		htmlEditorList.clear();
 	}
 	
 	/**
@@ -88,6 +99,9 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 	public void initialize() {
 		basePanel = new VerticalPanel();
 		basePanel.setWidth("100%");
+		if(htmlEditorList == null)
+			htmlEditorList = new ArrayList<HTMLSnippetConfigurationEditor>();
+		
 		initWidget(basePanel);
 		createSnippetRegistrationUI();
 	}
@@ -175,6 +189,9 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 		configEditor.setViewConfigurationType(viewConfigEntity);
 		configEditor.getViewEditor().populateSpansListBox(spansList);
 		configEditor.createUi();
+		
+		deregisterPreviousInstances();
+		htmlEditorList.add(configEditor);
 		
 		propConfigEditorVp.add(configEditor);
 		
