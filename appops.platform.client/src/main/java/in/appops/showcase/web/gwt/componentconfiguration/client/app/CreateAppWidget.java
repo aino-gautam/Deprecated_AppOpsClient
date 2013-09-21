@@ -343,13 +343,15 @@ public class CreateAppWidget extends Composite implements FieldEventHandler{
 				if (result != null) {
 					Entity appEntity = result.getOperationResult();
 					if(appEntity!=null){
-						
+						clearFields();
 						showNotification("App created successfully..");
 					}
 				}else{
 					showNotification("Data not saved..");
 				}
 			}
+
+			
 
 			
 		});
@@ -375,6 +377,12 @@ public class CreateAppWidget extends Composite implements FieldEventHandler{
 		} catch (Exception e) {
 			
 		}
+		
+	}
+	
+	private void clearFields() {
+		appNameTextField.clear();
+		appUrlTextField.clear();
 		
 	}
 	

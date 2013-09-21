@@ -365,17 +365,26 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 				if(result!=null){
 					Entity entity = result.getOperationResult();
 					showNotification("Service created successfully..");
+					clearFields();
 				}else{
 					showNotification("Service not created successfully..");
 				}
 				
 			}
+
+			
 			
 		});
 
 			
 	}
 
+	private void clearFields() {
+		nameTextField.clear();
+		versionTextField.clear();
+		
+	}
+	
 	private void showNotification(String messageStr) {
 		try {
 			LabelField popupLbl = new LabelField();
@@ -430,11 +439,11 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 			}else{
 				throw new NullPointerException("version");
 			}
-			
-			if(!serviceBlobId.equals("")){
-				serviceEntity.setPropertyByName("blobId", serviceBlobId);
+			if(serviceBlobId!=null){
+				if(!serviceBlobId.equals("")){
+					serviceEntity.setPropertyByName("blobId", serviceBlobId);
+				}
 			}
-		
 			return serviceEntity;
 			
 		}catch(Exception e){
