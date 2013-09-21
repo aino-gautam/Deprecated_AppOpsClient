@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -62,9 +63,18 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 	private final String SERVICENAME_TEXTFIELDCSS="serviceNameTextField";
 	private final String SERVCEVERSION_TEXTFIELDCSS="serviceVersionTextField";
 	private String serviceBlobId;
+	private HandlerRegistration fieldEventhandler = null;
 	 
 	public CreateServicePageWidget() {
 		initialise();
+	}
+	
+	public void deregisterHandler(){
+		try {
+			fieldEventhandler.removeHandler();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void initialise(){
@@ -73,7 +83,9 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 		errorlabelHorizontalPanel = new HorizontalPanel();
 		mediaPanel = new HorizontalPanel();
 		initWidget(basePanel);
-		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+		
+		if(fieldEventhandler == null)
+			fieldEventhandler = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 	}
 	
 	public void createUi(){
