@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -48,6 +49,8 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 	private int componentRow = 0;
 	private Entity libraryEntity;
 	private Logger logger = Logger.getLogger("ComponentListDisplayer");
+	private HandlerRegistration configEventhandler = null;
+	private HandlerRegistration fieldEventhandler = null;
 	
 	/** CSS styles **/
 	private final String HEADERLBL_CSS = "componentSectionHeaderLbl";
@@ -61,6 +64,15 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 	
 	public ComponentListDisplayer(){
 		
+	}
+	
+	public void deregisterHandler(){
+		try {
+			configEventhandler.removeHandler();
+			fieldEventhandler.removeHandler();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void createUi() {
@@ -92,8 +104,13 @@ public class ComponentListDisplayer extends Composite implements FieldEventHandl
 			scrollPanel.setStylePrimaryName(SCROLLPANELCSS);
 			compListPanel.setStylePrimaryName(LISTPANEL_CSS);
 			
-			AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
-			AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
+			
+			if(fieldEventhandler == null)
+				fieldEventhandler = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+			
+			if(configEventhandler == null)
+				configEventhandler = AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
+			
 			compListPanel.addClickHandler(this);
 			
 			initWidget(basePanel);
