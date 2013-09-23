@@ -1,10 +1,10 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.service;
 
 import in.appops.client.common.config.field.ButtonField;
-import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
-import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
+import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.config.field.media.MediaField;
 import in.appops.client.common.config.field.media.MediaField.MediaFieldConstant;
@@ -31,7 +31,6 @@ import in.appops.platform.server.core.services.platform.coreplatformservice.cons
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -65,6 +64,7 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 	private final String CREATESERVICEHEADERLBL="createAppPlusServiceHeaderLbl";
 	private String serviceBlobId;
 	private HandlerRegistration fieldEventhandler = null;
+	private HandlerRegistration attachmentEventhandler = null;
 	 
 	public CreateServicePageWidget() {
 		initialise();
@@ -73,6 +73,8 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 	public void deregisterHandler(){
 		try {
 			fieldEventhandler.removeHandler();
+			 if(attachmentEventhandler!=null)
+				 attachmentEventhandler.removeHandler();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -158,7 +160,9 @@ public class CreateServicePageWidget extends Composite implements FieldEventHand
 			 basePanel.setCellVerticalAlignment(serviceCreationLabelField, HasVerticalAlignment.ALIGN_MIDDLE);
 			 
 			 basePanel.setWidth("100%");
-			 AppUtils.EVENT_BUS.addHandler(AttachmentEvent.TYPE, this);
+			 
+			 if(attachmentEventhandler ==null)
+				 attachmentEventhandler = AppUtils.EVENT_BUS.addHandler(AttachmentEvent.TYPE, this);
 			 
 		}catch(Exception e){
 			e.printStackTrace();
