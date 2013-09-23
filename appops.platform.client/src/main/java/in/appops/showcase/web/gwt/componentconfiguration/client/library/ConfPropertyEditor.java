@@ -364,7 +364,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 						insertEmptyRecord();
 						if(isDisplayInGrid){
 							fireConfigEvent(ConfigEvent.UPDATEDCONFIGENTITYLIST);
-
+							clearPropertyValueFields(false);
 						}
 					}
 				}
