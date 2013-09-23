@@ -9,9 +9,7 @@ import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
 import in.appops.client.common.event.AppUtils;
-import in.appops.client.common.event.ConfigEvent;
 import in.appops.client.common.event.FieldEvent;
-import in.appops.client.common.event.handlers.ConfigEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
@@ -20,15 +18,16 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.Defa
 import in.appops.platform.client.EntityContext;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
+import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.configuration.constant.ConfigTypeConstant;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,13 +38,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author mahesh@ensarm.com
- *
  */
-public class ViewConfigurationEditor extends Composite implements FieldEventHandler,ConfigEventHandler {
+public class ViewConfigurationEditor extends Composite implements FieldEventHandler {
 
 	private VerticalPanel basePanel;
 	private VerticalPanel compConatinerHolder;
@@ -53,11 +50,12 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 	private Logger logger = Logger.getLogger("ViewConfigurationEditor");
 	private ListBoxField spanListBox;
 	private Entity viewConfigTypeEntity;
-	private HashMap<Entity, ArrayList<Entity>> configTypeEntityMap;
+	//private HashMap<Entity, ArrayList<Entity>> configTypeEntityMap;
+	private HashMap<String, Entity> configTypeEntityMap;
+	
 	private LabelField subHeaderLbl ;
 	
 	private HandlerRegistration fieldEventHandler = null;
-	private HandlerRegistration configEventHandler = null;
 	
 	public ViewConfigurationEditor(){
 		initialize();
@@ -68,14 +66,14 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 			basePanel = new VerticalPanel();
 			compConatinerHolder = new VerticalPanel();
 			spanListBox = new ListBoxField();
-			configTypeEntityMap = new HashMap<Entity, ArrayList<Entity>>();
+			//configTypeEntityMap = new HashMap<Entity, ArrayList<Entity>>();
+			configTypeEntityMap = new HashMap<String, Entity>();
 			subHeaderLbl = new LabelField();
 			initWidget(basePanel);
-			
+		
 			if(fieldEventHandler == null)
 				fieldEventHandler = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
-			if(configEventHandler == null)
-				configEventHandler = AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
+			
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -84,7 +82,6 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 	
 	public void deregisterHandler(){
 		fieldEventHandler.removeHandler();
-		configEventHandler.removeHandler();
 	}
 	
 	/**
@@ -180,12 +177,9 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 	}
 	
 	private boolean fetchSnippetComponentConfigType(String configTypeKeyName){
-		for(Entity configTypeEnt : configTypeEntityMap.keySet()){
-			if(configTypeEnt.getPropertyByName(ConfigTypeConstant.KEYNAME).toString().equalsIgnoreCase(configTypeKeyName)){
-				ArrayList<Entity> configList = configTypeEntityMap.get(configTypeEnt);
-				showConfigurator(configTypeEnt, configList);
-				return true;
-			}
+		
+		if(configTypeEntityMap.containsKey(configTypeKeyName)){
+			return true;
 		}
 		return false;
 	}
@@ -219,7 +213,9 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 						Entity propertyConfig   = (Entity)map.get("configType");
 						ArrayList<Entity> configList =  (ArrayList<Entity>)map.get("childConfigTypeList");
 						if(propertyConfig!=null){
-							configTypeEntityMap.put(propertyConfig, configList);
+							//configTypeEntityMap.put(propertyConfig, configList);
+							String val = propertyConfig.getPropertyByName(ConfigTypeConstant.KEYNAME).toString();
+							configTypeEntityMap.put(val , propertyConfig);
 							showConfigurator(propertyConfig, configList);
 						}
 					}
@@ -230,6 +226,53 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 			logger.log(Level.SEVERE, "ViewConfigurationEditor :: fetchComponentConfig :: Exception", e);
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public EntityList getConfigTypeList(Entity entity){
+		
+		try {
+			Property<Serializable> configTypeProperty = (Property<Serializable>) entity.getProperty("id");
+			Key<Serializable> key  = (Key<Serializable>) configTypeProperty.getValue();
+			
+			
+			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+						
+			Map parameterMap = new HashMap();
+			parameterMap.put("configTypeId", key.getKeyValue());
+			
+			StandardAction action = new StandardAction(Entity.class, "configuration.ConfigurationService.getConfigTypeFromKey", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+					
+				}
+
+				@Override
+				public void onSuccess(Result<Entity> result) {
+					if(result!=null){
+						Entity propertyConfig   = result.getOperationResult();
+						if(propertyConfig!=null){
+							
+							if(propertyConfig.getPropertyByName("configtypes")!=null){
+								ArrayList<Entity> configList = propertyConfig.getPropertyByName("configtypes");
+								showConfigurator(propertyConfig, configList);
+							}
+						}
+					}
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+		
+	}
+	
+	
 	@Override
 	public void onFieldEvent(FieldEvent event) {
 		try {
@@ -246,6 +289,8 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 					if(!entityExists){
 						Entity configTypeEnt  = getConfigTypeEntity(configName);
 						saveSnippetComponentConfigType(configTypeEnt, selectedStr);
+					}else{
+						getConfigTypeList(configTypeEntityMap.get(configName));
 					}
 				}
 			}
@@ -272,27 +317,7 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 		this.viewConfigTypeEntity = viewConfigTypeEntity;
 	}
 
-	@Override
-	public void onConfigEvent(ConfigEvent event) {
-		int eventType = event.getEventType();
-		Object eventSource = event.getEventSource();
-		switch (eventType) {
-		case ConfigEvent.UPDATEDCONFIGENTITYLIST: {
-			  HashMap<String, Object> map = (HashMap<String, Object>) event.getEventData();
-			  Widget parentContainer = (Widget) map.get("parentContainer");
-			  if(parentContainer instanceof ViewConfigurationEditor){
-				  EntityList configTypeList = (EntityList) map.get("configTypeList");
-				  Entity parentConftypeEnt =  (Entity) map.get("parentConfTypeEnt");
-				  updateConfigurationList(configTypeList,parentConftypeEnt);
-			  }
-			break;
-		}default:
-			break;
-		}
-		
-	}
-	
-	private void updateConfigurationList(EntityList newEntityList,Entity parentConfTypeEnt){
+	/*private void updateConfigurationList(EntityList newEntityList,Entity parentConfTypeEnt){
 		try {
 			if(newEntityList!=null && !newEntityList.isEmpty()){
 				Key key = (Key) parentConfTypeEnt.getPropertyByName("id");
@@ -322,7 +347,9 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
+	
+	
 	
 	
 	private EntityList getUpdatedList(EntityList newEntityList,ArrayList<Entity> existingEntityList){
