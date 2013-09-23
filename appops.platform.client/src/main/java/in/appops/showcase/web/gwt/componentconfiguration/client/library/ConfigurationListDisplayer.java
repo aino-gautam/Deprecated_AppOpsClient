@@ -607,10 +607,10 @@ public class ConfigurationListDisplayer extends Composite  implements FieldEvent
 			  case ConfigEvent.UPDATEDCONFIGENTITYLIST :{
 				  HashMap<String, Object> map = (HashMap<String, Object>) event.getEventData();
 				  Widget parentContainer = (Widget) map.get("parentContainer");
-				  if(parentContainer instanceof LibraryComponentManager){
+				 // if(parentContainer instanceof LibraryComponentManager){
 					  EntityList configTypeList = (EntityList) map.get("configTypeList");
 					  updateListDisplayer(configTypeList);
-				  }
+				//  }
 				  break;
 			}
 			default:
