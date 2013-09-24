@@ -352,7 +352,7 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 	
 	
 	
-	private EntityList getUpdatedList(EntityList newEntityList,ArrayList<Entity> existingEntityList){
+/*	private EntityList getUpdatedList(EntityList newEntityList,ArrayList<Entity> existingEntityList){
 		
 		for (int i = 0; i < newEntityList.size(); i++) {
 			
@@ -365,9 +365,9 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 		newEntityList.addAll(existingEntityList);
 		
 		return newEntityList;
-	}
+	}*/
 	
-	private int getIndexOfEntityToRemove(ArrayList<Entity> existingEntityList ,long id){
+/*	private int getIndexOfEntityToRemove(ArrayList<Entity> existingEntityList ,long id){
 		
 		for (int index = 0; index < existingEntityList.size(); index++) {
 			Key key1 = (Key) existingEntityList.get(index).getPropertyByName("id");
@@ -378,8 +378,8 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 		}
 		return -1;
 	}
-	
-	private boolean checkIfPropertyAlreadyExist(ArrayList<Entity> existingList, Entity newEntity){
+	*/
+/*	private boolean checkIfPropertyAlreadyExist(ArrayList<Entity> existingList, Entity newEntity){
 		
 		String newKeyName = newEntity.getPropertyByName("keyname");
 		
@@ -393,5 +393,5 @@ public class ViewConfigurationEditor extends Composite implements FieldEventHand
 		return false;
 		
 	}
-
+*/
 }
