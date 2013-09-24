@@ -425,7 +425,8 @@ public class SnippetManager extends Composite implements FieldEventHandler {
 			compEntity.setPropertyByName("name", snippetNameTextBox.getValue().toString());
 			compEntity.setPropertyByName("htmldescription", snippetHtmlTextArea.getValue().toString());
 			compEntity.setPropertyByName("typeId",159L); // ems typeId for html snipppet
-			
+			byte val = 1; 
+			compEntity.setPropertyByName("isMvp", val); 
 			return compEntity;
 		}
 		catch (Exception e) {
