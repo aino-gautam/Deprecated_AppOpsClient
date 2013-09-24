@@ -956,9 +956,9 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 						
 						String instanceValue = null;
 						if(value.equals("Component")) {
-							instanceValue = String.valueOf(1);
-						} else if(value.equals("HtmlSnippet")) {
 							instanceValue = String.valueOf(2);
+						} else if(value.equals("HtmlSnippet")) {
+							instanceValue = String.valueOf(1);
 						}
 						
 						Entity entity = null;
