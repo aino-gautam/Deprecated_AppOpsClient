@@ -1427,45 +1427,57 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	}
 	
 	private void checkUpdateValue(String instancevalue) {
-		if(instancevalue.equals("true")) {
-			if(!configInstanceEntityMap.containsKey("UpdateConfiguration")) {
-				EntityContext updateContext = getEntityContextForEventChild(null);
-				saveConfigInstance(getConfiginstanceEntity("UpdateConfiguration", "UpdateConfiguration", null, parentEventEntity, 5L), false, true, false, updateContext);
+		try {
+			if(instancevalue.equals("true")) {
+				if(!configInstanceEntityMap.containsKey("UpdateConfiguration")) {
+					EntityContext updateContext = getEntityContextForEventChild(null);
+					saveConfigInstance(getConfiginstanceEntity("UpdateConfiguration", "UpdateConfiguration", null, parentEventEntity, 5L), false, true, false, updateContext);
+				} else {
+					showUpdateConfigUI();
+				}
 			} else {
-				showUpdateConfigUI();
+				hideUpdateConfigUI();
 			}
-		} else {
-			hideUpdateConfigUI();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
 	private void createNewSnippetPropValueEditor() {
-		SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor("queryMode");
-		snipPropValEditor.setDeletable(false);
-		snipPropValEditor.setInstanceMode(true);
-		snipPropValEditor.setParentConfInstanceEntity(updateConfigEntity);
-		snipPropValEditor.setConfigTypeListboxVisible(true);
-		snipPropValEditor.createUi();
-		updateConfigurationPanel.add(snipPropValEditor);
-		SnippetPropValueEditorList.add(snipPropValEditor);
+		try {
+			SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor("queryMode");
+			snipPropValEditor.setDeletable(false);
+			snipPropValEditor.setInstanceMode(true);
+			snipPropValEditor.setParentConfInstanceEntity(updateConfigEntity);
+			snipPropValEditor.setConfigTypeListboxVisible(true);
+			snipPropValEditor.createUi();
+			updateConfigurationPanel.add(snipPropValEditor);
+			SnippetPropValueEditorList.add(snipPropValEditor);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
 	public void onConfigInstanceEvent(ConfigInstanceEvent event) {
-		if(event.getEventType() == ConfigEvent.SAVEPROPVALUEADDWIDGET){
-			if(event.getEventSource() instanceof SnippetPropValueEditor) {
-				SnippetPropValueEditor snipPropValEditorSelected = (SnippetPropValueEditor) event.getEventSource();
-				if(SnippetPropValueEditorList != null) {
-					if(SnippetPropValueEditorList.contains(snipPropValEditorSelected)) {
-						boolean isUpdate = snipPropValEditorSelected.isUpdate();
-						Entity entity = snipPropValEditorSelected.getConfInstanceParamValEnt();
-						EntityContext context = getEntityContext(null, updateConfigEntity);
-						context = getEntityContextForEventChild(context);
-						saveConfigInstance(entity, false, false, isUpdate, context);
-						createNewSnippetPropValueEditor();
+		try {
+			if(event.getEventType() == ConfigEvent.SAVEPROPVALUEADDWIDGET){
+				if(event.getEventSource() instanceof SnippetPropValueEditor) {
+					SnippetPropValueEditor snipPropValEditorSelected = (SnippetPropValueEditor) event.getEventSource();
+					if(SnippetPropValueEditorList != null) {
+						if(SnippetPropValueEditorList.contains(snipPropValEditorSelected)) {
+							boolean isUpdate = snipPropValEditorSelected.isUpdate();
+							Entity entity = snipPropValEditorSelected.getConfInstanceParamValEnt();
+							EntityContext context = getEntityContext(null, updateConfigEntity);
+							context = getEntityContextForEventChild(context);
+							saveConfigInstance(entity, false, false, isUpdate, context);
+							createNewSnippetPropValueEditor();
+						}
 					}
 				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

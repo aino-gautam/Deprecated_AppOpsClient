@@ -9,7 +9,6 @@ import in.appops.platform.core.shared.Configuration;
 import in.appops.showcase.web.gwt.componentconfiguration.client.app.CreateAppWidget;
 import in.appops.showcase.web.gwt.componentconfiguration.client.library.LibraryComponentManager;
 import in.appops.showcase.web.gwt.componentconfiguration.client.page.PageCreation;
-import in.appops.showcase.web.gwt.componentconfiguration.client.page.PageManager;
 import in.appops.showcase.web.gwt.componentconfiguration.client.page.SnippetManager;
 import in.appops.showcase.web.gwt.componentconfiguration.client.service.CreateServicePageWidget;
 

@@ -133,16 +133,21 @@ public class PageCreation extends Composite implements FieldEventHandler {
 	}
 
 	private HorizontalPanel createTitlePanel() {
-		HorizontalPanel titlePanel = new HorizontalPanel();
-		LabelField pageTitleLabelField = new LabelField();
-		pageTitleLabelField.setConfiguration(getPageTitleLabelConfig());
-		pageTitleLabelField.configure();
-		pageTitleLabelField.create();
-		titlePanel.add(pageTitleLabelField);
-		
-		titlePanel.setWidth("100%");
-		titlePanel.setCellHorizontalAlignment(pageTitleLabelField, HasHorizontalAlignment.ALIGN_CENTER);
-		return titlePanel;
+		try {
+			HorizontalPanel titlePanel = new HorizontalPanel();
+			LabelField pageTitleLabelField = new LabelField();
+			pageTitleLabelField.setConfiguration(getPageTitleLabelConfig());
+			pageTitleLabelField.configure();
+			pageTitleLabelField.create();
+			titlePanel.add(pageTitleLabelField);
+			
+			titlePanel.setWidth("100%");
+			titlePanel.setCellHorizontalAlignment(pageTitleLabelField, HasHorizontalAlignment.ALIGN_CENTER);
+			return titlePanel;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	/**
