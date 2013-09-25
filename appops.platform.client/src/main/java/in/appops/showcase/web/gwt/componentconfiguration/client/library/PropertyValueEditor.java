@@ -23,6 +23,7 @@ import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
 
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlexTable;
 
 public class PropertyValueEditor implements FieldEventHandler {
@@ -54,6 +55,7 @@ public class PropertyValueEditor implements FieldEventHandler {
 	private final String TYPEFIELD_PCLS = "emsTypeListBox";
 	private final String ISDEFAULT_PCLS = "isDefaultField";
 	private final String VALUEFIELD_PCLS = "propertyValueField";
+	private HandlerRegistration fieldEventhandler = null;
 	
 	public PropertyValueEditor() {
 		
@@ -108,10 +110,20 @@ public class PropertyValueEditor implements FieldEventHandler {
 		propValuePanel.setWidget(valuePanelRow, 4, crossImgField);
 		propValuePanel.setWidget(valuePanelRow, 5, savedImgField);
 		
-		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
+		fieldEventhandler = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE,this);
 		
 	}
 	
+	public void deregisterHandler(){
+		try {
+			
+			 if(fieldEventhandler!=null)
+				 fieldEventhandler.removeHandler();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Creates the cross image field configuration object and return.
 	 * @return Configuration instance

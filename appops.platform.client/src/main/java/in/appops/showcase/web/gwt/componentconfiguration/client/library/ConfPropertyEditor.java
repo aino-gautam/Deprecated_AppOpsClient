@@ -74,6 +74,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	private Entity confTypeEntToRemove = null;
 	private boolean isDefaultSelected = false;
 	private ArrayList<CheckboxField> selectedCheckBoxes  = null;
+	private ArrayList<PropertyValueEditor> propertyValueEditorList  = null;
 	private Widget parentContainer = null;
 	
 	private HandlerRegistration configEventhandler = null;
@@ -113,7 +114,8 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 			
 			horizontalPanel.add(propNameField);
 			horizontalPanel.add(propValuePanel);		
-					
+			if(propertyValueEditorList == null)
+					propertyValueEditorList = new ArrayList<PropertyValueEditor>();
 			createNewRecord();
 			
 			ButtonField saveConfigBtn = new ButtonField();
@@ -140,7 +142,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				propValueList = new HashMap<Integer, PropertyValueEditor>();
 			}
 			propValueList.put(valueRow, propValueEditor);
-			
+			propertyValueEditorList.add(propValueEditor);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -309,9 +311,19 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 					
 					createNewRecord();
 			    }
+				deregisterPropertyValueEditorHandler();
+				if(propertyValueEditorList!=null)
+					propertyValueEditorList.clear();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private void deregisterPropertyValueEditorHandler() {
+		for(PropertyValueEditor propertyValueEditor : propertyValueEditorList){
+			 propertyValueEditor.deregisterHandler();
+		}
+		
 	}
 
 	@SuppressWarnings("unchecked")
@@ -381,7 +393,8 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	private void fireConfigEvent(int eventType){
 		try {
 			
-			EntityList typeList = (EntityList) configTypeList.clone();
+			EntityList typeList = new EntityList();
+			typeList.addAll(configTypeList);
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			map.put("parentContainer",parentContainer);
 			map.put("configTypeList", typeList);
@@ -466,7 +479,9 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 						
 						EntityList typeList = (EntityList) mapEntry.getValue();
 						propNameField.setValue(keyname);
-						configTypeList = (EntityList) typeList.clone();
+						if(configTypeList == null)
+						    configTypeList = new EntityList(); 
+						configTypeList.addAll(typeList);
 						
 						
 																	
@@ -635,8 +650,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				@Override
 				public void onSuccess(Result<EntityList> result) {
 					if(result!=null){
-						EntityList entityList = result.getOperationResult();
-						configTypeList = entityList;
+						configTypeList = result.getOperationResult();
 						showPopup("Configurations updated successfully");
 						fireConfigEvent(ConfigEvent.UPDATEDCONFIGENTITYLIST);
 						clearPropertyValueFields(false);
@@ -718,6 +732,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 	}
 	public void populateConfFormEditor(){
 		try {
+			
 			PropertyValueEditor propValueEditor;
 			if(confTypeEnt!=null){
 				 propValueEditor = new PropertyValueEditor(propValuePanel, valueRow, confTypeEnt);
@@ -740,7 +755,7 @@ public class ConfPropertyEditor extends VerticalPanel implements FieldEventHandl
 				propValueList = new HashMap<Integer, PropertyValueEditor>();
 			}
 			propValueList.put(valueRow, propValueEditor);
-			
+			propertyValueEditorList.add(propValueEditor);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
