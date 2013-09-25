@@ -1,4 +1,4 @@
-package in.appops.client.common.fields;
+package in.appops.client.common.config.field.textfield;
 
 import in.appops.client.common.config.field.BaseField;
 import in.appops.client.common.config.field.NumericTextbox;
@@ -68,7 +68,7 @@ emailTextField.setConfiguration(conf);<br>
 emailTextField.configure();<br>
 emailTextField.create();
 </p>*/
-@Deprecated
+
 public class TextField extends BaseField implements BlurHandler, KeyUpHandler,KeyPressHandler,KeyDownHandler{
 
 	private TextBox textBox;
@@ -251,8 +251,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	private void createNumericTextBox(){
 		try {
 			logger.log(Level.INFO,	"[TextField] ::In createNumericTextBox method ");
-			//TODO : check and see exception not usable class
-			//numericTextbox = new NumericTextbox(this);
+			numericTextbox = new NumericTextbox(this);
 			numericTextbox.setConfiguration(getConfiguration());
 			numericTextbox.setReadOnly(isReadOnly());
 			numericTextbox.setEnabled(isEnabled());

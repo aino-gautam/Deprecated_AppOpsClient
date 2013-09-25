@@ -1,21 +1,15 @@
 package in.appops.client.common.config.model;
 
 import in.appops.client.common.core.EntityReceiver;
-import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.query.Query;
-import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
-import in.appops.platform.core.util.EntityList;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class EntityModel extends AppopsBaseModel {
 	private Entity entity;

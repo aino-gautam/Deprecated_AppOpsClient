@@ -14,7 +14,7 @@ import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.ToggleImageField;
 import in.appops.client.common.config.field.date.DateLabelField;
 import in.appops.client.common.config.field.spinner.SpinnerField;
-import in.appops.client.common.fields.TextField;
+import in.appops.client.common.config.field.textfield.TextField;
 import in.appops.client.common.fields.htmleditor.HtmlEditorField;
 
 public class ComponentFactoryImpl implements ComponentFactory {
