@@ -104,30 +104,33 @@
 }
 /*************************/
 
-.managerHomePanel{
-	border: 2px solid;
+.managerHomePanel {
+	border: 1px solid grey;
 	padding: 10px;
+	margin: 0 5px;
+	width: 99%;
 }
 
 .managerHomeButton {
-	width: 130px;
-	height: 50px;
-	border: 1px solid #DCDCDC;
+	width: 150px;
+	height: 25px;
+	border: 1px solid grey;
 	margin: 5px 5px 5px 5px;
 	font-family: 'Ubuntu', sans-serif;
-	-webkit-box-shadow: 1px 1px 1px 0px #8F8C8C;
-	box-shadow: 1px 1px 1px 0 rgb(99, 85, 85);
-	color: #333333;
+	color: #333;
 	cursor: hand;
 	cursor: pointer;
-	font-size: 13px;
-	font-weight: bold;
+	font-size: 12px;
+	background: white;
+	border-radius: 2px;
 }
 
-.buttonToolbar{
-	border: 1px solid;
-	padding-left: 15px;
-	padding-top: 10px;
+.managerHomeButton:HOVER{
+    border-color:orange;
+}
+.buttonToolbar {
+	border: 1px solid grey;
+	padding: 15px;
 }
 
 .contentPanel{
@@ -447,21 +450,28 @@
 	width: 100%;
 	margin-top: 10px;
 }
-.createAppBtn{
-	margin-top: 15px;
-	height: 30px;
-	border: 1px solid #DCDCDC;
+
+.createAppBtn {
+	height: 25px;
+	border: 1px solid grey;
 	font-family: 'Ubuntu', sans-serif;
-	-webkit-box-shadow: 1px 1px 1px 0px #8F8C8C;
-    box-shadow: 1px 1px 1px 0 #8F8C8C;
-    color: #333333;
-    cursor: hand;
-    cursor: pointer;
+	color: #333;
+	cursor: pointer;
+	background-color: white;
+	border-radius: 2px;
 }
+
+.createAppBtn:Hover{
+    border-color: orange;
+}
+
 .createAppWidgetLabels{
 	font-family: 'Ubuntu', sans-serif;
-	font-size: 14px;
+	font-size: 13px;
+	color: #333;
+	margin-bottom: 4px;
 }
+
 .errorLabelCss{
 	font-family: 'Ubuntu', sans-serif;
 	font-size: 12px;
@@ -478,11 +488,20 @@
 	cursor: pointer;
 	cursor: hand;
 }
+
+
+.serviceVersionTextField {
+	width: 255px;
+	border: 1px solid grey;
+	height: 20px;
+	text-indent: 10px;
+}
+
 .serviceNameTextField{
 	width: 255px;
-}
-.serviceVersionTextField{
-	width: 125px;
+	border: 1px solid grey;
+	height: 20px;
+	text-indent: 10px;
 }
 
 .saveConfInstanceBtnCss{
@@ -504,13 +523,60 @@
 }
 
 .pageTitleLabel {
-	font-weight: bold;
 	font-size: 15px;
-	margin-bottom: 10px;
+	font-family: 'Ubuntu', sans-serif;
 }
+
 .createAppPlusServiceHeaderLbl{
 	font-size: 16px;
 	font-weight: bold;
+}
+
+.augesHeader  {
+	margin: 5px;
+	background-color: white;
+	border: 1px solid grey;
+	width: 99%;
+	padding: 4px;
+}
+
+.augsLogoImage{
+	width: 100px;
+}
+
+.userIconImage {
+	width: 20px;
+	margin: 8px 10px 8px 0;
+	cursor: pointer;
+}
+
+.createServiceHeaderLinkBase{
+	margin: 10px;
+}
+
+.augsHeaderLink{
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 13px;
+	color: grey;
+	cursor: pointer;
+}
+
+.augsHeaderLink :HOVER{
+	text-decoration: underline;
+}
+
+.headerServiceSelectionListBox {
+	border: 1px solid grey;
+	color: #585858;
+	background-color: white;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 13px;
+	margin: 8px 3px 8px 0;
+	cursor:pointer;
+}
+
+.headerServiceSelectionListBox:HOVER{
+    border-color:orange;
 }
 .breadcrumbComponent{
 	display: inline-block;
