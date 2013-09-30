@@ -14,6 +14,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 
 
@@ -29,12 +30,14 @@ public class ActionField extends BaseField implements ClickHandler{
 		int AF_ANCHOR = 1;
 		int AF_BUTTON = 2;
 		int AF_LABEL = 3;
+		int AF_IMAGE = 4;
 	}
 
 	
 	private Anchor actionLink;
 	private Button actionButton; 
 	private Label actionLabel; 
+	private Image actionImage;
 	
 	/************************** All Configuration Methods here *****************************************/
 	@Override
@@ -108,7 +111,9 @@ public class ActionField extends BaseField implements ClickHandler{
 			actionLink = new Anchor();
 		} else if(widgetType == ActionFieldConstant.AF_BUTTON){
 			actionButton = new Button();
-		}	
+		} else if(widgetType == ActionFieldConstant.AF_IMAGE){
+			actionImage = new Image();
+		}		
 		
 		if(getBaseFieldPrimCss()!=null) {
 			if(widgetType == ActionFieldConstant.AF_LABEL){
@@ -117,6 +122,8 @@ public class ActionField extends BaseField implements ClickHandler{
 				actionLink.setStylePrimaryName(getBaseFieldPrimCss());
 			} else if(widgetType == ActionFieldConstant.AF_BUTTON){
 				actionButton.setStylePrimaryName(getBaseFieldPrimCss());
+			} else if(widgetType == ActionFieldConstant.AF_IMAGE){
+				actionImage.setStylePrimaryName(getBaseFieldPrimCss());
 			}
 		}
 		
@@ -140,7 +147,9 @@ public class ActionField extends BaseField implements ClickHandler{
 			actionLink.setText(value.toString());
 		} else if(widgetType == ActionFieldConstant.AF_BUTTON){
 			actionButton.setText(value.toString());
-		}	
+		} else if(widgetType == ActionFieldConstant.AF_IMAGE){
+			actionImage.setUrl(value.toString());
+		}		
 	}
 	
 	@Override
@@ -157,6 +166,9 @@ public class ActionField extends BaseField implements ClickHandler{
 		} else if(widgetType == ActionFieldConstant.AF_BUTTON){
 			basePanel.add(actionButton, DockPanel.CENTER);
 			actionButton.addClickHandler(this);
+		} else if(widgetType == ActionFieldConstant.AF_IMAGE){
+			basePanel.add(actionImage, DockPanel.CENTER);
+			actionImage.addClickHandler(this);
 		}
 	}
 
