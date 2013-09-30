@@ -37,7 +37,8 @@ public class FieldEvent extends GwtEvent<FieldEventHandler> {
 	public static final int CLICKED = 34;
 	public static final int VALUE_SELECTED = 35;
 	public static final int TAB_KEY_PRESSED = 36;
-	
+	public static final int BREACRUMBUPDATE = 37;
+
 	
 	public static Type<FieldEventHandler> TYPE = new Type<FieldEventHandler>();
 	
