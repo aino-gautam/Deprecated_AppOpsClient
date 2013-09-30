@@ -3,7 +3,9 @@ package in.appops.showcase.web.gwt.componentconfiguration.client;
 import in.appops.client.common.config.field.ButtonField;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
 import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.ConfigEvent;
 import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.ConfigEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.showcase.web.gwt.componentconfiguration.client.app.CreateAppWidget;
@@ -16,18 +18,19 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ConfigurationManagerHome extends Composite implements FieldEventHandler{
+public class ConfigurationManagerHome extends Composite implements FieldEventHandler,ConfigEventHandler{
 	
+	private VerticalPanel mainBasePanel;
 	private HorizontalPanel basePanel;
 	private VerticalPanel contentPanel;
 	private Logger logger = Logger.getLogger("ConfigurationManagerHome");
 	private ArrayList<Widget> widgetList  = null;
+	private AugsHeader augsHeader ;
 	
 	/** CSS styles used **/
 	private static String HOME_BTN_PCLS = "managerHomeButton";
@@ -49,8 +52,12 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 
 	private void initialize() {
 		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+		AppUtils.EVENT_BUS.addHandler(ConfigEvent.TYPE, this);
+
 		basePanel = new HorizontalPanel();
-		initWidget(basePanel);
+		mainBasePanel = new VerticalPanel();
+		initWidget(mainBasePanel);
+		augsHeader = new AugsHeader();
 	}
 	
 	public void createUi(){
@@ -71,21 +78,19 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 			createSnippetBtn.configure();
 			createSnippetBtn.create();
 			
-			ButtonField createServicetBtn = new ButtonField();
+/*			ButtonField createServicetBtn = new ButtonField();
 			createServicetBtn.setConfiguration(getCreateServiceBtnConf());
 			createServicetBtn.configure();
-			createServicetBtn.create();
+			createServicetBtn.create();*/
 			
 			ButtonField createAppBtn = new ButtonField();
 			createAppBtn.setConfiguration(getCreateAppBtnConf());
 			createAppBtn.configure();
 			createAppBtn.create();
 			
-			
-			
 			VerticalPanel toolbar = new VerticalPanel();
 			VerticalPanel btnPanel = new VerticalPanel();
-			btnPanel.add(createServicetBtn);
+		//	btnPanel.add(createServicetBtn);
 			btnPanel.add(createAppBtn);
 			btnPanel.add(manageLibBtn);
 			btnPanel.add(createSnippetBtn);
@@ -93,17 +98,19 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 		
 			toolbar.add(btnPanel);
 			
-			CreateServicePageWidget createServicePageWidget = new CreateServicePageWidget();
-			createServicePageWidget.createUi();
+		//	CreateServicePageWidget createServicePageWidget = new CreateServicePageWidget();
+		//	createServicePageWidget.createUi();
 			
 			if(widgetList == null)
 				widgetList = new ArrayList<Widget>();
 			
-			widgetList.add(createServicePageWidget);
+		//	widgetList.add(createServicePageWidget);
 								
 			contentPanel = new VerticalPanel();
-			contentPanel.add(createServicePageWidget);
+		//	contentPanel.add(createServicePageWidget);
 
+			augsHeader.createUi();
+			
 			basePanel.add(toolbar);
 			basePanel.add(contentPanel);
 			
@@ -111,14 +118,17 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 			contentPanel.setStylePrimaryName(CONTENTPANEL_PCLS);
 			basePanel.setStylePrimaryName(BASEPANEL_PCLS);
 			
-			int width = Window.getClientWidth() - 70;
+/*			int width = Window.getClientWidth() - 70;
 			int height = Window.getClientHeight() - 100;
 			
 			int toolBarWidth = (width/7);
 			toolbar.setSize(toolBarWidth+"px", height+"px");
 			contentPanel.setWidth((width-toolBarWidth)+"px");
-			basePanel.setWidth((width-toolBarWidth)+"px");
-						
+			basePanel.setWidth((width-toolBarWidth)+"px");*/
+			
+			mainBasePanel.add(augsHeader);
+			mainBasePanel.add(basePanel);
+			mainBasePanel.setWidth("100%");
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "ConfigurationManagerHome :: createUi :: Exception", e);
 		}
@@ -263,9 +273,7 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 						deregisterWidgetHandlers();
 						SnippetManager snippetManager = new SnippetManager();
 						snippetManager.initialize();
-						
 						widgetList.add(snippetManager);
-						
 						contentPanel.add(snippetManager);
 					}else if(btnField.getBaseFieldId().equals(CREATEAPP_BTN_ID)){
 						contentPanel.clear();
@@ -274,14 +282,14 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 						createAppWidget.createUi();
 						widgetList.add(createAppWidget);
 						contentPanel.add(createAppWidget);
-					}else if(btnField.getBaseFieldId().equals(CREATESERVICE_BTN_ID)){
+					}/*else if(btnField.getBaseFieldId().equals(CREATESERVICE_BTN_ID)){
 						contentPanel.clear();
 						deregisterWidgetHandlers();
 						CreateServicePageWidget createServicePageWidget = new CreateServicePageWidget();
 						createServicePageWidget.createUi();
 						widgetList.add(createServicePageWidget);
 						contentPanel.add(createServicePageWidget);
-					}
+					}*/
 				}
 				break;
 			}
@@ -310,6 +318,23 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 		}
 		
 		widgetList.clear();
+	}
+
+	@Override
+	public void onConfigEvent(ConfigEvent event) {
+		try{
+			if(event.getEventType() == ConfigEvent.CREATENEWSERVICE){
+				contentPanel.clear();
+				deregisterWidgetHandlers();
+				CreateServicePageWidget createServicePageWidget = new CreateServicePageWidget();
+				createServicePageWidget.createUi();
+				widgetList.add(createServicePageWidget);
+				contentPanel.add(createServicePageWidget);
+			}
+		}
+		catch (Exception e) {
+			logger.log(Level.SEVERE, "ConfigurationManagerHome :: onConfigEvent :: Exception", e);
+		}
 	}
 
 }
