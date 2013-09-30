@@ -15,48 +15,64 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
-public class BreadcrumbSnippetField implements FieldEventHandler{
+/**
+ * @author Kamlakar
+ * reworked by : mahesh@ensarm.com
+ */
+public class BreadcrumbSnippet extends Composite implements FieldEventHandler{
 
+	private HorizontalPanel baseHp;
 	private Entity actionEntity;
+	
+	private Configuration breadCrumbSnippetConfig;
+	
 	private LinkField hyperLinkField= new LinkField();
 	private ImageField image= new ImageField();
-	private HorizontalPanel hPanel= new HorizontalPanel();
-	private String label;
 	private HandlerRegistration fieldEventHandler= null;
 
-	private Logger logger = Logger.getLogger(getClass().getName());
+	private Logger logger = Logger.getLogger("BreadcrumbSnippetField");
 
-	public BreadcrumbSnippetField(String label) {
-		this.label=label;
-		if(fieldEventHandler ==null)
-			fieldEventHandler = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+	public BreadcrumbSnippet() {
+		initialize();
 	}
 
-	public HorizontalPanel create(){
+	private void initialize() {
+		try{
+			baseHp= new HorizontalPanel();
+			
+			if(fieldEventHandler ==null)
+				fieldEventHandler = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+			
+			initWidget(baseHp);
+		}
+		catch (Exception e) {
+			logger.log(Level.SEVERE,"[BreadcrumbSnippetField]::Exception In initialize  method :"+e);
+		}
+	}
+
+	public void create(){
 
 		image.setConfiguration(getImageConfiguration());
 		image.configure();
 		image.create();
 
-		hyperLinkField.setConfiguration(getHyperLinkConfiguration(label));
+		hyperLinkField.setConfiguration(getHyperLinkConfiguration(actionEntity.getPropertyByName("name").toString()));
 		hyperLinkField.configure();
 		hyperLinkField.create();
 
-		hPanel.add(hyperLinkField);
-		hPanel.add(image);
-		hPanel.setSpacing(2);
-		hPanel.setStylePrimaryName("breadcrumbComponent");
+		baseHp.add(hyperLinkField);
+		baseHp.add(image);
+		baseHp.setStylePrimaryName("breadcrumbComponent");
 
-		return hPanel;
 	}
 
 	private Configuration getHyperLinkConfiguration(String label) {
 		Configuration configuration = new Configuration();
 		try {
-			logger.log(Level.INFO,"[BreadcrumbSnippetField]:: In getHyperLinkConfiguration  method ");
-			configuration.setPropertyByName(LinkFieldConstant.LNK_TYPE, LinkFieldConstant.LNKTYPE_HYPERLINK);
+		//	configuration.setPropertyByName(LinkFieldConstant.LNK_TYPE, LinkFieldConstant.LNKTYPE_HYPERLINK);
 			configuration.setPropertyByName(LinkFieldConstant.BF_PCLS,"appops-LinkField");
 			configuration.setPropertyByName(LinkFieldConstant.LNK_DISPLAYTEXT, label);
 		} catch (Exception e) {
@@ -69,7 +85,6 @@ public class BreadcrumbSnippetField implements FieldEventHandler{
 	private Configuration getImageConfiguration(){
 		Configuration configuration = new Configuration();
 		try {
-			logger.log(Level.INFO,"[BreadcrumbSnippetField]:: In getImageConfiguration  method ");
 			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, "images/breadcrumArrowUnfilled.png");
 
 		} catch (Exception e) {
@@ -84,7 +99,9 @@ public class BreadcrumbSnippetField implements FieldEventHandler{
 			if(event.getEventSource() instanceof ImageField){
 				if(event.getEventType() == FieldEvent.CLICKED){
 					ImageField source = (ImageField) event.getEventSource();
-					showBreadcrumbPopup(source.getAbsoluteLeft(), source.getAbsoluteTop()+source.getOffsetHeight());
+					if(source.equals(image)){
+						showBreadcrumbPopup(source.getAbsoluteLeft(), source.getAbsoluteTop()+source.getOffsetHeight());
+					}
 				}
 			}
 		}
@@ -95,18 +112,37 @@ public class BreadcrumbSnippetField implements FieldEventHandler{
 	}
 
 	public void showBreadcrumbPopup(int left, int top){
+		try{
 		
+		EntityList childlist= actionEntity.getPropertyByName("child");
 		
-		EntityList childlist= actionEntity.getPropertyByName("ChildList");
-		
-		BreadcrumbPopUp popup=new BreadcrumbPopUp(childlist);
-		popup.setPopupPosition(left, top);
-		popup.createUI();
-		popup.show();
+		if(!childlist.isEmpty()){
+			BreadcrumbPopup popup=new BreadcrumbPopup(childlist);
+			popup.setPopupPosition(left, top);
+			popup.createUI();
+			popup.show();
+		}
+		}catch (Exception e) {
+			logger.log(Level.SEVERE,"[BreadcrumbSnippetField]::Exception In showBreadcrumbPopup  method :"+e);
+		}
 	}
 
 	public void setActionEntity(Entity entity1) {
 		actionEntity=entity1;
+	}
+
+	/**
+	 * @return the breadCrumbSnippetConfig
+	 */
+	public Configuration getBreadCrumbSnippetConfig() {
+		return breadCrumbSnippetConfig;
+	}
+
+	/**
+	 * @param breadCrumbSnippetConfig the breadCrumbSnippetConfig to set
+	 */
+	public void setBreadCrumbSnippetConfig(Configuration breadCrumbSnippetConfig) {
+		this.breadCrumbSnippetConfig = breadCrumbSnippetConfig;
 	}
 
 
