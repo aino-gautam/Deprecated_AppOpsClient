@@ -25,6 +25,7 @@ import in.appops.platform.client.EntityContextGenerator;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.Property;
+import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
@@ -82,6 +83,10 @@ public class PageCreation extends Composite implements FieldEventHandler {
 	private VerticalPanel pageConfigPanel;
 	private HandlerRegistration fieldEventHandler = null;
 	private ArrayList<PageConfiguration> pageConfigurationInstanceList = null;
+	
+	private boolean isPageUpdate;
+	private Entity pageComponentInstEnt;
+	private Entity pageEntity;
 	
 	public PageCreation() {
 		initialize();
@@ -513,6 +518,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 					pageNametextField.setValue("");
 					((TextBox) pageNametextField.getWidget()).setFocus(true);
 					pageListbox.setValue(pageListbox.getSuggestionValueForListBox());
+					isPageUpdate = false;
 				} else if(source.equals(processPageButton)) {
 					boolean isEnabled = appListbox.isFieldEnabled();
 					if(isEnabled) {
@@ -522,7 +528,17 @@ public class PageCreation extends Composite implements FieldEventHandler {
 						} else {
 							ArrayList<Element> appopsContainerFields = validateHTML();
 							if(appopsContainerFields != null) {
-								saveComponentDef(appopsContainerFields);
+								if(isPageUpdate) {
+									String pageName = pageComponentInstEnt.getPropertyByName("instancename").toString();
+									String pageHtml = pageComponentInstEnt.getPropertyByName("htmldescription").toString();
+									if(pageName.equals(pageNametextField.getValue()) && pageHtml.equals(htmltextArea.getValue())) {
+										fetchPageContainers(appopsContainerFields);
+									} else {
+										updatePage(appopsContainerFields);
+									}
+								} else {
+									saveComponentDef(appopsContainerFields);
+								}
 							} else {
 								showPopup("Html format not valid");
 							}
@@ -539,6 +555,7 @@ public class PageCreation extends Composite implements FieldEventHandler {
 					htmltextArea.setValue("");
 					pageNametextField.setValue("");
 					String value = (String) source.getValue();
+					isPageUpdate = false;
 					if(value.equals(source.getSuggestionValueForListBox())) {
 						pageListbox.setConfiguration(getPageListBoxConfiguration(false,null));
 						pageListbox.configure();
@@ -560,11 +577,15 @@ public class PageCreation extends Composite implements FieldEventHandler {
 						htmltextArea.setValue("");
 						pageNametextField.setValue("");
 						pageConfigPanel.clear();
+						isPageUpdate = false;
 					} else {
-						Entity pageEntity = source.getAssociatedEntity(value);
-						String pageName = pageEntity.getPropertyByName("name").toString();
+						pageEntity = source.getAssociatedEntity(value);
+						pageComponentInstEnt = (Entity) pageEntity.getProperty("componentinstance");
+						String pageName = pageComponentInstEnt.getPropertyByName("instancename").toString();
+						String pageHtml = pageComponentInstEnt.getPropertyByName("htmldescription").toString();
 						pageNametextField.setValue(pageName);
-						fetchComponentDefinationEnt(pageEntity);
+						htmltextArea.setValue(pageHtml);
+						isPageUpdate = true;
 						/*ConfigEvent configEvent = new ConfigEvent(ConfigEvent.SHOWPAGECONFIGURATION, null, this);
 						AppUtils.EVENT_BUS.fireEvent(configEvent);*/
 					}
@@ -573,10 +594,115 @@ public class PageCreation extends Composite implements FieldEventHandler {
 		}
 	}
 
-	private void fetchComponentDefinationEnt(Entity pageEntity) {
-		
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void updatePage(final ArrayList<Element> appopsContainerFields) {
+		try {
+			String pageName = pageComponentInstEnt.getPropertyByName("instancename").toString();
+
+			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+			
+			Map parameterMap = new HashMap();
+			HashMap<String, Entity> pageDetailMap = new HashMap<String, Entity>();
+			pageComponentInstEnt.setPropertyByName("htmldescription", (String) htmltextArea.getValue());
+			boolean isContentUpdate;
+			
+			if(pageName.equals(pageNametextField.getValue())) {
+				isContentUpdate = true;
+			} else {
+				isContentUpdate = false;
+				pageComponentInstEnt.setPropertyByName("instancename", (String) pageNametextField.getValue());
+				
+				String id = pageComponentInstEnt.getPropertyByName("configurationInstId").toString();
+				Entity configInstEntity = getPageConfigInstEnt(Long.valueOf(id));
+				pageDetailMap.put("ConfigInstEnt", configInstEntity);
+				
+				pageEntity.setPropertyByName("name", (String) pageNametextField.getValue());
+				pageDetailMap.put("pageEntity", pageEntity);
+			}
+			pageDetailMap.put("ComponentInstEnt", pageComponentInstEnt);
+			parameterMap.put("pageDetailMap", pageDetailMap);
+			parameterMap.put("isContentUpdate", isContentUpdate);
+			
+			StandardAction action = new StandardAction(HashMap.class, "appdefinition.AppDefinitionService.updatePage", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<HashMap<String, Entity>>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(Result<HashMap<String, Entity>> result) {
+					if(result!=null){
+						fetchPageContainers(appopsContainerFields);
+					}
+				}
+			});
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	protected void fetchPageContainers(final ArrayList<Element> appopsContainerFields) {
+		try{
+			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+			
+			Map parameterMap = new HashMap();
+			
+			Query query = new Query();
+			query.setQueryName("getPageContainers");
+			HashMap<String, Object> queryParamMap = new HashMap<String, Object>();
+			String id = pageComponentInstEnt.getPropertyByName("configurationInstId").toString();
+			queryParamMap.put("parentId", Long.valueOf(id));
+			query.setQueryParameterMap(queryParamMap);
+			
+			parameterMap.put("query", query);
+			
+			StandardAction action = new StandardAction(HashMap.class, "appdefinition.AppDefinitionService.getPageContainersMap", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<HashMap<String, HashMap<String, Object>>>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(Result<HashMap<String, HashMap<String, Object>>> result) {
+					if(result!=null){
+						HashMap<String, HashMap<String, Object>> map = result.getOperationResult();
+						PageConfiguration pageConfig = createPageConfiguration(null);
+						pageConfig.setPageComponentInstEntity(pageComponentInstEnt);
+						pageConfig.setPageEntity(pageEntity);
+						pageConfig.populateSpansListBox(appopsContainerFields);
+						pageConfig.setContainerCompoInstMap(map);
+					}
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	//TODO : Hardcoded entity has been set
+	private Entity getPageConfigInstEnt(Long id) {
+		try{
+			Entity configInstEntity = new Entity();
+			configInstEntity.setType(new MetaType("Configinstance"));
+			Key<Long> key = new Key<Long>(id);
+			Property<Key<Long>> keyProp = new Property<Key<Long>>(key);
+			configInstEntity.setProperty("id", keyProp);
+			configInstEntity.setPropertyByName("instancename", (String) pageNametextField.getValue());
+			return configInstEntity;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	private ArrayList<Element> validateHTML(){
 		String htmlStr = htmltextArea.getFieldText();
 		NodeList<Element> spans = HTMLProcessor.getSpanElementsFromHTML(htmlStr);
@@ -654,31 +780,8 @@ public class PageCreation extends Composite implements FieldEventHandler {
 				@Override
 				public void onSuccess(Result<HashMap<String, Entity>> result) {
 					if(result!=null){
-						pageConfigPanel.clear();
-						PageConfiguration pageConfig = new PageConfiguration();
-						
-						if(pageConfigurationInstanceList ==null)
-							pageConfigurationInstanceList = new ArrayList<PageConfiguration>();
-						
-						for(PageConfiguration pgConfig :pageConfigurationInstanceList){
-							pgConfig.deregisterHandler();
-						}
-						
-						pageConfigurationInstanceList.clear();
-						
-						pageConfigurationInstanceList.add(pageConfig);
-						
-						pageConfigPanel.add(pageConfig);
-						
 						HashMap<String, Entity> entityMap = result.getOperationResult();
-						if(entityMap != null && !entityMap.isEmpty()) {
-							Entity pageCompInstEnt = entityMap.get("pageCompInstEntity");
-							Entity pageEnt = entityMap.get("pageEntity");
-							if(pageCompInstEnt != null) {
-								pageConfig.setPageComponentInstEntity(pageCompInstEnt);
-								pageConfig.setPageEntity(pageEnt);
-							}
-						}
+						PageConfiguration pageConfig = createPageConfiguration(entityMap);
 						pageConfig.populateSpansListBox(appopsContainerFields);
 					}
 				}
@@ -688,6 +791,34 @@ public class PageCreation extends Composite implements FieldEventHandler {
 		}
 	}
 	
+	protected PageConfiguration createPageConfiguration(HashMap<String, Entity> entityMap) {
+		pageConfigPanel.clear();
+		PageConfiguration pageConfig = new PageConfiguration();
+		
+		if(pageConfigurationInstanceList ==null)
+			pageConfigurationInstanceList = new ArrayList<PageConfiguration>();
+		
+		for(PageConfiguration pgConfig :pageConfigurationInstanceList){
+			pgConfig.deregisterHandler();
+		}
+		
+		pageConfigurationInstanceList.clear();
+		
+		pageConfigurationInstanceList.add(pageConfig);
+		
+		pageConfigPanel.add(pageConfig);
+		
+		if(entityMap != null && !entityMap.isEmpty()) {
+			Entity pageCompInstEnt = entityMap.get("pageCompInstEntity");
+			Entity pageEnt = entityMap.get("pageEntity");
+			if(pageCompInstEnt != null) {
+				pageConfig.setPageComponentInstEntity(pageCompInstEnt);
+				pageConfig.setPageEntity(pageEnt);
+			}
+		}
+		return pageConfig;
+	}
+
 	public String getPageName() {
 		String name = pageNametextField.getValue().toString();
 		if(name.contains(" ")) {

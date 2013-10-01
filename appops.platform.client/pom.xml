@@ -213,9 +213,9 @@
 		<!-- Appops server jars -->
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>vikram_appops_platform</groupId>
 			<artifactId>appdefinition</artifactId>
-			<version>24.09.2013</version>
+			<version>27.09.2013</version>
 		</dependency>
 		
 		<dependency>
@@ -255,9 +255,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>milind_appops_platform</groupId>
 			<artifactId>entitystore</artifactId>
-			<version>20.09.2013</version>
+			<version>30.09.2013</version>
 		</dependency>
 
 		<dependency>
