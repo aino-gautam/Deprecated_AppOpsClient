@@ -509,6 +509,28 @@ public class GroupField extends BaseField implements FieldEventHandler{
 		}
 	}
 	
+	@Override
+	public void setFieldValue(String fieldValue) {
+		String groupFieldType = getGroupFieldType();
+		if (groupFieldType.equals(GroupFieldConstant.GFTYPE_MULTISELECT)) {
+			Iterator<Widget> iterator = fieldItems.iterator();
+			while(iterator.hasNext()) {
+				CheckboxField chkBoxField = (CheckboxField) iterator.next();
+				if(chkBoxField.getDisplayText().equals(fieldValue)) {
+					chkBoxField.setValue(true);
+				}
+			}
+		} else if (groupFieldType.equals(GroupFieldConstant.GFTYPE_SINGLE_SELECT)) {
+			Iterator<Widget> iterator = fieldItems.iterator();
+			while(iterator.hasNext()) {
+				RadioButtonField radioButton = (RadioButtonField) iterator.next();
+				if(radioButton.getDisplayText().equals(fieldValue)) {
+					radioButton.setValue(true);
+				}
+			}
+		}
+	};
+	
 	/***********************************************************************************/
 
 	public interface GroupFieldConstant extends BaseFieldConstant{
