@@ -69,6 +69,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 	private HandlerRegistration keyDownHandler = null ;
 	private HorizontalPanel boxPlusLoaderPanel ;
 	private ImageField imageField ;
+	private String selectDefaultValue;
 	private Logger logger = Logger.getLogger(getClass().getName());
 	public ListBoxField(){
 		listBox = new ListBox();
@@ -109,6 +110,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 
 				}
 			}
+			boxPlusLoaderPanel.clear();
 			boxPlusLoaderPanel.add(listBox);
 			boxPlusLoaderPanel.setCellWidth(listBox, "80%");
 			boxPlusLoaderPanel.add(imageField);
@@ -371,6 +373,10 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 			
 			if(getDefaultSelectedText()!=null){
 				listBox.setSelectedIndex(getIndexFromText(getDefaultSelectedText()));
+			}
+			if(selectDefaultValue != null) {
+				setValue(selectDefaultValue);
+				selectDefaultValue = null;
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In populateEntityList  method :"+e);
@@ -678,4 +684,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		return isEnabled();
 	}
 
+	public void setSelectDefaultValue(String selectDefaultValue) {
+		this.selectDefaultValue = selectDefaultValue;
+	}
 }
