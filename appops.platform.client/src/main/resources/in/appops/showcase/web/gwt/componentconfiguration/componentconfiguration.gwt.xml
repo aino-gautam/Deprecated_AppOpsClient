@@ -6,7 +6,11 @@
 <inherits name='com.google.gwt.user.theme.standard.Standard' />
 	<inherits name='in.appops.client.Client'/>
 	<inherits name="in.appops.platform.EntityConfigurationShared" />
+	<inherits name="in.appops.entitydesigner.entityDesigner" />
+	<inherits name = "in.appops.drawing.drawing"/>
 	
 	<entry-point class='in.appops.showcase.web.gwt.componentconfiguration.client.ComponentConfigurationManger'/>
-	<source path='client'/>
+	<source path='client' />
+	<source path='shared' />
+	<source path='server' />
 </module>
