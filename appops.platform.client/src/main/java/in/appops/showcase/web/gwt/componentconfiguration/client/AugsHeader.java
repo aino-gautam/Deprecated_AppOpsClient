@@ -224,6 +224,10 @@ public class AugsHeader extends Composite implements FieldEventHandler{
 				ConfigEvent configEvent = new ConfigEvent(ConfigEvent.CREATENEWSERVICE, null,this);
 				AppUtils.EVENT_BUS.fireEvent(configEvent);
 			}
+			else if(event.getEventSource().equals(updateLink)){
+				ConfigEvent configEvent = new ConfigEvent(ConfigEvent.AUGSHOME, null,this);
+				AppUtils.EVENT_BUS.fireEvent(configEvent);
+			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();
