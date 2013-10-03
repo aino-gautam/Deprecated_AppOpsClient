@@ -9,6 +9,7 @@ import in.appops.client.common.event.handlers.ConfigEventHandler;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.showcase.web.gwt.componentconfiguration.client.app.CreateAppWidget;
+import in.appops.showcase.web.gwt.componentconfiguration.client.developer.DeveloperHome;
 import in.appops.showcase.web.gwt.componentconfiguration.client.library.LibraryComponentManager;
 import in.appops.showcase.web.gwt.componentconfiguration.client.page.PageCreation;
 import in.appops.showcase.web.gwt.componentconfiguration.client.page.SnippetManager;
@@ -34,7 +35,6 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 	
 	/** CSS styles used **/
 	private static String HOME_BTN_PCLS = "managerHomeButton";
-	private static String HOME_BTN_DCLS = "managerHomeSelectedButton";
 	private static String TOOLBAR_PCLS = "buttonToolbar";
 	private static String CONTENTPANEL_PCLS = "contentPanel";
 	private static String BASEPANEL_PCLS = "managerHomePanel";
@@ -43,7 +43,6 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 	private static String MANAGELIB_BTN_ID = "manageLibBtnId";
 	private static String CREATEPAGE_BTN_ID = "createPageBtnId";
 	private static String CREATESNIPPET_BTN_ID = "createSnippetBtnId";
-	private static String CREATESERVICE_BTN_ID = "createServiceBtnId";
 	private static String CREATEAPP_BTN_ID = "createAppBtnId";
 	
 	public ConfigurationManagerHome() {
@@ -78,11 +77,6 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 			createSnippetBtn.configure();
 			createSnippetBtn.create();
 			
-/*			ButtonField createServicetBtn = new ButtonField();
-			createServicetBtn.setConfiguration(getCreateServiceBtnConf());
-			createServicetBtn.configure();
-			createServicetBtn.create();*/
-			
 			ButtonField createAppBtn = new ButtonField();
 			createAppBtn.setConfiguration(getCreateAppBtnConf());
 			createAppBtn.configure();
@@ -90,7 +84,6 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 			
 			VerticalPanel toolbar = new VerticalPanel();
 			VerticalPanel btnPanel = new VerticalPanel();
-		//	btnPanel.add(createServicetBtn);
 			btnPanel.add(createAppBtn);
 			btnPanel.add(manageLibBtn);
 			btnPanel.add(createSnippetBtn);
@@ -98,16 +91,10 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 		
 			toolbar.add(btnPanel);
 			
-		//	CreateServicePageWidget createServicePageWidget = new CreateServicePageWidget();
-		//	createServicePageWidget.createUi();
-			
 			if(widgetList == null)
 				widgetList = new ArrayList<Widget>();
 			
-		//	widgetList.add(createServicePageWidget);
-								
 			contentPanel = new VerticalPanel();
-		//	contentPanel.add(createServicePageWidget);
 
 			augsHeader.createUi();
 			
@@ -118,17 +105,16 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 			contentPanel.setStylePrimaryName(CONTENTPANEL_PCLS);
 			basePanel.setStylePrimaryName(BASEPANEL_PCLS);
 			
-/*			int width = Window.getClientWidth() - 70;
-			int height = Window.getClientHeight() - 100;
-			
-			int toolBarWidth = (width/7);
-			toolbar.setSize(toolBarWidth+"px", height+"px");
-			contentPanel.setWidth((width-toolBarWidth)+"px");
-			basePanel.setWidth((width-toolBarWidth)+"px");*/
-			
 			mainBasePanel.add(augsHeader);
 			mainBasePanel.add(basePanel);
 			mainBasePanel.setWidth("100%");
+			
+			DeveloperHome devHome= new DeveloperHome();
+			devHome.initialize();
+			devHome.createUI();
+			devHome.getServiceRecords();
+			contentPanel.add(devHome);
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "ConfigurationManagerHome :: createUi :: Exception", e);
 		}
@@ -147,22 +133,6 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, CREATEAPP_BTN_ID);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "ConfigurationManagerHome :: getCreateAppBtnConf :: Exception", e);
-		}
-		return configuration;
-	}
-
-	/**
-	 * This method for create configuration for the create sevice button field
-	 * @return
-	 */
-	private Configuration getCreateServiceBtnConf() {
-		Configuration configuration = new Configuration();
-		try {
-			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, "Create service");
-			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,HOME_BTN_PCLS);
-			configuration.setPropertyByName(ButtonFieldConstant.BF_ID, CREATESERVICE_BTN_ID);
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "ConfigurationManagerHome :: getCreateServiceBtnConf :: Exception", e);
 		}
 		return configuration;
 	}
@@ -215,41 +185,11 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 		return configuration;
 	}
 	
-	/**
-	 * Method add dependent css property to the existing configuration and return.
-	 * @param configuration
-	 * @return modified configuration instance.
-	 *//*
-	private Configuration getSelectedBtnConf(Configuration configuration){
-		
-		try {
-			configuration.setPropertyByName(ButtonFieldConstant.BF_DCLS,HOME_BTN_DCLS);
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "ConfigurationManagerHome :: getLibraryBtnConf :: Exception", e);
-		}
-		return configuration;
-	}
-
-	*//**
-	 * Method removes dependent css property from the existing configuration and return.
-	 * @param configuration
-	 * @return modified configuration instance.
-	 *//*
-	private Configuration getDeselectedBtnConf(Configuration configuration){
-		
-		try {
-			configuration.getValue().remove(ButtonFieldConstant.BF_DCLS);
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "ConfigurationManagerHome :: getLibraryBtnConf :: Exception", e);
-		}
-		return configuration;
-	}*/
 	@Override
 	public void onFieldEvent(FieldEvent event) {
 		try {
 			int eventType = event.getEventType();
 			Object eventSource = event.getEventSource();
-			//deregisterWidgetHandlers(); method called for each button click instead once bcz for other btn events this class listen to it. 
 			switch (eventType) {
 			case FieldEvent.CLICKED: {
 				
@@ -282,14 +222,7 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 						createAppWidget.createUi();
 						widgetList.add(createAppWidget);
 						contentPanel.add(createAppWidget);
-					}/*else if(btnField.getBaseFieldId().equals(CREATESERVICE_BTN_ID)){
-						contentPanel.clear();
-						deregisterWidgetHandlers();
-						CreateServicePageWidget createServicePageWidget = new CreateServicePageWidget();
-						createServicePageWidget.createUi();
-						widgetList.add(createServicePageWidget);
-						contentPanel.add(createServicePageWidget);
-					}*/
+					}
 				}
 				break;
 			}
@@ -330,6 +263,13 @@ public class ConfigurationManagerHome extends Composite implements FieldEventHan
 				createServicePageWidget.createUi();
 				widgetList.add(createServicePageWidget);
 				contentPanel.add(createServicePageWidget);
+			}
+			else if(event.getEventType() == ConfigEvent.AUGSHOME){
+				DeveloperHome devHome= new DeveloperHome();
+				devHome.initialize();
+				devHome.createUI();
+				devHome.getServiceRecords();
+				contentPanel.add(devHome);
 			}
 		}
 		catch (Exception e) {
