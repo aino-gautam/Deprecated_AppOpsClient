@@ -11,11 +11,6 @@ public class ComponentConfigurationManger implements EntryPoint {
 			ConfigurationManagerHome confManagerHome = new ConfigurationManagerHome();
 			confManagerHome.createUi();
 			RootPanel.get().add(confManagerHome);
-			/*DeveloperHome devHome= new DeveloperHome();
-			devHome.initialize();
-			devHome.createUI();
-			RootPanel.get().add(devHome);
-			devHome.getServiceRecords();*/
 		}
 		catch (Exception e) {
 			e.printStackTrace();
