@@ -157,7 +157,7 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>20.09.2013</version>
+			<version>24.09.2013</version>
 		</dependency>
 
 		<dependency>
@@ -216,6 +216,18 @@
 			<groupId>vikram_appops_platform</groupId>
 			<artifactId>appdefinition</artifactId>
 			<version>27.09.2013</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>pallavi_appops_platform</groupId>
+			<artifactId>drawing</artifactId>
+			<version>27.09.2013</version>
+		</dependency>
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>appOps_developer</artifactId>
+			<version>03.10.2013</version>
 		</dependency>
 		
 		<dependency>
@@ -363,9 +375,9 @@
 			<version>20.06.2013</version>
 		</dependency>
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>milind_appops_platform</groupId>
 			<artifactId>ems</artifactId>
-			<version>08.08.2013</version>
+			<version>03.10.2013</version>
 		</dependency>
 	
 
@@ -444,7 +456,8 @@
 						<module>in.appops.showcase.web.gwt.snippets.snippets</module> -->  
 						<module>in.appops.showcase.web.gwt.dynamicsnippet.dynamicsnippet</module>
 						<module>in.appops.showcase.web.gwt.componentconfiguration.componentconfiguration</module>
-					</modules>
+<!-- 						<module>in.appops.showcase.web.gwt.augs.augs</module>
+ -->					</modules>
 				</configuration>
 			</plugin>
 
