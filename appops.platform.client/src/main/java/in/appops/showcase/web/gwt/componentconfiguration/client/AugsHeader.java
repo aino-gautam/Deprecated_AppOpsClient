@@ -217,7 +217,8 @@ public class AugsHeader extends Composite implements FieldEventHandler{
 	public void onFieldEvent(FieldEvent event) {
 		try{
 			if(event.getEventSource().equals(logoImgField)){
-				//TODO : go to home
+				ConfigEvent configEvent = new ConfigEvent(ConfigEvent.AUGSHOME, null,this);
+				AppUtils.EVENT_BUS.fireEvent(configEvent);
 			}
 			else if(event.getEventSource().equals(createServiceLink)){
 				ConfigEvent configEvent = new ConfigEvent(ConfigEvent.CREATENEWSERVICE, null,this);
