@@ -61,9 +61,6 @@ public class DeveloperHome extends Composite{
 
 		hPanel.setStylePrimaryName("mainPanel");
 
-		//		int height = Window.getClientHeight() - 150;
-		//
-		//		servicePanel.setHeight(height+"px");
 		servicePanel.setStylePrimaryName("servicePanel");
 
 		initWidget(hPanel);
