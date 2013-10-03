@@ -50,7 +50,7 @@ public class ActivityListSnippet extends Composite implements Snippet{
 		setScrollPanel(new ScrollPanel(getListFlexTable()));
 
 		int height = Window.getClientHeight()- 200;
-		int width = Window.getClientWidth() - 400;
+		int width = Window.getClientWidth() - 600;
 		getScrollPanel().setHeight(height + "px");
 		getScrollPanel().setWidth(width + "px");
 
