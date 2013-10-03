@@ -1,7 +1,5 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client;
 
-import in.appops.showcase.web.gwt.componentconfiguration.client.developer.DeveloperHome;
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.ui.RootPanel;
 
