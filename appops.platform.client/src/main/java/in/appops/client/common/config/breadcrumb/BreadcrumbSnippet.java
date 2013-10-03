@@ -11,6 +11,7 @@ import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,7 +35,21 @@ public class BreadcrumbSnippet extends Composite implements FieldEventHandler{
 	private HandlerRegistration fieldEventHandler= null;
 
 	private Logger logger = Logger.getLogger("BreadcrumbSnippetField");
+	private int levelNo;
 
+	public static final String SNIPPETCONFIG = "snippetConfig";
+	public static final String QUERYNAME = "queryName";
+	public static final String ISBINDEDTOSTATICLIST = "isBindToStaticList";
+	public static final String STATICLIST = "staticList";
+	public static final String SHOWACTIONLINK = "showActionLink";
+	public static final String BINDEDENTITY = "bindedEntity";
+	public static final String ACTIONIMGCONFIG = "actionImageConfig";
+	public static final String BASEPCSS = "basePrimaryCss";
+	
+	private final Serializable ACTNIMGCSS = "breadcrumbActnImgCss";
+	private final String BRSPRIMARY_LINK_CSS = "breadcrumbLink";
+	private final String BRS_LINK_BASE_CSS = "breadcrumbLinkBase";
+	
 	public BreadcrumbSnippet() {
 		initialize();
 	}
@@ -54,27 +69,48 @@ public class BreadcrumbSnippet extends Composite implements FieldEventHandler{
 	}
 
 	public void create(){
+		try{
 
-		image.setConfiguration(getImageConfiguration());
-		image.configure();
-		image.create();
+			image.setConfiguration(getImageConfiguration());
+			image.configure();
+			image.create();
+	
+			hyperLinkField.setConfiguration(getHyperLinkConfiguration(actionEntity.getPropertyByName("name").toString()));
+			hyperLinkField.configure();
+			hyperLinkField.create();
+	
+			baseHp.add(hyperLinkField);
+			baseHp.add(image);
+			baseHp.setStylePrimaryName("breadcrumbComponent");
 
-		hyperLinkField.setConfiguration(getHyperLinkConfiguration(actionEntity.getPropertyByName("name").toString()));
-		hyperLinkField.configure();
-		hyperLinkField.create();
+		/*	if(Boolean.parseBoolean(breadCrumbSnippetConfig.getPropertyByName(SHOWACTIONLINK).toString())){
+				hyperLinkField.setConfiguration(getHyperLinkConfiguration(actionEntity.getPropertyByName("name").toString()));
+				hyperLinkField.configure();
+				hyperLinkField.create();
+				baseHp.add(hyperLinkField);
+			}
 
-		baseHp.add(hyperLinkField);
-		baseHp.add(image);
-		baseHp.setStylePrimaryName("breadcrumbComponent");
+			Configuration actionImgConfig = breadCrumbSnippetConfig.getPropertyByName(ACTIONIMGCONFIG);
+			image.setConfiguration(actionImgConfig);
+			image.configure();
+			image.create();
+			baseHp.add(image);
 
+			baseHp.setStylePrimaryName(breadCrumbSnippetConfig.getPropertyByName(BASEPCSS).toString());*/
+
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private Configuration getHyperLinkConfiguration(String label) {
 		Configuration configuration = new Configuration();
 		try {
-		//	configuration.setPropertyByName(LinkFieldConstant.LNK_TYPE, LinkFieldConstant.LNKTYPE_HYPERLINK);
-			configuration.setPropertyByName(LinkFieldConstant.BF_PCLS,"appops-LinkField");
 			configuration.setPropertyByName(LinkFieldConstant.LNK_DISPLAYTEXT, label);
+			configuration.setPropertyByName(LinkFieldConstant.BF_PCLS, BRSPRIMARY_LINK_CSS);
+			configuration.setPropertyByName(LinkFieldConstant.BF_BASEPANEL_PCLS, BRS_LINK_BASE_CSS);
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BreadcrumbSnippetField]::Exception In getHyperLinkConfiguration  method :"+e);
 		}
@@ -86,7 +122,7 @@ public class BreadcrumbSnippet extends Composite implements FieldEventHandler{
 		Configuration configuration = new Configuration();
 		try {
 			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, "images/breadcrumArrowUnfilled.png");
-
+			configuration.setPropertyByName(ImageFieldConstant.BF_PCLS, ACTNIMGCSS);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BreadcrumbSnippetField]::Exception In getImageConfiguration  method :"+e);
 		}
@@ -113,24 +149,26 @@ public class BreadcrumbSnippet extends Composite implements FieldEventHandler{
 
 	public void showBreadcrumbPopup(int left, int top){
 		try{
-		
-		EntityList childlist= actionEntity.getPropertyByName("child");
-		
-		if(!childlist.isEmpty()){
-			BreadcrumbPopup popup=new BreadcrumbPopup(childlist);
-			popup.setPopupPosition(left, top);
-			popup.createUI();
-			popup.show();
-		}
+			EntityList childlist= actionEntity.getPropertyByName("child");
+			if(!childlist.isEmpty()){
+				BreadcrumbPopup popup=new BreadcrumbPopup(childlist);
+				popup.setLevelNo(levelNo);
+				popup.setPopupPosition(left, top);
+				popup.createUI();
+				popup.show();
+			}
 		}catch (Exception e) {
 			logger.log(Level.SEVERE,"[BreadcrumbSnippetField]::Exception In showBreadcrumbPopup  method :"+e);
 		}
 	}
 
-	public void setActionEntity(Entity entity1) {
-		actionEntity=entity1;
+	public void setActionEntity(Entity entity) {
+		actionEntity=entity;
 	}
-
+	
+	public Entity getActionEntity() {
+		return actionEntity;
+	}
 	/**
 	 * @return the breadCrumbSnippetConfig
 	 */
@@ -143,6 +181,10 @@ public class BreadcrumbSnippet extends Composite implements FieldEventHandler{
 	 */
 	public void setBreadCrumbSnippetConfig(Configuration breadCrumbSnippetConfig) {
 		this.breadCrumbSnippetConfig = breadCrumbSnippetConfig;
+	}
+
+	public void setLevelNo(int counter) {
+		this.levelNo = counter;
 	}
 
 
