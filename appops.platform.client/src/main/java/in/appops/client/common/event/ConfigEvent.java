@@ -27,6 +27,7 @@ public class ConfigEvent extends GwtEvent<ConfigEventHandler> {
 	public static final int CONFIGURATION_COMPLETED = 14;
 	public static final int UPDATEDCONFIGENTITYLIST = 15;
 	public static final int CREATENEWSERVICE = 16;
+	public static final int AUGSHOME = 17;
 
 	public ConfigEvent() {
 		// TODO Auto-generated constructor stub
