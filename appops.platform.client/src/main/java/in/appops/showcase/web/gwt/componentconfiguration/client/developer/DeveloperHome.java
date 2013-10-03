@@ -1,6 +1,8 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.developer;
 
+import in.appops.client.common.config.field.ButtonField;
 import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.config.field.StateField;
 import in.appops.client.common.config.field.StateField.StateFieldConstant;
@@ -18,8 +20,10 @@ import in.appops.platform.core.util.EntityList;
 import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.logging.Level;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -57,9 +61,9 @@ public class DeveloperHome extends Composite{
 
 		hPanel.setStylePrimaryName("mainPanel");
 
-//		int height = Window.getClientHeight() - 150;
-//
-//		servicePanel.setHeight(height+"px");
+		//		int height = Window.getClientHeight() - 150;
+		//
+		//		servicePanel.setHeight(height+"px");
 		servicePanel.setStylePrimaryName("servicePanel");
 
 		initWidget(hPanel);
@@ -81,16 +85,12 @@ public class DeveloperHome extends Composite{
 
 	public Widget createServiceRecord(String service){
 
-		HorizontalPanel hPanel= new HorizontalPanel();
-		final LabelField labelField = new LabelField();
-		labelField.setConfiguration(getLabelFieldConfiguration(true,"appops-LabelField",service));
-		labelField.configure();
-		labelField.create();
-		hPanel.add(labelField);
-		hPanel.setCellHorizontalAlignment(labelField, HasHorizontalAlignment.ALIGN_CENTER);
-		hPanel.setStylePrimaryName("serviceRecord");
+		ButtonField serviceButton = new ButtonField();
+		serviceButton.setConfiguration(getButtonConfiguration(service,"serviceRecord"));
+		serviceButton.configure();
+		serviceButton.create();
 		
-		return hPanel;
+		return serviceButton;
 	}
 
 
@@ -98,12 +98,12 @@ public class DeveloperHome extends Composite{
 	public void getServiceRecords(){
 
 		final VerticalPanel vPanel= new VerticalPanel();
-		
+
 		StateField serviceSuggestionbox= new StateField();
 		serviceSuggestionbox.setConfiguration(getServiceSuggestBoxConfiguration());
 		serviceSuggestionbox.configure();
 		serviceSuggestionbox.create();
-		
+
 		servicePanel.add(serviceSuggestionbox);
 		servicePanel.add(vPanel);
 
@@ -177,6 +177,17 @@ public class DeveloperHome extends Composite{
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	private Configuration getButtonConfiguration(String displayText,String primaryCss ){
+		Configuration configuration = new Configuration();
+		try {
+			configuration.setPropertyByName(ButtonFieldConstant.BTNFD_DISPLAYTEXT, displayText);
+			configuration.setPropertyByName(ButtonFieldConstant.BF_PCLS,primaryCss);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return configuration;
 	}
 
 }
