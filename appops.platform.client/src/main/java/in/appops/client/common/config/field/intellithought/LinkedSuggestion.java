@@ -28,7 +28,7 @@ public class LinkedSuggestion extends PopupPanel implements EntityListBound, Mou
 	private FocusPanel focusPanel;
 	private VerticalPanel basePanel;
 	private EntityList entityList;
-	private int currentSelectedEntity;
+	protected int currentSelectedEntity;
 	private FieldEventHandler handler;
 	private Image loaderImage;
 	private Logger logger = Logger.getLogger(getClass().getName());
@@ -74,6 +74,7 @@ public class LinkedSuggestion extends PopupPanel implements EntityListBound, Mou
 
 			for(Entity linkedEntity : entityList){
 				IntelliThoughtSuggestion suggestion = new IntelliThoughtSuggestion();
+				suggestion.setSuggestionLabelCss(suggestionLabelCss);
 				suggestion.setEntity(linkedEntity);
 				suggestion.setEntPropToDisplay(getEntPropToDisplay());
 				suggestion.createSuggestion();
