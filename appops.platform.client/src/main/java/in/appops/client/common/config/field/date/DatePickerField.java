@@ -493,7 +493,7 @@ public class DatePickerField  extends BaseField implements ClickHandler {
 	}
 	
 	@Override
-	protected String getInvalidMsg() {
+	public String getInvalidMsg() {
 		String invalidMsg = getFieldValue() + " is not a valid date. It must be in the format " + getFormat();
 		try {
 			logger.log(Level.INFO,"[DatePickerField]:: In getInvalidMsg  method ");
