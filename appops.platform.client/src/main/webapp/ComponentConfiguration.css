@@ -736,3 +736,39 @@
 	border: 1px solid grey;
 	background-color: white;	
 }
+
+
+.entityTabBarPanel{
+	background: gray;
+	border: 1px solid black;
+	width: 400px;
+}
+
+.gwt-TabBar{
+	
+}
+
+.gwt-TabBar .gwt-TabBarFirst{
+	
+}
+
+.gwt-TabBar .gwt-TabBarRest{
+	
+}
+.gwt-TabBar .gwt-TabBarItem{
+	background: transparent !important;
+	color: black !important;
+	font-weight: bold !important;
+}
+.gwt-TabBar .gwt-TabBarItem-wrapper{
+	border-bottom: 1px solid gray;	
+}
+
+.gwt-TabBar .gwt-TabBarItem-selected{
+	cursor: default;
+	background: #92c1f0;
+}
+
+.gwt-TabBar .gwt-TabBarItem-wrapper-selected{
+	
+}
