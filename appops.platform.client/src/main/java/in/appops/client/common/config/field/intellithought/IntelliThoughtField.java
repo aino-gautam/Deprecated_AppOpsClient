@@ -54,7 +54,7 @@ conf.setPropertyByName(IntelliThoughtFieldConstant.INTLTHT_OPRTION, "spacemanage
 conf.setPropertyByName(IntelliThoughtFieldConstant.INTLTHT_MAXCHARLEN, 3);
 conf.setPropertyByName(IntelliThoughtFieldConstant.INTLTHT_QUERY_MAXRESULT, 10);
 conf.setPropertyByName(IntelliThoughtFieldConstant.BF_ID, "intelliTextField");
-conf.setPropertyByName(IntelliThoughtFieldConstant.BF_ID, "appops-intelliThoughtSuggestionLabel");
+conf.setPropertyByName(IntelliThoughtFieldConstant.INTLTHT_SUGGESTIONLBL_PCLS, "appops-intelliThoughtSuggestionLabel");
 intellithoughtField.setConfiguration(conf);<br>
 intellithoughtField.configure();<br>
 intellithoughtField.create();<br>
@@ -62,9 +62,9 @@ intellithoughtField.create();<br>
 
 public class IntelliThoughtField extends BaseField implements HasText, HasHTML, EventListener, FieldEventHandler{
 	
-	private LinkedSuggestion linkedSuggestion;
-	private Element intelliText;
-	private static int caretPosition;  
+	protected LinkedSuggestion linkedSuggestion;
+	protected Element intelliText;
+	protected static int caretPosition;  
 	private ArrayList<Entity> linkedUsers;
 	private ArrayList<Entity> linkedSpaces;
 	private ArrayList<Entity> linkedEntities;
@@ -103,8 +103,9 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 			intelliText.setClassName(getBaseFieldPrimCss());
 			intelliText.setId(getBaseFieldId());
 			intelliText.setAttribute(IntelliThoughtFieldConstant.INTLTHT_CONTENTEDITABLE,isContentEditable());
-			if(getSuggestionText()!=null)
+			if(getSuggestionText()!=null){
 				this.setText(getSuggestionText());
+			}
 
 			if (getBasePanelPrimCss() != null)
 				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
@@ -187,7 +188,7 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 		intelliText.setInnerHTML(html);
 	}
 
-	private void fireIntelliThoughtFieldEvent(FieldEvent fieldEvent) {
+	protected void fireIntelliThoughtFieldEvent(FieldEvent fieldEvent) {
 		AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, intelliText);
 	}
 
@@ -197,7 +198,7 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 	 * @param data
 	 * @return
 	 */
-	private FieldEvent getFieldEvent(int type, String data){
+	protected FieldEvent getFieldEvent(int type, String data){
 		try {
 			logger.log(Level.INFO, "[IntelliThoughtField] ::In getFieldEvent method ");
 			FieldEvent fieldEvent = new FieldEvent();
@@ -250,7 +251,6 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 						fireIntelliThoughtFieldEvent(focusEvent);
 			    	}
 			    break;
-			    
 			    case Event.ONKEYDOWN:
 			    	handleOnKeyDownEvent(event);
 			    break;	
@@ -268,7 +268,7 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 	 * Method handles key down event.
 	 * @param event
 	 */
-	private void handleOnKeyDownEvent(Event event) {
+	public void handleOnKeyDownEvent(Event event) {
 		try {
 			logger.log(Level.INFO, "[IntelliThoughtField] ::In handleOnKeyDownEvent method ");
 			int keyCode = event.getKeyCode();
@@ -326,7 +326,7 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 	 * Method collects selected suggestion and add it to the liked entities list.
 	 * @param entity
 	 */
-	private void collectSelectedSuggestion(Entity entity) {
+	protected void collectSelectedSuggestion(Entity entity) {
 		try {
 			logger.log(Level.INFO, "[IntelliThoughtField] ::In collectSelectedSuggestion method ");
 			String typeName = entity.getType().getTypeName();
@@ -346,7 +346,7 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 		
 	}
 
-	private void linkSuggestion(String text) {
+	protected void linkSuggestion(String text) {
 		try {
 			logger.log(Level.INFO, "[IntelliThoughtField] ::In linkSuggestion method ");
 			String elementValue = this.getText();
@@ -377,7 +377,7 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 	 * Method handles key up event.
 	 * @param event
 	 */
-	private void handleOnKeyUpEvent(Event event){
+	protected void handleOnKeyUpEvent(Event event){
 		try {
 			logger.log(Level.INFO, "[IntelliThoughtField] ::In handleOnKeyUpEvent method ");
 			int keyCode = event.getKeyCode();
@@ -422,20 +422,6 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 		final DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
 		final DispatchAsync				dispatch			= new StandardDispatchAsync(exceptionHandler);
 
-		//TODO uncomment following after defining operation.
-		
-		/*Query queryToBeExecute = new Query();
-		queryToBeExecute.setQueryName(getQueryName());
-		queryToBeExecute.setListSize(getQueryMaxResult());
-			
-		HashMap<String, Object> queryParam = new HashMap<String, Object>();
-		queryParam.put("search", "%"+ eventData +"%");
-		
-		queryToBeExecute.setQueryParameterMap( queryParam);
-		
-		Map parameterMap = new HashMap();
-		parameterMap.put("query", queryToBeExecute);*/
-		
 		try {
 			logger.log(Level.INFO, "[IntelliThoughtField] ::In handleThreeCharEnteredEvent method ");
 			Map map = new HashMap();
@@ -540,7 +526,7 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 	 * Method read isFireThreeCharEnteredEvent property from configuration and return.
 	 * @return isFireThreeCharEnteredEvent
 	 */
-	private boolean isFireThreeCharEnteredEvent() {
+	protected boolean isFireThreeCharEnteredEvent() {
 		Boolean isFireThreeCharEnteredEvent = true;
 		try {
 			logger.log(Level.INFO, "[IntelliThoughtField] ::In isFireThreeCharEnteredEvent method ");
@@ -558,7 +544,7 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 	 * Method read isFireWordEnteredEvent property from configuration and return.
 	 * @return isFireWordEnteredEvent
 	 */
-	private boolean isFireWordEnteredEvent() {
+	protected boolean isFireWordEnteredEvent() {
 		Boolean isFireWordEnteredEvent = true;
 		try {
 			logger.log(Level.INFO, "[IntelliThoughtField] ::In isFireWordEnteredEvent method ");
@@ -576,7 +562,7 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 	 * Method read isFireEditInitatedEvent property from configuration and return.
 	 * @return isFireEditInitatedEvent
 	 */
-	private boolean isFireEditInitatedEvent() {
+	protected boolean isFireEditInitatedEvent() {
 		Boolean isFireEditInitatedEvent = true;
 		try {
 			logger.log(Level.INFO, "[IntelliThoughtField] ::In isFireEditInitatedEvent method ");
@@ -759,14 +745,61 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 	protected String getSuggestionLoaderImagePrimCss() {
 		String primaryCss = "appops-intelliThoughtActionImage";
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getLoaderImagePrimCss  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_PCLS) != null) {
-				primaryCss = getConfigurationValue(BaseFieldConstant.BF_PCLS).toString();
+			logger.log(Level.INFO,"[IntelliThoughtField]:: In getLoaderImagePrimCss  method ");
+			if(getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_LOADERIMG_PCLS) != null) {
+				primaryCss = getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_LOADERIMG_PCLS).toString();
 			}
 		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[BaseField]::Exception In getLoaderImagePrimCss  method :"+e);
+			logger.log(Level.SEVERE,"[IntelliThoughtField]::Exception In getLoaderImagePrimCss  method :"+e);
 		}
 		return primaryCss;
+	}
+	
+	/**
+	 * Overriden method from BaseField to set inline error.
+	 */
+	@Override
+	public void setErrorInline () {
+		try {
+			logger.log(Level.INFO, "[IntelliThoughtField] ::In setErrorInline method ");
+			intelliText.addClassName(getErrorMsgCls());
+			intelliText.addClassName(getErrorIconCls());
+			
+			String errorMsg = "";
+			if(!getActiveErrors().isEmpty()){
+				for(String error : getActiveErrors()) {
+					errorMsg = errorMsg + error + ". ";
+				}
+				intelliText.setTitle(errorMsg);
+			}else
+				intelliText.setTitle(getInvalidMsg());
+			
+			if(getErrorIconBlobId()!=null)
+				intelliText.getStyle().setProperty("background", "white url("+ getErrorIconBlobId()+") no-repeat right	center");
+			
+		} catch (Exception e) {
+		    logger.log(Level.SEVERE, "[IntelliThoughtField] ::Exception In setErrorInline method "+e);
+		}
+	}
+	
+	/**
+	 * Overriden method from BaseField to clear inline msg .
+	 */
+	public void clearInlineMsg () {
+		try {
+			intelliText.removeClassName(getErrorMsgCls());
+			intelliText.removeClassName(getErrorIconCls());
+			intelliText.removeClassName(getValidFieldMsgCls());
+			intelliText.removeClassName(getValidFieldIconCls());
+			intelliText.setTitle(getTitle());
+			
+			if(intelliText.getStyle().getProperty("background")!=null)
+				intelliText.getStyle().clearProperty("background");
+			
+		} catch (Exception e) {
+			
+			logger.log(Level.SEVERE, "[IntelliThoughtField] ::Exception In clearInlineMsg method "+e);
+		}
 	}
 	
 	/****************************************************************************/
