@@ -225,6 +225,13 @@ public class LinkField extends BaseField implements ClickHandler{
 			if (getConfigurationValue(LinkFieldConstant.LNK_DISPLAYTEXT) != null) {
 				displayTxt = getConfigurationValue(LinkFieldConstant.LNK_DISPLAYTEXT).toString();
 			}
+			else{
+				if(getEntity()!=null){
+					if(getConfigurationValue(LinkFieldConstant.BF_BINDPROP) != null)
+						if(getEntity().getPropertyByName( getConfigurationValue(LinkFieldConstant.BF_BINDPROP).toString()) != null)
+							displayTxt = getEntity().getPropertyByName( getConfigurationValue(LinkFieldConstant.BF_BINDPROP).toString()).toString();
+				}
+			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[LinkField] ::Exception in getDisplayText method :"+e);
 		}
