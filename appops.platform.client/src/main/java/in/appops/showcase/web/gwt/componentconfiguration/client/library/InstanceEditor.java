@@ -19,6 +19,8 @@ import com.google.gwt.user.client.ui.FlexTable;
 
 public class InstanceEditor implements FieldEventHandler{
 	
+	private Entity configInstance;
+	
 	private String keyName = null;
 	private EntityList configList = null;
 	private TextField keyNameField;
@@ -120,14 +122,15 @@ public class InstanceEditor implements FieldEventHandler{
 				}
 			}
 		}
-		
 	}
 	
 	public Entity getPopulatedConfigInstanceEntity() throws AppOpsException {
 		try {
-			Entity configInstance = new Entity();
-			configInstance.setType(new MetaType("Configinstance"));
-
+			
+			if(configInstance == null){
+				setConfigInstance(new Entity());
+				configInstance.setType(new MetaType("Configinstance"));
+			}
 			
 			if (keyNameField.getValue().toString().equals("")) {
 				throw new AppOpsException("Instance name cannot be empty");
@@ -188,5 +191,17 @@ public class InstanceEditor implements FieldEventHandler{
 
 	public void setParentConfigInstanceEntity(Entity parentConfigInstanceEntity) {
 		this.parentConfigInstanceEntity = parentConfigInstanceEntity;
+	}
+
+	public void setkeyValue(String value) {
+		keyValueField.setValue(value);
+	}
+
+	public void setConfigInstance(Entity configInstance) {
+		this.configInstance = configInstance;
+	}
+	
+	public Entity getConfigInstance() {
+		return configInstance ;
 	}
 }

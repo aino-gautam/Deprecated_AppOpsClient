@@ -23,6 +23,8 @@ import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.EntityList;
+import in.appops.showcase.web.gwt.componentconfiguration.client.page.EntityInstanceProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,7 +73,8 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 	private DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	private DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 	private HandlerRegistration fieldEventHandler = null;
-	
+	private HashMap<String, Object> viewChildConfigInstMap;
+	private HashMap<String, Object> snippetInstanceChildMap;
 	
 	public ViewComponentInstanceEditor(){
 		initialize();
@@ -95,6 +98,11 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 	public void createUi(){
 		try{
 			baseVp.clear();
+			if(viewChildConfigInstMap != null) {
+				Entity entity = getConfigInstanceEnt("snippetInstance");
+				String instancevalue = entity.getPropertyByName("instancevalue").toString();
+				snippetInstanceChildMap = (HashMap<String, Object>) viewChildConfigInstMap.get(instancevalue);
+			}
 			fetchViewConfigType();
 		}
 		catch (Exception e) {
@@ -111,12 +119,29 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 				String keyName = childConfType.getPropertyByName("keyname");
 				String keyValue = childConfType.getPropertyByName("keyvalue");
 
+				Entity configInstEnt = getConfigInstanceEnt(keyName);
+				String instancevalue = null;
+				if(configInstEnt != null) {
+					instancevalue = configInstEnt.getPropertyByName("instancevalue").toString();
+				}
+				
 				if(keyName.equalsIgnoreCase("snippetType")) {
+					
+					if(configInstEnt != null) {
+						snippetTypeConfigInstEntity = configInstEnt;
+					}
 					snippetTypeConfigTypeEnt = childConfType;
-					HorizontalPanel instnceTypeSelectorPanel = createtransformToPanel();
+					HorizontalPanel instnceTypeSelectorPanel = createtransformToPanel(instancevalue);
 					baseVp.add(instnceTypeSelectorPanel);
 				} else if(keyName.equalsIgnoreCase("snippetInstance")) {
+					
+					if(configInstEnt != null) {
+						snippetInstanceConfigInstanceEntity = configInstEnt;
+					}
 					snippetInstnceConfigTypeEnt = childConfType;
+					if(instancevalue != null) {
+						keyValue = instancevalue;
+					}
 					HorizontalPanel instanceListPanel = createtransformInstancePanel(keyValue);
 					baseVp.add(instanceListPanel);
 				}
@@ -129,6 +154,21 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 		}
 	}
 	
+	private Entity getConfigInstanceEnt(String keyName) {
+		if(viewChildConfigInstMap != null) {
+			EntityList list = (EntityList) viewChildConfigInstMap.get("view");
+			Iterator<Entity> iterator = list.iterator();
+			while(iterator.hasNext()) {
+				Entity entity = iterator.next();
+				String instancename = entity.getPropertyByName("instancename").toString();
+				if(instancename.equals(keyName)) {
+					return entity;
+				}
+			}
+		}
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
 	public void fetchViewConfigType() {
 		Entity configTypeEnt = (Entity) viewConfigInstnceEntity.getProperty("configtype");
@@ -204,9 +244,13 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 							String value = (String) transformToListbox.getValue();
 
 							if(!value.equals(DEFTEXTLISTBOX)){
+								boolean isUpdate = false;
 								if(snippetTypeConfigInstEntity == null){
 									snippetTypeConfigInstEntity = new Entity();
 									snippetTypeConfigInstEntity.setType(new MetaType("Configinstance"));
+									isUpdate = false;
+								} else {
+									isUpdate = true;
 								}
 
 								snippetTypeConfigInstEntity.setPropertyByName("instancename", "snippetType");
@@ -215,7 +259,7 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 								snippetTypeConfigInstEntity.setProperty("configtype", snippetTypeConfigTypeEnt);
 								snippetTypeConfigInstEntity.setPropertyByName("instancevalue", value);
 								
-								saveSnippetTypeInstEnt(snippetTypeConfigInstEntity);
+								saveSnippetTypeInstEnt(snippetTypeConfigInstEntity, isUpdate);
 							}
 							else
 								Window.alert("Please select snippet type");
@@ -232,7 +276,7 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void saveSnippetTypeInstEnt(Entity configinstanceEntity) {
+	private void saveSnippetTypeInstEnt(Entity configinstanceEntity, boolean isUpdate) {
 
 		try{
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
@@ -240,7 +284,7 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 			
 			Map parameterMap = new HashMap();
 			parameterMap.put("confInstEnt", configinstanceEntity);
-			parameterMap.put("isUpdate", false);
+			parameterMap.put("isUpdate", isUpdate);
 			
 			EntityContext context  = getEntityContextForViewPageAppService(null);
 			parameterMap.put("entityContext", context);
@@ -273,9 +317,13 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 		try {
 			String value = transformInstanceTextField.getValue().toString().trim();
 			if(!value.equals("")){
+				boolean isUpdate = false; 
 				if(snippetInstanceConfigInstanceEntity == null){
 					snippetInstanceConfigInstanceEntity = new Entity();
 					snippetInstanceConfigInstanceEntity.setType(new MetaType("Configinstance"));
+					isUpdate = false;
+				} else {
+					isUpdate = true;
 				}
 			
 				snippetInstanceConfigInstanceEntity.setPropertyByName("instancename", "snippetInstance");
@@ -289,7 +337,7 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 				
 				Map parameterMap = new HashMap();
 				parameterMap.put("confInstEnt", snippetInstanceConfigInstanceEntity);
-				parameterMap.put("isUpdate", false);
+				parameterMap.put("isUpdate", isUpdate);
 				
 				EntityContext context  = getEntityContextForViewPageAppService(null);
 				parameterMap.put("entityContext", context);
@@ -324,23 +372,42 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void saveTransformWidgetInstance() {
 		try{
-			Entity compInstEntity = new Entity();
-			compInstEntity.setType(new MetaType("Componentinstance"));
-			compInstEntity.setPropertyByName("instancename", transformInstanceTextField.getFieldValue());
-			compInstEntity.setProperty("componentdefinition", transformToListbox.getAssociatedEntity(transformToListbox.getValue().toString()));
-			compInstEntity.setProperty("componentinstance", parentCompInstanceEnt);
+			Entity compInstEntity = null;
 
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 			
 			Map parameterMap = new HashMap();
-			parameterMap.put("componentInstEnt", compInstEntity);
-			parameterMap.put("isUpdate", false);
+			String operationName = null;
 			
-			Entity parentComponentEnt = (Entity)viewConfigInstnceEntity.getProperty("configinstance");
-			parameterMap.put("entityContext", getEntityContextForPgInstPageAppService(null, parentComponentEnt));
-
-			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveComponentInstance", parameterMap);
+			if(viewChildConfigInstMap != null) {
+				compInstEntity = (Entity) viewChildConfigInstMap.get("snippetInstanceComponentInstEnt");
+				compInstEntity.setPropertyByName("instancename", transformInstanceTextField.getFieldValue());
+				compInstEntity.setProperty("componentdefinition", transformToListbox.getAssociatedEntity(transformToListbox.getValue().toString()));
+				
+				HashMap<String, Object> instanceMap = new HashMap<String, Object>();
+				instanceMap.put("ComponentInstEnt", compInstEntity);
+				Entity configInstEnt = getConfigInstEnt();
+				instanceMap.put("ConfigInstEnt", configInstEnt);
+				
+				parameterMap.put("instanceMap", instanceMap);
+				operationName = "appdefinition.AppDefinitionService.updateModelViewComponentInst";
+			} else {
+				compInstEntity = new Entity();
+				compInstEntity.setType(new MetaType("Componentinstance"));
+				compInstEntity.setPropertyByName("instancename", transformInstanceTextField.getFieldValue());
+				compInstEntity.setProperty("componentdefinition", transformToListbox.getAssociatedEntity(transformToListbox.getValue().toString()));
+				compInstEntity.setProperty("componentinstance", parentCompInstanceEnt);
+				
+				parameterMap.put("componentInstEnt", compInstEntity);
+				parameterMap.put("isUpdate", false);
+				
+				Entity parentComponentEnt = (Entity)viewConfigInstnceEntity.getProperty("configinstance");
+				parameterMap.put("entityContext", getEntityContextForPgInstPageAppService(null, parentComponentEnt));
+				operationName = "appdefinition.AppDefinitionService.saveComponentInstance";
+			}
+			
+			StandardAction action = new StandardAction(Entity.class, operationName, parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<HashMap<String, Object>>>() {
 
 				@Override
@@ -370,19 +437,20 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 								}
 							}
 							
-							if(true){
-								configureButton.setConfiguration(getConfigureButtonConfiguration(false));
-								configureButton.configure();
-								configureButton.create();
+							configureButton.setConfiguration(getConfigureButtonConfiguration(false));
+							configureButton.configure();
+							configureButton.create();
 								
-								ConfigurationInstanceMVPEditor instanceMVPEditor = new ConfigurationInstanceMVPEditor();
-								instanceMVPEditor.setConfigInstEnt(configInst);
-								instanceMVPEditor.setViewInstanceEnt(viewInstanceEnt);
-								instanceMVPEditor.setModelInstanceEnt(modelInstanceEnt);
-								instanceMVPEditor.setPageEntity(pageEntity);
-								instanceMVPEditor.createUi();
-								baseVp.add(instanceMVPEditor);
+							ConfigurationInstanceMVPEditor instanceMVPEditor = new ConfigurationInstanceMVPEditor();
+							instanceMVPEditor.setConfigInstEnt(configInst);
+							instanceMVPEditor.setViewInstanceEnt(viewInstanceEnt);
+							instanceMVPEditor.setModelInstanceEnt(modelInstanceEnt);
+							instanceMVPEditor.setPageEntity(pageEntity);
+							if(snippetInstanceChildMap != null) {
+								instanceMVPEditor.setModelViewChildConfigInstMap(snippetInstanceChildMap);
 							}
+							instanceMVPEditor.createUi();
+							baseVp.add(instanceMVPEditor);
 						}
 					}
 				}
@@ -393,6 +461,16 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 		}
 	}
 	
+	private Entity getConfigInstEnt() {
+		Entity configInstEnt = (Entity) viewChildConfigInstMap.get("snippetInstanceConfigInstEnt");
+		configInstEnt.setPropertyByName("instancename", transformInstanceTextField.getFieldValue());
+		EntityInstanceProvider provider = new EntityInstanceProvider();
+		Entity compoDef = transformToListbox.getAssociatedEntity(transformToListbox.getValue().toString());
+		Long configTypeId = Long.valueOf(compoDef.getPropertyByName("configtypeId").toString());
+		configInstEnt.setProperty("configtype", provider.getConfigType(configTypeId));
+		return configInstEnt;
+	}
+
 	private Configuration getTransformToLabelConfiguration() {
 		try {
 			Configuration configuration = null;	
@@ -411,7 +489,7 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 		return null;
 	}
 	
-	private HorizontalPanel createtransformToPanel() {
+	private HorizontalPanel createtransformToPanel(String instancevalue) {
 		HorizontalPanel transformToPanel = new HorizontalPanel();
 		
 		LabelField transformToLabel = new LabelField();
@@ -421,14 +499,20 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 		transformToPanel.add(transformToLabel);
 		
 		transformToListbox = new ListBoxField();
-		byte isMvp = 0;
+		//byte isMvp = 0;
 		HashMap map = new HashMap();
-		map.put("isMvp", isMvp);
+		//map.put("isMvp", isMvp);
+		map.put("typeId", 159L);
 		
 		transformToListbox.setConfiguration(getTransformToListBoxConfiguration(map));
 		transformToListbox.configure();
 		transformToListbox.create();
 		transformToPanel.add(transformToListbox);
+
+		if(instancevalue != null) {
+			transformToListbox.setValue(instancevalue);
+			transformToListbox.setSelectDefaultValue(instancevalue);
+		}
 		
 		transformToPanel.setStylePrimaryName(TRANSFORM_TO_PANEL_CSS);
 		transformToPanel.setCellWidth(transformToLabel, "172px");
@@ -443,7 +527,7 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 			
 			if(paramMap != null) {
 				configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_OPRTION,"appdefinition.AppDefinitionService.getEntityList");
-				configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_QUERYNAME,"getComponentDefinationForIsMvp");
+				configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_QUERYNAME,"getComponentDefinationForHtmlSnipp");
 				configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ENTPROP,"name");
 				configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_QUERY_RESTRICTION,paramMap);
 			} else {
@@ -589,5 +673,14 @@ public class ViewComponentInstanceEditor extends Composite implements FieldEvent
 
 	public void setPageEntity(Entity pageEntity) {
 		this.pageEntity = pageEntity;
+	}
+	
+	public HashMap<String, Object> getViewChildConfigInstMap() {
+		return viewChildConfigInstMap;
+	}
+
+	public void setViewChildConfigInstMap(
+			HashMap<String, Object> viewChildConfigInstMap) {
+		this.viewChildConfigInstMap = viewChildConfigInstMap;
 	}
 }

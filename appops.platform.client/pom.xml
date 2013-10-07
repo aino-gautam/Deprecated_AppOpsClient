@@ -155,9 +155,9 @@
 
 		<!-- This should be used when using a final version of the jar -->
 		<dependency>
-			<groupId>appops_platform</groupId>
+			<groupId>mahesh_appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>24.09.2013</version>
+			<version>04.10.2013</version>
 		</dependency>
 
 		<dependency>
@@ -215,7 +215,7 @@
 		<dependency>
 			<groupId>vikram_appops_platform</groupId>
 			<artifactId>appdefinition</artifactId>
-			<version>27.09.2013</version>
+			<version>05.10.2013</version>
 		</dependency>
 
 

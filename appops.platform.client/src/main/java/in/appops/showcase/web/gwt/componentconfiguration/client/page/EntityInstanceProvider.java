@@ -32,7 +32,7 @@ public class EntityInstanceProvider {
 	}
 	
 	//TODO : Hardcoded entity has been set
-	private Entity getConfigType(Long configTypeId) {
+	public Entity getConfigType(Long configTypeId) {
 		Entity configTypeEntity = new Entity();
 		configTypeEntity.setType(new MetaType("Configtype"));
 		Key<Long> key = new Key<Long>(configTypeId);

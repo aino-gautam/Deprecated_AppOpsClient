@@ -23,6 +23,7 @@ import in.appops.platform.client.EntityContext;
 import in.appops.platform.client.EntityContextGenerator;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
+import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.util.EntityList;
@@ -457,7 +458,12 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 						String value = (String) transformToListbox.getValue();
 						String defaultValue = transformToListbox.getSuggestionValueForListBox();
 						if(!transformInstanceTextField.getFieldValue().trim().equals("") && !value.equals(defaultValue)) {
-							saveTransformWidgetInstance();
+							boolean isUpdate = checkIsUpdate();
+							/*if(isUpdate) {
+								updateTransformWidgetInstance();
+							} else {*/
+								saveTransformWidgetInstance(isUpdate);
+							//}
 						}
 					}
 				} else if(event.getEventSource() instanceof ImageField) {
@@ -595,6 +601,29 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		}
 	}
 	
+	private void updateTransformWidgetInstance() {
+		Entity compInstEntity = getCompInstEntity();
+	}
+
+	private boolean checkIsUpdate() {
+		if(modelViewConfigInstMap != null) {
+			Entity componentInst = (Entity) modelViewConfigInstMap.get("componentInstEnt");
+			Entity compoDefEnt = (Entity) componentInst.getProperty("componentdefinition");
+			
+			transWgtCompDefEnt = transformToListbox.getAssociatedEntity((String)transformToListbox.getValue());
+			
+			Long transWgtCompDefId = ((Key<Long>) transWgtCompDefEnt.getPropertyByName("id")).getKeyValue();
+			Long compoDefEntId = ((Key<Long>) compoDefEnt.getPropertyByName("id")).getKeyValue();
+			
+			if(!transWgtCompDefId.toString().equals(compoDefEntId.toString())) {
+				isComponentDefUpdate = true;
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	private void updateTempHashMap(String eventname, Entity entity) {
 		if(tempHashMap != null) {
 			if(eventNameList.contains(tempHashMap)) {
@@ -715,6 +744,50 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 			transformToListbox.setSelectDefaultValue(instancevalue);
 		}  else if(instancename.equals(PageConfigurationContant.TRANSFORM_INSTANCE)) {
 			transformInstanceTextField.setValue(instancevalue);
+			fetchInstancesForTransformInst(instancevalue);
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void fetchInstancesForTransformInst(String instancevalue) {
+		try{
+			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+			
+			Map parameterMap = new HashMap();
+			
+			Query query = new Query();
+			query.setQueryName("getComponentInstByName");
+			HashMap<String, Object> queryParamMap = new HashMap<String, Object>();
+			queryParamMap.put("instancename", instancevalue);
+			query.setQueryParameterMap(queryParamMap);
+			
+			parameterMap.put("query", query);
+			
+			String operationName = null;
+			if(transformTypeListbox.getValue().toString().equals(PageConfigurationContant.SNIPPET)) {
+				operationName = "appdefinition.AppDefinitionService.getModelViewAndChildConfigInstForSnippet";
+			} else {
+				operationName = "appdefinition.AppDefinitionService.getModelViewAndChildConfigInstForComponent";
+			}
+			
+			StandardAction action = new StandardAction(HashMap.class, operationName, parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<HashMap<String, Object>>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(Result<HashMap<String, Object>> result) {
+					if(result!=null){
+						modelViewConfigInstMap = result.getOperationResult();
+					}
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -906,40 +979,59 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes", "unused" })
-	private void saveTransformWidgetInstance() {
+	private void saveTransformWidgetInstance(final boolean isUpdate) {
 		try{
-			Entity compInstEntity = new Entity();
-			compInstEntity.setType(new MetaType("Componentinstance"));
-			compInstEntity.setPropertyByName("instancename", transformInstanceTextField.getFieldValue());
-			compInstEntity.setProperty("componentdefinition", transWgtCompDefEnt);
-			compInstEntity.setProperty("componentinstance", this.pageComponentInstEntity);
-			
 			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 			
 			Map parameterMap = new HashMap();
-			parameterMap.put("componentInstEnt", compInstEntity);
-			parameterMap.put("isUpdate", false);
+			Entity compInstEntity = null;
+			String operationName = null;
 			
-			Key<Long> compKey = pageComponentInstEntity.getPropertyByName("id");
-			Long compId = compKey.getKeyValue();
-			EntityContext compContext  = EntityContextGenerator.defineContext(null, compId);
+			if(isUpdate) {
+				compInstEntity = getCompInstEntity();
+				
+				Entity configInstEnt = getConfigInstEnt();
+				HashMap<String, Object> instanceMap = new HashMap<String, Object>();
+				instanceMap.put("ComponentInstEnt", compInstEntity);
+				instanceMap.put("ConfigInstEnt", configInstEnt);
+				
+				parameterMap.put("instanceMap", instanceMap);
+				
+				operationName = "appdefinition.AppDefinitionService.updateModelViewComponentInst";
+				
+			} else {
+				compInstEntity = new Entity();
+				compInstEntity.setType(new MetaType("Componentinstance"));
+				compInstEntity.setPropertyByName("instancename", transformInstanceTextField.getFieldValue());
+				compInstEntity.setProperty("componentdefinition", transWgtCompDefEnt);
+				compInstEntity.setProperty("componentinstance", this.pageComponentInstEntity);
+				
+				parameterMap.put("componentInstEnt", compInstEntity);
+				parameterMap.put("isUpdate", isUpdate);
+				
+				Key<Long> compKey = pageComponentInstEntity.getPropertyByName("id");
+				Long compId = compKey.getKeyValue();
+				EntityContext compContext  = EntityContextGenerator.defineContext(null, compId);
 
-			Key<Long> pageEntKey = pageEntity.getPropertyByName("id");
-			Long pageEntId = pageEntKey.getKeyValue();
-			EntityContext pageEntContext  = compContext.defineContext(pageEntId);
+				Key<Long> pageEntKey = pageEntity.getPropertyByName("id");
+				Long pageEntId = pageEntKey.getKeyValue();
+				EntityContext pageEntContext  = compContext.defineContext(pageEntId);
 
-			Key<Long> appKey = AppEnviornment.CURRENTAPP.getPropertyByName("id");
-			Long appId = appKey.getKeyValue();
-			EntityContext appContext  = pageEntContext.defineContext(appId);
+				Key<Long> appKey = AppEnviornment.CURRENTAPP.getPropertyByName("id");
+				Long appId = appKey.getKeyValue();
+				EntityContext appContext  = pageEntContext.defineContext(appId);
 
-			Key<Long> serviceKey = AppEnviornment.CURRENTSERVICE.getPropertyByName("id");
-			Long serviceId = serviceKey.getKeyValue();
-			EntityContext context  = appContext.defineContext(serviceId);
-			
-			parameterMap.put("entityContext", compContext);
+				Key<Long> serviceKey = AppEnviornment.CURRENTSERVICE.getPropertyByName("id");
+				Long serviceId = serviceKey.getKeyValue();
+				EntityContext context  = appContext.defineContext(serviceId);
+				
+				parameterMap.put("entityContext", compContext);
+				
+				operationName = "appdefinition.AppDefinitionService.saveComponentInstance";
+			}
 
-			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveComponentInstance", parameterMap);
+			StandardAction action = new StandardAction(Entity.class, operationName, parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<HashMap<String, Object>>>() {
 
 				@Override
@@ -978,10 +1070,16 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 								instanceMVPEditor.setConfigInstEnt(configInst);
 								instanceMVPEditor.setViewInstanceEnt(viewInstanceEnt);
 								instanceMVPEditor.setModelInstanceEnt(modelInstanceEnt);
+								
+								if(isUpdate) {
+									if(!isComponentDefUpdate) {
+										instanceMVPEditor.setModelViewChildConfigInstMap(modelViewConfigInstMap);
+									}
+								}
+								
 								instanceMVPEditor.createUi();
 								deregisterPreviousInstances();
 								instanceMVPEditorsList.add(instanceMVPEditor);
-								
 								addConfigPanel.add(instanceMVPEditor);
 							}
 							else if((transformTypeListbox.getValue().toString().equals(PageConfigurationContant.COMPONENT))){
@@ -991,10 +1089,16 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 								instanceMVPEditor.setViewInstanceEnt(viewInstanceEnt);
 								instanceMVPEditor.setModelInstanceEnt(modelInstanceEnt);
 								instanceMVPEditor.setPageCompInstEntity(pageComponentInstEntity);
+								
+								if(isUpdate) {
+									if(!isComponentDefUpdate) {
+										instanceMVPEditor.setModelViewChildConfigInstMap(modelViewConfigInstMap);
+									}
+								}
+								
 								instanceMVPEditor.createUi();
 								deregisterPreviousInstances();
 								instanceMVPEditorsList.add(instanceMVPEditor);
-								
 								addConfigPanel.add(instanceMVPEditor);
 							}
 						}
@@ -1008,6 +1112,32 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		}
 	}
 	
+	private Entity getConfigInstEnt() {
+		Entity configInstEnt = (Entity) modelViewConfigInstMap.get("configInstEnt");
+		
+		configInstEnt.setPropertyByName("instancename", transformInstanceTextField.getFieldValue());
+		
+		if(isComponentDefUpdate) {
+			Long configtypeId = Long.valueOf(transWgtCompDefEnt.getPropertyByName("configtypeId").toString());
+			Entity configTypeEnt = entityInstanceProvider.getConfigType(configtypeId);
+			configInstEnt.setProperty("configtype", configTypeEnt);
+		}
+		return configInstEnt;
+	}
+
+	private Entity getCompInstEntity() {
+		Entity componentInst = (Entity) modelViewConfigInstMap.get("componentInstEnt");
+		String newInstName = transformInstanceTextField.getFieldValue();
+		String prevName = componentInst.getPropertyByName("instancename").toString();
+		Entity compoDefEnt = (Entity) componentInst.getProperty("componentdefinition");
+		
+		if(!prevName.equals(newInstName) || !transWgtCompDefEnt.equals(compoDefEnt)) {
+			componentInst.setPropertyByName("instancename", transformInstanceTextField.getFieldValue());
+			componentInst.setProperty("componentdefinition", transWgtCompDefEnt);
+		}
+		return componentInst;
+	}
+
 	private void deregisterPreviousInstances(){
 		for(Widget mvpInstance :instanceMVPEditorsList){
 			if(mvpInstance instanceof ConfigurationInstanceMVPEditor){
@@ -1184,6 +1314,8 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 		this.containerCompoInstMap = containerCompoInstMap;
 	}
 
+	private boolean isComponentDefUpdate;
+	
 	private VerticalPanel basePanel;
 	private VerticalPanel addConfigPanel;
 	private ListBoxField spanListbox;
@@ -1233,4 +1365,6 @@ public class PageConfiguration extends Composite implements ConfigEventHandler,F
 	private ArrayList<Widget> instanceMVPEditorsList = null;
 	private ConfigurationInstanceProvider instanceProvider;
 	private EntityInstanceProvider entityInstanceProvider;
+	
+	private HashMap<String, Object> modelViewConfigInstMap;
 }

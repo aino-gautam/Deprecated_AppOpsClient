@@ -22,9 +22,11 @@ import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.EntityList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -80,6 +82,7 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 	
 	private HandlerRegistration fieldEventHandler = null;
 	private HandlerRegistration configEventHandler = null;
+	private HashMap<String, Object> childConfigInstMap;
 	
 	public ModelConfigurationInstanceEditor(){
 		initialize();
@@ -722,4 +725,70 @@ public class ModelConfigurationInstanceEditor extends Composite implements Field
 		this.pageEntity = pageEntity;
 	}
 
+	public void populateValues(EntityList list) {
+		if(list != null && !list.isEmpty()) {
+			Iterator<Entity> iterator = list.iterator();
+			while(iterator.hasNext()) {
+				Entity entity = iterator.next();
+				String instancename = entity.getPropertyByName("instancename").toString();
+				if(instancename.equals("operationname")) {
+					operationNameConfigInsEntity = entity;
+					String instancevalue = entity.getPropertyByName("instancevalue").toString();
+					opNamevalFld.setValue(instancevalue);
+				} else if(instancename.equals("queryname")) {
+					queryNameConfigInsEntity = entity;
+					String instancevalue = entity.getPropertyByName("instancevalue").toString();
+					qryNamevalFld.setValue(instancevalue);
+				} else if(instancename.equals("operationParam")) {
+					EntityList operationParamChildList = (EntityList) childConfigInstMap.get(instancename);
+					createListOfSnippetPropValueEditor(false, operationParamChildList);
+				} else if(instancename.equals("queryParam")) {
+					EntityList queryParamChildList = (EntityList) childConfigInstMap.get(instancename);
+					createListOfSnippetPropValueEditor(true, queryParamChildList);
+				}
+			}
+		}
+	}
+
+	public HashMap<String, Object> getChildConfigInstMap() {
+		return childConfigInstMap;
+	}
+
+	public void setChildConfigInstMap(HashMap<String, Object> childConfigInstMap) {
+		this.childConfigInstMap = childConfigInstMap;
+	}
+	
+	public void createListOfSnippetPropValueEditor(boolean isQueryCall, EntityList paramChildList) {
+		
+		snippetPropValueEditors.clear();
+		Iterator<Entity> iterator = paramChildList.iterator();
+		while(iterator.hasNext()) {
+			Entity configInstEntity = iterator.next();
+			if(isQueryCall) {
+				SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(QUERYMODE);
+				snippetPropValueEditors.add(snipPropValEditor);
+				snipPropValEditor.setDeletable(false);
+				snipPropValEditor.setInstanceMode(true);
+				snipPropValEditor.setConfigTypeListboxVisible(true);
+				snipPropValEditor.setParentConfInstanceEntity(queryParamConfigInstanceEnt);
+				snipPropValEditor.setConfInstanceParamValEnt(configInstEntity);
+				//snipPropValEditor.setConfTypeParamValEnt(childConfType);
+				snipPropValEditor.createUi();
+				snipPropValEditor.populate();
+				queryParamFlex.add(snipPropValEditor);
+			} else {
+				SnippetPropValueEditor snipPropValEditor = new SnippetPropValueEditor(OPERATIONMODE);
+				snippetPropValueEditors.add(snipPropValEditor);
+				snipPropValEditor.setDeletable(false);
+				snipPropValEditor.setInstanceMode(true);
+				snipPropValEditor.setConfigTypeListboxVisible(true);
+				snipPropValEditor.setParentConfInstanceEntity(opParamConfigInstanceEnt);
+				snipPropValEditor.setConfInstanceParamValEnt(configInstEntity);
+				//snipPropValEditor.setConfTypeParamValEnt(childConfType);
+				snipPropValEditor.createUi();
+				snipPropValEditor.populate();
+				opParamFlex.add(snipPropValEditor);
+			}
+		}
+	}
 }

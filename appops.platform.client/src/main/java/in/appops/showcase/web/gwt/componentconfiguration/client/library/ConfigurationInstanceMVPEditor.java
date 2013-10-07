@@ -1,8 +1,10 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.util.EntityList;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TabPanel;
@@ -16,6 +18,7 @@ public class ConfigurationInstanceMVPEditor extends Composite{
 	private Entity pageEntity;
 	
 	private ArrayList<Widget> instanceMVPEditorsList = null;
+	private HashMap<String, Object> modelViewChildConfigInstMap;
 	
 	private final String MODEL = "model";
 	private final String VIEW = "view";
@@ -62,12 +65,19 @@ public class ConfigurationInstanceMVPEditor extends Composite{
 		modConfigInstanceEditor.createUi();
 		modConfigInstanceEditor.fetchModel();
 		instanceMVPEditorsList.add(modConfigInstanceEditor);
+		if(modelViewChildConfigInstMap != null) {
+			EntityList list = (EntityList) modelViewChildConfigInstMap.get("model");
+			modConfigInstanceEditor.populateValues(list);
+		}
 		return modConfigInstanceEditor;
 	}
 	
 	public ViewConfigurationInstanceEditor getViewConfigInstanceEditor() {
 		ViewConfigurationInstanceEditor viewConfigInstanceEditor = new ViewConfigurationInstanceEditor(viewInstanceEnt);
 		viewConfigInstanceEditor.setPageEntity(pageEntity);
+		if(modelViewChildConfigInstMap != null) {
+			viewConfigInstanceEditor.setViewChildConfigInstMap(modelViewChildConfigInstMap);
+		}
 		viewConfigInstanceEditor.createUi();
 		instanceMVPEditorsList.add(viewConfigInstanceEditor);
 		return viewConfigInstanceEditor;
@@ -115,5 +125,13 @@ public class ConfigurationInstanceMVPEditor extends Composite{
 	public void setPageEntity(Entity pageEntity) {
 		this.pageEntity = pageEntity;
 	}
-	
+
+	public HashMap<String, Object> getModelViewChildConfigInstMap() {
+		return modelViewChildConfigInstMap;
+	}
+
+	public void setModelViewChildConfigInstMap(
+			HashMap<String, Object> modelViewChildConfigInstMap) {
+		this.modelViewChildConfigInstMap = modelViewChildConfigInstMap;
+	}
 }

@@ -52,6 +52,9 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 	private Entity pageEntity = null;
 	private Image  loaderImage = null;
 	private HandlerRegistration fieldEventHandler = null;
+	private HashMap<String, Object> viewChildConfigInstMap;
+	private ArrayList<Entity> childList;
+	private ListBoxField compListBoxField;
 	
 	/** Field ID **/
 	private static String SAVECONFINSTANCE_BTN_ID = "saveConfInstanceBtnId";
@@ -95,8 +98,12 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 			Entity configTypeEnt = (Entity) viewInstance.getProperty("configtype");
 			Long configTypeId = ((Key<Long>)configTypeEnt.getPropertyByName("id")).getKeyValue();
 			
-			getViewChilds(configTypeId);
-			
+			if(viewChildConfigInstMap == null) {
+				getViewChilds(configTypeId);
+			} else {
+				EntityList list = (EntityList) viewChildConfigInstMap.get("view");
+				initializeComponentInstanceListBox(list);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -244,7 +251,7 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 	}
 	
 	private void initializeComponentInstanceListBox(EntityList configInstanceList){
-		ListBoxField compListBoxField = new ListBoxField();
+		compListBoxField = new ListBoxField();
 		compListBoxField.setConfiguration(getComponentListBoxConfig(configInstanceList));
 		compListBoxField.configure();
 		compListBoxField.create();
@@ -295,6 +302,18 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 			    EntityList list = (EntityList) pairs.getValue();
 			    InstanceEditor instanceEditor = new InstanceEditor(configurationListTable, currentRow ,pairs.getKey().toString(), list, parentConfigInstanceEntity);
 			    instanceEditor.createUi();
+			    if(childList != null && !childList.isEmpty()) {
+			    	Iterator<Entity> iterator = childList.iterator();
+			    	while(iterator.hasNext()) {
+			    		Entity entity = iterator.next();
+			    		String instanceName = entity.getPropertyByName("instancename").toString();
+			    		if(instanceName.equals(pairs.getKey().toString())) {
+			    			String instancevalue = entity.getPropertyByName("instancevalue").toString();
+				    		instanceEditor.setkeyValue(instancevalue);
+				    		instanceEditor.setConfigInstance(entity);
+			    		}
+			    	}
+			    }
 			    editorList.add(instanceEditor);
 			    currentRow++;
 			}
@@ -436,16 +455,26 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 					ButtonField doneBtnField = (ButtonField) eventSource;
 					if (doneBtnField.getBaseFieldId().equals(SAVECONFINSTANCE_BTN_ID)) {
 						if(editorList!=null){
-							saveConfigInstances(getConfigurationInstanceList(), true);				
+						//	saveConfigInstances(getConfigurationInstanceList(), true);				
+							getConfigurationInstanceList();
 						}
 					}
 				}
 			}else if (event.getEventType() == FieldEvent.VALUECHANGED) {
 				if (event.getEventSource() instanceof ListBoxField){
 					ListBoxField compListField = (ListBoxField) eventSource;
-					if (compListField.getBaseFieldId().equals(COMPONENTFIELD_ID)) {
-						SelectedItem selectedItem = (SelectedItem) event.getEventData();
-						getComponentConfigTypes(selectedItem.getAssociatedEntity());
+					if (compListField.equals(compListBoxField)) {
+						String value = (String) compListField.getValue();
+						innerPanel.clear();
+						if(value.equals(compListField.getSuggestionValueForListBox())) {
+							childList = null;
+						} else {
+							if(viewChildConfigInstMap != null) {
+								childList = (ArrayList<Entity>) viewChildConfigInstMap.get(value);
+							}
+							SelectedItem selectedItem = (SelectedItem) event.getEventData();
+							getComponentConfigTypes(selectedItem.getAssociatedEntity());
+						}
 					}
 				}
 			}
@@ -456,7 +485,7 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 		
 	}
 	
-	private EntityList getConfigurationInstanceList() {
+	private void getConfigurationInstanceList() {
 		try {
 			EntityList list = new EntityList();
 			for (int index = 0; index < editorList.size(); index++) {
@@ -488,11 +517,13 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 				Long serviceId = ((Key<Long>)AppEnviornment.CURRENTSERVICE.getPropertyByName("id")).getKeyValue(); 
 				EntityContext context6 = context5.defineContext(serviceId);
 				
-				instanceEnt.setPropertyByName("context", context);
+				editor.setConfigInstance(instanceEnt);
 				
-				list.add(instanceEnt);
+				saveConfigInstances(editor, context);
+				
+			//	list.add(instanceEnt);
 			}
-			return list;
+			//return list;
 			
 		} catch (Exception e) {
 			if(e instanceof AppOpsException){
@@ -500,7 +531,51 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 				showPopup(ex.getMsg());
 			}
 		}
-		return null;
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void saveConfigInstances(final InstanceEditor editor, EntityContext context) {
+		try{
+			
+			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+			DispatchAsync dispatch = new StandardDispatchAsync(exceptionHandler);
+			
+			boolean isUpdate = false;
+			Entity instanceEnt = editor.getConfigInstance();
+			Key<Long> id = instanceEnt.getPropertyByName("id");
+			if(id != null) {
+				isUpdate = true;
+			} else {
+				isUpdate = false;
+			}
+			Map parameterMap = new HashMap();
+			parameterMap.put("confInstEnt", instanceEnt);
+			
+			parameterMap.put("isUpdate", isUpdate);
+			parameterMap.put("entityContext", context);
+			
+			StandardAction action = new StandardAction(Entity.class, "appdefinition.AppDefinitionService.saveConfigurationInstance", parameterMap);
+			dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(Result<Entity> result) {
+					if (result != null) {
+						Entity configInstanceEnt = result.getOperationResult();
+						if (configInstanceEnt != null) {
+							editor.setConfigInstance(configInstanceEnt);
+						}
+					}
+				}
+			});
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -595,5 +670,14 @@ public class ViewConfigurationInstanceEditor extends Composite implements FieldE
 
 	public void setPageEntity(Entity pageEntity) {
 		this.pageEntity = pageEntity;
+	}
+
+	public HashMap<String, Object> getViewChildConfigInstMap() {
+		return viewChildConfigInstMap;
+	}
+
+	public void setViewChildConfigInstMap(
+			HashMap<String, Object> viewChildConfigInstMap) {
+		this.viewChildConfigInstMap = viewChildConfigInstMap;
 	}
 }

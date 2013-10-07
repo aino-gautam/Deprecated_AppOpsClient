@@ -4,8 +4,10 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.library;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.util.EntityList;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TabPanel;
@@ -24,7 +26,7 @@ public class ComponentInstanceMVPEditor extends Composite {
 	private Entity pageCompInstEntity;
 	private Entity pageEntity;
 	private ArrayList<Widget> instanceMVPEditorsList = null;
-	
+	private HashMap<String, Object> modelViewChildConfigInstMap;
 	
 	private final String MODEL = "model";
 	private final String VIEW = "view";
@@ -73,6 +75,11 @@ public class ComponentInstanceMVPEditor extends Composite {
 		modConfigInstanceEditor.createUi();
 		modConfigInstanceEditor.fetchModel();
 		instanceMVPEditorsList.add(modConfigInstanceEditor);
+		if(modelViewChildConfigInstMap != null) {
+			modConfigInstanceEditor.setChildConfigInstMap(modelViewChildConfigInstMap);
+			EntityList list = (EntityList) modelViewChildConfigInstMap.get("model");
+			modConfigInstanceEditor.populateValues(list);
+		}
 		return modConfigInstanceEditor;
 	}
 	
@@ -81,6 +88,9 @@ public class ComponentInstanceMVPEditor extends Composite {
 		viewConfigInstanceEditor.setPageEntity(pageEntity);
 		viewConfigInstanceEditor.setViewConfigInstnceEntity(viewInstanceEnt);
 		viewConfigInstanceEditor.setParentCompInstanceEnt(pageCompInstEntity);
+		if(modelViewChildConfigInstMap != null) {
+			viewConfigInstanceEditor.setViewChildConfigInstMap(modelViewChildConfigInstMap);
+		}
 		viewConfigInstanceEditor.createUi();
 		instanceMVPEditorsList.add(viewConfigInstanceEditor);
 		return viewConfigInstanceEditor;
@@ -143,4 +153,12 @@ public class ComponentInstanceMVPEditor extends Composite {
 		this.pageEntity = pageEntity;
 	}
 	
+	public HashMap<String, Object> getModelViewChildConfigInstMap() {
+		return modelViewChildConfigInstMap;
+	}
+
+	public void setModelViewChildConfigInstMap(
+			HashMap<String, Object> modelViewChildConfigInstMap) {
+		this.modelViewChildConfigInstMap = modelViewChildConfigInstMap;
+	}
 }
