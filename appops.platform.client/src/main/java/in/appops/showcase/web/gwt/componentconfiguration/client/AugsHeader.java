@@ -7,8 +7,8 @@ import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
 import in.appops.client.common.config.field.LinkField;
 import in.appops.client.common.config.field.LinkField.LinkFieldConstant;
-import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
 import in.appops.client.common.config.field.ListBoxField;
+import in.appops.client.common.config.field.ListBoxField.ListBoxFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.ConfigEvent;
 import in.appops.client.common.event.FieldEvent;
@@ -16,7 +16,6 @@ import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 /**
@@ -26,7 +25,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 public class AugsHeader extends Composite implements FieldEventHandler{
 
 	private HorizontalPanel basePanel;
-	
+
 	private final String IMG_PATH = "images/augsLogo.jpg";
 	private final String USERICON_IMG_PATH = "images/userIcon.jpg";
 	private final String AUGS_ICON_IMAGE_CSS = "augsLogoImage";
@@ -42,7 +41,7 @@ public class AugsHeader extends Composite implements FieldEventHandler{
 
 	private LinkField updateLink;
 	private ImageField userIconImgFld;
-	
+
 	public AugsHeader(){
 		initialize();
 	}
@@ -66,40 +65,40 @@ public class AugsHeader extends Composite implements FieldEventHandler{
 			logoImgField.setConfiguration(getLogoConfig());
 			logoImgField.configure();
 			logoImgField.create();
-			
+
 			createServiceLink = new LinkField();
 			createServiceLink.setConfiguration(getCreateSeriveLinkConfig());
 			createServiceLink.configure();
 			createServiceLink.create();
-			
+
 			selectServiceListFld = new ListBoxField();
 			selectServiceListFld.setConfiguration(getSelectServiceConfig());
 			selectServiceListFld.configure();
 			selectServiceListFld.create();
-			
+
 			versionServiceSelectionListFld = new ListBoxField();
 			versionServiceSelectionListFld = new ListBoxField();
 			versionServiceSelectionListFld.setConfiguration(getVersionSelectionFldConfig());
 			versionServiceSelectionListFld.configure();
 			versionServiceSelectionListFld.create();
-			
+
 			updateLink = new LinkField();
 			updateLink.setConfiguration(getUpdateConfig());
 			updateLink.configure();
 			updateLink.create();
-			
+
 			userIconImgFld = new ImageField();
 			userIconImgFld.setConfiguration(getUserIconConfig());
 			userIconImgFld.configure();
 			userIconImgFld.create();
-			
-			
+
+
 			basePanel.add(logoImgField);
-			
+
 			HorizontalPanel innerBasePanel = new HorizontalPanel();
-			
+
 			innerBasePanel.add(createServiceLink);
-			
+
 			innerBasePanel.add(selectServiceListFld);
 
 			innerBasePanel.add(versionServiceSelectionListFld);
@@ -109,10 +108,10 @@ public class AugsHeader extends Composite implements FieldEventHandler{
 			innerBasePanel.add(userIconImgFld);
 
 			basePanel.add(innerBasePanel);
-			
+
 			basePanel.setCellHorizontalAlignment(logoImgField, HorizontalPanel.ALIGN_LEFT);
 			basePanel.setCellHorizontalAlignment(innerBasePanel, HorizontalPanel.ALIGN_RIGHT);
-			
+
 			innerBasePanel.setCellHorizontalAlignment(createServiceLink, HorizontalPanel.ALIGN_RIGHT);
 			innerBasePanel.setCellHorizontalAlignment(versionServiceSelectionListFld, HorizontalPanel.ALIGN_RIGHT);
 			innerBasePanel.setCellHorizontalAlignment(updateLink, HorizontalPanel.ALIGN_RIGHT);
@@ -227,6 +226,12 @@ public class AugsHeader extends Composite implements FieldEventHandler{
 			else if(event.getEventSource().equals(updateLink)){
 				ConfigEvent configEvent = new ConfigEvent(ConfigEvent.AUGSHOME, null,this);
 				AppUtils.EVENT_BUS.fireEvent(configEvent);
+			}
+			else if(event.getEventSource().equals(userIconImgFld)){
+				ShowUserInfoPopup userPopup= new ShowUserInfoPopup();
+				userPopup.createUI();
+				userPopup.setPopupPosition(userIconImgFld.getAbsoluteLeft()-170, userIconImgFld.getAbsoluteTop()+userIconImgFld.getOffsetHeight());
+				userPopup.show();
 			}
 		}
 		catch (Exception e) {
