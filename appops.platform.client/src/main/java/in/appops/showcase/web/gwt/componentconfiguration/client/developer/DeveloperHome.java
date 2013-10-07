@@ -1,8 +1,8 @@
 package in.appops.showcase.web.gwt.componentconfiguration.client.developer;
 
 import in.appops.client.common.config.field.ButtonField;
-import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
+import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.config.field.StateField;
 import in.appops.client.common.config.field.StateField.StateFieldConstant;
@@ -20,16 +20,17 @@ import in.appops.platform.core.util.EntityList;
 import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.logging.Level;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * @author kamalakar@ensarm.com
+ */
 public class DeveloperHome extends Composite{
 
 	private HorizontalPanel hPanel;
@@ -86,7 +87,7 @@ public class DeveloperHome extends Composite{
 		serviceButton.setConfiguration(getButtonConfiguration(service,"serviceRecord"));
 		serviceButton.configure();
 		serviceButton.create();
-		
+
 		return serviceButton;
 	}
 
