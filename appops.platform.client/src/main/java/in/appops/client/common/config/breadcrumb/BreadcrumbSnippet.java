@@ -50,6 +50,8 @@ public class BreadcrumbSnippet extends Composite implements FieldEventHandler{
 	private final String BRSPRIMARY_LINK_CSS = "breadcrumbLink";
 	private final String BRS_LINK_BASE_CSS = "breadcrumbLinkBase";
 	
+	private String PROPTOBINDCHILD = "child";
+	
 	public BreadcrumbSnippet() {
 		initialize();
 	}
@@ -74,8 +76,9 @@ public class BreadcrumbSnippet extends Composite implements FieldEventHandler{
 			image.setConfiguration(getImageConfiguration());
 			image.configure();
 			image.create();
-	
-			hyperLinkField.setConfiguration(getHyperLinkConfiguration(actionEntity.getPropertyByName("name").toString()));
+			
+			hyperLinkField.setEntity(actionEntity);
+			hyperLinkField.setConfiguration(getHyperLinkConfiguration());
 			hyperLinkField.configure();
 			hyperLinkField.create();
 	
@@ -104,13 +107,12 @@ public class BreadcrumbSnippet extends Composite implements FieldEventHandler{
 		}
 	}
 
-	private Configuration getHyperLinkConfiguration(String label) {
+	private Configuration getHyperLinkConfiguration() {
 		Configuration configuration = new Configuration();
 		try {
-			configuration.setPropertyByName(LinkFieldConstant.LNK_DISPLAYTEXT, label);
 			configuration.setPropertyByName(LinkFieldConstant.BF_PCLS, BRSPRIMARY_LINK_CSS);
 			configuration.setPropertyByName(LinkFieldConstant.BF_BASEPANEL_PCLS, BRS_LINK_BASE_CSS);
-			
+			configuration.setPropertyByName(LinkFieldConstant.BF_BINDPROP, "name");
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BreadcrumbSnippetField]::Exception In getHyperLinkConfiguration  method :"+e);
 		}
@@ -149,7 +151,7 @@ public class BreadcrumbSnippet extends Composite implements FieldEventHandler{
 
 	public void showBreadcrumbPopup(int left, int top){
 		try{
-			EntityList childlist= actionEntity.getPropertyByName("child");
+			EntityList childlist= actionEntity.getPropertyByName(PROPTOBINDCHILD);
 			if(!childlist.isEmpty()){
 				BreadcrumbPopup popup=new BreadcrumbPopup(childlist);
 				popup.setLevelNo(levelNo);

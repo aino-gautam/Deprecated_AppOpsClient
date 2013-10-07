@@ -44,7 +44,7 @@ public class BreadcrumbPopup extends PopupPanel implements FieldEventHandler{
 			Entity entity=itr.next();
 			LinkField link= new LinkField();
 			link.setEntity(entity);
-			link.setConfiguration(getLinkFieldConfiguration(entity.getPropertyByName("name").toString()));
+			link.setConfiguration(getLinkFieldConfiguration());
 			link.configure();
 			link.create();
 			basePanel.add(link);
@@ -82,10 +82,10 @@ public class BreadcrumbPopup extends PopupPanel implements FieldEventHandler{
 		}
 	}
 
-	public Configuration getLinkFieldConfiguration(String value){
+	public Configuration getLinkFieldConfiguration(){
 		Configuration configuration= new Configuration();
 		
-		configuration.setPropertyByName(LinkFieldConstant.LNK_DISPLAYTEXT, value);
+		configuration.setPropertyByName(LinkFieldConstant.BF_BINDPROP, "name");
 		configuration.setPropertyByName(LinkFieldConstant.BF_PCLS, BRSPRIMARY_LINK_CSS);
 		configuration.setPropertyByName(LinkFieldConstant.BF_BASEPANEL_PCLS, BRS_LINK_BASE_CSS);
 		
