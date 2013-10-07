@@ -550,7 +550,7 @@
 
 .userIconImage {
 	width: 20px;
-	margin: 8px 10px 8px 0;
+	margin: 8px 10px 8px 10px;
 	cursor: pointer;
 }
 
@@ -771,4 +771,36 @@
 
 .gwt-TabBar .gwt-TabBarItem-wrapper-selected{
 	
+}
+
+.userPopup{
+	border: 1px solid grey;
+	background-color: white;
+	width: 200px;
+}
+
+.userInfoPanel{
+	width: 200px;
+	margin: 5px 5px 5px 5px;
+}
+
+.actionPanel{
+	margin-top:20px;
+	width: 200px;
+	border-top:1px solid black;
+	background-color: light gray;
+}
+
+.logoutButton{
+	width: 100px;
+	height: 25px;
+	border: 1px solid grey;
+	margin: 5px 5px 5px 5px;
+	font-family: 'Ubuntu', sans-serif;
+	color: #333;
+	cursor: hand;
+	cursor: pointer;
+	font-size: 12px;
+	background: white;
+	border-radius: 2px;
 }
