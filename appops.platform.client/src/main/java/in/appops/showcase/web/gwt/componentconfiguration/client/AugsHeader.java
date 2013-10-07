@@ -13,6 +13,7 @@ import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.ConfigEvent;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
+import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 
 import com.google.gwt.user.client.ui.Composite;
@@ -228,7 +229,12 @@ public class AugsHeader extends Composite implements FieldEventHandler{
 				AppUtils.EVENT_BUS.fireEvent(configEvent);
 			}
 			else if(event.getEventSource().equals(userIconImgFld)){
-				ShowUserInfoPopup userPopup= new ShowUserInfoPopup();
+
+				Entity userEntity = new Entity();
+				userEntity.setPropertyByName("userIcon", USERICON_IMG_PATH);
+				userEntity.setPropertyByName("userName", "Kamalakar Kale");
+
+				ShowUserInfoPopup userPopup= new ShowUserInfoPopup(userEntity);
 				userPopup.createUI();
 				userPopup.setPopupPosition(userIconImgFld.getAbsoluteLeft()-170, userIconImgFld.getAbsoluteTop()+userIconImgFld.getOffsetHeight());
 				userPopup.show();

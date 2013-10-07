@@ -6,6 +6,7 @@ import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
 import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
+import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -24,12 +25,13 @@ public class ShowUserInfoPopup extends PopupPanel{
 	private ImageField userIcon;
 	private ButtonField logoutButton;
 	private LabelField userName;
+	private Entity userEntity;
 
-	private final String USERICON_IMG_PATH = "images/userIcon.jpg";
 	private final String USER_ICON_IMAGE_CSS = "userIconImage";
 
-	public ShowUserInfoPopup() {
+	public ShowUserInfoPopup(Entity userEntity) {
 		super(true);
+		this.userEntity = userEntity;
 	}
 
 	public void createUI(){
@@ -38,22 +40,22 @@ public class ShowUserInfoPopup extends PopupPanel{
 		actionPanel = new HorizontalPanel();
 		vPanel = new VerticalPanel();
 		userIcon = new ImageField();
-		
-		userIcon.setConfiguration(getUserIconConfig());
+
+		userIcon.setConfiguration(getUserIconConfig(userEntity.getPropertyByName("userIcon").toString()));
 		userIcon.configure();
 		userIcon.create();
 		userInfo.add(userIcon);
-		
+
 		userName = new LabelField();
-		userName.setConfiguration(getLabelFieldConfiguration(true,"appops-LabelField",null,"Kamalakar Kale"));
+		userName.setConfiguration(getLabelFieldConfiguration(true,"appops-LabelField",null,userEntity.getPropertyByName("userName").toString()));
 		userName.configure();
 		userName.create();
 		userInfo.add(userName);
-	
+
 		userInfo.setCellHorizontalAlignment(userIcon, HasHorizontalAlignment.ALIGN_LEFT);
 		userInfo.setCellHorizontalAlignment(userName, HasHorizontalAlignment.ALIGN_CENTER);
 		userInfo.setStylePrimaryName("userInfoPanel");
-		
+
 		logoutButton = new ButtonField();
 		logoutButton.setConfiguration(getButtonConfiguration());
 		logoutButton.configure();
@@ -68,11 +70,11 @@ public class ShowUserInfoPopup extends PopupPanel{
 		setWidget(vPanel);
 	}
 
-	private Configuration getUserIconConfig() {
+	private Configuration getUserIconConfig(String userIcon) {
 		Configuration config = null;
 		try{
 			config = new Configuration();
-			config.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, USERICON_IMG_PATH);
+			config.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, userIcon);
 			config.setPropertyByName(ImageFieldConstant.BF_PCLS, USER_ICON_IMAGE_CSS);
 		}
 		catch (Exception e) {
@@ -91,7 +93,7 @@ public class ShowUserInfoPopup extends PopupPanel{
 		}
 		return configuration;
 	}
-	
+
 	/**
 	 * creates the configuration object for a {@link}LabelField
 	 * @param allowWordWrap boolean true / false
@@ -101,7 +103,7 @@ public class ShowUserInfoPopup extends PopupPanel{
 	 * @return
 	 */
 	private Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String displayText){
-		
+
 		Configuration conf = new Configuration();
 		try {
 			conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
@@ -111,7 +113,7 @@ public class ShowUserInfoPopup extends PopupPanel{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return conf;
 	}
 
