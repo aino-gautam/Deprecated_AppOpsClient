@@ -37,7 +37,7 @@ public class PageProcessor extends HTMLPanel {
 							Container container = new Container();
 							
 							String dataConfig = pageSpan.getAttribute("data-config");
-							Configuration configuration =  Store.getConfiguration(dataConfig);
+							Configuration configuration =  Store.getFromConfigurationStore(dataConfig);
 							container.setConfiguration(configuration);
 							container.configure();
 							container.setId(pageSpan.getId());

@@ -1,11 +1,5 @@
 package in.appops.client.common.config.dsnip;
 
-import in.appops.client.common.config.form.FormSnippetPresenter;
-import in.appops.client.common.config.util.ReusableSnippetStore;
-import in.appops.client.common.config.util.Store;
-import in.appops.platform.core.shared.Configuration;
-
-import com.google.gwt.dom.client.Element;
 
 /**
  * @author nitish@ensarm.com	
@@ -14,43 +8,32 @@ import com.google.gwt.dom.client.Element;
  */
 public class SnippetGeneratorImpl implements SnippetGenerator {
 
-	private final String FORMSNIPPET = "formSnippet";
+	private final String PAGESNIPPET = "pageSnippet";
 
-	/**
-	 * The method which will return the instance of type {@link HTMLSnippetPresenter}
-	 * depending on the type string passed to it.
-	 * @param type
-	 * @return
-	 */
-	@Override
-	public HTMLSnippetPresenter generateSnippet(String type, String instance) {
+	public HTMLSnippetPresenter requestHTMLSnippet(String type, String instance) {
 		try{
-			String snippetDesc = ReusableSnippetStore.getSnippetDesc(type);
-			Configuration configuration = Store.getConfiguration(instance);
-
-			HTMLSnippetPresenter snippetPres;
-			HTMLSnippet snippet = new HTMLSnippet(snippetDesc);
-			Element node = snippet.getElement().getFirstChildElement();
-
-			String nodeName = node.getNodeName();
-
-			if(nodeName.equalsIgnoreCase(FORMSNIPPET)){
-				snippet = new HTMLSnippet(node.getInnerHTML());
-				snippetPres = new FormSnippetPresenter();
+			HTMLSnippetPresenter snippetPresenter = null;
+			if(type.equalsIgnoreCase(PAGESNIPPET)) {
+				snippetPresenter = new PageSnippetPresenter();
+			}  else {
+				snippetPresenter = new HTMLSnippetPresenter(type, instance);
 			}
-			else {
-				snippetPres = new HTMLSnippetPresenter();
-			}
-			snippetPres.setConfiguration(configuration);
-			snippetPres.setHtmlSnippet(snippet);
-			snippetPres.init();
-			snippetPres.create();
-			return snippetPres;
+			return snippetPresenter;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
+	@Override
+	public HTMLSnippetPresenter requestHTMLSnippet(String type) {
+		return requestHTMLSnippet(type, null);
+	}
+
+	@Override
+	public PageSnippetPresenter requestPageSnippet() {
+		PageSnippetPresenter pageSnippetPresenter = (PageSnippetPresenter)requestHTMLSnippet(PAGESNIPPET);
+		return pageSnippetPresenter;
+	}
 }

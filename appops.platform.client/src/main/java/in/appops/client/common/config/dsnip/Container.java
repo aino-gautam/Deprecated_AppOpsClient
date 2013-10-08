@@ -225,10 +225,10 @@ public class Container extends SimplePanel implements Configurable, ValueChangeH
 				}
 			}
 			
-			final HTMLSnippetPresenter snippetPres = snippetGenerator.generateSnippet(transformTo, transFormInstance);
+			final HTMLSnippetPresenter snippetPres = snippetGenerator.requestHTMLSnippet(transformTo, transFormInstance);
 
 			this.clear();
-			this.add(snippetPres.getHTMLSnippet());
+			this.add(snippetPres.getView());
 			snippetMap.put(transFormInstance, snippetPres);
 			
 			snippetPres.load();
@@ -248,7 +248,7 @@ public class Container extends SimplePanel implements Configurable, ValueChangeH
 				compPres = componentFactory.getComponent(transformTo);
 			//}
 			
-			Configuration componentConfig = Store.getConfiguration(transFormInstance);
+			Configuration componentConfig = Store.getFromConfigurationStore(transFormInstance);
 			compPres.setConfiguration(componentConfig);
 			compPres.initialize();
 			compPres.configure();
