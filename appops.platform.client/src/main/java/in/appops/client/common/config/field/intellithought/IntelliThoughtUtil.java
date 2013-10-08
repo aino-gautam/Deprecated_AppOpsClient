@@ -51,6 +51,36 @@ public class IntelliThoughtUtil {
 	    }
 	    return caretOffset;
 	}-*/;
+	
+	public static native String getSelectionCoords() /*-{
+	    var sel = $doc.selection;
+	    var x = 0, y = 0;
+	    var coordinates ;
+		
+	    if (sel) {
+	        if (sel.type != "Control") {
+	            range = sel.createRange();
+	            range.collapse(true);
+	            x = range.boundingLeft;
+	            y = range.boundingTop;
+	        }
+	    } else if ($wnd.getSelection) {
+	        sel = $wnd.getSelection();
+	        if (sel.rangeCount) {
+	            range = sel.getRangeAt(0).cloneRange();
+	            if (range.getClientRects) {
+	                range.collapse(true);
+	                var rect = range.getClientRects()[0];
+	                x = rect.left;
+	                y = rect.top;
+	            }
+	        }
+	    }
+	    
+	    coordinates = x+"#"+y;
+	   
+	    return coordinates;
+	}-*/;
 
 	/**
 	 * Accept html string creates and inserts an HTML element at the Current Caret Position.
