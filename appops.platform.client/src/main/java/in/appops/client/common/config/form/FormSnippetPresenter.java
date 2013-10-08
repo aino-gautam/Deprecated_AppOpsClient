@@ -28,6 +28,11 @@ import com.google.gwt.user.client.Window;
  */
 public class FormSnippetPresenter extends HTMLSnippetPresenter {
 	
+	public FormSnippetPresenter(String snippetType, String snippetInstance) {
+		super(snippetType, snippetInstance);
+		// TODO Auto-generated constructor stub
+	}
+
 	public interface FormSnippetConstant extends BaseComponentConstant {
 		final String CONFIGTYPE = "config";
 
@@ -65,18 +70,18 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 	 * Applies configurations to view and model.
 	 */
 	public void init() {
-		model = new FormModel();
+		setModel(new FormModel());
 
-		if(getModelConfiguration() != null) {
-			model.setConfiguration(getModelConfiguration());
-			model.configure();
+		/*if(getModelConfiguration() != null) {
+			getModel().setConfiguration(getModelConfiguration());
+			getModel().configure();
 		}
 
 		if(getViewConfiguration() != null) {
-			htmlSnippet.setConfiguration(getViewConfiguration());
-		}
+			view.setConfiguration(getViewConfiguration());
+		}*/
 		
-		model.setReceiver(this);
+		getModel().setReceiver(this);
 		fieldEventRegistration = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 	}
 	
@@ -152,7 +157,7 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 
 			String eventName = eventType + "##" + eventSourceId;
 			
-			if(isInterestedFieldEvent(eventName)) {
+			/*if(isInterestedFieldEvent(eventName)) {
 				Configuration fieldEventConf = getFieldEventConfiguration(eventName);
 				
 				String localAction = fieldEventConf.getPropertyByName(FieldEventConstant.LOCAL_ACTION);
@@ -166,7 +171,7 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 				else if(localAction.equalsIgnoreCase(FormSnippetConstant.frmDefActn)){
 					executeDefaultAction();
 				}
-			}
+			}*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -207,7 +212,7 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 						}
 						else if(propStrVal.startsWith(FormSnippetConstant.FldProp)){
 							String fieldName = propStrVal.substring(propStrVal.indexOf(".") + 1);
-							BaseField field = (BaseField) htmlSnippet.getSnippetElementMap().get(fieldName);
+							BaseField field = (BaseField) view.getSnippetElementMap().get(fieldName);
 							propvalue = (Serializable) field.getValue();
 						}
 						entity.setPropertyByName(key, propvalue);
@@ -236,7 +241,7 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 					}
 				}
 				
-				((FormModel)model).saveUpdateEntity();
+				((FormModel)getModel()).saveUpdateEntity();
 			}
 		}
 		catch (Exception e) {

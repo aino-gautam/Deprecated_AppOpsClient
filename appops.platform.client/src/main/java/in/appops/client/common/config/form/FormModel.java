@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import in.appops.client.common.config.dsnip.HTMLSnippetModel;
 import in.appops.client.common.config.form.FormSnippetPresenter.FormSnippetConstant;
 import in.appops.client.common.config.model.EntityModel;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
@@ -23,7 +24,7 @@ import in.appops.platform.core.shared.Configuration;
  * All the server call needed for form to be funtional will be done
  * by this model.
  */
-public class FormModel extends EntityModel{
+public class FormModel extends HTMLSnippetModel{
 	
 	/**
 	 * Method to make a save or update entity call depending on the isUpdate flag
@@ -63,7 +64,7 @@ public class FormModel extends EntityModel{
 		HashMap<String, Object> queryParamMap = null;
 		try {
 			
-			Configuration operationParam = getOperationParam();
+			Configuration operationParam = getOperationParameters();
 			if(operationParam != null) {
 				queryParamMap = new HashMap<String, Object>();
 		
