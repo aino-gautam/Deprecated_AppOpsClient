@@ -9,6 +9,7 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.Defa
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.operation.Result;
+import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 
@@ -19,7 +20,7 @@ import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public abstract class AppopsBaseModel implements AppopsModel, EntityCacheListener {
+public abstract class AppopsBaseModel implements EntityCacheListener, Configurable {
 	
 	public interface AppopsModelConstant {
 		String ABM_QRY_NAME = "queryname";
@@ -36,9 +37,11 @@ public abstract class AppopsBaseModel implements AppopsModel, EntityCacheListene
 	protected Configuration configuration;
 	protected String operationName;
 	protected String queryName;
+	protected Configuration queryParameters;
+	protected Configuration operationParameters;
 	protected Boolean cacheable;
-	protected ArrayList<String> interestedQueryList = new ArrayList<String>();;
 	
+	protected ArrayList<String> interestedQueryList = new ArrayList<String>();;
 	protected GlobalEntityCache globalEntityCache = GlobalEntityCache.getInstance();
 
 	
@@ -52,27 +55,26 @@ public abstract class AppopsBaseModel implements AppopsModel, EntityCacheListene
 		this.configuration = conf;
 	}
 
-	@Override
 	public void setOperationName(String operationName) {
 		this.operationName = operationName;
 	}
 
-	@Override
 	public void setQueryName(String queryName) {
 		this.queryName = queryName;
 	}
-	
 	
 	public void setCacheable(Boolean cacheable) {
 		this.cacheable = cacheable;
 	}
 
-//	@Override
-//	public void setQueryParamList(ArrayList<Configuration> queryParamList) {
-//		this.queryParamList = queryParamList;
-//	}
+	public void setOperationParameters(Configuration operationParameters) {
+		this.operationParameters = operationParameters;
+	}
 	
-	@Override
+	public void setQueryParameters(Configuration queryParameters) {
+		this.queryParameters = queryParameters;
+	}
+	
 	public void configure() {
 		if(getOperationName() != null) {
 			setOperationName(getOperationName());
@@ -80,27 +82,19 @@ public abstract class AppopsBaseModel implements AppopsModel, EntityCacheListene
 		if(getQueryName() != null) {
 			setQueryName(getQueryName());
 		}
-		setCacheable(getCacheable());
+		if(getOperationParameters() != null) {
+			setOperationParameters(getOperationParameters());
+		}
+		if(getQueryParameters() != null) {
+			setQueryParameters(getQueryParameters());
+		}
+		setCacheable(isCacheable());
 		
-		if(cacheable) {
+		if(isCacheable()) {
 			globalEntityCache.register(this);
 		}
 	}
 
-	protected boolean hasConfiguration(String configKey) {
-		if(configuration != null && configuration.getPropertyByName(configKey) != null) {
-			return true;
-		}
-		return false;
-	}
-	
-	protected Serializable getConfigurationValue(String configKey) {
-		if(hasConfiguration(configKey)) {
-			return configuration.getPropertyByName(configKey);
-		}
-		return null;
-	}
-	
 	public String getOperationName() {
 		String operation = null;
 		if(getConfigurationValue(AppopsModelConstant.ABM_OPR_NM) != null) {
@@ -117,7 +111,7 @@ public abstract class AppopsBaseModel implements AppopsModel, EntityCacheListene
 		return queryName;
 	}
 	
-	public Configuration getQueryParam() {
+	public Configuration getQueryParameters() {
 		Configuration param = null;
 		if(getConfigurationValue(AppopsModelConstant.ABM_QRY_PARAM) != null) {
 			param = (Configuration) getConfigurationValue(AppopsModelConstant.ABM_QRY_PARAM);
@@ -125,22 +119,52 @@ public abstract class AppopsBaseModel implements AppopsModel, EntityCacheListene
 		return param;
 	}
 
-	private Boolean getCacheable() {
+	private Boolean isCacheable() {
 		Boolean param = true;
 		if(getConfigurationValue(AppopsModelConstant.ABM_CHCBLE) != null) {
 			param = (Boolean) getConfigurationValue(AppopsModelConstant.ABM_CHCBLE);
 		}
 		return param;
 	}
-
 	
-	@Override
-	public void onQueryUpdated(String query, Serializable data) {
-		// TODO Auto-generated method stub
-		
+	public Configuration getOperationParameters() {
+		Configuration param = null;
+		if(getConfigurationValue(AppopsModelConstant.ABM_OPR_PARAM) != null) {
+			param = (Configuration) getConfigurationValue(AppopsModelConstant.ABM_OPR_PARAM);
+		}
+		return param;
 	}
-
-	@SuppressWarnings("unchecked")
+	
+	public Boolean hasQueryParam() {
+		Boolean param = null;
+		if(getConfigurationValue(AppopsModelConstant.ABM_HAS_QRYPARAM) != null) {
+			param = (Boolean) getConfigurationValue(AppopsModelConstant.ABM_HAS_QRYPARAM);
+		}
+		return param;
+	}
+	
+	protected boolean isInterestingQuery(String query) {
+		if(!interestedQueryList.isEmpty() && interestedQueryList.contains(query)) {
+			return true;
+		}
+		return false;
+	}
+	
+	protected boolean hasConfiguration(String configKey) {
+		if(configuration != null && configuration.getPropertyByName(configKey) != null) {
+			return true;
+		}
+		return false;
+	}
+	
+	protected Serializable getConfigurationValue(String configKey) {
+		if(hasConfiguration(configKey)) {
+			return configuration.getPropertyByName(configKey);
+		}
+		return null;
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected void executeQuery(final Query query) {
 		Map<String, Serializable> queryParam = new HashMap<String, Serializable>();
 		queryParam.put("query", query);
@@ -176,26 +200,9 @@ public abstract class AppopsBaseModel implements AppopsModel, EntityCacheListene
 		});
 	}
 	
-	protected boolean isInterestingQuery(String query) {
-		if(!interestedQueryList.isEmpty() && interestedQueryList.contains(query)) {
-			return true;
-		}
-		return false;
-	}
-	
-	public Configuration getOperationParam() {
-		Configuration param = null;
-		if(getConfigurationValue(AppopsModelConstant.ABM_OPR_PARAM) != null) {
-			param = (Configuration) getConfigurationValue(AppopsModelConstant.ABM_OPR_PARAM);
-		}
-		return param;
-	}
-	
-	public Boolean hasQueryParam() {
-		Boolean param = null;
-		if(getConfigurationValue(AppopsModelConstant.ABM_HAS_QRYPARAM) != null) {
-			param = (Boolean) getConfigurationValue(AppopsModelConstant.ABM_HAS_QRYPARAM);
-		}
-		return param;
+	@Override
+	public void onQueryUpdated(String query, Serializable data) {
+		// TODO Auto-generated method stub
+		
 	}
 }

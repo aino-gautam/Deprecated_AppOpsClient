@@ -13,7 +13,6 @@ import java.util.Set;
 
 public class EntityListModel extends AppopsBaseModel {
 
-	private EntityList entityList;
 	protected EntityListReceiver listReceiver;
 	
 	@Override
@@ -21,14 +20,13 @@ public class EntityListModel extends AppopsBaseModel {
 		super.configure();
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void fetchEntityList() {
 				
 		String queryName = getQueryName();
 		HashMap<String, Object> queryParamMap = null;
 
 		//if(hasQueryParam()) {
-			Configuration queryParam = getQueryParam();
+			Configuration queryParam = getQueryParameters();
 			
 			
 			Set<Entry<String, Property<? extends Serializable>>> confSet = queryParam.getValue().entrySet();
@@ -61,31 +59,6 @@ public class EntityListModel extends AppopsBaseModel {
 		}
 	}
 	
-	/*@SuppressWarnings("unchecked")
-	public void executeQuery(Query query) {
-		Map<String, Serializable> queryParam = new HashMap<String, Serializable>();
-		queryParam.put("query", query);
-		
-		StandardAction action = new StandardAction(EntityList.class, getOperationName(), queryParam);
-		dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
-			}
-
-			@Override
-			public void onSuccess(Result<EntityList> result) {
-				EntityList entList = (EntityList) result.getOperationResult();
-				//TODO
-				if(entList != null) {
-					listReceiver.onEntityListReceived(entList);
-				}
-			
-			}
-		});
-	}*/
-
 	public void setReceiver(EntityListReceiver listReceiver) {
 		this.listReceiver = listReceiver;
 	}

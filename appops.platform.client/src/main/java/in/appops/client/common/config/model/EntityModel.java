@@ -12,48 +12,14 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 public class EntityModel extends AppopsBaseModel {
-	private Entity entity;
 	private EntityReceiver receiver;
 
-	
-	public void saveEntity(String operation) {
-		/*StandardAction action = new StandardAction(EntityList.class, operation, parameterMap);
-		dispatch.execute(action, new AsyncCallback<Result>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
-			}
-
-			@Override
-			public void onSuccess(Result result) {
-				Entity entity = (Entity) result.getOperationResult();
-			
-				entityReceiver.onEntityReceived(entity);
-			}
-		});*/
-
-	}
-	
-	public void draftEntity(Property<Serializable> prop) {
-		
-		if(entity == null) {
-			entity = new Entity();
-		}
-		entity.setProperty(prop);
-	}
-	
-	public void deleteEntity() {
-		
-	}
-	
-	@SuppressWarnings("unchecked")
 	public void fetchEntity() {
 		String queryName = getQueryName();
 		
 		if(queryName != null) {
 			
-			Configuration queryParam = getQueryParam();
+			Configuration queryParam = getQueryParameters();
 			if(queryParam != null) {
 				HashMap<String, Object> queryParamMap = new HashMap<String, Object>();
 		
@@ -86,31 +52,6 @@ public class EntityModel extends AppopsBaseModel {
 			}
 		}
 	}
-	/*
-	@SuppressWarnings("unchecked")
-	public void executeQuery(Query query) {
-		Map<String, Serializable> queryParam = new HashMap<String, Serializable>();
-		queryParam.put("query", query);
-		
-		StandardAction action = new StandardAction(EntityList.class, getOperationName(), queryParam);
-		dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
-			}
-
-			@Override
-			public void onSuccess(Result<Entity> result) {
-				Entity ent = result.getOperationResult();
-				//TODO
-				if(ent != null) {
-					receiver.onEntityReceived(ent);
-				}
-			
-			}
-		});
-	}*/
 
 	public void setReceiver(EntityReceiver receiver) {
 		this.receiver = receiver;
