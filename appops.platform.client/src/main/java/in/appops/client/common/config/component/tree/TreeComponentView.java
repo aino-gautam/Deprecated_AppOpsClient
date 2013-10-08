@@ -69,7 +69,7 @@ public class TreeComponentView extends BaseComponentView {
 			root.clear();
 			for(Entity entity : entityList){
 				HTMLSnippetPresenter snippetPres  = getChildSnippet();
-				TreeItem item = root.addItem(snippetPres.getHTMLSnippet());
+				TreeItem item = root.addItem(snippetPres.getView());
 				item.setTitle("0");
 				item.setStylePrimaryName("treeItem");
 				item.addItem("");
@@ -80,7 +80,7 @@ public class TreeComponentView extends BaseComponentView {
 			selectedTreeItem.removeItems();
 			for(Entity entity : entityList){
 				HTMLSnippetPresenter snippetPres  = getChildSnippet();
-				TreeItem item = selectedTreeItem.addItem(snippetPres.getHTMLSnippet());
+				TreeItem item = selectedTreeItem.addItem(snippetPres.getView());
 				int depth = (Integer.parseInt(selectedTreeItem.getTitle())) + 1;
 				item.setTitle(Integer.toString(depth));
 
@@ -96,7 +96,7 @@ public class TreeComponentView extends BaseComponentView {
 	private HTMLSnippetPresenter getChildSnippet() {
 		AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
 		SnippetGenerator snippetGenerator = (SnippetGenerator)injector.getSnippetGenerator();
-		HTMLSnippetPresenter snippetPres = snippetGenerator.generateSnippet(snippetType, instanceType);
+		HTMLSnippetPresenter snippetPres = snippetGenerator.requestHTMLSnippet(snippetType, instanceType);
 		return snippetPres;
 	}
 

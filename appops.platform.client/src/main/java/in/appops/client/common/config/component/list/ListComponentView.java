@@ -79,7 +79,7 @@ public class ListComponentView extends BaseComponentView  {
 		row = 0;
 		for(Entity entity : entityList){
 			HTMLSnippetPresenter snippetPres  = getChildSnippet();
-			listPanel.setWidget(row ,0 ,snippetPres.getHTMLSnippet());
+			listPanel.setWidget(row ,0 ,snippetPres.getView());
 			snippetPres.setEntity(entity);
 			snippetPres.load();
 			row++;
@@ -89,7 +89,7 @@ public class ListComponentView extends BaseComponentView  {
 	private HTMLSnippetPresenter getChildSnippet() {
 		AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
 		SnippetGenerator snippetGenerator = (SnippetGenerator)injector.getSnippetGenerator();
-		HTMLSnippetPresenter snippetPres = snippetGenerator.generateSnippet(snippetType, instanceType);
+		HTMLSnippetPresenter snippetPres = snippetGenerator.requestHTMLSnippet(snippetType, instanceType);
 		return snippetPres;
 	}
 

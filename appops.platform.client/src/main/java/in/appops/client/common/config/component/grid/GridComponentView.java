@@ -199,14 +199,14 @@ public class GridComponentView extends BaseComponentView implements ScrollHandle
 			HTMLSnippetPresenter snippetPres = getChildSnippet();
 			snippetPres.setEntity(entity);
 			snippetPres.load();
-			gridFlowPanel.add(snippetPres.getHTMLSnippet());
+			gridFlowPanel.add(snippetPres.getView());
 		}
 	}
 	
 	private HTMLSnippetPresenter getChildSnippet() {
 		AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
 		SnippetGenerator snippetGenerator = (SnippetGenerator)injector.getSnippetGenerator();
-		HTMLSnippetPresenter snippetPres = snippetGenerator.generateSnippet(snippetType, instanceType);
+		HTMLSnippetPresenter snippetPres = snippetGenerator.requestHTMLSnippet(snippetType, instanceType);
 		return snippetPres;
 	}
 

@@ -4,7 +4,7 @@ import in.appops.client.common.config.component.base.BaseComponentPresenter;
 import in.appops.client.common.config.dsnip.ApplicationContext;
 import in.appops.client.common.config.dsnip.Container.ContainerConstant;
 import in.appops.client.common.config.dsnip.EventConstant;
-import in.appops.client.common.config.dsnip.HTMLSnippet;
+import in.appops.client.common.config.dsnip.HTMLSnippetView;
 import in.appops.client.common.config.model.TreeModel;
 import in.appops.client.common.core.EntityListReceiver;
 import in.appops.client.common.util.JsonToEntityConverter;
@@ -102,13 +102,13 @@ public class TreeComponentPresenter extends BaseComponentPresenter implements Op
 	@Override
 	public void onOpen(OpenEvent<TreeItem> event) {
 		try {
-			TreeItem treeItem = event.getTarget();
+			/*TreeItem treeItem = event.getTarget();
 			TreeComponentView treeView = (TreeComponentView)view;
 			int depth = Integer.parseInt(treeItem.getTitle());
 
 			treeView.getRoot().setSelectedItem(treeItem);
 
-			HTMLSnippet treeSnippet = (HTMLSnippet) treeItem.getWidget();
+			HTMLSnippetView treeSnippet = (HTMLSnippetView) treeItem.getWidget();
 			
 			configuration.setPropertyByName("currentRequestedDepth", depth + 1);
 			
@@ -148,7 +148,7 @@ public class TreeComponentPresenter extends BaseComponentPresenter implements Op
 
 				
 			}
-			
+			*/
 /*			for(Configuration paramConfig : paramList) {
 				Serializable value = null;
 				
