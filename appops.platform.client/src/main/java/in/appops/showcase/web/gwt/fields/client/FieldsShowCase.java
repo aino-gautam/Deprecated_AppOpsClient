@@ -33,10 +33,10 @@ import in.appops.client.common.config.field.date.TimePickerField;
 import in.appops.client.common.config.field.date.TimePickerField.TimePickerFieldConstant;
 import in.appops.client.common.config.field.intellithought.IntelliThoughtField;
 import in.appops.client.common.config.field.intellithought.IntelliThoughtField.IntelliThoughtFieldConstant;
-import in.appops.client.common.config.field.intellithought.QueryThoughtField;
-import in.appops.client.common.config.field.intellithought.QueryThoughtField.QueryThoughtFieldConstant;
 import in.appops.client.common.config.field.media.MediaField;
 import in.appops.client.common.config.field.media.MediaField.MediaFieldConstant;
+import in.appops.client.common.config.field.querythought.QueryThoughtField;
+import in.appops.client.common.config.field.querythought.QueryThoughtField.QueryThoughtFieldConstant;
 import in.appops.client.common.config.field.rangeslider.RangeSliderField;
 import in.appops.client.common.config.field.rangeslider.RangeSliderField.RangeSliderFieldConstant;
 import in.appops.client.common.config.field.spinner.SpinnerField;
@@ -1339,6 +1339,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				return DateLabelField.class.getName();
 			}else if(fieldName.equals(INTELLITHOUGHTFIELD)) {
 				return IntelliThoughtField.class.getName();
+			}else if(fieldName.equals(QUERYTHOUGHTFIELD)) {
+				return QueryThoughtField.class.getName();
 			}
 			
 		return null;
