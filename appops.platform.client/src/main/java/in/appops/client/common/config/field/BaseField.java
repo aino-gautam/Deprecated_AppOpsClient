@@ -419,7 +419,7 @@ public class BaseField extends Composite implements Field {
 		return errPos;
 	}
 	
-	protected String getInvalidMsg() {
+	public String getInvalidMsg() {
 		String invalidMsg = "The value in this field is invalid";
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getInvalidMsg  method ");
