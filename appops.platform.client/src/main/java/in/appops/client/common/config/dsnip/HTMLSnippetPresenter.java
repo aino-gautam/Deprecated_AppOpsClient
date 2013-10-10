@@ -1,5 +1,7 @@
 package in.appops.client.common.config.dsnip;
 
+import in.appops.client.common.config.dsnip.event.EventActionRuleMap;
+import in.appops.client.common.config.dsnip.event.EventActionRulesList;
 import in.appops.client.common.config.field.BaseField;
 import in.appops.client.common.core.EntityReceiver;
 import in.appops.client.common.event.AppUtils;
@@ -27,7 +29,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
-public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, EntityReceiver, ClickHandler, ActionEventHandler  {
+public class HTMLSnippetPresenter implements FieldEventHandler, EntityReceiver, ClickHandler, ActionEventHandler  {
 
 	public interface HTMLSnippetConstant {
 		String HS_FIELDEVENTS = "interestedFieldEvents";
@@ -38,17 +40,17 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 		String EVENTDATA = "evt";
 		String SEPERATOR = ".";
 		String APPCONTEXT = "ac";
+		String EVENTACTIONRULEMAP = "earm";
 	}
 
-	protected Configuration configuration;
 	protected HTMLSnippetView view;
 	protected HTMLSnippetModel model;
 	protected Entity entity;
 	private String snippetType;
 	private String snippetInstance;
 	
-	protected EventActionSet eventActionSet;
-
+	protected EventActionRuleMap eventActionRuleMap;
+	
 	protected AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
 	protected SnippetGenerator snippetGenerator = (SnippetGenerator)injector.getSnippetGenerator();
 	private Map<String, HTMLSnippetPresenter> snippetMap	= new HashMap<String, HTMLSnippetPresenter>();
@@ -63,35 +65,30 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 
 	protected void init() {
 		model = new HTMLSnippetModel();
-		configuration = model.getConfiguration(getSnippetInstance());
-
-		String snippetDescription = model.getDescription(getSnippetType());
 		view = new HTMLSnippetView();
+		
+		String snippetDescription = model.getDescription(getSnippetType());
 		view.setSnippetDescription(snippetDescription);
-		model.setReceiver(this);
-		view.addClickHandler(this);
-		fieldEventRegistration = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
-
-		List<EventAction> eventActionList = eventActionSet.getAllEventActions();
-		for(EventAction eventAction : eventActionList) {
-			AppUtils.ACTIONEVENT_BUS.registerHandler(eventAction.getName(), this);
-		}
-
+		view.addClickHandler(this); // shift to basepresenter
+		
+		fieldEventRegistration = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this); // shift to basepresenter
 	}
 	
+	/**
+	 * loads the initial configuration and based on it configures the model and view
+	 */
 	protected void configure() {
+		model.loadInstanceConfiguration(getSnippetInstance());
+		model.configure();
+		view.configure();
 		
-		if(configuration != null) {
-			if(model.getModelConfiguration() != null) {
-				model.setConfiguration(model.getModelConfiguration());
-				model.configure();
-			}
-			
-			if(model.getViewConfiguration() != null) {
-				view.setConfiguration(model.getViewConfiguration());
-				view.configure();
-			}
+		eventActionRuleMap =  model.getEventActionRuleMap(); // variable to be defined in basepresenter
+		// shift to pagepresenter
+		Set<String> eventNamesSet = eventActionRuleMap.getEventActionNames();
+		for(String eventName : eventNamesSet) {
+			AppUtils.ACTIONEVENT_BUS.registerHandler(eventName, this);
 		}
+
 	}
 	
 	public void load() {
@@ -100,15 +97,6 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 		} else {
 			model.fetchEntity();
 		}
-	}
-
-	public Configuration getConfiguration() {
-		return configuration;
-	}
-
-	@Override
-	public void setConfiguration(Configuration conf) {
-		this.configuration = conf;
 	}
 
 	protected void create() {
@@ -277,7 +265,7 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 
 	@Override
 	public void onClick(ClickEvent event) {
-		try {
+		/*try {
 			Configuration clickConfig = (Configuration) configuration.getProperty("onClick");
 			if(clickConfig != null) {
 				String pageValue = clickConfig.getPropertyByName("page");
@@ -302,7 +290,7 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 			}
 		} catch (EntityGraphException e) {
 			e.printStackTrace();
-		}
+		}*/
 		
 	}
 
@@ -331,9 +319,10 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 		this.model = model;
 	}
 
+	// shift to pagepresenter
 	@Override
 	public void onActionEvent(ActionEvent event) {
-		try {
+		/*try {
 			String eventName = event.getName();
 			Object eventData = event.getEventData();
 			
@@ -344,9 +333,10 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
+	//shift to basepresenter
 	private void processEventAction(EventAction eventAction, Object eventData) {
 		try {
 			boolean transformation = eventAction.hasTransformation();
@@ -377,7 +367,8 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 	}
 
 	private void applyConfiguration(HashMap<String, Object> preparedConfigMap) {
-		try {
+		// implementation needs enhancement to handle snippets, components or fields
+		/*try {
 			
 			HTMLSnippetPresenter snippetToUpdate = null;
 			
@@ -391,7 +382,7 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 					
 					if((snippetToUpdate == null && (snippetToUpdate = snippetMap.get(snippetInstance)) != null ) || 
 							(snippetToUpdate != null && snippetInstance.equals(snippetToUpdate.getSnippetInstance()))) {
-						Configuration configToUpdate = snippetToUpdate.getConfiguration();
+						Configuration configToUpdate = snippetToUpdate.getModel().getConfiguration(snippetInstance);
 						configToUpdate.setGraphPropertyValue(propertyToUpdate, (Serializable)propertyValue, null);
 						preparedConfigMap.remove(propertyToUpdate);
 					}
@@ -402,7 +393,7 @@ public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, En
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	private HashMap<String, Object> prepareConfigurationsToUpdate(HashMap<String, Object> configToUpdateMap, Object eventData) {

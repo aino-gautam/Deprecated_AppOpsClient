@@ -5,6 +5,8 @@ import in.appops.client.common.config.component.base.BaseComponentView;
 import in.appops.client.common.config.dsnip.HTMLSnippetPresenter.HTMLSnippetConstant;
 import in.appops.client.common.config.field.BaseField;
 import in.appops.client.common.config.field.BaseField.BaseFieldConstant;
+import in.appops.client.common.core.EntityReceiver;
+import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 
 import java.util.HashMap;
@@ -17,7 +19,7 @@ import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class HTMLSnippetView extends BaseComponentView {
+public class HTMLSnippetView extends BaseComponentView implements EntityReceiver{
 	protected HTMLPanel snippetPanel;
 	private Map<String, Widget> snippetElementMap = new HashMap<String, Widget>();
 	
@@ -27,6 +29,7 @@ public class HTMLSnippetView extends BaseComponentView {
 	@Override
 	protected void initialize() {
 		super.initialize();
+		//TODO set view as the entityreceiver on the model
 		snippetPanel = new HTMLPanel("") {
 			
 			@Override
@@ -178,6 +181,24 @@ public class HTMLSnippetView extends BaseComponentView {
 
 	public void setSnippetDescription(String snippetDescription) {
 		snippetPanel.getElement().setInnerHTML(snippetDescription);
+	}
+
+	@Override
+	public void noMoreData() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEntityReceived(Entity entity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEntityUpdated(Entity entity) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	
