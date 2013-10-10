@@ -46,6 +46,34 @@ public class Store {
 			return null;
 		}
 	}
+	
+	/**
+	 * Returns the configuration based on the context path.
+	 * E.g. - We want to get the configuration for S5, for path S1.S2.S3.S4.S5
+	 * We first fetch the configuration for S1 (i.e. the parent configuration)
+	 * From the parent configuration we fetch S5 by getGraphPropertyValue("S2.S3.S4.S5").
+	 * @param contextPath
+	 * @return
+	 */
+	public static Configuration getContextConfiguration(String contextPath) {
+		try {
+			// Context Path eg S1.S2.S3.S4.S5
+			
+			String parentConfigStr = contextPath.substring(0, contextPath.indexOf(".")); // Returns S1
+			String childConfigStr = contextPath.substring(contextPath.indexOf(".") + 1); // Returns S2.S3.S4.S5
+			
+			String jsonConfig = configStore.get(parentConfigStr); // Returns configuration for S1
+			JsonToEntityConverter convertor = new JsonToEntityConverter();
+			Configuration parentConfig = (Configuration) convertor.convertjsonStringToEntity(jsonConfig);
+			
+			Configuration contextConfig = parentConfig.getGraphPropertyValue(childConfigStr, parentConfig); // Returns configuration for S5 from parent configuration S1 using S2.S3.S4.S5 
+			return contextConfig;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 
 	public static Configuration getChildConfiguration(String instance, String dataConfig) {
 		Configuration parentConfig = getFromConfigurationStore(instance);
