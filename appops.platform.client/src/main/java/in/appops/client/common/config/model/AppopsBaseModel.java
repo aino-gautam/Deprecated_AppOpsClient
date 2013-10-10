@@ -45,6 +45,8 @@ public abstract class AppopsBaseModel implements EntityCacheListener, Configurab
 	protected GlobalEntityCache globalEntityCache = GlobalEntityCache.getInstance();
 
 	
+	public abstract void configure();
+	
 	@Override
 	public Configuration getConfiguration() {
 		return configuration;
@@ -75,74 +77,8 @@ public abstract class AppopsBaseModel implements EntityCacheListener, Configurab
 		this.queryParameters = queryParameters;
 	}
 	
-	public void configure() {
-		if(getOperationName() != null) {
-			setOperationName(getOperationName());
-		}
-		if(getQueryName() != null) {
-			setQueryName(getQueryName());
-		}
-		if(getOperationParameters() != null) {
-			setOperationParameters(getOperationParameters());
-		}
-		if(getQueryParameters() != null) {
-			setQueryParameters(getQueryParameters());
-		}
-		setCacheable(isCacheable());
-		
-		if(isCacheable()) {
-			globalEntityCache.register(this);
-		}
-	}
+	
 
-	public String getOperationName() {
-		String operation = null;
-		if(getConfigurationValue(AppopsModelConstant.ABM_OPR_NM) != null) {
-			operation = getConfigurationValue(AppopsModelConstant.ABM_OPR_NM).toString();
-		}
-		return operation;
-	}
-
-	public String getQueryName() {
-		String queryName = null;
-		if(getConfigurationValue(AppopsModelConstant.ABM_QRY_NAME) != null) {
-			queryName = getConfigurationValue(AppopsModelConstant.ABM_QRY_NAME).toString();
-		}
-		return queryName;
-	}
-	
-	public Configuration getQueryParameters() {
-		Configuration param = null;
-		if(getConfigurationValue(AppopsModelConstant.ABM_QRY_PARAM) != null) {
-			param = (Configuration) getConfigurationValue(AppopsModelConstant.ABM_QRY_PARAM);
-		}
-		return param;
-	}
-
-	private Boolean isCacheable() {
-		Boolean param = true;
-		if(getConfigurationValue(AppopsModelConstant.ABM_CHCBLE) != null) {
-			param = (Boolean) getConfigurationValue(AppopsModelConstant.ABM_CHCBLE);
-		}
-		return param;
-	}
-	
-	public Configuration getOperationParameters() {
-		Configuration param = null;
-		if(getConfigurationValue(AppopsModelConstant.ABM_OPR_PARAM) != null) {
-			param = (Configuration) getConfigurationValue(AppopsModelConstant.ABM_OPR_PARAM);
-		}
-		return param;
-	}
-	
-	public Boolean hasQueryParam() {
-		Boolean param = null;
-		if(getConfigurationValue(AppopsModelConstant.ABM_HAS_QRYPARAM) != null) {
-			param = (Boolean) getConfigurationValue(AppopsModelConstant.ABM_HAS_QRYPARAM);
-		}
-		return param;
-	}
-	
 	protected boolean isInterestingQuery(String query) {
 		if(!interestedQueryList.isEmpty() && interestedQueryList.contains(query)) {
 			return true;
@@ -150,26 +86,12 @@ public abstract class AppopsBaseModel implements EntityCacheListener, Configurab
 		return false;
 	}
 	
-	protected boolean hasConfiguration(String configKey) {
-		if(configuration != null && configuration.getPropertyByName(configKey) != null) {
-			return true;
-		}
-		return false;
-	}
-	
-	protected Serializable getConfigurationValue(String configKey) {
-		if(hasConfiguration(configKey)) {
-			return configuration.getPropertyByName(configKey);
-		}
-		return null;
-	}
-	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected void executeQuery(final Query query) {
 		Map<String, Serializable> queryParam = new HashMap<String, Serializable>();
 		queryParam.put("query", query);
 		
-		StandardAction action = new StandardAction(EntityList.class, getOperationName(), queryParam);
+		StandardAction action = new StandardAction(EntityList.class, operationName, queryParam);
 		dispatch.execute(action, new AsyncCallback<Result>() {
 
 			@Override

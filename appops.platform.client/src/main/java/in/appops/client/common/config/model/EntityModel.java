@@ -12,14 +12,28 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 public class EntityModel extends AppopsBaseModel {
+	
 	private EntityReceiver receiver;
-
+	private Entity currentEntity;
+	
+	/**
+	 * instantiate a property model with a reference to the entity model and the property it binds to. 
+	 * @param prop
+	 * @return
+	 */
+	public PropertyModel getPropertyModel(Property prop){
+		PropertyModel propertyModel = new PropertyModel(this, prop);
+		return propertyModel;
+	}
+	
+	public void updateProperty(Property prop){
+		currentEntity.setProperty(prop);
+	}
+	
 	public void fetchEntity() {
-		String queryName = getQueryName();
-		
 		if(queryName != null) {
 			
-			Configuration queryParam = getQueryParameters();
+			Configuration queryParam = queryParameters;
 			if(queryParam != null) {
 				HashMap<String, Object> queryParamMap = new HashMap<String, Object>();
 		
@@ -43,9 +57,9 @@ public class EntityModel extends AppopsBaseModel {
 						interestedQueryList.add(querypPointer);
 					}
 						
-					Entity entity = globalEntityCache.getEntity(query);
-					if(entity != null) {
-						receiver.onEntityReceived(entity);
+					currentEntity = globalEntityCache.getEntity(query);
+					if(currentEntity != null) {
+						receiver.onEntityReceived(currentEntity);
 					}
 					executeQuery(query);
 				}
@@ -59,14 +73,27 @@ public class EntityModel extends AppopsBaseModel {
 	
 	@Override
 	public void onQueryUpdated(String query, Serializable data) {
-
 		if(isInterestingQuery(query)) {
-			Entity entity = (Entity)data;
-			receiver.onEntityReceived(entity);
+			currentEntity = (Entity)data;
+			receiver.onEntityReceived(currentEntity);
 		}
 	}
 	
 	public EntityReceiver getReceiver() {
 		return receiver;
+	}
+
+	public Entity getCurrentEntity() {
+		return currentEntity;
+	}
+
+	public void setCurrentEntity(Entity entity) {
+		this.currentEntity = entity;
+	}
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
+		
 	}
 }

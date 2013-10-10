@@ -15,18 +15,12 @@ public class EntityListModel extends AppopsBaseModel {
 
 	protected EntityListReceiver listReceiver;
 	
-	@Override
-	public void configure() {
-		super.configure();
-	}
-	
 	public void fetchEntityList() {
 				
-		String queryName = getQueryName();
 		HashMap<String, Object> queryParamMap = null;
 
 		//if(hasQueryParam()) {
-			Configuration queryParam = getQueryParameters();
+			Configuration queryParam = queryParameters;
 			
 			
 			Set<Entry<String, Property<? extends Serializable>>> confSet = queryParam.getValue().entrySet();
@@ -74,5 +68,11 @@ public class EntityListModel extends AppopsBaseModel {
 			EntityList entityList = (EntityList)data;
 			listReceiver.onEntityListReceived(entityList);
 		}
+	}
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
+		
 	}
 }
