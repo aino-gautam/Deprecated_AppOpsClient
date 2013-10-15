@@ -1,5 +1,6 @@
 package in.appops.client.common.config.component.list;
 
+import in.appops.client.common.config.component.base.BaseComponent.BaseComponentConstant;
 import in.appops.client.common.config.component.base.BaseComponentPresenter;
 import in.appops.client.common.config.model.ConfigurationListModel;
 import in.appops.client.common.config.model.EntityListModel;
@@ -8,24 +9,20 @@ import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.util.EntityList;
 
 public class ListComponentPresenter extends BaseComponentPresenter implements EntityListReceiver {
-	EntityListModel entityListModel;
+	private EntityListModel entityListModel;
 	
 	@Override
 	public void initialize() {
-		if(isConfigDriven()) {
-			model = new ConfigurationListModel();
-		} else {
-			model = new EntityListModel();
-		}
+		model = new ConfigurationListModel();
 		entityListModel = (EntityListModel) model;
 		entityListModel.setReceiver(this);
 		view = new ListComponentView();
 	}
 
-	@Override
+	/*@Override
 	public void load() {
 		entityListModel.fetchEntityList();
-	}
+	}*/
 	
 /*	
 	@SuppressWarnings("unchecked")

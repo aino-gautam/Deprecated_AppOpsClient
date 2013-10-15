@@ -1,9 +1,9 @@
 package in.appops.client.common.config.component.tree;
 
-import in.appops.client.common.config.component.base.BaseComponentView;
+import in.appops.client.common.config.component.base.BaseComponent;
 import in.appops.client.common.config.component.tree.TreeComponentPresenter.TreeComponentConstant;
 import in.appops.client.common.config.dsnip.HTMLSnippetPresenter;
-import in.appops.client.common.config.dsnip.SnippetGenerator;
+import in.appops.client.common.config.dsnip.DynamicMVPFactory;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.util.EntityList;
@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
-public class TreeComponentView extends BaseComponentView {
+public class TreeComponentView extends BaseComponent {
 	
 	private ScrollPanel scrollPanel;
 	private String instanceType;
@@ -73,8 +73,8 @@ public class TreeComponentView extends BaseComponentView {
 				item.setTitle("0");
 				item.setStylePrimaryName("treeItem");
 				item.addItem("");
-				snippetPres.setEntity(entity);
-				snippetPres.load();
+//				snippetPres.setEntity(entity);
+//				snippetPres.load();
 			}
 		} else {
 			selectedTreeItem.removeItems();
@@ -86,8 +86,8 @@ public class TreeComponentView extends BaseComponentView {
 
 				item.setStylePrimaryName("treeItem");
 				item.addItem("");
-				snippetPres.setEntity(entity);
-				snippetPres.load();
+//				snippetPres.setEntity(entity);
+//				snippetPres.load();
 			}
 		}
 		scrollPanel.setWidget(root);
@@ -95,7 +95,7 @@ public class TreeComponentView extends BaseComponentView {
 
 	private HTMLSnippetPresenter getChildSnippet() {
 		AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
-		SnippetGenerator snippetGenerator = (SnippetGenerator)injector.getSnippetGenerator();
+		DynamicMVPFactory snippetGenerator = (DynamicMVPFactory)injector.getMVPFactory();
 		HTMLSnippetPresenter snippetPres = snippetGenerator.requestHTMLSnippet(snippetType, instanceType);
 		return snippetPres;
 	}
@@ -103,8 +103,8 @@ public class TreeComponentView extends BaseComponentView {
 
 	private String getInstanceType() {
 		String instanceType = null;
-		if(getConfigurationValue(TreeComponentConstant.TR_INSTANCETYPE) != null) {
-			instanceType = getConfigurationValue(TreeComponentConstant.TR_INSTANCETYPE).toString();
+		if(viewConfiguration.getConfigurationValue(TreeComponentConstant.TR_INSTANCETYPE) != null) {
+			instanceType = viewConfiguration.getConfigurationValue(TreeComponentConstant.TR_INSTANCETYPE).toString();
 		}
 		return instanceType;
 	}
@@ -112,8 +112,8 @@ public class TreeComponentView extends BaseComponentView {
 
 	private String getSnippetType() {
 		String snippetType = null;
-		if(getConfigurationValue(TreeComponentConstant.TR_SNIPPETTYPE) != null) {
-			snippetType = getConfigurationValue(TreeComponentConstant.TR_SNIPPETTYPE).toString();
+		if(viewConfiguration.getConfigurationValue(TreeComponentConstant.TR_SNIPPETTYPE) != null) {
+			snippetType = viewConfiguration.getConfigurationValue(TreeComponentConstant.TR_SNIPPETTYPE).toString();
 		}
 		return snippetType;
 	}

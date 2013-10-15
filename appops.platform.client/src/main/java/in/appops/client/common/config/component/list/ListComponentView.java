@@ -1,9 +1,9 @@
 package in.appops.client.common.config.component.list;
 
-import in.appops.client.common.config.component.base.BaseComponentView;
+import in.appops.client.common.config.component.base.BaseComponent;
 import in.appops.client.common.config.component.list.ListComponentPresenter.ListComponentConstant;
 import in.appops.client.common.config.dsnip.HTMLSnippetPresenter;
-import in.appops.client.common.config.dsnip.SnippetGenerator;
+import in.appops.client.common.config.dsnip.DynamicMVPFactory;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.util.EntityList;
@@ -14,7 +14,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasAlignment;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
-public class ListComponentView extends BaseComponentView  {
+public class ListComponentView extends BaseComponent  {
 	private ScrollPanel scrollPanel;
 	protected FlexTable listPanel;
 	private int row = 0;
@@ -57,8 +57,8 @@ public class ListComponentView extends BaseComponentView  {
 
 	private String getListPanelPrimCss() {
 		String primaryCss = "appops-ListScrollCss";
-		if(getConfigurationValue(ListComponentConstant.LC_LISTCLS) != null) {
-			primaryCss = getConfigurationValue(ListComponentConstant.LC_LISTCLS).toString();
+		if(viewConfiguration.getConfigurationValue(ListComponentConstant.LC_LISTCLS) != null) {
+			primaryCss = viewConfiguration.getConfigurationValue(ListComponentConstant.LC_LISTCLS).toString();
 		}
 		return primaryCss;
 	}
@@ -80,15 +80,15 @@ public class ListComponentView extends BaseComponentView  {
 		for(Entity entity : entityList){
 			HTMLSnippetPresenter snippetPres  = getChildSnippet();
 			listPanel.setWidget(row ,0 ,snippetPres.getView());
-			snippetPres.setEntity(entity);
-			snippetPres.load();
+//			snippetPres.setEntity(entity);
+//			snippetPres.load();
 			row++;
 		}
 	}
 
 	private HTMLSnippetPresenter getChildSnippet() {
 		AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
-		SnippetGenerator snippetGenerator = (SnippetGenerator)injector.getSnippetGenerator();
+		DynamicMVPFactory snippetGenerator = (DynamicMVPFactory)injector.getMVPFactory();
 		HTMLSnippetPresenter snippetPres = snippetGenerator.requestHTMLSnippet(snippetType, instanceType);
 		return snippetPres;
 	}
@@ -96,8 +96,8 @@ public class ListComponentView extends BaseComponentView  {
 
 	private String getInstanceType() {
 		String instanceType = null;
-		if(getConfigurationValue(ListComponentConstant.LC_INSTANCETYPE) != null) {
-			instanceType = getConfigurationValue(ListComponentConstant.LC_INSTANCETYPE).toString();
+		if(viewConfiguration.getConfigurationValue(ListComponentConstant.LC_INSTANCETYPE) != null) {
+			instanceType = viewConfiguration.getConfigurationValue(ListComponentConstant.LC_INSTANCETYPE).toString();
 		}
 		return instanceType;
 	}
@@ -105,8 +105,8 @@ public class ListComponentView extends BaseComponentView  {
 
 	private String getSnippetType() {
 		String snippetType = "appops-ListScrollCss";
-		if(getConfigurationValue(ListComponentConstant.LC_SNIPPETTYPE) != null) {
-			snippetType = getConfigurationValue(ListComponentConstant.LC_SNIPPETTYPE).toString();
+		if(viewConfiguration.getConfigurationValue(ListComponentConstant.LC_SNIPPETTYPE) != null) {
+			snippetType = viewConfiguration.getConfigurationValue(ListComponentConstant.LC_SNIPPETTYPE).toString();
 		}
 		return snippetType;
 	}
