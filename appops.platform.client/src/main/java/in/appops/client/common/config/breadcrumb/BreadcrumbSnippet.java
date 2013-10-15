@@ -111,7 +111,7 @@ public class BreadcrumbSnippet extends Composite implements FieldEventHandler{
 		Configuration configuration = new Configuration();
 		try {
 			configuration.setPropertyByName(LinkFieldConstant.BF_PCLS, BRSPRIMARY_LINK_CSS);
-			configuration.setPropertyByName(LinkFieldConstant.BF_BASEPANEL_PCLS, BRS_LINK_BASE_CSS);
+			configuration.setPropertyByName(LinkFieldConstant.BC_BASEPANEL_PCLS, BRS_LINK_BASE_CSS);
 			configuration.setPropertyByName(LinkFieldConstant.BF_BINDPROP, "name");
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BreadcrumbSnippetField]::Exception In getHyperLinkConfiguration  method :"+e);

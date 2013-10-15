@@ -87,7 +87,7 @@ public class BreadcrumbPopup extends PopupPanel implements FieldEventHandler{
 		
 		configuration.setPropertyByName(LinkFieldConstant.BF_BINDPROP, "name");
 		configuration.setPropertyByName(LinkFieldConstant.BF_PCLS, BRSPRIMARY_LINK_CSS);
-		configuration.setPropertyByName(LinkFieldConstant.BF_BASEPANEL_PCLS, BRS_LINK_BASE_CSS);
+		configuration.setPropertyByName(LinkFieldConstant.BC_BASEPANEL_PCLS, BRS_LINK_BASE_CSS);
 		
 		return configuration;
 	}
