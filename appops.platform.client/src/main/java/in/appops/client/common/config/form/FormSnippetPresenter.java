@@ -3,25 +3,9 @@
  */
 package in.appops.client.common.config.form;
 
-import java.io.Serializable;
-import java.util.Set;
-import java.util.Map.Entry;
-
-import in.appops.client.common.config.component.base.BaseComponentPresenter.BaseComponentConstant;
-import in.appops.client.common.config.dsnip.FieldEventConstant;
 import in.appops.client.common.config.dsnip.HTMLSnippetPresenter;
 import in.appops.client.common.config.field.BaseField;
-import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
-import in.appops.platform.core.constants.typeconstants.TypeConstants;
-import in.appops.platform.core.entity.Entity;
-import in.appops.platform.core.entity.Key;
-import in.appops.platform.core.entity.Property;
-import in.appops.platform.core.entity.type.MetaType;
-import in.appops.platform.core.shared.Configuration;
-
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 
 /**
  * @author mahesh@ensarm.com
@@ -33,7 +17,7 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 		// TODO Auto-generated constructor stub
 	}
 
-	public interface FormSnippetConstant extends BaseComponentConstant {
+/*	public interface FormSnippetConstant extends BaseComponentConstant {
 		final String CONFIGTYPE = "config";
 
 		final String frmDefActn = "FormDefaultAction";
@@ -62,7 +46,7 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 		final String DEFACTNCONFIG = "defaultActionConfig";
 
 		final String PREVIEWCONFIG = "previewConfig";
-	}
+	}*/
 
 
 	/**
@@ -70,22 +54,22 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 	 * Applies configurations to view and model.
 	 */
 	public void init() {
-		setModel(new FormModel());
+		/*setModel(new FormModel());
 
-		/*if(getModelConfiguration() != null) {
+		if(getModelConfiguration() != null) {
 			getModel().setConfiguration(getModelConfiguration());
 			getModel().configure();
 		}
 
 		if(getViewConfiguration() != null) {
 			view.setConfiguration(getViewConfiguration());
-		}*/
+		}
 		
 		getModel().setReceiver(this);
-		fieldEventRegistration = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
+		fieldEventRegistration = AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);*/
 	}
 	
-	@Override
+	/*@Override
 	public void onEntityReceived(Entity entity) {
 		if(entity != null) {
 			this.entity = entity;
@@ -100,14 +84,14 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 		else{
 			onFailureAction();
 		}
-	}
+	}*/
 	
 	/**
 	 * On success of save/update operation what needs to be done 
 	 * by the form is been done below
 	 */
 	private void onSuccessAction() {
-		try{
+		/*try{
 			Configuration defaultConfig = (Configuration) getConfiguration().getProperty(FormSnippetConstant.DEFACTNCONFIG);
 			if(defaultConfig != null){
 				Configuration onSuccessConfig = (Configuration) defaultConfig.getProperty(FormSnippetConstant.ONSUCCESS);
@@ -119,7 +103,7 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	/**
@@ -127,7 +111,7 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 	 * by the form is been done below
 	 */
 	private void onFailureAction() {
-		try{
+		/*try{
 			Configuration defaultConfig = (Configuration) getConfiguration().getProperty(FormSnippetConstant.DEFACTNCONFIG);
 			if(defaultConfig != null){
 				Configuration onSuccessConfig = (Configuration) defaultConfig.getProperty(FormSnippetConstant.ONFAILURE);
@@ -139,7 +123,7 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	@Override
@@ -185,7 +169,7 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 	 * param-map and operation and then calls the model saveUpdateMethod.
 	 */
 	private void executeDefaultAction() {
-		try{
+		/*try{
 			Configuration defaultActionConfig = (Configuration) getConfiguration().getProperty(FormSnippetConstant.DEFACTNCONFIG);
 			
 			if(defaultActionConfig != null){
@@ -246,7 +230,7 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	/**
@@ -255,7 +239,7 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 	 * default form action. 
 	 */
 	private void executePreviewForm() {
-		try{
+		/*try{
 			Configuration previewConfig = (Configuration) getConfiguration().getProperty(FormSnippetConstant.PREVIEWCONFIG);
 			
 			if(previewConfig.getPropertyByName(FormSnippetConstant.ALERT)!=null){
@@ -270,7 +254,7 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	

@@ -101,9 +101,9 @@ public class DateLabelField extends BaseField{
 		String displayFormat = DateLabelFieldConstant.LIVETIMESTAMP_DSPLY;
 		try {
 			logger.log(Level.INFO,"[DateLabelField]:: In getDisplayFormat  method ");
-			if(getConfigurationValue(DateLabelFieldConstant.DTLBL_DSPLY_FORM) != null) {
+			if(viewConfiguration.getConfigurationValue(DateLabelFieldConstant.DTLBL_DSPLY_FORM) != null) {
 				
-				displayFormat = getConfigurationValue(DateLabelFieldConstant.DTLBL_DSPLY_FORM).toString();
+				displayFormat = viewConfiguration.getConfigurationValue(DateLabelFieldConstant.DTLBL_DSPLY_FORM).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[DateLabelField]::Exception In getDisplayFormat  method :"+e);
@@ -122,9 +122,9 @@ public class DateLabelField extends BaseField{
 		String displayFormat = "MMM dd''yy 'at' HH:mm a";
 		try {
 			logger.log(Level.INFO,"[DateLabelField]:: In getDateTimeFormat  method ");
-			if(getConfigurationValue(DateLabelFieldConstant.DATETIME_FORMAT) != null) {
+			if(viewConfiguration.getConfigurationValue(DateLabelFieldConstant.DATETIME_FORMAT) != null) {
 				
-				displayFormat = getConfigurationValue(DateLabelFieldConstant.DATETIME_FORMAT).toString();
+				displayFormat = viewConfiguration.getConfigurationValue(DateLabelFieldConstant.DATETIME_FORMAT).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[DateLabelField]::Exception In getDateTimeFormat  method :"+e);
@@ -142,9 +142,9 @@ public class DateLabelField extends BaseField{
 		Date date = null;;
 		try {
 			logger.log(Level.INFO,"[DateLabelField]:: In getDateTimeToDisplay  method ");
-			if(getConfigurationValue(DateLabelFieldConstant.DATETIME_TO_DISPLAY) != null) {
+			if(viewConfiguration.getConfigurationValue(DateLabelFieldConstant.DATETIME_TO_DISPLAY) != null) {
 				
-				date = (Date) getConfigurationValue(DateLabelFieldConstant.DATETIME_TO_DISPLAY);
+				date = (Date) viewConfiguration.getConfigurationValue(DateLabelFieldConstant.DATETIME_TO_DISPLAY);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[DateLabelField]::Exception In getDateTimeToDisplay  method :"+e);
@@ -162,9 +162,9 @@ public class DateLabelField extends BaseField{
 		Boolean displayFormat = true;
 		try {
 			logger.log(Level.INFO,"[DateLabelField]:: In isTitleVisible  method ");
-			if(getConfigurationValue(DateLabelFieldConstant.IS_TITLE_VISIBLE) != null) {
+			if(viewConfiguration.getConfigurationValue(DateLabelFieldConstant.IS_TITLE_VISIBLE) != null) {
 				
-				displayFormat = (Boolean) getConfigurationValue(DateLabelFieldConstant.IS_TITLE_VISIBLE);
+				displayFormat = (Boolean) viewConfiguration.getConfigurationValue(DateLabelFieldConstant.IS_TITLE_VISIBLE);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[DateLabelField]::Exception In isTitleVisible  method :"+e);

@@ -1,9 +1,8 @@
 package in.appops.client.common.config.dsnip.event;
 
-import java.util.ArrayList;
-import java.util.Set;
-
 import in.appops.platform.core.shared.Configuration;
+
+import java.util.Set;
 
 /**
  * A HashMap of all the {@link EventActionRulesList} vs their event name

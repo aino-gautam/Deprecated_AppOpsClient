@@ -158,8 +158,8 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 		String url = null;
 		try {
 			logger.log(Level.INFO, "[ToggleImageField] ::In getUpStateImageUrl method ");
-			if (getConfigurationValue(ToggleImageFieldConstant.TIMGFD_UPSTATE_URL) != null) {
-				url = getConfigurationValue(ToggleImageFieldConstant.TIMGFD_UPSTATE_URL).toString();
+			if (viewConfiguration.getConfigurationValue(ToggleImageFieldConstant.TIMGFD_UPSTATE_URL) != null) {
+				url = viewConfiguration.getConfigurationValue(ToggleImageFieldConstant.TIMGFD_UPSTATE_URL).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ToggleImageField] ::Exception in getUpStateImageUrl method :"+e);
@@ -175,8 +175,8 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 		String url = null;
 		try {
 			logger.log(Level.INFO, "[ToggleImageField] ::In getDwnStateImageUrl method ");
-			if (getConfigurationValue(ToggleImageFieldConstant.TIMGFD_DWNSTATE_URL) != null) {
-				url = getConfigurationValue(ToggleImageFieldConstant.TIMGFD_DWNSTATE_URL).toString();
+			if (viewConfiguration.getConfigurationValue(ToggleImageFieldConstant.TIMGFD_DWNSTATE_URL) != null) {
+				url = viewConfiguration.getConfigurationValue(ToggleImageFieldConstant.TIMGFD_DWNSTATE_URL).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ToggleImageField] ::Exception in getDwnStateImageUrl method :"+e);
@@ -192,8 +192,8 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 		String title = null;
 		try {
 			logger.log(Level.INFO, "[ToggleImageField] ::In getUpStateImageTitle method ");
-			if (getConfigurationValue(ToggleImageFieldConstant.TIMGFD_UPSTATE_TITLE) != null) {
-				title = getConfigurationValue(ToggleImageFieldConstant.TIMGFD_UPSTATE_TITLE).toString();
+			if (viewConfiguration.getConfigurationValue(ToggleImageFieldConstant.TIMGFD_UPSTATE_TITLE) != null) {
+				title = viewConfiguration.getConfigurationValue(ToggleImageFieldConstant.TIMGFD_UPSTATE_TITLE).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ToggleImageField] ::Exception in getUpStateImageTitle method :"+e);
@@ -209,8 +209,8 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 		String title = null;
 		try {
 			logger.log(Level.INFO, "[ToggleImageField] ::In getDwnStateImageTitle method ");
-			if (getConfigurationValue(ToggleImageFieldConstant.TIMGFD_DWNSTATE_TITLE) != null) {
-				title = getConfigurationValue(ToggleImageFieldConstant.TIMGFD_DWNSTATE_TITLE).toString();
+			if (viewConfiguration.getConfigurationValue(ToggleImageFieldConstant.TIMGFD_DWNSTATE_TITLE) != null) {
+				title = viewConfiguration.getConfigurationValue(ToggleImageFieldConstant.TIMGFD_DWNSTATE_TITLE).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ToggleImageField] ::Exception in getDwnStateImageTitle method :"+e);
@@ -226,8 +226,8 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 		String pcls = null;
 		try {
 			logger.log(Level.INFO, "[ToggleImageField] ::In getStateImagePrimaryCss method ");
-			if (getConfigurationValue(ToggleImageFieldConstant.TIMGFD_STATEIMG_PCLS) != null) {
-				pcls = getConfigurationValue(ToggleImageFieldConstant.TIMGFD_STATEIMG_PCLS).toString();
+			if (viewConfiguration.getConfigurationValue(ToggleImageFieldConstant.TIMGFD_STATEIMG_PCLS) != null) {
+				pcls = viewConfiguration.getConfigurationValue(ToggleImageFieldConstant.TIMGFD_STATEIMG_PCLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ToggleImageField] ::Exception in getStateImagePrimaryCss method :"+e);
@@ -244,8 +244,8 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 		String dcls = null;
 		try {
 			logger.log(Level.INFO, "[ToggleImageField] ::In getStateImageDependentCss method ");
-			if (getConfigurationValue(ToggleImageFieldConstant.TIMGFD_STATEIMG_DCLS) != null) {
-				dcls = getConfigurationValue(ToggleImageFieldConstant.TIMGFD_STATEIMG_DCLS).toString();
+			if (viewConfiguration.getConfigurationValue(ToggleImageFieldConstant.TIMGFD_STATEIMG_DCLS) != null) {
+				dcls = viewConfiguration.getConfigurationValue(ToggleImageFieldConstant.TIMGFD_STATEIMG_DCLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ToggleImageField] ::Exception in getStateImageDependentCss method :"+e);

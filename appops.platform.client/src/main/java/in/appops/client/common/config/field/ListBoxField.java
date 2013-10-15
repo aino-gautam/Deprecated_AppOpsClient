@@ -213,8 +213,8 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		Integer noOfVisibleItems = 1;
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getVisibleItemCount  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_VISIBLE_ITEM_CNT) != null) {
-				noOfVisibleItems = (Integer) getConfigurationValue(ListBoxFieldConstant.LSTFD_VISIBLE_ITEM_CNT);
+			if(viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_VISIBLE_ITEM_CNT) != null) {
+				noOfVisibleItems = (Integer) viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_VISIBLE_ITEM_CNT);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getVisibleItemCount  method :"+e);
@@ -230,8 +230,8 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 	private Object getStaticListOfItems() {
 		Object listOfItems = null;
 		try {
-			if (getConfigurationValue(ListBoxFieldConstant.LSTFD_ITEMS) != null) {
-				listOfItems = getConfigurationValue(ListBoxFieldConstant.LSTFD_ITEMS);
+			if (viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_ITEMS) != null) {
+				listOfItems = viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_ITEMS);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getStaticListOfItems  method :"
@@ -249,8 +249,8 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		String query = null;
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getListQueryName  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERYNAME) != null) {
-				query = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERYNAME);
+			if(viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERYNAME) != null) {
+				query = (String) viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERYNAME);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getListQueryName  method :"+e);
@@ -266,8 +266,8 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		String entprop = null;
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getEntPropToShow  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_ENTPROP) != null) {
-				entprop = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_ENTPROP);
+			if(viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_ENTPROP) != null) {
+				entprop = (String) viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_ENTPROP);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getEntPropToShow  method :"+e);
@@ -283,8 +283,8 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		HashMap<String, Object> queryRestrictions = null;
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getQueryRestrictions  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_RESTRICTION) != null) {
-				queryRestrictions =  (HashMap<String, Object>) getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_RESTRICTION);
+			if(viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_RESTRICTION) != null) {
+				queryRestrictions =  (HashMap<String, Object>) viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_RESTRICTION);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getQueryRestrictions  method :"+e);
@@ -300,8 +300,8 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		Integer maxResult = 100;
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getQueryMaxResult  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_MAXRESULT) != null) {
-				maxResult =(Integer) getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_MAXRESULT);
+			if(viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_MAXRESULT) != null) {
+				maxResult =(Integer) viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_MAXRESULT);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getQueryMaxResult  method :"+e);
@@ -317,8 +317,8 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		String operation = null;
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getOperationName  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_OPRTION) != null) {
-				operation =(String) getConfigurationValue(ListBoxFieldConstant.LSTFD_OPRTION);
+			if(viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_OPRTION) != null) {
+				operation =(String) viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_OPRTION);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getOperationName  method :"+e);
@@ -334,8 +334,8 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		String selectedTxt = null;
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getDefaultSelectedText  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_SELECTED_TXT) != null) {
-				selectedTxt = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_SELECTED_TXT);
+			if(viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_SELECTED_TXT) != null) {
+				selectedTxt = (String) viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_SELECTED_TXT);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getDefaultSelectedText  method :"+e);
@@ -563,8 +563,8 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		String defaultImageLoader = "images/defaultLoader.gif";
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getListBoxImageLoader  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_LOADERIMG_BLOBID) != null) {
-				defaultImageLoader = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_LOADERIMG_BLOBID);
+			if(viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_LOADERIMG_BLOBID) != null) {
+				defaultImageLoader = (String) viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_LOADERIMG_BLOBID);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getListBoxImageLoader  method :"+e);
@@ -576,8 +576,8 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		String defaultPcls = "appops-listBoxLoaderPcls";
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getListBoxImageLoaderPcls  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_LOADERIMG_PCLS) != null) {
-				defaultPcls = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_LOADERIMG_PCLS);
+			if(viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_LOADERIMG_PCLS) != null) {
+				defaultPcls = (String) viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_LOADERIMG_PCLS);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getListBoxImageLoaderPcls  method :"+e);
@@ -602,7 +602,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		Configuration configuration = new Configuration();
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getImageVisibleConfiguration  method ");
-				configuration.setPropertyByName(ButtonFieldConstant.BF_VISIBLE, false);
+				configuration.setPropertyByName(ButtonFieldConstant.BC_VISIBLE, false);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getImageVisibleConfiguration  method :"+e);
 		}

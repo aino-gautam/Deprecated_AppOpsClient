@@ -16,16 +16,6 @@ public class EntityModel extends AppopsBaseModel {
 	private EntityReceiver receiver;
 	private Entity currentEntity;
 	
-	/**
-	 * instantiate a property model with a reference to the entity model and the property it binds to. 
-	 * @param prop
-	 * @return
-	 */
-	public PropertyModel getPropertyModel(Property prop){
-		PropertyModel propertyModel = new PropertyModel(this, prop);
-		return propertyModel;
-	}
-	
 	public void updateProperty(Property prop){
 		currentEntity.setProperty(prop);
 	}
@@ -89,11 +79,5 @@ public class EntityModel extends AppopsBaseModel {
 
 	public void setCurrentEntity(Entity entity) {
 		this.currentEntity = entity;
-	}
-
-	@Override
-	public void configure() {
-		// TODO Auto-generated method stub
-		
 	}
 }

@@ -1,7 +1,5 @@
 package in.appops.client.common.config.field;
 
-import in.appops.platform.core.shared.Configurable;
-
 import java.util.ArrayList;
 
 /**
@@ -12,17 +10,7 @@ import java.util.ArrayList;
  * 
  * @author nitish@ensarm.com
  */
-public interface Field extends Configurable {
-	
-	/**
-	 * Configure a field, apply possible configurations before creating it.
-	 */
-	void configure();
-	
-	/**
-	 *  Create the field.
-	 */
-	void create();
+public interface Field {
 	
 	/**
 	 * Sets data value to the field.

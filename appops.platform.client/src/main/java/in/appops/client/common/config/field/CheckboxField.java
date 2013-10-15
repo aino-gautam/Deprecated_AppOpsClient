@@ -51,9 +51,9 @@ public class CheckboxField extends BaseField implements ValueChangeHandler, Blur
 		String displayText = "";
 		try {
 			logger.log(Level.INFO, "[CheckboxField] ::In getDisplayText method ");
-			if(getConfigurationValue(CheckBoxFieldConstant.CF_DISPLAYTEXT) != null) {
+			if(viewConfiguration.getConfigurationValue(CheckBoxFieldConstant.CF_DISPLAYTEXT) != null) {
 				
-				displayText = (String) getConfigurationValue(CheckBoxFieldConstant.CF_DISPLAYTEXT);
+				displayText = (String) viewConfiguration.getConfigurationValue(CheckBoxFieldConstant.CF_DISPLAYTEXT);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[CheckboxField] ::Exception in getDisplayText method :"+e);
@@ -71,9 +71,9 @@ public class CheckboxField extends BaseField implements ValueChangeHandler, Blur
 		
 		try {
 			logger.log(Level.INFO, "[CheckboxField] ::In isFieldChecked method ");
-			if(getConfigurationValue(CheckBoxFieldConstant.CF_CHECKED) != null) {
+			if(viewConfiguration.getConfigurationValue(CheckBoxFieldConstant.CF_CHECKED) != null) {
 				
-				isChecked = (Boolean) getConfigurationValue(CheckBoxFieldConstant.CF_CHECKED);
+				isChecked = (Boolean) viewConfiguration.getConfigurationValue(CheckBoxFieldConstant.CF_CHECKED);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[CheckboxField] ::Exception in isFieldChecked method :"+e);
@@ -88,9 +88,9 @@ public class CheckboxField extends BaseField implements ValueChangeHandler, Blur
 	public String getGroupId(){
 		
 		String id = MULTI_SELECTION;
-		if(getConfigurationValue(CheckBoxFieldConstant.CF_GROUPID) != null) {
+		if(viewConfiguration.getConfigurationValue(CheckBoxFieldConstant.CF_GROUPID) != null) {
 			
-			id = (String) getConfigurationValue(CheckBoxFieldConstant.CF_GROUPID);
+			id = (String) viewConfiguration.getConfigurationValue(CheckBoxFieldConstant.CF_GROUPID);
 		}
 		return id;
 	}

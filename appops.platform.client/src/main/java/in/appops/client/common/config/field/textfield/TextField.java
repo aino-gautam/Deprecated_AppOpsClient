@@ -252,7 +252,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		try {
 			logger.log(Level.INFO,	"[TextField] ::In createNumericTextBox method ");
 			numericTextbox = new NumericTextbox(this);
-			numericTextbox.setConfiguration(getConfiguration());
+			numericTextbox.setConfiguration(viewConfiguration);
 			numericTextbox.setReadOnly(isReadOnly());
 			numericTextbox.setEnabled(isEnabled());
 			if (getBaseFieldPrimCss() != null)
@@ -581,9 +581,9 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			
 			logger.log(Level.INFO, "[TextField] ::In getEmailRegex method ");
 			String regexExp = TextFieldConstant.EMAIL_REGEX_EXP;
-			if(getConfiguration()!=null){
+			if(viewConfiguration.getConfigurationValue(TextFieldConstant.EMAIL_REGEX)!=null){
 				
-				regexExp =  getConfiguration().getPropertyByName(TextFieldConstant.EMAIL_REGEX);
+				regexExp =  viewConfiguration.getConfigurationValue(TextFieldConstant.EMAIL_REGEX).toString();
 				if(regexExp !=null){
 					return regexExp; 
 				}else{
@@ -624,8 +624,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		try {
 			
 			logger.log(Level.INFO, "[TextField] ::In getNoOfVisibleLines method ");
-			if (getConfigurationValue(TextFieldConstant.TF_VISLINES) != null) {
-				noOfVisibleLines = (Integer) getConfigurationValue(TextFieldConstant.TF_VISLINES);
+			if (viewConfiguration.getConfigurationValue(TextFieldConstant.TF_VISLINES) != null) {
+				noOfVisibleLines = (Integer) viewConfiguration.getConfigurationValue(TextFieldConstant.TF_VISLINES);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[TextField] ::Exception In getNoOfVisibleLines method "+e);
@@ -641,8 +641,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		String fieldType = TextFieldConstant.TFTYPE_TXTBOX;
 		try {
 			logger.log(Level.INFO, "[TextField] ::In getTextFieldType method ");
-			if (getConfigurationValue(TextFieldConstant.TF_TYPE) != null) {
-				fieldType = (String) getConfigurationValue(TextFieldConstant.TF_TYPE);
+			if (viewConfiguration.getConfigurationValue(TextFieldConstant.TF_TYPE) != null) {
+				fieldType = (String) viewConfiguration.getConfigurationValue(TextFieldConstant.TF_TYPE);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[TextField] ::Exception In getTextFieldType method "+e);
@@ -660,8 +660,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		Integer maxLength = 255;
 		try {
 			logger.log(Level.INFO, "[TextField] ::In getFieldMaxLength method ");
-			if (getConfigurationValue(TextFieldConstant.TF_MAXLENGTH) != null) {
-				maxLength = (Integer) getConfigurationValue(TextFieldConstant.TF_MAXLENGTH);
+			if (viewConfiguration.getConfigurationValue(TextFieldConstant.TF_MAXLENGTH) != null) {
+				maxLength = (Integer) viewConfiguration.getConfigurationValue(TextFieldConstant.TF_MAXLENGTH);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[TextField] ::Exception In getFieldMaxLength method "+e);
@@ -679,8 +679,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		Integer minLength = 6;
 		try {
 			logger.log(Level.INFO, "[TextField] ::In getMinLength method ");
-			if (getConfigurationValue(TextFieldConstant.TF_MINLENGTH) != null) {
-				minLength = (Integer) getConfigurationValue(TextFieldConstant.TF_MINLENGTH);
+			if (viewConfiguration.getConfigurationValue(TextFieldConstant.TF_MINLENGTH) != null) {
+				minLength = (Integer) viewConfiguration.getConfigurationValue(TextFieldConstant.TF_MINLENGTH);
 			}
 		} catch (Exception e) {
 		logger.log(Level.SEVERE, "[TextField] ::Exception In getMinLength method "+e);
@@ -696,8 +696,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		Boolean validate = false;
 		try {
 			logger.log(Level.INFO, "[TextField] ::In isValidateField method ");
-			if (getConfigurationValue(TextFieldConstant.VALIDATEFIELD) != null) {
-				validate = (Boolean) getConfigurationValue(TextFieldConstant.VALIDATEFIELD);
+			if (viewConfiguration.getConfigurationValue(TextFieldConstant.VALIDATEFIELD) != null) {
+				validate = (Boolean) viewConfiguration.getConfigurationValue(TextFieldConstant.VALIDATEFIELD);
 			}
 		} catch (Exception e) {
 		  logger.log(Level.SEVERE, "[TextField] ::Exception In isValidateField method "+e);
@@ -715,8 +715,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		Integer charWidth = 255;
 		try {
 			logger.log(Level.INFO, "[TextField] ::In getFieldCharWidth method ");
-			if (getConfigurationValue(TextFieldConstant.TF_CHARWIDTH) != null) {
-				charWidth = (Integer) getConfigurationValue(TextFieldConstant.TF_CHARWIDTH);
+			if (viewConfiguration.getConfigurationValue(TextFieldConstant.TF_CHARWIDTH) != null) {
+				charWidth = (Integer) viewConfiguration.getConfigurationValue(TextFieldConstant.TF_CHARWIDTH);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[TextField] ::Exception In getFieldCharWidth method "+e);
@@ -756,8 +756,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		String minValueText = "The minimum length for this field is "+ getMinLength();
 		try {
 			logger.log(Level.INFO, "[TextField] ::In getMinLengthErrorText method ");
-			if (getConfigurationValue(TextFieldConstant.MIN_LEGTH_ERROR_TEXT) != null) {
-				minValueText = (String) getConfigurationValue(TextFieldConstant.MIN_LEGTH_ERROR_TEXT);
+			if (viewConfiguration.getConfigurationValue(TextFieldConstant.MIN_LEGTH_ERROR_TEXT) != null) {
+				minValueText = (String) viewConfiguration.getConfigurationValue(TextFieldConstant.MIN_LEGTH_ERROR_TEXT);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[TextField] ::Exception In getMinLengthErrorText method "+e);
@@ -774,8 +774,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		String invalidEmailText = "Invalid email";
 		try {
 			logger.log(Level.INFO, "[TextField] ::In getInvalidEmailText method ");
-			if (getConfigurationValue(TextFieldConstant.INVALID_EMAIL_TEXT) != null) {
-				invalidEmailText = (String) getConfigurationValue(TextFieldConstant.INVALID_EMAIL_TEXT);
+			if (viewConfiguration.getConfigurationValue(TextFieldConstant.INVALID_EMAIL_TEXT) != null) {
+				invalidEmailText = (String) viewConfiguration.getConfigurationValue(TextFieldConstant.INVALID_EMAIL_TEXT);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[TextField] ::Exception In getInvalidEmailText method "+e);

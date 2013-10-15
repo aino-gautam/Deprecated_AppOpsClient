@@ -195,8 +195,8 @@ public class QueryThoughtField extends IntelliThoughtField implements FieldEvent
 		Entity serviceEnt = null;
 		try {
 			logger.log(Level.INFO, "[QueryThoughtField] ::In getServiceEntity method ");
-			if (getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_MAXCHARLEN) != null) {
-				serviceEnt = (Entity) getConfigurationValue(QueryThoughtFieldConstant.QRYTHOUGHT_SERVICE);
+			if (viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_MAXCHARLEN) != null) {
+				serviceEnt = (Entity) viewConfiguration.getConfigurationValue(QueryThoughtFieldConstant.QRYTHOUGHT_SERVICE);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[QueryThoughtField] ::Exception in getServiceEntity method :"+e);
@@ -208,8 +208,8 @@ public class QueryThoughtField extends IntelliThoughtField implements FieldEvent
 		Entity schemaEnt = null;
 		try {
 			logger.log(Level.INFO, "[QueryThoughtField] ::In getSchemaEntity method ");
-			if (getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_MAXCHARLEN) != null) {
-				schemaEnt = (Entity) getConfigurationValue(QueryThoughtFieldConstant.QRYTHOUGHT_SCHEMA);
+			if (viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_MAXCHARLEN) != null) {
+				schemaEnt = (Entity) viewConfiguration.getConfigurationValue(QueryThoughtFieldConstant.QRYTHOUGHT_SCHEMA);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[QueryThoughtField] ::Exception in getSchemaEntity method :"+e);

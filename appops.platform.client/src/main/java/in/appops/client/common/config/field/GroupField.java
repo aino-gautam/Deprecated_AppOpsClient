@@ -161,9 +161,9 @@ public class GroupField extends BaseField implements FieldEventHandler{
 		
 		try {
 			logger.log(Level.INFO, "[GroupField] ::In getGroupFieldAlignment method ");
-			if(getConfiguration()!=null){
+			if(viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_ALIGNMENT)!=null){
 				
-				String fieldBasePanel =  getConfiguration().getPropertyByName(GroupFieldConstant.GF_ALIGNMENT);
+				String fieldBasePanel =  viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_ALIGNMENT).toString();
 				if(fieldBasePanel !=null){
 					return fieldBasePanel; 
 				}else{
@@ -184,9 +184,9 @@ public class GroupField extends BaseField implements FieldEventHandler{
 	private String getGroupFieldType(){
 		try {
 			logger.log(Level.INFO, "[GroupField] ::In getGroupFieldType method ");
-			if(getConfiguration()!=null){
+			if(viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_TYPE)!=null){
 				
-				String fieldType =  getConfiguration().getPropertyByName(GroupFieldConstant.GF_TYPE);
+				String fieldType =  viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_TYPE).toString();
 				if(fieldType !=null){
 					return fieldType; 
 				}else{
@@ -348,9 +348,9 @@ public class GroupField extends BaseField implements FieldEventHandler{
 		
 		try {
 			logger.log(Level.INFO, "[GroupField] ::In getListOfItemsInGroupField method ");
-			if(getConfiguration()!=null){
+			if(viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_LIST_OF_ITEMS)!=null){
 				
-				ArrayList<String> listOfItems =  getConfiguration().getPropertyByName(GroupFieldConstant.GF_LIST_OF_ITEMS);
+				ArrayList<String> listOfItems =  (ArrayList<String>) viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_LIST_OF_ITEMS);
 				if(listOfItems !=null){
 					return listOfItems; 
 				}
@@ -370,9 +370,9 @@ public class GroupField extends BaseField implements FieldEventHandler{
 		
 		try {
 			logger.log(Level.INFO, "[GroupField] ::In getChildConfiguration method ");
-			if(getConfiguration()!=null){
+			if(viewConfiguration.getConfigurationValue(id)!=null){
 				
-				Configuration childConfig = getConfiguration().getPropertyByName(id);
+				Configuration childConfig = (Configuration) viewConfiguration.getConfigurationValue(id);
 				if(childConfig !=null){
 					return childConfig;
 				}else{
@@ -395,9 +395,9 @@ public class GroupField extends BaseField implements FieldEventHandler{
 		
 		try {
 			logger.log(Level.INFO, "[GroupField] ::In getFieldLimit method ");
-			if(getConfiguration()!=null){
+			if(viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_LIMIT)!=null){
 				
-				Integer limit =  getConfiguration().getPropertyByName(GroupFieldConstant.GF_LIMIT);
+				Integer limit =  (Integer) viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_LIMIT);
 				if(limit !=null){
 					return limit; 
 				}else{
@@ -417,9 +417,9 @@ public class GroupField extends BaseField implements FieldEventHandler{
 	public String getGroupId(){
 		
 		String name = "groupId";
-		if(getConfigurationValue(GroupFieldConstant.GF_ID) != null) {
+		if(viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_ID) != null) {
 			
-			name = (String) getConfigurationValue(GroupFieldConstant.GF_ID);
+			name = (String) viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_ID);
 		}
 		return name;
 	}

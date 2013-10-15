@@ -180,8 +180,8 @@ public class StateField extends BaseField implements FieldEventHandler {
 		Boolean isStatic = false;
 		try {
 			logger.log(Level.INFO, "[StateField] ::In isStaticSuggestionBox method ");
-			if(getConfigurationValue(StateFieldConstant.IS_STATIC_BOX) != null) {
-				isStatic =(Boolean) getConfigurationValue(StateFieldConstant.IS_STATIC_BOX);
+			if(viewConfiguration.getConfigurationValue(StateFieldConstant.IS_STATIC_BOX) != null) {
+				isStatic =(Boolean) viewConfiguration.getConfigurationValue(StateFieldConstant.IS_STATIC_BOX);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in isStaticSuggestionBox method :"+e);
@@ -197,8 +197,8 @@ public class StateField extends BaseField implements FieldEventHandler {
 		Integer maxResult = 10;
 		try {
 			logger.log(Level.INFO, "[StateField] ::In getQueryMaxResult method ");
-			if(getConfigurationValue(StateFieldConstant.STFD_QUERY_MAXRESULT) != null) {
-				maxResult =(Integer) getConfigurationValue(StateFieldConstant.STFD_QUERY_MAXRESULT);
+			if(viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_QUERY_MAXRESULT) != null) {
+				maxResult =(Integer) viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_QUERY_MAXRESULT);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in getQueryMaxResult method :"+e);
@@ -214,8 +214,8 @@ public class StateField extends BaseField implements FieldEventHandler {
 		ArrayList<String> listOfItems = null;
 		try {
 			logger.log(Level.INFO, "[StateField] ::In getFieldItemList method ");
-			if(getConfigurationValue(StateFieldConstant.ITEMS_LIST) != null) {
-				listOfItems = (ArrayList<String>) getConfigurationValue(StateFieldConstant.ITEMS_LIST);
+			if(viewConfiguration.getConfigurationValue(StateFieldConstant.ITEMS_LIST) != null) {
+				listOfItems = (ArrayList<String>) viewConfiguration.getConfigurationValue(StateFieldConstant.ITEMS_LIST);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in getFieldItemList method :"+e);
@@ -232,8 +232,8 @@ public class StateField extends BaseField implements FieldEventHandler {
 		HashMap<String, Object> queryRestrictions = null;
 		try {
 			logger.log(Level.INFO, "[StateField] ::In getQueryRestrictions method ");
-			if(getConfigurationValue(StateFieldConstant.STFD_QUERY_RESTRICTION) != null) {
-				queryRestrictions =  (HashMap<String, Object>) getConfigurationValue(StateFieldConstant.STFD_QUERY_RESTRICTION);
+			if(viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_QUERY_RESTRICTION) != null) {
+				queryRestrictions =  (HashMap<String, Object>) viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_QUERY_RESTRICTION);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in getQueryRestrictions method :"+e);
@@ -249,8 +249,8 @@ public class StateField extends BaseField implements FieldEventHandler {
 		String queryname = null;
 		try {
 			logger.log(Level.INFO, "[StateField] ::In getQueryName method ");
-			if(getConfigurationValue(StateFieldConstant.STFD_QUERYNAME) != null) {
-				queryname =(String) getConfigurationValue(StateFieldConstant.STFD_QUERYNAME);
+			if(viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_QUERYNAME) != null) {
+				queryname =(String) viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_QUERYNAME);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in getQueryName method :"+e);
@@ -266,8 +266,8 @@ public class StateField extends BaseField implements FieldEventHandler {
 		String entprop = null;
 		try {
 			logger.log(Level.INFO, "[StateField] ::In getEntPropToDisplay method ");
-			if(getConfigurationValue(StateFieldConstant.STFD_ENTPROP) != null) {
-				entprop = (String) getConfigurationValue(StateFieldConstant.STFD_ENTPROP);
+			if(viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_ENTPROP) != null) {
+				entprop = (String) viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_ENTPROP);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in getEntPropToDisplay method :"+e);
@@ -284,8 +284,8 @@ public class StateField extends BaseField implements FieldEventHandler {
 		String operation = null;
 		try {
 			logger.log(Level.INFO, "[StateField] ::In getOperationName method ");
-			if(getConfigurationValue(StateFieldConstant.STFD_OPRTION) != null) {
-				operation =(String) getConfigurationValue(StateFieldConstant.STFD_OPRTION);
+			if(viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_OPRTION) != null) {
+				operation =(String) viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_OPRTION);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in getOperationName method :"+e);
@@ -301,8 +301,8 @@ public class StateField extends BaseField implements FieldEventHandler {
 		Boolean isautoSuggetion = true;
 		try {
 			logger.log(Level.INFO, "[StateField] ::In isAutosuggestion method ");
-			if(getConfigurationValue(StateFieldConstant.IS_AUTOSUGGESTION) != null) {
-				isautoSuggetion =(Boolean) getConfigurationValue(StateFieldConstant.IS_AUTOSUGGESTION);
+			if(viewConfiguration.getConfigurationValue(StateFieldConstant.IS_AUTOSUGGESTION) != null) {
+				isautoSuggetion =(Boolean) viewConfiguration.getConfigurationValue(StateFieldConstant.IS_AUTOSUGGESTION);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in isAutosuggestion method :"+e);
@@ -318,8 +318,8 @@ public class StateField extends BaseField implements FieldEventHandler {
 		Boolean isSearchQuery = false;
 		try {
 			logger.log(Level.INFO, "[StateField] ::In isSearchQuery method ");
-			if(getConfigurationValue(StateFieldConstant.IS_SEARCH_QUERY) != null) {
-				isSearchQuery =(Boolean) getConfigurationValue(StateFieldConstant.IS_SEARCH_QUERY);
+			if(viewConfiguration.getConfigurationValue(StateFieldConstant.IS_SEARCH_QUERY) != null) {
+				isSearchQuery =(Boolean) viewConfiguration.getConfigurationValue(StateFieldConstant.IS_SEARCH_QUERY);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in isSearchQuery method :"+e);

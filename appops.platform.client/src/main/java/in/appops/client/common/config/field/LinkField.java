@@ -205,8 +205,8 @@ public class LinkField extends BaseField implements ClickHandler{
 		String linkType = LinkFieldConstant.LNKTYPE_ANCHOR;
 		try {
 			logger.log(Level.INFO, "[LinkField] ::In getLinkType method ");
-			if (getConfigurationValue(LinkFieldConstant.LNK_TYPE) != null) {
-				linkType = getConfigurationValue(LinkFieldConstant.LNK_TYPE).toString();
+			if (viewConfiguration.getConfigurationValue(LinkFieldConstant.LNK_TYPE) != null) {
+				linkType = viewConfiguration.getConfigurationValue(LinkFieldConstant.LNK_TYPE).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[LinkField] ::Exception in getLinkType method :"+e);
@@ -222,14 +222,14 @@ public class LinkField extends BaseField implements ClickHandler{
 		String displayTxt = "";
 		try {
 			logger.log(Level.INFO, "[LinkField] ::In getDisplayText method ");
-			if (getConfigurationValue(LinkFieldConstant.LNK_DISPLAYTEXT) != null) {
-				displayTxt = getConfigurationValue(LinkFieldConstant.LNK_DISPLAYTEXT).toString();
+			if (viewConfiguration.getConfigurationValue(LinkFieldConstant.LNK_DISPLAYTEXT) != null) {
+				displayTxt = viewConfiguration.getConfigurationValue(LinkFieldConstant.LNK_DISPLAYTEXT).toString();
 			}
 			else{
 				if(getEntity()!=null){
-					if(getConfigurationValue(LinkFieldConstant.BF_BINDPROP) != null)
-						if(getEntity().getPropertyByName( getConfigurationValue(LinkFieldConstant.BF_BINDPROP).toString()) != null)
-							displayTxt = getEntity().getPropertyByName( getConfigurationValue(LinkFieldConstant.BF_BINDPROP).toString()).toString();
+					if(viewConfiguration.getConfigurationValue(LinkFieldConstant.BF_BINDPROP) != null)
+						if(getEntity().getPropertyByName( viewConfiguration.getConfigurationValue(LinkFieldConstant.BF_BINDPROP).toString()) != null)
+							displayTxt = getEntity().getPropertyByName( viewConfiguration.getConfigurationValue(LinkFieldConstant.BF_BINDPROP).toString()).toString();
 				}
 			}
 		} catch (Exception e) {
@@ -246,8 +246,8 @@ public class LinkField extends BaseField implements ClickHandler{
 		String linkTitle = null;
 		try {
 			logger.log(Level.INFO, "[LinkField] ::In getLinkTitle method ");
-			if (getConfigurationValue(LinkFieldConstant.LNK_TITLE) != null) {
-				linkTitle = getConfigurationValue(LinkFieldConstant.LNK_TITLE).toString();
+			if (viewConfiguration.getConfigurationValue(LinkFieldConstant.LNK_TITLE) != null) {
+				linkTitle = viewConfiguration.getConfigurationValue(LinkFieldConstant.LNK_TITLE).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[LinkField] ::Exception in getLinkTitle method :"+e);
@@ -263,8 +263,8 @@ public class LinkField extends BaseField implements ClickHandler{
 		String historyToken = null;
 		try {
 			logger.log(Level.INFO, "[LinkField] ::In getTargetHistoryToken method ");
-			if (getConfigurationValue(LinkFieldConstant.LNK_HISTORYTOKEN) != null) {
-				historyToken = getConfigurationValue(LinkFieldConstant.LNK_HISTORYTOKEN).toString();
+			if (viewConfiguration.getConfigurationValue(LinkFieldConstant.LNK_HISTORYTOKEN) != null) {
+				historyToken = viewConfiguration.getConfigurationValue(LinkFieldConstant.LNK_HISTORYTOKEN).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[LinkField] ::Exception in getTargetHistoryToken method :"+e);
@@ -280,8 +280,8 @@ public class LinkField extends BaseField implements ClickHandler{
 		String href = null;
 		try {
 			logger.log(Level.INFO, "[LinkField] ::In getHref method ");
-			if (getConfigurationValue(LinkFieldConstant.LNK_HREF) != null) {
-				href = getConfigurationValue(LinkFieldConstant.LNK_HREF).toString();
+			if (viewConfiguration.getConfigurationValue(LinkFieldConstant.LNK_HREF) != null) {
+				href = viewConfiguration.getConfigurationValue(LinkFieldConstant.LNK_HREF).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[LinkField] ::Exception in getHref method :"+e);
@@ -297,8 +297,8 @@ public class LinkField extends BaseField implements ClickHandler{
 		String targetFrm = null;
 		try {
 			logger.log(Level.INFO, "[LinkField] ::In getTargetFrame method ");
-			if (getConfigurationValue(LinkFieldConstant.LNK_TARGET_FRAME) != null) {
-				targetFrm = getConfigurationValue(LinkFieldConstant.LNK_TARGET_FRAME).toString();
+			if (viewConfiguration.getConfigurationValue(LinkFieldConstant.LNK_TARGET_FRAME) != null) {
+				targetFrm = viewConfiguration.getConfigurationValue(LinkFieldConstant.LNK_TARGET_FRAME).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[LinkField] ::Exception in getTargetFrame method :"+e);

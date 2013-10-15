@@ -55,9 +55,9 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler, B
 		String displayText = "";
 		try {
 			logger.log(Level.INFO, "[RadioButtonField] ::In getDisplayText method ");
-			if(getConfigurationValue(RadionButtonFieldConstant.RF_DISPLAYTEXT) != null) {
+			if(viewConfiguration.getConfigurationValue(RadionButtonFieldConstant.RF_DISPLAYTEXT) != null) {
 				
-				displayText = (String) getConfigurationValue(RadionButtonFieldConstant.RF_DISPLAYTEXT);
+				displayText = (String) viewConfiguration.getConfigurationValue(RadionButtonFieldConstant.RF_DISPLAYTEXT);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[RadioButtonField] ::Exception in getDisplayText method :"+e);
@@ -73,9 +73,9 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler, B
 		
 		String name = SINGLE_SELECTION;
 		
-		if(getConfigurationValue(RadionButtonFieldConstant.RF_GROUPID) != null) {
+		if(viewConfiguration.getConfigurationValue(RadionButtonFieldConstant.RF_GROUPID) != null) {
 			
-			name = (String) getConfigurationValue(RadionButtonFieldConstant.RF_GROUPID);
+			name = (String) viewConfiguration.getConfigurationValue(RadionButtonFieldConstant.RF_GROUPID);
 		}
 		return name;
 	}
@@ -90,9 +90,9 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler, B
 		
 		try {
 			logger.log(Level.INFO, "[RadioButtonField] ::In isFieldChecked method ");
-			if(getConfigurationValue(RadionButtonFieldConstant.RF_CHECKED) != null) {
+			if(viewConfiguration.getConfigurationValue(RadionButtonFieldConstant.RF_CHECKED) != null) {
 				
-				isChecked = (Boolean) getConfigurationValue(RadionButtonFieldConstant.RF_CHECKED);
+				isChecked = (Boolean) viewConfiguration.getConfigurationValue(RadionButtonFieldConstant.RF_CHECKED);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[RadioButtonField] ::Exception in isFieldChecked method :"+e);

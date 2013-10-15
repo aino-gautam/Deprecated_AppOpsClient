@@ -496,8 +496,8 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 		String maxCharLength = null;
 		try {
 			logger.log(Level.INFO, "[IntelliThoughtField] ::In getMaxCharLengh method ");
-			if (getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_MAXCHARLEN) != null) {
-				maxCharLength = getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_MAXCHARLEN).toString();
+			if (viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_MAXCHARLEN) != null) {
+				maxCharLength = viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_MAXCHARLEN).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[IntelliThoughtField] ::Exception in getMaxCharLengh method :"+e);
@@ -513,8 +513,8 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 		String isContentEditable = "true";
 		try {
 			logger.log(Level.INFO, "[IntelliThoughtField] ::In isContentEditable method ");
-			if (getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_CONTENTEDITABLE) != null) {
-				isContentEditable = getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_CONTENTEDITABLE).toString();
+			if (viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_CONTENTEDITABLE) != null) {
+				isContentEditable = viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_CONTENTEDITABLE).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[IntelliThoughtField] ::Exception in isContentEditable method :"+e);
@@ -530,9 +530,9 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 		Boolean isFireThreeCharEnteredEvent = true;
 		try {
 			logger.log(Level.INFO, "[IntelliThoughtField] ::In isFireThreeCharEnteredEvent method ");
-			if (getConfigurationValue(IntelliThoughtFieldConstant.FIRE_THREECHARENTERED_EVENT) != null) {
+			if (viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.FIRE_THREECHARENTERED_EVENT) != null) {
 				
-				isFireThreeCharEnteredEvent = Boolean.parseBoolean(getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_CONTENTEDITABLE).toString());
+				isFireThreeCharEnteredEvent = Boolean.parseBoolean(viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_CONTENTEDITABLE).toString());
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[IntelliThoughtField] ::Exception in isFireThreeCharEnteredEvent method :"+e);
@@ -548,9 +548,9 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 		Boolean isFireWordEnteredEvent = true;
 		try {
 			logger.log(Level.INFO, "[IntelliThoughtField] ::In isFireWordEnteredEvent method ");
-			if (getConfigurationValue(IntelliThoughtFieldConstant.FIRE_THREECHARENTERED_EVENT) != null) {
+			if (viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.FIRE_THREECHARENTERED_EVENT) != null) {
 				
-				isFireWordEnteredEvent = Boolean.parseBoolean(getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_CONTENTEDITABLE).toString());
+				isFireWordEnteredEvent = Boolean.parseBoolean(viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_CONTENTEDITABLE).toString());
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[IntelliThoughtField] ::Exception in isFireWordEnteredEvent method :"+e);
@@ -566,9 +566,9 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 		Boolean isFireEditInitatedEvent = true;
 		try {
 			logger.log(Level.INFO, "[IntelliThoughtField] ::In isFireEditInitatedEvent method ");
-			if (getConfigurationValue(IntelliThoughtFieldConstant.FIRE_THREECHARENTERED_EVENT) != null) {
+			if (viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.FIRE_THREECHARENTERED_EVENT) != null) {
 				
-				isFireEditInitatedEvent = Boolean.parseBoolean(getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_CONTENTEDITABLE).toString());
+				isFireEditInitatedEvent = Boolean.parseBoolean(viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_CONTENTEDITABLE).toString());
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[IntelliThoughtField] ::Exception in isFireEditInitatedEvent method :"+e);
@@ -584,8 +584,8 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 		String query = null;
 		try {
 			logger.log(Level.INFO,"[IntelliThoughtField]:: In getQueryName  method ");
-			if(getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_QUERYNAME) != null) {
-				query = (String) getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_QUERYNAME);
+			if(viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_QUERYNAME) != null) {
+				query = (String) viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_QUERYNAME);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[IntelliThoughtField]::Exception In getQueryName  method :"+e);
@@ -601,8 +601,8 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 		String entprop = null;
 		try {
 			logger.log(Level.INFO,"[IntelliThoughtField]:: In getEntPropToDisplay  method ");
-			if(getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_ENTPROP) != null) {
-				entprop = (String) getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_ENTPROP);
+			if(viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_ENTPROP) != null) {
+				entprop = (String) viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_ENTPROP);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[IntelliThoughtField]::Exception In getEntPropToDisplay  method :"+e);
@@ -618,8 +618,8 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 		Integer maxResult = 10;
 		try {
 			logger.log(Level.INFO,"[IntelliThoughtField]:: In getQueryMaxResult  method ");
-			if(getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_QUERY_MAXRESULT) != null) {
-				maxResult =(Integer) getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_QUERY_MAXRESULT);
+			if(viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_QUERY_MAXRESULT) != null) {
+				maxResult =(Integer) viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_QUERY_MAXRESULT);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[IntelliThoughtField]::Exception In getQueryMaxResult  method :"+e);
@@ -635,8 +635,8 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 		String operation = null;
 		try {
 			logger.log(Level.INFO,"[IntelliThoughtField]:: In getOperationName  method ");
-			if(getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_OPRTION) != null) {
-				operation =(String) getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_OPRTION);
+			if(viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_OPRTION) != null) {
+				operation =(String) viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_OPRTION);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[IntelliThoughtField]::Exception In getOperationName  method :"+e);
@@ -653,8 +653,8 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 		String primaryCss = "appops-LinkField";
 		try {
 			logger.log(Level.INFO,"[IntelliThoughtField]:: In getLinkedSuggestionPrimaryCss  method ");
-			if(getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_LNKSUGGESTION_PCLS) != null) {
-				primaryCss = getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_LNKSUGGESTION_PCLS).toString();
+			if(viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_LNKSUGGESTION_PCLS) != null) {
+				primaryCss = viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_LNKSUGGESTION_PCLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[IntelliThoughtField]::Exception In getLinkedSuggestionPrimaryCss  method :"+e);
@@ -672,8 +672,8 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 		String primaryCss = "appops-intelliThoughtSuggestionLabel";
 		try {
 			logger.log(Level.INFO,"[IntelliThoughtField]:: In getSuggestionLblPrimaryCss  method ");
-			if(getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_SUGGESTIONLBL_PCLS) != null) {
-				primaryCss = getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_SUGGESTIONLBL_PCLS).toString();
+			if(viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_SUGGESTIONLBL_PCLS) != null) {
+				primaryCss = viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_SUGGESTIONLBL_PCLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[IntelliThoughtField]::Exception In getSuggestionLblPrimaryCss  method :"+e);
@@ -691,8 +691,8 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 		String primaryCss = "appops-intelliThoughtLinkedSuggestionPopup";
 		try {
 			logger.log(Level.INFO,"[IntelliThoughtField]:: In getLinkedSuggestionPopupCss  method ");
-			if(getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_SUGGESTIONPOPUP_PCLS) != null) {
-				primaryCss = getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_SUGGESTIONPOPUP_PCLS).toString();
+			if(viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_SUGGESTIONPOPUP_PCLS) != null) {
+				primaryCss = viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_SUGGESTIONPOPUP_PCLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[IntelliThoughtField]::Exception In getLinkedSuggestionPopupCss  method :"+e);
@@ -710,8 +710,8 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 		String primaryCss = "appops-intelliThoughtSuggestionSelection";
 		try {
 			logger.log(Level.INFO,"[IntelliThoughtField]:: In getSuggestionHoverCss  method ");
-			if(getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_SUGGESTION_HOVER_PCLS) != null) {
-				primaryCss = getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_SUGGESTION_HOVER_PCLS).toString();
+			if(viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_SUGGESTION_HOVER_PCLS) != null) {
+				primaryCss = viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_SUGGESTION_HOVER_PCLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[IntelliThoughtField]::Exception In getSuggestionHoverCss  method :"+e);
@@ -728,8 +728,8 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 		String blobId = "images/opptinLoader.gif";
 		try {
 			logger.log(Level.INFO, "[ImageField] ::In getSuggestionLoaderBlobId method ");
-			if (getConfigurationValue(ImageFieldConstant.IMGFD_BLOBID) != null) {
-				blobId = getConfigurationValue(ImageFieldConstant.IMGFD_BLOBID).toString();
+			if (viewConfiguration.getConfigurationValue(ImageFieldConstant.IMGFD_BLOBID) != null) {
+				blobId = viewConfiguration.getConfigurationValue(ImageFieldConstant.IMGFD_BLOBID).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[IntelliThoughtField]::Exception In getSuggestionLoaderBlobId  method :"+e);
@@ -746,8 +746,8 @@ public class IntelliThoughtField extends BaseField implements HasText, HasHTML, 
 		String primaryCss = "appops-intelliThoughtActionImage";
 		try {
 			logger.log(Level.INFO,"[IntelliThoughtField]:: In getLoaderImagePrimCss  method ");
-			if(getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_LOADERIMG_PCLS) != null) {
-				primaryCss = getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_LOADERIMG_PCLS).toString();
+			if(viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_LOADERIMG_PCLS) != null) {
+				primaryCss = viewConfiguration.getConfigurationValue(IntelliThoughtFieldConstant.INTLTHT_LOADERIMG_PCLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[IntelliThoughtField]::Exception In getLoaderImagePrimCss  method :"+e);

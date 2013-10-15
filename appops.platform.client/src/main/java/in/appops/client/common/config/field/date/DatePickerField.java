@@ -75,7 +75,7 @@ public class DatePickerField  extends BaseField implements ClickHandler {
 	}
 	
 	@Override
-	protected void initialize() {
+	public void initialize() {
 		super.initialize();
 		dtPickFieldBase = new HorizontalPanel();
 		dtPickBox=new TextBox();
@@ -127,8 +127,8 @@ public class DatePickerField  extends BaseField implements ClickHandler {
 		String format = "dd/MM/yyyy";
 		try {
 			logger.log(Level.INFO,"[DatePickerField]:: In getFormat  method ");
-			if(getConfigurationValue(DatePickerConstant.DP_FORMAT) != null) {
-				format = getConfigurationValue(DatePickerConstant.DP_FORMAT).toString();
+			if(viewConfiguration.getConfigurationValue(DatePickerConstant.DP_FORMAT) != null) {
+				format = viewConfiguration.getConfigurationValue(DatePickerConstant.DP_FORMAT).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[DatePickerField]::Exception In getFormat  method :"+e);
@@ -284,8 +284,8 @@ public class DatePickerField  extends BaseField implements ClickHandler {
 	protected String getDatePickFieldPrimCss() {
 		logger.log(Level.INFO,"[DatePickerField]:: In getDatePickFieldPrimCss  method ");
 		String primaryCss = "appops-dtPickFieldPrim";
-//		if(getConfigurationValue(SpinnerConfigurationConstant.SPINNER_PRIMARYCSS) != null) {
-//			primaryCss = getConfigurationValue(SpinnerConfigurationConstant.SPINNER_PRIMARYCSS).toString();
+//		if(viewConfiguration.getConfigurationValue(SpinnerConfigurationConstant.SPINNER_PRIMARYCSS) != null) {
+//			primaryCss = viewConfiguration.getConfigurationValue(SpinnerConfigurationConstant.SPINNER_PRIMARYCSS).toString();
 //		}
 		return primaryCss;
 	}
@@ -298,8 +298,8 @@ public class DatePickerField  extends BaseField implements ClickHandler {
 	protected String getDatePickFieldDepCss() {
 		logger.log(Level.INFO,"[DatePickerField]:: In getDatePickFieldDepCss  method ");
 		String depCss = "appops-dtPickFieldDep";
-//		if(getConfigurationValue(SpinnerConfigurationConstant.SPINNER_DEPENDENTCSS) != null) {
-//			depCss = getConfigurationValue(SpinnerConfigurationConstant.SPINNER_DEPENDENTCSS).toString();
+//		if(viewConfiguration.getConfigurationValue(SpinnerConfigurationConstant.SPINNER_DEPENDENTCSS) != null) {
+//			depCss = viewConfiguration.getConfigurationValue(SpinnerConfigurationConstant.SPINNER_DEPENDENTCSS).toString();
 //		}
 		return depCss;
 	}
@@ -312,8 +312,8 @@ public class DatePickerField  extends BaseField implements ClickHandler {
 	protected String getDatePickBoxPrimCss() {
 		logger.log(Level.INFO,"[DatePickerField]:: In getDatePickBoxPrimCss  method ");
 		String primaryCss = "appops-SpinnerBoxPrimary";
-//		if(getConfigurationValue(SpinnerConfigurationConstant.BOX_PRIMARYCSS) != null) {
-//			primaryCss = getConfigurationValue(SpinnerConfigurationConstant.BOX_PRIMARYCSS).toString();
+//		if(viewConfiguration.getConfigurationValue(SpinnerConfigurationConstant.BOX_PRIMARYCSS) != null) {
+//			primaryCss = viewConfiguration.getConfigurationValue(SpinnerConfigurationConstant.BOX_PRIMARYCSS).toString();
 //		}
 		return primaryCss;
 	}
@@ -326,8 +326,8 @@ public class DatePickerField  extends BaseField implements ClickHandler {
 	protected String getDatePickBoxDepCss() {
 		logger.log(Level.INFO,"[DatePickerField]:: In getDatePickBoxDepCss  method ");
 		String dependentCss = "appops-dtPickBoxDep";
-//		if(getConfigurationValue(SpinnerConfigurationConstant.BOX_DEPENDENTCSS) != null) {
-//			dependentCss = getConfigurationValue(SpinnerConfigurationConstant.BOX_DEPENDENTCSS).toString();
+//		if(viewConfiguration.getConfigurationValue(SpinnerConfigurationConstant.BOX_DEPENDENTCSS) != null) {
+//			dependentCss = viewConfiguration.getConfigurationValue(SpinnerConfigurationConstant.BOX_DEPENDENTCSS).toString();
 //		}
 		return dependentCss;
 	}
@@ -337,8 +337,8 @@ public class DatePickerField  extends BaseField implements ClickHandler {
 		boolean allowblank = false; 
 		try {
 			logger.log(Level.INFO,"[DatePickerField]:: In isAllowBlank  method ");
-			if(getConfigurationValue(DatePickerConstant.DP_ALLOWBLNK) != null) {
-				allowblank = (Boolean)getConfigurationValue(DatePickerConstant.DP_ALLOWBLNK);
+			if(viewConfiguration.getConfigurationValue(DatePickerConstant.DP_ALLOWBLNK) != null) {
+				allowblank = (Boolean)viewConfiguration.getConfigurationValue(DatePickerConstant.DP_ALLOWBLNK);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[DatePickerField]::Exception In isAllowBlank  method :"+e);
@@ -401,8 +401,8 @@ public class DatePickerField  extends BaseField implements ClickHandler {
 		try {
 			logger.log(Level.INFO,"[DatePickerField]:: In getMinDate  method ");
 			Date minDate = null;
-			if(getConfigurationValue(DatePickerConstant.DP_MINDATE) != null) {
-				String minDateStr =  getConfigurationValue(DatePickerConstant.DP_MINDATE).toString();
+			if(viewConfiguration.getConfigurationValue(DatePickerConstant.DP_MINDATE) != null) {
+				String minDateStr =  viewConfiguration.getConfigurationValue(DatePickerConstant.DP_MINDATE).toString();
 				minDate = parseDate(minDateStr);
 				if(minDate != null) {
 					min = minDate;
@@ -419,8 +419,8 @@ public class DatePickerField  extends BaseField implements ClickHandler {
 		try {
 			logger.log(Level.INFO,"[DatePickerField]:: In getMaxDate  method ");
 			Date maxDate = null;
-			if(getConfigurationValue(DatePickerConstant.DP_MAXDATE) != null) {
-				String maxDateStr =  getConfigurationValue(DatePickerConstant.DP_MAXDATE).toString();
+			if(viewConfiguration.getConfigurationValue(DatePickerConstant.DP_MAXDATE) != null) {
+				String maxDateStr =  viewConfiguration.getConfigurationValue(DatePickerConstant.DP_MAXDATE).toString();
 				maxDate = parseDate(maxDateStr);
 				if(maxDate !=  null) {
 					max = maxDate;
@@ -436,8 +436,8 @@ public class DatePickerField  extends BaseField implements ClickHandler {
 		String minMsg = "The date in the field should be equal or after " + format(getMinDate(), getFormat());
 		try {
 			logger.log(Level.INFO,"[DatePickerField]:: In getMinErrMsg  method ");
-			if(getConfigurationValue(DatePickerConstant.DP_ERRMSGMIN) != null) {
-				minMsg = getConfigurationValue(DatePickerConstant.DP_ERRMSGMIN).toString();
+			if(viewConfiguration.getConfigurationValue(DatePickerConstant.DP_ERRMSGMIN) != null) {
+				minMsg = viewConfiguration.getConfigurationValue(DatePickerConstant.DP_ERRMSGMIN).toString();
 			}
 		} catch (Exception e) {
 			
@@ -450,8 +450,8 @@ public class DatePickerField  extends BaseField implements ClickHandler {
 		String maxMsg = "The date in the field should be equal or before " + format(getMaxDate(), getFormat());
 		try {
 			logger.log(Level.INFO,"[DatePickerField]:: In getMaxErrMsg  method ");
-			if(getConfigurationValue(DatePickerConstant.DP_ERRMSGMAX) != null) {
-				maxMsg = getConfigurationValue(DatePickerConstant.DP_ERRMSGMAX).toString();
+			if(viewConfiguration.getConfigurationValue(DatePickerConstant.DP_ERRMSGMAX) != null) {
+				maxMsg = viewConfiguration.getConfigurationValue(DatePickerConstant.DP_ERRMSGMAX).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[DatePickerField]::Exception In getMaxErrMsg  method :"+e);
@@ -463,8 +463,8 @@ public class DatePickerField  extends BaseField implements ClickHandler {
 		String blnkMsg = "This field is required";
 		try {
 			logger.log(Level.INFO,"[DatePickerField]:: In getBlankErrMsg  method ");
-			if(getConfigurationValue(DatePickerConstant.DP_ERRMSGBLNK) != null) {
-				blnkMsg = getConfigurationValue(DatePickerConstant.DP_ERRMSGBLNK).toString();
+			if(viewConfiguration.getConfigurationValue(DatePickerConstant.DP_ERRMSGBLNK) != null) {
+				blnkMsg = viewConfiguration.getConfigurationValue(DatePickerConstant.DP_ERRMSGBLNK).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[DatePickerField]::Exception In getBlankErrMsg  method :"+e);
@@ -497,8 +497,8 @@ public class DatePickerField  extends BaseField implements ClickHandler {
 		String invalidMsg = getFieldValue() + " is not a valid date. It must be in the format " + getFormat();
 		try {
 			logger.log(Level.INFO,"[DatePickerField]:: In getInvalidMsg  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_INVLDMSG) != null) {
-				invalidMsg = getConfigurationValue(BaseFieldConstant.BF_INVLDMSG).toString();
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_INVLDMSG) != null) {
+				invalidMsg = viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_INVLDMSG).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[DatePickerField]::Exception In getInvalidMsg  method :"+e);

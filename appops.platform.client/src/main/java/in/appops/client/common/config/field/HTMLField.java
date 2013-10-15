@@ -70,8 +70,8 @@ public class HTMLField extends BaseField implements ClickHandler  {
 	
 	private String getHTMLFieldCss() {
 		String depCss = null;
-		if(getConfigurationValue(HTMLFieldConstant.LBLFD_FCSS) != null) {
-			depCss = getConfigurationValue(HTMLFieldConstant.LBLFD_FCSS).toString();
+		if(viewConfiguration.getConfigurationValue(HTMLFieldConstant.LBLFD_FCSS) != null) {
+			depCss = viewConfiguration.getConfigurationValue(HTMLFieldConstant.LBLFD_FCSS).toString();
 		}
 		return depCss;
 	}
@@ -84,9 +84,9 @@ public class HTMLField extends BaseField implements ClickHandler  {
 	private String getDisplayText() {
 		
 		String displayTxt = "";
-		if(getConfigurationValue(HTMLFieldConstant.LBLFD_DISPLAYTXT) != null) {
+		if(viewConfiguration.getConfigurationValue(HTMLFieldConstant.LBLFD_DISPLAYTXT) != null) {
 			
-			displayTxt = getConfigurationValue(HTMLFieldConstant.LBLFD_DISPLAYTXT).toString();
+			displayTxt = viewConfiguration.getConfigurationValue(HTMLFieldConstant.LBLFD_DISPLAYTXT).toString();
 		}
 		return displayTxt;
 	}
@@ -98,9 +98,9 @@ public class HTMLField extends BaseField implements ClickHandler  {
 	private String getLblTitle() {
 		
 		String title = "";
-		if(getConfigurationValue(HTMLFieldConstant.LBLFD_TITLE) != null) {
+		if(viewConfiguration.getConfigurationValue(HTMLFieldConstant.LBLFD_TITLE) != null) {
 			
-			title = getConfigurationValue(HTMLFieldConstant.LBLFD_TITLE).toString();
+			title = viewConfiguration.getConfigurationValue(HTMLFieldConstant.LBLFD_TITLE).toString();
 		}
 		return title;
 	}
@@ -113,9 +113,9 @@ public class HTMLField extends BaseField implements ClickHandler  {
 		
 		Boolean isWordWrap = false;
 		
-		if(getConfigurationValue(HTMLFieldConstant.LBLFD_ISWORDWRAP) != null) {
+		if(viewConfiguration.getConfigurationValue(HTMLFieldConstant.LBLFD_ISWORDWRAP) != null) {
 			
-			isWordWrap = (Boolean) getConfigurationValue(HTMLFieldConstant.LBLFD_ISWORDWRAP);
+			isWordWrap = (Boolean) viewConfiguration.getConfigurationValue(HTMLFieldConstant.LBLFD_ISWORDWRAP);
 		}
 		return isWordWrap;
 	}
@@ -138,8 +138,8 @@ public class HTMLField extends BaseField implements ClickHandler  {
 		
 		Boolean isLimitLines = false;
 		
-		if(getConfigurationValue(HTMLFieldConstant.LIMIT_HTMLFIELD_MODE) != null) {
-			isLimitLines = (Boolean) getConfigurationValue(HTMLFieldConstant.LIMIT_HTMLFIELD_MODE);
+		if(viewConfiguration.getConfigurationValue(HTMLFieldConstant.LIMIT_HTMLFIELD_MODE) != null) {
+			isLimitLines = (Boolean) viewConfiguration.getConfigurationValue(HTMLFieldConstant.LIMIT_HTMLFIELD_MODE);
 		}
 		return isLimitLines;
 	}
@@ -162,8 +162,8 @@ public class HTMLField extends BaseField implements ClickHandler  {
 	
 	private String getWidgetTitle() {
 		String title = null;
-		if(getConfigurationValue(HTMLFieldConstant.EXPAND_LABEL_NAME) != null) {
-			title = getConfigurationValue(HTMLFieldConstant.EXPAND_LABEL_NAME).toString();
+		if(viewConfiguration.getConfigurationValue(HTMLFieldConstant.EXPAND_LABEL_NAME) != null) {
+			title = viewConfiguration.getConfigurationValue(HTMLFieldConstant.EXPAND_LABEL_NAME).toString();
 		} else {
 			title = HTMLFieldConstant.EXPAND_LABEL_DEFAULT_NAME;
 		}
@@ -172,8 +172,8 @@ public class HTMLField extends BaseField implements ClickHandler  {
 
 	private String getWidgetType() {
 		String type = null;
-		if(getConfigurationValue(HTMLFieldConstant.EXPAND_WIDGET_TYPE) != null) {
-			type = getConfigurationValue(HTMLFieldConstant.EXPAND_WIDGET_TYPE).toString();
+		if(viewConfiguration.getConfigurationValue(HTMLFieldConstant.EXPAND_WIDGET_TYPE) != null) {
+			type = viewConfiguration.getConfigurationValue(HTMLFieldConstant.EXPAND_WIDGET_TYPE).toString();
 		} else {
 			type = HTMLFieldConstant.EXPAND_WIDGET_LABEL;
 		}
@@ -182,8 +182,8 @@ public class HTMLField extends BaseField implements ClickHandler  {
 	
 	private String getWidgetPosition() {
 		String position = null;
-		if(getConfigurationValue(HTMLFieldConstant.EXPAND_LABEL_POSTION_MODE) != null) {
-			position = getConfigurationValue(HTMLFieldConstant.EXPAND_LABEL_POSTION_MODE).toString();
+		if(viewConfiguration.getConfigurationValue(HTMLFieldConstant.EXPAND_LABEL_POSTION_MODE) != null) {
+			position = viewConfiguration.getConfigurationValue(HTMLFieldConstant.EXPAND_LABEL_POSTION_MODE).toString();
 		} else {
 			position = HTMLFieldConstant.EXPAND_LABEL_POSTION_RIGHT;
 		}
@@ -192,8 +192,8 @@ public class HTMLField extends BaseField implements ClickHandler  {
 	
 	private String getExpandWidgetCSS() {
 		String css = null;
-		if(getConfigurationValue(HTMLFieldConstant.EXPAND_WIDGET_CSS) != null) {
-			css = getConfigurationValue(HTMLFieldConstant.EXPAND_WIDGET_CSS).toString();
+		if(viewConfiguration.getConfigurationValue(HTMLFieldConstant.EXPAND_WIDGET_CSS) != null) {
+			css = viewConfiguration.getConfigurationValue(HTMLFieldConstant.EXPAND_WIDGET_CSS).toString();
 		}
 		return css;
 	}

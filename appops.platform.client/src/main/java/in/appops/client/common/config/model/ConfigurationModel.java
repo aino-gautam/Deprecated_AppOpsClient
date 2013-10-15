@@ -1,10 +1,11 @@
 package in.appops.client.common.config.model;
 
-import in.appops.client.common.config.component.base.BaseComponentPresenter.BaseComponentConstant;
-import in.appops.client.common.config.dsnip.Container.ContainerConstant;
 import in.appops.client.common.config.dsnip.event.EventActionRuleMap;
 import in.appops.client.common.config.util.Store;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.EntityGraphException;
+
+import java.io.Serializable;
 
 /**
  * 
@@ -12,16 +13,16 @@ import in.appops.platform.core.shared.Configuration;
  *
  */
 public class ConfigurationModel extends EntityModel implements IsConfigurationModel {
-	
-	Configuration configuration;
-	Configuration modelConfiguration;
+	protected Configuration configuration;
+	protected Configuration modelConfiguration;
+	private String instance;
 	
 	/**
 	 * loads a configuration object based on the instance id 
 	 * @param instance - String instanceId 
 	 */
 	@Override
-	public void loadInstanceConfiguration(String instance){
+	public void loadInstanceConfiguration() {
 		configuration = Store.getFromConfigurationStore(instance);
 	}
 	
@@ -31,8 +32,8 @@ public class ConfigurationModel extends EntityModel implements IsConfigurationMo
 	 */
 	@Override
 	public Configuration getModelConfiguration(){
-		if(configuration.getConfigurationValue(BaseComponentConstant.BC_CONFIGMODEL) != null) {
-			return (Configuration)configuration.getConfigurationValue(BaseComponentConstant.BC_CONFIGMODEL);
+		if(configuration.getConfigurationValue(CONFIG_MODEL) != null) {
+			return (Configuration)configuration.getConfigurationValue(CONFIG_MODEL);
 		}
 		return null;
 	}
@@ -43,8 +44,8 @@ public class ConfigurationModel extends EntityModel implements IsConfigurationMo
 	 */
 	@Override
 	public Configuration getViewConfiguration(){
-		if(configuration.getConfigurationValue(BaseComponentConstant.BC_CONFIGMODEL) != null) {
-			return (Configuration)configuration.getConfigurationValue(BaseComponentConstant.BC_CONFIGMODEL);
+		if(configuration.getConfigurationValue(CONFIG_VIEW) != null) {
+			return (Configuration)configuration.getConfigurationValue(CONFIG_VIEW);
 		}
 		return null;
 	}
@@ -55,17 +56,19 @@ public class ConfigurationModel extends EntityModel implements IsConfigurationMo
 	 */
 	@Override
 	public EventActionRuleMap getEventActionRuleMap(){
-		if(configuration.getConfigurationValue(ContainerConstant.CT_INTRSDEVNTS) != null) {
-			return (EventActionRuleMap) configuration.getConfigurationValue(ContainerConstant.CT_INTRSDEVNTS); 
+		if(configuration.getConfigurationValue(CONFIG_EVENTACTIONRULEMAP) != null) {
+			return (EventActionRuleMap) configuration.getConfigurationValue(CONFIG_EVENTACTIONRULEMAP); 
 		}
-		
 		return null;
 	}
 
 	@Override
 	public void updateConfiguration(String key, Object value) {
-		// TODO Auto-generated method stub
-		
+		try {
+			configuration.setGraphPropertyValue(key, (Serializable)value, null);
+		} catch (EntityGraphException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -144,7 +147,35 @@ public class ConfigurationModel extends EntityModel implements IsConfigurationMo
 		return param;
 	}
 
+	@Override
+	public void setInstance(String instance) {
+		this.instance = instance;
+	}
 
+	@Override
+	public String getInstance() {
+		return instance;
+	}
+
+	@Override
+	public Configuration getConfiguration() {
+		return null;
+	}
+
+	@Override
+	public void setConfiguration(Configuration conf) {
+		// TODO Auto-generated method stub
+		
+	}
 	
+	/**
+	 * instantiate a property model with a reference to the entity model and the property it binds to. 
+	 * @param prop
+	 * @return
+	 */
+	public PropertyModel getPropertyModel(){
+		PropertyModel propertyModel = new PropertyModel(this);
+		return propertyModel;
+	}
 	
 }

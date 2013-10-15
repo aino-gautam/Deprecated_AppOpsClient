@@ -1,16 +1,18 @@
 package in.appops.client.common.config.model;
 
-import in.appops.client.common.config.component.base.BaseComponentPresenter.BaseComponentConstant;
-import in.appops.client.common.config.dsnip.Container.ContainerConstant;
+import java.io.Serializable;
+
 import in.appops.client.common.config.dsnip.event.EventActionRuleMap;
 import in.appops.client.common.config.util.Store;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.EntityGraphException;
 
 public class ConfigurationListModel extends EntityListModel implements IsConfigurationModel{
 
-	Configuration configuration;
-	Configuration listModelConfiguration;
-	
+	private Configuration configuration;
+	private Configuration listModelConfiguration;
+	private String instance;
+
 	public ConfigurationListModel(){
 		
 	}
@@ -20,7 +22,7 @@ public class ConfigurationListModel extends EntityListModel implements IsConfigu
 	 * @param instance - String instanceId 
 	 */
 	@Override
-	public void loadInstanceConfiguration(String instance){
+	public void loadInstanceConfiguration(){
 		configuration = Store.getFromConfigurationStore(instance);
 	}
 	
@@ -30,8 +32,8 @@ public class ConfigurationListModel extends EntityListModel implements IsConfigu
 	 */
 	@Override
 	public Configuration getModelConfiguration(){
-		if(configuration.getConfigurationValue(BaseComponentConstant.BC_CONFIGMODEL) != null) {
-			return (Configuration)configuration.getConfigurationValue(BaseComponentConstant.BC_CONFIGMODEL);
+		if(configuration.getConfigurationValue(CONFIG_MODEL) != null) {
+			return (Configuration)configuration.getConfigurationValue(CONFIG_MODEL);
 		}
 		return null;
 	}
@@ -42,8 +44,8 @@ public class ConfigurationListModel extends EntityListModel implements IsConfigu
 	 */
 	@Override
 	public Configuration getViewConfiguration(){
-		if(configuration.getConfigurationValue(BaseComponentConstant.BC_CONFIGMODEL) != null) {
-			return (Configuration)configuration.getConfigurationValue(BaseComponentConstant.BC_CONFIGMODEL);
+		if(configuration.getConfigurationValue(CONFIG_VIEW) != null) {
+			return (Configuration)configuration.getConfigurationValue(CONFIG_VIEW);
 		}
 		return null;
 	}
@@ -54,8 +56,8 @@ public class ConfigurationListModel extends EntityListModel implements IsConfigu
 	 */
 	@Override
 	public EventActionRuleMap getEventActionRuleMap(){
-		if(configuration.getConfigurationValue(ContainerConstant.CT_INTRSDEVNTS) != null) {
-			return (EventActionRuleMap) configuration.getConfigurationValue(ContainerConstant.CT_INTRSDEVNTS); 
+		if(configuration.getConfigurationValue(CONFIG_EVENTACTIONRULEMAP) != null) {
+			return (EventActionRuleMap) configuration.getConfigurationValue(CONFIG_EVENTACTIONRULEMAP); 
 		}
 		
 		return null;
@@ -63,8 +65,11 @@ public class ConfigurationListModel extends EntityListModel implements IsConfigu
 	
 	@Override
 	public void updateConfiguration(String key, Object value) {
-		// TODO Auto-generated method stub
-		
+		try {
+			configuration.setGraphPropertyValue(key, (Serializable)value, null);
+		} catch (EntityGraphException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -136,6 +141,26 @@ public class ConfigurationListModel extends EntityListModel implements IsConfigu
 			param = (Boolean) listModelConfiguration.getConfigurationValue(AppopsModelConstant.ABM_HAS_QRYPARAM);
 		}
 		return param;
+	}
+
+	@Override
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	@Override
+	public void setConfiguration(Configuration conf) {
+		this.configuration = conf;
+	}
+
+	@Override
+	public void setInstance(String instance) {
+		this.instance = instance;
+	}
+
+	@Override
+	public String getInstance() {
+		return instance;
 	}
 
 }

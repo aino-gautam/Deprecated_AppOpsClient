@@ -10,9 +10,22 @@ import java.util.Map;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.History;
 
 public class ActionEventBus implements ValueChangeHandler<String> {
-	private Map<String, List<ActionEventHandler>> eventHandlers = new HashMap<String, List<ActionEventHandler>>();;
+	private Map<String, List<ActionEventHandler>> eventHandlers = new HashMap<String, List<ActionEventHandler>>();
+	private static  ActionEventBus actionEventBus;
+	
+	private ActionEventBus() {
+		History.addValueChangeHandler(this);
+	}
+	
+	public static ActionEventBus getInstance(){
+		if(actionEventBus == null) {
+			actionEventBus = new ActionEventBus();
+		}
+		return actionEventBus;
+	}
 	
 	public void registerHandler(String event, ActionEventHandler handler) {
 		List<ActionEventHandler> handlers = getRegisteredList(event);
@@ -56,7 +69,7 @@ public class ActionEventBus implements ValueChangeHandler<String> {
 	
 	private void fireActionEvent(ActionEvent event) {
 		if(!eventHandlers.isEmpty()) {
-			String eventName = event.getName();
+			String eventName = event.getEventName();
 			
 			List<ActionEventHandler> dispatchHandlers = getDispatchList(eventName);
 			

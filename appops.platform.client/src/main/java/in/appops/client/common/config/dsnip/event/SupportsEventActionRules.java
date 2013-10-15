@@ -7,7 +7,12 @@ package in.appops.client.common.config.dsnip.event;
  */
 public interface SupportsEventActionRules {
 	
-	public void processEventRules(String eventName);
+	public void processEventActionRuleMap(String eventName, Object eventData);
 	
+	public void processSnippetControllerRule(SnippetControllerRule snippetControllerRule);
+	
+	public void processUpdateConfigurationRule(UpdateConfigurationRule updateConfigurationRule, Object eventData);
+	
+	public void processSubEventRule(SubEventRule subEventRule);
 
 }

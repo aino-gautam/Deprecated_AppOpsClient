@@ -24,7 +24,7 @@ public class SubEventRule extends EventActionRule {
 	 * Needed to know which event bus to use to fire the event
 	 * @return boolean true / false
 	 */
-	public boolean isAppEvent(){
+	public Boolean isAppEvent(){
 		return this.getPropertyByName(IS_APP_EVENT);
 	}
 	

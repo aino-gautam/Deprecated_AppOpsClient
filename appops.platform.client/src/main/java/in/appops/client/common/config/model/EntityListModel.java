@@ -69,10 +69,4 @@ public class EntityListModel extends AppopsBaseModel {
 			listReceiver.onEntityListReceived(entityList);
 		}
 	}
-
-	@Override
-	public void configure() {
-		// TODO Auto-generated method stub
-		
-	}
 }

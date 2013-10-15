@@ -123,9 +123,9 @@ public class RangeSliderField extends BaseField{
 		
 		try {
 			logger.log(Level.INFO, "[RangeSliderField] ::In getRangeSliderMode method ");
-			if(getConfigurationValue(RangeSliderFieldConstant.SLIDER_MODE) != null) {
+			if(viewConfiguration.getConfigurationValue(RangeSliderFieldConstant.SLIDER_MODE) != null) {
 				
-				mode = getConfigurationValue(RangeSliderFieldConstant.SLIDER_MODE).toString();
+				mode = viewConfiguration.getConfigurationValue(RangeSliderFieldConstant.SLIDER_MODE).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[RangeSliderField] ::Exception in getRangeSliderMode method :"+e);
@@ -143,9 +143,9 @@ public class RangeSliderField extends BaseField{
 		
 		try {
 			logger.log(Level.INFO, "[RangeSliderField] ::In getSliderLineCss method ");
-			if(getConfigurationValue(RangeSliderFieldConstant.SLIDER_LINE_CSS) != null) {
+			if(viewConfiguration.getConfigurationValue(RangeSliderFieldConstant.SLIDER_LINE_CSS) != null) {
 				
-				css = getConfigurationValue(RangeSliderFieldConstant.SLIDER_LINE_CSS).toString();
+				css = viewConfiguration.getConfigurationValue(RangeSliderFieldConstant.SLIDER_LINE_CSS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[RangeSliderField] ::Exception in getSliderLineCss method :"+e);
@@ -163,9 +163,9 @@ public class RangeSliderField extends BaseField{
 		
 		try {
 			logger.log(Level.INFO, "[RangeSliderField] ::In getMinValue method ");
-			if(getConfigurationValue(RangeSliderFieldConstant.MINVAL) != null) {
+			if(viewConfiguration.getConfigurationValue(RangeSliderFieldConstant.MINVAL) != null) {
 				
-				minVal = (Double)getConfigurationValue(RangeSliderFieldConstant.MINVAL);
+				minVal = (Double)viewConfiguration.getConfigurationValue(RangeSliderFieldConstant.MINVAL);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[RangeSliderField] ::Exception in getMinValue method :"+e);
@@ -183,9 +183,9 @@ public class RangeSliderField extends BaseField{
 		
 		try {
 			logger.log(Level.INFO, "[RangeSliderField] ::In getMaxValue method ");
-			if(getConfigurationValue(RangeSliderFieldConstant.MAXVAL) != null) {
+			if(viewConfiguration.getConfigurationValue(RangeSliderFieldConstant.MAXVAL) != null) {
 				
-				maxVal = (Double)getConfigurationValue(RangeSliderFieldConstant.MAXVAL);
+				maxVal = (Double)viewConfiguration.getConfigurationValue(RangeSliderFieldConstant.MAXVAL);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[RangeSliderField] ::Exception in getMaxValue method :"+e);
@@ -203,9 +203,9 @@ public class RangeSliderField extends BaseField{
 		
 		try {
 			logger.log(Level.INFO, "[RangeSliderField] ::In getStepValue method ");
-			if(getConfigurationValue(RangeSliderFieldConstant.STEPVAL) != null) {
+			if(viewConfiguration.getConfigurationValue(RangeSliderFieldConstant.STEPVAL) != null) {
 				
-				stepVal = (Double)getConfigurationValue(RangeSliderFieldConstant.STEPVAL);
+				stepVal = (Double)viewConfiguration.getConfigurationValue(RangeSliderFieldConstant.STEPVAL);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[RangeSliderField] ::Exception in getStepValue method :"+e);
@@ -221,8 +221,8 @@ public class RangeSliderField extends BaseField{
 		ArrayList<String> listOfItems = null;
 		try {
 			logger.log(Level.INFO, "[RangeSliderField] ::In getRangeSliderItemList method ");
-			if(getConfigurationValue(RangeSliderFieldConstant.ITEMS_LIST) != null) {
-				listOfItems = (ArrayList<String>) getConfigurationValue(RangeSliderFieldConstant.ITEMS_LIST);
+			if(viewConfiguration.getConfigurationValue(RangeSliderFieldConstant.ITEMS_LIST) != null) {
+				listOfItems = (ArrayList<String>) viewConfiguration.getConfigurationValue(RangeSliderFieldConstant.ITEMS_LIST);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[RangeSliderField] ::Exception in getRangeSliderItemList method :"+e);

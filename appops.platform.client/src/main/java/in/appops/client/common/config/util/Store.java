@@ -66,7 +66,7 @@ public class Store {
 			JsonToEntityConverter convertor = new JsonToEntityConverter();
 			Configuration parentConfig = (Configuration) convertor.convertjsonStringToEntity(jsonConfig);
 			
-			Configuration contextConfig = parentConfig.getGraphPropertyValue(childConfigStr, parentConfig); // Returns configuration for S5 from parent configuration S1 using S2.S3.S4.S5 
+			Configuration contextConfig = parentConfig.getGraphPropertyValue(childConfigStr, null); // Returns configuration for S5 from parent configuration S1 using S2.S3.S4.S5 
 			return contextConfig;
 		} catch (Exception e) {
 			e.printStackTrace();

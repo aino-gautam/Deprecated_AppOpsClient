@@ -78,7 +78,7 @@ public class PersonalDetailsScreen extends Composite implements Screen{
 	public Entity populateEntity() {
 		if(entity== null)
 			entity = new Entity();
-		Property<Serializable> prop = new Property<Serializable>();
+/*		Property<Serializable> prop = new Property<Serializable>();
 		prop.setName(tbFName.getConfiguration().getPropertyByName(TextFieldConstant.PROPERTY_BY_FIELD_NAME).toString());
 		//prop.setValue(tbFName.getValue());
 		entity.setProperty(tbFName.getConfiguration().getPropertyByName(TextFieldConstant.PROPERTY_BY_FIELD_NAME).toString(), prop);
@@ -87,7 +87,7 @@ public class PersonalDetailsScreen extends Composite implements Screen{
 		prop1.setName(tbLName.getConfiguration().getPropertyByName(TextFieldConstant.PROPERTY_BY_FIELD_NAME).toString());
 		//prop1.setValue(tbLName.getValue());
 		entity.setProperty(tbLName.getConfiguration().getPropertyByName(TextFieldConstant.PROPERTY_BY_FIELD_NAME).toString(), prop1);
-		
+*/		
 		return entity;
 	}
 	

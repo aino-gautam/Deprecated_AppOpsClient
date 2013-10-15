@@ -124,9 +124,9 @@ public class MediaField extends BaseField implements FieldEventHandler{
 		
 		try {
 			logger.log(Level.INFO, "[MediaField] ::In getMediaImageBlobId method ");
-			if(getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_BLOB) != null) {
+			if(viewConfiguration.getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_BLOB) != null) {
 				
-				blobId = getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_BLOB).toString();
+				blobId = viewConfiguration.getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_BLOB).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[MediaField] ::Exception In getMediaImageBlobId method :"+e);
@@ -145,9 +145,9 @@ public class MediaField extends BaseField implements FieldEventHandler{
 		
 		try {
 			logger.log(Level.INFO, "[MediaField] ::In getMediaImagePrimaryCss method ");
-			if(getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_PCLS) != null) {
+			if(viewConfiguration.getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_PCLS) != null) {
 				
-				primCss = getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_PCLS).toString();
+				primCss = viewConfiguration.getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_PCLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[MediaField] ::Exception In getMediaImagePrimaryCss method :"+e);
@@ -166,9 +166,9 @@ public class MediaField extends BaseField implements FieldEventHandler{
 		
 		try {
 			logger.log(Level.INFO, "[MediaField] ::In getCrossImagePrimaryCss method ");
-			if(getConfigurationValue(MediaFieldConstant.MF_CROSSIMG_PCLS) != null) {
+			if(viewConfiguration.getConfigurationValue(MediaFieldConstant.MF_CROSSIMG_PCLS) != null) {
 				
-				primCss = getConfigurationValue(MediaFieldConstant.MF_CROSSIMG_PCLS).toString();
+				primCss = viewConfiguration.getConfigurationValue(MediaFieldConstant.MF_CROSSIMG_PCLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[MediaField] ::Exception In getCrossImagePrimaryCss method :"+e);
@@ -187,9 +187,9 @@ public class MediaField extends BaseField implements FieldEventHandler{
 		
 		try {
 			logger.log(Level.INFO, "[MediaField] ::In getMediaImageDependentCss method ");
-			if(getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_DCLS) != null) {
+			if(viewConfiguration.getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_DCLS) != null) {
 				
-				primCss = getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_DCLS).toString();
+				primCss = viewConfiguration.getConfigurationValue(MediaFieldConstant.MF_MEDIAIMG_DCLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[MediaField] ::Exception In getMediaImageDependentCss method :"+e);
@@ -209,9 +209,9 @@ public class MediaField extends BaseField implements FieldEventHandler{
 		
 		try {
 			logger.log(Level.INFO, "[MediaField] ::In getCrossImageBlobId method ");
-			if(getConfigurationValue(MediaFieldConstant.MF_CROSSIMG_BLOBID) != null) {
+			if(viewConfiguration.getConfigurationValue(MediaFieldConstant.MF_CROSSIMG_BLOBID) != null) {
 				
-				crossImageBlobId = getConfigurationValue(MediaFieldConstant.MF_CROSSIMG_BLOBID).toString();
+				crossImageBlobId = viewConfiguration.getConfigurationValue(MediaFieldConstant.MF_CROSSIMG_BLOBID).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[MediaField] ::Exception In getCrossImageBlobId method :"+e);
@@ -230,9 +230,9 @@ public class MediaField extends BaseField implements FieldEventHandler{
 		
 		try {
 			logger.log(Level.INFO, "[MediaField] ::In getFileUploadPanelcss method ");
-			if(getConfigurationValue(MediaFieldConstant.MF_FILEUPLOADER_CLS) != null) {
+			if(viewConfiguration.getConfigurationValue(MediaFieldConstant.MF_FILEUPLOADER_CLS) != null) {
 				
-				primCss = getConfigurationValue(MediaFieldConstant.MF_FILEUPLOADER_CLS).toString();
+				primCss = viewConfiguration.getConfigurationValue(MediaFieldConstant.MF_FILEUPLOADER_CLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[MediaField] ::Exception In getFileUploadPanelcss method :"+e);
@@ -251,9 +251,9 @@ public class MediaField extends BaseField implements FieldEventHandler{
 		
 		try {
 			logger.log(Level.INFO, "[MediaField] ::In isProfileImage method ");
-			if(getConfigurationValue(MediaFieldConstant.MF_ISPROFILE_IMG) != null) {
+			if(viewConfiguration.getConfigurationValue(MediaFieldConstant.MF_ISPROFILE_IMG) != null) {
 				
-				isProfileImage = (Boolean)getConfigurationValue(MediaFieldConstant.MF_ISPROFILE_IMG);
+				isProfileImage = (Boolean)viewConfiguration.getConfigurationValue(MediaFieldConstant.MF_ISPROFILE_IMG);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[MediaField] ::Exception In isProfileImage method :"+e);
@@ -274,9 +274,9 @@ public class MediaField extends BaseField implements FieldEventHandler{
 		
 		try {
 			logger.log(Level.INFO, "[MediaField] ::In isMediaImageVisible method ");
-			if(getConfigurationValue(MediaFieldConstant.MF_ISMEDIAIMG_VISIBLE) != null) {
+			if(viewConfiguration.getConfigurationValue(MediaFieldConstant.MF_ISMEDIAIMG_VISIBLE) != null) {
 				
-				isVisible = (Boolean)getConfigurationValue(MediaFieldConstant.MF_ISMEDIAIMG_VISIBLE);
+				isVisible = (Boolean)viewConfiguration.getConfigurationValue(MediaFieldConstant.MF_ISMEDIAIMG_VISIBLE);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[MediaField] ::Exception In isMediaImageVisible method :"+e);
@@ -296,9 +296,9 @@ public class MediaField extends BaseField implements FieldEventHandler{
 		
 		try {
 			logger.log(Level.INFO, "[MediaField] ::In getExtensionList method ");
-			if(getConfigurationValue(MediaFieldConstant.MF_VALIDEXTEXNSION_LIST) != null) {
+			if(viewConfiguration.getConfigurationValue(MediaFieldConstant.MF_VALIDEXTEXNSION_LIST) != null) {
 				
-				extensionList = (ArrayList<String>) getConfigurationValue(MediaFieldConstant.MF_VALIDEXTEXNSION_LIST);
+				extensionList = (ArrayList<String>) viewConfiguration.getConfigurationValue(MediaFieldConstant.MF_VALIDEXTEXNSION_LIST);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[MediaField] ::Exception In getExtensionList method :"+e);

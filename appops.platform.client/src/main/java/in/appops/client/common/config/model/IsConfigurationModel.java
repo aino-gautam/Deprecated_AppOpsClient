@@ -6,7 +6,13 @@ import in.appops.platform.core.shared.Configuration;
 
 public interface IsConfigurationModel extends Configurable {
 	
-	public void loadInstanceConfiguration(String instance);
+	String CONFIG_MODEL = "model";
+	String CONFIG_VIEW = "view";
+	String CONFIG_EVENTACTIONRULEMAP = "eventActionRuleMap";
+	
+	public void configure();
+	
+	public void loadInstanceConfiguration();
 	
 	public Configuration getModelConfiguration();
 	
@@ -15,5 +21,9 @@ public interface IsConfigurationModel extends Configurable {
 	public EventActionRuleMap getEventActionRuleMap();
 	
 	public void updateConfiguration(String key, Object value);
+	
+	public void setInstance(String instance);
+
+	public String getInstance();
 
 }

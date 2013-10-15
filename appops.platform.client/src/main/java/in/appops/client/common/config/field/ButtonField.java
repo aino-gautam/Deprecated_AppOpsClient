@@ -205,8 +205,8 @@ public class ButtonField extends BaseField implements ClickHandler, BlurHandler,
 		String displayTxt = "";
 		try {
 			logger.log(Level.INFO,"[ButtonField]:: In getDisplayText  method ");
-			if (getConfigurationValue(ButtonFieldConstant.BTNFD_DISPLAYTEXT) != null) {
-				displayTxt = getConfigurationValue(ButtonFieldConstant.BTNFD_DISPLAYTEXT).toString();
+			if (viewConfiguration.getConfigurationValue(ButtonFieldConstant.BTNFD_DISPLAYTEXT) != null) {
+				displayTxt = viewConfiguration.getConfigurationValue(ButtonFieldConstant.BTNFD_DISPLAYTEXT).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ButtonField]::Exception In creagetDisplayTextte  method :"+e);
@@ -222,8 +222,8 @@ public class ButtonField extends BaseField implements ClickHandler, BlurHandler,
 		String btnTitle = null;
 		try {
 			logger.log(Level.INFO,"[ButtonField]:: In getBtnTitle  method ");
-			if (getConfigurationValue(ButtonFieldConstant.BTNFD_TITLE) != null) {
-				btnTitle = getConfigurationValue(ButtonFieldConstant.BTNFD_TITLE).toString();
+			if (viewConfiguration.getConfigurationValue(ButtonFieldConstant.BTNFD_TITLE) != null) {
+				btnTitle = viewConfiguration.getConfigurationValue(ButtonFieldConstant.BTNFD_TITLE).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ButtonField]::Exception In getBtnTitle  method :"+e);

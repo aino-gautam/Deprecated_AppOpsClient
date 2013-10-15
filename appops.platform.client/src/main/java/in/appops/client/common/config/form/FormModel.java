@@ -3,27 +3,26 @@
  */
 package in.appops.client.common.config.form;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.Map.Entry;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import in.appops.client.common.config.dsnip.HTMLSnippetModel;
-import in.appops.client.common.config.form.FormSnippetPresenter.FormSnippetConstant;
-import in.appops.client.common.config.model.EntityModel;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 /**
  * @author mahesh@ensarm.com
  * All the server call needed for form to be funtional will be done
  * by this model.
  */
+@Deprecated
 public class FormModel extends HTMLSnippetModel{
 	
 	/**
@@ -45,7 +44,7 @@ public class FormModel extends HTMLSnippetModel{
 			public void onSuccess(Result result) {
 				try {
 					Entity entity = (Entity) result.getOperationResult();
-					entity.setPropertyByName(FormSnippetConstant.ISSAVEUPDATECALL, true);
+					//entity.setPropertyByName(FormSnippetConstant.ISSAVEUPDATECALL, true);
 					getReceiver().onEntityReceived(entity);
 				} catch (Exception e) {
 					e.printStackTrace();

@@ -1,8 +1,7 @@
 package in.appops.client.common.config.field;
 
-import in.appops.client.common.config.dsnip.EventConstant;
+import in.appops.client.common.config.dsnip.ActionEvent;
 import in.appops.client.common.util.EntityToJsonClientConvertor;
-import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.type.MetaType;
 
 import com.google.gwt.core.client.GWT;
@@ -41,15 +40,15 @@ public class ActionField extends BaseField implements ClickHandler{
 	
 	/************************** All Configuration Methods here *****************************************/
 	@Override
-	protected void initialize() {
+	public void initialize() {
 		super.initialize();
 		actionLink = new Anchor();
 	}
 	
 	protected String getTokenValue() {
 		String type = ActionFieldConstant.AF_TOKENVAL;
-		if(getConfigurationValue(ActionFieldConstant.AF_TOKENVAL) != null) {
-			type = getConfigurationValue(ActionFieldConstant.AF_TOKENVAL).toString();;
+		if(viewConfiguration.getConfigurationValue(ActionFieldConstant.AF_TOKENVAL) != null) {
+			type = viewConfiguration.getConfigurationValue(ActionFieldConstant.AF_TOKENVAL).toString();;
 		}
 		return type;
 	}
@@ -73,8 +72,8 @@ public class ActionField extends BaseField implements ClickHandler{
 	}
 	
 	private int getMode() {
-		if(getConfigurationValue(ActionFieldConstant.MODE) != null) {
-			return Integer.parseInt(getConfigurationValue(ActionFieldConstant.MODE).toString());
+		if(viewConfiguration.getConfigurationValue(ActionFieldConstant.MODE) != null) {
+			return Integer.parseInt(viewConfiguration.getConfigurationValue(ActionFieldConstant.MODE).toString());
 		}
 		return 1;
 	}
@@ -82,16 +81,16 @@ public class ActionField extends BaseField implements ClickHandler{
 
 	private String getPageValue() {
 		String page = null;
-		if(getConfigurationValue(ActionFieldConstant.AF_PAGE) != null) {
-			page = getConfigurationValue(ActionFieldConstant.AF_PAGE).toString();
+		if(viewConfiguration.getConfigurationValue(ActionFieldConstant.AF_PAGE) != null) {
+			page = viewConfiguration.getConfigurationValue(ActionFieldConstant.AF_PAGE).toString();
 		}
 		return page;
 	}
 	
 	
 	private int getWidgetType() {
-		if(getConfigurationValue(ActionFieldConstant.AF_WIDGETTYPE) != null) {
-			return Integer.parseInt(getConfigurationValue(ActionFieldConstant.AF_WIDGETTYPE).toString());
+		if(viewConfiguration.getConfigurationValue(ActionFieldConstant.AF_WIDGETTYPE) != null) {
+			return Integer.parseInt(viewConfiguration.getConfigurationValue(ActionFieldConstant.AF_WIDGETTYPE).toString());
 		}
 		return 1;
 	}
@@ -181,12 +180,12 @@ public class ActionField extends BaseField implements ClickHandler{
 				token = token + Long.toString(bindId);
 			} */
 			
-			Entity appEvent = new Entity();
-			appEvent.setType(new MetaType("EventData"));
-			appEvent.setPropertyByName(EventConstant.EVNT_NAME, token);
-			appEvent.setPropertyByName(EventConstant.EVNT_DATA, bindId);
+			ActionEvent actionEvent = new ActionEvent();
+			actionEvent.setType(new MetaType("eventData"));
+			actionEvent.setEventName(token);
+			actionEvent.setEventData(entity);
 			
-			JSONObject appEventJson = EntityToJsonClientConvertor.createJsonFromEntity(appEvent);
+			JSONObject appEventJson = EntityToJsonClientConvertor.createJsonFromEntity(actionEvent);
 			
 			History.newItem(appEventJson.toString(), true);
 		} else if(getMode() == ActionFieldConstant.PAGE) {

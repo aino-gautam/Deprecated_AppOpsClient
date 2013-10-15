@@ -9,7 +9,6 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.Defa
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.operation.Result;
-import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 
@@ -20,7 +19,7 @@ import java.util.Map;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public abstract class AppopsBaseModel implements EntityCacheListener, Configurable {
+public abstract class AppopsBaseModel implements EntityCacheListener {
 	
 	public interface AppopsModelConstant {
 		String ABM_QRY_NAME = "queryname";
@@ -34,7 +33,6 @@ public abstract class AppopsBaseModel implements EntityCacheListener, Configurab
 	protected final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	protected final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 	
-	protected Configuration configuration;
 	protected String operationName;
 	protected String queryName;
 	protected Configuration queryParameters;
@@ -43,19 +41,6 @@ public abstract class AppopsBaseModel implements EntityCacheListener, Configurab
 	
 	protected ArrayList<String> interestedQueryList = new ArrayList<String>();;
 	protected GlobalEntityCache globalEntityCache = GlobalEntityCache.getInstance();
-
-	
-	public abstract void configure();
-	
-	@Override
-	public Configuration getConfiguration() {
-		return configuration;
-	}
-
-	@Override
-	public void setConfiguration(Configuration conf) {
-		this.configuration = conf;
-	}
 
 	public void setOperationName(String operationName) {
 		this.operationName = operationName;

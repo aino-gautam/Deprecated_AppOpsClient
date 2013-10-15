@@ -6,12 +6,9 @@ import com.google.gwt.dom.client.NodeList;
 
 
 public class PageSnippetView extends HTMLSnippetView {
-	private final String HTMLSNIPPET = "htmlsnippet";
-	private final String WIDGET_TYPE = "widgetType";
-	private final String DATA_CONFIG = "data-config";
 	
 	@Override
-	protected void processSnippetDescription() {
+	public void create() {
 		try {
 			NodeList<Element> spanList = getAllSpanNodes();
 			
@@ -23,12 +20,12 @@ public class PageSnippetView extends HTMLSnippetView {
 					Element pageSpan = Element.as(node);
 					pageSpan.setId(pageSpan.getId());
 					if (pageSpan != null) {
-						if (pageSpan.hasAttribute(WIDGET_TYPE) && pageSpan.getAttribute(WIDGET_TYPE).equals(HTMLSNIPPET)) {
-							String type = pageSpan.getAttribute(WIDGET_TYPE);
+						if (pageSpan.getAttribute(COMPONENT_TYPE).equalsIgnoreCase(HTMLSNIPPET)) {
+							String type = pageSpan.getAttribute(TYPE);
 							String instance = pageSpan.getAttribute(DATA_CONFIG);
-							HTMLSnippetPresenter snippetPres = snippetGenerator.requestHTMLSnippet(type, instance);
+							HTMLSnippetPresenter snippetPres = mvpFactory.requestHTMLSnippet(type, instance);
 							snippetPres.create();
-							
+							elementMap.put(instance, snippetPres);
 							snippetPanel.addAndReplaceElement(snippetPres.getView(), pageSpan);
 						}
 					}

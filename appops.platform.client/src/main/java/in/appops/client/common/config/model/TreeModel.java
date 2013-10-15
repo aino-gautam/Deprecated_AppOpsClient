@@ -17,18 +17,18 @@ public class TreeModel extends AppopsBaseModel {
 	private HashMap<String,Configuration> depthConfigList;
 	private EntityListReceiver receiver;
 	
-	@Override
+/*	@Override
 	public void configure() {
 		super.configure();
 		setDepthList(getDepthConfigList());
-	}
+	}*/
 	
 	@SuppressWarnings("unchecked")
 	private HashMap<String,Configuration> getDepthConfigList() {
 		HashMap<String,Configuration> depthConfigList = null;
-		if(getConfigurationValue("depthConfigList") != null) {
-			depthConfigList = (HashMap<String,Configuration>)getConfigurationValue("depthConfigList");
-		}
+//		if(getConfigurationValue("depthConfigList") != null) {
+//			depthConfigList = (HashMap<String,Configuration>)getConfigurationValue("depthConfigList");
+//		}
 		return depthConfigList;
 	}
 
@@ -45,7 +45,7 @@ public class TreeModel extends AppopsBaseModel {
 	 * @param depth
 	 */
 	public void getItems(int depth) {
-		Configuration depthConfig = (Configuration) configuration.getProperty(Integer.toString(depth));
+	/*	Configuration depthConfig = (Configuration) configuration.getProperty(Integer.toString(depth));
 		
 		String depthQuery = depthConfig.getPropertyByName(TreeComponentConstant.TM_DEPTH_QUERY);
 		Configuration param = depthConfig.getPropertyByName("queryParam");
@@ -75,7 +75,7 @@ public class TreeModel extends AppopsBaseModel {
 				receiver.onEntityListReceived(entityList);
 			}
 			executeQuery(query);
-		}
+		}*/
 	}
 	
 	/*@SuppressWarnings("unchecked")
@@ -105,9 +105,9 @@ public class TreeModel extends AppopsBaseModel {
 	
 	public String getTreeOperationName() {
 		String operation = null;
-		if(getConfigurationValue(TreeComponentConstant.TM_OPERATION) != null) {
+		/*if(getConfigurationValue(TreeComponentConstant.TM_OPERATION) != null) {
 			operation = getConfigurationValue(TreeComponentConstant.TM_OPERATION).toString();
-		}
+		}*/
 		return operation;
 	}
 

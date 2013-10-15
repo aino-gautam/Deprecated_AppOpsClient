@@ -3,6 +3,11 @@
  */
 package in.appops.client.common.util;
 
+import in.appops.client.common.config.dsnip.ActionEvent;
+import in.appops.client.common.config.dsnip.event.EventActionRule;
+import in.appops.client.common.config.dsnip.event.EventActionRuleMap;
+import in.appops.client.common.config.dsnip.event.EventActionRulesList;
+import in.appops.client.common.config.dsnip.event.SnippetControllerRule;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.GeoLocation;
 import in.appops.platform.core.entity.Key;
@@ -14,6 +19,7 @@ import in.appops.platform.core.operation.IntelliThought;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -73,6 +79,12 @@ public class JsonToEntityConverter {
 				entity = new InitiateActionContext();
 			} else if (mainType.contains("config")){
 				entity = new Configuration();
+			} else if (mainType.contains("eventData")){
+				entity = new ActionEvent();
+			} else if (mainType.contains("eventActionRuleMap")){
+				entity = new EventActionRuleMap();
+			} else if (mainType.contains("snippetControllerRule")){
+				entity = new SnippetControllerRule();
 			} else {
 				entity = new Entity();
 			}
@@ -232,7 +244,12 @@ public class JsonToEntityConverter {
 					entity.setPropertyByName(propName, valueMap);
 				} else if(primitiveTypeName.equals("arrayList")){
 					JSONArray jsonArr = propValueJson.get(primitiveTypeName).isArray();
-					ArrayList<Object> valueMap = decodeJsonArray(jsonArr); 
+					ArrayList<Serializable> valueMap = decodeJsonArray(jsonArr, new ArrayList<Serializable>()); 
+					entity.setPropertyByName(propName, valueMap);
+				} else if(primitiveTypeName.equals("eventActionRuleList")){
+					JSONArray jsonArr = propValueJson.get(primitiveTypeName).isArray();
+					EventActionRulesList eventActionRulesList = new EventActionRulesList();
+					EventActionRulesList valueMap = decodeJsonArray(jsonArr,eventActionRulesList); 
 					entity.setPropertyByName(propName, valueMap);
 				}
 				else{
@@ -271,10 +288,8 @@ public class JsonToEntityConverter {
 		return entity;
 	}
 
-	private ArrayList<Object> decodeJsonArray(JSONArray jsonArray){
-		ArrayList<Object> list = null;
+	private ArrayList<Serializable> decodeJsonArray(JSONArray jsonArray, ArrayList<Serializable> list){
 		try{
-			list = new ArrayList<Object>();
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONValue v = jsonArray.get(i);
 				if(v.isObject() != null){
@@ -349,5 +364,22 @@ public class JsonToEntityConverter {
 		return convertedEntity;
 	}
 
+	private EventActionRulesList decodeJsonArray(JSONArray jsonArray, EventActionRulesList eventActionRulesList){
+		try{
+			for (int i = 0; i < jsonArray.size(); i++) {
+				JSONValue v = jsonArray.get(i);
+				if(v.isObject() != null){
+					EventActionRule rule =  (EventActionRule) getConvertedEntity(v.isObject());
+					eventActionRulesList.add(rule);
+				} 
+			}
+			
+		}
+		catch (Exception e) {
+			logger.log(Level.SEVERE, "[JsonToEntityConverter] :: [decodeJsonArray] :: Exception", e);
+		}
+		return eventActionRulesList;
+		
+	}
 	
 }

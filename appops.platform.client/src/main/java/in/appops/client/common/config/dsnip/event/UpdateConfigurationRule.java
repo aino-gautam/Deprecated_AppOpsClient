@@ -9,6 +9,12 @@ import java.util.HashMap;
  */
 public class UpdateConfigurationRule extends EventActionRule {
 
+	public interface UpdateConfigurationRuleConstant {
+		String EVENTDATA = "evt";
+		String SEPERATOR = ".";
+		String APPCONTEXT = "ac";
+	}
+	
 	/**
 	 * 
 	 */
@@ -16,7 +22,7 @@ public class UpdateConfigurationRule extends EventActionRule {
 	public static final String CONFIGURATION_TO_UPDATE = "ConfigurationToUpdate";
 	public static final String HAS_UPDATE_CONFIGURATION	 = "HasUpdateConfiguration";
 
-	public boolean hasConfigurationUpdation() {
+	public Boolean hasConfigurationUpdation() {
 		return this.getPropertyByName(HAS_UPDATE_CONFIGURATION);
 	}
 

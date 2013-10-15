@@ -162,8 +162,8 @@ public class ImageField extends BaseField implements ClickHandler{
 		String blobId = null;
 		try {
 			logger.log(Level.INFO, "[ImageField] ::In getImageBlobId method ");
-			if (getConfigurationValue(ImageFieldConstant.IMGFD_BLOBID) != null) {
-				blobId = getConfigurationValue(ImageFieldConstant.IMGFD_BLOBID).toString();
+			if (viewConfiguration.getConfigurationValue(ImageFieldConstant.IMGFD_BLOBID) != null) {
+				blobId = viewConfiguration.getConfigurationValue(ImageFieldConstant.IMGFD_BLOBID).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ImageField] ::Exception in getImageBlobId method :"+e);
@@ -180,8 +180,8 @@ public class ImageField extends BaseField implements ClickHandler{
 		String title = null;
 		try {
 			logger.log(Level.INFO, "[ImageField] ::In getImageTitle method ");
-			if (getConfigurationValue(ImageFieldConstant.IMGFD_TITLE) != null) {
-				title = getConfigurationValue(ImageFieldConstant.IMGFD_TITLE).toString();
+			if (viewConfiguration.getConfigurationValue(ImageFieldConstant.IMGFD_TITLE) != null) {
+				title = viewConfiguration.getConfigurationValue(ImageFieldConstant.IMGFD_TITLE).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ImageField] ::Exception in getImageTitle method :"+e);
