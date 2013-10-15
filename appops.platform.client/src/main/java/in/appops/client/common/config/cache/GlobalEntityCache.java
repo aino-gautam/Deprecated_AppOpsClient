@@ -30,6 +30,8 @@ public class GlobalEntityCache implements EntityCache {
 	
 	private static final String IS_ENTITYLIST_QUERY = "isQueryEntityList";
 
+	private GlobalEntityCache() { }
+
 	public static GlobalEntityCache getInstance(){
 		if(globalEntityCache == null) {
 			globalEntityCache = new GlobalEntityCache();
