@@ -3,23 +3,19 @@ package in.appops.client.common.config.component.grid;
 
 import in.appops.client.common.config.component.base.BaseComponent.BaseComponentConstant;
 import in.appops.client.common.config.component.base.BaseComponentPresenter;
-import in.appops.client.common.config.dsnip.Container.ContainerConstant;
-import in.appops.client.common.config.dsnip.EventConstant;
 import in.appops.client.common.config.model.ConfigurationListModel;
 import in.appops.client.common.config.model.EntityListModel;
 import in.appops.client.common.core.EntityListReceiver;
 import in.appops.client.common.util.BlobDownloader;
-import in.appops.client.common.util.JsonToEntityConverter;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
+
 import java.util.HashMap;
 import java.util.Set;
-
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
 
 public class GridComponentPresenter extends BaseComponentPresenter implements EntityListReceiver {
 	
