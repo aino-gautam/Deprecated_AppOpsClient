@@ -1,7 +1,7 @@
 package in.appops.client.common.config.component.base;
 
-import in.appops.client.common.config.component.base.BaseComponentPresenter.BaseComponentConstant;
-import in.appops.client.common.config.dsnip.SnippetGenerator;
+import in.appops.client.common.config.component.base.BaseComponent.BaseComponentConstant;
+import in.appops.client.common.config.dsnip.DynamicMVPFactory;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.shared.Configuration;
@@ -16,6 +16,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 
+@Deprecated
 public abstract class BaseComponentView extends Composite implements Configurable, HasClickHandlers{
 
 	protected DockPanel basePanel;
@@ -23,7 +24,7 @@ public abstract class BaseComponentView extends Composite implements Configurabl
 	protected Configuration configuration;
 	
 	protected AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
-	protected SnippetGenerator snippetGenerator = (SnippetGenerator)injector.getSnippetGenerator();
+	protected DynamicMVPFactory snippetGenerator = (DynamicMVPFactory)injector.getMVPFactory();
 	
 	public BaseComponentView() {
 		initialize();
@@ -57,9 +58,9 @@ public abstract class BaseComponentView extends Composite implements Configurabl
 	
 	private String getBaseComponentPrimCss() {
 		String primaryCss = "defaultcss";
-		if(getConfigurationValue(BaseComponentConstant.BC_PCLS) != null) {
+	/*	if(getConfigurationValue(BaseComponentConstant.BC_PCLS) != null) {
 			primaryCss = getConfigurationValue(BaseComponentConstant.BC_PCLS).toString();
-		}
+		}*/
 		return primaryCss;
 	}
 	
