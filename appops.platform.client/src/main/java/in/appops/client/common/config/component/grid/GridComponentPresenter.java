@@ -1,9 +1,11 @@
 
 package in.appops.client.common.config.component.grid;
 
+import in.appops.client.common.config.component.base.BaseComponent.BaseComponentConstant;
 import in.appops.client.common.config.component.base.BaseComponentPresenter;
 import in.appops.client.common.config.dsnip.Container.ContainerConstant;
 import in.appops.client.common.config.dsnip.EventConstant;
+import in.appops.client.common.config.model.ConfigurationListModel;
 import in.appops.client.common.config.model.EntityListModel;
 import in.appops.client.common.core.EntityListReceiver;
 import in.appops.client.common.util.BlobDownloader;
@@ -25,9 +27,9 @@ public class GridComponentPresenter extends BaseComponentPresenter implements En
 	public void configure() {
 		super.configure();
 		
-		model.setConfiguration(getModelConfiguration());
+		model.setConfiguration(model.getModelConfiguration());
 		model.configure();
-		view.setConfiguration(getViewConfiguration());
+		//view.setConfiguration(model.getViewConfiguration());
 		
 		view.configure();
 		view.create();
@@ -35,13 +37,13 @@ public class GridComponentPresenter extends BaseComponentPresenter implements En
 	
 	@Override
 	public void initialize() {
-		model = new EntityListModel();
+		model = new ConfigurationListModel();
 		((EntityListModel)model).setReceiver(this);
 		view = new GridComponentView();		
 	}
 	
 	
-	@Override
+	/*@Override
 	public void load() {
 		//((EntityListModel)model).fetchEntityList();
 		EntityList entityList = getProductEntityList();
@@ -50,14 +52,14 @@ public class GridComponentPresenter extends BaseComponentPresenter implements En
 			listView.setEntityList(entityList);
 			listView.populate();
 		}
-	}
+	}*/
 	
 	@SuppressWarnings("unchecked")
 	protected HashMap<String, Configuration> getInterestedEvents() {
 		HashMap<String, Configuration> interestedEvents = new HashMap<String, Configuration>();
-		if(getConfigurationValue(ContainerConstant.CT_INTRSDEVNTS) != null) {
+		/*if(getConfigurationValue(ContainerConstant.CT_INTRSDEVNTS) != null) {
 			interestedEvents = (HashMap<String, Configuration>) getConfigurationValue(ContainerConstant.CT_INTRSDEVNTS);
-		}
+		}*/
 		return interestedEvents;
 	}
 	
@@ -113,7 +115,7 @@ public class GridComponentPresenter extends BaseComponentPresenter implements En
 	}
 	
 	
-	public interface GridComponentConstant extends BaseComponentConstant {
+	public interface GridComponentConstant extends BaseComponentConstant{
 		String GC_SNIPPETTYPE = "gridSnippetType";
 		String GC_INSTANCETYPE = "gridSnippetInstanceType";
 		String GC_NO_OF_COLS = "noOfColumns";

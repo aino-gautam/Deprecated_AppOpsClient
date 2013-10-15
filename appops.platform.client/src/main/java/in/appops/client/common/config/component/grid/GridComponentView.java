@@ -1,9 +1,9 @@
 package in.appops.client.common.config.component.grid;
 
-import in.appops.client.common.config.component.base.BaseComponentView;
+import in.appops.client.common.config.component.base.BaseComponent;
 import in.appops.client.common.config.component.grid.GridComponentPresenter.GridComponentConstant;
 import in.appops.client.common.config.dsnip.HTMLSnippetPresenter;
-import in.appops.client.common.config.dsnip.SnippetGenerator;
+import in.appops.client.common.config.dsnip.DynamicMVPFactory;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.util.EntityList;
@@ -17,7 +17,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasAlignment;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
-public class GridComponentView extends BaseComponentView implements ScrollHandler  {
+public class GridComponentView extends BaseComponent implements ScrollHandler  {
 	
 	private ScrollPanel gridScrollPanel;
 	protected FlowPanel gridFlowPanel;
@@ -79,8 +79,8 @@ public class GridComponentView extends BaseComponentView implements ScrollHandle
 	 */
 	private String getGridPanelPrimCss() {
 		String primaryCss = "gridPanelCss";
-		if(getConfigurationValue(GridComponentConstant.GC_PANEL_CSS) != null) {
-			primaryCss = getConfigurationValue(GridComponentConstant.GC_PANEL_CSS).toString();
+		if(viewConfiguration.getConfigurationValue(GridComponentConstant.GC_PANEL_CSS) != null) {
+			primaryCss = viewConfiguration.getConfigurationValue(GridComponentConstant.GC_PANEL_CSS).toString();
 		}
 		return primaryCss;
 	}
@@ -91,8 +91,8 @@ public class GridComponentView extends BaseComponentView implements ScrollHandle
 	 */
 	private String getGridAlignmemt() {
 		String align = "vertical";
-		if(getConfigurationValue(GridComponentConstant.GC_ALIGN) != null) {
-			align = getConfigurationValue(GridComponentConstant.GC_ALIGN).toString();
+		if(viewConfiguration.getConfigurationValue(GridComponentConstant.GC_ALIGN) != null) {
+			align = viewConfiguration.getConfigurationValue(GridComponentConstant.GC_ALIGN).toString();
 		}
 		return align;
 	}
@@ -103,8 +103,8 @@ public class GridComponentView extends BaseComponentView implements ScrollHandle
 	 */
 	private String getScrollPanelCss() {
 		String scrollPanelCss = "scrollPanelCss";
-		if(getConfigurationValue(GridComponentConstant.SCROLL_PANEL_CSS) != null) {
-			scrollPanelCss = getConfigurationValue(GridComponentConstant.SCROLL_PANEL_CSS).toString();
+		if(viewConfiguration.getConfigurationValue(GridComponentConstant.SCROLL_PANEL_CSS) != null) {
+			scrollPanelCss = viewConfiguration.getConfigurationValue(GridComponentConstant.SCROLL_PANEL_CSS).toString();
 		}
 		return scrollPanelCss;
 	}
@@ -115,8 +115,8 @@ public class GridComponentView extends BaseComponentView implements ScrollHandle
 	 */
 	private Integer getScrollPanelWidth() {
 		Integer width = null;
-		if(getConfigurationValue(GridComponentConstant.SCROLL_PANEL_WIDTH) != null) {
-			width = (Integer) getConfigurationValue(GridComponentConstant.SCROLL_PANEL_WIDTH);
+		if(viewConfiguration.getConfigurationValue(GridComponentConstant.SCROLL_PANEL_WIDTH) != null) {
+			width = (Integer) viewConfiguration.getConfigurationValue(GridComponentConstant.SCROLL_PANEL_WIDTH);
 		}
 		return width;
 	}
@@ -127,8 +127,8 @@ public class GridComponentView extends BaseComponentView implements ScrollHandle
 	 */
 	private Integer getScrollPanelHeight() {
 		Integer height = null;
-		if(getConfigurationValue(GridComponentConstant.SCROLL_PANEL_HEIGHT) != null) {
-			height = (Integer) getConfigurationValue(GridComponentConstant.SCROLL_PANEL_HEIGHT);
+		if(viewConfiguration.getConfigurationValue(GridComponentConstant.SCROLL_PANEL_HEIGHT) != null) {
+			height = (Integer) viewConfiguration.getConfigurationValue(GridComponentConstant.SCROLL_PANEL_HEIGHT);
 		}
 		return height;
 	}
@@ -197,15 +197,15 @@ public class GridComponentView extends BaseComponentView implements ScrollHandle
 		for (int index = 0; index < entityList.size(); index++) {
 			Entity entity = entityList.get(index);
 			HTMLSnippetPresenter snippetPres = getChildSnippet();
-			snippetPres.setEntity(entity);
-			snippetPres.load();
+//			snippetPres.setEntity(entity);
+//			snippetPres.load();
 			gridFlowPanel.add(snippetPres.getView());
 		}
 	}
 	
 	private HTMLSnippetPresenter getChildSnippet() {
 		AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
-		SnippetGenerator snippetGenerator = (SnippetGenerator)injector.getSnippetGenerator();
+		DynamicMVPFactory snippetGenerator = (DynamicMVPFactory)injector.getMVPFactory();
 		HTMLSnippetPresenter snippetPres = snippetGenerator.requestHTMLSnippet(snippetType, instanceType);
 		return snippetPres;
 	}
@@ -213,8 +213,8 @@ public class GridComponentView extends BaseComponentView implements ScrollHandle
 
 	private String getInstanceType() {
 		String instanceType = null;
-		if(getConfigurationValue(GridComponentConstant.GC_INSTANCETYPE) != null) {
-			instanceType = getConfigurationValue(GridComponentConstant.GC_INSTANCETYPE).toString();
+		if(viewConfiguration.getConfigurationValue(GridComponentConstant.GC_INSTANCETYPE) != null) {
+			instanceType = viewConfiguration.getConfigurationValue(GridComponentConstant.GC_INSTANCETYPE).toString();
 		}
 		return instanceType;
 	}
@@ -222,8 +222,8 @@ public class GridComponentView extends BaseComponentView implements ScrollHandle
 
 	private String getSnippetType() {
 		String snippetType = null;
-		if(getConfigurationValue(GridComponentConstant.GC_SNIPPETTYPE) != null) {
-			snippetType = getConfigurationValue(GridComponentConstant.GC_SNIPPETTYPE).toString();
+		if(viewConfiguration.getConfigurationValue(GridComponentConstant.GC_SNIPPETTYPE) != null) {
+			snippetType = viewConfiguration.getConfigurationValue(GridComponentConstant.GC_SNIPPETTYPE).toString();
 		}
 		return snippetType;
 	}
@@ -234,8 +234,8 @@ public class GridComponentView extends BaseComponentView implements ScrollHandle
 	 */
 	private Integer getNoOfColumns() {
 		Integer noOfColumns = 0;
-		if(getConfigurationValue(GridComponentConstant.GC_NO_OF_COLS) != null) {
-			noOfColumns = (Integer) getConfigurationValue(GridComponentConstant.GC_NO_OF_COLS);
+		if(viewConfiguration.getConfigurationValue(GridComponentConstant.GC_NO_OF_COLS) != null) {
+			noOfColumns = (Integer) viewConfiguration.getConfigurationValue(GridComponentConstant.GC_NO_OF_COLS);
 		}
 		return noOfColumns;
 	}
