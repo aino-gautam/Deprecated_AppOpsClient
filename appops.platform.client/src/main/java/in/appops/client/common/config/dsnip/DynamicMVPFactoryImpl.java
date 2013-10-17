@@ -1,10 +1,9 @@
 package in.appops.client.common.config.dsnip;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.RootPanel;
-
 import in.appops.client.common.config.component.base.BaseComponent;
 import in.appops.client.common.config.component.base.BaseComponentPresenter;
+import in.appops.client.common.config.component.list.ListComponentPresenter;
+import in.appops.client.common.config.component.list.ListComponentView;
 import in.appops.client.common.config.field.ActionField;
 import in.appops.client.common.config.field.ButtonField;
 import in.appops.client.common.config.field.FieldPresenter;
@@ -20,6 +19,9 @@ import in.appops.client.common.config.model.ConfigurationListModel;
 import in.appops.client.common.config.model.IsConfigurationModel;
 import in.appops.client.common.config.model.PropertyModel;
 import in.appops.client.common.fields.htmleditor.HtmlEditorField;
+
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.RootPanel;
 
 
 /**
@@ -59,7 +61,7 @@ public class DynamicMVPFactoryImpl implements DynamicMVPFactory {
 			return new PageSnippetModel();
 		} else if(type.equals(HTMLSNIPPET)) {
 			return new HTMLSnippetModel();
-		} else if(type.equals(COMPONENT)) {
+		} else if(type.equals(LISTCOMPONENT)) {
 			return new ConfigurationListModel();
 		}
 		return null;
@@ -93,6 +95,8 @@ public class DynamicMVPFactoryImpl implements DynamicMVPFactory {
 			return new ImageField();
 		}else if(type.equalsIgnoreCase(TOGGLEIMAGEFIELD)) {
 			return new ToggleImageField();
+		}else if(type.equalsIgnoreCase(LISTCOMPONENT)) {
+			return new ListComponentView();
 		}
 		return null;
 	}
@@ -107,6 +111,20 @@ public class DynamicMVPFactoryImpl implements DynamicMVPFactory {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	@Override
+	public BaseComponentPresenter requestComponent(String type, String instance) {
+		try{
+			if(type.equalsIgnoreCase(LISTCOMPONENT)) {
+				return new ListComponentPresenter(type, instance);
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		return null;
 	}
 	
 

@@ -1,6 +1,7 @@
 package in.appops.client.common.config.dsnip;
 
 import in.appops.client.common.config.component.base.BaseComponent;
+import in.appops.client.common.config.component.base.BaseComponentPresenter;
 import in.appops.client.common.config.field.FieldPresenter;
 import in.appops.client.common.config.model.IsConfigurationModel;
 import in.appops.client.common.config.model.PropertyModel;
@@ -22,6 +23,7 @@ public interface DynamicMVPFactory {
 	String IMAGEFIELD = "imageField";
 	String TOGGLEIMAGEFIELD = "toggleImageField";
 	String FIELD = "FIELD";
+	String LISTCOMPONENT = "listComponent";
 
 	PageSnippetPresenter requestPageSnippet();
 
@@ -32,4 +34,6 @@ public interface DynamicMVPFactory {
 	IsConfigurationModel requestModel(String type);
 	
 	BaseComponent requestView(String type);
+
+	BaseComponentPresenter requestComponent(String type, String instance);
 }
