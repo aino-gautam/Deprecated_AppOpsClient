@@ -3,6 +3,7 @@ package in.appops.client.common.config.field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import in.appops.client.common.config.model.PropertyModel;
 import in.appops.platform.core.util.AppOpsException;
 
 import com.google.gwt.user.client.ui.DockPanel;
@@ -62,8 +63,14 @@ public class LabelField extends BaseField  {
 	public void configure() {
 		try {
 			super.configure();
-			setValue(getDisplayText());
-			// label.setWordWrap(isWordWrap());
+			
+			if(getDefaultValue() != null) {
+				setValue(getDefaultValue());
+			} else if(getBindProperty() != null && !getBindProperty().toString().equals("")){
+				Object value = ((PropertyModel)model).getPropertyValue(getBindProperty());
+				setValue(value);
+			}
+			
 			label.setTitle(getLblTitle());
 
 			if (getBaseFieldPrimCss() != null)
@@ -85,24 +92,6 @@ public class LabelField extends BaseField  {
 	}
 	
 	/**************** **********************/
-	/**
-	 * Method returns diplaytext for label.
-	 * @return
-	 */
-	private String getDisplayText() {
-		
-		String displayTxt = "";
-		try {
-			logger.log(Level.INFO,"[LabelField]:: In getDisplayText  method ");
-			if(viewConfiguration.getConfigurationValue(LabelFieldConstant.LBLFD_DISPLAYTXT) != null) {
-				
-				displayTxt = viewConfiguration.getConfigurationValue(LabelFieldConstant.LBLFD_DISPLAYTXT).toString();
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[LabelField]::Exception In getDisplayText  method :"+e);
-		}
-		return displayTxt;
-	}
 	
 	/**
 	 * Method returns title for the label.
