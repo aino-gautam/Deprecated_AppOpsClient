@@ -3,11 +3,11 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 	<link type="text/css" rel="stylesheet" href="AppOpsClient.css">
-	<link type="text/css" rel="stylesheet" href= "style.css">
+	<link type="text/css" rel="stylesheet" href= "DynamicUIShowcase.css">
 	<script type="text/javascript" language="javascript" src="dynamicsnippet/dynamicsnippet.nocache.js"></script>
-	<script type="text/javascript" language="javascript" src="dsnipresource/PageCache.js"></script>
-	<script type="text/javascript" language="javascript" src="dsnipresource/PageTestSnippet.js"></script>
-	<script type="text/javascript" language="javascript" src="dsnipresource/PageTestConfig.js"></script>
+	<script type="text/javascript" language="javascript" src="dsnipresource/ShowcaseEntityCache.js"></script>
+	<script type="text/javascript" language="javascript" src="dsnipresource/ShowcaseSnippet.js"></script>
+	<script type="text/javascript" language="javascript" src="dsnipresource/ShowcasePageConfig.js"></script>
 </head>
 <body>
  	<iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
@@ -18,8 +18,8 @@
         in order for this application to display correctly.
       </div>
     </noscript>
-	<span id="page" componentType="page" name="pageTest" data-config = "pageConfig" >
-		<div class="art-sheet clearfix">
+	<span id="page" componentType="page" name="DynamicUIShowcase" data-config = "pageConfig" >
+		<div class="showcase-sheet">
 			<header>
 				<h1 style="color:#2E8B57; margin:0px;"> Dynamic UI Configurator </h1>
 				<h3 style="color:#2E8B57; margin: 0px 0px 1em 0px;"> Showcase of component configurations </h3>
@@ -34,35 +34,20 @@
 					</tr>
 		
 					<tr align="center">
-		
 						<td width="20%" align="center" style="overflow-y: auto;">
-							<table>
-								<tr>
-									<td> <img src="http://etc-mysitemyway.s3.amazonaws.com/icons/legacy-previews/icons/glossy-black-icons-media/003334-glossy-black-icon-media-a-media22-arrow-forward1.png" alt="Smiley face" height="42" width="42"></td>
-									<td> Name of widget </td>
-								</tr>
-								<tr>
-									<td> 
-										<ol>
-											<li>Fields</li>
-											<li>Lists</li>
-											<li>Menu</li>
-										</ol>
-									</td>
-								</tr>
-							</table>
+							<span id="componentCategories" componentType="htmlSnippet" type="componentCategoriesSnippet" data-config="componentCategoriesSnippetConfig" />
 						</td>
 		
 						<td width="40%">
-							<p>second column.</p>
+							
 						</td>
 						<td width="40%">
-							<p>third column.</p>
+							
 						</td>
 					</tr>
 				</table>
 			</div>
-	</div>
+		</div>
 	</span>
 </body>
 </html>

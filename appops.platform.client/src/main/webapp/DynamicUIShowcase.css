@@ -1,0 +1,25 @@
+.showcase-sheet {
+   margin:0 auto;
+   position:relative;
+   cursor:auto;
+   width: 800px;
+   z-index: auto !important;
+}
+
+.disclosureLabel {
+	color: #1982D1;
+	clear: both;
+	font-size: 12px;
+	line-height: 18px;
+	font-weight: bold;
+	padding-right: 10px;
+}
+
+.disclosureImage{
+	cursor: pointer;
+	cursor: hand;
+	border-radius: 5px;
+	height: 24px;
+	width: 24px;
+	
+}
