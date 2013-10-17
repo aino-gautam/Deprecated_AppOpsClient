@@ -3,7 +3,6 @@ package in.appops.client.common.config.dsnip;
 import in.appops.client.common.config.component.base.BaseComponent;
 import in.appops.client.common.config.component.base.BaseComponentPresenter;
 import in.appops.client.common.config.field.FieldPresenter;
-import in.appops.client.common.config.model.ConfigurationModel;
 import in.appops.client.common.config.model.PropertyModel;
 import in.appops.client.common.core.EntityReceiver;
 import in.appops.platform.core.entity.Entity;
@@ -15,11 +14,9 @@ import java.util.Map;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.DockPanel.DockLayoutConstant;
 
 public class HTMLSnippetView extends BaseComponent implements EntityReceiver {
 	protected HTMLPanel snippetPanel;
@@ -87,33 +84,22 @@ public class HTMLSnippetView extends BaseComponent implements EntityReceiver {
 					Node node = nodeList.getItem(i);
 					Element spanElement = (Element) Element.as(node); 
 					if(spanElement != null) {
+						String dataConfig = spanElement.getAttribute(DATA_CONFIG);
 						
 						if (spanElement.hasAttribute(COMPONENT_TYPE)) {
+							BaseComponentPresenter componentPresenter = null; 
 							if(spanElement.getAttribute(COMPONENT_TYPE).equalsIgnoreCase(APPOPS_FIELD)) {
-								String dataConfig = spanElement.getAttribute(DATA_CONFIG);
-	
 								PropertyModel propertyModel = ((HTMLSnippetModel) model).getPropertyModel();
-								FieldPresenter fieldPresenter = mvpFactory.requestField(spanElement.getAttribute(TYPE), dataConfig, propertyModel);
-								if(fieldPresenter != null) {
-									fieldPresenter.create();
-									elementMap.put(dataConfig, fieldPresenter);
-									snippetPanel.addAndReplaceElement(fieldPresenter.getView().asWidget(), spanElement);
-								}
+								componentPresenter = mvpFactory.requestField(spanElement.getAttribute(TYPE), dataConfig, propertyModel);
 							} else if(spanElement.getAttribute(COMPONENT_TYPE).equalsIgnoreCase(APPOPS_COMPONENT)) {
-							/*BaseComponentPresenter compPres = componentFactory.getComponent(spanElement.getAttribute("widgetType"));
-							String dataConfig = spanElement.getAttribute("data-config");
-							
-							if(viewConfiguration.getConfigurationValue(dataConfig) != null) {
-								Configuration compConfig = (Configuration) viewConfiguration.getConfigurationValue(dataConfig);
-								compPres.setConfiguration(compConfig);
-								compPres.initialize();
-
-								compPres.configure();
-								BaseComponentView component = compPres.getView();
-								snippetElementMap.put(spanElement.getId(), component);
-								snippetPanel.addAndReplaceElement(component, spanElement);
-							}*/
+								componentPresenter = mvpFactory.requestComponent(spanElement.getAttribute(TYPE), dataConfig);
 							}
+							if(componentPresenter != null) {
+								componentPresenter.create();
+								elementMap.put(dataConfig, componentPresenter);
+								snippetPanel.addAndReplaceElement(componentPresenter.getView().asWidget(), spanElement);
+							}
+
 						}
 					}
 				}
