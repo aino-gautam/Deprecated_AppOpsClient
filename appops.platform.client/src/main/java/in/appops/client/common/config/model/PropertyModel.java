@@ -5,6 +5,7 @@ package in.appops.client.common.config.model;
 
 import in.appops.client.common.config.dsnip.event.EventActionRuleMap;
 import in.appops.client.common.config.util.Store;
+import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.shared.Configuration;
 
@@ -117,6 +118,12 @@ public class PropertyModel extends AppopsBaseModel implements IsConfigurationMod
 	public void setConfiguration(Configuration conf) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public Object getPropertyValue(String property) {
+		Entity entity = parentEntityModel.getEntity();
+		Serializable value = entity.getPropertyByName(property); 
+		return value;
 	}
 	
 }

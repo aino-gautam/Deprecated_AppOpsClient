@@ -14,11 +14,7 @@ import java.util.Set;
 public class EntityModel extends AppopsBaseModel {
 	
 	private EntityReceiver receiver;
-	private Entity currentEntity;
-	
-	public void updateProperty(Property prop){
-		currentEntity.setProperty(prop);
-	}
+	private Entity entity;
 	
 	public void fetchEntity() {
 		if(queryName != null) {
@@ -47,9 +43,9 @@ public class EntityModel extends AppopsBaseModel {
 						interestedQueryList.add(querypPointer);
 					}
 						
-					currentEntity = globalEntityCache.getEntity(query);
-					if(currentEntity != null) {
-						receiver.onEntityReceived(currentEntity);
+					setEntity(globalEntityCache.getEntity(query));
+					if(getEntity() != null) {
+						receiver.onEntityReceived(getEntity());
 					}
 					executeQuery(query);
 				}
@@ -64,8 +60,8 @@ public class EntityModel extends AppopsBaseModel {
 	@Override
 	public void onQueryUpdated(String query, Serializable data) {
 		if(isInterestingQuery(query)) {
-			currentEntity = (Entity)data;
-			receiver.onEntityReceived(currentEntity);
+			setEntity((Entity)data);
+			receiver.onEntityReceived(getEntity());
 		}
 	}
 	
@@ -73,11 +69,11 @@ public class EntityModel extends AppopsBaseModel {
 		return receiver;
 	}
 
-	public Entity getCurrentEntity() {
-		return currentEntity;
+	public Entity getEntity() {
+		return entity;
 	}
 
-	public void setCurrentEntity(Entity entity) {
-		this.currentEntity = entity;
+	public void setEntity(Entity entity) {
+		this.entity = entity;
 	}
 }

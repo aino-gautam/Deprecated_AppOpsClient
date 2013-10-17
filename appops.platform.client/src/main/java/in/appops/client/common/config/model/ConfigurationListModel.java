@@ -1,11 +1,12 @@
 package in.appops.client.common.config.model;
 
-import java.io.Serializable;
-
+import in.appops.client.common.config.component.list.ListComponentPresenter.ListComponentConstant;
 import in.appops.client.common.config.dsnip.event.EventActionRuleMap;
 import in.appops.client.common.config.util.Store;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityGraphException;
+
+import java.io.Serializable;
 
 public class ConfigurationListModel extends EntityListModel implements IsConfigurationModel{
 
@@ -163,4 +164,20 @@ public class ConfigurationListModel extends EntityListModel implements IsConfigu
 		return instance;
 	}
 
+	public String getSnippetInstance() {
+		String snippetInstance = null;
+		if(configuration.getConfigurationValue(ListComponentConstant.LC_INSTANCETYPE) != null) {
+			snippetInstance = configuration.getConfigurationValue(ListComponentConstant.LC_INSTANCETYPE).toString();
+		}
+		return snippetInstance;
+	}
+
+
+	public String getSnippetType() {
+		String snippetType = null;
+		if(configuration.getConfigurationValue(ListComponentConstant.LC_SNIPPETTYPE) != null) {
+			snippetType = configuration.getConfigurationValue(ListComponentConstant.LC_SNIPPETTYPE).toString();
+		}
+		return snippetType;
+	}
 }
