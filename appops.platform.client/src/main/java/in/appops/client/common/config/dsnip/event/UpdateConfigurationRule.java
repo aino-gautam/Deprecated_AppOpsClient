@@ -25,8 +25,8 @@ public class UpdateConfigurationRule extends EventActionRule {
 	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	public static final String CONFIGURATION_TO_UPDATE = "ConfigurationToUpdate";
-	public static final String HAS_UPDATE_CONFIGURATION	 = "HasUpdateConfiguration";
+	public static final String CONFIGURATION_TO_UPDATE = "Configuration_to_update";
+	public static final String HAS_UPDATE_CONFIGURATION	 = "Has_update_configuration";
 
 	public Boolean hasConfigurationUpdation() {
 		return this.getPropertyByName(HAS_UPDATE_CONFIGURATION);

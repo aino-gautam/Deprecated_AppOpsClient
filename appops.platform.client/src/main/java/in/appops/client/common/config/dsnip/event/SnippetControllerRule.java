@@ -12,10 +12,10 @@ public class SnippetControllerRule extends EventActionRule {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public static final String HAS_TRANSFORMATION = "HasTransformation";
-	public static final String TRANSFORM_TO_SNIPPET = "TransformToSnippet";
-	public static final String TRANSFORM_TO_SNIPPET_INSTANCE = "TransformToSnippetInstance";
-	public static final String TRANSFORM_FROM_SNIPPET = "TransformFromSnippet";
+	public static final String HAS_TRANSFORMATION = "Has_transformation";
+	public static final String TRANSFORM_TO_SNIPPET = "Transform_to_snippet";
+	public static final String TRANSFORM_TO_SNIPPET_INSTANCE = "Transform_to_snippet_instance";
+	public static final String TRANSFORM_FROM_SNIPPET = "Transform_from_snippet";
 	
 	public Boolean hasTransformation() {
 		return getPropertyByName(HAS_TRANSFORMATION);
