@@ -1,3 +1,23 @@
+h1 {
+	color:#2E8B57; 
+	margin:0px;
+}
+h3 {
+	color:#2E8B57; 
+	margin: 0px 0px 1em 0px;
+}
+.mainTable{
+	width:100%; 
+	border: 1px solid #A7C942; 
+	border-collapse: collapse;
+}
+.mainTable-firstRow{
+	background-color:#A7C942;
+	height:35px; 
+	font-size: 16px; 
+	color:white; 
+	padding: 5px 0px 4px 0px;
+}
 .showcase-sheet {
    margin:0 auto;
    position:relative;
