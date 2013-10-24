@@ -213,9 +213,9 @@
 		<!-- Appops server jars -->
 
 		<dependency>
-			<groupId>vikram_appops_platform</groupId>
+			<groupId>appops_platform</groupId>
 			<artifactId>appdefinition</artifactId>
-			<version>05.10.2013</version>
+			<version>24.10.2013</version>
 		</dependency>
 
 
@@ -232,8 +232,8 @@
 		
 		<dependency>
 			<groupId>appops_platform</groupId>
-			<artifactId> configuration</artifactId>
-			<version>21.09.2013</version>
+			<artifactId>configuration</artifactId>
+			<version> 24.10.2013</version>
 		</dependency>
 		
 		<dependency>
@@ -249,9 +249,9 @@
 		</dependency> -->
 
 		<dependency>
-			<groupId>milind_appops_platform</groupId>
+			<groupId>appops_platform</groupId>
 			<artifactId>core</artifactId>
-			<version>14.09.2013</version>
+			<version>24.10.2013</version>
 		</dependency>
 
 		<dependency>
