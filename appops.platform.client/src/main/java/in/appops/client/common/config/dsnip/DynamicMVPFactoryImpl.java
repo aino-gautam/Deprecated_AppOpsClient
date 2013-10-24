@@ -2,6 +2,8 @@ package in.appops.client.common.config.dsnip;
 
 import in.appops.client.common.config.component.base.BaseComponent;
 import in.appops.client.common.config.component.base.BaseComponentPresenter;
+import in.appops.client.common.config.component.editor.ConfigEditorComponentPresenter;
+import in.appops.client.common.config.component.editor.ConfigEditorComponentView;
 import in.appops.client.common.config.component.list.ListComponentPresenter;
 import in.appops.client.common.config.component.list.ListComponentView;
 import in.appops.client.common.config.field.ActionField;
@@ -16,6 +18,7 @@ import in.appops.client.common.config.field.date.DateLabelField;
 import in.appops.client.common.config.field.spinner.SpinnerField;
 import in.appops.client.common.config.field.textfield.TextField;
 import in.appops.client.common.config.model.ConfigurationListModel;
+import in.appops.client.common.config.model.ConfigurationModel;
 import in.appops.client.common.config.model.IsConfigurationModel;
 import in.appops.client.common.config.model.PropertyModel;
 import in.appops.client.common.fields.htmleditor.HtmlEditorField;
@@ -64,6 +67,8 @@ public class DynamicMVPFactoryImpl implements DynamicMVPFactory {
 			return new HTMLSnippetModel();
 		} else if(type.equals(LISTCOMPONENT)) {
 			return new ConfigurationListModel();
+		} else if(type.equals(CONFIGEDITORCOMPONENT)) {
+			return new ConfigurationModel();
 		}
 		return null;
 	}
@@ -98,6 +103,8 @@ public class DynamicMVPFactoryImpl implements DynamicMVPFactory {
 			return new ToggleImageField();
 		}else if(type.equalsIgnoreCase(LISTCOMPONENT)) {
 			return new ListComponentView();
+		}else if(type.equalsIgnoreCase(CONFIGEDITORCOMPONENT)) {
+			return new ConfigEditorComponentView();
 		}
 		return null;
 	}
@@ -119,6 +126,8 @@ public class DynamicMVPFactoryImpl implements DynamicMVPFactory {
 		try{
 			if(type.equalsIgnoreCase(LISTCOMPONENT)) {
 				return new ListComponentPresenter(type, instance);
+			}else if(type.equalsIgnoreCase(CONFIGEDITORCOMPONENT)) {
+				return new ConfigEditorComponentPresenter(type, instance);
 			}
 		}
 		catch (Exception e) {

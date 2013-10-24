@@ -24,6 +24,7 @@ public interface DynamicMVPFactory {
 	String TOGGLEIMAGEFIELD = "toggleImageField";
 	String FIELD = "FIELD";
 	String LISTCOMPONENT = "listComponent";
+	String CONFIGEDITORCOMPONENT = "configEditorComponent";
 
 	PageSnippetPresenter requestPageSnippet();
 
