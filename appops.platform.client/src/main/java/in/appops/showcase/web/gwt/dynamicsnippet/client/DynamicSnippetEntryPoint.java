@@ -2,6 +2,7 @@ package in.appops.showcase.web.gwt.dynamicsnippet.client;
 
 import in.appops.client.common.config.cache.GlobalEntityCache;
 import in.appops.client.common.config.dsnip.ApplicationContext;
+import in.appops.client.common.config.dsnip.Context;
 import in.appops.client.common.config.dsnip.DynamicMVPFactory;
 import in.appops.client.common.config.dsnip.PageSnippetPresenter;
 import in.appops.client.common.config.dsnip.event.EventActionRuleMap;
@@ -22,7 +23,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
 
 public class DynamicSnippetEntryPoint implements EntryPoint{
-	
+
 	@Override
 	public void onModuleLoad() {
 		//createJsonConfiguration();
@@ -33,12 +34,12 @@ public class DynamicSnippetEntryPoint implements EntryPoint{
 	private void createJsonConfiguration() {
 		Configuration pageConfiguration = new Configuration();
 		pageConfiguration.setType(new MetaType("config"));
-		
+
 		EventActionRuleMap eventActionRuleMap = new EventActionRuleMap();
 		eventActionRuleMap.setType(new MetaType("eventActionRuleMap"));
-		
+
 		EventActionRulesList eventActionRulesList = new EventActionRulesList();
-		
+
 		SnippetControllerRule snippetControllerRule = new SnippetControllerRule();
 		snippetControllerRule.setType(new MetaType("snippetControllerRule"));
 		snippetControllerRule.addEventActionRule(SnippetControllerRule.HAS_TRANSFORMATION, true);
@@ -46,11 +47,11 @@ public class DynamicSnippetEntryPoint implements EntryPoint{
 		snippetControllerRule.addEventActionRule(SnippetControllerRule.TRANSFORM_TO_SNIPPET, "newHeaderFooterSnippet");
 		snippetControllerRule.addEventActionRule(SnippetControllerRule.TRANSFORM_TO_SNIPPET_INSTANCE, "newHeaderFooterSnippetConfig");
 		eventActionRulesList.addEventActionRule(snippetControllerRule);
-		
+
 		eventActionRuleMap.addEventActionRules("onToggleHeader", eventActionRulesList);
 
 		pageConfiguration.setProperty("eventActionRuleMap", eventActionRuleMap);
-		
+
 		JSONObject pageJsonObject = EntityToJsonClientConvertor.createJsonFromEntity(pageConfiguration);
 		System.out.println(pageJsonObject.toString());
 	}
@@ -72,9 +73,12 @@ public class DynamicSnippetEntryPoint implements EntryPoint{
 		processor.processPageDescription();		*/
 
 		AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
-		DynamicMVPFactory snippetGenerator = (DynamicMVPFactory)injector.getMVPFactory();
+		DynamicMVPFactory snippetGenerator = injector.getMVPFactory();
 
 		PageSnippetPresenter snippetPres = snippetGenerator.requestPageSnippet();
+		Context pageContext = new Context();
+		snippetPres.getModel().setContext(pageContext);
+		snippetPres.configure();
 		snippetPres.create();
 	}
 
@@ -96,11 +100,11 @@ public class DynamicSnippetEntryPoint implements EntryPoint{
 		Configuration appContextConfig = Store.getFromConfigurationStore("applicationContext");
 		if(appContextConfig != null) {
 			ArrayList<String> contextParamList = appContextConfig.getPropertyByName("contextparam");
-	
+
 			for (String param : contextParamList) {
 				ApplicationContext.getInstance().setPropertyByName(param, null);
 			}
 		}
 	}
-	
+
 }

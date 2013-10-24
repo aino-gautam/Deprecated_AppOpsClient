@@ -1,9 +1,10 @@
 package in.appops.client.common.config.field;
 
-import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -30,17 +31,17 @@ toggleImageField.setConfiguration(conf);<br>
 toggleImageField.configure();<br>
 toggleImageField.create();<br>
 </p>*/
- 
+
 @SuppressWarnings("rawtypes")
 public class ToggleImageField extends BaseField implements ValueChangeHandler{
 
 	private ToggleButton toggleButton ;
 	private Image upStateImage;
 	private Image downStateImage;
-	private Logger logger = Logger.getLogger(getClass().getName());
+	private final Logger logger = Logger.getLogger(getClass().getName());
 
 	public ToggleImageField(){
-		
+
 	}
 
 	/******************************** ****************************************/
@@ -63,30 +64,31 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 	 */
 	@Override
 	public void configure() {
+		super.configure();
 		try {
 			logger.log(Level.INFO, "[ToggleImageField] ::In configure method ");
-			
+
 			upStateImage = getStateImage(getUpStateImageUrl());
 			downStateImage = getStateImage(getDwnStateImageUrl());
 			toggleButton = new ToggleButton(upStateImage, downStateImage);
-			
+
 			setToggleImageTitle(getUpStateImageTitle());
-			
+
 			if(getBaseFieldPrimCss()!=null)
-				toggleButton.setStylePrimaryName(getBaseFieldPrimCss());		
+				toggleButton.setStylePrimaryName(getBaseFieldPrimCss());
 			if(getBaseFieldDependentCss()!=null)
 				toggleButton.addStyleName(getBaseFieldDependentCss());
-			
+
 			if (getBasePanelPrimCss() != null)
 				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
 			if (getBasePanelDependentCss() != null)
 				getBasePanel().addStyleName(getBasePanelDependentCss());
-			
+
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ToggleImageField] ::Exception in configure method :"+e);
 		}
 	}
-	
+
 	/**
 	 * Method sets the title to toggle image .
 	 * @param title
@@ -96,27 +98,27 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 			toggleButton.setTitle(title);
 		}
 	}
-	
+
 	/**
 	 * Method creates image, get styles from configuration and set it to image and return that image instance.
 	 * @param upStateImageUrl.
 	 * @return stateImage
 	 */
 	private Image getStateImage(String upStateImageUrl) {
-		
+
 		Image stateImage = new Image();
 		stateImage.setUrl(upStateImageUrl);
 		if (getStateImagePrimaryCss()!= null)
 			stateImage.setStylePrimaryName(getStateImagePrimaryCss());
-		
+
 		if (getStateImageDependentCss()!= null)
 			stateImage.setStylePrimaryName(getStateImageDependentCss());
-		
+
 		return stateImage;
 	}
 
 	/**
-	 * Overriden method from BaseField sets the value to toggleImageField, if value is true then it press the toggle button 
+	 * Overriden method from BaseField sets the value to toggleImageField, if value is true then it press the toggle button
 	 * also fires valueChangeEvent.
 	 */
 	@Override
@@ -124,7 +126,7 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 		try {
 			logger.log(Level.INFO, "[ToggleImageField] ::In setValue method ");
 			super.setValue(value);
-			
+
 			boolean isUp =  Boolean.valueOf(value.toString());
 			toggleButton.setValue(!isUp, true);
 
@@ -132,7 +134,7 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 			logger.log(Level.SEVERE,"[ToggleImageField]::Exception In setValue  method :"+e);
 		}
 	}
-	
+
 	/**
 	 * Overriden method from BaseField returns whether toggleImageField is currently down or not.
 	 */
@@ -147,9 +149,9 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 		}
 		return isUp;
 	}
-	
+
 	/*********************** *****************************/
-	
+
 	/**
 	 * Method gets the up-state image url from configuration.
 	 * @return up-state image url.
@@ -166,7 +168,7 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 		}
 		return url;
 	}
-	
+
 	/**
 	 * Method gets the down-state image url from configuration.
 	 * @return down-state image url.
@@ -183,7 +185,7 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 		}
 		return url;
 	}
-	
+
 	/**
 	 * Method gets the up-state image title from configuration.
 	 * @return down-state image title.
@@ -200,7 +202,7 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 		}
 		return title;
 	}
-	
+
 	/**
 	 * Method gets the down-state image title from configuration.
 	 * @return down-state image title.
@@ -217,7 +219,7 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 		}
 		return title;
 	}
-	
+
 	/**
 	 * Method gets the state image primary css from configuration.
 	 * @return state image primary css.
@@ -234,8 +236,8 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 		}
 		return pcls;
 	}
-	
-	
+
+
 	/**
 	 * Method gets the state image dependent css from configuration.
 	 * @return state image dependent css.
@@ -252,7 +254,7 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 		}
 		return dcls;
 	}
-	
+
 	/******************************************************************/
 	/**
 	 * Method sets the title to image and fires VALUECHANGED event.
@@ -262,46 +264,45 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 		try {
 			logger.log(Level.INFO, "[ToggleImageField] ::In onValueChange method ");
 			if(event.getSource().equals(toggleButton)){
+				FieldEvent fieldEvent = new FieldEvent();
 				if(toggleButton.isDown()){
 					setToggleImageTitle(getDwnStateImageTitle());
+					fieldEvent.setEventType(FieldEvent.TOGGLE_DOWN);
 				}else{
 					setToggleImageTitle(getUpStateImageTitle());
+					fieldEvent.setEventType(FieldEvent.TOGGLE_UP);
 				}
-				
-				FieldEvent fieldEvent = new FieldEvent();
-				fieldEvent.setEventType(fieldEvent.VALUECHANGED);
-				fieldEvent.setEventData(!toggleButton.isDown());
 				fieldEvent.setEventSource(this);
-				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+				fireLocalEvent(fieldEvent);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ToggleImageField] ::Exception in onValueChange method :"+e);
 		}
 	}
-	
-		
+
+
 	/***************************   ***********************************************/
-	
+
 	public interface ToggleImageFieldConstant  extends BaseFieldConstant{
-		
+
 		/**  Specifies the up-state image url. ****/
 		public static final String TIMGFD_UPSTATE_URL = "upStateUrl";
-		
+
 		/**  Specifies the down-state image url. ****/
 		public static final String TIMGFD_DWNSTATE_URL = "downStateUrl";
-		
+
 		/**  Specifies up-state image title ****/
 		public static final String TIMGFD_UPSTATE_TITLE = "upStateTitle";
-		
+
 		/**  Specifies down-state image title ****/
 		public static final String TIMGFD_DWNSTATE_TITLE = "downStateTitle";
-		
+
 		/**  Specifies the primary css style to be used for state image field. ****/
 		public static final String TIMGFD_STATEIMG_PCLS = "stateImgPrimaryCss";
-		
+
 		/**  Specifies the dependent css style to be used for state image field. ****/
 		public static final String TIMGFD_STATEIMG_DCLS = "stateImgDependentCss";
-		
+
 	}
-	
+
 }

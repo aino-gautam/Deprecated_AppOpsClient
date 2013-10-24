@@ -1,5 +1,9 @@
 package in.appops.client.common.config.dsnip.event;
 
+import in.appops.platform.core.entity.Property;
+import in.appops.platform.core.shared.Configuration;
+
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
@@ -10,13 +14,15 @@ import java.util.HashMap;
 public class UpdateConfigurationRule extends EventActionRule {
 
 	public interface UpdateConfigurationRuleConstant {
-		String EVENTDATA = "evt";
+		String EVENTDATA = "@eventdata";
 		String SEPERATOR = ".";
-		String APPCONTEXT = "ac";
+		String APPCONTEXT = "@applicationcontext";
+		String CURRENTENTITY = "@currententity";
+		String PARENTENTITY = "@parententity";
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	public static final String CONFIGURATION_TO_UPDATE = "ConfigurationToUpdate";
@@ -26,7 +32,9 @@ public class UpdateConfigurationRule extends EventActionRule {
 		return this.getPropertyByName(HAS_UPDATE_CONFIGURATION);
 	}
 
-	public HashMap<String, Object> getConfigurationToUpdateMap() {
-		return this.getPropertyByName(CONFIGURATION_TO_UPDATE);
+	public HashMap<String, Property<? extends Serializable>> getConfigurationToUpdateMap() {
+		Configuration configurationToUpdate = (Configuration) this.getProperty(CONFIGURATION_TO_UPDATE);
+
+		return configurationToUpdate.getValue();
 	}
 }

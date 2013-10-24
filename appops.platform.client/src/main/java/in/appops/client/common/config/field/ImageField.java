@@ -1,9 +1,10 @@
 package in.appops.client.common.config.field;
 
-import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -54,7 +55,7 @@ public class ImageField extends BaseField implements ClickHandler{
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ImageField] ::Exception in create method :"+e);
 		}
-	  
+
 	}
 
 	/**
@@ -66,37 +67,37 @@ public class ImageField extends BaseField implements ClickHandler{
 		try {
 			super.configure();
 			image.setVisible(isFieldVisible());
-			
+
 			if(getImageBlobId()!=null)
 				image.setUrl(getImageBlobId());
 			if(getImageTitle()!=null)
 				image.setTitle(getImageTitle());
 			if(getBaseFieldPrimCss()!=null)
-				image.setStylePrimaryName(getBaseFieldPrimCss());		
+				image.setStylePrimaryName(getBaseFieldPrimCss());
 			if(getBaseFieldDependentCss()!=null)
 				image.addStyleName(getBaseFieldDependentCss());
-			
+
 			if (getBasePanelPrimCss() != null)
 				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
 			if (getBasePanelDependentCss() != null)
 				getBasePanel().addStyleName(getBasePanelDependentCss());
-			
+
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ImageField] ::Exception in configure method :"+e);
 		}
 	}
-	
+
 	/**
 	 * Method removed registered handlers from field
 	 */
 	@Override
 	public void removeRegisteredHandlers() {
-		
+
 		if(clickHandler!=null)
 			clickHandler.removeHandler();
-		
+
 	}
-	
+
 	/**
 	 * Overriden method from BaseField sets the value to image.
 	 */
@@ -109,7 +110,7 @@ public class ImageField extends BaseField implements ClickHandler{
 			logger.log(Level.SEVERE,"[ImageField]::Exception In setValue  method :"+e);
 		}
 	}
-	
+
 	/**
 	 * Overriden method from BaseField returns the converted field value.
 	 */
@@ -123,7 +124,7 @@ public class ImageField extends BaseField implements ClickHandler{
 		}
 		return value;
 	}
-	
+
 	/**
 	 * Overriden method from BaseField returns the url of image.
 	 */
@@ -138,7 +139,7 @@ public class ImageField extends BaseField implements ClickHandler{
 		}
 		return value;
 	}
-	
+
 	/**
 	 * Overriden method from BaseField sets the url to image.
 	 */
@@ -151,9 +152,9 @@ public class ImageField extends BaseField implements ClickHandler{
 			logger.log(Level.SEVERE,"[ImageField]::Exception In setFieldValue  method :"+e);
 		}
 	}
-	
+
 	/*********************** *****************************/
-	
+
 	/**
 	 * Method return the image blobId.
 	 * @return
@@ -170,8 +171,8 @@ public class ImageField extends BaseField implements ClickHandler{
 		}
 		return blobId;
 	}
-	
-	
+
+
 	/**
 	 * Method return the image title.
 	 * @return
@@ -188,35 +189,35 @@ public class ImageField extends BaseField implements ClickHandler{
 		}
 		return title;
 	}
-	
+
 	@Override
 	public void onClick(ClickEvent event) {
 		try {
 			logger.log(Level.INFO, "[ImageField] ::In onClick method ");
 			if(event.getSource().equals(image)){
 				FieldEvent fieldEvent = new FieldEvent();
-				fieldEvent.setEventType(fieldEvent.CLICKED);
+				fieldEvent.setEventType(FieldEvent.CLICKED);
 				fieldEvent.setEventSource(this);
-				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+				fireLocalEvent(fieldEvent);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ImageField] ::Exception in onClick method :"+e);
 		}
-		
-	}
-	
-	/***************************   ***********************************************/
-	
-	public interface ImageFieldConstant  extends BaseFieldConstant{
-		
-		/**  Specifies the title to be displayed on the image ****/
-		public static final String IMGFD_TITLE = "title";
-		
-		/**  Specifies the image blobId ****/
-		public static final String IMGFD_BLOBID = "blobId";
-		
+
 	}
 
-	
+	/***************************   ***********************************************/
+
+	public interface ImageFieldConstant  extends BaseFieldConstant{
+
+		/**  Specifies the title to be displayed on the image ****/
+		public static final String IMGFD_TITLE = "title";
+
+		/**  Specifies the image blobId ****/
+		public static final String IMGFD_BLOBID = "blobId";
+
+	}
+
+
 
 }

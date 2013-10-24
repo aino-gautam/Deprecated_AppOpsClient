@@ -7,19 +7,45 @@
 }
 
 .disclosureLabel {
-	color: #1982D1;
+	/* color: #1982D1;
 	clear: both;
 	font-size: 12px;
 	line-height: 18px;
 	font-weight: bold;
-	padding-right: 10px;
+	padding-right: 10px; */
+	padding-left: 3px;
+	padding-right: 3px;
+	outline: none;
 }
 
-.disclosureImage{
-	cursor: pointer;
+.disclosureImage {
+	left: 0px;
+	height: 15px;
+	width: 15px;
+	position: absolute;
+}
+
+.disclosureSnippetUpper1 {
+	font-weight: bold;
+	color: #4B4A4A;
+	margin-top: 20px;
+	padding: 3px 13px 3px 10px !important;
+}
+
+.disclosureSnippetUpper2 {
 	cursor: hand;
-	border-radius: 5px;
-	height: 24px;
-	width: 24px;
-	
+	cursor: pointer;
+	zoom: 1;
+}
+
+.disclosureSnippetUpper3 {
+	border-bottom: 1px solid #6F7277;
+}
+
+.componentSnippet1 {
+	padding-top: 4px;
+	padding-bottom: 4px;
+	cursor: hand;
+	cursor: pointer;
+	zoom: 1;
 }

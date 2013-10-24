@@ -552,10 +552,10 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 			
 			
 			if(getSpinnerType() == SpinnerFieldConstant.SP_TYPENUMERIC) {
-				setModel(new NumericModel());
+				setSpinnerModel(new NumericModel());
 				configureForNumber();
 			} else {
-				setModel(new ListModel());
+				setSpinnerModel(new ListModel());
 				configureForList();
 			}
 			configureModel();
@@ -706,7 +706,7 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 			logger.log(Level.INFO, "[SpinnerField] ::In setSpinnerValue method ");
 			if(getModel() instanceof NumericModel) {
 				NumericModel numModel = (NumericModel)getModel();
-				setValue(numModel.fixPrecision(numModel.parseValue(getModel().getValue().toString()), getPrecision()));
+				setValue(numModel.fixPrecision(numModel.parseValue(getSpinnerModel().getValue().toString()), getPrecision()));
 			} else if(getModel() instanceof ListModel) {
 				ListModel listModel = (ListModel)getModel();
 				setValue(listModel.getValue().toString());
@@ -719,7 +719,7 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 	private void onSpinUp() {
 		try {
 			logger.log(Level.INFO, "[SpinnerField] ::In onSpinUp method ");
-			getModel().spinUp();
+			getSpinnerModel().spinUp();
 			setSpinnerValue();
 
 			if(isValidateOnChange()) {
@@ -738,7 +738,7 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 	private void onSpinDown() {
 		try {
 			logger.log(Level.INFO, "[SpinnerField] ::In onSpinDown method ");
-			getModel().spinDown();
+			getSpinnerModel().spinDown();
 			setSpinnerValue();
 
 			if(isValidateOnChange()) {
@@ -861,7 +861,7 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 			logger.log(Level.INFO, "[SpinnerField] ::In updateModel method ");
 			if(getModel() instanceof NumericModel) {
 				NumericModel numModel = (NumericModel)getModel();
-				getModel().setValue(numModel.parseValue(getValue().toString()));
+				getSpinnerModel().setValue(numModel.parseValue(getValue().toString()));
 			} else if(getModel() instanceof ListModel) {
 				ListModel listModel = (ListModel)getModel();
 				int indx = listModel.getValueList().indexOf(getValue().toString());
@@ -1010,12 +1010,12 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 	}
 
 
-	public SpinnerModel getModel() {
+	public SpinnerModel getSpinnerModel() {
 		return model;
 	}
 
 
-	public void setModel(SpinnerModel model) {
+	public void setSpinnerModel(SpinnerModel model) {
 		this.model = model;
 	}
 

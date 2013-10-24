@@ -30,9 +30,9 @@ public interface DynamicMVPFactory {
 	HTMLSnippetPresenter requestHTMLSnippet(String type, String instance);
 
 	FieldPresenter requestField(String type, String instance, PropertyModel model);
-	
+
 	IsConfigurationModel requestModel(String type);
-	
+
 	BaseComponent requestView(String type);
 
 	BaseComponentPresenter requestComponent(String type, String instance);

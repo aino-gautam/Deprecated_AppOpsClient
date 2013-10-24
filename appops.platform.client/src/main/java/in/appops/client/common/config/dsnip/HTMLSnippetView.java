@@ -2,7 +2,8 @@ package in.appops.client.common.config.dsnip;
 
 import in.appops.client.common.config.component.base.BaseComponent;
 import in.appops.client.common.config.component.base.BaseComponentPresenter;
-import in.appops.client.common.config.field.FieldPresenter;
+import in.appops.client.common.config.model.ConfigurationModel;
+import in.appops.client.common.config.model.IsConfigurationModel;
 import in.appops.client.common.config.model.PropertyModel;
 import in.appops.client.common.core.EntityReceiver;
 import in.appops.platform.core.entity.Entity;
@@ -21,7 +22,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class HTMLSnippetView extends BaseComponent implements EntityReceiver {
 	protected HTMLPanel snippetPanel;
 	protected Map<String, BaseComponentPresenter> elementMap = new HashMap<String, BaseComponentPresenter>();
-	
+
 	private String snippetType;
 	private final String SPAN = "span";
 	private final String APPOPS_FIELD = "appopsField";
@@ -30,17 +31,17 @@ public class HTMLSnippetView extends BaseComponent implements EntityReceiver {
 	protected final String COMPONENT_TYPE = "componentType";
 	protected final String TYPE = "type";
 	protected final String DATA_CONFIG = "data-config";
-	
+
 	@Override
 	public void initialize() {
 		super.initialize();
 		String snippetDescription = ((HTMLSnippetModel) model).getDescription(snippetType);
 		//((HTMLSnippetModel) model).setReceiver(this);
 		snippetPanel = new HTMLPanel(snippetDescription) {
-			
+
 			@Override
 			public void addAndReplaceElement(Widget widget, com.google.gwt.user.client.Element toReplace) {
-				
+
 				if (toReplace == widget.getElement()) {
 					return;
 				}
@@ -70,24 +71,24 @@ public class HTMLSnippetView extends BaseComponent implements EntityReceiver {
 		};
 		basePanel.add(snippetPanel, DockPanel.CENTER);
 	}
-	
+
 	@Override
 	public void create() {
 		try {
-			
-			NodeList<Element> nodeList =  getAllSpanNodes(); 
+
+			NodeList<Element> nodeList =  getAllSpanNodes();
 
 			if(nodeList != null) {
-				
+
 				int lengthOfNodes = nodeList.getLength();
-				for (int i = lengthOfNodes - 1; i > -1; i--) { 
+				for (int i = lengthOfNodes - 1; i > -1; i--) {
 					Node node = nodeList.getItem(i);
-					Element spanElement = (Element) Element.as(node); 
+					Element spanElement = Element.as(node);
 					if(spanElement != null) {
 						String dataConfig = spanElement.getAttribute(DATA_CONFIG);
-						
+
 						if (spanElement.hasAttribute(COMPONENT_TYPE)) {
-							BaseComponentPresenter componentPresenter = null; 
+							BaseComponentPresenter componentPresenter = null;
 							if(spanElement.getAttribute(COMPONENT_TYPE).equalsIgnoreCase(APPOPS_FIELD)) {
 								PropertyModel propertyModel = ((HTMLSnippetModel) model).getPropertyModel();
 								componentPresenter = mvpFactory.requestField(spanElement.getAttribute(TYPE), dataConfig, propertyModel);
@@ -95,6 +96,16 @@ public class HTMLSnippetView extends BaseComponent implements EntityReceiver {
 								componentPresenter = mvpFactory.requestComponent(spanElement.getAttribute(TYPE), dataConfig);
 							}
 							if(componentPresenter != null) {
+								componentPresenter.getView().setLocalEventBus(localEventBus);
+
+								Context componentContext = new Context();
+								componentContext.setParentEntity(((ConfigurationModel)model).getEntity());
+								String componentContextPath = !model.getContext().getContextPath().equals("") ?
+										model.getContext().getContextPath() + IsConfigurationModel.SEPARATOR + model.getInstance() : model.getInstance();
+								componentContext.setContextPath(componentContextPath);
+								componentPresenter.getModel().setContext(componentContext);
+
+								componentPresenter.configure();
 								componentPresenter.create();
 								elementMap.put(dataConfig, componentPresenter);
 								snippetPanel.addAndReplaceElement(componentPresenter.getView().asWidget(), spanElement);
@@ -110,7 +121,7 @@ public class HTMLSnippetView extends BaseComponent implements EntityReceiver {
 	}
 
 	/**
-	 * Returns <span> elements. 
+	 * Returns <span> elements.
 	 */
 	protected NodeList<com.google.gwt.dom.client.Element> getAllSpanNodes() {
 		try {
@@ -122,21 +133,22 @@ public class HTMLSnippetView extends BaseComponent implements EntityReceiver {
 			return null;
 		}
 	}
-	
-	
+
+
 	/**
-	 * Method configures the html snippet. 
+	 * Method configures the html snippet.
 	 */
+	@Override
 	public void configure() {
 		super.configure();
-		
+
 		/*
 		 * TODO set configurations for snippet panel if any
 		 */
 		/*if(viewConfiguration.getConfigurationValue(HTMLSnippetConstant.HS_PCLS) != null) {
 			this.setStylePrimaryName(viewConfiguration.getConfigurationValue(HTMLSnippetConstant.HS_PCLS).toString());
 		}
-		
+
 		if(viewConfiguration.getConfigurationValue(HTMLSnippetConstant.HS_DCLS) != null) {
 			this.addStyleName(viewConfiguration.getConfigurationValue(HTMLSnippetConstant.HS_DCLS).toString());
 		}*/
@@ -146,28 +158,24 @@ public class HTMLSnippetView extends BaseComponent implements EntityReceiver {
 		return elementMap;
 	}
 
-	public void setElementMap(Map<String, BaseComponentPresenter> snippetElement) {
-		this.elementMap = snippetElement;
-	}
-
 	@Override
 	public void noMoreData() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onEntityReceived(Entity entity) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onEntityUpdated(Entity entity) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	public void addAndReplaceElement(Widget widget, Element toReplace) {
 		snippetPanel.addAndReplaceElement(widget, toReplace);
 	}

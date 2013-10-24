@@ -2,6 +2,7 @@ package in.appops.client.common.config.component.list;
 
 import in.appops.client.common.config.component.base.BaseComponent;
 import in.appops.client.common.config.component.list.ListComponentPresenter.ListComponentConstant;
+import in.appops.client.common.config.dsnip.Context;
 import in.appops.client.common.config.dsnip.HTMLSnippetPresenter;
 import in.appops.client.common.config.model.ConfigurationListModel;
 import in.appops.client.common.config.model.ConfigurationModel;
@@ -26,7 +27,7 @@ public class ListComponentView extends BaseComponent implements EntityListReceiv
 		scrollPanel = new ScrollPanel(listPanel);
 		((ConfigurationListModel)model).setReceiver(this);
 	}
-	
+
 	@Override
 	public void configure() {
 		super.configure();
@@ -62,10 +63,15 @@ public class ListComponentView extends BaseComponent implements EntityListReceiv
 		for(Entity entity : entityList){
 			HTMLSnippetPresenter snippetPres  = getChildSnippet();
 			((ConfigurationModel)snippetPres.getModel()).setEntity(entity);
+
+			Context componentContext = new Context();
+			snippetPres.getModel().setContext(componentContext);
+
+			snippetPres.configure();
 			snippetPres.create();
 			listPanel.setWidget(row, 0, snippetPres.getView());
 			row++;
-		}		
+		}
 	}
 
 	@Override

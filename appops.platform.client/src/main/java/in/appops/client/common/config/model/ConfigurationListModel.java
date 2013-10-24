@@ -1,6 +1,7 @@
 package in.appops.client.common.config.model;
 
 import in.appops.client.common.config.component.list.ListComponentPresenter.ListComponentConstant;
+import in.appops.client.common.config.dsnip.Context;
 import in.appops.client.common.config.dsnip.event.EventActionRuleMap;
 import in.appops.client.common.config.util.Store;
 import in.appops.platform.core.shared.Configuration;
@@ -13,57 +14,56 @@ public class ConfigurationListModel extends EntityListModel implements IsConfigu
 	private Configuration configuration;
 	private Configuration listModelConfiguration;
 	private String instance;
+	private Context context;
 
-	public ConfigurationListModel(){
-		
-	}
-	
 	/**
-	 * loads a configuration object based on the instance id 
-	 * @param instance - String instanceId 
+	 * loads a configuration object based on the instance id
+	 * @param instance - String instanceId
 	 */
 	@Override
-	public void loadInstanceConfiguration(){
-		configuration = Store.getFromConfigurationStore(instance);
+	public void loadInstanceConfiguration() {
+		if(configuration == null) {
+			configuration = Store.getContextConfiguration(context.getContextPath() + SEPARATOR + instance);
+		}
 	}
-	
+
 	/**
 	 * Fetches the model configurations from the configuration object
 	 * @return {@link Configuration}
 	 */
 	@Override
-	public Configuration getModelConfiguration(){
+	public Configuration getModelConfiguration() {
 		if(configuration.getConfigurationValue(CONFIG_MODEL) != null) {
 			return (Configuration)configuration.getConfigurationValue(CONFIG_MODEL);
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Fetches the view configurations from the configuration object
 	 * @return {@link Configuration}
 	 */
 	@Override
-	public Configuration getViewConfiguration(){
+	public Configuration getViewConfiguration() {
 		if(configuration.getConfigurationValue(CONFIG_VIEW) != null) {
 			return (Configuration)configuration.getConfigurationValue(CONFIG_VIEW);
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Fetches the {@klink EventActionRuleMap} from the configuration object
-	 * @return {@klink EventActionRuleMap} 
+	 * @return {@klink EventActionRuleMap}
 	 */
 	@Override
 	public EventActionRuleMap getEventActionRuleMap(){
 		if(configuration.getConfigurationValue(CONFIG_EVENTACTIONRULEMAP) != null) {
-			return (EventActionRuleMap) configuration.getConfigurationValue(CONFIG_EVENTACTIONRULEMAP); 
+			return (EventActionRuleMap) configuration.getConfigurationValue(CONFIG_EVENTACTIONRULEMAP);
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
 	public void updateConfiguration(String key, Object value) {
 		try {
@@ -89,12 +89,12 @@ public class ConfigurationListModel extends EntityListModel implements IsConfigu
 			setQueryParameters(getQueryParameters());
 		}
 		setCacheable(isCacheable());
-		
+
 		if(isCacheable()) {
 			globalEntityCache.register(this);
 		}
 	}
-	
+
 	public String getOperationName() {
 		String operation = null;
 		if(listModelConfiguration.getConfigurationValue(AppopsModelConstant.ABM_OPR_NM) != null) {
@@ -110,7 +110,7 @@ public class ConfigurationListModel extends EntityListModel implements IsConfigu
 		}
 		return queryName;
 	}
-	
+
 	public Configuration getQueryParameters() {
 		Configuration param = null;
 		if(listModelConfiguration.getConfigurationValue(AppopsModelConstant.ABM_QRY_PARAM) != null) {
@@ -118,7 +118,7 @@ public class ConfigurationListModel extends EntityListModel implements IsConfigu
 		}
 		return param;
 	}
-	
+
 
 	private Boolean isCacheable() {
 		Boolean param = true;
@@ -127,7 +127,7 @@ public class ConfigurationListModel extends EntityListModel implements IsConfigu
 		}
 		return param;
 	}
-	
+
 	public Configuration getOperationParameters() {
 		Configuration param = null;
 		if(listModelConfiguration.getConfigurationValue(AppopsModelConstant.ABM_OPR_PARAM) != null) {
@@ -135,7 +135,7 @@ public class ConfigurationListModel extends EntityListModel implements IsConfigu
 		}
 		return param;
 	}
-	
+
 	public Boolean hasQueryParam() {
 		Boolean param = null;
 		if(listModelConfiguration.getConfigurationValue(AppopsModelConstant.ABM_HAS_QRYPARAM) != null) {
@@ -179,5 +179,15 @@ public class ConfigurationListModel extends EntityListModel implements IsConfigu
 			snippetType = configuration.getConfigurationValue(ListComponentConstant.LC_SNIPPETTYPE).toString();
 		}
 		return snippetType;
+	}
+
+	@Override
+	public void setContext(Context context) {
+		this.context = context;
+	}
+
+	@Override
+	public Context getContext() {
+		return context;
 	}
 }

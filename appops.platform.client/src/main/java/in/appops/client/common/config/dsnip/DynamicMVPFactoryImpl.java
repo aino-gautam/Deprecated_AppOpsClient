@@ -25,12 +25,13 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 
 /**
- * @author nitish@ensarm.com	
+ * @author nitish@ensarm.com
  * Class that will be responsible for return proper instance {@link HTMLSnippetPresenter}
  * Depending on the type of the html.
  */
 public class DynamicMVPFactoryImpl implements DynamicMVPFactory {
 
+	@Override
 	public HTMLSnippetPresenter requestHTMLSnippet(String type, String instance) {
 		try{
 			HTMLSnippetPresenter snippetPresenter = null;
@@ -54,7 +55,7 @@ public class DynamicMVPFactoryImpl implements DynamicMVPFactory {
 		PageSnippetPresenter pageSnippetPresenter = (PageSnippetPresenter)requestHTMLSnippet(PAGE, pageSpan.getAttribute("data-config"));
 		return pageSnippetPresenter;
 	}
-	
+
 	@Override
 	public IsConfigurationModel requestModel(String type) {
 		if(type.equals(PAGE)) {
@@ -112,7 +113,7 @@ public class DynamicMVPFactoryImpl implements DynamicMVPFactory {
 			return null;
 		}
 	}
-	
+
 	@Override
 	public BaseComponentPresenter requestComponent(String type, String instance) {
 		try{
@@ -126,6 +127,6 @@ public class DynamicMVPFactoryImpl implements DynamicMVPFactory {
 		}
 		return null;
 	}
-	
+
 
 }

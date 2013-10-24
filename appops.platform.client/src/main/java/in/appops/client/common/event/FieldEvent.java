@@ -9,7 +9,7 @@ public class FieldEvent extends GwtEvent<FieldEventHandler> {
 	protected int eventType;
 	protected Object eventData = null;
 	protected Object eventSource = null;
-	
+
 	public static final int EDITINITIATED = 1;
 	public static final int EDITINPROGRESS = 2;
 	public static final int EDITCOMPLETED = 3;
@@ -40,21 +40,23 @@ public class FieldEvent extends GwtEvent<FieldEventHandler> {
 	public static final int BREACRUMBUPDATE = 37;
 	public static final int BREACRUMBHIERARCHYUPDATE = 38;
 	public static final int SELECTION_EVENT=39;
+	public static final int TOGGLE_UP = 40 ;
+	public static final int TOGGLE_DOWN = 41;
 
-	
+
 	public static Type<FieldEventHandler> TYPE = new Type<FieldEventHandler>();
-	
-	
+
+
 	public FieldEvent(){
-		
+
 	}
 
 	public FieldEvent(int type, Object data){
 		this.eventType = type;
 		this.eventData = data;
 	}
-	
-	
+
+
 	@Override
 	public void dispatch(FieldEventHandler handler) {
 		handler.onFieldEvent(this);
@@ -64,19 +66,19 @@ public class FieldEvent extends GwtEvent<FieldEventHandler> {
 	public Type<FieldEventHandler> getAssociatedType() {
 		return TYPE;
 	}
-	
+
 	public int getEventType() {
 		return eventType;
 	}
-	
+
 	public void setEventType(int eventType) {
 		this.eventType = eventType;
 	}
-	
+
 	public Object getEventData() {
 		return eventData;
 	}
-	
+
 	public void setEventData(Object eventData) {
 		this.eventData = eventData;
 	}

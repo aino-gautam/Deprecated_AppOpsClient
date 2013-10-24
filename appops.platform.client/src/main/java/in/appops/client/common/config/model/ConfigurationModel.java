@@ -1,5 +1,6 @@
 package in.appops.client.common.config.model;
 
+import in.appops.client.common.config.dsnip.Context;
 import in.appops.client.common.config.dsnip.event.EventActionRuleMap;
 import in.appops.client.common.config.util.Store;
 import in.appops.platform.core.shared.Configuration;
@@ -8,7 +9,7 @@ import in.appops.platform.core.util.EntityGraphException;
 import java.io.Serializable;
 
 /**
- * 
+ *
  * @author nairutee
  *
  */
@@ -16,16 +17,20 @@ public class ConfigurationModel extends EntityModel implements IsConfigurationMo
 	protected Configuration configuration;
 	protected Configuration modelConfiguration;
 	private String instance;
-	
+	private Context context;
+
 	/**
-	 * loads a configuration object based on the instance id 
-	 * @param instance - String instanceId 
+	 * loads a configuration object based on the instance id
+	 * @param instance - String instanceId
 	 */
 	@Override
 	public void loadInstanceConfiguration() {
-		configuration = Store.getFromConfigurationStore(instance);
+		if(configuration == null) {
+			String storePath = !context.getContextPath().equals("") ? context.getContextPath() + SEPARATOR + instance : instance;
+			configuration = Store.getFromConfigurationStore(storePath);
+		}
 	}
-	
+
 	/**
 	 * Fetches the model configurations from the configuration object
 	 * @return {@link Configuration}
@@ -37,7 +42,7 @@ public class ConfigurationModel extends EntityModel implements IsConfigurationMo
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Fetches the view configurations from the configuration object
 	 * @return {@link Configuration}
@@ -49,15 +54,15 @@ public class ConfigurationModel extends EntityModel implements IsConfigurationMo
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Fetches the {@klink EventActionRuleMap} from the configuration object
-	 * @return {@klink EventActionRuleMap} 
+	 * @return {@klink EventActionRuleMap}
 	 */
 	@Override
 	public EventActionRuleMap getEventActionRuleMap(){
 		if(configuration.getConfigurationValue(CONFIG_EVENTACTIONRULEMAP) != null) {
-			return (EventActionRuleMap) configuration.getConfigurationValue(CONFIG_EVENTACTIONRULEMAP); 
+			return (EventActionRuleMap) configuration.getConfigurationValue(CONFIG_EVENTACTIONRULEMAP);
 		}
 		return null;
 	}
@@ -70,7 +75,7 @@ public class ConfigurationModel extends EntityModel implements IsConfigurationMo
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * configures the model configurations such as query name, query params, op name and op params
 	 */
@@ -91,13 +96,13 @@ public class ConfigurationModel extends EntityModel implements IsConfigurationMo
 				setQueryParameters(getQueryParameters());
 			}
 			setCacheable(isCacheable());
-			
+
 			if(isCacheable()) {
 				globalEntityCache.register(this);
 			}
 		}
 	}
-	
+
 	public String getOperationName() {
 		String operation = null;
 		if(modelConfiguration.getConfigurationValue(AppopsModelConstant.ABM_OPR_NM) != null) {
@@ -113,7 +118,7 @@ public class ConfigurationModel extends EntityModel implements IsConfigurationMo
 		}
 		return queryName;
 	}
-	
+
 	public Configuration getQueryParameters() {
 		Configuration param = null;
 		if(modelConfiguration.getConfigurationValue(AppopsModelConstant.ABM_QRY_PARAM) != null) {
@@ -121,7 +126,7 @@ public class ConfigurationModel extends EntityModel implements IsConfigurationMo
 		}
 		return param;
 	}
-	
+
 
 	private Boolean isCacheable() {
 		Boolean param = true;
@@ -130,7 +135,7 @@ public class ConfigurationModel extends EntityModel implements IsConfigurationMo
 		}
 		return param;
 	}
-	
+
 	public Configuration getOperationParameters() {
 		Configuration param = null;
 		if(modelConfiguration.getConfigurationValue(AppopsModelConstant.ABM_OPR_PARAM) != null) {
@@ -138,7 +143,7 @@ public class ConfigurationModel extends EntityModel implements IsConfigurationMo
 		}
 		return param;
 	}
-	
+
 	public Boolean hasQueryParam() {
 		Boolean param = null;
 		if(modelConfiguration.getConfigurationValue(AppopsModelConstant.ABM_HAS_QRYPARAM) != null) {
@@ -165,17 +170,26 @@ public class ConfigurationModel extends EntityModel implements IsConfigurationMo
 	@Override
 	public void setConfiguration(Configuration conf) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 	/**
-	 * instantiate a property model with a reference to the entity model and the property it binds to. 
+	 * instantiate a property model with a reference to the entity model and the property it binds to.
 	 * @param prop
 	 * @return
 	 */
-	public PropertyModel getPropertyModel(){
+	public PropertyModel getPropertyModel() {
 		PropertyModel propertyModel = new PropertyModel(this);
 		return propertyModel;
 	}
-	
+
+	@Override
+	public void setContext(Context context) {
+		this.context = context;
+	}
+
+	@Override
+	public Context getContext() {
+		return context;
+	}
 }

@@ -1,29 +1,31 @@
 /**
- * 
+ *
  */
 package in.appops.client.common.config.model;
 
+import in.appops.client.common.config.dsnip.Context;
 import in.appops.client.common.config.dsnip.event.EventActionRuleMap;
 import in.appops.client.common.config.util.Store;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.EntityGraphException;
 
 import java.io.Serializable;
 
 /**
  * @author mahesh@ensarm.com / nairutee@ensarm.com
- * 
+ *
  *
  */
 public class PropertyModel extends AppopsBaseModel implements IsConfigurationModel {
-	
-	private ConfigurationModel parentEntityModel;
-	private Property<Serializable> property;
-	private final String seperator = ".";
-	private String instance;
 
 	private Configuration configuration;
+	private ConfigurationModel parentEntityModel;
+	private Property<Serializable> property;
+	private String instance;
+	private Context context;
+
 	/**
 	 * constructor
 	 */
@@ -31,18 +33,6 @@ public class PropertyModel extends AppopsBaseModel implements IsConfigurationMod
 		this.parentEntityModel = parentEntityModel;
 	}
 
-	/**
-	 * gets the configurations for the property.
-	 * Why would I get the field configuration from the Store, when I have the parentConfiguration available through the parentModel?
-	 * @param contextPath - the context path of the property. 
-	 * @return
-	 */
-	@Deprecated
-	private Configuration getPropertyConfiguration(String contextPath) {
-		Configuration propertyConfig = Store.getContextConfiguration(contextPath);
-		return propertyConfig;
-	}
-		
 	public ConfigurationModel getParentEntityModel() {
 		return parentEntityModel;
 	}
@@ -62,14 +52,16 @@ public class PropertyModel extends AppopsBaseModel implements IsConfigurationMod
 	@Override
 	public void configure() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void loadInstanceConfiguration() {
-		/*String contextPath = parentEntityModel.getInstance() + seperator + getInstance();
-		configuration = getPropertyConfiguration(contextPath);*/
-		configuration = (Configuration) parentEntityModel.getViewConfiguration().getConfigurationValue(instance);
+		//String contextPath = parentEntityModel.getInstance() + seperator + getInstance();
+		if(configuration == null) {
+			configuration = Store.getContextConfiguration(context.getContextPath() + SEPARATOR + instance);
+		}
+		//configuration = (Configuration) parentEntityModel.getViewConfiguration().getConfigurationValue(instance);
 	}
 
 	@Override
@@ -88,14 +80,19 @@ public class PropertyModel extends AppopsBaseModel implements IsConfigurationMod
 
 	@Override
 	public EventActionRuleMap getEventActionRuleMap() {
-		// TODO Auto-generated method stub
+		if(configuration.getConfigurationValue(CONFIG_EVENTACTIONRULEMAP) != null) {
+			return (EventActionRuleMap) configuration.getConfigurationValue(CONFIG_EVENTACTIONRULEMAP);
+		}
 		return null;
 	}
 
 	@Override
 	public void updateConfiguration(String key, Object value) {
-		// TODO Auto-generated method stub
-		
+		try {
+			configuration.setGraphPropertyValue(key, (Serializable)value, null);
+		} catch (EntityGraphException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -117,13 +114,22 @@ public class PropertyModel extends AppopsBaseModel implements IsConfigurationMod
 	@Override
 	public void setConfiguration(Configuration conf) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public Object getPropertyValue(String property) {
 		Entity entity = parentEntityModel.getEntity();
-		Serializable value = entity.getPropertyByName(property); 
+		Serializable value = entity.getPropertyByName(property);
 		return value;
 	}
-	
+
+	@Override
+	public void setContext(Context context) {
+		this.context = context;
+	}
+
+	@Override
+	public Context getContext() {
+		return context;
+	}
 }

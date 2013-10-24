@@ -2,9 +2,12 @@ package in.appops.client.common.config.dsnip;
 
 import in.appops.client.common.config.component.base.BaseComponent.BaseComponentConstant;
 import in.appops.client.common.config.component.base.BaseComponentPresenter;
-import in.appops.client.common.config.dsnip.event.SnippetControllerRule;
+import in.appops.client.common.event.FieldEvent;
+
+import com.google.gwt.event.shared.SimpleEventBus;
 
 public class HTMLSnippetPresenter extends BaseComponentPresenter {
+	private SimpleEventBus localEventBus;
 
 	public interface HTMLSnippetConstant extends BaseComponentConstant {
 		String HS_PCLS = "basePrimaryCss";
@@ -17,17 +20,19 @@ public class HTMLSnippetPresenter extends BaseComponentPresenter {
 
 	@Override
 	protected void initialize() {
-		model = (HTMLSnippetModel) dynamicFactory.requestModel(DynamicMVPFactory.HTMLSNIPPET);
+		localEventBus = injector.getLocalEventBus();
+		model = dynamicFactory.requestModel(DynamicMVPFactory.HTMLSNIPPET);
 		view = dynamicFactory.requestView(DynamicMVPFactory.HTMLSNIPPET);
+		view.setLocalEventBus(localEventBus);
 		view.setModel(model);
 		((HTMLSnippetView) view).setSnippetType(type);
 		view.initialize();
 	}
 
 	@Override
-	public void create() {
-		super.create();
-		
+	public void configure() {
+		super.configure();
+
 		if(model.getModelConfiguration() != null) {
 			String operationName = ((HTMLSnippetModel) model).getOperationName();
 			if(operationName != null && !operationName.equals("")) {
@@ -35,9 +40,19 @@ public class HTMLSnippetPresenter extends BaseComponentPresenter {
 			}
 		}
 	}
+
 	@Override
-	public void processSnippetControllerRule(SnippetControllerRule snippetControllerRule) {
-		// TODO Auto-generated method stub
-		
+	public void create() {
+		super.create();
 	}
+
+	@Override
+	protected void registerHandlers() {
+		super.registerHandlers();
+		if(localEventBus != null) {
+			handlerRegistrationList.add(localEventBus.addHandler(FieldEvent.TYPE, this));
+		}
+	}
+
+
 }
