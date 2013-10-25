@@ -1,6 +1,5 @@
 package in.appops.client.common.config.dsnip;
 
-import in.appops.client.common.config.dsnip.event.SnippetControllerRule;
 import in.appops.platform.core.entity.Property;
 
 import java.io.Serializable;
@@ -31,7 +30,7 @@ public class PageSnippetPresenter extends HTMLSnippetPresenter {
 		RootPanel.get(type).add(view);
 	}
 
-	@Override
+	/*@Override
 	public void processSnippetControllerRule(SnippetControllerRule snippetControllerRule) {
 		boolean transformation = snippetControllerRule.hasTransformation();
 
@@ -62,7 +61,7 @@ public class PageSnippetPresenter extends HTMLSnippetPresenter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	@Override
 	protected	void applyConfiguration(HashMap<String, Property<? extends Serializable>>  preparedConfigMap) {

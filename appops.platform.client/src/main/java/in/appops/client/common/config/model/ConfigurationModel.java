@@ -26,8 +26,12 @@ public class ConfigurationModel extends EntityModel implements IsConfigurationMo
 	@Override
 	public void loadInstanceConfiguration() {
 		if(configuration == null) {
-			String storePath = !context.getContextPath().equals("") ? context.getContextPath() + SEPARATOR + instance : instance;
-			configuration = Store.getFromConfigurationStore(storePath);
+
+			if(context.getContextPath().equals("")) {
+				configuration = Store.getFromConfigurationStore(instance);
+			} else {
+				configuration = Store.getContextConfiguration(context.getContextPath() + SEPARATOR + instance);
+			}
 		}
 	}
 

@@ -1,8 +1,12 @@
 package in.appops.client.common.config.field;
 
 import in.appops.client.common.config.dsnip.ActionEvent;
+import in.appops.client.common.config.dsnip.event.UpdateConfigurationRule.UpdateConfigurationRuleConstant;
+import in.appops.client.common.config.model.PropertyModel;
 import in.appops.client.common.util.EntityToJsonClientConvertor;
+import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.type.MetaType;
+import in.appops.platform.core.util.EntityGraphException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -126,10 +130,11 @@ public class ActionField extends BaseField implements ClickHandler{
 			}
 		}
 		
-		if(getDefaultValue() == null) {
-			setValue("");
-		} else {
+		if(getDefaultValue() != null) {
 			setValue(getDefaultValue().toString());
+		} else if(getBindProperty() != null && !getBindProperty().toString().equals("")){
+			Object value = ((PropertyModel)model).getPropertyValue(getBindProperty());
+			setValue(value);
 		}
 	}
 	
@@ -173,27 +178,35 @@ public class ActionField extends BaseField implements ClickHandler{
 
 	@Override
 	public void onClick(ClickEvent event) {
-		if(getMode() == ActionFieldConstant.TOKEN) {
-			String token = getTokenValue();
-		
-			/*if(bindId != null) {
-				token = token + Long.toString(bindId);
-			} */
+		try {
+			if(getMode() == ActionFieldConstant.TOKEN) {
+				String token = getTokenValue();
 			
-			ActionEvent actionEvent = new ActionEvent();
-			actionEvent.setType(new MetaType("eventData"));
-			actionEvent.setEventName(token);
-			actionEvent.setEventData(entity);
-			
-			JSONObject appEventJson = EntityToJsonClientConvertor.createJsonFromEntity(actionEvent);
-			
-			History.newItem(appEventJson.toString(), true);
-		} else if(getMode() == ActionFieldConstant.PAGE) {
-			String page = getPageValue(); 
-			String moduleUrl = GWT.getHostPageBaseURL();
-			//String pageUrl = moduleUrl + page; // + "?gwt.codesvr=127.0.0.1:9997";
-			String pageUrl = moduleUrl + "render?viewPage=" + page;
-			Window.open(pageUrl, "_self", "");
+				if(token.startsWith(UpdateConfigurationRuleConstant.PARENTENTITY)) {
+
+					String currentEntityProp = token.substring(token.indexOf(UpdateConfigurationRuleConstant.SEPERATOR) + 1);
+					Entity currentEntity = model.getContext().getParentEntity();
+					token = currentEntity.getGraphPropertyValue(currentEntityProp, currentEntity).toString();
+				}
+				
+				ActionEvent actionEvent = new ActionEvent();
+				actionEvent.setType(new MetaType("eventData"));
+				actionEvent.setEventName(token);
+				actionEvent.setEventData(entity);
+				
+				JSONObject appEventJson = EntityToJsonClientConvertor.createJsonFromEntity(actionEvent);
+				
+				History.newItem(appEventJson.toString(), true);
+			} else if(getMode() == ActionFieldConstant.PAGE) {
+				String page = getPageValue(); 
+				String moduleUrl = GWT.getHostPageBaseURL();
+				//String pageUrl = moduleUrl + page; // + "?gwt.codesvr=127.0.0.1:9997";
+				String pageUrl = moduleUrl + "render?viewPage=" + page;
+				Window.open(pageUrl, "_self", "");
+			}
+		} catch (EntityGraphException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	

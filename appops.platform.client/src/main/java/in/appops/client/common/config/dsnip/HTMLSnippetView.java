@@ -94,6 +94,8 @@ public class HTMLSnippetView extends BaseComponent implements EntityReceiver {
 								componentPresenter = mvpFactory.requestField(spanElement.getAttribute(TYPE), dataConfig, propertyModel);
 							} else if(spanElement.getAttribute(COMPONENT_TYPE).equalsIgnoreCase(APPOPS_COMPONENT)) {
 								componentPresenter = mvpFactory.requestComponent(spanElement.getAttribute(TYPE), dataConfig);
+							} else if(spanElement.getAttribute(COMPONENT_TYPE).equalsIgnoreCase(HTMLSNIPPET)) {
+								componentPresenter = mvpFactory.requestHTMLSnippet(spanElement.getAttribute(TYPE), dataConfig);
 							}
 							if(componentPresenter != null) {
 								componentPresenter.getView().setLocalEventBus(localEventBus);

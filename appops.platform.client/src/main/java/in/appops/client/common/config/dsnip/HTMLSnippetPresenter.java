@@ -2,6 +2,9 @@ package in.appops.client.common.config.dsnip;
 
 import in.appops.client.common.config.component.base.BaseComponent.BaseComponentConstant;
 import in.appops.client.common.config.component.base.BaseComponentPresenter;
+import in.appops.client.common.config.dsnip.event.SnippetControllerRule;
+import in.appops.client.common.config.model.ConfigurationModel;
+import in.appops.client.common.config.model.IsConfigurationModel;
 import in.appops.client.common.event.FieldEvent;
 
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -51,6 +54,51 @@ public class HTMLSnippetPresenter extends BaseComponentPresenter {
 		super.registerHandlers();
 		if(localEventBus != null) {
 			handlerRegistrationList.add(localEventBus.addHandler(FieldEvent.TYPE, this));
+		}
+	}
+	
+	@Override
+	public void processSnippetControllerRule(SnippetControllerRule snippetControllerRule) {
+		boolean transformation = snippetControllerRule.hasTransformation();
+
+		if(transformation) {
+			String transformToSnippet = snippetControllerRule.getTransformToSnippet();
+			String transformFromSnippet = snippetControllerRule.getTransformFromSnippet();
+			String snippetInstance = snippetControllerRule.getSnippetInstance();
+
+			createAddSnippet(transformToSnippet, transformFromSnippet, snippetInstance);
+		}
+	}
+	
+	private void createAddSnippet(String transformToSnippet, String transformFromSnippet, String snippetInstance) {
+		try {
+			HTMLSnippetPresenter snippetFrom = null;
+			if(!((HTMLSnippetView) view).getElementMap().isEmpty()) {
+				if(transformFromSnippet == null) {
+					transformFromSnippet =  ((HTMLSnippetView) view).getElementMap().keySet().toArray()[0].toString();
+				}
+				snippetFrom = (HTMLSnippetPresenter) ((HTMLSnippetView) view).getElementMap().get(transformFromSnippet);
+				if(snippetFrom != null) {
+					snippetFrom.removeHandlers();
+					((HTMLSnippetView) view).getElementMap().remove(transformFromSnippet);
+				}
+			}
+
+			HTMLSnippetPresenter snippetTo = dynamicFactory.requestHTMLSnippet(transformToSnippet, snippetInstance);
+			
+			Context componentContext = new Context();
+			componentContext.setParentEntity(((ConfigurationModel)model).getEntity());
+			String componentContextPath = !model.getContext().getContextPath().equals("") ?
+					model.getContext().getContextPath() + IsConfigurationModel.SEPARATOR + model.getInstance() : model.getInstance();
+			componentContext.setContextPath(componentContextPath);
+			snippetTo.getModel().setContext(componentContext);
+			
+			snippetTo.configure();
+			snippetTo.create();
+			((HTMLSnippetView) view).addAndReplaceElement(snippetTo.getView(), snippetFrom.getView().getElement());
+			((HTMLSnippetView) view).getElementMap().put(transformToSnippet, snippetTo);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

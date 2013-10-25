@@ -1,10 +1,10 @@
 package in.appops.client.common.config.field;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import in.appops.client.common.config.model.PropertyModel;
 import in.appops.platform.core.util.AppOpsException;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Label;

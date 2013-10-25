@@ -17,8 +17,44 @@ var snippetStore = {
 
 		componentSnippet: " <div>" + 
 				"				<div style=\"padding-left: 16px;position:relative;\" class=\"componentSnippet1 \">" + 
-				"					<span id=\"componentLabel\" componentType=\"appopsField\" type= \"labelField\" data-config=\"componentLabelConfig\"></span>" + 
+				"					<span id=\"componentLabel\" componentType=\"appopsField\" type= \"actionField\" data-config=\"componentLabelConfig\"></span>" + 
 				"				</div>" + 
 				"			</div>",
+				
+		componentPreviewSnippet: " <div>" + 
+				"						<div style=\"padding-left: 16px;position:relative;\" class=\"componentSnippet1 \">" + 
+				"							<span id=\"defaultPreviewSnippet\" componentType=\"htmlSnippet\" type= \"defaultPreviewSnippet\" data-config=\"defaultPreviewSnippetConfig\"></span>" + 
+				"						</div>" + 
+				" 				   </div>",
+		
+		defaultPreviewSnippet: " <div>" + 
+				"					<div style=\"padding-left: 16px;position:relative;\" class=\"componentSnippet1 \">" + 
+				"						<span id=\"defaultlabelPreview\" componentType=\"appopsField\" type= \"labelField\" data-config=\"defaultLabelPreviewConfig\"></span>" + 
+				"					</div>" + 
+				"			     </div>",
 
+		labelFieldPreviewSnippet: " <div>" + 
+				"					<div style=\"padding-left: 16px;position:relative;\" class=\"componentSnippet1 \">" + 
+				"						<span id=\"labelPreview\" componentType=\"appopsField\" type= \"labelField\" data-config=\"labelFieldPreviewConfig\"></span>" + 
+				"					</div>" + 
+				"			   </div>",
+
+		textFieldPreviewSnippet: " <div>" + 
+				"						<div style=\"padding-left: 16px;position:relative;\" class=\"componentSnippet1 \">" + 
+				"							<span id=\"labelPreview\" componentType=\"appopsField\" type= \"labelField\" data-config=\"labelPreviewConfig\"></span>" + 
+				"						</div>" + 
+				"			   	   </div>",
+		
+		basicImageFieldPreviewSnippet: " <div>" + 
+				"							<div style=\"padding-left: 16px;position:relative;\" class=\"componentSnippet1 \">" + 
+				"								<span id=\"labelPreview\" componentType=\"appopsField\" type= \"labelField\" data-config=\"labelPreviewConfig\"></span>" + 
+				"							</div>" + 
+				"			   			</div>",
+
+		toggleImageFieldPreviewSnippet: " <div>" + 
+				"							<div style=\"padding-left: 16px;position:relative;\" class=\"componentSnippet1 \">" + 
+				"								<span id=\"labelPreview\" componentType=\"appopsField\" type= \"labelField\" data-config=\"labelPreviewConfig\"></span>" + 
+				"							</div>" + 
+				"			   			 </div>",
+		
 };
