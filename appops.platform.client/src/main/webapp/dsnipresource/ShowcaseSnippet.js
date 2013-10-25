@@ -4,6 +4,12 @@ var snippetStore = {
 				"					 		<td> <span id=\"componentCategoriesList\" componentType=\"appopsComponent\" type= \"listComponent\" data-config=\"componentCategoriesListConfig\"></span> </td>" + 
 				"						</tr>" + 
 				"					  </table>",
+				
+		componentConfigEditorSnippet: " <table width=\"400px\">" + 
+				"						<tr>" + 
+				"					 		<td> <span id=\"componentConfigEditor\" componentType=\"appopsComponent\" type= \"configEditorComponent\" data-config=\"componentConfigEditorConfig\"></span> </td>" + 
+				"						</tr>" + 
+				"					  </table>",
 
 		disclosureSnippet: " <div>" + 
 				"				<div style=\"padding-left: 0px;\" class=\"disclosureSnippetUpper1 disclosureSnippetUpper2\">" + 
