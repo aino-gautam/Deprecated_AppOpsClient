@@ -298,9 +298,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>vikram_appops_platform</groupId>
+			<groupId>appops_platform</groupId>
 			<artifactId>useraccount</artifactId>
-			<version>20.06.2013</version>
+			<version>17.10.2013</version>
 		</dependency>
 
 		<dependency>
@@ -431,7 +431,7 @@
 				<version>2.4.0</version>
 
 				<configuration>
-					<runTarget>formSample.html</runTarget>
+					<runTarget>DynamicUIShowcase.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 
 					<!-- what ever is needed to complie we can add them as below here. When 
