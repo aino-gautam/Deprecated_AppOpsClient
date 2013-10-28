@@ -90,13 +90,14 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 * creates the field UI according the configuration set to it;
 	 */
 	public void create() {
-			try {
-				logger.log(Level.INFO, "[TextField] ::In create method ");
-				getBasePanel().add(getWidget(),DockPanel.CENTER);
-			} catch (Exception e) {
-				logger.log(Level.SEVERE, "[TextField] ::Exception In create method "+e);
-				
-			}
+		super.create();
+		try {
+			logger.log(Level.INFO, "[TextField] ::In create method ");
+			getBasePanel().add(getWidget(),DockPanel.CENTER);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[TextField] ::Exception In create method "+e);
+			
+		}
 	}
 	
 	/**
@@ -104,7 +105,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 */
 	@Override
 	public void configure() {
-		
+		super.configure();
 		try {
 			
 			logger.log(Level.INFO, "[TextField] ::In configure method ");                                           

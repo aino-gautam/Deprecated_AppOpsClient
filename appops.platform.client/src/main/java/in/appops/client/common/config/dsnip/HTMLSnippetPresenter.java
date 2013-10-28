@@ -78,25 +78,27 @@ public class HTMLSnippetPresenter extends BaseComponentPresenter {
 					transformFromSnippet =  ((HTMLSnippetView) view).getElementMap().keySet().toArray()[0].toString();
 				}
 				snippetFrom = (HTMLSnippetPresenter) ((HTMLSnippetView) view).getElementMap().get(transformFromSnippet);
-				if(snippetFrom != null) {
+			}
+			
+			if(snippetFrom != null) {
+				HTMLSnippetPresenter snippetTo = dynamicFactory.requestHTMLSnippet(transformToSnippet, snippetInstance);
+				if(snippetTo != null) {
+					Context componentContext = new Context();
+					componentContext.setParentEntity(((ConfigurationModel)model).getEntity());
+					String componentContextPath = !model.getContext().getContextPath().equals("") ?
+							model.getContext().getContextPath() + IsConfigurationModel.SEPARATOR + model.getInstance() : model.getInstance();
+					componentContext.setContextPath(componentContextPath);
+					snippetTo.getModel().setContext(componentContext);
+					
+					snippetTo.configure();
+					snippetTo.create();
+					((HTMLSnippetView) view).addAndReplaceElement(snippetTo.getView(), snippetFrom.getView().getElement());
+
 					snippetFrom.removeHandlers();
 					((HTMLSnippetView) view).getElementMap().remove(transformFromSnippet);
+					((HTMLSnippetView) view).getElementMap().put(transformToSnippet, snippetTo);
 				}
 			}
-
-			HTMLSnippetPresenter snippetTo = dynamicFactory.requestHTMLSnippet(transformToSnippet, snippetInstance);
-			
-			Context componentContext = new Context();
-			componentContext.setParentEntity(((ConfigurationModel)model).getEntity());
-			String componentContextPath = !model.getContext().getContextPath().equals("") ?
-					model.getContext().getContextPath() + IsConfigurationModel.SEPARATOR + model.getInstance() : model.getInstance();
-			componentContext.setContextPath(componentContextPath);
-			snippetTo.getModel().setContext(componentContext);
-			
-			snippetTo.configure();
-			snippetTo.create();
-			((HTMLSnippetView) view).addAndReplaceElement(snippetTo.getView(), snippetFrom.getView().getElement());
-			((HTMLSnippetView) view).getElementMap().put(transformToSnippet, snippetTo);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

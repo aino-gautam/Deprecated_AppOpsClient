@@ -48,6 +48,7 @@ public class ImageField extends BaseField implements ClickHandler{
 	 */
 	@Override
 	public void create() {
+		super.create();
 		try {
 			logger.log(Level.INFO, "[ImageField] ::In create method ");
 			clickHandler = image.addClickHandler(this);
@@ -63,6 +64,7 @@ public class ImageField extends BaseField implements ClickHandler{
 	 */
 	@Override
 	public void configure() {
+		super.configure();
 		logger.log(Level.INFO, "[ImageField] ::In configure method ");
 		try {
 			super.configure();

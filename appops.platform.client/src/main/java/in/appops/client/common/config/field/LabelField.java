@@ -50,7 +50,7 @@ public class LabelField extends BaseField  {
 	 */
 	@Override
 	public void create() {
-		
+		super.create();
 		try {
 			logger.log(Level.INFO,"[LabelField]:: In create  method ");
 			getBasePanel().add(label, DockPanel.CENTER);
