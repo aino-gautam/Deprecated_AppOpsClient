@@ -69,3 +69,38 @@ h3 {
 	cursor: pointer;
 	zoom: 1;
 }
+
+.labelFieldPreview {
+	color: #1982D1;
+	clear: both;
+	font-size: 15px;
+	line-height: 18px;
+	font-weight: bold;
+	padding-right: 10px;
+}
+
+.textFieldPreview {
+	width: 150px;	
+}
+
+.basicImageFieldPreview {
+	left: 0px;
+	height: 48px;
+	width: 48px;
+	position: absolute;
+}
+
+.toggleImageFieldPreview {
+	left: 0px;
+	height: 24px;
+	width: 24px;
+	position: absolute;
+	cursor: hand;
+	cursor: pointer;
+}
+
+.componentLabel {
+	padding-left: 18px;
+	padding-right: 3px;
+	outline: none;
+}

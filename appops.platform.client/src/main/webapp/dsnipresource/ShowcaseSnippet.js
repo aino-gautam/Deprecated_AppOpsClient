@@ -28,39 +28,29 @@ var snippetStore = {
 				"			</div>",
 				
 		componentPreviewSnippet: " <div>" + 
-				"						<div style=\"padding-left: 16px;position:relative;\" class=\"componentSnippet1 \">" + 
+				"						<div style=\"padding-left: 16px;position:relative;\" >" + 
 				"							<span id=\"defaultPreviewSnippet\" componentType=\"htmlSnippet\" type= \"defaultPreviewSnippet\" data-config=\"defaultPreviewSnippetConfig\"></span>" + 
 				"						</div>" + 
 				" 				   </div>",
 		
 		defaultPreviewSnippet: " <div>" + 
-				"					<div style=\"padding-left: 16px;position:relative;\" class=\"componentSnippet1 \">" + 
-				"						<span id=\"defaultlabelPreview\" componentType=\"appopsField\" type= \"labelField\" data-config=\"defaultLabelPreviewConfig\"></span>" + 
-				"					</div>" + 
+				"					  <span id=\"defaultlabelPreview\" componentType=\"appopsField\" type= \"labelField\" data-config=\"defaultLabelPreviewConfig\"></span>" + 
 				"			     </div>",
 
 		labelFieldPreviewSnippet: " <div>" + 
-				"					<div style=\"padding-left: 16px;position:relative;\" class=\"componentSnippet1 \">" + 
-				"						<span id=\"labelPreview\" componentType=\"appopsField\" type= \"labelField\" data-config=\"labelFieldPreviewConfig\"></span>" + 
-				"					</div>" + 
-				"			   </div>",
+				"						 <span id=\"labelPreview\" componentType=\"appopsField\" type= \"labelField\" data-config=\"labelFieldPreviewConfig\"></span>" + 
+				"			        </div>",
 
 		textFieldPreviewSnippet: " <div>" + 
-				"						<div style=\"padding-left: 16px;position:relative;\" class=\"componentSnippet1 \">" + 
-				"							<span id=\"labelPreview\" componentType=\"appopsField\" type= \"labelField\" data-config=\"labelPreviewConfig\"></span>" + 
-				"						</div>" + 
+				"						<span id=\"textFieldPreview\" componentType=\"appopsField\" type= \"textField\" data-config=\"textFieldPreviewConfig\"></span>" + 
 				"			   	   </div>",
 		
 		basicImageFieldPreviewSnippet: " <div>" + 
-				"							<div style=\"padding-left: 16px;position:relative;\" class=\"componentSnippet1 \">" + 
-				"								<span id=\"labelPreview\" componentType=\"appopsField\" type= \"labelField\" data-config=\"labelPreviewConfig\"></span>" + 
-				"							</div>" + 
+				"							  <span id=\"basicImagePreview\" componentType=\"appopsField\" type= \"imageField\" data-config=\"basicImageFieldPreviewConfig\"></span>" + 
 				"			   			</div>",
 
 		toggleImageFieldPreviewSnippet: " <div>" + 
-				"							<div style=\"padding-left: 16px;position:relative;\" class=\"componentSnippet1 \">" + 
-				"								<span id=\"labelPreview\" componentType=\"appopsField\" type= \"labelField\" data-config=\"labelPreviewConfig\"></span>" + 
-				"							</div>" + 
+				"							   <span id=\"toggleImagePreview\" componentType=\"appopsField\" type= \"toggleImageField\" data-config=\"toggleImageFieldPreviewConfig\"></span>" + 
 				"			   			 </div>",
 		
 };
