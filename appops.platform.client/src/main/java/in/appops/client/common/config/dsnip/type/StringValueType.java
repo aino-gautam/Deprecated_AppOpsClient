@@ -11,11 +11,11 @@ public class StringValueType extends ValueType {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public int getMinLength(){
+	public Integer getMinLength(){
 		return getPropertyByName(MIN_LENGTH);
 	}
 	
-	public int getMaxLength(){
+	public Integer getMaxLength(){
 		return getPropertyByName(MAX_LENGTH);
 	}
 	
