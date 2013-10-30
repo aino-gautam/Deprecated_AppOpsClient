@@ -39,7 +39,7 @@ public class ComboBoxField extends Composite implements Field, ChangeHandler,Cli
 	}
 
 	@Override
-	public void createField() throws AppOpsException {
+	public void create() throws AppOpsException {
 		if(getConfiguration() == null)
 			throw new AppOpsException("Statefield configuration unavailable");
 		if(getConfiguration().getPropertyByName(ComboBoxField_EntityList)!=null){
@@ -67,12 +67,12 @@ public class ComboBoxField extends Composite implements Field, ChangeHandler,Cli
 	}
 
 	@Override
-	public void clearField() {
+	public void clear() {
 
 	}
 
 	@Override
-	public void resetField() {
+	public void reset() {
 		// TODO Auto-generated method stub
 
 	}
@@ -167,6 +167,12 @@ public class ComboBoxField extends Composite implements Field, ChangeHandler,Cli
             String name=listBox.getItemText(listBox.getSelectedIndex());
             entity = (Entity) nameVsEntity.get(name);
 		}
+		
+	}
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
 		
 	}
 }

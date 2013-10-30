@@ -3,13 +3,10 @@
  */
 package in.appops.client.gwt.web.ui.messaging.spacelistcomponent;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.core.EntityListReceiver;
 import in.appops.client.common.event.AppUtils;
-import in.appops.client.common.fields.LabelField;
-import in.appops.client.gwt.web.ui.messaging.ChatMessagingComponent;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEvent;
 import in.appops.client.gwt.web.ui.messaging.event.MessengerEventHandler;
 import in.appops.platform.core.entity.Entity;
@@ -18,9 +15,11 @@ import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.spacemanagement.constants.SpaceConstants;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -53,11 +52,6 @@ public class SpaceListWidget extends Composite implements EntityListReceiver,Mes
 	 */
 	private SpaceListModel spaceListModel ;
 	
-	/**
-	 * The reference to the parent to fire chat window chat event on click of nearby space.
-	 */
-	private ChatMessagingComponent parentMessagingComponent;
-	
 	private LabelField spaceTitle;
 	
 	private ArrayList<SpaceWidgetIcon> spaceList;
@@ -85,11 +79,11 @@ public class SpaceListWidget extends Composite implements EntityListReceiver,Mes
 			Configuration labelConfig = getLabelFieldConfiguration(true, "spaceListTitle", null, null);
 			spaceTitle.setFieldValue("Spaces");
 			spaceTitle.setConfiguration(labelConfig);
-			spaceTitle.createField();
+			spaceTitle.create();
 			basePanel.add(spaceTitle);
 			
-			int height = Window.getClientHeight() - 130;
-			scrollPanel.setHeight(height + "px");
+		//	int height = Window.getClientHeight() - 130;
+		//	scrollPanel.setHeight(height + "px");
 			
 			createNearByContainer();
 			baseVp.add(centerBaseConatiner);
@@ -126,25 +120,10 @@ public class SpaceListWidget extends Composite implements EntityListReceiver,Mes
 					
 					//TODO : this should be passed nearby contact entity list
 					//and added them as participants
-					
-					ChatEntity entity = new ChatEntity();
 					String groupName = spaceNameAnchor.getHTML();
-					if(getParentMessagingComponent().getGrpMapEntityMap().get(groupName)==null){
-						EntityList participantList = new EntityList();
-						participantList.add(getParentMessagingComponent().getContactEntity());
-						
-						entity.setParticipantEntity(participantList);
-						entity.setHeaderTitle(groupName);
-						
-						entity.setSpaceEntity(getParentMessagingComponent().getContactEntity());
-						entity.setIsGroupChat(true);
-						
-						getParentMessagingComponent().startNewChat(entity);
-					}
-					else{
-						ChatEntity chatEnt = getParentMessagingComponent().getGrpMapEntityMap().get(groupName);
-						getParentMessagingComponent().startNewChat(chatEnt);
-					}
+					MessengerEvent msgEvent = new MessengerEvent(MessengerEvent.STARTNEARBYSPACECHAT, groupName);
+					AppUtils.EVENT_BUS.fireEvent(msgEvent);
+					
 				}
 			});
 			
@@ -218,8 +197,6 @@ public class SpaceListWidget extends Composite implements EntityListReceiver,Mes
 
 	@Override
 	public void noMoreData() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	/**
@@ -231,7 +208,6 @@ public class SpaceListWidget extends Composite implements EntityListReceiver,Mes
 		try{
 			for(Entity entity : entityList){
 				SpaceWidgetIcon spWidgetIcon = new SpaceWidgetIcon(entity);
-				spWidgetIcon.setParentSpaceListWidget(this);
 				centerBaseConatiner.add(spWidgetIcon);
 				spaceList.add(spWidgetIcon);
 			}
@@ -243,30 +219,6 @@ public class SpaceListWidget extends Composite implements EntityListReceiver,Mes
 
 	@Override
 	public void onEntityListUpdated() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/**
-	 * Set the parent messaging component reference.
-	 * @param messagingComponent
-	 */
-	public void setParentMessagingWidget(ChatMessagingComponent messagingComponent) {
-		setParentMessagingComponent(messagingComponent);
-	}
-
-	/**
-	 * @return the parentMessagingComponent
-	 */
-	public ChatMessagingComponent getParentMessagingComponent() {
-		return parentMessagingComponent;
-	}
-
-	/**
-	 * @param parentMessagingComponent the parentMessagingComponent to set
-	 */
-	public void setParentMessagingComponent(ChatMessagingComponent parentMessagingComponent) {
-		this.parentMessagingComponent = parentMessagingComponent;
 	}
 
 	@Override
@@ -283,29 +235,30 @@ public class SpaceListWidget extends Composite implements EntityListReceiver,Mes
 
 	@Override
 	public void updateCurrentView(Entity entity) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	private Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId){
-		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		configuration.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return configuration;
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
+		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return conf;
 	}
 
 	public void receivedChat(ChatEntity chatEntity) {
-		
-		String header = chatEntity.getHeaderTitle();
-		Iterator<SpaceWidgetIcon> iterator = spaceList.iterator();
-		while(iterator.hasNext()) {
-			SpaceWidgetIcon widget = iterator.next();
-			String spaceName = widget.getSpaceEntity().getPropertyByName(SpaceConstants.NAME);
-			if(spaceName.equals(header)) {
-				widget.highlightWidget();
+		try{
+			String header = chatEntity.getHeaderTitle();
+			Iterator<SpaceWidgetIcon> iterator = spaceList.iterator();
+			while(iterator.hasNext()) {
+				SpaceWidgetIcon widget = iterator.next();
+				String spaceName = widget.getSpaceEntity().getPropertyByName(SpaceConstants.NAME);
+				if(spaceName.equals(header)) {
+					widget.highlightWidget();
+				}
 			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }

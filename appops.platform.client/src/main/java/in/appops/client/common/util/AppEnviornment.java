@@ -22,6 +22,10 @@ public class AppEnviornment {
 	
 	private static GeoLocation CURRENT_GEOLOCATION = null;
 	
+	public static Entity CURRENTAPP = null;
+	
+	public static Entity CURRENTSERVICE = null;
+	
 	public static Entity getCurrentUser() {
 		return CURRENTUSER;
 	}

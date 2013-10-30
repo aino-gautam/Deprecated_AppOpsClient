@@ -1,7 +1,6 @@
 package in.appops.client.common.fields;
 
 import in.appops.client.common.event.AppUtils;
-import in.appops.client.common.event.CheckBoxSelectEvent;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -50,7 +49,7 @@ public class CheckboxGroupField extends Composite implements Field{
 	}
 
 	@Override
-	public void createField() throws AppOpsException {
+	public void create() throws AppOpsException {
 		 
 		if(getConfiguration() == null)
 			throw new AppOpsException("CheckboxGroupField configuration unavailable");
@@ -74,7 +73,7 @@ public class CheckboxGroupField extends Composite implements Field{
 	}
 
 	@Override
-	public void clearField() {
+	public void clear() {
 		if(checkboxSelectMode.equals(CHECKBOX_SINGLESELECT)) {
 			
 		}else if(checkboxSelectMode.equals(CHECKBOX_MULTISELECT)) {
@@ -83,7 +82,7 @@ public class CheckboxGroupField extends Composite implements Field{
 	}
 
 	@Override
-	public void resetField() {
+	public void reset() {
 		if(checkboxSelectMode.equals(CHECKBOX_SINGLESELECT)) {
 			
 		}else if(checkboxSelectMode.equals(CHECKBOX_MULTISELECT)) {
@@ -141,15 +140,15 @@ public class CheckboxGroupField extends Composite implements Field{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				CheckBoxSelectEvent selectEvent = new CheckBoxSelectEvent();
-				selectEvent.setEventData(checkBox);
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventData(checkBox);
 				boolean value = checkBox.getValue();
 				if(value) {
-					selectEvent.setEventType(CheckBoxSelectEvent.SELECTED);
+					fieldEvent.setEventType(FieldEvent.CHECKBOX_SELECT);
 				} else {
-					selectEvent.setEventType(CheckBoxSelectEvent.DESELECTED);
+					fieldEvent.setEventType(FieldEvent.CHECKBOX_DESELECT);
 				}
-				AppUtils.EVENT_BUS.fireEvent(selectEvent);
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 			}
 		});
 	}
@@ -175,5 +174,11 @@ public class CheckboxGroupField extends Composite implements Field{
 			}
 		}
 		return map;
+	}
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
+		
 	}
 }

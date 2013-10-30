@@ -1,9 +1,10 @@
 package in.appops.client.common.snippet;
 
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.event.ActionEvent;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.fields.ImageField;
-import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.util.AppEnviornment;
 import in.appops.client.common.util.BlobDownloader;
 import in.appops.client.common.util.EntityToJsonClientConvertor;
@@ -63,8 +64,8 @@ public class ActionBoxSnippet extends Composite implements Snippet, ClickHandler
 		snippetLabel.setConfiguration(labelConfig);
 		snippetLabel.setFieldValue(getEntity().getProperty("name").getValue().toString());
 		try {
-			snippetImage.createField();
-			snippetLabel.createField();
+			snippetImage.create();
+			snippetLabel.create();
 		} catch (AppOpsException e) {
 			e.printStackTrace();
 		}
@@ -89,12 +90,11 @@ public class ActionBoxSnippet extends Composite implements Snippet, ClickHandler
 	}
 	
 	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
-		Configuration config = new Configuration();
-		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return config;
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
+		configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return configuration;
 	}
 	
 	@Override

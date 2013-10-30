@@ -1,25 +1,22 @@
 package in.appops.client.common.components;
 
 import in.appops.client.common.bound.EntityBound;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.contactmodel.ContactSnippet;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.ImageField;
-import in.appops.client.common.fields.LabelField;
-import in.appops.client.common.gin.AppOpsGinjector;
-import in.appops.client.common.snippet.Snippet;
+import in.appops.client.common.snippet.SnippetConstant;
 import in.appops.client.common.snippet.SnippetFactory;
 import in.appops.client.common.util.BlobDownloader;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class ContactSuggestionSnippet  extends Composite implements EntityBound, ClickHandler{
@@ -40,7 +37,7 @@ public class ContactSuggestionSnippet  extends Composite implements EntityBound,
 	
 	public void createSuggestionSnippet(SnippetFactory snippetFactory) {
 		
-		final ContactSnippet snippet = (ContactSnippet)snippetFactory.getSnippetByEntityType(entity.getType(), null);
+		final ContactSnippet snippet = (ContactSnippet)snippetFactory.getSnippetByEntityType(null, SnippetConstant.CONTACTSNIPPET);
 	//	snippet.setEntity(entity);
 		//snippet.initialize(entity);
 		snippet.setSelectionAllowed(false);
@@ -51,9 +48,20 @@ public class ContactSuggestionSnippet  extends Composite implements EntityBound,
 		snippet.setWidth("100%");
 		BlobDownloader downloader = new BlobDownloader();
 		//ContactSnippet contactSnippet = new ContactSnippet(false);
-		String blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
-		String url = downloader.getIconDownloadURL(blobId);
-		Configuration imageConfig = getImageFieldConfiguration(url, "defaultIcon");
+		Configuration imageConfig =null;
+		if(entity.getPropertyByName(ContactConstant.IMGBLOBID)!=null){
+			String blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
+			String url = downloader.getIconDownloadURL(blobId);
+			imageConfig = getImageFieldConfiguration(url, "defaultIcon");
+		}else{
+			imageConfig = getImageFieldConfiguration("images/default_Icon.png", "defaultIcon");
+		}
+		//String blobId = null;
+		/*if(entity.getPropertyByName(ContactConstant.IMGBLOBID)!=null)
+		  blobId = entity.getPropertyByName(ContactConstant.IMGBLOBID).toString();
+		
+		 String url = downloader.getIconDownloadURL(blobId);
+		Configuration imageConfig = getImageFieldConfiguration(url, "defaultIcon");*/
 		Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
 		snippet.setConfigurationForFields(labelConfig, imageConfig);
 		snippet.initialize(entity);
@@ -93,12 +101,11 @@ public class ContactSuggestionSnippet  extends Composite implements EntityBound,
 	}
 	
 	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
-		Configuration config = new Configuration();
-		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return config;
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
+		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return conf;
 	}
 	
 	@Override

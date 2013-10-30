@@ -2,7 +2,8 @@ package in.appops.showcase.web.gwt.contactbox.client;
 
 import in.appops.client.common.components.IntelliThoughtWidget;
 import in.appops.client.common.components.SendMessageWidget;
-import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
@@ -54,7 +55,7 @@ public class ContactBoxEntry implements EntryPoint{
 			LabelField label = new LabelField();
 			label.setFieldValue("Loading..");
 			label.setConfiguration(getLabelFieldConfiguration(true, "appops-LabelField", null, null));
-			label.createField();
+			label.create();
 			RootPanel.get().add(label); 
 			RootPanel.get().setWidgetPosition(label, 200, 50);
 			DefaultExceptionHandler	exceptionHandler	= new DefaultExceptionHandler();
@@ -80,7 +81,7 @@ public class ContactBoxEntry implements EntryPoint{
 						Entity entity = new Entity();
 					    entity.setType(new MetaType(TypeConstants.SPACE));
 				        Property<Serializable> property = new Property<Serializable>();
-				        Key<Serializable> key = new Key<Serializable>(5004L);
+				        Key<Serializable> key = new Key<Serializable>(5008L);
 				        property.setName(SpaceConstants.ID);
 				        property.setValue(key);
 				        entity.setProperty(property);
@@ -118,6 +119,7 @@ public class ContactBoxEntry implements EntryPoint{
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}*/
+						RootPanel.get().clear();
 						RootPanel.get().add(messageWidget);
 						RootPanel.get().setWidgetPosition(messageWidget, 200, 50);
 					}
@@ -133,8 +135,8 @@ public class ContactBoxEntry implements EntryPoint{
 	
 	private Configuration getConfiguration(String primaryCss, String secondaryCss){
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
+		configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
 		
 		configuration.setPropertyByName(IntelliThoughtWidget.IS_INTELLISHAREFIELD, true);
 		configuration.setPropertyByName(IntelliThoughtWidget.IS_ATTACHMEDIAFIELD, true);
@@ -149,16 +151,15 @@ public class ContactBoxEntry implements EntryPoint{
 	}
 	private Configuration getIntelliFieldConfiguration(String primaryCss, String secondaryCss){
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
+		configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
 		return configuration;
 	}
 	private Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId){
 		Configuration configuration = new Configuration();
-		configuration.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		configuration.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		configuration.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
+		configuration.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
+		configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
 		return configuration;
 	}
 	

@@ -1,6 +1,5 @@
 package in.appops.client.gwt.web.ui.messaging.chatuserlistcomponent;
 
-import in.appops.client.gwt.web.ui.messaging.ChatMessagingComponent;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 
@@ -22,11 +21,9 @@ public class UserListingComponent extends Composite{
 	private ScrollPanel basePanel;
 	private VerticalPanel userSnippetContainerPanel;
 	private HashMap<Integer, ContactSnippetDisplayer> contactSnippetMap = new HashMap<Integer, ContactSnippetDisplayer>();
-	private MainUserListingComponent chatUserListWidget;
 	private ArrayList<ContactSnippetDisplayer> widgetList = new ArrayList<ContactSnippetDisplayer>();
 	
-	public UserListingComponent(MainUserListingComponent chatUserListWidget){
-		this.chatUserListWidget = chatUserListWidget;
+	public UserListingComponent(){
 		initialize();
 		createUI();
 		initWidget(basePanel);
@@ -38,7 +35,7 @@ public class UserListingComponent extends Composite{
 	}
 	
 	private void createUI() {
-		int height = Window.getClientHeight() - 180;
+		int height = Window.getClientHeight() - 200;
 		basePanel.setHeight(height + "px");
 		addScrollHandler();
 	}
@@ -81,10 +78,6 @@ public class UserListingComponent extends Composite{
 		
 		userSnippetContainerPanel.add(widget);
 		widgetList.add((ContactSnippetDisplayer) widget);
-	}
-	
-	public ChatMessagingComponent getParentMessagingComponent() {
-		return chatUserListWidget.getParentMessagingComponent();
 	}
 
 	public void highlightSnippet(String contactIdToHighlight) {

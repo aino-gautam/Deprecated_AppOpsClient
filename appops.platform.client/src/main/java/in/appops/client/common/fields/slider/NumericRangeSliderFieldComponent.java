@@ -107,7 +107,7 @@ public class NumericRangeSliderFieldComponent extends Composite implements Click
 		StateField numericRangeSlider = new StateField();
 		numericRangeSlider.setConfiguration(getNumericSliderFieldConfiguration());
 		try {
-			numericRangeSlider.createField();
+			numericRangeSlider.create();
 			numericSliderComponentPanel.add(numericRangeSlider);
 		} catch (AppOpsException e) {
 			e.printStackTrace();

@@ -97,7 +97,7 @@ public class StringRangeSliderFieldComponent extends Composite implements ClickH
 		StateField stringRangeSlider = new StateField();
 		stringRangeSlider.setConfiguration(getStringSliderFieldConfiguration());
 		try {
-			stringRangeSlider.createField();
+			stringRangeSlider.create();
 			stringSliderComponentPanel.add(stringRangeSlider);
 		} catch (AppOpsException e) {
 			e.printStackTrace();

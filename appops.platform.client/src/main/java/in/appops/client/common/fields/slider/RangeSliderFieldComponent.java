@@ -156,7 +156,7 @@ public class RangeSliderFieldComponent extends Composite implements ClickHandler
 		StateField numericRangeSlider = new StateField();
 		numericRangeSlider.setConfiguration(getNumericSliderFieldConfiguration());
 		try {
-			numericRangeSlider.createField();
+			numericRangeSlider.create();
 			numericSliderComponentPanel.add(numericRangeSlider);
 		} catch (AppOpsException e) {
 			e.printStackTrace();
@@ -168,7 +168,7 @@ public class RangeSliderFieldComponent extends Composite implements ClickHandler
 		StateField stringRangeSlider = new StateField();
 		stringRangeSlider.setConfiguration(getStringSliderFieldConfiguration());
 		try {
-			stringRangeSlider.createField();
+			stringRangeSlider.create();
 			stringSliderComponentPanel.add(stringRangeSlider);
 		} catch (AppOpsException e) {
 			e.printStackTrace();

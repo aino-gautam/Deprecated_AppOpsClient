@@ -1,5 +1,8 @@
 package in.appops.client.common.fields.suggestion;
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
+
 import java.util.HashMap;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -45,10 +48,16 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 
 	@Override
 	public void onSelection(SelectionEvent<Suggestion> event) {
+		
 		AppopsSuggestion selectedSuggestion = (AppopsSuggestion) event.getSelectedItem();
 		setSelectedSuggestion(selectedSuggestion);
 		getSuggestBox().setText(selectedSuggestion.getDisplayString());
 		getSuggestBox().getTextBox().setFocus(false);
+		
+		FieldEvent fieldEvent = new FieldEvent();
+		fieldEvent.setEventData(selectedSuggestion);
+		fieldEvent.setEventType(FieldEvent.SUGGESTION_SELECTED);
+		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 	}
 
 	public void setSelectedSuggestion(AppopsSuggestion selectedSuggestion) {
@@ -87,6 +96,9 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	}
 
 	public void setIsSearchQuery(Boolean val) {
+		oracle.IsSearchQuery(val);
+	}
+	public void setStaticSuggestion(Boolean val) {
 		oracle.IsSearchQuery(val);
 	}
 

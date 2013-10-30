@@ -16,7 +16,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<dependencies>
+		<dependencies>
+		
 		<!-- lucene related jars -->
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
@@ -40,23 +41,14 @@
 			<artifactId>json</artifactId>
 			<version>20090211</version>
 		</dependency>
-		
+
 		<!-- atmosphere jars -->
 		<dependency>
 			<groupId>org.atmosphere</groupId>
 			<artifactId>atmosphere-gwt-server</artifactId>
 			<version>1.0.1</version>
 		</dependency>
-		<!-- <dependency>
-			<groupId>org.atmosphere</groupId>
-			<artifactId>atmosphere-gwt-common</artifactId>
-			<version>1.0.9</version>
-		</dependency> -->
-		<!-- <dependency>
-			<groupId>org.atmosphere</groupId>
-			<artifactId>atmosphere-runtime</artifactId>
-			<version>1.0.9</version>
-		</dependency> -->
+		
 		<dependency>
 			<groupId>org.atmosphere</groupId>
 			<artifactId>atmosphere-gwt-client</artifactId>
@@ -154,26 +146,18 @@
 			<artifactId>mvp4g</artifactId>
 			<version>1.4.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>lienzo</groupId>
 			<artifactId>lienzo</artifactId>
 			<version>1.1</version>
-		</dependency>
-		
-		<!-- <dependency> <groupId>appops_platform</groupId> <artifactId>appops_server</artifactId> 
-			<version>14.02.2013</version> </dependency> -->
-		<dependency>
-			<groupId>appops_platform</groupId>
-			<artifactId>appops_server</artifactId>
-			<version>05.06.2013</version>
 		</dependency>
 
 		<!-- This should be used when using a final version of the jar -->
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>appops_shared</artifactId>
-			<version>13.05.2013</version>
+			<version>08.10.2013</version>
 		</dependency>
 
 		<dependency>
@@ -199,41 +183,228 @@
 			<artifactId>gwtphonegap</artifactId>
 			<version>2.0.0.0</version>
 		</dependency>
-		<!-- Mail dependencies-->
+		<!-- Mail dependencies -->
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mailapi</artifactId>
 			<version>1.4.3</version>
 		</dependency>
-		<!-- <dependency>
-			<groupId>com.sun.mail</groupId>
-			<artifactId>smtp</artifactId>
-			<version>1.4.6-rc1</version>
-		</dependency> -->
-		<!-- <dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>1.5.0-b01</version>
-		</dependency> -->
+		
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
 			<version>1.4</version>
-	    </dependency>
-    
-	    <dependency>
+		</dependency>
+
+		<dependency>
 			<groupId>javax.activation</groupId>
 			<artifactId>activation</artifactId>
 			<version>1.1.1</version>
 		</dependency>
-		<!-- Mail dependencies-->
-		
+		<!-- Mail dependencies -->
+
 		<!-- Hibernate c3p0 connection pool -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-c3p0</artifactId>
 			<version>4.1.7.Final</version>
 		</dependency>
+
+		<!-- Appops server jars -->
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>appdefinition</artifactId>
+			<version>24.10.2013</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>pallavi_appops_platform</groupId>
+			<artifactId>drawing</artifactId>
+			<version>27.09.2013</version>
+		</dependency>
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>appOps_developer</artifactId>
+			<version>03.10.2013</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>configuration</artifactId>
+			<version> 24.10.2013</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>kiran_appops_platform</groupId>
+			<artifactId>htmlappservice</artifactId>
+			<version>07.08.2013</version>
+		</dependency>
+<!-- 
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>core</artifactId>
+			<version>13.09.2013</version>
+		</dependency> -->
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>core</artifactId>
+			<version>24.10.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>apprenderer</artifactId>
+			<version>11.09.2013</version>
+		</dependency>  
+
+        <dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>entityconf_shared</artifactId>
+			<version>17.09.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>milind_appops_platform</groupId>
+			<artifactId>entitystore</artifactId>
+			<version>30.09.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>vikram_appops_platform</groupId>
+			<artifactId>entitycache</artifactId>
+			<version>20.06.2013</version>
+		</dependency>
+
+		
+		<dependency>
+			<groupId>vikram_appops_platform</groupId>
+			<artifactId>media</artifactId>
+			<version>20.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>vikram_appops_platform</groupId>
+			<artifactId>blobstore</artifactId>
+			<version>20.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>vikram_appops_platform</groupId>
+			<artifactId>spacemanagement</artifactId>
+			<version>20.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>useraccount</artifactId>
+			<version>17.10.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>vikram_appops_platform</groupId>
+			<artifactId>searchservice</artifactId>
+			<version>20.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>vikram_appops_platform</groupId>
+			<artifactId>httpsessionservice</artifactId>
+			<version>20.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>vikram_appops_platform</groupId>
+			<artifactId>entitybroadcast</artifactId>
+			<version>20.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>vikram_appops_platform</groupId>
+			<artifactId>calendar</artifactId>
+			<version>20.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>vikram_appops_platform</groupId>
+			<artifactId>statics</artifactId>
+			<version>20.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>vikram_appops_platform</groupId>
+			<artifactId>contact</artifactId>
+			<version>20.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>vikram_appops_platform</groupId>
+			<artifactId>messenger</artifactId>
+			<version>20.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>vikram_appops_platform</groupId>
+			<artifactId>social</artifactId>
+			<version>20.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>vikram_appops_platform</groupId>
+			<artifactId>usermessage</artifactId>
+			<version>20.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>vikram_appops_platform</groupId>
+			<artifactId>inservice</artifactId>
+			<version>20.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>vikram_appops_platform</groupId>
+			<artifactId>restaurant</artifactId>
+			<version>20.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>vikram_appops_platform</groupId>
+			<artifactId>deal</artifactId>
+			<version>20.06.2013</version>
+		</dependency>
+		<dependency>
+			<groupId>milind_appops_platform</groupId>
+			<artifactId>ems</artifactId>
+			<version>03.10.2013</version>
+		</dependency>
+	
+
+		<dependency>
+			<groupId>vikram_appops_platform</groupId>
+			<artifactId>dating</artifactId>
+			<version>20.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>vikram_appops_platform</groupId>
+			<artifactId>email</artifactId>
+			<version>20.06.2013</version>
+		</dependency>
+
+		<dependency>
+			<groupId>appops_platform</groupId>
+			<artifactId>activity</artifactId>
+			<version>26.06.2013</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>mahesh_appops_platform</groupId>
+			<artifactId>blogging</artifactId>
+			<version>26.08.2013</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -260,7 +431,7 @@
 				<version>2.4.0</version>
 
 				<configuration>
-					<runTarget>MasterShowcase.html</runTarget>
+					<runTarget>DynamicUIShowcase.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 
 					<!-- what ever is needed to complie we can add them as below here. When 
@@ -268,9 +439,9 @@
 
 					<modules>
 						<module>in.appops.client.Client</module>
-						<module>in.appops.showcase.web.gwt.dragonwheel.dragonwheel</module>
-						<module>in.appops.showcase.web.gwt.fields.fields</module> 
-						<module>in.appops.showcase.web.gwt.intellithought.IntelliThought</module>
+						<!-- <module>in.appops.showcase.web.gwt.dragonwheel.dragonwheel</module> -->  
+						<!-- <module>in.appops.showcase.web.gwt.fields.fields</module>  -->
+						<!-- <module>in.appops.showcase.web.gwt.intellithought.IntelliThought</module>
 						<module>in.appops.showcase.web.gwt.wizardform.wizardform</module>
 						<module>in.appops.showcase.web.gwt.splash.splash</module>
 						<module>in.appops.showcase.web.gwt.contactselector.contactselector</module>
@@ -282,8 +453,9 @@
 						<module>in.appops.showcase.web.gwt.calendarHome.calendarHome</module>
 						<module>in.appops.showcase.web.gwt.chat.chat</module>
 						<module>in.appops.showcase.web.gwt.search.search</module> 
-						<module>in.appops.showcase.web.gwt.snippets.snippets</module>
-					</modules>
+						<module>in.appops.showcase.web.gwt.snippets.snippets</module> -->  
+						<module>in.appops.showcase.web.gwt.dynamicsnippet.dynamicsnippet</module>
+				</modules>
 				</configuration>
 			</plugin>
 

@@ -5,6 +5,8 @@ import in.appops.client.common.contactmodel.ContactSelectorModel;
 import in.appops.client.common.core.EntityListReceiver;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.util.AppEnviornment;
+import in.appops.platform.core.constants.propertyconstants.SpaceConstants;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.query.Query;
@@ -13,6 +15,7 @@ import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -65,7 +68,7 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 	}
 	
 	@Override
-	public void createField() throws AppOpsException {
+	public void create() throws AppOpsException {
 		
 		String primaryCss = configuration.getPropertyByName(USERBOXFIELD_PRIMARYCSS) != null ?  configuration.getPropertyByName(USERBOXFIELD_PRIMARYCSS).toString() : null;  
 		String dependentCss = configuration.getPropertyByName(USERBOXFIELD_DEPENDENTCSS) != null ?  configuration.getPropertyByName(USERBOXFIELD_DEPENDENTCSS).toString() : null;  
@@ -234,10 +237,14 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 	}
 
 	private void handleThreeCharEnteredEvent(String eventData) {
+		Entity spaceEntity = AppEnviornment.getCurrentSpace();
+		Key<Serializable> key=(Key<Serializable>) spaceEntity.getProperty(SpaceConstants.ID).getValue();
+		Long spaceId = (Long) key.getKeyValue();
 		Query query = new Query();
 		query.setQueryName("getMessageContact");
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("search", "%"+eventData+"%");
+		map.put("spaceId", spaceId);
 		query.setQueryParameterMap(map);
 		query.setListSize(8);
 		ContactSelectorModel contactSelectorModel = new ContactSelectorModel(query,"contact.ContactService.getEntityList",0);
@@ -253,13 +260,13 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 		return fieldEvent;
 	}
 	@Override
-	public void clearField() {
+	public void clear() {
 		this.setText("");
 		
 	}
 
 	@Override
-	public void resetField() {
+	public void reset() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -315,6 +322,7 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 					contactWigetSuggestion.hide();
 				}
 			}
+			
 		}
 		if(wordBeingTyped.length() >  2) {
 
@@ -376,6 +384,7 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 				
 				
 			}
+			
     	}
 		
 	}
@@ -448,6 +457,12 @@ public class ContactBoxField extends Composite implements Field,HasText,EventLis
 
 	public void setPlainEmailsMap(HashMap<String, String> plainEmailsMap) {
 		this.plainEmailsMap = plainEmailsMap;
+	}
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
+		
 	}
 }
 

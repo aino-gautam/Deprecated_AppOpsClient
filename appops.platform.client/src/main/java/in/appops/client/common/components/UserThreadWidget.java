@@ -1,12 +1,14 @@
 package in.appops.client.common.components;
 
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.contactmodel.ContactSnippet;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.ImageField;
-import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.gin.AppOpsGinjector;
+import in.appops.client.common.snippet.SnippetConstant;
 import in.appops.client.common.snippet.SnippetFactory;
 import in.appops.client.common.util.AppEnviornment;
 import in.appops.client.common.util.BlobDownloader;
@@ -19,7 +21,6 @@ import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
-import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.contact.constant.ContactConstant;
 
@@ -63,7 +64,7 @@ public class UserThreadWidget extends Composite implements EventListener,ClickHa
 	private void createUserSnippet(EntityList list) {
 		SnippetFactory snippetFactory = injector.getSnippetFactory();
 		for(final Entity entity:list){
-		   ContactSnippet snippet = (ContactSnippet)snippetFactory.getSnippetByEntityType(entity.getType(), null);
+		   ContactSnippet snippet = (ContactSnippet)snippetFactory.getSnippetByEntityType(null, SnippetConstant.CONTACTSNIPPET);
 		    HorizontalPanel horizontalPanel = new HorizontalPanel();
 			snippet.setSelectionAllowed(false);
 			
@@ -155,25 +156,16 @@ public class UserThreadWidget extends Composite implements EventListener,ClickHa
 		/*Configuration imageConfig = getImageFieldConfiguration("images/loader.gif", "defaultIcon_Medium");
 		 ImageField imageField = new ImageField();*/
 			
-			////imageField.setConfiguration(imageConfig);
-	        try {
-				//imageField.createField();
-				
-				LabelField labelField = new LabelField();
-				Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
-								
-					labelField.setFieldValue("Loading contacts ...");
-				
-				labelField.setConfiguration(labelConfig);
-				labelField.createField();
-				
-			//	horizontalPanel.add(imageField);
-				horizontalPanel.add(labelField);
-				
-			} catch (AppOpsException e) {
-				
-				e.printStackTrace();
-			}
+			LabelField labelField = new LabelField();
+			Configuration labelConfig = getLabelFieldConfiguration(true, "flowPanelContent", null, null);
+							
+				labelField.setFieldValue("Loading contacts ...");
+			
+			labelField.setConfiguration(labelConfig);
+			labelField.create();
+			
+//	horizontalPanel.add(imageField);
+			horizontalPanel.add(labelField);
 		return horizontalPanel;
 		
 	}
@@ -187,12 +179,11 @@ public class UserThreadWidget extends Composite implements EventListener,ClickHa
 	}
 	
 	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
-		Configuration config = new Configuration();
-		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return config;
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
+		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return conf;
 	}
 
 	public Entity getUserEntity() {

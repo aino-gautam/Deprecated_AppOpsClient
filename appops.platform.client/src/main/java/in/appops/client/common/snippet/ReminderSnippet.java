@@ -1,21 +1,20 @@
 package in.appops.client.common.snippet;
 
 import in.appops.client.common.components.CreateCalendarEntryScreen;
-import in.appops.client.common.fields.LabelField;
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.fields.LinkField;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
 import in.appops.platform.core.entity.Entity;
-import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
-import in.appops.platform.server.core.services.calendar.constant.CalendarConstant;
 import in.appops.platform.server.core.services.calendar.constant.ReminderConstant;
 import in.appops.platform.server.core.services.calendar.constant.ReminderTypeConstant;
 
@@ -73,7 +72,7 @@ public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHan
 			reminderTitleLink = new LinkField();
 			reminderTitleLink.setFieldValue(title);
 			reminderTitleLink.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_ANCHOR, "reminderTitleLabel", "crossImageCss", null));
-			reminderTitleLink.createField();
+			reminderTitleLink.create();
 						
 			//reminderTitleLink.getWidget().addDomHandler(this, ClickEvent.getType());
 			
@@ -122,7 +121,7 @@ public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHan
 			
 			editLinkField.setFieldValue("Edit");
 			editLinkField.setConfiguration(getLinkFieldConfiguration(LinkField.LINKFIELDTYPE_ANCHOR, "postLink", "crossImageCss", null));
-			editLinkField.createField();
+			editLinkField.create();
 			
 			HorizontalPanel linkPanel = new HorizontalPanel();
 			//linkPanel.add(editLinkField);
@@ -151,19 +150,18 @@ public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHan
 		label.setFieldValue(lblText);
 		Configuration config = getLabelFieldConfiguration(true,primaryCss,null,null);
 		label.setConfiguration(config);
-		label.createField();
+		label.create();
 		return label;
 		
 	}
 	
 
 	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
-		Configuration config = new Configuration();
-		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return config;
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
+		configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return configuration;
 	}
 
 	@Override
@@ -312,19 +310,19 @@ public class ReminderSnippet extends VerticalPanel implements Snippet , ClickHan
 		try {
 			String title = editedReminderEntity.getProperty(ReminderConstant.TITLE).getValue().toString();
 			reminderTitleLink.setFieldValue(title);
-			reminderTitleLink.resetField();
+			reminderTitleLink.reset();
 			
 			Date date = (Date) editedReminderEntity.getProperty(ReminderConstant.REMINDERTIME).getValue();
 			
 			String dateTimeValue = DateTimeFormat.getLongDateFormat().format(date) +" at "+ DateTimeFormat.getShortTimeFormat().format(date);
 			dateTime.setFieldValue(dateTimeValue);
-			dateTime.resetField();
+			dateTime.reset();
 			
 			Entity reminderType = (Entity) entity.getProperty(ReminderConstant.REMINDERTYPE);
 			
 			
 			reminderTypeLabel.setFieldValue(reminderType.getProperty(ReminderTypeConstant.TYPE).getValue().toString());
-			reminderTypeLabel.resetField();
+			reminderTypeLabel.reset();
 			
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -33,7 +33,7 @@ public class NavigationMazeShowCase implements EntryPoint{
 		Configuration numericRangeSliderConfig = getNumericRangeSliderFieldConfiguration();
 		numericRangeSlider.setConfiguration(numericRangeSliderConfig);
 		try {
-			numericRangeSlider.createField();
+			numericRangeSlider.create();
 			numericRangeSlider.setStylePrimaryName("mainPanel");
 		} catch (AppOpsException e) {
 			e.printStackTrace();

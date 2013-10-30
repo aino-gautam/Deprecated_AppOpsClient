@@ -184,7 +184,7 @@ public class IntelliThoughtWidget extends Composite implements Configurable, Cli
 	}
 
 	private void createIntelliShareField() throws AppOpsException {
-		intelliShareField.createField();
+		intelliShareField.create();
 		basePanel.getFlexCellFormatter().setRowSpan(1, 0, 3);
 
 		basePanel.setWidget(1, 0, intelliShareField);

@@ -1,7 +1,8 @@
 package in.appops.client.common.components;
 
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.fields.ImageField;
-import in.appops.client.common.fields.LabelField;
 import in.appops.client.common.snippet.Snippet;
 import in.appops.client.common.util.BlobDownloader;
 import in.appops.platform.core.entity.Entity;
@@ -17,7 +18,6 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 public class MessageWithUserSnippet extends Composite implements Snippet{
 	
@@ -65,7 +65,7 @@ public class MessageWithUserSnippet extends Composite implements Snippet{
 				labelField.setFieldValue("user");
 			}
 			labelField.setConfiguration(labelConfig);
-			labelField.createField();
+			labelField.create();
 			vpPanel.add(labelField);
 			Configuration labelConfig1 = getLabelFieldConfiguration(true, "appops-LabelField", "userWithMessagePanelLabelContent", null);
 			LabelField messageLabelField = new LabelField();
@@ -74,7 +74,7 @@ public class MessageWithUserSnippet extends Composite implements Snippet{
 				
 				messageLabelField.setFieldValue(messageStr);
 				messageLabelField.setConfiguration(labelConfig1);
-				messageLabelField.createField();
+				messageLabelField.create();
 			}
 			HorizontalPanel panel = new HorizontalPanel();
 			panel.add(messageLabelField);
@@ -88,12 +88,11 @@ public class MessageWithUserSnippet extends Composite implements Snippet{
 		return vpPanel;
 	}
 	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
-		Configuration config = new Configuration();
-		config.setPropertyByName(LabelField.LABELFIELD_WORDWRAP, allowWordWrap);
-		config.setPropertyByName(LabelField.LABELFIELD_PRIMARYCSS, primaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEPENDENTCSS, secondaryCss);
-		config.setPropertyByName(LabelField.LABELFIELD_DEBUGID, debugId);
-		return config;
+		Configuration conf = new Configuration();
+		conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
+		conf.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		conf.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return conf;
 	}
 	private HorizontalPanel createUserImageField() {
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
@@ -111,7 +110,7 @@ public class MessageWithUserSnippet extends Composite implements Snippet{
 		final ImageField imageField = new ImageField();
 		
 		imageField.setConfiguration(imageConfig);
-        imageField.createField();
+        imageField.create();
         imageField.addErrorHandler(new ErrorHandler() {
 			
 			@Override
