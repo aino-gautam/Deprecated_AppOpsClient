@@ -25,6 +25,9 @@ public class SuggestionOracle extends SuggestOracle {
 	private final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 	private int maxResult;
+	private String displayText;
+	private HashMap<String, Object> restrictionMap;
+	private Boolean isSearchQuery = false;
 	
 	public void setQueryName(String queryName) {
 		this.queryName = queryName;
@@ -58,9 +61,21 @@ public class SuggestionOracle extends SuggestOracle {
 			queryObj.setQueryName(queryName);
 			queryObj.setListSize(maxResult);
 			HashMap map = new HashMap();
-			map.put("searchChar", "%" + search + "%");
-			//map.put("max", maxResult);
-			queryObj.setQueryParameterMap(map);
+
+			if(isSearchQuery){
+				if(restrictionMap != null){
+					for (String key : restrictionMap.keySet())
+						map.put(key, restrictionMap.get(key));
+				}
+				map.put("searchChar", search+"*");
+			}else if(restrictionMap != null){
+				for (String key : restrictionMap.keySet())
+					map.put(key, restrictionMap.get(key));
+				map.put("searchChar", "%" + search + "%");
+			}else
+				map.put("searchChar", "%" + search + "%");
+				//map.put("max", maxResult);
+				queryObj.setQueryParameterMap(map);
 			
 			Map parameterMap = new HashMap();
 			parameterMap.put("query", queryObj);
@@ -80,7 +95,7 @@ public class SuggestionOracle extends SuggestOracle {
 					if(entityList != null && !entityList.isEmpty()) {
 						for (Entity entity : entityList) {
 							AppopsSuggestion appopsSuggestion = new AppopsSuggestion(entity);
-							appopsSuggestion.initialize();
+							appopsSuggestion.initialize(displayText);
 							store.add(appopsSuggestion);
 						}
 					}
@@ -104,5 +119,17 @@ public class SuggestionOracle extends SuggestOracle {
 	
 	public void setMaxResult(int max) {
 		this.maxResult = max;
+	}
+
+	public void setDisplayText(String displayText) {
+		this.displayText = displayText;
+	}
+
+	public void setRestriction(HashMap<String, Object> map) {
+		this.restrictionMap = map;
+	}
+
+	public void IsSearchQuery(Boolean val) {
+		this.isSearchQuery = val;
 	}
 }

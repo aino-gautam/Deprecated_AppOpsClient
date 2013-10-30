@@ -1,10 +1,12 @@
 package in.appops.showcase.web.gwt.navigationmaze.client;
 
+import in.appops.client.common.fields.StateField;
+import in.appops.client.common.fields.slider.field.NumericRangeSliderField;
+import in.appops.client.gwt.web.ui.maze.Maze;
+import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.AppOpsException;
+
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -14,32 +16,43 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class NavigationMazeShowCase implements EntryPoint{
 
-	private Button button = new Button("run");
-	
 	@Override
 	public void onModuleLoad() {
 		
-
-		VerticalPanel vertcalPanel = new VerticalPanel();
-		vertcalPanel.setWidth("100%");
+		Maze maze = new Maze();
 		
-		final MazeWidget mazeWidget = new MazeWidget();
 		
-		vertcalPanel.add(mazeWidget);
+		maze.addMazeImageWidget("images/test1.jpg", 5, 5);
+		maze.addMazeImageWidget("images/test2.jpg", 200, 50);
+		maze.addMazeImageWidget("images/test3.jpg", 500, 10);
+		maze.addMazeImageWidget("images/test4.jpg", 800, 100);
 		
-		vertcalPanel.add(button);
+		maze.init();
 		
-		vertcalPanel.setCellHorizontalAlignment(mazeWidget, HasHorizontalAlignment.ALIGN_CENTER);
-		vertcalPanel.setCellHorizontalAlignment(button, HasHorizontalAlignment.ALIGN_CENTER);
+		StateField numericRangeSlider = new StateField();
+		Configuration numericRangeSliderConfig = getNumericRangeSliderFieldConfiguration();
+		numericRangeSlider.setConfiguration(numericRangeSliderConfig);
+		try {
+			numericRangeSlider.create();
+			numericRangeSlider.setStylePrimaryName("mainPanel");
+		} catch (AppOpsException e) {
+			e.printStackTrace();
+		}
 		
-		RootPanel.get().add(vertcalPanel);
+		VerticalPanel vp = new VerticalPanel();
+		vp.add(maze);
+		vp.add(numericRangeSlider);
 		
-		button.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				mazeWidget.refreshMaze();
-			}
-		});
+		RootPanel.get().add(vp);
+	}
+	
+	private Configuration getNumericRangeSliderFieldConfiguration() {
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(StateField.STATEFIELD_MODE, StateField.STATEFIELDMODE_ENUM);
+		configuration.setPropertyByName(StateField.STATEFIELD_TYPE, StateField.STATEFIELDTYPE_NUMERICRANGE);
+		configuration.setPropertyByName(NumericRangeSliderField.NUMERIC_RANGESLIDER_MAXVALUE, 0.1);
+		configuration.setPropertyByName(NumericRangeSliderField.NUMERIC_RANGESLIDER_MINVALUE, 0.0);
+		configuration.setPropertyByName(NumericRangeSliderField.NUMERIC_RANGESLIDER_STEPVALUE, 0.01);
+		return configuration;
 	}
 }

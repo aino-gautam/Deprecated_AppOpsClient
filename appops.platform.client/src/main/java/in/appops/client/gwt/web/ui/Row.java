@@ -3,7 +3,10 @@
  */
 package in.appops.client.gwt.web.ui;
 
+import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.shared.Configuration;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -52,8 +55,28 @@ public class Row extends AbsolutePanel implements MouseWheelHandler,ClickHandler
 	
 	public Row(String name){
 		this.name = name;
+		setTitle(name);
 		addDomHandler(this, MouseWheelEvent.getType());
 		setStylePrimaryName("rowPanel");
+	}
+	
+	public void setRowName(String name,int left,int top){
+		this.name = name;
+		LabelField rowlabel = new LabelField();
+		Configuration labelConf =getLabelFieldConfiguration(true, "rowName", null, null);
+		rowlabel.setConfiguration(labelConf);
+		rowlabel.create();
+		rowlabel.setValue(name);
+		add(rowlabel,left,top);
+	}
+
+
+	public Configuration getLabelFieldConfiguration(boolean allowWordWrap, String primaryCss, String secondaryCss, String debugId) {
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, allowWordWrap);
+		configuration.setPropertyByName(LabelFieldConstant.BF_PCLS, primaryCss);
+		configuration.setPropertyByName(LabelFieldConstant.BF_DCLS, secondaryCss);
+		return configuration;
 	}
 	
 	public int getRowPosition() {
@@ -176,6 +199,9 @@ public class Row extends AbsolutePanel implements MouseWheelHandler,ClickHandler
 
 			double scale = scalingConstant/ (scalingConstant + Math.sin(currentAngle + index * getWidgetSpacing() + getParentCylinder().getSpeed()) * getParentCylinder().getRadius() + zcenter);
 						
+			if(scale>=0.9)
+				setRowName(name, left+40, top-20);
+			
 			widget = scaleWheelWidget(widget, scale,0,index);
 						
 			widget.addDomHandler(this, ClickEvent.getType());

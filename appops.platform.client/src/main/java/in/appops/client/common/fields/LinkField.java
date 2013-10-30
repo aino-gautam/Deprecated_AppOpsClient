@@ -1,16 +1,14 @@
 package in.appops.client.common.fields;
 
 
-import com.google.gwt.event.shared.GwtEvent.Type;
-import com.google.gwt.event.shared.HandlerRegistration;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.AppOpsException;
+
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Hyperlink;
-
-import in.appops.client.common.event.FieldEvent;
-import in.appops.client.common.event.handlers.FieldEventHandler;
-import in.appops.platform.core.shared.Configuration;
-import in.appops.platform.core.util.AppOpsException;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Field class to represent a {@link Hyperlink} or {@link Anchor}
@@ -41,7 +39,7 @@ public class LinkField extends Composite implements Field {
 	 * @throws AppOpsException 
 	 */
 	@Override
-	public void createField() throws AppOpsException{
+	public void create() throws AppOpsException{
 		if(getConfiguration() == null)
 			throw new AppOpsException("LinkField configuration unavailable");
 		
@@ -75,7 +73,7 @@ public class LinkField extends Composite implements Field {
 	 * clears the field if it has any values
 	 */
 	@Override
-	public void clearField() {
+	public void clear() {
 		if(getConfiguration().getPropertyByName(LINKFIELD_TYPE).toString().equalsIgnoreCase(LINKFIELDTYPE_HYPERLINK))
 			hyperLink.setText("");
 		else if(getConfiguration().getPropertyByName(LINKFIELD_TYPE).toString().equalsIgnoreCase(LINKFIELDTYPE_ANCHOR))
@@ -86,7 +84,7 @@ public class LinkField extends Composite implements Field {
 	 * resets the field to the original value that has been set via setFieldValue()
 	 */
 	@Override
-	public void resetField() {
+	public void reset() {
 		if(getConfiguration().getPropertyByName(LINKFIELD_TYPE).toString().equalsIgnoreCase(LINKFIELDTYPE_HYPERLINK))
 			hyperLink.setText(getFieldValue());
 		else if(getConfiguration().getPropertyByName(LINKFIELD_TYPE).toString().equalsIgnoreCase(LINKFIELDTYPE_ANCHOR))
@@ -116,6 +114,21 @@ public class LinkField extends Composite implements Field {
 
 	@Override
 	public void onFieldEvent(FieldEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public Widget getWidget() {
+		if(getConfiguration().getPropertyByName(LINKFIELD_TYPE).toString().equalsIgnoreCase(LINKFIELDTYPE_HYPERLINK)) {
+			return hyperLink;
+		} else if(getConfiguration().getPropertyByName(LINKFIELD_TYPE).toString().equalsIgnoreCase(LINKFIELDTYPE_ANCHOR)) {
+			return anchor;
+		}
+		return null;
+	}
+
+	@Override
+	public void configure() {
 		// TODO Auto-generated method stub
 		
 	}

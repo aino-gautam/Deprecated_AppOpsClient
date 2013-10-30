@@ -1,0 +1,106 @@
+h1 {
+	color:#2E8B57; 
+	margin:0px;
+}
+h3 {
+	color:#2E8B57; 
+	margin: 0px 0px 1em 0px;
+}
+.mainTable{
+	width:100%; 
+	border: 1px solid #A7C942; 
+	border-collapse: collapse;
+}
+.mainTable-firstRow{
+	background-color:#A7C942;
+	height:35px; 
+	font-size: 16px; 
+	color:white; 
+	padding: 5px 0px 4px 0px;
+}
+.showcase-sheet {
+   margin:0 auto;
+   position:relative;
+   cursor:auto;
+   width: 800px;
+   z-index: auto !important;
+}
+
+.disclosureLabel {
+	/* color: #1982D1;
+	clear: both;
+	font-size: 12px;
+	line-height: 18px;
+	font-weight: bold;
+	padding-right: 10px; */
+	padding-left: 3px;
+	padding-right: 3px;
+	outline: none;
+}
+
+.disclosureImage {
+	left: 0px;
+	height: 15px;
+	width: 15px;
+	position: absolute;
+}
+
+.disclosureSnippetUpper1 {
+	font-weight: bold;
+	color: #4B4A4A;
+	margin-top: 20px;
+	padding: 3px 13px 3px 10px !important;
+}
+
+.disclosureSnippetUpper2 {
+	cursor: hand;
+	cursor: pointer;
+	zoom: 1;
+}
+
+.disclosureSnippetUpper3 {
+	border-bottom: 1px solid #6F7277;
+}
+
+.componentSnippet1 {
+	padding-top: 4px;
+	padding-bottom: 4px;
+	cursor: hand;
+	cursor: pointer;
+	zoom: 1;
+}
+
+.labelFieldPreview {
+	color: #1982D1;
+	clear: both;
+	font-size: 15px;
+	line-height: 18px;
+	font-weight: bold;
+	padding-right: 10px;
+}
+
+.textFieldPreview {
+	width: 150px;	
+}
+
+.basicImageFieldPreview {
+	left: 0px;
+	height: 48px;
+	width: 48px;
+	position: absolute;
+}
+
+.toggleImageFieldPreview {
+	left: 0px;
+	height: 24px;
+	width: 24px;
+	position: absolute;
+	cursor: hand;
+	cursor: pointer;
+}
+
+.componentLabel {
+	padding-left: 18px;
+	padding-right: 3px;
+	outline: none;
+}
