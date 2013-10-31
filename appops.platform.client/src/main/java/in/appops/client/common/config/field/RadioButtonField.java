@@ -1,5 +1,6 @@
 package in.appops.client.common.config.field;
 
+import in.appops.client.common.config.dsnip.type.BooleanValueType;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 
@@ -84,7 +85,7 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler, B
 	 * Method will check whether checkbox is checked or not.
 	 * @return
 	 */
-	public Boolean isFieldChecked(){
+/*	public Boolean isFieldChecked(){
 		
 		Boolean isChecked = false;
 		
@@ -98,7 +99,7 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler, B
 			logger.log(Level.SEVERE, "[RadioButtonField] ::Exception in isFieldChecked method :"+e);
 		}
 		return isChecked;
-	}
+	}*/
 
 	/**
 	 * Method removed registered handlers from field
@@ -149,7 +150,7 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler, B
 		radioBtn = new RadioButton(getGroupId());
 		try {
 			logger.log(Level.INFO, "[RadioButtonField] ::In configure method ");
-			radioBtn.setValue(isFieldChecked());
+			radioBtn.setValue(((BooleanValueType)getValueType()).getDefaultValue());
 				
 			radioBtn.setText(getDisplayText());
 			

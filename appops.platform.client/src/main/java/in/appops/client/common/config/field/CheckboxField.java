@@ -1,5 +1,6 @@
 package in.appops.client.common.config.field;
 
+import in.appops.client.common.config.dsnip.type.BooleanValueType;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 
@@ -65,7 +66,7 @@ public class CheckboxField extends BaseField implements ValueChangeHandler, Blur
 	 * Method will check whether checkbox is checked or not.
 	 * @return
 	 */
-	public Boolean isFieldChecked(){
+	/*public Boolean isFieldChecked(){
 		
 		Boolean isChecked = false;
 		
@@ -79,7 +80,7 @@ public class CheckboxField extends BaseField implements ValueChangeHandler, Blur
 			logger.log(Level.SEVERE, "[CheckboxField] ::Exception in isFieldChecked method :"+e);
 		}
 		return isChecked;
-	}
+	}*/
 
 	/**
 	 * Method will return the group ID in which the checkbox will be added.
@@ -137,7 +138,7 @@ public class CheckboxField extends BaseField implements ValueChangeHandler, Blur
 	@Override
 	public void configure() {
 		try {
-			checkBox.setValue(isFieldChecked());
+			checkBox.setValue(((BooleanValueType)getValueType()).getDefaultValue());
 
 			checkBox.setText(getDisplayText());
 
