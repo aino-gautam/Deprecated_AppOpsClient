@@ -298,7 +298,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter field value");
 			configuration.setPropertyByName(TextFieldConstant.BF_VALIDATEONCHANGE, true);
 			configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
-			configuration.setPropertyByName(TextFieldConstant.TF_MAXLENGTH, 10);
+		//	configuration.setPropertyByName(TextFieldConstant.TF_MAXLENGTH, 10);
 			configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, true);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[FieldsShowCase]::Exception In getTextFieldConfiguration  method :"+e);;
@@ -316,7 +316,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			configuration.setPropertyByName(TextFieldConstant.BF_PCLS, primaryCss);
 			configuration.setPropertyByName(TextFieldConstant.BF_DCLS, secondaryCss);
 			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter Number");
-			configuration.setPropertyByName(TextFieldConstant.MINVALUE,0);
+		//	configuration.setPropertyByName(TextFieldConstant.MINVALUE,0);
 			configuration.setPropertyByName(TextFieldConstant.ALLOWDEC,true);
 			configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
 			configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, true);
@@ -440,7 +440,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			configuration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter field value");
 			configuration.setPropertyByName(TextFieldConstant.BF_VALIDATEONCHANGE, true);
 			configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
-			configuration.setPropertyByName(TextFieldConstant.TF_MAXLENGTH, 10);
+			//configuration.setPropertyByName(TextFieldConstant.TF_MAXLENGTH, 10);
 			configuration.setPropertyByName(TextFieldConstant.TF_CHARWIDTH, 70);
 			configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, false);
 		} catch (Exception e) {
@@ -926,13 +926,13 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				Configuration configuration = new Configuration();
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_STEP, 3);
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_UNIT, "%");
-				configuration.setPropertyByName(SpinnerFieldConstant.SP_MAXVAL, 23F);
-				configuration.setPropertyByName(SpinnerFieldConstant.SP_MINVAL, -3F);
+				//configuration.setPropertyByName(SpinnerFieldConstant.SP_MAXVAL, 23F);
+				//configuration.setPropertyByName(SpinnerFieldConstant.SP_MINVAL, -3F);
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, true);
 				configuration.setPropertyByName(SpinnerFieldConstant.BF_DEFVAL, 3F);
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_TYPE, SpinnerFieldConstant.SP_TYPENUMERIC);
 				configuration.setPropertyByName(SpinnerFieldConstant.BF_ERRPOS, SpinnerFieldConstant.BF_BOTTOM);
-				configuration.setPropertyByName(SpinnerFieldConstant.SP_DECPRECISION, 0);
+				//configuration.setPropertyByName(SpinnerFieldConstant.SP_DECPRECISION, 0);
 				configuration.setPropertyByName(SpinnerFieldConstant.SP_ALLOWDEC, false);
 				configuration.setPropertyByName(SpinnerFieldConstant.BF_VALIDATEONCHANGE, true);
 				

@@ -1,7 +1,7 @@
 package in.appops.client.common.gin;
 
-import in.appops.client.common.config.dsnip.DynamicMVPFactory;
-import in.appops.client.common.config.dsnip.DynamicMVPFactoryImpl;
+import in.appops.client.common.config.dsnip.DynamicMvpFactory;
+import in.appops.client.common.config.dsnip.DynamicMvpFactoryImpl;
 import in.appops.client.common.snippet.SnippetFactory;
 import in.appops.client.common.snippet.SnippetFactoryImpl;
 
@@ -13,7 +13,7 @@ public class AppOpsModule extends AbstractGinModule {
 	@Override
 	protected void configure() {
 		bind(SnippetFactory.class).to(SnippetFactoryImpl.class);
-		bind(DynamicMVPFactory.class).to(DynamicMVPFactoryImpl.class);
+		bind(DynamicMvpFactory.class).to(DynamicMvpFactoryImpl.class);
 		bind(SimpleEventBus.class);
 	}
 

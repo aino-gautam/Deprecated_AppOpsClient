@@ -1,7 +1,7 @@
 package in.appops.client.common.config.component.base;
 
 import in.appops.client.common.config.component.base.BaseComponent.BaseComponentConstant;
-import in.appops.client.common.config.dsnip.DynamicMVPFactory;
+import in.appops.client.common.config.dsnip.DynamicMvpFactory;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.shared.Configuration;
@@ -24,7 +24,7 @@ public abstract class BaseComponentView extends Composite implements Configurabl
 	protected Configuration configuration;
 	
 	protected AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
-	protected DynamicMVPFactory snippetGenerator = (DynamicMVPFactory)injector.getMVPFactory();
+	protected DynamicMvpFactory snippetGenerator = (DynamicMvpFactory)injector.getMVPFactory();
 	
 	public BaseComponentView() {
 		initialize();

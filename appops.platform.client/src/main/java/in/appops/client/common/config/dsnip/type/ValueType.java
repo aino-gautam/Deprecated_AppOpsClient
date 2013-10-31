@@ -1,8 +1,8 @@
 package in.appops.client.common.config.dsnip.type;
 
-import java.io.Serializable;
-
 import in.appops.platform.core.shared.Configuration;
+
+import java.io.Serializable;
 
 /**
  * Represents the basic value types that can be used by fields
@@ -16,8 +16,8 @@ public abstract class ValueType extends Configuration {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public static final String DEFAULT_VALUE = "Default_value";
-	public static final String REGEX_VALIDATOR = "Regex_validator";
+	public static final String DEFAULT_VALUE = "defaultValue";
+	public static final String REGEX_VALIDATOR = "regexValidator";
 
 	/**
 	 * gets the default value

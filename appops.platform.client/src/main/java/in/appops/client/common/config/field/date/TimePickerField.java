@@ -194,8 +194,8 @@ public class TimePickerField extends BaseField{
 		Configuration configuration = new Configuration();
 		try {
 			logger.log(Level.INFO,"[TimePickerField]:: In getSpinnerConfiguration  method ");
-			configuration.setPropertyByName(SpinnerFieldConstant.SP_MAXVAL, maxvalue);
-			configuration.setPropertyByName(SpinnerFieldConstant.SP_MINVAL, minValue);
+			//configuration.setPropertyByName(SpinnerFieldConstant.SP_MAXVAL, maxvalue);
+			//configuration.setPropertyByName(SpinnerFieldConstant.SP_MINVAL, minValue);
 			configuration.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, true);
 			configuration.setPropertyByName(SpinnerFieldConstant.BF_PCLS, getSpinnerPrimaryCss());
 			configuration.setPropertyByName(SpinnerFieldConstant.BF_DCLS, getSpinnerDependentCss());

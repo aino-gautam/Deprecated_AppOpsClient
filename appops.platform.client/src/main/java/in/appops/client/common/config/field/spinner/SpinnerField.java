@@ -1,5 +1,6 @@
 package in.appops.client.common.config.field.spinner;
 
+import in.appops.client.common.config.dsnip.type.DecimalValueType;
 import in.appops.client.common.config.field.BaseField;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
@@ -75,10 +76,10 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		public static final String SP_UNIT = "unit";
 		
 		/** The maximum allowed value. Will be used by the field's validation logic **/
-		public static final String SP_MAXVAL = "max";
+		//public static final String SP_MAXVAL = "max";
 		
 		/** The minimum allowed value. Will be used by the field's validation logic **/
-		public static final String SP_MINVAL = "min";
+		//public static final String SP_MINVAL = "min";
 		
 		/** Specifies whether the spinner should continuing rolling value when the maxValue or minValue are reached. Applied only when maxValue and minValue are provided. Defaults to false  **/
 		public static final String SP_CIRCULAR = "circular";
@@ -89,11 +90,11 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		/** Specifies whether decimal to allow decimal value. Defaults to false **/
 		public static final String SP_ALLOWDEC = "allowDecimal";
 		
-		/** The maximum precision to display after the decimal separator **/
-		public static final String SP_DECPRECSION = "decimalPrecision";
-		
-		/** Single Character to allow as the decimal separator **/
-		public static final String SP_DECSEPARTOR = "decimalSeperator";
+//		/** The maximum precision to display after the decimal separator **/
+//		public static final String SP_DECPRECISION = "decimalPrecision";
+//		
+//		/** Single Character to allow as the decimal separator **/
+//		public static final String SP_DECSEPARTOR = "decimalSeperator";
 		
 		/** Error text to display if the maximum value validation fails. {@link SpinnerFieldConstant#SP_MAXVAL}**/
 		public static final String SP_ERRMSGMAX = "maxMsg";
@@ -115,9 +116,6 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		
 		/** Index of default value to be shown from the {@link SpinnerFieldConstant#SP_VALUELIST}.  **/
 		public static final String SP_VALUEIDX = "valueListIndex";
-
-		/** Number of digits to follow the decimal  **/
-		public static final String SP_DECPRECISION = "decimalPrecision";
 
 	}
 	
@@ -295,7 +293,7 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 	}
 
 	private String getMaxErrMsg() {
-		String maxMsg = "Maximum value for this field is " + ((NumericModel)getModel()).fixPrecision(getMax(), getPrecision());
+		String maxMsg = "Maximum value for this field is " + ((NumericModel)getSpinnerModel()).fixPrecision(((DecimalValueType)getValueType()).getMaxValue(), ((DecimalValueType)getValueType()).getPrecision());
 		try {
 			logger.log(Level.INFO, "[SpinnerField] ::In getMaxErrMsg method ");
 			if(viewConfiguration.getConfigurationValue(SpinnerFieldConstant.SP_ERRMSGMAX) != null) {
@@ -309,7 +307,7 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 	}
 
 	private String getMinErrMsg() {
-		String minMsg = "Minimum value for this field is " + ((NumericModel)getModel()).fixPrecision(getMin(), getPrecision());
+		String minMsg = "Minimum value for this field is " + ((NumericModel)getSpinnerModel()).fixPrecision(((DecimalValueType)getValueType()).getMinValue(), ((DecimalValueType)getValueType()).getPrecision());
 		try {
 			logger.log(Level.INFO, "[SpinnerField] ::In getMinErrMsg method ");
 			if(viewConfiguration.getConfigurationValue(SpinnerFieldConstant.SP_ERRMSGMIN) != null) {
@@ -350,7 +348,7 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		}
 	}
 	
-	private Float getMax() {
+/*	private Float getMax() {
 		Float max = Float.MAX_VALUE;
 		try {
 			logger.log(Level.INFO, "[SpinnerField] ::In getMax method ");
@@ -378,7 +376,7 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 
 		}
 		return min;
-	}
+	}*/
 
 	private boolean isAllowDecimal() {
 		boolean allowDec = false;
@@ -394,7 +392,7 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		return allowDec;
 	}
 	
-	private Integer getPrecision() {
+	/*private Integer getPrecision() {
 		int precision = 0;
 		try {
 			logger.log(Level.INFO, "[SpinnerField] ::In getPrecision method ");
@@ -410,7 +408,7 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 //			logger.log(Level.SEVERE, "[SpinnerField] ::Exception in getPrecision method :"+e);
 
 		}
-	}
+	}*/
 	
 	private int getDefaultValueIndex() {
 		int index = 0;
@@ -488,28 +486,26 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		ArrayList<String> errors = new ArrayList<String>();
 		try {
 			logger.log(Level.INFO, "[SpinnerField] ::In getErrors method ");
-			boolean valid = true;
 			errors.clear();
 			if(value != null) {
 				if(!isAllowBlank() && value.toString().trim().equals("")) {
 					errors.add(getBlankErrMsg());
 					return errors;
 				}
-				if(!value.toString().matches("-?\\d+(\\.\\d+)?")) {
-					errors.add(getInvalidErrMsg());
-					return errors;
-				}
-				if(getMin() > 0 && Float.parseFloat(value.toString()) < 0) {
-					errors.add(getNegErrMsg());
-					valid = false;
-				}
-				if(getMax() != null && Float.parseFloat(value.toString()) > getMax()) {
-					errors.add(getMaxErrMsg());
-					valid = false;
-				} 
-				if(getMin() != null && Double.parseDouble(value.toString()) < getMin()) {
-					errors.add(getMinErrMsg());
-					valid = false;
+				if(!value.toString().trim().equals("")) {
+					if(!value.toString().matches("-?\\d+(\\.\\d+)?")) {
+						errors.add(getInvalidErrMsg());
+						return errors;
+					}
+					if(((DecimalValueType)getValueType()).getMinValue() > 0 && Float.parseFloat(value.toString()) < 0) {
+						errors.add(getNegErrMsg());
+					}
+					if(((DecimalValueType)getValueType()).getMaxValue() != null && Float.parseFloat(value.toString()) > ((DecimalValueType)getValueType()).getMaxValue()) {
+						errors.add(getMaxErrMsg());
+					} 
+					if(((DecimalValueType)getValueType()).getMinValue() != null && Double.parseDouble(value.toString()) < ((DecimalValueType)getValueType()).getMinValue()) {
+						errors.add(getMinErrMsg());
+					}
 				}
 			}
 		} catch (NumberFormatException e) {
@@ -540,6 +536,9 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 		}
 	}
 
+	/**
+	 * Needs some refactoring
+	 */
 	@Override
 	public void configure() {
 		
@@ -553,12 +552,13 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 			
 			if(getSpinnerType() == SpinnerFieldConstant.SP_TYPENUMERIC) {
 				setSpinnerModel(new NumericModel());
+				configureModel();
 				configureForNumber();
 			} else {
 				setSpinnerModel(new ListModel());
+				configureModel();
 				configureForList();
 			}
-			configureModel();
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[SpinnerField] ::Exception in configure method :"+e);
 
@@ -628,8 +628,9 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 	private void configureForNumber() {
 		try {
 			logger.log(Level.INFO, "[SpinnerField] ::In configureForNumber method ");
-			NumericModel numModel = (NumericModel)getModel();
-			if(getMin() > getMax()) {
+			NumericModel numModel = (NumericModel)getSpinnerModel();
+			
+			if(((DecimalValueType)getValueType()).getMinValue() > ((DecimalValueType)getValueType()).getMaxValue()) {
 				// CONFIG EXCEPTION -- If min value is > than max value
 			}
 
@@ -637,15 +638,15 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 				// CONFIG EXCEPTION -- Step should be a +ve no. But can Step be -ve ????
 			}
 			
-			if(getStep() > (getMax() - getMin())) {
+			if(getStep() > (((DecimalValueType)getValueType()).getMaxValue() - ((DecimalValueType)getValueType()).getMinValue())) {
 				// CONFIG EXCEPTION -- Step should not be > than the difference of max and min.
 				// Shall exception be thrown in this case???
 			}
 			
-			if(getDefaultValue() == null || (numModel.parseValue(getDefaultValue().toString()) == null)){
+			if(((DecimalValueType)getValueType()).getDefaultValue() == null || (numModel.parseValue(((DecimalValueType)getValueType()).getDefaultValue().toString()) == null)){
 				setValue("");
 			} else {
-				String value = numModel.fixPrecision(numModel.parseValue(getDefaultValue().toString()), getPrecision());
+				String value = numModel.fixPrecision(numModel.parseValue(numModel.getValue().toString()), ((DecimalValueType)getValueType()).getPrecision());
 				setValue(value);
 			}
 		} catch (Exception e) {
@@ -657,11 +658,8 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 	private void configureForList() {
 		try {
 			logger.log(Level.INFO, "[SpinnerField] ::In configureForList method ");
-			ListModel listModel = (ListModel)getModel();
-			listModel.setValueList(getValueList());
-			listModel.setCurrentIndex(getDefaultValueIndex());
-			listModel.setCircular(isCircular());
-			spinnerBox.setText(listModel.getValue().toString());
+			ListModel listModel = (ListModel)getSpinnerModel();
+			setValue(listModel.getValue().toString());
 			spinnerBox.setReadOnly(true);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[SpinnerField] ::Exception in configureForList method :"+e);
@@ -672,12 +670,18 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 	private void configureModel() {
 		try {
 			logger.log(Level.INFO, "[SpinnerField] ::In configureModel method ");
-			if(getModel() instanceof NumericModel) {
-				NumericModel numModel = (NumericModel)getModel();
-				numModel.setMax(getMax());
-				numModel.setMin(getMin());
+			if(getSpinnerModel() instanceof NumericModel) {
+				NumericModel numModel = (NumericModel)getSpinnerModel();
+				numModel.setMax(((DecimalValueType)getValueType()).getMaxValue());
+				numModel.setMin(((DecimalValueType)getValueType()).getMinValue());
 				numModel.setStep(getStep());
-				numModel.setValue(numModel.parseValue(getValue().toString()));
+				numModel.setValue(numModel.parseValue(((DecimalValueType)getValueType()).getDefaultValue().toString()));
+				numModel.setCircular(isCircular());
+			} else if(getSpinnerModel() instanceof ListModel) {
+				ListModel listModel = (ListModel)getSpinnerModel();
+				listModel.setValueList(getValueList());
+				listModel.setCurrentIndex(getDefaultValueIndex());
+				listModel.setCircular(isCircular());
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[SpinnerField] ::Exception in configureModel method :"+e);
@@ -704,11 +708,11 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 	public void setSpinnerValue() {
 		try {
 			logger.log(Level.INFO, "[SpinnerField] ::In setSpinnerValue method ");
-			if(getModel() instanceof NumericModel) {
-				NumericModel numModel = (NumericModel)getModel();
-				setValue(numModel.fixPrecision(numModel.parseValue(getSpinnerModel().getValue().toString()), getPrecision()));
-			} else if(getModel() instanceof ListModel) {
-				ListModel listModel = (ListModel)getModel();
+			if(getSpinnerModel() instanceof NumericModel) {
+				NumericModel numModel = (NumericModel)getSpinnerModel();
+				setValue(numModel.fixPrecision(numModel.parseValue(getSpinnerModel().getValue().toString()), ((DecimalValueType)getValueType()).getPrecision()));
+			} else if(getSpinnerModel() instanceof ListModel) {
+				ListModel listModel = (ListModel)getSpinnerModel();
 				setValue(listModel.getValue().toString());
 			}
 		} catch (Exception e) {
@@ -805,7 +809,7 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 				event.preventDefault();
 				return;
 			}
-			if(getMin() > 0 && event.getCharCode() == '-') {
+			if(((DecimalValueType)getValueType()).getMinValue() > 0 && event.getCharCode() == '-') {
 				event.preventDefault();
 				return;
 			}
@@ -859,11 +863,11 @@ public class SpinnerField extends BaseField implements KeyDownHandler, MouseWhee
 	public void updateModel() {
 		try {
 			logger.log(Level.INFO, "[SpinnerField] ::In updateModel method ");
-			if(getModel() instanceof NumericModel) {
-				NumericModel numModel = (NumericModel)getModel();
+			if(getSpinnerModel() instanceof NumericModel) {
+				NumericModel numModel = (NumericModel)getSpinnerModel();
 				getSpinnerModel().setValue(numModel.parseValue(getValue().toString()));
-			} else if(getModel() instanceof ListModel) {
-				ListModel listModel = (ListModel)getModel();
+			} else if(getSpinnerModel() instanceof ListModel) {
+				ListModel listModel = (ListModel)getSpinnerModel();
 				int indx = listModel.getValueList().indexOf(getValue().toString());
 				listModel.setCurrentIndex(indx);
 			}

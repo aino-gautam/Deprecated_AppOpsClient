@@ -3,7 +3,7 @@ package in.appops.client.common.config.component.grid;
 import in.appops.client.common.config.component.base.BaseComponent;
 import in.appops.client.common.config.component.grid.GridComponentPresenter.GridComponentConstant;
 import in.appops.client.common.config.dsnip.HTMLSnippetPresenter;
-import in.appops.client.common.config.dsnip.DynamicMVPFactory;
+import in.appops.client.common.config.dsnip.DynamicMvpFactory;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.util.EntityList;
@@ -205,7 +205,7 @@ public class GridComponentView extends BaseComponent implements ScrollHandler  {
 	
 	private HTMLSnippetPresenter getChildSnippet() {
 		AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
-		DynamicMVPFactory snippetGenerator = (DynamicMVPFactory)injector.getMVPFactory();
+		DynamicMvpFactory snippetGenerator = (DynamicMvpFactory)injector.getMVPFactory();
 		HTMLSnippetPresenter snippetPres = snippetGenerator.requestHTMLSnippet(snippetType, instanceType);
 		return snippetPres;
 	}

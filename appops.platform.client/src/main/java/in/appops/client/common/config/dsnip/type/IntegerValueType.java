@@ -7,9 +7,9 @@ package in.appops.client.common.config.dsnip.type;
  */
 public class IntegerValueType extends ValueType {
 
-	public static final String MAX_VALUE = "Max_value";
-	public static final String MIN_VALUE = "Min_value";
-	public static final String IS_SIGNED = "Is_signed";
+	public static final String MAX_VALUE = "maxValue";
+	public static final String MIN_VALUE = "minValue";
+	public static final String IS_SIGNED = "isSigned";
 	
 	/**
 	 * 
@@ -21,7 +21,7 @@ public class IntegerValueType extends ValueType {
 	 * @return
 	 */
 	public Integer getMinValue(){
-		return getPropertyByName(MIN_VALUE);
+		return (Integer) (getPropertyByName(MIN_VALUE) != null ? getPropertyByName(MIN_VALUE) : Integer.MIN_VALUE);
 	}
 	
 	/**
@@ -29,7 +29,7 @@ public class IntegerValueType extends ValueType {
 	 * @return
 	 */
 	public Integer getMaxValue(){
-		return getPropertyByName(MAX_VALUE);
+		return (Integer) (getPropertyByName(MAX_VALUE) != null ? getPropertyByName(MAX_VALUE) : Integer.MAX_VALUE);
 	}
 	
 	/**

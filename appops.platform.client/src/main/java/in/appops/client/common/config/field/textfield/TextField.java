@@ -1,5 +1,6 @@
 package in.appops.client.common.config.field.textfield;
 
+import in.appops.client.common.config.dsnip.type.StringValueType;
 import in.appops.client.common.config.field.BaseField;
 import in.appops.client.common.config.field.NumericTextbox;
 import in.appops.client.common.event.AppUtils;
@@ -126,10 +127,10 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			}
 			
 			setSuggestion();
-			if(getDefaultValue()!=null){
-				setValue(getDefaultValue());
-				setOriginalValue(getDefaultValue());
-				setFieldValue(getDefaultValue().toString());
+			if(getValueType().getDefaultValue()!=null){
+				setValue(getValueType().getDefaultValue());
+				setOriginalValue(getValueType().getDefaultValue());
+				setFieldValue(getValueType().getDefaultValue().toString());
 			}
 			
 			
@@ -162,7 +163,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			if (getBaseFieldDependentCss() != null)
 				textBox.addStyleName(getBaseFieldDependentCss());
 
-			textBox.setMaxLength(getFieldMaxLength());
+			textBox.setMaxLength(((StringValueType)getValueType()).getMaxLength());
 
 			if (getTabIndex() != null)
 				textBox.setTabIndex(getTabIndex());
@@ -228,7 +229,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			if (getBaseFieldDependentCss() != null)
 				passwordTextBox.addStyleName(getBaseFieldDependentCss());
 
-			passwordTextBox.setMaxLength(getFieldMaxLength());
+			passwordTextBox.setMaxLength(((StringValueType)getValueType()).getMaxLength());
 			if (getTabIndex() != null)
 				passwordTextBox.setTabIndex(getTabIndex());
 
@@ -261,7 +262,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			if (getBaseFieldDependentCss() != null)
 				numericTextbox.addStyleName(getBaseFieldDependentCss());
 
-			numericTextbox.setMaxLength(getFieldMaxLength());
+			// Not necessary as max value would take care of the max length
+			// numericTextbox.setMaxLength(getFieldMaxLength());
 
 			if (getTabIndex() != null)
 				numericTextbox.setTabIndex(getTabIndex());
@@ -547,7 +549,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 				return getBlankFieldText();
 			}
 		}else {
-			if (!value.toString().matches(getEmailRegex())) {
+			if (!value.toString().matches(((StringValueType)getDefaultValue()).getRegexValidator())) {
 				return getInvalidEmailText();
 			}
 		}
@@ -564,7 +566,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 				return getBlankFieldText();
 			}
 		} else {
-			if (value.toString().length() < getMinLength())
+			if (value.toString().length() < ((StringValueType)getDefaultValue()).getMinLength())
 				return getMinLengthErrorText();
 			
 		}
@@ -577,11 +579,11 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 * @return default regex expression.
 	 */
 	
-	private String getEmailRegex(){
+	/*private String getEmailRegex(){
 		try {
 			
 			logger.log(Level.INFO, "[TextField] ::In getEmailRegex method ");
-			String regexExp = TextFieldConstant.EMAIL_REGEX_EXP;
+			String regexExp = ((StringValueType)getDefaultValue()).getRegexValidator();
 			if(viewConfiguration.getConfigurationValue(TextFieldConstant.EMAIL_REGEX)!=null){
 				
 				regexExp =  viewConfiguration.getConfigurationValue(TextFieldConstant.EMAIL_REGEX).toString();
@@ -596,7 +598,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		}
 		return null;
 		
-	}
+	}*/
 	
 	/**
 	 * Methos checks the field type and return that widget.
@@ -656,7 +658,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 * @return
 	 */
 	
-	private Integer getFieldMaxLength(){
+	/*private Integer getFieldMaxLength(){
 		
 		Integer maxLength = 255;
 		try {
@@ -668,14 +670,14 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			logger.log(Level.SEVERE, "[TextField] ::Exception In getFieldMaxLength method "+e);
 		}
 		return maxLength;
-	}
+	}*/
 	
 	/**
 	 * Method read the field minimum length set in the configuration and return . Default value is 6;
 	 * @return
 	 */
 	
-	private Integer getMinLength(){
+	/*private Integer getMinLength(){
 		
 		Integer minLength = 6;
 		try {
@@ -687,7 +689,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		logger.log(Level.SEVERE, "[TextField] ::Exception In getMinLength method "+e);
 		}
 		return minLength;
-	}
+	}*/
 	
 	/**
 	 * Returns if field should be validated or not.
@@ -754,7 +756,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	 */
 	
 	private String getMinLengthErrorText(){
-		String minValueText = "The minimum length for this field is "+ getMinLength();
+		String minValueText = "The minimum length for this field is "+ ((StringValueType)getDefaultValue()).getMinLength();
 		try {
 			logger.log(Level.INFO, "[TextField] ::In getMinLengthErrorText method ");
 			if (viewConfiguration.getConfigurationValue(TextFieldConstant.MIN_LEGTH_ERROR_TEXT) != null) {
@@ -930,10 +932,10 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		public static final String TF_VISLINES = "visibleLines";
 		
 		/** Specifies max length for the field**/
-		public static final String TF_MAXLENGTH = "maxlength";
+	//	public static final String TF_MAXLENGTH = "maxlength";
 		
 		/** Specifies minimum length for the field**/
-		public static final String TF_MINLENGTH = "minlength";
+		//public static final String TF_MINLENGTH = "minlength";
 		
 		/** Specifies character width for the field**/
 		public static final String TF_CHARWIDTH = "charWidth";
@@ -962,7 +964,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		public static final String EMAIL_REGEX = "emailRegex";
 		
 		/** Specifies email field regex **/
-		public static final String EMAIL_REGEX_EXP = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+	//	public static final String EMAIL_REGEX_EXP = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
 		
 		
 		
@@ -970,10 +972,10 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		public static final String ALLOWDEC = "allowDecimal";
 		
 		/** Specifies min value for the field . Defaults to java min float value.**/
-		public static final String MINVALUE = "minValue";
+	//	public static final String MINVALUE = "minValue";
 		
 		/** Specifies max value for the field . Defaults to java max float value.**/
-		public static final String MAXVALUE = "maxValue";
+	//	public static final String MAXVALUE = "maxValue";
 		
 		public static final String PROPERTY_BY_FIELD_NAME = "propertyByFieldName";
 		

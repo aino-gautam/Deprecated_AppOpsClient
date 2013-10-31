@@ -3,7 +3,7 @@ package in.appops.client.common.config.component.base;
 import in.appops.client.common.config.dsnip.ActionEvent;
 import in.appops.client.common.config.dsnip.ActionEventHandler;
 import in.appops.client.common.config.dsnip.ApplicationContext;
-import in.appops.client.common.config.dsnip.DynamicMVPFactory;
+import in.appops.client.common.config.dsnip.DynamicMvpFactory;
 import in.appops.client.common.config.dsnip.event.EventActionRule;
 import in.appops.client.common.config.dsnip.event.EventActionRuleMap;
 import in.appops.client.common.config.dsnip.event.EventActionRulesList;
@@ -43,7 +43,7 @@ public abstract class BaseComponentPresenter implements SupportsEventActionRules
 	protected String type;
 
 	protected AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
-	protected DynamicMVPFactory dynamicFactory = injector.getMVPFactory();
+	protected DynamicMvpFactory dynamicFactory = injector.getMVPFactory();
 
 	public BaseComponentPresenter() {}
 

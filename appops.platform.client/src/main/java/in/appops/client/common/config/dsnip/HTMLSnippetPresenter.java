@@ -24,8 +24,8 @@ public class HTMLSnippetPresenter extends BaseComponentPresenter {
 	@Override
 	protected void initialize() {
 		localEventBus = injector.getLocalEventBus();
-		model = dynamicFactory.requestModel(DynamicMVPFactory.HTMLSNIPPET);
-		view = dynamicFactory.requestView(DynamicMVPFactory.HTMLSNIPPET);
+		model = dynamicFactory.requestModel(DynamicMvpFactory.HTMLSNIPPET);
+		view = dynamicFactory.requestView(DynamicMvpFactory.HTMLSNIPPET);
 		view.setLocalEventBus(localEventBus);
 		view.setModel(model);
 		((HTMLSnippetView) view).setSnippetType(type);

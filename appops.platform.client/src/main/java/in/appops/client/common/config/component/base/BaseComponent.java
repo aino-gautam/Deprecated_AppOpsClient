@@ -1,6 +1,6 @@
 package in.appops.client.common.config.component.base;
 
-import in.appops.client.common.config.dsnip.DynamicMVPFactory;
+import in.appops.client.common.config.dsnip.DynamicMvpFactory;
 import in.appops.client.common.config.model.IsConfigurationModel;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.gin.AppOpsGinjector;
@@ -24,7 +24,7 @@ public abstract class BaseComponent extends Composite implements HasClickHandler
 	protected SimpleEventBus localEventBus;
 
 	protected AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
-	protected DynamicMVPFactory mvpFactory = injector.getMVPFactory();
+	protected DynamicMvpFactory mvpFactory = injector.getMVPFactory();
 
 	public void initialize() {
 		basePanel = new DockPanel();

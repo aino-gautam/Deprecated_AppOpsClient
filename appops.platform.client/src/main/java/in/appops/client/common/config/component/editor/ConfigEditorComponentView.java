@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.Label;
 
 import in.appops.client.common.config.component.base.BaseComponent;
 import in.appops.client.common.config.component.editor.ConfigEditorComponentPresenter.ConfigEditorComponentConstant;
-import in.appops.client.common.config.dsnip.DynamicMVPFactory;
+import in.appops.client.common.config.dsnip.DynamicMvpFactory;
 import in.appops.client.common.config.field.FieldPresenter;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.client.common.config.field.StateField.StateFieldConstant;
@@ -61,14 +61,14 @@ public class ConfigEditorComponentView  extends BaseComponent implements EntityR
 				EntityList list= viewConfigTypesMap.get(propName);
 				
 				PropertyModel lblFldModel = ((ConfigurationModel)model).getPropertyModel();
-				FieldPresenter lblFldPresenter = new FieldPresenter(DynamicMVPFactory.LABELFIELD, "cieLabelFieldConfig", lblFldModel);
+				FieldPresenter lblFldPresenter = new FieldPresenter(DynamicMvpFactory.LABELFIELD, "cieLabelFieldConfig", lblFldModel);
 				lblFldPresenter.configure();
 				lblFldPresenter.create();
 				lblFldModel.updateConfiguration(LabelFieldConstant.BF_DEFVAL, propName);
 				lblFldPresenter.configure();
 				
 				PropertyModel listBoxFldModel = ((ConfigurationModel)model).getPropertyModel();
-				FieldPresenter listBoxFldPresenter = new FieldPresenter(DynamicMVPFactory.LISTBOXFIELD, "cieListBoxFieldConfig", listBoxFldModel);
+				FieldPresenter listBoxFldPresenter = new FieldPresenter(DynamicMvpFactory.LISTBOXFIELD, "cieListBoxFieldConfig", listBoxFldModel);
 				listBoxFldPresenter.configure();
 				listBoxFldPresenter.create();
 				listBoxFldModel.updateConfiguration(StateFieldConstant.ITEMS_LIST, list);
@@ -81,7 +81,7 @@ public class ConfigEditorComponentView  extends BaseComponent implements EntityR
 			}
 			
 			PropertyModel actionFldModel = ((ConfigurationModel)model).getPropertyModel();
-			FieldPresenter actionFldPresenter = new FieldPresenter(DynamicMVPFactory.ACTIONFIELD, "cieActionButtonFieldConfig", actionFldModel);
+			FieldPresenter actionFldPresenter = new FieldPresenter(DynamicMvpFactory.ACTIONFIELD, "cieActionButtonFieldConfig", actionFldModel);
 			actionFldPresenter.configure();
 			actionFldPresenter.create();
 			

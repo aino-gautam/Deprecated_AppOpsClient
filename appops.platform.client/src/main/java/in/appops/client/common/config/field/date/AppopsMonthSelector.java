@@ -103,8 +103,8 @@ public class AppopsMonthSelector extends MonthSelector implements FieldEventHand
 
 			Configuration confNs = new Configuration();
 			confNs.setPropertyByName(SpinnerFieldConstant.SP_STEP, 1);
-			confNs.setPropertyByName(SpinnerFieldConstant.SP_MAXVAL, 2099L);
-			confNs.setPropertyByName(SpinnerFieldConstant.SP_MINVAL, 1900L);
+			//confNs.setPropertyByName(SpinnerFieldConstant.SP_MAXVAL, 2099L);
+			//confNs.setPropertyByName(SpinnerFieldConstant.SP_MINVAL, 1900L);
 			confNs.setPropertyByName(SpinnerFieldConstant.SP_CIRCULAR, true);
 			confNs.setPropertyByName(SpinnerFieldConstant.BF_PCLS, "appops-DpMonYrSpin");
 			confNs.setPropertyByName(SpinnerFieldConstant.SP_TYPE, SpinnerFieldConstant.SP_TYPENUMERIC);

@@ -39,7 +39,7 @@ public class NumericModel implements SpinnerModel {
 			logger.log(Level.INFO, "[NumericModel] ::In spinUp method ");
 			if((value + step > max)) { //
 				if(isCircular()) { 
-					value = ((value - (max - value)) - 1) + min;
+					value = ((step - (max - value)) - 1) + min;
 				} else {
 					value = max;
 				}

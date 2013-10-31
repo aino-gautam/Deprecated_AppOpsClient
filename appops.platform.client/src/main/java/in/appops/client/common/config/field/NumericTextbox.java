@@ -1,5 +1,6 @@
 package in.appops.client.common.config.field;
 
+import in.appops.client.common.config.dsnip.type.IntegerValueType;
 import in.appops.client.common.config.field.textfield.TextField;
 import in.appops.client.common.config.field.textfield.TextField.TextFieldConstant;
 import in.appops.client.common.event.AppUtils;
@@ -51,7 +52,7 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 
 	private String getMaxErrMsg(){
 		
-			String maxErrMsg = "The maximum value for this field is "+ getMax();
+			String maxErrMsg = "The maximum value for this field is "+ ((IntegerValueType)textField.getValueType()).getMaxValue();
 			try {
 				logger.log(Level.INFO, "[NumericTextbox] ::In getMaxErrMsg method ");
 				if(getConfigurationValue(TextFieldConstant.MAX_VALUE_TEXT) != null) {
@@ -66,7 +67,7 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 	
 	private String getMinErrMsg(){
 		
-			String minErrMsg = "The minimum value for this field is "+ getMin();
+			String minErrMsg = "The minimum value for this field is "+ ((IntegerValueType)textField.getValueType()).getMinValue();
 			try {
 				logger.log(Level.INFO, "[NumericTextbox] ::In getMinErrMsg method ");
 				if(getConfigurationValue(TextFieldConstant.MIN_VALUE_TEXT) != null) {
@@ -79,7 +80,7 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 			return minErrMsg;
 	}
 	
-	private Float getMax() {
+	/*private Float getMax() {
 		Float max = Float.MAX_VALUE;
 		try {
 			logger.log(Level.INFO, "[NumericTextbox] ::In getMax method ");
@@ -105,7 +106,7 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 			logger.log(Level.SEVERE, "[NumericTextbox] ::Exception in getMin method :"+e);
 		}
 		return min;
-	}
+	}*/
 	
 	public boolean isAllowDecimal() {
 		boolean allowDec = false;
@@ -228,15 +229,15 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 					errors.add(getBlankErrMsg());
 					return errors;
 				}
-				if(getMin() > 0 && Double.parseDouble(value.toString()) < 0) {
+				if(((IntegerValueType)textField.getValueType()).getMinValue() > 0 && Double.parseDouble(value.toString()) < 0) {
 					errors.add(getNegErrMsg());
 					valid = false;
 				}
-				if(getMax() != null && Double.parseDouble(value.toString()) > getMax()) {
+				if(((IntegerValueType)textField.getValueType()).getMaxValue() != null && Double.parseDouble(value.toString()) > ((IntegerValueType)textField.getValueType()).getMaxValue()) {
 					errors.add(getMaxErrMsg());
 					valid = false;
 				} 
-				if(getMin() != null && Double.parseDouble(value.toString()) < getMin()) {
+				if(((IntegerValueType)textField.getValueType()).getMinValue() != null && Double.parseDouble(value.toString()) < ((IntegerValueType)textField.getValueType()).getMinValue()) {
 					errors.add(getMinErrMsg());
 					valid = false;
 				}
@@ -292,7 +293,7 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 				event.preventDefault();
 				return;
 			}
-			if (getMin() > 0 && event.getCharCode() == '-') {
+			if (((IntegerValueType)textField.getValueType()).getMinValue() > 0 && event.getCharCode() == '-') {
 				event.preventDefault();
 				return;
 			}

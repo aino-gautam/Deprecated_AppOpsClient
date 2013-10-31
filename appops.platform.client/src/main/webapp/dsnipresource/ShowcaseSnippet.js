@@ -53,4 +53,43 @@ var snippetStore = {
 				"							   <span id=\"toggleImagePreview\" componentType=\"appopsField\" type= \"toggleImageField\" data-config=\"toggleImageFieldPreviewConfig\"></span>" + 
 				"			   			 </div>",
 		
+		numericTextFieldPreviewSnippet: " <div>" + 
+				"								<span id=\"numericTextFieldPreview\" componentType=\"appopsField\" type= \"textField\" data-config=\"numericTextFieldPreviewConfig\"></span>" + 
+				"			   	   		</div>",
+
+		numericSpinnerFieldPreviewSnippet: " <div>" + 
+				"								<span id=\"numericSpinnerFieldPreview\" componentType=\"appopsField\" type= \"spinnerField\" data-config=\"numericSpinnerFieldPreviewConfig\"></span>" + 
+				"			   	   		</div>",
+
+		listSpinnerFieldPreviewSnippet: " <div>" + 
+				"								<span id=\"listSpinnerFieldPreview\" componentType=\"appopsField\" type= \"spinnerField\" data-config=\"listSpinnerFieldPreviewConfig\"></span>" + 
+				"			   	   		</div>",
+				
+		buttonFieldPreviewSnippet: " <div>" + 
+				"								<span id=\"buttonFieldPreview\" componentType=\"appopsField\" type= \"buttonField\" data-config=\"buttonFieldPreviewConfig\"></span>" + 
+				"			   	   		</div>",
+				
+		/**        Snippet Name             -    SnippetConfigurationInstance
+		 *  passwordTextFieldPreviewSnippet - passwordTextFieldPreviewSnippetConfig
+		 *  emailTextFieldPreviewSnippet - emailTextFieldPreviewSnippetConfig
+		 *  textAreaFieldPreviewSnippet - textAreaFieldPreviewSnippetConfig
+		 *  groupCheckBoxFieldPreviewSnippet - groupCheckBoxFieldPreviewSnippetConfig
+		 *  groupRadioButtonFieldPreviewSnippet - groupRadioButtonFieldPreviewSnippetConfig
+		 *  hyperLinkFieldPreviewSnippet - hyperLinkFieldPreviewSnippetConfig
+		 *  anchorFieldPreviewSnippet - anchorFieldPreviewSnippetConfig
+		 *  locationSelectorFieldPreviewSnippet - locationSelectorFieldPreviewSnippetConfig
+		 *  numericRangeSliderFieldPreviewSnippet - numericRangeSliderFieldPreviewSnippetConfig
+		 *  stringRangeSliderFieldPreviewSnippet - stringRangeSliderFieldPreviewSnippetConfig
+		 *  listBoxStaticFieldPreviewSnippet - listBoxStaticFieldPreviewSnippetConfig
+		 *  listBoxQueryFieldPreviewSnippet - listBoxQueryFieldPreviewSnippetConfig
+		 *  stateStaticFieldPreviewSnippet - stateStaticFieldPreviewSnippetConfig
+		 *  stateQueryFieldPreviewSnippet - stateQueryFieldPreviewSnippetConfig
+		 *  dateLabelTimeStampFieldPreviewSnippet - dateLabelTimeStampFieldPreviewSnippetConfig
+		 *  dateLabelDateTimeFieldPreviewSnippet - dateLabelDateTimeFieldPreviewSnippetConfig
+		 *  intelliThoughtFieldPreviewSnippet - intelliThoughtFieldPreviewSnippetConfig
+		 *  queryThoughtFieldPreviewSnippet - queryThoughtFieldPreviewSnippetConfig
+		 *  
+		 *   
+		 *  
+		 */
 };

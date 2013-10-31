@@ -1,6 +1,9 @@
 package in.appops.client.common.config.field;
 
 import in.appops.client.common.config.component.base.BaseComponent;
+import in.appops.client.common.config.dsnip.type.IntegerValueType;
+import in.appops.client.common.config.dsnip.type.StringValueType;
+import in.appops.client.common.config.dsnip.type.ValueType;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 
@@ -142,6 +145,9 @@ public class BaseField extends BaseComponent implements Field {
 		/** Property from the Entity to bind the field to. The data displayed in the field is the value of the property **/
 		public static final String BF_BINDPROP = "bindProperty";
 
+		/** Value type associate with a field viz {@link StringValueType} {@link IntegerValueType} **/
+		public static final String BF_VALUETYPE = "valueType";
+
 	}
 	
 	
@@ -165,7 +171,6 @@ public class BaseField extends BaseComponent implements Field {
 	private Logger logger = Logger.getLogger(getClass().getName());
 
 	protected Long bindId;	
-
 	
 	/**
 	 * Initializes the member variables
@@ -642,6 +647,21 @@ public class BaseField extends BaseComponent implements Field {
 		}
 		return bindProp;
 	}
+	
+	public ValueType getValueType() {
+		ValueType valueType = null;
+		try {
+			logger.log(Level.INFO,"[BaseField]:: In getValueType  method ");
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_VALUETYPE) != null) {
+				valueType = (ValueType) viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_VALUETYPE);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[BaseField]::Exception In getValueType  method :"+e);
+
+		}
+		return valueType;
+	}
+	
 	
 	
 

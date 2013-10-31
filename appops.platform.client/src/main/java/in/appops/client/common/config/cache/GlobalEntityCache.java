@@ -136,7 +136,7 @@ public class GlobalEntityCache implements EntityCache {
 		}
 	}
 	
-	public String getEntityIdentifer(Entity entity) {
+	public static String getEntityIdentifer(Entity entity) {
 		final String splitter = "##";
 		final String dotSeperator = ".";
 		String entityType = entity.getType().getTypeName();
@@ -155,7 +155,7 @@ public class GlobalEntityCache implements EntityCache {
 		return identifier;
 	}
 	
-	public String getQueryIdentifier(Query query) {
+	public static String getQueryIdentifier(Query query) {
 		final String querySplitter = "?";
 		final String paramSplitter = "&&";
 		final String valueAssign = "=";

@@ -9,6 +9,9 @@ import in.appops.client.common.config.dsnip.event.EventActionRuleMap;
 import in.appops.client.common.config.dsnip.event.EventActionRulesList;
 import in.appops.client.common.config.dsnip.event.SnippetControllerRule;
 import in.appops.client.common.config.dsnip.event.UpdateConfigurationRule;
+import in.appops.client.common.config.dsnip.type.DecimalValueType;
+import in.appops.client.common.config.dsnip.type.IntegerValueType;
+import in.appops.client.common.config.dsnip.type.StringValueType;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.GeoLocation;
 import in.appops.platform.core.entity.Key;
@@ -76,18 +79,24 @@ public class JsonToEntityConverter {
 
 			//String typeName = typeSplitter[typeSplitter.length-1];
 
-			if(mainType.contains("ActionContext")){
+			if(mainType.contains("ActionContext")) {
 				entity = new InitiateActionContext();
-			} else if (mainType.contains("config")){
+			} else if (mainType.contains("config")) {
 				entity = new Configuration();
-			} else if (mainType.contains("eventData")){
+			} else if (mainType.contains("eventData")) {
 				entity = new ActionEvent();
-			} else if (mainType.contains("eventActionRuleMap")){
+			} else if (mainType.contains("eventActionRuleMap")) {
 				entity = new EventActionRuleMap();
-			} else if (mainType.contains("snippetControllerRule")){
+			} else if (mainType.contains("snippetControllerRule")) {
 				entity = new SnippetControllerRule();
-			} else if (mainType.contains("updateConfigurationRule")){
+			} else if (mainType.contains("updateConfigurationRule")) {
 				entity = new UpdateConfigurationRule();
+			} else if (mainType.contains("StringValueType")) {
+				entity = new StringValueType();
+			} else if (mainType.contains("IntegerValueType")) {
+				entity = new IntegerValueType();
+			} else if (mainType.contains("DecimalValueType")) {
+				entity = new DecimalValueType();
 			} else {
 				entity = new Entity();
 			}

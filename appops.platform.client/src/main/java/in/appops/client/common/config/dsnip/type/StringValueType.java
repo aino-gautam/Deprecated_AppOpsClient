@@ -2,8 +2,8 @@ package in.appops.client.common.config.dsnip.type;
 
 public class StringValueType extends ValueType {
 
-	public static final String MAX_LENGTH = "Max_length";
-	public static final String MIN_LENGTH = "Min_length";
+	public static final String MAX_LENGTH = "maxlength";
+	public static final String MIN_LENGTH = "minlength";
 	public static final String CHARSET = "Charset";
 	
 	/**
