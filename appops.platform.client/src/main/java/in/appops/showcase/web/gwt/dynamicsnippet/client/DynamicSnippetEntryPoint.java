@@ -8,6 +8,7 @@ import in.appops.client.common.config.dsnip.PageSnippetPresenter;
 import in.appops.client.common.config.dsnip.event.EventActionRuleMap;
 import in.appops.client.common.config.dsnip.event.EventActionRulesList;
 import in.appops.client.common.config.dsnip.event.SnippetControllerRule;
+import in.appops.client.common.config.field.textfield.TextField.TextFieldConstant;
 import in.appops.client.common.config.util.Store;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.client.common.util.EntityToJsonClientConvertor;
@@ -32,8 +33,9 @@ public class DynamicSnippetEntryPoint implements EntryPoint{
 	public void onModuleLoad() {
 		//createSnippetJsonConfiguration();
 		//createEntityQueryCache();
-		init();
-		start();
+		createSnippetConfiguration();
+//		init();
+//		start();
 	}
 
 	private void createJsonConfiguration() {
@@ -116,6 +118,41 @@ public class DynamicSnippetEntryPoint implements EntryPoint{
 		JSONObject queryCacheJsonObject = EntityToJsonClientConvertor.createJsonFromEntity(queryCacheEntity);
 		System.out.println(queryCacheJsonObject.toString());
 		
+	}
+	
+	private void createSnippetConfiguration() {
+		Configuration snippetConfiguration = new Configuration();
+		snippetConfiguration.setType(new MetaType("config"));
+
+		Configuration viewConfiguration = new Configuration();
+		viewConfiguration.setType(new MetaType("config"));
+		snippetConfiguration.setProperty("view", viewConfiguration);
+		
+		Configuration fieldConfiguration = new Configuration();
+		fieldConfiguration.setType(new MetaType("config"));
+
+		snippetConfiguration.setProperty("fieldConfigurationInstance", fieldConfiguration); // fieldConfigurationInstance is the 
+																							// Data-config value in field span
+		
+		Configuration fieldViewConfiguration = new Configuration();
+		fieldViewConfiguration.setType(new MetaType("config"));
+		fieldViewConfiguration.setPropertyByName(TextFieldConstant.TF_VISLINES, 3);
+		fieldViewConfiguration.setPropertyByName(TextFieldConstant.BF_READONLY, true);
+		fieldViewConfiguration.setPropertyByName(TextFieldConstant.BF_PCLS, "primaryCss");
+		fieldViewConfiguration.setPropertyByName(TextFieldConstant.BF_DCLS, "dependentCss");
+		fieldViewConfiguration.setPropertyByName(TextFieldConstant.BF_ALLOWBLNK, false);
+		fieldViewConfiguration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_POS, TextFieldConstant.BF_SUGGESTION_INLINE);
+		fieldViewConfiguration.setPropertyByName(TextFieldConstant.BF_SUGGESTION_TEXT, "Enter field value");
+		fieldViewConfiguration.setPropertyByName(TextFieldConstant.BF_VALIDATEONCHANGE, true);
+		fieldViewConfiguration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
+		fieldViewConfiguration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, true);
+		
+		fieldConfiguration.setProperty("view", fieldViewConfiguration);
+		
+
+		
+		JSONObject pageJsonObject = EntityToJsonClientConvertor.createJsonFromEntity(snippetConfiguration);
+		System.out.println(pageJsonObject.toString());
 	}
 
 	private void start() {
