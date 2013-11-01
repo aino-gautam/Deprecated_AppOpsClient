@@ -58,6 +58,7 @@ public class ButtonField extends BaseField implements ClickHandler, BlurHandler,
 	public void create(){
 		
 		try {
+			super.create();
 			clickHandler = button.addClickHandler(this);
 			blurHandler = button.addBlurHandler(this);
 			keyUpHandler = button.addKeyUpHandler(this);
@@ -102,6 +103,7 @@ public class ButtonField extends BaseField implements ClickHandler, BlurHandler,
 	public void configure() {
 		try {
 			logger.log(Level.INFO,"[ButtonField]:: In configure  method ");
+			super.configure();
 			setFieldValue(getDisplayText());
 			
 			button.setEnabled(isEnabled());

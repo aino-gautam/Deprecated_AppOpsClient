@@ -50,6 +50,7 @@ public class RangeSliderField extends BaseField{
 	public void create() {
 		try {
 			logger.log(Level.INFO, "[RangeSliderField] ::In create method ");
+			super.create();
 			getBasePanel().add(basePanel, DockPanel.CENTER);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[RangeSliderField] ::Exception in create method :"+e);
@@ -61,6 +62,7 @@ public class RangeSliderField extends BaseField{
 		
 		try {
 			logger.log(Level.INFO, "[RangeSliderField] ::In configure method ");
+			super.configure();
 			basePanel = new VerticalPanel();
 			
 			String mode = getRangeSliderMode();
