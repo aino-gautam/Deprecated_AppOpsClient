@@ -55,6 +55,7 @@ public class LinkField extends BaseField implements ClickHandler{
 	@Override
 	public void create(){
 		try {
+			super.create();
 			logger.log(Level.INFO, "[LinkField] ::In create method ");
 			getBasePanel().add(getWidget(),DockPanel.CENTER);
 		} catch (Exception e) {
@@ -85,6 +86,7 @@ public class LinkField extends BaseField implements ClickHandler{
 	@Override
 	public void configure() {
 		try {
+			super.configure();
 			if (getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)) {
 				hyperLink = new Hyperlink();
 				hyperLink.setText(getDisplayText());
