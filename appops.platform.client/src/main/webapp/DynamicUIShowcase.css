@@ -118,3 +118,20 @@ h3 {
 	color: #424242 !important;
 	cursor: default !important;
 }
+
+.dynamicUIListBox {
+	border: 1px solid darkkhaki;
+	color: grey;
+	background-color: white;
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.dynamicUIListBox:HOVER{
+    border-color:orange;
+}
+
+.dynamicUIListBoxLoader {
+	width: 16px;
+}
