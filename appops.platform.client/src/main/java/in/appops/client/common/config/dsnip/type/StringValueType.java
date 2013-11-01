@@ -5,6 +5,7 @@ public class StringValueType extends ValueType {
 	public static final String MAX_LENGTH = "maxlength";
 	public static final String MIN_LENGTH = "minlength";
 	public static final String CHARSET = "Charset";
+	public static final String CHARWIDTH = "CharWidth";
 	
 	/**
 	 * 
@@ -23,7 +24,7 @@ public class StringValueType extends ValueType {
 		return getPropertyByName(CHARSET);
 	}
 	
-	
-	
-
+	public Integer getCharWidth(){
+		return getPropertyByName(CHARWIDTH);
+	}
 }
