@@ -4,6 +4,7 @@ import in.appops.client.common.config.field.BaseField;
 import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
 import in.appops.platform.core.shared.Configuration;
+
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,7 +41,6 @@ public class DateLabelField extends BaseField{
 	
 	private LabelField displayLblField ;
 	private Logger logger = Logger.getLogger(getClass().getName());
-	public DateLabelField() {}
 	
 	/**
 	 * Method creates the date label field.
@@ -48,9 +48,11 @@ public class DateLabelField extends BaseField{
 	@Override
 	public void create() {
 		try {
+			super.create();
 			logger.log(Level.INFO,"[DateLabelField]:: In create  method ");
 			getBasePanel().add(displayLblField,DockPanel.CENTER);
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.log(Level.SEVERE,"[DateLabelField]::Exception In create  method :"+e);
 		}
 	}
@@ -60,11 +62,18 @@ public class DateLabelField extends BaseField{
 	 */
 	@Override
 	public void configure() {
-		
+		super.configure();
 		try {
 			logger.log(Level.INFO,"[DateLabelField]:: In configure  method ");
+			
+			/*FieldPresenter fieldPresenter = new FieldPresenter(DynamicMvpFactory.LABELFIELD, "", null);
+			fieldPresenter.configure();
+			fieldPresenter.create();*/
+			
 			displayLblField = new LabelField();
 			displayLblField.setConfiguration(getDateLabelConfiguration());
+			//temp changes later need to be removed.
+			displayLblField.initialize();
 			displayLblField.configure();
 			displayLblField.create();
 			
@@ -139,12 +148,13 @@ public class DateLabelField extends BaseField{
 	 */
 	private Date getDateTimeToDisplay() {
 		
-		Date date = null;;
+		Date date = new Date();
 		try {
 			logger.log(Level.INFO,"[DateLabelField]:: In getDateTimeToDisplay  method ");
 			if(viewConfiguration.getConfigurationValue(DateLabelFieldConstant.DATETIME_TO_DISPLAY) != null) {
-				
-				date = (Date) viewConfiguration.getConfigurationValue(DateLabelFieldConstant.DATETIME_TO_DISPLAY);
+				String dateString = viewConfiguration.getConfigurationValue(DateLabelFieldConstant.DATETIME_TO_DISPLAY).toString();
+				date  = DateTimeFormat.getFormat(getDateTimeFormat()).parse(dateString);
+				//date = (Date) viewConfiguration.getConfigurationValue(DateLabelFieldConstant.DATETIME_TO_DISPLAY);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[DateLabelField]::Exception In getDateTimeToDisplay  method :"+e);
@@ -234,7 +244,7 @@ public class DateLabelField extends BaseField{
 			conf.setPropertyByName(LabelFieldConstant.LBLFD_ISWORDWRAP, true);
 			conf.setPropertyByName(LabelFieldConstant.BF_PCLS, getBaseFieldPrimCss());
 			conf.setPropertyByName(LabelFieldConstant.BF_DCLS, getBaseFieldDependentCss());
-			conf.setPropertyByName(LabelFieldConstant.LBLFD_FCSS, "postenDateLabelField");
+			//conf.setPropertyByName(LabelFieldConstant.LBLFD_FCSS, "postenDateLabelField");
 			
 			if(isTitleVisible()) {
 				//conf.setPropertyByName(LabelFieldConstant.LBLFD_TITLE, getDateTimeToDisplay().toString());
