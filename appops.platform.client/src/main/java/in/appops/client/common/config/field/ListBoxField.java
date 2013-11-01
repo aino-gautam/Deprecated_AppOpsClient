@@ -519,6 +519,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 			
 			
 			imageField.setConfiguration(getImageConfiguration());
+			imageField.initialize();
 			imageField.configure();
 			imageField.create();
 			
