@@ -25,6 +25,8 @@ public interface DynamicMvpFactory {
 	String FIELD = "FIELD";
 	String LISTCOMPONENT = "listComponent";
 	String CONFIGEDITORCOMPONENT = "configEditorComponent";
+	String RANGESLIDERFIELD ="rangeSliderField";
+	String LOCATIONSELECTOR = "locationSelectorField";
 
 	PageSnippetPresenter requestPageSnippet();
 
