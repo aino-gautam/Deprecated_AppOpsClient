@@ -46,6 +46,7 @@ public class ListComponentPresenter extends BaseComponentPresenter {
 
 	public interface ListComponentConstant extends BaseComponentConstant {
 		String LC_LISTCLS = "listCss";
+		String LC_LISTSCROLLCLS = "listScrollCss";
 		String LC_SNIPPETTYPE = "snippetType";
 		String LC_INSTANCETYPE = "snippetInstance";
 	}

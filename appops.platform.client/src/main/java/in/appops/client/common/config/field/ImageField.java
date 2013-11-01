@@ -1,5 +1,6 @@
 package in.appops.client.common.config.field;
 
+import in.appops.client.common.config.model.PropertyModel;
 import in.appops.client.common.event.FieldEvent;
 
 import java.util.logging.Level;
@@ -70,8 +71,21 @@ public class ImageField extends BaseField implements ClickHandler{
 			super.configure();
 			image.setVisible(isFieldVisible());
 
+			/**
+			 * TODO Blob id should be removed and the image/image blob has to be passed as default value
+			 */
 			if(getImageBlobId()!=null)
 				image.setUrl(getImageBlobId());
+			
+			if(getDefaultValue() != null && getBindProperty() == null) {
+				setValue(getDefaultValue());
+			} else if(getBindProperty() != null && !getBindProperty().toString().equals("")){
+				Object value = ((PropertyModel)model).getPropertyValue(getBindProperty());
+				if(value != null || (value == null && getDefaultValue() != null)) {
+					setValue(value);
+				}
+			}
+			
 			if(getImageTitle()!=null)
 				image.setTitle(getImageTitle());
 			if(getBaseFieldPrimCss()!=null)

@@ -118,9 +118,21 @@ public class PropertyModel extends AppopsBaseModel implements IsConfigurationMod
 	}
 
 	public Object getPropertyValue(String property) {
-		Entity entity = parentEntityModel.getEntity();
-		Serializable value = entity.getPropertyByName(property);
+		Serializable value = null;
+
+		try {
+			Entity entity = parentEntityModel.getEntity();
+			if(!property.contains(".")) {
+				value = entity.getPropertyByName(property);
+			} else {
+				value = entity.getGraphPropertyValue(property, entity);
+			}
+			
+		} catch (EntityGraphException e) {
+			e.printStackTrace();
+		}
 		return value;
+
 	}
 
 	@Override

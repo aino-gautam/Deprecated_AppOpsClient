@@ -52,8 +52,8 @@ public class HTMLSnippetPresenter extends BaseComponentPresenter {
 	@Override
 	protected void registerHandlers() {
 		super.registerHandlers();
-		if(localEventBus != null) {
-			handlerRegistrationList.add(localEventBus.addHandler(FieldEvent.TYPE, this));
+		if(view.getLocalEventBus() != null) {
+			handlerRegistrationList.add(view.getLocalEventBus().addHandler(FieldEvent.TYPE, this));
 		}
 	}
 	

@@ -1,5 +1,6 @@
 package in.appops.client.common.config.field;
 
+import in.appops.client.common.config.cache.GlobalEntityCache;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
 import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
 import in.appops.client.common.event.AppUtils;
@@ -31,7 +32,6 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockPanel;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 
@@ -68,13 +68,15 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 	private HandlerRegistration blurHandler = null ;
 	private HandlerRegistration keyDownHandler = null ;
 	private HorizontalPanel boxPlusLoaderPanel ;
-	private ImageField imageField ;
+	//private ImageField imageField ;
 	private String selectDefaultValue;
 	private Logger logger = Logger.getLogger(getClass().getName());
+	protected GlobalEntityCache globalEntityCache = GlobalEntityCache.getInstance();
+	
 	public ListBoxField(){
 		listBox = new ListBox();
 		boxPlusLoaderPanel = new HorizontalPanel();
-		imageField = new ImageField();
+		//imageField = new ImageField();
 	}
 	
 	/******************************** ****************************************/
@@ -114,9 +116,9 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 			boxPlusLoaderPanel.clear();
 			boxPlusLoaderPanel.add(listBox);
 			boxPlusLoaderPanel.setCellWidth(listBox, "80%");
-			boxPlusLoaderPanel.add(imageField);
-			boxPlusLoaderPanel.setCellWidth(imageField, "20%");
-			boxPlusLoaderPanel.setCellVerticalAlignment(imageField, HasVerticalAlignment.ALIGN_MIDDLE);
+		//	boxPlusLoaderPanel.add(imageField);
+		//	boxPlusLoaderPanel.setCellWidth(imageField, "20%");
+		//	boxPlusLoaderPanel.setCellVerticalAlignment(imageField, HasVerticalAlignment.ALIGN_MIDDLE);
 			getBasePanel().add(boxPlusLoaderPanel, DockPanel.CENTER);
 
 		} catch (Exception e) {
@@ -128,8 +130,8 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 	
 	@Override
 	public void configure() {
+		super.configure();
 		try {
-			super.configure();
 			listBox.clear();
 			listBox.setVisibleItemCount(getVisibleItemCount());
 			listBox.setEnabled(isEnabled());
@@ -353,10 +355,9 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 	private void populateEntityList(EntityList entityList){
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In populateEntityList  method ");
-			imageField.setConfiguration(getImageVisibleConfiguration());
-			imageField.initialize();
-			imageField.configure();
-			imageField.create();
+//			imageField.setConfiguration(getImageVisibleConfiguration());
+//			imageField.configure();
+//			imageField.create();
 			if(nameVsEntity==null)
 				nameVsEntity = new HashMap<String, Entity>();
 						
@@ -394,10 +395,9 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 	private void populateList(ArrayList<String> listOfItems){
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In populateList  method ");
-			imageField.setConfiguration(getImageVisibleConfiguration());
-			imageField.initialize();
-			imageField.configure();
-			imageField.create();
+//			imageField.setConfiguration(getImageVisibleConfiguration());
+//			imageField.configure();
+//			imageField.create();
 			for(int count = 0; count<listOfItems.size() ;count ++){
 				String item = listOfItems.get(count);
 				listBox.addItem(item);
@@ -427,6 +427,13 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 				if(getQueryRestrictions()!=null)
 					queryObj.setQueryParameterMap(getQueryRestrictions());
 				
+				
+				EntityList entityList = globalEntityCache.getEntityList(queryObj);
+				if(entityList != null && !entityList.isEmpty()) {
+					populateEntityList(entityList);
+
+				}
+							
 				Map parameterMap = new HashMap();
 				parameterMap.put("query", queryObj);
 				executeOperation(parameterMap);
@@ -489,22 +496,24 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 			logger.log(Level.INFO,"[ListBoxField]:: In onChange  method ");
 				
 			FieldEvent fieldEvent = new FieldEvent();
-			String item = getValue().toString();
+//			String item = getValue().toString();
 			String value = getSelectedValue().toString();
-			SelectedItem selectedItem = new SelectedItem();
+/*			SelectedItem selectedItem = new SelectedItem();
 			selectedItem.setItemString(item);
 
 			if(nameVsEntity != null && !nameVsEntity.isEmpty()) {
+			
 				Entity entity = nameVsEntity.get(value);
 				if(nameVsEntity!=null){
 					selectedItem.setAssociatedEntity(entity);
 				}
-			}
+			}*/
 			
+			Entity entity = nameVsEntity.get(value);
 			fieldEvent.setEventSource(this);
-			fieldEvent.setEventData(selectedItem);
+			fieldEvent.setEventData(entity);
 			fieldEvent.setEventType(FieldEvent.VALUECHANGED);
-			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+			fireLocalEvent(fieldEvent);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In onChange  method :"+e);
 		}
@@ -518,10 +527,9 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 			logger.log(Level.INFO,"[ListBoxField]:: In executeOperation  method ");
 			
 			
-			imageField.setConfiguration(getImageConfiguration());
-			imageField.initialize();
-			imageField.configure();
-			imageField.create();
+//			imageField.setConfiguration(getImageConfiguration());
+//			imageField.configure();
+//			imageField.create();
 			
 			StandardAction action = new StandardAction(EntityList.class, getOperationName(), parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
@@ -533,10 +541,9 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 
 				@Override
 				public void onSuccess(Result<EntityList> result) {
-					imageField.setConfiguration(getImageVisibleConfiguration());
-					imageField.initialize();
-					imageField.configure();
-					imageField.create();
+//					imageField.setConfiguration(getImageVisibleConfiguration());
+//					imageField.configure();
+//					imageField.create();
 					if(result!=null){
 						EntityList list   = result.getOperationResult();
 						if(!list.isEmpty())

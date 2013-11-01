@@ -160,50 +160,54 @@ public abstract class BaseComponentPresenter implements SupportsEventActionRules
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private HashMap<String, Property<? extends Serializable>> prepareConfigurationsToUpdate(HashMap<String, Property<? extends Serializable>> configToUpdateMap, Object eventData) {
+		HashMap<String, Property<? extends Serializable>> preparedConfigMap = new HashMap<String, Property<? extends Serializable>>();
+		
 		try {
 			for(Entry<String, Property<? extends Serializable>> configToUpdateEntry : configToUpdateMap.entrySet()) {
 				String propertyToUpdate = configToUpdateEntry.getKey();
 				Property<Serializable> propertyValue = (Property<Serializable>) configToUpdateEntry.getValue();
-
+				Property<Serializable> updatedPropertyValue = new Property<Serializable>();
+				
 				if(propertyValue.toString() != null) {
 					String propStrVal = propertyValue.getValue().toString();
+					updatedPropertyValue.setValue((Serializable) propertyValue.getValue());
 
 					if(propStrVal.startsWith(UpdateConfigurationRuleConstant.EVENTDATA)) {
 
 						if(propStrVal.indexOf(UpdateConfigurationRuleConstant.SEPERATOR) == -1) {
-							propertyValue.setValue((Serializable) eventData);
+							updatedPropertyValue.setValue((Serializable) eventData);
 						} else {
 							String entityProp = propStrVal.substring(propStrVal.indexOf(UpdateConfigurationRuleConstant.SEPERATOR) + 1);
 							Entity entity = (Entity)eventData;
-							propertyValue.setValue(entity.getGraphPropertyValue(entityProp, entity));
+							updatedPropertyValue.setValue(entity.getGraphPropertyValue(entityProp, entity));
 						}
 					} else if(propStrVal.startsWith(UpdateConfigurationRuleConstant.APPCONTEXT)) {
 						String appContextProp = propStrVal.substring(propStrVal.indexOf(UpdateConfigurationRuleConstant.SEPERATOR) + 1);
-						propertyValue.setValue(ApplicationContext.getInstance().getGraphPropertyValue(appContextProp, null));
+						updatedPropertyValue.setValue(ApplicationContext.getInstance().getGraphPropertyValue(appContextProp, null));
 					} else if(propStrVal.startsWith(UpdateConfigurationRuleConstant.CURRENTENTITY)) {
 
 						if(propStrVal.indexOf(UpdateConfigurationRuleConstant.SEPERATOR) == -1) {
-							propertyValue.setValue(((EntityModel)model).getEntity());
+							updatedPropertyValue.setValue(((EntityModel)model).getEntity());
 						} else {
 							String currentEntityProp = propStrVal.substring(propStrVal.indexOf(UpdateConfigurationRuleConstant.SEPERATOR) + 1);
 							Entity currentEntity = ((EntityModel)model).getEntity();
-							propertyValue.setValue(currentEntity.getGraphPropertyValue(currentEntityProp, currentEntity));
+							updatedPropertyValue.setValue(currentEntity.getGraphPropertyValue(currentEntityProp, currentEntity));
 						}
 					} else if(propStrVal.startsWith(UpdateConfigurationRuleConstant.PARENTENTITY)) {
 
 						if(propStrVal.indexOf(UpdateConfigurationRuleConstant.SEPERATOR) == -1) {
-							propertyValue.setValue(model.getContext().getParentEntity());
+							updatedPropertyValue.setValue(model.getContext().getParentEntity());
 						} else {
 							String parentEntityProp = propStrVal.substring(propStrVal.indexOf(UpdateConfigurationRuleConstant.SEPERATOR) + 1);
 							Entity parentEntity = model.getContext().getParentEntity();
-							propertyValue.setValue(parentEntity.getGraphPropertyValue(parentEntityProp, parentEntity));
+							updatedPropertyValue.setValue(parentEntity.getGraphPropertyValue(parentEntityProp, parentEntity));
 						}
 					}
-					if(propertyValue.getValue() instanceof Key) {
-						Key keyVal = (Key)propertyValue.getValue();
-						propertyValue.setValue(keyVal.getKeyValue());
+					if(updatedPropertyValue.getValue() instanceof Key) {
+						Key keyVal = (Key)updatedPropertyValue.getValue();
+						updatedPropertyValue.setValue(keyVal.getKeyValue());
 					}
-					configToUpdateMap.put(propertyToUpdate, propertyValue);
+					preparedConfigMap.put(propertyToUpdate, updatedPropertyValue);
 				}
 
 			}
@@ -211,7 +215,7 @@ public abstract class BaseComponentPresenter implements SupportsEventActionRules
 			e.printStackTrace();
 			return null;
 		}
-		return configToUpdateMap;
+		return preparedConfigMap;
 	}
 
 	protected	void applyConfiguration(HashMap<String, Property<? extends Serializable>> preparedConfigMap) {

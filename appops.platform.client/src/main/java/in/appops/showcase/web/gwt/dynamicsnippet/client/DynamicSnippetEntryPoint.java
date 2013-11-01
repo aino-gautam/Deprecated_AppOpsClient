@@ -16,15 +16,15 @@ import in.appops.client.common.util.JsonToEntityConverter;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.type.MetaType;
-import in.appops.platform.core.entity.type.Type;
 import in.appops.platform.core.shared.Configuration;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.Map;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONObject;
 
 public class DynamicSnippetEntryPoint implements EntryPoint{
@@ -33,9 +33,9 @@ public class DynamicSnippetEntryPoint implements EntryPoint{
 	public void onModuleLoad() {
 		//createSnippetJsonConfiguration();
 		//createEntityQueryCache();
-		createSnippetConfiguration();
-//		init();
-//		start();
+		//createSnippetConfiguration();
+		init();
+		start();
 	}
 
 	private void createJsonConfiguration() {
@@ -86,7 +86,7 @@ public class DynamicSnippetEntryPoint implements EntryPoint{
 	}
 	
 	private void createEntityQueryCache() {
-		String entityCachejson = "{\"config\":{\"cache\":{\"map\":{\"3##Category##1\":{\"in.appops.platform.server.core.service.blogging.domain.Category\":{\"id\":{\"Key\":{\"Long\":\"1\"}}, \"title\":{\"String\":\"Fields\"}}}, \"3##Category##2\":{\"in.appops.platform.server.core.service.blogging.domain.Category\":{\"id\":{\"Key\":{\"Long\":\"2\"}}, \"title\":{\"String\":\"Lists\"}}}, \"3##Category##3\":{\"in.appops.platform.server.core.service.blogging.domain.Category\":{\"id\":{\"Key\":{\"Long\":\"3\"}}, \"title\":{\"String\":\"Menus\"}}}, \"3##Component##1\":{\"in.appops.platform.server.core.service.blogging.domain.Component\":{\"id\":{\"Key\":{\"Long\":\"1\"}}, \"name\":{\"String\":\"labelField\"}, \"title\":{\"String\":\"Label\"}}}, \"3##Component##2\":{\"in.appops.platform.server.core.service.blogging.domain.Component\":{\"id\":{\"Key\":{\"Long\":\"2\"}}, \"name\":{\"String\":\"textField\"}, \"title\":{\"String\":\"Text\"}}}, \"3##Component##3\":{\"in.appops.platform.server.core.service.blogging.domain.Component\":{\"id\":{\"Key\":{\"Long\":\"3\"}}, \"name\":{\"String\":\"basicImageField\"}, \"title\":{\"String\":\"Basic Image\"}}}, \"3##Component##4\":{\"in.appops.platform.server.core.service.blogging.domain.Component\":{\"id\":{\"Key\":{\"Long\":\"4\"}}, \"name\":{\"String\":\"toggleImageField\"}, \"title\":{\"String\":\"Toggle Image\"}}}, \"3##Component##5\":{\"in.appops.platform.server.core.service.blogging.domain.Component\":{\"id\":{\"Key\":{\"Long\":\"5\"}}, \"name\":{\"String\":\"numericTextField\"}, \"title\":{\"String\":\"Numeric Text Field\"}}}, \"3##Component##6\":{\"in.appops.platform.server.core.service.blogging.domain.Component\":{\"id\":{\"Key\":{\"Long\":\"6\"}}, \"name\":{\"String\":\"numericSpinnerField\"}, \"title\":{\"String\":\"Numeric Spinner Field\"}}}, \"3##Component##7\":{\"in.appops.platform.server.core.service.blogging.domain.Component\":{\"id\":{\"Key\":{\"Long\":\"7\"}}, \"name\":{\"String\":\"listSpinnerField\"}, \"title\":{\"String\":\"List Spinner Field\"}}} }}}}";
+		/*String entityCachejson = "{\"config\":{\"cache\":{\"map\":{\"3##Category##1\":{\"in.appops.platform.server.core.service.blogging.domain.Category\":{\"id\":{\"Key\":{\"Long\":\"1\"}}, \"title\":{\"String\":\"Fields\"}}}, \"3##Category##2\":{\"in.appops.platform.server.core.service.blogging.domain.Category\":{\"id\":{\"Key\":{\"Long\":\"2\"}}, \"title\":{\"String\":\"Lists\"}}}, \"3##Category##3\":{\"in.appops.platform.server.core.service.blogging.domain.Category\":{\"id\":{\"Key\":{\"Long\":\"3\"}}, \"title\":{\"String\":\"Menus\"}}}, \"3##Component##1\":{\"in.appops.platform.server.core.service.blogging.domain.Component\":{\"id\":{\"Key\":{\"Long\":\"1\"}}, \"name\":{\"String\":\"labelField\"}, \"title\":{\"String\":\"Label\"}}}, \"3##Component##2\":{\"in.appops.platform.server.core.service.blogging.domain.Component\":{\"id\":{\"Key\":{\"Long\":\"2\"}}, \"name\":{\"String\":\"textField\"}, \"title\":{\"String\":\"Text\"}}}, \"3##Component##3\":{\"in.appops.platform.server.core.service.blogging.domain.Component\":{\"id\":{\"Key\":{\"Long\":\"3\"}}, \"name\":{\"String\":\"basicImageField\"}, \"title\":{\"String\":\"Basic Image\"}}}, \"3##Component##4\":{\"in.appops.platform.server.core.service.blogging.domain.Component\":{\"id\":{\"Key\":{\"Long\":\"4\"}}, \"name\":{\"String\":\"toggleImageField\"}, \"title\":{\"String\":\"Toggle Image\"}}}, \"3##Component##5\":{\"in.appops.platform.server.core.service.blogging.domain.Component\":{\"id\":{\"Key\":{\"Long\":\"5\"}}, \"name\":{\"String\":\"numericTextField\"}, \"title\":{\"String\":\"Numeric Text Field\"}}}, \"3##Component##6\":{\"in.appops.platform.server.core.service.blogging.domain.Component\":{\"id\":{\"Key\":{\"Long\":\"6\"}}, \"name\":{\"String\":\"numericSpinnerField\"}, \"title\":{\"String\":\"Numeric Spinner Field\"}}}, \"3##Component##7\":{\"in.appops.platform.server.core.service.blogging.domain.Component\":{\"id\":{\"Key\":{\"Long\":\"7\"}}, \"name\":{\"String\":\"listSpinnerField\"}, \"title\":{\"String\":\"List Spinner Field\"}}} }}}}";
 		
 		Entity cacheEntity = new JsonToEntityConverter().convertjsonStringToEntity(entityCachejson);
 		HashMap<String, Entity> cacheMap = cacheEntity.getPropertyByName("cache");
@@ -116,7 +116,50 @@ public class DynamicSnippetEntryPoint implements EntryPoint{
 		entityPointerList.add(entityIdentifier);
 		
 		JSONObject queryCacheJsonObject = EntityToJsonClientConvertor.createJsonFromEntity(queryCacheEntity);
-		System.out.println(queryCacheJsonObject.toString());
+		System.out.println(queryCacheJsonObject.toString());*/
+		
+		Entity epic = new Entity();
+		epic.setType(new MetaType("Epic"));
+		Key<Long> epicKey = new Key<Long>(2L);
+		epic.setPropertyByName("id", epicKey);
+		epic.setPropertyByName("title", "Now & next - A detailed task management system");
+
+		Entity createdBy = new Entity();
+		createdBy.setType(new MetaType("User"));
+		Key<Long> createdByKey = new Key<Long>(3L);
+		createdBy.setPropertyByName("id", createdByKey);
+		createdBy.setPropertyByName("name", "Mahesh");
+
+		Entity modifiedBy = new Entity();
+		modifiedBy.setType(new MetaType("User"));
+		Key<Long> modifiedByKey = new Key<Long>(4L);
+		modifiedBy.setPropertyByName("id", modifiedByKey);
+		modifiedBy.setPropertyByName("name", "Nitish");
+
+		Entity status = new Entity();
+		status.setType(new MetaType("Epic"));
+		Key<Long> statusKey = new Key<Long>(5L);
+		status.setPropertyByName("id", statusKey);
+		status.setPropertyByName("name", "Identified");
+		
+		Entity story = new Entity();
+		story.setType(new MetaType("Story"));
+		
+		Key<Long> storyKey = new Key<Long>(6L);
+		story.setPropertyByName("id", storyKey);
+		story.setPropertyByName("title", "User can change task status effortlessly and in one click");
+		
+		String str_date="11-June-13";
+		Date modifiedOn = DateTimeFormat.getFormat("dd-MMM-yy").parse(str_date);
+		story.setPropertyByName("modifiedOn", modifiedOn);
+
+		story.setProperty("epic", epic);
+		story.setProperty("status", status);
+		story.setProperty("createdBy", createdBy);
+		story.setProperty("modifiedBy", modifiedBy);
+	
+		JSONObject storyJsonObject = EntityToJsonClientConvertor.createJsonFromEntity(story);
+		System.out.println(storyJsonObject.toString());
 		
 	}
 	

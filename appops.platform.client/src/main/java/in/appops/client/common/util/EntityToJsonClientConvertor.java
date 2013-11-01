@@ -17,7 +17,6 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONString;
-import com.google.gwt.json.client.JSONValue;
 
 
 public class EntityToJsonClientConvertor {
@@ -153,19 +152,18 @@ public class EntityToJsonClientConvertor {
 					else if(value instanceof Date || value instanceof Timestamp || value instanceof java.sql.Date){
 						Long time = 0L;
 						JSONObject dateJson = new JSONObject();
-						JSONValue timeval = JSONParser.parseStrict(time.toString());
 
 						if(value instanceof Date){
 							time = ((Date)value).getTime();
-							dateJson.put("Date", timeval);
+							dateJson.put("Date", JSONParser.parseStrict(time.toString()));
 						}
 						else if(value instanceof Timestamp){
 							time = ((Timestamp)value).getTime();
-							dateJson.put("Timestamp", timeval);
+							dateJson.put("Timestamp", JSONParser.parseStrict(time.toString()));
 						}
 						else if(value instanceof java.sql.Date){
 							time = ((java.sql.Date)value).getTime();
-							dateJson.put("java.sql.Date", timeval);
+							dateJson.put("java.sql.Date", JSONParser.parseStrict(time.toString()));
 						}
 						childJson.put(propName, dateJson);
 					}

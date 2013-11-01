@@ -36,7 +36,7 @@ public class HTMLSnippetView extends BaseComponent implements EntityReceiver {
 	public void initialize() {
 		super.initialize();
 		String snippetDescription = ((HTMLSnippetModel) model).getDescription(snippetType);
-		//((HTMLSnippetModel) model).setReceiver(this);
+		((HTMLSnippetModel) model).setReceiver(this);
 		snippetPanel = new HTMLPanel(snippetDescription) {
 
 			@Override
@@ -168,7 +168,9 @@ public class HTMLSnippetView extends BaseComponent implements EntityReceiver {
 
 	@Override
 	public void onEntityReceived(Entity entity) {
-		// TODO Auto-generated method stub
+		for(Map.Entry<String, BaseComponentPresenter> componentEntry :  elementMap.entrySet()) {
+			componentEntry.getValue().configure();
+		}
 
 	}
 

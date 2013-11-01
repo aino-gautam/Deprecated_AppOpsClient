@@ -31,10 +31,11 @@ public class ListComponentView extends BaseComponent implements EntityListReceiv
 	@Override
 	public void configure() {
 		super.configure();
-		listPanel.setStylePrimaryName(getListPanelPrimCss());
+		listPanel.setStylePrimaryName(getListPanelPrimaryCss());
+		scrollPanel.setStylePrimaryName(getListScrollPrimaryCss());
 	}
 
-	private String getListPanelPrimCss() {
+	private String getListPanelPrimaryCss() {
 		String primaryCss = "appops-ListScrollCss";
 		if(viewConfiguration.getConfigurationValue(ListComponentConstant.LC_LISTCLS) != null) {
 			primaryCss = viewConfiguration.getConfigurationValue(ListComponentConstant.LC_LISTCLS).toString();
@@ -42,6 +43,13 @@ public class ListComponentView extends BaseComponent implements EntityListReceiv
 		return primaryCss;
 	}
 
+	private String getListScrollPrimaryCss() {
+		String primaryCss = "appops-ListScrollCss";
+		if(viewConfiguration.getConfigurationValue(ListComponentConstant.LC_LISTSCROLLCLS) != null) {
+			primaryCss = viewConfiguration.getConfigurationValue(ListComponentConstant.LC_LISTSCROLLCLS).toString();
+		}
+		return primaryCss;
+	}
 
 	@Override
 	public void create() {

@@ -15,7 +15,6 @@ import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LinkField;
 import in.appops.client.common.config.field.ListBoxField;
 import in.appops.client.common.config.field.StateField;
-import in.appops.client.common.config.field.LocationSelectorField;
 import in.appops.client.common.config.field.ToggleImageField;
 import in.appops.client.common.config.field.date.DateLabelField;
 import in.appops.client.common.config.field.rangeslider.RangeSliderField;
@@ -111,8 +110,6 @@ public class DynamicMvpFactoryImpl implements DynamicMvpFactory {
 			return new ConfigEditorComponentView();
 		}else if(type.equalsIgnoreCase(RANGESLIDERFIELD)){
 			return new RangeSliderField();
-		}else if(type.equalsIgnoreCase(LOCATIONSELECTOR)){
-			return new LocationSelectorField();
 		}else if(type.equalsIgnoreCase(LINKFIELD)) {
 			return new LinkField();
 		}else if(type.equalsIgnoreCase(STATEFIELD)) {
