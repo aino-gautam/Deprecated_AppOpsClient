@@ -69,6 +69,50 @@ var snippetStore = {
 				"								<span id=\"buttonFieldPreview\" componentType=\"appopsField\" type= \"buttonField\" data-config=\"buttonFieldPreviewConfig\"></span>" + 
 				"			   	   		</div>",
 				
+		hyperLinkFieldPreviewSnippet: " <div>" + 
+				"								<span id=\"hyperLinkFieldPreview\" componentType=\"appopsField\" type= \"linkField\" data-config=\"hyperLinkFieldPreviewConfig\"></span>" + 
+				"			   	   		</div>",
+		anchorFieldPreviewSnippet: " <div>" + 
+				"								<span id=\"anchorFieldPreview\" componentType=\"appopsField\" type= \"linkField\" data-config=\"anchorFieldPreviewConfig\"></span>" + 
+				"			   	   		</div>",
+		textAreaFieldPreviewSnippet: " <div>" + 
+				"								<span id=\"textAreaFieldPreview\" componentType=\"appopsField\" type= \"textField\" data-config=\"textAreaFieldPreviewConfig\"></span>" + 
+				"			   	   		</div>",
+		passwordTextFieldPreviewSnippet: " <div>" + 
+				"								<span id=\"passwordTextFieldPreview\" componentType=\"appopsField\" type= \"textField\" data-config=\"passwordTextFieldPreviewConfig\"></span>" + 
+				"			   	   		</div>",
+		emailTextFieldPreviewSnippet: " <div>" + 
+				"								<span id=\"emailTextFieldPreview\" componentType=\"appopsField\" type= \"textField\" data-config=\"emailTextFieldPreviewConfig\"></span>" + 
+				"			   	   		</div>",
+		stateStaticFieldPreviewSnippet: " <div>" + 
+				"								<span id=\"stateStaticFieldPreview\" componentType=\"appopsField\" type= \"stateField\" data-config=\"stateStaticFieldPreviewConfig\"></span>" + 
+				"			   	   		</div>",
+		stateQueryFieldPreviewSnippet: " <div>" + 
+				"								<span id=\"stateQueryFieldPreview\" componentType=\"appopsField\" type= \"stateField\" data-config=\"stateQueryFieldPreviewConfig\"></span>" + 
+				"			   	   		</div>",
+		dateLabelTimeStampFieldPreviewSnippet: " <div>" + 
+				"								<span id=\"dateLabelTimeStampFieldPreview\" componentType=\"appopsField\" type= \"dateLabelField\" data-config=\"dateLabelTimeStampFieldPreviewConfig\"></span>" + 
+				"			   	   		</div>",
+				
+		dateLabelDateTimeFieldPreviewSnippet: " <div>" + 
+				"								<span id=\"dateLabelDateTimeFieldPreview\" componentType=\"appopsField\" type= \"dateLabelField\" data-config=\"dateLabelDateTimeFieldPreviewConfig\"></span>" + 
+				"			   	   		</div>",
+				
+		listBoxStaticFieldPreviewSnippet: " <div>" + 
+				"								<span id=\"listBoxStaticFieldPreview\" componentType=\"appopsField\" type= \"listBoxField\" data-config=\"listBoxStaticFieldPreviewConfig\"></span>" + 
+				"			   	   		</div>",
+
+		listBoxQueryFieldPreviewSnippet: " <div>" + 
+				"								<span id=\"listBoxQueryFieldPreview\" componentType=\"appopsField\" type= \"listBoxField\" data-config=\"listBoxQueryFieldPreviewConfig\"></span>" + 
+				"			   	   		</div>",
+		numericRangeSliderFieldPreviewSnippet: " <div>" + 
+				"								<span id=\"numericRangeSliderFieldPreview\" componentType=\"appopsField\" type= \"rangeSliderField\" data-config=\"numericRangeSliderFieldPreviewConfig\"></span>" + 
+				"			   	   		</div>",
+				
+		stringRangeSliderFieldPreviewSnippet: " <div>" + 
+				"								<span id=\"stringRangeSliderFieldPreview\" componentType=\"appopsField\" type= \"rangeSliderField\" data-config=\"stringRangeSliderFieldPreviewConfig\"></span>" + 
+				"			   	   		</div>",
+				
 		/**        Snippet Name             -    SnippetConfigurationInstance
 		 *  passwordTextFieldPreviewSnippet - passwordTextFieldPreviewSnippetConfig
 		 *  emailTextFieldPreviewSnippet - emailTextFieldPreviewSnippetConfig
@@ -92,4 +136,136 @@ var snippetStore = {
 		 *   
 		 *  
 		 */
+				
+		listComponentPreviewSnippet: " <table>" + 
+		"						<tr>" + 
+		"					 		<td> <span id=\"listComponentPreview\" componentType=\"appopsComponent\" type= \"listComponent\" data-config=\"listComponentPreviewConfig\"></span> </td>" + 
+		"						</tr>" + 
+		"					  </table>",
+		
+		contactSnippet: " <div>" + 
+		"				<div style=\"padding-left: 0px;\" class=\"disclosureSnippetUpper1 disclosureSnippetUpper2\">" + 
+		"					<div style=\"padding-left: 16px;position:relative;height: 50px;\" class=\"disclosureSnippetUpper2 disclosureSnippetUpper3\">" + 
+		"			 			<span id=\"contactImage\" componentType=\"appopsField\" type= \"imageField\" data-config=\"contactImageFieldConfig\"></span>" + 
+		"						<span id=\"contactNameLabel\" componentType=\"appopsField\" type= \"labelField\" data-config=\"contactNameLabelFieldConfig\"></span>" + 
+		"					</div>" + 
+		"				</div>" + 
+		"			</div>",
+
+		storySelectSnippet:	"<table cellspacing=\"1\" cellpadding=\"0\" style=\"width: 100%;\">" +
+		"				<tbody>" +
+		"					<tr>" +
+		"						<td align=\"left\" style=\"vertical-align: top; \">" +
+		"							<span id=\"storyListBoxField\" componentType=\"appopsField\" type= \"listBoxField\" data-config=\"storyListBoxFieldConfig\"></span>" +
+		"						</td>" +
+		"					</tr>" +
+		"					<tr>" +
+		"						<td align=\"left\" style=\"vertical-align: top; \">" +
+		"							<span id=\"storySnippet\" componentType=\"htmlSnippet\" type= \"storySnippet\" data-config=\"storySnippetConfig\"></span>" +
+		"						</td>" +
+		"					</tr>" +
+		"				</tbody>" +
+		"			</table>",
+		
+		storySnippet : "	<table cellspacing=\"0\" cellpadding=\"0\"	style=\"height: 100%; width: 100%; margin-top: 10px;\">\n" + 
+				"		<tbody>\n" + 
+				"			<tr>\n" + 
+				"				<td align=\"left\" style=\"vertical-align: top;\" width=\"60%\">\n" +
+				" 					<table cellspacing=\"0\" cellpadding=\"0\">\n " +
+				"						<tbody> \n"+ 
+				"							<tr> \n"+
+				"								<td align=\"left\" style=\"vertical-align: top;\"> \n"+
+				"									<span id=\"storyTitleLabel\" componentType=\"appopsField\" type= \"labelField\" data-config=\"storyTitleLabelConfig\"></span>\n" + 
+				"								</td>\n" +
+				"							</tr>\n" + 
+"										</tbody>\n" + 
+"									</table>\n" + 
+				"				</td>\n" + 
+				"			</tr>\n" + 
+				"			<tr>\n" + 
+				" 					<table cellspacing=\"0\" cellpadding=\"0\">\n " +
+				"						<tbody> \n"+ 
+				"							<tr> \n"+
+				"								<td align=\"left\" style=\"vertical-align: top;\"> \n"+
+				"									<span id=\"storyEpicLabel\" componentType=\"appopsField\" type= \"labelField\" data-config=\"storyEpicLabelConfig\"></span>\n" + 
+				"								</td>\n" + 
+				"								<td align=\"left\" style=\"vertical-align: top;\">\n" + 
+				"									<span id=\"epicTitleLabel\" componentType=\"appopsField\" type= \"labelField\" data-config=\"epicTitleLabelConfig\"></span>\n" + 
+				"								</td>\n" + 
+				"							</tr>\n" + 
+				"										</tbody>\n" + 
+				"									</table>\n" + 
+				"			</tr>\n" + 
+				"			<tr>\n" + 
+				"				<td align=\"left\" style=\"vertical-align: top;\">\n" + 
+				"					<table cellspacing=\"0\" cellpadding=\"0\" style=\"width: 100%;\">\n" + 
+				"						<tbody>\n" + 
+				"							<tr>\n" + 
+				"								<td align=\"left\" style=\"vertical-align: middle;\" width=\"40%\">\n" + 
+				"									<table cellspacing=\"0\" cellpadding=\"0\">\n" + 
+				"										<tbody>\n" + 
+				"											<tr>\n" + 
+				"												<td align=\"left\" style=\"vertical-align: top;\">\n" + 
+				"													<span id=\"modifiedOnLabel\" componentType=\"appopsField\" type= \"labelField\" data-config=\"modifiedOnLabelConfig\"></span>\n" + 
+				"												</td>\n" + 
+				"												<td align=\"left\" style=\"vertical-align: top;\">\n" + 
+				"												    <span id=\"modifiedOnDateLabel\" componentType=\"appopsField\" type= \"dateLabelField\" data-config=\"modifiedOnDateConfig\"></span>\n" +
+				"												</td>\n" + 
+				"											</tr>\n" + 
+				"										</tbody>\n" + 
+				"									</table></td>\n" + 
+				"								<td align=\"left\" style=\"vertical-align: middle;\" width=\"60%\">\n" + 
+				"									<table cellspacing=\"0\" cellpadding=\"0\">\n" + 
+				"										<tbody>\n" + 
+				"											<tr>\n" + 
+				"												<td align=\"left\" style=\"vertical-align: top;\">\n" + 
+				"													<span id=\"modifiedByLabel\" componentType=\"appopsField\" type= \"labelField\" data-config=\"modifiedByLabelConfig\"></span>\n" + 
+				"												</td>\n" + 
+				"												<td align=\"left\" style=\"vertical-align: top;\">\n" + 
+				"													<span id=\"modifiedByNameLabel\" componentType=\"appopsField\" type= \"labelField\" data-config=\"modifiedByNameLabelConfig\"></span>\n" + 
+				"												</td>\n" + 
+				"											</tr>\n" + 
+				"										</tbody>\n" + 
+				"									</table>\n" + 
+				"								</td>\n" + 
+				"							</tr>\n" + 
+				"						</tbody>\n" + 
+				"					</table>\n" + 
+				"				</td>\n" + 
+				"			</tr>\n" + 
+				"			<tr>\n" + 
+				"				<td align=\"left\" style=\"vertical-align: top;\">\n" + 
+				"					<table cellspacing=\"0\" cellpadding=\"0\"  style=\"width: 100%;\">\n" + 
+				"						<tbody>\n" + 
+				"							<tr>\n" + 
+				"								<td align=\"left\" style=\"vertical-align: middle;\" width=\"40%\">\n" + 
+				"									<table cellspacing=\"0\" cellpadding=\"0\">\n" + 
+				"										<tbody>\n" + 
+				"											<tr>\n" + 
+				"												<td align=\"left\" style=\"vertical-align: middle;\">\n" + 
+				"													<span id=\"statusLabel\" componentType=\"appopsField\" type= \"labelField\" data-config=\"statusLabelConfig\"></span>\n" + 
+				"												</td>\n" + 
+				"												<td align=\"left\" style=\"vertical-align: middle;\" width=\"78%\">\n" + 
+				"													<span id=\"statusNameLabel\" componentType=\"appopsField\" type= \"labelField\" data-config=\"statusNameLabelConfig\"></span>\n" + 
+				"												</td>\n" + 
+				"											</tr>\n" + 
+				"										</tbody>\n" + 
+				"									</table></td>\n" + 
+				"								<td align=\"left\" style=\"vertical-align: middle;\" width=\"60%\">\n" + 
+				"									<table cellspacing=\"0\" cellpadding=\"0\">\n" + 
+				"										<tbody>\n" + 
+				"											<tr>\n" + 
+				"												<td align=\"left\" style=\"vertical-align: middle;\">\n" + 
+				"													<span id=\"ownerLabel\" componentType=\"appopsField\" type= \"labelField\" data-config=\"ownerLabelConfig\"></span>\n" + 
+				"												</td>\n" + 
+				"												<td align=\"left\" style=\"vertical-align: middle;\" width=\"78%\">\n" + 
+				"													<span id=\"ownerNameLabel\" componentType=\"appopsField\" type= \"labelField\" data-config=\"ownerNameLabelConfig\"></span>\n" + 
+				"												</td>\n" + 
+				"											</tr>\n" + 
+				"										</tbody>\n" + 
+				"									</table>\n" + 
+				"								</td>\n" + 
+				"							</tr>\n" + 
+				"						</tbody>\n" + 
+				"					</table>",
 };

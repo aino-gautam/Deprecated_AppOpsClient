@@ -135,3 +135,33 @@ h3 {
 .dynamicUIListBoxLoader {
 	width: 16px;
 }
+
+.contactLabel {
+	padding-left: 35px !important;
+	outline: none;
+}
+
+.dynamicListScroll {
+	height: 450px;
+	width: 250px;
+	border: 1px solid #CCC;
+	text-align: left;
+}
+
+.storyDetailsLabel {
+	color: #1982D1;
+	clear: both;
+	font-size: 12px;
+	line-height: 18px;
+	font-weight: bold;
+	padding-right: 10px;
+}
+
+.storyPropertyDetails {
+	clear: both;
+	font-size: 12px;
+	line-height: 18px;
+	font-weight: bold;
+	padding-right: 10px;
+	color: #999;
+}
