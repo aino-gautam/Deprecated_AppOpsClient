@@ -12,7 +12,9 @@ import in.appops.client.common.config.field.FieldPresenter;
 import in.appops.client.common.config.field.HTMLField;
 import in.appops.client.common.config.field.ImageField;
 import in.appops.client.common.config.field.LabelField;
+import in.appops.client.common.config.field.LinkField;
 import in.appops.client.common.config.field.ListBoxField;
+import in.appops.client.common.config.field.StateField;
 import in.appops.client.common.config.field.LocationSelectorField;
 import in.appops.client.common.config.field.ToggleImageField;
 import in.appops.client.common.config.field.date.DateLabelField;
@@ -111,6 +113,10 @@ public class DynamicMvpFactoryImpl implements DynamicMvpFactory {
 			return new RangeSliderField();
 		}else if(type.equalsIgnoreCase(LOCATIONSELECTOR)){
 			return new LocationSelectorField();
+		}else if(type.equalsIgnoreCase(LINKFIELD)) {
+			return new LinkField();
+		}else if(type.equalsIgnoreCase(STATEFIELD)) {
+			return new StateField();
 		}
 		return null;
 	}
