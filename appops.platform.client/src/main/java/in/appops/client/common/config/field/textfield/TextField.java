@@ -164,7 +164,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 				textBox.addStyleName(getBaseFieldDependentCss());
 
 			textBox.setMaxLength(((StringValueType)getValueType()).getMaxLength());
-
+			textBox.setText((String) ((StringValueType)getValueType()).getDefaultValue());
+			
 			if (getTabIndex() != null)
 				textBox.setTabIndex(getTabIndex());
 
@@ -200,6 +201,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			if(getFieldCharWidth()!=null)
 				textArea.setCharacterWidth(getFieldCharWidth());
 			
+			textArea.setText((String) ((StringValueType)getValueType()).getDefaultValue());
+			
 			if (getTabIndex() != null)
 				textArea.setTabIndex(getTabIndex());
 			
@@ -230,6 +233,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 				passwordTextBox.addStyleName(getBaseFieldDependentCss());
 
 			passwordTextBox.setMaxLength(((StringValueType)getValueType()).getMaxLength());
+			passwordTextBox.setText((String) ((StringValueType)getValueType()).getDefaultValue());
+			
 			if (getTabIndex() != null)
 				passwordTextBox.setTabIndex(getTabIndex());
 
@@ -238,7 +243,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			keyPressHandler = passwordTextBox.addKeyPressHandler(this);
 			blurHandler = passwordTextBox.addBlurHandler(this);
 			keyUpHandler = passwordTextBox.addKeyUpHandler(this);
-			keyDownHandler = textBox.addKeyDownHandler(this);
+			keyDownHandler = passwordTextBox.addKeyDownHandler(this);
 			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[TextField] ::Exception In createPasswordBox method " + e);
@@ -273,7 +278,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			keyPressHandler = numericTextbox.addKeyPressHandler(numericTextbox);
 			keyUpHandler = numericTextbox.addKeyUpHandler(this);
 			blurHandler = numericTextbox.addBlurHandler(this);
-			keyDownHandler = textBox.addKeyDownHandler(this);
+			keyDownHandler = numericTextbox.addKeyDownHandler(this);
 			
 		} catch (Exception e) {
 
@@ -549,7 +554,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 				return getBlankFieldText();
 			}
 		}else {
-			if (!value.toString().matches(((StringValueType)getDefaultValue()).getRegexValidator())) {
+			if (!value.toString().matches(((StringValueType)getValueType()).getRegexValidator())) {
 				return getInvalidEmailText();
 			}
 		}
