@@ -104,3 +104,17 @@ h3 {
 	padding-right: 3px;
 	outline: none;
 }
+
+.gwt-SuggestBoxPopup {
+	border: 1px solid darkkhaki !important;
+}
+
+.gwt-SuggestBoxPopup .item-selected {
+	background: #B7D6F6 !important;
+}
+
+.gwt-SuggestBoxPopup .item {
+	padding: 2px 6px !important;
+	color: #424242 !important;
+	cursor: default !important;
+}
