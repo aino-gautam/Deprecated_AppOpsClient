@@ -56,6 +56,7 @@ public class StateField extends BaseField implements FieldEventHandler {
 	public void create() {
 		
 		try {
+			super.create();
 			logger.log(Level.INFO, "[StateField] ::In create method ");
 			getBasePanel().add(appopsSuggestionBox,DockPanel.CENTER);
 		} catch (Exception e) {
@@ -66,6 +67,7 @@ public class StateField extends BaseField implements FieldEventHandler {
 	@Override
 	public void configure() {
 		try {
+			super.configure();
 			logger.log(Level.INFO, "[StateField] ::In configure method ");
 			
 			setSuggestionInline();
