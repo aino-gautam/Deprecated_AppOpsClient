@@ -87,6 +87,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 	 */
 	@Override
 	public void create() {
+		super.create();
 		try {
 			if (getOperationName() != null) {
 				excuteListQuery();
@@ -128,6 +129,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 	@Override
 	public void configure() {
 		try {
+			super.configure();
 			listBox.clear();
 			listBox.setVisibleItemCount(getVisibleItemCount());
 			listBox.setEnabled(isEnabled());
@@ -352,6 +354,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In populateEntityList  method ");
 			imageField.setConfiguration(getImageVisibleConfiguration());
+			imageField.initialize();
 			imageField.configure();
 			imageField.create();
 			if(nameVsEntity==null)
@@ -392,6 +395,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In populateList  method ");
 			imageField.setConfiguration(getImageVisibleConfiguration());
+			imageField.initialize();
 			imageField.configure();
 			imageField.create();
 			for(int count = 0; count<listOfItems.size() ;count ++){
@@ -529,6 +533,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 				@Override
 				public void onSuccess(Result<EntityList> result) {
 					imageField.setConfiguration(getImageVisibleConfiguration());
+					imageField.initialize();
 					imageField.configure();
 					imageField.create();
 					if(result!=null){
