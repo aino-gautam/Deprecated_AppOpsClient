@@ -213,9 +213,9 @@
 		<!-- Appops server jars -->
 
 		<dependency>
-			<groupId>vikram_appops_platform</groupId>
+			<groupId>appops_platform</groupId>
 			<artifactId>appdefinition</artifactId>
-			<version>05.10.2013</version>
+			<version>31.10.2013</version>
 		</dependency>
 
 
@@ -226,14 +226,14 @@
 		</dependency>
 		<dependency>
 			<groupId>appops_platform</groupId>
-			<artifactId>appOps_developer</artifactId>
-			<version>03.10.2013</version>
+			<artifactId>appops_developer</artifactId>
+			<version>14.11.2013</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId> configuration</artifactId>
-			<version>21.09.2013</version>
+			<version>31.10.2013</version>
 		</dependency>
 		
 		<dependency>
@@ -241,17 +241,11 @@
 			<artifactId>htmlappservice</artifactId>
 			<version>07.08.2013</version>
 		</dependency>
-<!-- 
+
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>core</artifactId>
-			<version>13.09.2013</version>
-		</dependency> -->
-
-		<dependency>
-			<groupId>milind_appops_platform</groupId>
-			<artifactId>core</artifactId>
-			<version>14.09.2013</version>
+			<version>24.10.2013</version>
 		</dependency>
 
 		<dependency>
@@ -260,10 +254,10 @@
 			<version>11.09.2013</version>
 		</dependency>  
 
-        <dependency>
+         <dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>entityconf_shared</artifactId>
-			<version>17.09.2013</version>
+			<version>29.10.2013</version>
 		</dependency>
 
 		<dependency>
@@ -377,7 +371,7 @@
 		<dependency>
 			<groupId>milind_appops_platform</groupId>
 			<artifactId>ems</artifactId>
-			<version>03.10.2013</version>
+			<version>18.10.2013</version>
 		</dependency>
 	
 
