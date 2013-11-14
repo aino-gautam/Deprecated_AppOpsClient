@@ -1,5 +1,11 @@
 package in.appops.client.common.fields;
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
+import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.util.AppOpsException;
+
 import java.util.List;
 
 import com.google.gwt.maps.client.MapOptions;
@@ -23,7 +29,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class MapField  extends Composite{
+public class MapField  extends Composite implements Field{
 
 	private VerticalPanel mainPanel;
 	private MapWidget mapWidget;	
@@ -77,6 +83,7 @@ public class MapField  extends Composite{
 				 mapWidget.getMap().panTo(event.getLatLng());
 				
 				 getAddressAndSet(event.getLatLng());
+				 
 				}
 		      };
 		Event.addListener(mapWidget.getMap(), "click", mapClickCallback);
@@ -109,13 +116,20 @@ public class MapField  extends Composite{
 						else
 							address = address + " "
 									+ addCompList.get(i).getLongName();
+						
 					}
 					
 					choosenAddress = address;
+					FieldEvent fieldEvent = new FieldEvent();
+					fieldEvent.setEventType(FieldEvent.LOCATION_RECIEVED);
+					fieldEvent.setEventData(address);	
+					AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, MapField.this);
 				} else {
 					Window.alert("Error in Geocoding : " + status);
 				}
+				
 			}
+			
 		});
 
 	}
@@ -177,5 +191,62 @@ public class MapField  extends Composite{
 
 	public void setMapZoomParameter(int mapZoomParameter) {
 		this.mapZoomParameter = mapZoomParameter;
+	}
+
+	@Override
+	public Configuration getConfiguration() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setConfiguration(Configuration conf) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void create() throws AppOpsException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clear() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getFieldValue() {
+		return choosenAddress;
+	}
+
+	@Override
+	public void setFieldValue(String fieldValue) {
+		choosenAddress = fieldValue;
+		
+	}
+	public void addHandle(FieldEventHandler handler) {
+		AppUtils.EVENT_BUS.addHandlerToSource(FieldEvent.TYPE, this, handler);
+		
+	}
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
+		
 	}
 }

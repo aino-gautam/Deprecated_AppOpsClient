@@ -8,6 +8,7 @@ public class FieldEvent extends GwtEvent<FieldEventHandler> {
 
 	protected int eventType;
 	protected Object eventData = null;
+	protected Object eventSource = null;
 	
 	public static final int EDITINITIATED = 1;
 	public static final int EDITINPROGRESS = 2;
@@ -17,6 +18,29 @@ public class FieldEvent extends GwtEvent<FieldEventHandler> {
 	public static final int THREE_CHAR_ENTERED = 6;
 	public static final int SUGGESTION_CLICKED = 7;
 	public static final int EDITSUCCESS = 8;
+	public static final int EVENTDATA = 9;
+	public static final int REMINDERDATA = 10;
+	public static final int TIMEONLY = 11;
+	public static final int DATETIMEONLY = 12;
+	public static final int DATEONLY = 13;
+	public static final int LOCATION_RECIEVED = 14;
+	public static final int CHECKBOX_SELECT = 15;
+	public static final int CHECKBOX_DESELECT = 16;
+	public static final int VALUECHANGED = 17;
+	public static final int SUGGESTION_SELECTED = 18;
+	public static final int SPN_SPINUP = 19;
+	public static final int SPN_SPINDOWN = 20;
+	public static final int LOCATION_CHANGED = 22;
+	public static final int CHANGE_LOCATION = 23;
+	public static final int RADIOBUTTON_SELECTED = 24;
+	public static final int ENTERED_HIT = 33;
+	public static final int CLICKED = 34;
+	public static final int VALUE_SELECTED = 35;
+	public static final int TAB_KEY_PRESSED = 36;
+	public static final int BREACRUMBUPDATE = 37;
+	public static final int BREACRUMBHIERARCHYUPDATE = 38;
+	public static final int SELECTION_EVENT=39;
+
 	
 	public static Type<FieldEventHandler> TYPE = new Type<FieldEventHandler>();
 	
@@ -55,6 +79,14 @@ public class FieldEvent extends GwtEvent<FieldEventHandler> {
 	
 	public void setEventData(Object eventData) {
 		this.eventData = eventData;
+	}
+
+	public Object getEventSource() {
+		return eventSource;
+	}
+
+	public void setEventSource(Object eventSource) {
+		this.eventSource = eventSource;
 	}
 
 }

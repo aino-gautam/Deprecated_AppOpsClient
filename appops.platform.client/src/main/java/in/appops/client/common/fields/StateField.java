@@ -1,10 +1,12 @@
 package in.appops.client.common.fields;
 
+import java.util.HashMap;
+
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.fields.slider.field.NumericRangeSliderField;
 import in.appops.client.common.fields.slider.field.StringRangeSliderField;
 import in.appops.client.common.fields.suggestion.AppopsSuggestion;
-import in.appops.client.common.fields.suggestion.SuggestionField;
+import in.appops.client.common.fields.suggestion.AppopsSuggestionBox;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
@@ -19,7 +21,7 @@ public class StateField extends Composite implements Field, ChangeHandler{
 	private Configuration configuration;
 	private String fieldValue;
 	private ListBox listBox;
-	private SuggestionField appopsSuggestionBox;
+	private AppopsSuggestionBox appopsSuggestionBox;
 	private String fieldType;
 	private String fieldMode ;
 	public static final String STATEFIELD_MODE ="stateFieldMode;";
@@ -38,12 +40,16 @@ public class StateField extends Composite implements Field, ChangeHandler{
 	public static final String STATEFIELD_OPERATION = "stateFieldOperation";
 	public static final String PROPERTY_BY_FIELD_NAME = "propertyByFieldName";
 	public static final String STATEFIELD_QUERY_MAXRESULT = "stateFieldQueryMaxresult";
+	public static final String STATEFIELD_PROPERTY_TO_DISPLAY = "propertyToDisplay";
+	public static final String STATEFIELD_QUERY_RESTRICTION = "queryRestriction";
+	public static final String IS_SEARCH_QUERY = "isSearchQuery";
+	public static final String IS_AUTOSUGGESTION = "isAutoSuggestion";
 	
 	public StateField(){
 	}
 	
 	@Override
-	public void createField() throws AppOpsException {
+	public void create() throws AppOpsException {
 		if(getConfiguration() == null)
 			throw new AppOpsException("Statefield configuration unavailable");
 		
@@ -56,22 +62,22 @@ public class StateField extends Composite implements Field, ChangeHandler{
 			if(fieldType.equalsIgnoreCase(STATEFIELDTYPE_NUMERICRANGE)){
 				NumericRangeSliderField numericRangeSliderField = new NumericRangeSliderField();
 				numericRangeSliderField.setConfiguration(getConfiguration());
-				numericRangeSliderField.createField();
+				numericRangeSliderField.create();
 				initWidget(numericRangeSliderField);
 			}else if(fieldType.equalsIgnoreCase(STATEFIELDTYPE_STRINGRANGE)){
 				StringRangeSliderField stringRangeSliderField = new StringRangeSliderField();
 				stringRangeSliderField.setConfiguration(getConfiguration());
-				stringRangeSliderField.createField();
+				stringRangeSliderField.create();
 				initWidget(stringRangeSliderField);
 			}else{
 				if(fieldType.equalsIgnoreCase(STATEFIELDTYPE_LIST)){
 					ListBoxField listBoxField = new ListBoxField();
 					listBoxField.setConfiguration(getConfiguration());
-					listBoxField.createField();
+					listBoxField.create();
 				}else if(fieldType.equalsIgnoreCase(STATEFIELDTYPE_COMBO)){
 					ComboBoxField comboBoxField = new ComboBoxField();
 					comboBoxField.setConfiguration(getConfiguration());
-					comboBoxField.createField();
+					comboBoxField.create();
 				}
 				if(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS) != null)
 					listBox.setStylePrimaryName(getConfiguration().getPropertyByName(STATEFIELD_PRIMARYCSS).toString());
@@ -81,16 +87,27 @@ public class StateField extends Composite implements Field, ChangeHandler{
 					listBox.ensureDebugId(getConfiguration().getPropertyByName(STATEFIELD_DEBUGID).toString());
 			}
 		} else if(fieldMode.equalsIgnoreCase(STATEFIELDMODE_SUGGESTIVE)){
-			appopsSuggestionBox = new SuggestionField();
+			appopsSuggestionBox = new AppopsSuggestionBox();
 			if(getConfiguration().getPropertyByName(STATEFIELD_QUERY) != null)
 				appopsSuggestionBox.setQueryName(getConfiguration().getPropertyByName(STATEFIELD_QUERY).toString());
+			if(getConfiguration().getPropertyByName(IS_SEARCH_QUERY) != null){
+				Boolean val = getConfiguration().getPropertyByName(IS_SEARCH_QUERY);
+				appopsSuggestionBox.setIsSearchQuery(val);
+			}if(getConfiguration().getPropertyByName(IS_AUTOSUGGESTION) != null){
+				Boolean val = getConfiguration().getPropertyByName(IS_AUTOSUGGESTION);
+				appopsSuggestionBox.setAutoSuggestion(val);
+			}
 			if(getConfiguration().getPropertyByName(STATEFIELD_OPERATION) != null)
 				appopsSuggestionBox.setOperationName(getConfiguration().getPropertyByName(STATEFIELD_OPERATION).toString());
-			
-			if(getConfiguration().getPropertyByName(STATEFIELD_QUERY_MAXRESULT) != null) {
+			if(getConfiguration().getPropertyByName(STATEFIELD_QUERY_MAXRESULT) != null)
 				appopsSuggestionBox.setMaxResult((Integer)getConfiguration().getPropertyByName(STATEFIELD_QUERY_MAXRESULT));
-			} else {
+			else
 				appopsSuggestionBox.setMaxResult(25);
+			if(getConfiguration().getPropertyByName(STATEFIELD_PROPERTY_TO_DISPLAY) != null) {
+				appopsSuggestionBox.setPropertyToDisplay(getConfiguration().getPropertyByName(STATEFIELD_PROPERTY_TO_DISPLAY).toString());
+			}
+			if(getConfiguration().getPropertyByName(STATEFIELD_QUERY_RESTRICTION) != null) {
+				appopsSuggestionBox.setQueryRestrictions((HashMap<String, Object>) getConfiguration().getPropertyByName(STATEFIELD_QUERY_RESTRICTION));
 			}
 			
 			initWidget(appopsSuggestionBox);
@@ -104,12 +121,12 @@ public class StateField extends Composite implements Field, ChangeHandler{
 	}
 
 	@Override
-	public void clearField() {
+	public void clear() {
 		
 	}
 
 	@Override
-	public void resetField() {
+	public void reset() {
 		// TODO Auto-generated method stub
 		
 	}
@@ -174,16 +191,22 @@ public class StateField extends Composite implements Field, ChangeHandler{
 	}
 	
 	
-	public SuggestionField getAppopsSuggestionBox() {
+	public AppopsSuggestionBox getAppopsSuggestionBox() {
 		return appopsSuggestionBox;
 	}
 
-	public void setAppopsSuggestionBox(SuggestionField appopsSuggestionBox) {
+	public void setAppopsSuggestionBox(AppopsSuggestionBox appopsSuggestionBox) {
 		this.appopsSuggestionBox = appopsSuggestionBox;
 	}
 
 	@Override
 	public void onFieldEvent(FieldEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void configure() {
 		// TODO Auto-generated method stub
 		
 	}

@@ -6,6 +6,7 @@ package in.appops.showcase.web.gwt.dragonwheel.client;
 import java.util.HashMap;
 import java.util.Map;
 
+import in.appops.client.common.snippet.MediaServiceHomeSnippet;
 import in.appops.client.gwt.web.ui.Cylinder;
 import in.appops.client.gwt.web.ui.DragonWheelNew;
 import in.appops.client.gwt.web.ui.MediaViewer;
@@ -41,12 +42,10 @@ public class DragonWheelShowCase implements EntryPoint{
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onModuleLoad() {
-		
-		MediaViewer mediaViewer = new MediaViewer();
-		RootPanel.get("wheelContainer").add(mediaViewer);
-		
-			
+		btn.setStylePrimaryName("appops-Button");
+		//MediaViewer mediaViewer = new MediaViewer();
+		MediaServiceHomeSnippet snip = new MediaServiceHomeSnippet();
+		snip.initialize();
+		RootPanel.get("wheelContainer").add(snip);
 	}
-
-	
 }

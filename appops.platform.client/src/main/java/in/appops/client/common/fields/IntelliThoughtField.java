@@ -1,5 +1,6 @@
 package in.appops.client.common.fields;
 
+import in.appops.client.common.components.IntelliThoughtSuggestion;
 import in.appops.client.common.components.LinkedSuggestion;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
@@ -8,11 +9,15 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.constants.typeconstants.TypeConstants;
+import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.operation.IntelliThought;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.AppOpsException;
 import in.appops.platform.core.util.EntityList;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +31,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
@@ -35,13 +41,16 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
  * @author nitish@ensarm.com
  * 
  */
-public class IntelliThoughtField extends Composite implements Field, HasText, EventListener{
+public class IntelliThoughtField extends Composite implements Field, HasText, HasHTML, EventListener{
 	private Configuration configuration;
 	private String fieldValue;
 	private LinkedSuggestion linkedSuggestion;
 	private HorizontalPanel basePanel;
 	private Element intelliText;
 	private static int caretPosition;  
+	private ArrayList<Entity> linkedUsers;
+	private ArrayList<Entity> linkedSpaces;
+	private ArrayList<Entity> linkedEntities;
 	
 	public static final String INTELLITEXTFIELD_VISIBLELINES = "intelliShareFieldVisibleLines";
 	public static final String INTELLITEXTFIELD_PRIMARYCSS = "intelliShareFieldPrimaryCss";
@@ -49,6 +58,13 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ev
 	public static final String INTELLITEXTFIELD_MAXCHARLENGTH = "maxLength";
 	public static final String INTELLITEXTFIELD_CONTENTEDITABLE = "contenteditable";
 
+	public static final String FIRE_THREECHARENTERED_EVENT = "fireThreeCharEnteredEvent";
+	public static final String FIRE_WORDENTERED_EVENT = "fireWordEnteredEvent";
+	public static final String FIRE_EDITINITIATED_EVENT = "fireEditInitatedEvent";
+
+	private String isFireThreeCharEnteredEvent;
+	private String isFireWordEnteredEvent;
+	private String isFireEditInitatedEvent;
 
 	public IntelliThoughtField(){
 		initialize();
@@ -58,44 +74,48 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ev
 	private void initialize() {
 		basePanel = new HorizontalPanel();
 		linkedSuggestion = new LinkedSuggestion(true);
+		linkedEntities = new ArrayList<Entity>();
+		linkedUsers = new ArrayList<Entity>();
+		linkedSpaces = new ArrayList<Entity>();
 	}
 	
 	@Override
-	public void createField() throws AppOpsException {
-		if(configuration == null){
-			throw new AppOpsException("No Configuration available");
-		} else{
-		
+	public void create() throws AppOpsException {
+		if(configuration != null) {
 			String primaryCss = configuration.getPropertyByName(INTELLITEXTFIELD_PRIMARYCSS) != null ?  configuration.getPropertyByName(INTELLITEXTFIELD_PRIMARYCSS).toString() : null;  
 			String dependentCss = configuration.getPropertyByName(INTELLITEXTFIELD_DEPENDENTCSS) != null ?  configuration.getPropertyByName(INTELLITEXTFIELD_DEPENDENTCSS).toString() : null;  
 			String maxCharLength = configuration.getPropertyByName(INTELLITEXTFIELD_MAXCHARLENGTH) != null ?  configuration.getPropertyByName(INTELLITEXTFIELD_MAXCHARLENGTH).toString() : null;  
 			
+			isFireThreeCharEnteredEvent = configuration.getPropertyByName(FIRE_THREECHARENTERED_EVENT);
+			isFireWordEnteredEvent = configuration.getPropertyByName(FIRE_WORDENTERED_EVENT);
+			isFireEditInitatedEvent = configuration.getPropertyByName(FIRE_EDITINITIATED_EVENT);
+			
 			if(primaryCss != null){
-				this.setStylePrimaryName("intelliShareField");
+				this.setStylePrimaryName(primaryCss);
 			} 
-
+	
 			if(dependentCss != null){
 				this.addStyleName(dependentCss);
 			} 
-
-			if(dependentCss != null){
+	
+			if(maxCharLength != null){
 				this.getElement().setAttribute(INTELLITEXTFIELD_MAXCHARLENGTH, maxCharLength);
 			}
 			
 			intelliText = DOM.createDiv();
-			intelliText.setClassName("intelliTextField");
+			intelliText.setClassName("appops-intelliThoughtField");
 			intelliText.setId("intelliTextField");
 			intelliText.setAttribute(INTELLITEXTFIELD_CONTENTEDITABLE, "true");
 			this.setText("Any Thoughts");
-
+	
 			basePanel.getElement().appendChild(intelliText);
+			basePanel.setStylePrimaryName("appops-intelliThoughtFieldPanel");
 			AppUtils.EVENT_BUS.addHandlerToSource(FieldEvent.TYPE, intelliText, this);
 			
 			Event.setEventListener(intelliText, this);
 			Event.sinkEvents(intelliText, Event.ONCLICK | Event.KEYEVENTS);
 			linkedSuggestion.addHandle(this);
 		}
-		
 	}
 
 	
@@ -110,12 +130,12 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ev
 	}	
 	
 	@Override
-	public void clearField() {
+	public void clear() {
 		this.setText("");
 	}
 
 	@Override
-	public void resetField() {
+	public void reset() {
 		
 	}
 
@@ -152,6 +172,17 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ev
 	public void setText(String text) {
 		intelliText.setInnerText(text);
 	}
+	
+	@Override
+	public String getHTML() {
+		String innerHtml = intelliText.getInnerHTML();
+		return innerHtml;
+	}
+
+	@Override
+	public void setHTML(String html) {
+		intelliText.setInnerHTML(html);
+	}
 
 	private void fireIntelliThoughtFieldEvent(FieldEvent fieldEvent) {
 		AppUtils.EVENT_BUS.fireEventFromSource(fieldEvent, intelliText);
@@ -179,10 +210,12 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ev
 		int eventType = event.getEventType();
 		String eventData = (String) event.getEventData();
 		
-		if(eventType == FieldEvent.THREE_CHAR_ENTERED) {
-			handleThreeCharEnteredEvent(eventData);
-		} else if(eventType == FieldEvent.SUGGESTION_CLICKED ){
-			linkSuggestion(eventData);
+		if(this.isVisible()) {
+			if(eventType == FieldEvent.THREE_CHAR_ENTERED) {
+				handleThreeCharEnteredEvent(eventData);
+			} else if(eventType == FieldEvent.SUGGESTION_CLICKED ){
+				linkSuggestion(eventData);
+			}
 		}
 	}
 
@@ -196,8 +229,10 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ev
 		    	if(this.getText().equalsIgnoreCase("Any Thoughts")){
 					this.setText("");
 				}
-				FieldEvent focusEvent = getFieldEvent(FieldEvent.EDITINITIATED, null);
-				fireIntelliThoughtFieldEvent(focusEvent);
+		    	if(Boolean.valueOf(isFireEditInitatedEvent)){
+					FieldEvent focusEvent = getFieldEvent(FieldEvent.EDITINITIATED, null);
+					fireIntelliThoughtFieldEvent(focusEvent);
+		    	}
             break;
             
 	        case Event.ONKEYDOWN:
@@ -226,11 +261,14 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ev
 			return;
     	}
     	if(keyCode == KeyCodes.KEY_ENTER){
-
+    		/** This needs to be removed and handling of enter needs to be fixed**/
+    		event.preventDefault();
 			if(linkedSuggestion.isShowing()){
-				event.preventDefault();
-				String text = linkedSuggestion.getCurrentSelection();
-				linkSuggestion(text);
+				IntelliThoughtSuggestion suggestion = linkedSuggestion.getCurrentSelection();
+				Entity selectedEnt = suggestion.getEntity();
+				collectSelectedSuggestion(selectedEnt);
+
+				linkSuggestion(suggestion.getDisplayText());
 				linkedSuggestion.hide();
 			}
 			return;
@@ -239,9 +277,11 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ev
 			if(linkedSuggestion.isShowing()){
 				linkedSuggestion.hide();
 			}
-			if(!wordBeingTyped.trim().equals("")) { 
-				FieldEvent wordEntered = getFieldEvent(FieldEvent.WORDENTERED, wordBeingTyped.trim()); 
-				fireIntelliThoughtFieldEvent(wordEntered);
+			if(!wordBeingTyped.trim().equals("")) {
+				if(Boolean.valueOf(isFireWordEnteredEvent)){
+					FieldEvent wordEntered = getFieldEvent(FieldEvent.WORDENTERED, getText().trim());
+					fireIntelliThoughtFieldEvent(wordEntered);
+				}
 			}
 			return;
 		}
@@ -255,6 +295,21 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ev
 		
 	}
 	
+	private void collectSelectedSuggestion(Entity entity) {
+		String typeName = entity.getType().getTypeName();
+		typeName = typeName.replace(".", "#");
+		String[] splittedArray = typeName.split("#");
+		String actualTypeProp = splittedArray[splittedArray.length-1];
+		
+		linkedEntities.add(entity);
+		if(actualTypeProp.equals(TypeConstants.SPACETYPE)){
+			linkedSpaces.add(entity);
+		} else if(actualTypeProp.equals(TypeConstants.USER)){
+			linkedUsers.add(entity);
+		}
+		
+	}
+
 	private void linkSuggestion(String text) {
 		String elementValue = this.getText();
 		String textTillCaretPosition = elementValue.substring(0, caretPosition);
@@ -262,6 +317,7 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ev
 		if(linkedSuggestion.isShowing()){
 			
 			Anchor tag = new Anchor(text);
+			tag.setStylePrimaryName("appops-LinkField");
 			String tagHtml = tag.getElement().getString();
 			
 			int start = IntelliThoughtUtil.checkPreviousWord(textTillCaretPosition, text);
@@ -297,11 +353,13 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ev
 				}
 			}
 		}
-		if(wordBeingTyped.length() >  2) {
+		if(wordBeingTyped.length() >  2 && Character.isUpperCase(wordBeingTyped.charAt(0))) {
 
-//TODO This is fire event to call the server			
-			FieldEvent threeCharEntered = getFieldEvent(FieldEvent.THREE_CHAR_ENTERED, wordBeingTyped);
-			fireIntelliThoughtFieldEvent(threeCharEntered);
+			//	TODO This is fire event to call the server
+			if(Boolean.valueOf(isFireThreeCharEnteredEvent)){
+				FieldEvent threeCharEntered = getFieldEvent(FieldEvent.THREE_CHAR_ENTERED, wordBeingTyped);
+				fireIntelliThoughtFieldEvent(threeCharEntered);
+			}
 			
 		}
 	}
@@ -324,6 +382,13 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ev
 		final int posy = basePanel.getElement().getAbsoluteTop() + basePanel.getElement().getOffsetHeight();
 		final int posx = basePanel.getElement().getAbsoluteLeft();
 
+		linkedSuggestion.createUi();
+		if(!linkedSuggestion.isShowing()){
+			linkedSuggestion.show();
+			linkedSuggestion.setWidth(basePanel.getElement().getOffsetWidth() - 10 + "px");
+
+			linkedSuggestion.setPopupPosition(posx, posy);
+		}
 		
 		//This is the Server Call to fetch the suggestions		
 		StandardAction action = new StandardAction(EntityList.class, "spacemanagement.SpaceManagementService.getLinkSuggestions", map);
@@ -331,26 +396,40 @@ public class IntelliThoughtField extends Composite implements Field, HasText, Ev
 			
 			
 			public void onFailure(Throwable caught) {
-				Window.alert("operation failed ");
+				linkedSuggestion.hide();
 				caught.printStackTrace();
 			}
 			
 			
 			public void onSuccess(Result<EntityList> result) {
 				EntityList linkedSuggestionList = result.getOperationResult();
-				
-				linkedSuggestion.clearList();
-				linkedSuggestion.setEntityList(linkedSuggestionList);
-				linkedSuggestion.populateSuggestions();
-				if(!linkedSuggestion.isShowing()){
-					linkedSuggestion.show();
-					linkedSuggestion.setWidth(basePanel.getElement().getOffsetWidth() - 10 + "px");
-
-					linkedSuggestion.setPopupPosition(posx, posy);
+				if(linkedSuggestionList != null && !linkedSuggestionList.isEmpty()) {
+					linkedSuggestion.setEntityList(linkedSuggestionList);
+					linkedSuggestion.populateSuggestions();
 					linkedSuggestion.setFirstSelection();
+				} else {
+					linkedSuggestion.hide();
 				}
 			}
 		});
+		
+	}
+	
+	public IntelliThought getIntelliThought(){
+		IntelliThought intelliThought = new IntelliThought();
+		
+		intelliThought.setIntelliText(getText());
+		intelliThought.setIntelliHtml(getHTML());
+		intelliThought.setLinkedEntities(linkedEntities);
+		intelliThought.setLinkedSpaces(linkedSpaces);
+		intelliThought.setLinkedUsers(linkedUsers);
+		
+		return intelliThought;
+	}
+
+	@Override
+	public void configure() {
+		// TODO Auto-generated method stub
 		
 	}
 }

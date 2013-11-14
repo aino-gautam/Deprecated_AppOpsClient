@@ -3,9 +3,12 @@
  */
 package in.appops.client.gwt.web.ui.messaging.spacelistcomponent;
 
-import in.appops.client.gwt.web.ui.messaging.datastructure.ChatEntity;
+import java.util.ArrayList;
+
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.gwt.web.ui.messaging.event.MessengerEvent;
+import in.appops.client.gwt.web.ui.messaging.event.MessengerEventHandler;
 import in.appops.platform.core.entity.Entity;
-import in.appops.platform.core.util.EntityList;
 import in.appops.platform.server.core.services.spacemanagement.constants.SpaceConstants;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -20,14 +23,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * The space widget is created using a default icon and the space name that is fetched 
  * from the space entity sent to it.
  */
-public class SpaceWidgetIcon extends VerticalPanel{
+public class SpaceWidgetIcon extends VerticalPanel implements MessengerEventHandler{
 	
 	private Entity spaceEntity;
-	
-	/**
-	 * parent reference to get to the messaging component and fire specific event.
-	 */
-	private SpaceListWidget parentSpaceListWidget;
 	
 	/**
 	 * The space entity is sent to it to create the space name and icon ui for 
@@ -47,23 +45,15 @@ public class SpaceWidgetIcon extends VerticalPanel{
 				@Override
 				public void onClick(ClickEvent event) {
 					
-					//TODO :	EntityList participantList =null;
-					
-					EntityList participantList = null;
-					ChatEntity entity = new ChatEntity();
+					removeStyleName("hightlightSnippet");
+				
 					String groupName = spaceNameAnchor.getHTML();
-					if(getParentSpaceListWidget().getParentMessagingComponent().getGrpMapEntityMap().get(groupName)==null){
-						entity.setParticipantEntity(participantList);
-						entity.setHeaderTitle(groupName);
-						entity.setUserEntity(getParentSpaceListWidget().getParentMessagingComponent().getUserEntity());
-						entity.setIsGroupChat(true);
-
-						getParentSpaceListWidget().getParentMessagingComponent().startNewChat(entity);
-					}
-					else{
-						ChatEntity chatEnt = getParentSpaceListWidget().getParentMessagingComponent().getGrpMapEntityMap().get(groupName);
-						getParentSpaceListWidget().getParentMessagingComponent().startNewChat(chatEnt);
-					}
+					ArrayList<Object> dataMap = new ArrayList<Object>();
+					dataMap.add(groupName);
+					dataMap.add(spaceEntity);
+ 					MessengerEvent msgEvent = new MessengerEvent(MessengerEvent.STARTSPACECHAT, dataMap);
+					AppUtils.EVENT_BUS.fireEvent(msgEvent);
+					
 				}
 			});
 			
@@ -75,23 +65,30 @@ public class SpaceWidgetIcon extends VerticalPanel{
 			add(widgetIconHolder);
 			
 			setStylePrimaryName("spaceWidgetIcon");
+			
+			AppUtils.EVENT_BUS.addHandler(MessengerEvent.TYPE, this);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	/**
-	 * @return the parentSpaceListWidget
-	 */
-	public SpaceListWidget getParentSpaceListWidget() {
-		return parentSpaceListWidget;
+	@Override
+	public void onMessengerEvent(MessengerEvent event) {
+		try{
+			if(event.getEventType() == MessengerEvent.ONSPACEMSGRECIEVED){
+				//Window.alert("Space chat received");
+			}
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
-	/**
-	 * @param parentSpaceListWidget the parentSpaceListWidget to set
-	 */
-	public void setParentSpaceListWidget(SpaceListWidget parentSpaceListWidget) {
-		this.parentSpaceListWidget = parentSpaceListWidget;
+	public Entity getSpaceEntity() {
+		return spaceEntity;
 	}
-	
+
+	public void highlightWidget() {
+		addStyleName("hightlightSnippet");
+	}
 }
