@@ -251,7 +251,7 @@
 		<dependency>
 			<groupId>appops_platform</groupId>
 			<artifactId>core</artifactId>
-			<version>24.10.2013</version>
+			<version>22.11.2013</version>
 		</dependency>
 
 		<dependency>
@@ -375,9 +375,9 @@
 			<version>20.06.2013</version>
 		</dependency>
 		<dependency>
-			<groupId>milind_appops_platform</groupId>
+			<groupId>appops_platform</groupId>
 			<artifactId>ems</artifactId>
-			<version>03.10.2013</version>
+			<version>22.11.2013</version>
 		</dependency>
 	
 
