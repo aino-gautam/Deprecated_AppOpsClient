@@ -136,7 +136,22 @@ var snippetStore = {
 		 *   
 		 *  
 		 */
-				
+			
+		formSnippet : "<table>" + 
+		"        	<tr>" + 
+		"				<td><span id=\"userNameLabel\" componentType=\"appopsField\" type= \"labelField\" data-config=\"userNameLabelConfig\"></span></td>" + 
+		"				<td><span id=\"userNameBox\" componentType=\"appopsField\" type=\"textField\" data-config=\"userNameBoxConfig\"></span></td>" + 
+		"			</tr>" + 
+		"			<tr>" + 
+		"				<td><span id=\"passwordLabel\" componentType=\"appopsField\" type=\"labelField\" data-config=\"passwordLabelConfig\"> </span></td>" + 
+		"				<td><span id=\"passwordLabelBox\" componentType=\"appopsField\" type=\"textField\" data-config=\"passwordBoxConfig\"></td>" + 
+		"			</tr>" + 
+		"			<tr>" + 
+		"				<td><span id=\"loginButton\" componentType=\"appopsField\" type= \"buttonField\" data-config=\"loginButtonConfig\"></span></td>" + 
+		"				<td><span id=\"clearButton\" componentType=\"appopsField\" type= \"buttonField\" data-config=\"clearButtonConfig\"></span></td>" + 
+		"			</tr>" + 
+		"		</table> ",
+		
 		listComponentPreviewSnippet: " <table>" + 
 		"						<tr>" + 
 		"					 		<td> <span id=\"listComponentPreview\" componentType=\"appopsComponent\" type= \"listComponent\" data-config=\"listComponentPreviewConfig\"></span> </td>" + 
