@@ -1741,3 +1741,10 @@ td.datePickerMonth {
 	float: left;
 }
 /*************************/
+
+.formCss{
+	height: 500px;
+	width : 500px;
+	border: 1px solid rgb(68,68,68);
+	padding: 3px;
+}
