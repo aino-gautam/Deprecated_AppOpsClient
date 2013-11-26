@@ -16,8 +16,8 @@ public class PageSnippetPresenter extends HTMLSnippetPresenter {
 
 	@Override
 	protected void initialize() {
-		model = new PageSnippetModel();
-		view = new PageSnippetView();
+		model = dynamicFactory.requestModel(DynamicMvpFactory.PAGE);
+		view = dynamicFactory.requestView(DynamicMvpFactory.PAGE);
 		view.setModel(model);
 		((PageSnippetView) view).setSnippetType(type);
 		view.initialize();

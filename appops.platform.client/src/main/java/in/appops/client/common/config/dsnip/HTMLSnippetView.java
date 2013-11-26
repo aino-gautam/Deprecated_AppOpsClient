@@ -2,6 +2,7 @@ package in.appops.client.common.config.dsnip;
 
 import in.appops.client.common.config.component.base.BaseComponent;
 import in.appops.client.common.config.component.base.BaseComponentPresenter;
+import in.appops.client.common.config.dsnip.HTMLSnippetPresenter.HTMLSnippetConstant;
 import in.appops.client.common.config.model.ConfigurationModel;
 import in.appops.client.common.config.model.IsConfigurationModel;
 import in.appops.client.common.config.model.PropertyModel;
@@ -143,19 +144,54 @@ public class HTMLSnippetView extends BaseComponent implements EntityReceiver {
 	@Override
 	public void configure() {
 		super.configure();
-
-		/*
-		 * TODO set configurations for snippet panel if any
-		 */
-		/*if(viewConfiguration.getConfigurationValue(HTMLSnippetConstant.HS_PCLS) != null) {
-			this.setStylePrimaryName(viewConfiguration.getConfigurationValue(HTMLSnippetConstant.HS_PCLS).toString());
+		
+		if(viewConfiguration != null){
+			if(getFormPrimCss() != null) {
+				snippetPanel.setStylePrimaryName(getFormPrimCss());
+			}
+	
+			if(getFormDependentCss() != null) {
+				snippetPanel.addStyleName(getFormDependentCss());
+			}
 		}
-
-		if(viewConfiguration.getConfigurationValue(HTMLSnippetConstant.HS_DCLS) != null) {
-			this.addStyleName(viewConfiguration.getConfigurationValue(HTMLSnippetConstant.HS_DCLS).toString());
-		}*/
 	}
 
+	/**
+	 * Returns the primary style to be applied to the component basepanel.
+	 * If the style is not provided through configuration default is returned
+	 * @return
+	 */
+	protected String getFormPrimCss() {
+		String primaryCss = null;
+		try {
+			if(viewConfiguration.getConfigurationValue(HTMLSnippetConstant.HS_PCLS) != null) {
+				primaryCss = viewConfiguration.getConfigurationValue(HTMLSnippetConstant.HS_PCLS).toString();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return primaryCss;
+	}
+
+
+	/**
+	 * Returns the dependent style to be applied to the component basepanel.
+	 * If the style is not provided through configuration default is returned
+	 * @return
+	 */
+	protected String getFormDependentCss() {
+		String depCss = null;
+		try {
+			if(viewConfiguration.getConfigurationValue(HTMLSnippetConstant.HS_DCLS) != null) {
+				depCss = viewConfiguration.getConfigurationValue(HTMLSnippetConstant.HS_DCLS).toString();
+			}
+		} catch (Exception e) {
+
+		}
+		return depCss;
+	}
+
+	
 	public Map<String, BaseComponentPresenter> getElementMap() {
 		return elementMap;
 	}

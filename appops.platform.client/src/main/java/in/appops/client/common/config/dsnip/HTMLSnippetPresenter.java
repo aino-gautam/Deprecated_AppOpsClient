@@ -10,11 +10,11 @@ import in.appops.client.common.event.FieldEvent;
 import com.google.gwt.event.shared.SimpleEventBus;
 
 public class HTMLSnippetPresenter extends BaseComponentPresenter {
-	private SimpleEventBus localEventBus;
+	protected SimpleEventBus localEventBus;
 
 	public interface HTMLSnippetConstant extends BaseComponentConstant {
-		String HS_PCLS = "basePrimaryCss";
-		String HS_DCLS = "baseDependentCss";
+		String HS_PCLS = "htmlSnippetPrimaryCss";
+		String HS_DCLS = "htmlSnippetDependentCss";
 	}
 
 	public HTMLSnippetPresenter(String snippetType, String snippetInstance) {
