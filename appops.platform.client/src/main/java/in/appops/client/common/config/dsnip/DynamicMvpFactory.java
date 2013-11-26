@@ -10,6 +10,7 @@ import in.appops.client.common.config.model.PropertyModel;
 public interface DynamicMvpFactory {
 	String PAGE = "page";
 	String HTMLSNIPPET = "htmlSnippet";
+	String FORMSNIPPET = "formSnippet";
 	String COMPONENT = "component";
 	String SPINNERFIELD = "spinnerField";
 	String ACTIONFIELD = "actionField";

@@ -43,6 +43,8 @@ public class DynamicMvpFactoryImpl implements DynamicMvpFactory {
 			HTMLSnippetPresenter snippetPresenter = null;
 			if(type.equalsIgnoreCase(PAGE)) {
 				snippetPresenter = new PageSnippetPresenter(type, instance);
+			}  else if(type.equalsIgnoreCase(FORMSNIPPET)) {
+				snippetPresenter = new FormSnippetPresenter(type, instance);
 			}  else {
 				snippetPresenter = new HTMLSnippetPresenter(type, instance);
 			}
@@ -66,6 +68,8 @@ public class DynamicMvpFactoryImpl implements DynamicMvpFactory {
 	public IsConfigurationModel requestModel(String type) {
 		if(type.equals(PAGE)) {
 			return new PageSnippetModel();
+		} else if(type.equals(FORMSNIPPET)) {
+			return new FormSnippetModel();
 		} else if(type.equals(HTMLSNIPPET)) {
 			return new HTMLSnippetModel();
 		} else if(type.equals(LISTCOMPONENT)) {
@@ -80,6 +84,8 @@ public class DynamicMvpFactoryImpl implements DynamicMvpFactory {
 	public BaseComponent requestView(String type) {
 		if(type.equals(PAGE)) {
 			return new PageSnippetView();
+		} else if(type.equals(FORMSNIPPET)) {
+			return new FormSnippetView();
 		} else if(type.equals(HTMLSNIPPET)) {
 			return new HTMLSnippetView();
 		} else if(type.equalsIgnoreCase(ACTIONFIELD)) {
