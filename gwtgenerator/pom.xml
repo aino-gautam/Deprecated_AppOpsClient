@@ -94,8 +94,11 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
 				<version>2.4.0</version>
-
 				<configuration>
+					<!-- <extraJvmArgs>-Xmx1024M</extraJvmArgs>
+					<gen>
+						C:\Users\Administrator\git\AppOpsClient\gwtgenerator\target\.generated
+					</gen> -->
 					<runTarget>GWTGENERATOR.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 
@@ -106,6 +109,15 @@
 						<module>com.appops.gwtgenerator.GWTGENERATOR</module>
 					</modules>
 				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>debug</goal>
+						</goals>
+					</execution>
+				</executions>
+
 			</plugin>
 
 			<plugin>

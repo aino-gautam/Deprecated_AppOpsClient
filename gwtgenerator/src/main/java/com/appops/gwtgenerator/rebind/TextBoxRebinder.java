@@ -82,7 +82,7 @@ public class TextBoxRebinder extends Generator {
 	}
 	
 	private void generateCodeForSetTextMethod(SourceWriter sourceWriter) {
-	
+		
 		sourceWriter.println("@Override");
 		sourceWriter.println("public void setText(String text) {");
 		sourceWriter.println("super.setText(text);");
@@ -108,14 +108,13 @@ public class TextBoxRebinder extends Generator {
 	 *            Source writer to output source code
 	 */
 	private void generateMethodIM(SourceWriter sourceWriter) {
-		sourceWriter.println("public static native Object invokeMethod(AppOpsTextBox appopsTextBox, String obfuscatedMethodName, ArrayList parameters) /*-{");
+		sourceWriter.println("public static native Object invokeMethod(AppOpsTextBox appopsTextBox, String obfuscatedMethodName, String[] parameters) /*-{");
 		sourceWriter.indent();
 		sourceWriter.println("$wnd.alert(obfuscatedMethodName);");
 		sourceWriter.println("var theInstance = this;");
 		sourceWriter.println("var methodName = obfuscatedMethodName;");
-
-		sourceWriter.println("theInstance.methodName(\"this is set by me by performing magic!!\");");
-		sourceWriter.println("return null;");
+		sourceWriter.println("var returnval = $wnd.__appops_jsInvoke(theInstance,methodName,parameters);");
+		sourceWriter.println("return returnval;");
 		sourceWriter.outdent();
 		sourceWriter.println("}-*/;");
 	}
@@ -133,10 +132,7 @@ public class TextBoxRebinder extends Generator {
 		sourceWriter.indent();
 		//	sourceWriter.println("super();");
 		sourceWriter.println("try {");
-		sourceWriter.println("ArrayList<String> parameters = new ArrayList<String>();");
-		sourceWriter.println("parameters.add(\"I was invoked by calling the obfuscated version of the method setText\");");
-		//sourceWriter.println("this.setText(\"Initial set text\");");
-		
+		sourceWriter.println("String[] parameters = {\"I was invoked by calling the obfuscated version of the method setText\"};");
 		sourceWriter.println("Object myValue = invokeMethod(this,\"setText\", parameters);");
 		sourceWriter.println("GWT.log(\"Got value \" + myValue, null);");
 		sourceWriter.println("}");

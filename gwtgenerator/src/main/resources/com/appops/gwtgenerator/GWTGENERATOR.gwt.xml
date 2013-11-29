@@ -16,8 +16,6 @@
 
 	<!-- Other module inherits -->
 
-	<inherits name='org.timepedia.exporter.Exporter' />
-	 <set-property name="export" value="yes"/>
 
 	<!-- Specify the app entry point class. -->
 	<entry-point class='com.appops.gwtgenerator.client.GWTGENERATOR' />
@@ -25,9 +23,18 @@
 	<!-- <generate-with class="com.appops.gwtgenerator.client.rebind.PropertyMapGenerator"> 
 		<when-type-assignable class="com.appops.gwtgenerator.client.generator.PropertyMap" 
 		/> </generate-with> -->
-	<generate-with class="com.appops.gwtgenerator.rebind.TextBoxRebinder">
+	<generate-with class="com.appops.gwtgenerator.rebind.StubGenerator">
+		<when-type-is class="com.google.gwt.user.client.ui.RadioButton" />
+	</generate-with>
+	<generate-with class="com.appops.gwtgenerator.rebind.StubGenerator">
 		<when-type-is class="com.google.gwt.user.client.ui.TextBox" />
 	</generate-with>
+	<generate-with class="com.appops.gwtgenerator.rebind.StubGenerator">
+		<when-type-is class="com.google.gwt.user.client.ui.Label" />
+	</generate-with>
+	<replace-with class="com.appops.gwtgenerator.rebind.StubGenerator">
+		<when-type-is class="com.google.gwt.user.client.ui.CheckBox" />
+	</replace-with>
 
 	<!-- Specify the paths for translatable code -->
 	<source path='client' />
