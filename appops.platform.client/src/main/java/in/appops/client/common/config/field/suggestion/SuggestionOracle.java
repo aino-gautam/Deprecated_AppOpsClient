@@ -92,12 +92,12 @@ public class SuggestionOracle extends SuggestOracle {
 						for (String key : restrictionMap.keySet())
 							map.put(key, restrictionMap.get(key));
 					}
-					map.put("searchChar", search+"*");
+					map.put("searchChar", search.trim() +"*");
 				}else if(restrictionMap != null){
 					for (String key : restrictionMap.keySet())
 						map.put(key, restrictionMap.get(key));
 					
-					map.put("searchChar", "%" + search + "%");
+					map.put("searchChar", "%" + search.trim() + "%");
 				}else {
 					map.put("searchChar", "%" + search.trim() + "%");
 				}
@@ -136,9 +136,11 @@ public class SuggestionOracle extends SuggestOracle {
 							response.setSuggestions(store);
 						} else{
 							List<AppopsSuggestion> suggestionList = new LinkedList<AppopsSuggestion>();
-							for(AppopsSuggestion suggestion : store){
-								if(suggestion.getDisplayString().toLowerCase().startsWith(search.trim().toLowerCase())){
-									suggestionList.add(suggestion);
+							if(store != null && !store.isEmpty()) {
+								for(AppopsSuggestion suggestion : store){
+									if(suggestion.getDisplayString().toLowerCase().startsWith(search.trim().toLowerCase())){
+										suggestionList.add(suggestion);
+									}
 								}
 							}
 							response.setSuggestions(suggestionList);
