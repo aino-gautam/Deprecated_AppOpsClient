@@ -283,4 +283,30 @@ var snippetStore = {
 				"							</tr>\n" + 
 				"						</tbody>\n" + 
 				"					</table>",
+				
+				loginUserSnippet:
+					" 	<table>" + 
+					"   <span id=\"loginSnippet\" componentType=\"htmlSnippet\" type=\"loginSnippet\" data-config=loginSnippetConfig />"+
+					"	</table> ",
+				
+				loginSnippet:			
+				" 	<table>" + 
+				"   <span id=\"loginFormSnippet\" componentType=\"formSnippet\" type=\"loginFormSnippet\" data-config=loginFormSnippetConfig />"+
+				"	</table> ",
+				
+				loginFormSnippet : "<table>" + 
+				"        	<tr>" + 
+				"				<td><span id=\"emailLabel\" componentType=\"appopsField\" type= \"labelField\" data-config=\"emailLabelConfig\"></span></td>" + 
+				"				<td><span id=\"emailBox\" componentType=\"appopsField\" type=\"textField\" data-config=\"emailBoxConfig\"></span></td>" + 
+				"			</tr>" + 
+				"			<tr>" + 
+				"				<td><span id=\"pswLabel\" componentType=\"appopsField\" type=\"labelField\" data-config=\"pswLabelConfig\"> </span></td>" + 
+				"				<td><span id=\"pswLabelBox\" componentType=\"appopsField\" type=\"textField\" data-config=\"pswBoxConfig\"></td>" + 
+				"			</tr>" + 
+				"			<tr>" + 
+				"				<td><span id=\"loginFormButton\" componentType=\"appopsField\" type= \"buttonField\" data-config=\"loginFormButtonConfig\"></span></td>" + 
+				"				<td><span id=\"clearFormButton\" componentType=\"appopsField\" type= \"buttonField\" data-config=\"clearFormButtonConfig\"></span></td>" + 
+				"				<td><span id=\"resetFormButton\" componentType=\"appopsField\" type= \"buttonField\" data-config=\"resetFormButtonConfig\"></span></td>" + 
+				"			</tr>" + 
+				"		</table> ",
 };
