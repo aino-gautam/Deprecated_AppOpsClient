@@ -147,6 +147,9 @@ public class BaseField extends BaseComponent implements Field {
 
 		/** Value type associate with a field viz {@link StringValueType} {@link IntegerValueType} **/
 		public static final String BF_VALUETYPE = "valueType";
+		
+		/** Specifies whether field should be validated or not**/
+		public static final String BF_VALIDATEFIELD = "validateField";
 
 	}
 	
@@ -192,7 +195,10 @@ public class BaseField extends BaseComponent implements Field {
 	/**
 	 * clears the field .
 	 */
-	protected void clear() { }
+	@Override
+	public void clear() { 
+		super.clear();
+	}
 	
 	/**
 	 * Method removed registered handlers from field
@@ -459,7 +465,7 @@ public class BaseField extends BaseComponent implements Field {
 	}
 	
 	public boolean isValidateOnChange() {
-		boolean validateOnChng = true;
+		boolean validateOnChng = false;
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In isValidateOnChange  method ");
 			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_VALIDATEONCHANGE) != null) {
@@ -473,7 +479,7 @@ public class BaseField extends BaseComponent implements Field {
 	}
 	
 	public boolean isValidateOnBlur() {
-		boolean validateOnBlur = true;
+		boolean validateOnBlur = false;
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In isValidateOnBlur  method ");
 			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_VALIDATEONBLUR) != null) {
@@ -662,6 +668,23 @@ public class BaseField extends BaseComponent implements Field {
 		return valueType;
 	}
 	
+	
+	/**
+	 * Returns if field should be validated or not.
+	 * @return
+	 */
+	public Boolean isValidateField(){
+		Boolean validate = false;
+		try {
+			logger.log(Level.INFO, "[TextField] ::In isValidateField method ");
+			if (viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_VALIDATEFIELD) != null) {
+				validate = (Boolean) viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_VALIDATEFIELD);
+			}
+		} catch (Exception e) {
+		  logger.log(Level.SEVERE, "[TextField] ::Exception In isValidateField method "+e);
+		}
+		return validate;
+	}
 	
 	
 
@@ -913,7 +936,7 @@ public class BaseField extends BaseComponent implements Field {
 
 	@Override
 	public void reset() {
-		// TODO Auto-generated method stub
+		super.reset();
 	}
 	
 	@Override
