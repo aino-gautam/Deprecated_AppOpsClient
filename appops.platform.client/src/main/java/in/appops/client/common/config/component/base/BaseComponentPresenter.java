@@ -157,6 +157,11 @@ public abstract class BaseComponentPresenter implements SupportsEventActionRules
 	public void processSnippetControllerRule(SnippetControllerRule snippetControllerRule) {
 
 	}
+	
+	@Override
+	public void processFormEventRuleMap(String eventName, Object eventData) {
+		
+	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private HashMap<String, Property<? extends Serializable>> prepareConfigurationsToUpdate(HashMap<String, Property<? extends Serializable>> configToUpdateMap, Object eventData) {
