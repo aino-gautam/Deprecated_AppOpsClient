@@ -41,4 +41,6 @@ public interface DynamicMvpFactory {
 	BaseComponent requestView(String type);
 
 	BaseComponentPresenter requestComponent(String type, String instance);
+	
+	FormSnippetPresenter requestFormSnippet(String type, String instance);
 }
