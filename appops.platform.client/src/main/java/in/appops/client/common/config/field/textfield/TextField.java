@@ -3,6 +3,7 @@ package in.appops.client.common.config.field.textfield;
 import in.appops.client.common.config.dsnip.type.StringValueType;
 import in.appops.client.common.config.field.BaseField;
 import in.appops.client.common.config.field.NumericTextbox;
+import in.appops.client.common.config.model.PropertyModel;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 
@@ -112,9 +113,10 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			logger.log(Level.INFO, "[TextField] ::In configure method ");                                           
 			String fieldType = getTextFieldType();
 			
+			removeRegisteredHandlers();
+			
 			if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX)	|| fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX)) {
 				createTextBox();
-				
 			} else if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX)) {
 				createPasswordBox();
 
@@ -125,12 +127,16 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 				createNumericTextBox();
 				
 			}
-			
 			setSuggestion();
 			if(getValueType().getDefaultValue()!=null){
 				setValue(getValueType().getDefaultValue());
 				setOriginalValue(getValueType().getDefaultValue());
 				setFieldValue(getValueType().getDefaultValue().toString());
+			}else if(getBindProperty() != null && !getBindProperty().toString().equals("")){
+				Object value = ((PropertyModel)model).getPropertyValue(getBindProperty());
+				setValue(value);
+				setOriginalValue(value.toString());
+				setFieldValue(value.toString());
 			}
 			
 			
@@ -154,7 +160,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		logger.log(Level.INFO, "[TextField] ::In createTextBox method ");         
 		
 		try {
-			textBox = new TextBox();
+			if(textBox==null)
+				textBox = new TextBox();
 			textBox.setReadOnly(isReadOnly());
 			textBox.setEnabled(isEnabled());
 			
@@ -187,7 +194,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		
 		try {
 			logger.log(Level.INFO, "[TextField] ::In createTextArea method ");
-			textArea = new TextArea();
+			if(textArea==null)
+				textArea = new TextArea();
 			
 			Integer visibleLines = getNoOfVisibleLines();
 			textArea.setVisibleLines(visibleLines);
@@ -224,7 +232,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	private void createPasswordBox(){
 		try {
 			logger.log(Level.INFO, "[TextField] ::In createPasswordBox method ");
-			passwordTextBox = new PasswordTextBox();
+			if(passwordTextBox==null)
+				passwordTextBox = new PasswordTextBox();
 			passwordTextBox.setReadOnly(isReadOnly());
 			passwordTextBox.setEnabled(isEnabled());
 			if (getBaseFieldPrimCss() != null)
@@ -258,7 +267,8 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	private void createNumericTextBox(){
 		try {
 			logger.log(Level.INFO,	"[TextField] ::In createNumericTextBox method ");
-			numericTextbox = new NumericTextbox(this);
+			if(numericTextbox==null)
+				numericTextbox = new NumericTextbox(this);
 			numericTextbox.setConfiguration(viewConfiguration);
 			numericTextbox.setReadOnly(isReadOnly());
 			numericTextbox.setEnabled(isEnabled());
@@ -294,14 +304,20 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		try {
 			logger.log(Level.INFO, "[TextField] ::In reset method ");
 			String fieldType = getTextFieldType();
-			if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX) || fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX)  ) {
-				textBox.setText(getValue().toString());
-			}else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX))
-				passwordTextBox.setText(getValue().toString());
-			else if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC))
-				numericTextbox.setText(getValue().toString());
+			String valueToReset = "";
+			if(getOriginalValue()!=null){
+				valueToReset = getOriginalValue().toString();
+			}
+			
+			if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_TXTBOX)	|| fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX)) {
+				textBox.setText(getOriginalValue().toString());
+			} else if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_PSWBOX))
+				passwordTextBox.setText(getOriginalValue().toString());
+			else if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC))
+				numericTextbox.setText(getOriginalValue().toString());
 			else
-				textArea.setText(getValue().toString());
+				textArea.setText(getOriginalValue().toString());
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[TextField] ::Exception In reset method "+e);
 			
@@ -571,7 +587,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 				return getBlankFieldText();
 			}
 		} else {
-			if (value.toString().length() < ((StringValueType)getDefaultValue()).getMinLength())
+			if (value.toString().length() < ((StringValueType)getValueType()).getMinLength())
 				return getMinLengthErrorText();
 			
 		}
@@ -696,22 +712,6 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		return minLength;
 	}*/
 	
-	/**
-	 * Returns if field should be validated or not.
-	 * @return
-	 */
-	private Boolean isValidateField(){
-		Boolean validate = false;
-		try {
-			logger.log(Level.INFO, "[TextField] ::In isValidateField method ");
-			if (viewConfiguration.getConfigurationValue(TextFieldConstant.VALIDATEFIELD) != null) {
-				validate = (Boolean) viewConfiguration.getConfigurationValue(TextFieldConstant.VALIDATEFIELD);
-			}
-		} catch (Exception e) {
-		  logger.log(Level.SEVERE, "[TextField] ::Exception In isValidateField method "+e);
-		}
-		return validate;
-	}
 	
 	/**
 	 * Method read the charWidth set in the configuration and return . Default value is 255;
@@ -840,8 +840,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			if(keycode.equals(KeyCodes.KEY_BACKSPACE) || keycode.equals(KeyCodes.KEY_DELETE)){
 				if(isValidateField()){
 					if(isValidateOnChange()){
-						if(validate())
-							setValue(getValue());
+						validate();
 						setFocus();
 					}
 				}
@@ -905,8 +904,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 				public void execute() {
 					if (isValidateField()) {
 						if (isValidateOnChange()) {
-							if (validate())
-								setValue(getValue());
+							validate();
 							setFocus();
 						}
 					}
@@ -996,8 +994,6 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 		/** Specifies negative value error text to be shown **/
 		public static final String NEGATIVE_VALUE_TEXT = "negativevalTxt";
 		
-		/** Specifies whether field should be validated or not**/
-		public static final String VALIDATEFIELD = "validateField";
 		
 	}
 
