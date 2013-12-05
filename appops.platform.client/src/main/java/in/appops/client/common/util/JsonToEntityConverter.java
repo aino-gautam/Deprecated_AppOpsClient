@@ -9,6 +9,11 @@ import in.appops.client.common.config.dsnip.event.EventActionRuleMap;
 import in.appops.client.common.config.dsnip.event.EventActionRulesList;
 import in.appops.client.common.config.dsnip.event.SnippetControllerRule;
 import in.appops.client.common.config.dsnip.event.UpdateConfigurationRule;
+import in.appops.client.common.config.dsnip.event.form.FormEventRule;
+import in.appops.client.common.config.dsnip.event.form.FormEventRuleMap;
+import in.appops.client.common.config.dsnip.event.form.FormEventRulesList;
+import in.appops.client.common.config.dsnip.event.form.InvokeActionRule;
+import in.appops.client.common.config.dsnip.event.form.ValidationRule;
 import in.appops.client.common.config.dsnip.type.DecimalValueType;
 import in.appops.client.common.config.dsnip.type.IntegerValueType;
 import in.appops.client.common.config.dsnip.type.StringValueType;
@@ -87,11 +92,17 @@ public class JsonToEntityConverter {
 				entity = new ActionEvent();
 			} else if (mainType.contains("eventActionRuleMap")) {
 				entity = new EventActionRuleMap();
+			}else if (mainType.contains("formEventRuleMap")) {
+				entity = new FormEventRuleMap();
 			} else if (mainType.contains("snippetControllerRule")) {
 				entity = new SnippetControllerRule();
 			} else if (mainType.contains("updateConfigurationRule")) {
 				entity = new UpdateConfigurationRule();
-			} else if (mainType.contains("StringValueType")) {
+			} else if (mainType.contains("invokeActionRule")) {
+				entity = new InvokeActionRule();
+			}else if (mainType.contains("validationRule")) {
+				entity = new ValidationRule();
+			}else if (mainType.contains("StringValueType")) {
 				entity = new StringValueType();
 			} else if (mainType.contains("IntegerValueType")) {
 				entity = new IntegerValueType();
@@ -263,8 +274,12 @@ public class JsonToEntityConverter {
 					EventActionRulesList eventActionRulesList = new EventActionRulesList();
 					EventActionRulesList valueMap = decodeJsonArray(jsonArr,eventActionRulesList);
 					entity.setPropertyByName(propName, valueMap);
-				}
-				else{
+				} else if(primitiveTypeName.equals("formEventRuleList")){
+					JSONArray jsonArr = propValueJson.get(primitiveTypeName).isArray();
+					FormEventRulesList formEventRuleList = new FormEventRulesList();
+					FormEventRulesList valueMap = decodeJsonArray(jsonArr,formEventRuleList);
+					entity.setPropertyByName(propName, valueMap);
+				}else{
 					Entity childEntity = getConvertedEntity(propValueJson);
 					entity.setProperty(propName, childEntity);
 				}
@@ -364,7 +379,9 @@ public class JsonToEntityConverter {
 		Entity convertedEntity = null;
 		try {
 
+			System.out.println(jsonObjectStr);
 			JSONValue jsonVal = JSONParser.parseLenient(jsonObjectStr);
+			
 
 			JSONObject jsonObj = new JSONObject(jsonVal.isObject().getJavaScriptObject());
 
@@ -392,6 +409,24 @@ public class JsonToEntityConverter {
 			logger.log(Level.SEVERE, "[JsonToEntityConverter] :: [decodeJsonArray] :: Exception", e);
 		}
 		return eventActionRulesList;
+
+	}
+	
+	private FormEventRulesList decodeJsonArray(JSONArray jsonArray, FormEventRulesList formEventRulesList){
+		try{
+			for (int i = 0; i < jsonArray.size(); i++) {
+				JSONValue v = jsonArray.get(i);
+				if(v.isObject() != null){
+					FormEventRule rule =  (FormEventRule) getConvertedEntity(v.isObject());
+					formEventRulesList.add(rule);
+				}
+			}
+
+		}
+		catch (Exception e) {
+			logger.log(Level.SEVERE, "[JsonToEntityConverter] :: [decodeJsonArray] :: Exception", e);
+		}
+		return formEventRulesList;
 
 	}
 
