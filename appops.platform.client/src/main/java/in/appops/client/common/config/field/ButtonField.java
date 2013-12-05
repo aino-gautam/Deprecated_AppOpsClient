@@ -242,7 +242,7 @@ public class ButtonField extends BaseField implements ClickHandler, BlurHandler,
 			FieldEvent fieldEvent = new FieldEvent();
 			fieldEvent.setEventSource(this);
 			fieldEvent.setEventType(FieldEvent.CLICKED);
-			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+			fireLocalEvent(fieldEvent);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ButtonField]::Exception In onClick  method :"+e);
 		}
