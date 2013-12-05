@@ -43,9 +43,7 @@ public class DynamicMvpFactoryImpl implements DynamicMvpFactory {
 			HTMLSnippetPresenter snippetPresenter = null;
 			if(type.equalsIgnoreCase(PAGE)) {
 				snippetPresenter = new PageSnippetPresenter(type, instance);
-			}  else if(type.equalsIgnoreCase(FORMSNIPPET)) {
-				snippetPresenter = new FormSnippetPresenter(type, instance);
-			}  else {
+			}   else {
 				snippetPresenter = new HTMLSnippetPresenter(type, instance);
 			}
 			return snippetPresenter;
@@ -54,6 +52,12 @@ public class DynamicMvpFactoryImpl implements DynamicMvpFactory {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	@Override
+	public FormSnippetPresenter requestFormSnippet(String type, String instance) {
+		FormSnippetPresenter snippetPresenter = new FormSnippetPresenter(type, instance);
+		return snippetPresenter;
 	}
 
 	@Override
