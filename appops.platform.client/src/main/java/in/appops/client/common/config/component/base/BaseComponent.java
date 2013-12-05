@@ -48,6 +48,20 @@ public abstract class BaseComponent extends Composite implements HasClickHandler
 	}
 
 	public void create() {	}
+	
+	public void clear() {	}
+	
+	public void reset() {	}
+	
+	public Object getValue() {
+		return null;
+	}
+	
+	public void setValue() {	}
+	
+	public boolean validate() { 
+		return false;
+	}
 
 	/**
 	 * Returns the primary style to be applied to the component basepanel.
@@ -95,6 +109,30 @@ public abstract class BaseComponent extends Composite implements HasClickHandler
 		}
 		return visible;
 	}
+	
+	public boolean isFormAction() {
+		boolean isFormAction = true;
+		try {
+			if(viewConfiguration.getConfigurationValue(BaseComponentConstant.BC_ISFORMACTION) != null) {
+				isFormAction = (Boolean) viewConfiguration.getConfigurationValue(BaseComponentConstant.BC_ISFORMACTION);
+			}
+		} catch (Exception e) {
+
+		}
+		return isFormAction;
+	}
+	
+	public String getFormAction() {
+		String formAction = null;
+		try {
+			if(viewConfiguration.getConfigurationValue(BaseComponentConstant.BC_FORMACTION) != null) {
+				formAction = viewConfiguration.getConfigurationValue(BaseComponentConstant.BC_FORMACTION).toString();
+			}
+		} catch (Exception e) {
+
+		}
+		return formAction;
+	}
 
 	@Override
     public HandlerRegistration addClickHandler(ClickHandler handler) {
@@ -135,6 +173,15 @@ public abstract class BaseComponent extends Composite implements HasClickHandler
 
 		/** Specifies whether the component should be visible or not **/
 		public static final String BC_VISIBLE = "visible";
+		
+		/** Specifies whether to execute some form action or not **/
+		public static final String BC_ISFORMACTION= "isFormAction";
+		
+		/** Specifies form action **/
+		public static final String BC_FORMACTION= "formAction";
+		
+		/** Specifies whether field is inputField  **/
+		public static final String BC_ISINPUTFIELD= "isInputField";
 	}
 
 
