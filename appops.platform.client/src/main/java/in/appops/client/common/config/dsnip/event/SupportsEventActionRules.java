@@ -1,5 +1,6 @@
 package in.appops.client.common.config.dsnip.event;
 
+
 /**
  * Interface to be implemented by those classes that support processing of events rules
  * @author nairutee
@@ -14,5 +15,7 @@ public interface SupportsEventActionRules {
 	public void processUpdateConfigurationRule(UpdateConfigurationRule updateConfigurationRule, Object eventData);
 	
 	public void processSubEventRule(SubEventRule subEventRule);
+	
+	public void processFormEventRuleMap(String eventName, Object eventData);
 
 }
