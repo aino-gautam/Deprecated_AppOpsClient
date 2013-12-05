@@ -299,7 +299,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			configuration.setPropertyByName(TextFieldConstant.BF_VALIDATEONCHANGE, true);
 			configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
 		//	configuration.setPropertyByName(TextFieldConstant.TF_MAXLENGTH, 10);
-			configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, true);
+			configuration.setPropertyByName(TextFieldConstant.BF_VALIDATEFIELD, true);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[FieldsShowCase]::Exception In getTextFieldConfiguration  method :"+e);;
 		}
@@ -319,7 +319,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		//	configuration.setPropertyByName(TextFieldConstant.MINVALUE,0);
 			configuration.setPropertyByName(TextFieldConstant.ALLOWDEC,true);
 			configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
-			configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, true);
+			configuration.setPropertyByName(TextFieldConstant.BF_VALIDATEFIELD, true);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[FieldsShowCase]::Exception In getNumericFieldConfiguration  method :"+e);
 		}
@@ -442,7 +442,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
 			//configuration.setPropertyByName(TextFieldConstant.TF_MAXLENGTH, 10);
 			configuration.setPropertyByName(TextFieldConstant.TF_CHARWIDTH, 70);
-			configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, false);
+			configuration.setPropertyByName(TextFieldConstant.BF_VALIDATEFIELD, false);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[FieldsShowCase]::Exception In getTextAreaConfiguration  method :"+e);
 		}
@@ -464,7 +464,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			configuration.setPropertyByName(TextFieldConstant.BF_SHOW_VALID_FIELD,true);
 			configuration.setPropertyByName(TextFieldConstant.BF_VALIDATEONCHANGE, true);
 			configuration.setPropertyByName(TextFieldConstant.BF_ERRPOS, TextFieldConstant.BF_SIDE);
-			configuration.setPropertyByName(TextFieldConstant.VALIDATEFIELD, true);
+			configuration.setPropertyByName(TextFieldConstant.BF_VALIDATEFIELD, true);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[FieldsShowCase]::Exception In getEmailFieldConfiguration  method :"+e);
 		}
