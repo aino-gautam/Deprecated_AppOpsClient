@@ -26,8 +26,9 @@ public class HTMLSnippetView extends BaseComponent implements EntityReceiver {
 
 	private String snippetType;
 	private final String SPAN = "span";
-	private final String APPOPS_FIELD = "appopsField";
-	private final String APPOPS_COMPONENT = "appopsComponent";
+	protected final String APPOPS_FIELD = "appopsField";
+	protected final String APPOPS_COMPONENT = "appopsComponent";
+	protected final String FORMSNIPPET = "formSnippet";
 	protected final String HTMLSNIPPET = "htmlSnippet";
 	protected final String COMPONENT_TYPE = "componentType";
 	protected final String TYPE = "type";
@@ -97,6 +98,8 @@ public class HTMLSnippetView extends BaseComponent implements EntityReceiver {
 								componentPresenter = mvpFactory.requestComponent(spanElement.getAttribute(TYPE), dataConfig);
 							} else if(spanElement.getAttribute(COMPONENT_TYPE).equalsIgnoreCase(HTMLSNIPPET)) {
 								componentPresenter = mvpFactory.requestHTMLSnippet(spanElement.getAttribute(TYPE), dataConfig);
+							}else if(spanElement.getAttribute(COMPONENT_TYPE).equalsIgnoreCase(FORMSNIPPET)) {
+								componentPresenter = mvpFactory.requestFormSnippet(spanElement.getAttribute(TYPE), dataConfig);
 							}
 							if(componentPresenter != null) {
 								componentPresenter.getView().setLocalEventBus(localEventBus);
