@@ -16,6 +16,13 @@ public class ValidationRule extends Configuration implements Rule  {
 	public static final String INLINEVALIDATION = "inlineValidation";
 	public static final String FIELDFOCUSVALIDATION = "fieldFocusValidation";
 	
+	public static final String ERRPOS = "errorPosition";
+	public static final String TOP = "top";
+	public static final String SIDE = "side";
+	public static final String BOTTOM = "bottom";
+	public static final String ERRINLINE = "errorInline";
+	public static final String ERRMSGCLS = "errorMsgCls";
+	public static final String ERRICON_BLOB = "errorIcon";
 	
 	public Boolean isValidate() {
 		if(getPropertyByName(ISVALIDATE)!=null){
@@ -37,5 +44,31 @@ public class ValidationRule extends Configuration implements Rule  {
 			return getPropertyByName(VALIDATION_MODE);
 		}
 		return INLINEVALIDATION;
+	}
+	
+	public String getErrorPosition() {
+		String errPos = ERRINLINE;
+		try {
+			if(getPropertyByName(ERRPOS) != null) {
+				errPos = getPropertyByName(ERRPOS);
+			}
+		} catch (Exception e) {
+
+		}
+		return errPos;
+	}
+	
+	public String getErrorMessageCss() {
+		if(getPropertyByName(ERRMSGCLS)!=null){
+			return getPropertyByName(ERRMSGCLS);
+		}
+		return null;
+	}
+	
+	public String getErrorIconBlobId() {
+		if(getPropertyByName(ERRICON_BLOB)!=null){
+			return getPropertyByName(ERRICON_BLOB);
+		}
+		return null;
 	}
 }
