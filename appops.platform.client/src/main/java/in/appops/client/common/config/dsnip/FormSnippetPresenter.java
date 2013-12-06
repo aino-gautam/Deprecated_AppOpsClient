@@ -24,17 +24,19 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.event.shared.SimpleEventBus;
 
 /**
- * 
  * @author nairutee
- *
  */
+
 public class FormSnippetPresenter extends HTMLSnippetPresenter {
 
 	protected SimpleEventBus localEventBus;
+	private Logger logger = Logger.getLogger("FormSnippetPresenter");
 		
 	public interface FormSnippetConstant extends BaseComponentConstant {
 		String HAS_INLINE_EDITING = "hasInlineEditing";
@@ -49,23 +51,56 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 
 	@Override
 	protected void initialize() {
-		localEventBus = injector.getLocalEventBus();
-		model = dynamicFactory.requestModel(DynamicMvpFactory.FORMSNIPPET);
-		view = dynamicFactory.requestView(DynamicMvpFactory.FORMSNIPPET);
-		view.setLocalEventBus(localEventBus);
-		view.setModel(model);
-		((FormSnippetView) view).setSnippetType(type);
-		view.initialize();
+		try {
+			localEventBus = injector.getLocalEventBus();
+			model = dynamicFactory.requestModel(DynamicMvpFactory.FORMSNIPPET);
+			view = dynamicFactory.requestView(DynamicMvpFactory.FORMSNIPPET);
+			view.setLocalEventBus(localEventBus);
+			view.setModel(model);
+			((FormSnippetView) view).setSnippetType(type);
+			view.initialize();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetPresenter]::Exception In initialize  method :"+e);
+		}
 		
 	}
 	
 	@Override
 	public void configure() {
-		super.configure();
+		try {
+			super.configure();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetPresenter]::Exception In configure  method :"+e);
+		}
 		
 	}
 	
-	private Boolean doPostValidation(ValidationRule validationRule){
+	@Override
+	public void create() {
+		try {
+			super.create();
+			ValidationRule validationRule = ((FormSnippetView) view).getValidationRule();
+			if(validationRule.isValidate()){
+				String validationMode= validationRule.getValidationMode();
+				if(validationMode.equals(ValidationRule.PREVALIDATION) && ((FormSnippetModel)model).getModelConfiguration()!=null){
+					validateForm();
+				}
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetPresenter]::Exception In create  method :"+e);
+		}
+	}
+	
+	/**
+	 * Method validates all the form fields one by one.
+	 * @param validationRule
+	 * @return whether field is valid or not. 
+	 */
+	private Boolean validateAllFormFields(ValidationRule validationRule){
 		Boolean isValid = false;
 		try {
 			Map<String, BaseComponentPresenter> fieldMap= ((FormSnippetView) view).getElementMap();
@@ -80,13 +115,10 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 				    		if(model.getViewConfiguration().hasConfiguration(BaseComponentConstant.BC_ISINPUTFIELD)){
 					    		Boolean isInputField = (Boolean)model.getViewConfiguration().getPropertyByName(BaseComponentConstant.BC_ISINPUTFIELD);
 					    		if(isInputField){
-					    			String validationMode = validationRule.getValidationMode();
 					    			model.getViewConfiguration().setPropertyByName(BaseFieldConstant.BF_VALIDATEFIELD, true);
-					    			if(validationMode.equals(ValidationRule.POSTVALIDATION)){
-					    				isValid = fieldPresenter.getView().validate();
-					    				if(!isValid){
-					    					return isValid;
-					    				}
+					    			isValid = fieldPresenter.getView().validate();
+					    			if(!isValid){
+					    				return isValid;
 					    			}
 					    		}
 					    	}
@@ -96,55 +128,70 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetPresenter]::Exception In doPostValidation  method :"+e);
 		}
-		
 		return isValid;
 	}
 	
-	@Override
-	public void create() {
-		super.create();
-	}
-
+	/**
+	 * Method register handlers.
+	 */
 	@Override
 	protected void registerHandlers() {
-		super.registerHandlers();
-		
-		FormEventRuleMap formEventRuleMap = ((FormSnippetModel)model).getFormEventRuleMap();
-		if(formEventRuleMap != null) {
-			Set<String> events = formEventRuleMap.getFormEventNames();
-			if(!events.isEmpty()) {
-				for(String event : events) {
-					AppUtils.ACTIONEVENT_BUS.registerHandler(event, this);
+		try {
+			super.registerHandlers();
+			
+			FormEventRuleMap formEventRuleMap = ((FormSnippetModel)model).getFormEventRuleMap();
+			if(formEventRuleMap != null) {
+				Set<String> events = formEventRuleMap.getFormEventNames();
+				if(!events.isEmpty()) {
+					for(String event : events) {
+						AppUtils.ACTIONEVENT_BUS.registerHandler(event, this);
+					}
 				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetPresenter]::Exception In registerHandlers  method :"+e);
 		}
 	}
 	
+	/**
+	 * Method processes form event rule map.
+	 */
 	@Override
 	public void processFormEventRuleMap(String eventName, Object eventData) {
 
-		FormEventRuleMap formEventRuleMap = ((FormSnippetModel) model).getFormEventRuleMap();
-			if (formEventRuleMap.hasConfiguration(eventName)) {
-				FormEventRulesList formEventRulesList = formEventRuleMap.getFormEventRules(eventName);
-				if (formEventRulesList != null && !formEventRulesList.isEmpty()) {
-					for (FormEventRule formEventRule : formEventRulesList) {
-						if (formEventRule instanceof InvokeActionRule) {
-							InvokeActionRule invokeActionRule = ((InvokeActionRule) formEventRule);
-							boolean hasOperation = invokeActionRule.hasOperation();
-							if (hasOperation) {
-								executeOperation(invokeActionRule);
+		try {
+			FormEventRuleMap formEventRuleMap = ((FormSnippetModel) model).getFormEventRuleMap();
+				if (formEventRuleMap.hasConfiguration(eventName)) {
+					FormEventRulesList formEventRulesList = formEventRuleMap.getFormEventRules(eventName);
+					if (formEventRulesList != null && !formEventRulesList.isEmpty()) {
+						for (FormEventRule formEventRule : formEventRulesList) {
+							if (formEventRule instanceof InvokeActionRule) {
+								InvokeActionRule invokeActionRule = ((InvokeActionRule) formEventRule);
+								boolean hasOperation = invokeActionRule.hasOperation();
+								if (hasOperation) {
+									executeOperation(invokeActionRule);
+								}
 							}
 						}
+					} else if (eventName.equals(FormConstant.CLEAR)) {
+						clear();
+					} else if (eventName.equals(FormConstant.RESET)) {
+						reset();
 					}
-				} else if (eventName.equals(FormConstant.CLEAR)) {
-					clear();
-				} else if (eventName.equals(FormConstant.RESET)) {
-					reset();
 				}
-			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetPresenter]::Exception In processFormEventRuleMap  method :"+e);
+		}
 	}
 	
+	/**
+	 * Method get the processed parameter map and set it to invoke action rule. and then call invoke action of model.
+	 * @param invokeActionRule
+	 */
 	private void executeOperation(InvokeActionRule invokeActionRule){
 		try {
 			HashMap paramMap = null;
@@ -159,9 +206,15 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 			((FormSnippetModel) model).invokeAction(invokeActionRule);
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetPresenter]::Exception In executeOperation  method :"+e);
 		}
 	}
 	
+	/**
+	 * Method fetch the parameter value from the field using instance .
+	 * @param param
+	 * @return parameter map.
+	 */
 	private HashMap<String, Object> getParameterValueMap(Configuration param) {
 
 		HashMap<String, Object> queryParamMap = null;
@@ -188,45 +241,60 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetPresenter]::Exception In getParameterValueMap  method :"+e);
 		}
 		return queryParamMap;
 	}
 	
+	/**
+	 * Method creates the entity using form values and return. If initially form is not populated using entity then new entity is created and entity type
+	 * is set which is provided from FORM configuration.  
+	 * @return populated entity.
+	 */
 	private Entity getPopulatedEntity() {
 		Entity entity = null;
-		if(model!=null){
-			entity  = ((FormSnippetModel)model).getEntity();
-		}
-		
-		if(entity == null){
-			entity = new Entity();
-			entity.setType(new MetaType(((FormSnippetView) view).getEntityType()));
-		}
-		
-		Map<String, BaseComponentPresenter> fieldMap= ((FormSnippetView) view).getElementMap();
-		Iterator it = fieldMap.entrySet().iterator();
-		while (it.hasNext()) {
-		    Map.Entry entry = (Map.Entry)it.next();
-		    if(entry.getValue() instanceof FieldPresenter){
-		    	FieldPresenter fieldPresenter = (FieldPresenter) entry.getValue();
-		    	IsConfigurationModel model = fieldPresenter.getModel();
-		    	if(model!=null){
-		    		if(model.getViewConfiguration()!=null){
-			    		if(model.getViewConfiguration().hasConfiguration(BaseComponentConstant.BC_ISINPUTFIELD)){
-				    		Boolean isInputField = (Boolean)model.getViewConfiguration().getPropertyByName(BaseComponentConstant.BC_ISINPUTFIELD);
-				    		if(isInputField){
-				    			String bindProperty = model.getViewConfiguration().getPropertyByName(BaseFieldConstant.BF_BINDPROP);
-				    			entity.setPropertyByName(bindProperty, fieldPresenter.getView().getValue().toString());
-				    		}
-				    			
+		try {
+			if(model!=null){
+				entity  = ((FormSnippetModel)model).getEntity();
+			}
+			
+			if(entity == null){
+				entity = new Entity();
+				entity.setType(new MetaType(((FormSnippetView) view).getEntityType()));
+			}
+			
+			Map<String, BaseComponentPresenter> fieldMap= ((FormSnippetView) view).getElementMap();
+			Iterator it = fieldMap.entrySet().iterator();
+			while (it.hasNext()) {
+			    Map.Entry entry = (Map.Entry)it.next();
+			    if(entry.getValue() instanceof FieldPresenter){
+			    	FieldPresenter fieldPresenter = (FieldPresenter) entry.getValue();
+			    	IsConfigurationModel model = fieldPresenter.getModel();
+			    	if(model!=null){
+			    		if(model.getViewConfiguration()!=null){
+				    		if(model.getViewConfiguration().hasConfiguration(BaseComponentConstant.BC_ISINPUTFIELD)){
+					    		Boolean isInputField = (Boolean)model.getViewConfiguration().getPropertyByName(BaseComponentConstant.BC_ISINPUTFIELD);
+					    		if(isInputField){
+					    			String bindProperty = model.getViewConfiguration().getPropertyByName(BaseFieldConstant.BF_BINDPROP);
+					    			entity.setPropertyByName(bindProperty, fieldPresenter.getView().getValue().toString());
+					    		}
+					    	}
 				    	}
 			    	}
-		    	}
-		    }
+			    }
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetPresenter]::Exception In getPopulatedEntity  method :"+e);
 		}
 		return entity;
 	}
 
+	/**
+	 * Method returns value of the specific field using instance.
+	 * @param instanceName
+	 * @return instance value.
+	 */
 	private Object getInstanceValue(String instanceName){
 		
 		try {
@@ -236,12 +304,13 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetPresenter]::Exception In getInstanceValue  method :"+e);
 		}
 		return null;
 	}
 	
 	/**
-	 * Iterates the element map and clears all the fields
+	 * Iterates the element map and clears all the fields.
 	 */
 	public void clear(){
 		try {
@@ -265,6 +334,7 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetPresenter]::Exception In clear  method :"+e);
 		}
 	}
 	
@@ -293,24 +363,21 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetPresenter]::Exception In reset  method :"+e);
 		}
 	}
 	
 	@Override
 	public void onFieldEvent(FieldEvent event) {
 		try {
-			final String SEPARATOR = "##";
-			String eventType = Integer.toString(event.getEventType());
 			BaseComponent eventSource = (BaseComponent) event.getEventSource();
 			String formAction = eventSource.getFormAction();
-			String eventName = eventType + SEPARATOR + formAction;
 			
-			
-			
-			if(((FormSnippetView)view).getValidationRule()!=null){
-				String validationOnInstance = ((FormSnippetView)view).getValidationRule().getValidateOn();
-				if(eventSource.getModel().getInstance().equals(validationOnInstance)){
-					if(validateField()){
+			ValidationRule validationRule = ((FormSnippetView)view).getValidationRule();
+			if(validationRule!=null && validationRule.isValidate()){
+				String validationOnInstance = validationRule.getValidateOn();
+				if(validationOnInstance !=null && eventSource.getModel().getInstance().equals(validationOnInstance)){
+					if(validateForm()){
 						if (eventSource.isFormAction()) {
 							if(((FormSnippetModel)model).getFormEventRuleMap() != null && ((FormSnippetModel)model).getFormEventRuleMap().getFormEventRules(formAction) != null ) {
 								Object eventData = event.getEventData();
@@ -329,19 +396,22 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetPresenter]::Exception In onFieldEvent  method :"+e);
 		}
 	}
 	
-	
-	private Boolean validateField(){
+	/**
+	 * Method validates the form fields.
+	 * @return
+	 */
+	private Boolean validateForm(){
 		Boolean isValid = false;
 		try {
 			ValidationRule validationRule = ((FormSnippetView) view).getValidationRule();
-			if(validationRule!=null && validationRule.isValidate()){
-				isValid = doPostValidation(validationRule);
-			}
+			isValid = validateAllFormFields(validationRule);
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetPresenter]::Exception In validateField  method :"+e);
 		}
 		return isValid;
 	}
@@ -351,10 +421,10 @@ public class FormSnippetPresenter extends HTMLSnippetPresenter {
 		try {
 			String eventName = event.getEventName();
 			Object eventData = event.getEventData();
-
 			processFormEventRuleMap(eventName, eventData);
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetPresenter]::Exception In onActionEvent  method :"+e);
 		}
 	}
 

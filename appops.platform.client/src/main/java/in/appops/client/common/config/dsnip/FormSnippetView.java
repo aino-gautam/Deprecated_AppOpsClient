@@ -1,19 +1,19 @@
 package in.appops.client.common.config.dsnip;
 
 import in.appops.client.common.config.component.base.BaseComponentPresenter;
-import in.appops.client.common.config.component.base.BaseComponent.BaseComponentConstant;
 import in.appops.client.common.config.dsnip.FormSnippetPresenter.FormSnippetConstant;
 import in.appops.client.common.config.dsnip.HTMLSnippetPresenter.HTMLSnippetConstant;
 import in.appops.client.common.config.dsnip.event.form.ValidationRule;
-import in.appops.client.common.config.field.FieldPresenter;
 import in.appops.client.common.config.field.BaseField.BaseFieldConstant;
+import in.appops.client.common.config.field.FieldPresenter;
 import in.appops.client.common.config.model.ConfigurationModel;
 import in.appops.client.common.config.model.IsConfigurationModel;
 import in.appops.client.common.config.model.PropertyModel;
 import in.appops.platform.core.entity.Entity;
 
-import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
@@ -23,25 +23,35 @@ public class FormSnippetView extends HTMLSnippetView{
 	
 	private boolean hasInlineEditing;
 	
+	private Logger logger = Logger.getLogger("FormSnippetView");
+	
 	/**
-	 * Method configures the html snippet.
+	 * Method configures the form snippet.
 	 */
 	@Override
 	public void configure() {
-		super.configure();
-		
-		if(getFormPrimCss() != null) {
-			snippetPanel.setStylePrimaryName(getFormPrimCss());
+		try {
+			super.configure();
+			
+			if(getFormPrimCss() != null) {
+				snippetPanel.setStylePrimaryName(getFormPrimCss());
+			}
+
+			if(getFormDependentCss() != null) {
+				snippetPanel.addStyleName(getFormDependentCss());
+			}
+			
+			if(hasInlineEditing() != null)
+				hasInlineEditing = hasInlineEditing();
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetView]::Exception In configure  method :"+e);
 		}
-	
-		if(getFormDependentCss() != null) {
-			snippetPanel.addStyleName(getFormDependentCss());
-		}
-		
-		if(hasInlineEditing() != null)
-			hasInlineEditing = hasInlineEditing();
 	}
 	
+	/**
+	 * MEthod creates form snippet also configure form fields according to validation rule.
+	 */
 	@Override
 	public void create() {
 		try {
@@ -83,7 +93,7 @@ public class FormSnippetView extends HTMLSnippetView{
 								ValidationRule validationRule = getValidationRule();
 								//Just for inline and onfocus validation.
 								if(getValidationRule()!=null && getValidationRule().isValidate()){
-									configureFormField(componentPresenter);
+									configureFormFieldToValidate(componentPresenter);
 								}
 								componentPresenter.create();
 								elementMap.put(dataConfig, componentPresenter);
@@ -96,10 +106,15 @@ public class FormSnippetView extends HTMLSnippetView{
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetView]::Exception In create  method :"+e);
 		}
 	}
 	
-	private void configureFormField(BaseComponentPresenter fieldPresenter) {
+	/**
+	 * Method configures form field to validate.
+	 * @param fieldPresenter
+	 */
+	private void configureFormFieldToValidate(BaseComponentPresenter fieldPresenter) {
 		try {
 			if (fieldPresenter instanceof FieldPresenter) {
 				IsConfigurationModel model = fieldPresenter.getModel();
@@ -116,6 +131,15 @@ public class FormSnippetView extends HTMLSnippetView{
 								} else if (validationMode.equals(ValidationRule.FIELDFOCUSVALIDATION)) {
 									model.getViewConfiguration().setPropertyByName(BaseFieldConstant.BF_VALIDATEONBLUR,	true);
 								}
+								if(getValidationRule().getErrorPosition()!=null){
+									model.getViewConfiguration().setPropertyByName(ValidationRule.ERRPOS,getValidationRule().getErrorPosition());
+								}
+								if(getValidationRule().getErrorMessageCss()!=null){
+									model.getViewConfiguration().setPropertyByName(ValidationRule.ERRMSGCLS,getValidationRule().getErrorPosition());
+								}
+								if(getValidationRule().getErrorIconBlobId()!=null){
+									model.getViewConfiguration().setPropertyByName(ValidationRule.ERRICON_BLOB,getValidationRule().getErrorIconBlobId());
+								}
 							}
 						}
 					}
@@ -123,8 +147,10 @@ public class FormSnippetView extends HTMLSnippetView{
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetView]::Exception In configureFormFieldToValidate method :"+e);
 		}
 	}
+
 
 	/**
 	 * Returns the primary style to be applied to the component basepanel.
@@ -138,7 +164,8 @@ public class FormSnippetView extends HTMLSnippetView{
 				primaryCss = viewConfiguration.getConfigurationValue(HTMLSnippetConstant.HS_PCLS).toString();
 			}
 		} catch (Exception e) {
-			
+			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetView]::Exception In getFormPrimCss method :"+e);
 		}
 		return primaryCss;
 	}
@@ -156,7 +183,8 @@ public class FormSnippetView extends HTMLSnippetView{
 				depCss = viewConfiguration.getConfigurationValue(HTMLSnippetConstant.HS_DCLS).toString();
 			}
 		} catch (Exception e) {
-
+			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetView]::Exception In getFormDependentCss method :"+e);
 		}
 		return depCss;
 	}
@@ -167,7 +195,8 @@ public class FormSnippetView extends HTMLSnippetView{
 			if(viewConfiguration.getConfigurationValue(FormSnippetConstant.HAS_INLINE_EDITING) != null)
 				inlineEditing = (Boolean) viewConfiguration.getConfigurationValue(FormSnippetConstant.HAS_INLINE_EDITING);
 		}catch (Exception e) {
-
+			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetView]::Exception In hasInlineEditing method :"+e);
 		}
 		return inlineEditing;
 	}
@@ -178,12 +207,15 @@ public class FormSnippetView extends HTMLSnippetView{
 				return  (ValidationRule) viewConfiguration.getConfigurationValue("validationRule");
 		}catch (Exception e) {
 			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetView]::Exception In getValidationRule method :"+e);
 		}
 		return null;
 	}
 	
-
-	
+	/**
+	 * MEthod returns associated entity type of the form.
+	 * @return
+	 */
 	protected String getEntityType(){
 		String type = null;
 		try{
@@ -191,26 +223,32 @@ public class FormSnippetView extends HTMLSnippetView{
 				type =  viewConfiguration.getConfigurationValue(FormSnippetConstant.ENTITYTYPE).toString();
 		}catch (Exception e) {
 			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetView]::Exception In getEntityType method :"+e);
 		}
 		return type;
 	}
 	
 	@Override
 	public void onEntityReceived(Entity entity) {
-		for(Map.Entry<String, BaseComponentPresenter> componentEntry :  elementMap.entrySet()) {
-			if(componentEntry.getValue() instanceof FieldPresenter){
-				FieldPresenter fieldPresenter = (FieldPresenter) componentEntry.getValue();
-				IsConfigurationModel model = fieldPresenter.getModel();
-		    	if(model!=null){
-		    		if(model.getViewConfiguration()!=null){
-			    		if(model.getViewConfiguration().hasConfiguration(BaseComponentConstant.BC_ISINPUTFIELD)){
-				    		Boolean isInputField = (Boolean)model.getViewConfiguration().getPropertyByName(BaseComponentConstant.BC_ISINPUTFIELD);
-				    		if(isInputField)
-				    			fieldPresenter.configure();
+		try {
+			for(Map.Entry<String, BaseComponentPresenter> componentEntry :  elementMap.entrySet()) {
+				if(componentEntry.getValue() instanceof FieldPresenter){
+					FieldPresenter fieldPresenter = (FieldPresenter) componentEntry.getValue();
+					IsConfigurationModel model = fieldPresenter.getModel();
+			    	if(model!=null){
+			    		if(model.getViewConfiguration()!=null){
+				    		if(model.getViewConfiguration().hasConfiguration(BaseComponentConstant.BC_ISINPUTFIELD)){
+					    		Boolean isInputField = (Boolean)model.getViewConfiguration().getPropertyByName(BaseComponentConstant.BC_ISINPUTFIELD);
+					    		if(isInputField)
+					    			fieldPresenter.configure();
+					    	}
 				    	}
 			    	}
-		    	}
+				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.log(Level.SEVERE,"[FormSnippetView]::Exception In onEntityReceived method :"+e);
 		}
 	}
 
