@@ -24,8 +24,9 @@ public class LibraryTagProviderGenerator extends Generator {
 	private String			typeName	= null;
 	/** Package name of class to be generated */
 	private String			packageName	= "com.appops.gwtgenerator.client.components.generated";
-	//private JClassType		classType;
-	// need to find a way to pass it dynamically or it should be figured dynamically
+	private JClassType		classType;
+	// need to find a way to pass it dynamically or it should be figured
+	// dynamically
 	private String			generatedClassName;
 	private TypeOracle		typeOracle;
 	
@@ -35,8 +36,8 @@ public class LibraryTagProviderGenerator extends Generator {
 		typeOracle = context.getTypeOracle();
 		try {
 			// get classType and save instance variables
-			//classType = typeOracle.getType(typeName);
-			className = APPOPS +"LibraryTagProvider"; //classType.getSimpleSourceName();
+			classType = typeOracle.getType(typeName);
+			className = APPOPS + classType.getSimpleSourceName();
 			generatedClassName = packageName + "." + className;
 			generateStubClass(logger, context);
 			
