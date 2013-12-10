@@ -32,7 +32,6 @@ public class AnnotationScanner {
 					if (type.getAnnotation(c) != null) {
 						annotationMap.get(c).add(type);
 					}
-					
 				}
 			}
 			

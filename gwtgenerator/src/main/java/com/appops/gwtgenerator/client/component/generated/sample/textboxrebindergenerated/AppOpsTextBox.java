@@ -1,8 +1,8 @@
-package com.appops.gwtgenerator.client.components.generated.sample.textboxrebindergenerated;
+package com.appops.gwtgenerator.client.component.generated.sample.textboxrebindergenerated;
 
+import com.appops.gwtgenerator.client.config.annotation.Tag;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.TextBox;
-
 //sample used for reference.. in the TextBoxRebinder.
 public class AppOpsTextBox extends TextBox {
 	public AppOpsTextBox() {

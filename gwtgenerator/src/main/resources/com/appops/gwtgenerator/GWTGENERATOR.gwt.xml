@@ -20,9 +20,9 @@
 	<!-- Specify the app entry point class. -->
 	<entry-point class='com.appops.gwtgenerator.client.GWTGENERATOR' />
 
-	<!-- <generate-with class="com.appops.gwtgenerator.client.rebind.PropertyMapGenerator"> 
-		<when-type-assignable class="com.appops.gwtgenerator.client.generator.PropertyMap" 
-		/> </generate-with> -->
+	<generate-with class="com.appops.gwtgenerator.rebind.LibraryTagProviderGenerator">
+		<when-type-is class="com.appops.gwtgenerator.client.config.LibraryTagProvider" />
+	</generate-with>
 	<generate-with class="com.appops.gwtgenerator.rebind.StubGenerator">
 		<when-type-is class="com.google.gwt.user.client.ui.RadioButton" />
 	</generate-with>
@@ -38,5 +38,6 @@
 
 	<!-- Specify the paths for translatable code -->
 	<source path='client' />
+	<source path='rebind' />
 
 </module>

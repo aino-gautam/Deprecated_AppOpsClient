@@ -32,46 +32,48 @@ public class EventConfigurationHelper {
 			JMethod jMethod = jMethods[j];
 			String methodName = jMethod.getName();
 			try {
-				if (jMethod.isPublic() && (methodName.startsWith("get")) || methodName.startsWith("set") || methodName.startsWith("is")) {
-					JParameter[] methodParameters = jMethod.getParameters();
-					sourceWriter.println("if(methodName.equalsIgnoreCase(\"" + methodName + "\")){");
-					sourceWriter.indent();
-					if (!jMethod.getReturnType().getSimpleSourceName().equalsIgnoreCase(Void.TYPE.toString()))
-						sourceWriter.println("return ");
-					sourceWriter.print(methodName + "(");
-					if (methodParameters.length > 0) {
-						for (int i = 0; i < methodParameters.length; i++) {
-							JType parameterType = methodParameters[i].getType();
-							String sourceStr = "";
-							if (parameterType.isPrimitive() != null) {
-								JPrimitiveType jPrimitiveType = parameterType.isPrimitive();
-								if (jPrimitiveType.equals(JPrimitiveType.INT)) {
-									sourceStr = "Integer.parseInt(parameters[" + i + "].toString())";
+				if (jMethod.isPublic()) {
+					if ((methodName.startsWith("get")) || methodName.startsWith("set") || methodName.startsWith("is")) {
+						JParameter[] methodParameters = jMethod.getParameters();
+						sourceWriter.println("if(methodName.equalsIgnoreCase(\"" + methodName + "\")){");
+						sourceWriter.indent();
+						if (!jMethod.getReturnType().getSimpleSourceName().equalsIgnoreCase(Void.TYPE.toString()))
+							sourceWriter.println("return ");
+						sourceWriter.print(methodName + "(");
+						if (methodParameters.length > 0) {
+							for (int i = 0; i < methodParameters.length; i++) {
+								JType parameterType = methodParameters[i].getType();
+								String sourceStr = "";
+								if (parameterType.isPrimitive() != null) {
+									JPrimitiveType jPrimitiveType = parameterType.isPrimitive();
+									if (jPrimitiveType.equals(JPrimitiveType.INT)) {
+										sourceStr = "Integer.parseInt(parameters[" + i + "].toString())";
+									}
+									if (jPrimitiveType.equals(JPrimitiveType.BOOLEAN)) {
+										sourceStr = "Boolean.parseBoolean(parameters[" + i + "].toString())";
+									}
+									if (jPrimitiveType.equals(JPrimitiveType.CHAR)) {
+										sourceStr = "(parameters[" + i + "].toString()).charAt(0)";
+									}
 								}
-								if (jPrimitiveType.equals(JPrimitiveType.BOOLEAN)) {
-									sourceStr = "Boolean.parseBoolean(parameters[" + i + "].toString())";
+								else {
+									sourceStr = "(" + parameterType.getQualifiedSourceName() + ")parameters[" + i + "]";
+									composer.addImport(parameterType.getQualifiedSourceName());
 								}
-								if (jPrimitiveType.equals(JPrimitiveType.CHAR)) {
-									sourceStr = "(parameters[" + i + "].toString()).charAt(0)";
-								}
+								int val = methodParameters.length - 1;
+								if (i == val)
+									sourceStr = sourceStr + ");";
+								else
+									sourceStr = sourceStr + ",";
+								sourceWriter.print(sourceStr);
 							}
-							else {
-								sourceStr = "(" + parameterType.getQualifiedSourceName() + ")parameters[" + i + "]";
-								composer.addImport(parameterType.getQualifiedSourceName());
-							}
-							int val = methodParameters.length - 1;
-							if (i == val)
-								sourceStr = sourceStr + ");";
-							else
-								sourceStr = sourceStr + ",";
-							sourceWriter.print(sourceStr);
+							
 						}
-						
+						else
+							sourceWriter.print(");");
+						sourceWriter.outdent();
+						sourceWriter.println("}");
 					}
-					else
-						sourceWriter.print(");");
-					sourceWriter.outdent();
-					sourceWriter.println("}");
 				}
 			}
 			catch (Exception e) {
@@ -127,13 +129,13 @@ public class EventConfigurationHelper {
 							sourceWriter.print(finalStr);
 						}
 					}
+					else
+						sourceWriter.print("){");
+					sourceWriter.indent();
+					sourceWriter.println("super(" + paramStr + ");");
+					sourceWriter.outdent();
+					sourceWriter.println("}");
 				}
-				else
-					sourceWriter.print("){");
-				sourceWriter.indent();
-				sourceWriter.println("super(" + paramStr + ");");
-				sourceWriter.outdent();
-				sourceWriter.println("}");
 			}
 			catch (Exception e) {
 				e.printStackTrace();
@@ -155,5 +157,25 @@ public class EventConfigurationHelper {
 		// end constructor source generation
 		sourceWriter.outdent();
 		sourceWriter.println("}");*/
+	}
+	
+	public void generatePresenterAccessMethods(ClassSourceFileComposerFactory composer, SourceWriter sourceWriter, JClassType classType) {
+		// create member variable
+		sourceWriter.println("public Presenter	presenter = null;");
+		// create getter method
+		sourceWriter.println("@Override");
+		sourceWriter.println("public Presenter getPresenter() {");
+		sourceWriter.indent();
+		sourceWriter.println("return presenter;");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+		
+		// create setter method
+		sourceWriter.println("@Override");
+		sourceWriter.println("public void setPresenter(Presenter presenter) {");
+		sourceWriter.indent();
+		sourceWriter.println("this.presenter = presenter;");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
 	}
 }
