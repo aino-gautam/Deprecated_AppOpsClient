@@ -1,8 +1,8 @@
 package com.appops.gwtgenerator.client.component.generated.sample.textboxrebindergenerated;
 
 import com.appops.gwtgenerator.client.component.presenter.Presenter;
-import com.appops.gwtgenerator.client.config.Dynamic;
 import com.appops.gwtgenerator.client.config.annotation.Tag;
+import com.appops.gwtgenerator.client.generator.Dynamic;
 
 @Tag(tagname = "TextBox", library = "core")
 public class AppOpTextBox extends com.google.gwt.user.client.ui.TextBox implements Dynamic {
@@ -16,6 +16,18 @@ public class AppOpTextBox extends com.google.gwt.user.client.ui.TextBox implemen
 	public Object im(String methodName, Object[] parameters) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Presenter getPresenter() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setPresenter(Presenter presenter) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
