@@ -20,7 +20,7 @@ public @interface Tag {
 	 * Canonical class name the tag represents
 	 * @return
 	 */
-	String classname();
+	String classname() default "";
 	
 	/**
 	 * Name of the library the class representing the tag belongs to.
@@ -29,4 +29,3 @@ public @interface Tag {
 	String library();
 	
 }
-
