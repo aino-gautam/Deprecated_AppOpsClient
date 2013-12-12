@@ -6,6 +6,7 @@ import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.util.EntityList;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,21 +20,23 @@ public class GlobalEntityCache implements EntityCache {
 	private Map<String, Entity> entityCache;
 
 	/** Keeps track of query identifier vs. list of entity identifier for the resultant entity list
-	 *	Qeury Identifier = querr name + [paramName = paramValue...] 
+	 *	Query Identifier = query name + [paramName = paramValue...] 
 	 */
 	private Map<String, ArrayList<String>> queryCache;
 	
 	/** List of all the models registered for data from cache */
 	private ArrayList<EntityCacheListener> registeredListeners;
 	
-	private static GlobalEntityCache globalEntityCache;
+	private static final GlobalEntityCache globalEntityCache = new GlobalEntityCache();
 	
 	private static final String IS_ENTITYLIST_QUERY = "isQueryEntityList";
 
-	public static GlobalEntityCache getInstance(){
-		if(globalEntityCache == null) {
-			globalEntityCache = new GlobalEntityCache();
-		}
+	private GlobalEntityCache() {
+		entityCache = new HashMap<String, Entity>();
+		queryCache = new HashMap<String, ArrayList<String>>();
+	}
+
+	public static GlobalEntityCache getInstance() {
 		return globalEntityCache;
 	}
 
@@ -134,7 +137,7 @@ public class GlobalEntityCache implements EntityCache {
 		}
 	}
 	
-	public String getEntityIdentifer(Entity entity) {
+	public static String getEntityIdentifer(Entity entity) {
 		final String splitter = "##";
 		final String dotSeperator = ".";
 		String entityType = entity.getType().getTypeName();
@@ -148,12 +151,12 @@ public class GlobalEntityCache implements EntityCache {
 		Key<Long> key = entity.getPropertyByName("id");
 		Long entityId = key.getKeyValue();
 		
-		String identifier = serviceId.toString() + splitter + entityType + splitter + entityId.toString();
+		String identifier = (serviceId != null ? serviceId.toString() + splitter : "") + entityType + splitter + entityId.toString();
 
 		return identifier;
 	}
 	
-	public String getQueryIdentifier(Query query) {
+	public static String getQueryIdentifier(Query query) {
 		final String querySplitter = "?";
 		final String paramSplitter = "&&";
 		final String valueAssign = "=";
