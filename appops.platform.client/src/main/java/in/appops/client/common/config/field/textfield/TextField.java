@@ -990,4 +990,10 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			textArea.setEnabled(isEnable);
 		}
 	}
+	
+	public void setSelectionRange(int startIndex, int endIndex) {
+		if(getWidget() instanceof TextArea) {
+			textArea.setSelectionRange(startIndex, endIndex);
+		}
+	}
 }
