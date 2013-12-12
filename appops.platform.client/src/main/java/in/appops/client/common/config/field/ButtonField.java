@@ -16,6 +16,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
 * Field class to represent a {@link Button} .
@@ -254,7 +255,10 @@ public class ButtonField extends BaseField implements ClickHandler, BlurHandler,
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ButtonField]::Exception In onBlur  method :"+e);
 		}
-		
+	}
+	
+	public Widget getWidget() {
+		return button;
 	}
 	
 	/*********************************************************************************/
@@ -271,7 +275,4 @@ public class ButtonField extends BaseField implements ClickHandler, BlurHandler,
 		public static final String BTNFD_CLICK_EVENT = "clickEvent";
 		
 	}
-
-	
-
 }
