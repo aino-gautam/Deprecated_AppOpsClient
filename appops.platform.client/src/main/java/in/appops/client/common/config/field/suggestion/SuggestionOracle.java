@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,6 +41,7 @@ public class SuggestionOracle extends SuggestOracle {
 	private Boolean isStaticSuggestionBox = false;
 	private Object itemsToDisplay;
 	private Logger logger = Logger.getLogger(getClass().getName());
+	private HashMap<String, Object> opParamMap;
 
 	public SuggestionOracle() {
 		
@@ -106,10 +106,11 @@ public class SuggestionOracle extends SuggestOracle {
 					queryObj.setQueryParameterMap(map);
 				
 								
-				Map parameterMap = new HashMap();
-				parameterMap.put("query", queryObj);
+				if(opParamMap == null)
+					opParamMap= new HashMap();
+				opParamMap.put("query", queryObj);
 				
-				StandardAction action = new StandardAction(Entity.class, operationName, parameterMap);
+				StandardAction action = new StandardAction(Entity.class, operationName, opParamMap);
 				dispatch.execute(action, new AsyncCallback<Result>() {
 
 					@Override
@@ -216,5 +217,9 @@ public class SuggestionOracle extends SuggestOracle {
 
 	public void setItemsToDisplay(Object object) {
 		this.itemsToDisplay = object;
+	}
+
+	public void setOpParamMap(HashMap<String, Object> opParamMap) {
+		this.opParamMap = opParamMap;
 	}
 }

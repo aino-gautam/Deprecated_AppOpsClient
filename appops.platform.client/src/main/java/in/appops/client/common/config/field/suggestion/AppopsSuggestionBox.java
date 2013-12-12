@@ -52,7 +52,6 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	/***************************************** *******************************/
 	public void createUi(){
 		try {
-			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In createUi method ");
 			this.basePanel.add(suggestBox);
 			selectionHandler = suggestBox.addSelectionHandler(this);
 	     	keyUpHandler = suggestBox.getTextBox().addKeyUpHandler(this);
@@ -118,7 +117,6 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 */
 	public void setEnabled(Boolean isEnabled) {
 		try {
-			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setEnabled method ");
 			suggestBox.getTextBox().setEnabled(isEnabled);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setEnabled method :"+e);
@@ -131,7 +129,6 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 */
 	public void setQueryName(String queryName) {
 		try {
-			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setQueryName method ");
 			oracle.setQueryName(queryName);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setQueryName method :"+e);
@@ -144,7 +141,6 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 */
 	public void setOperationName(String name) {
 		try {
-			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setOperationName method ");
 			oracle.setOperationName(name);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setOperationName method :"+e);
@@ -157,7 +153,6 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 */
 	public void setQueryRestrictions(HashMap<String, Object> map) {
 		try {
-			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setQueryRestrictions method ");
 			oracle.setRestriction(map);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setQueryRestrictions method :"+e);
@@ -170,7 +165,6 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 */
 	public void setQueryMaxResult(int max) {
 		try {
-			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setQueryMaxResult method ");
 			oracle.setMaxResult(max);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setQueryMaxResult method :"+e);
@@ -183,7 +177,6 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 */
 	public void setPropertyToDisplay(String propertyByName) {
 		try {
-			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setPropertyToDisplay method ");
 			oracle.setEntityPropToDisplay(propertyByName);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setPropertyToDisplay method :"+e);
@@ -196,7 +189,6 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 */
 	public void setAutoSuggestion(Boolean val) {
 		try {
-			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setAutoSuggestion method ");
 			isAutoSuggestion = val;
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setAutoSuggestion method :"+e);
@@ -209,7 +201,6 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 */
 	public void setStaticSuggestionBox(Boolean val) {
 		try {
-			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setStaticSuggestionBox method ");
 			oracle.IsStaticSuggestionBox(val);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setStaticSuggestionBox method :"+e);
@@ -222,7 +213,6 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 */
 	public void setItemsToDisplay(ArrayList<String> itemsToDisplay) {
 		try {
-			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setItemsToDisplay method ");
 			oracle.setItemsToDisplay(itemsToDisplay);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setItemsToDisplay method :"+e);
@@ -235,7 +225,6 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	 */
 	public void setIsSearchQuery(Boolean val) {
 		try {
-			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In setIsSearchQuery method ");
 			oracle.IsSearchQuery(val);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setIsSearchQuery method :"+e);
@@ -246,7 +235,6 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	@Override
 	public void onFocus(FocusEvent event) {
 		try {
-			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In onFocus method ");
 			if(isAutoSuggestion){
 				if(getSuggestBox().getText().equals(""))
 					getSuggestBox().setText(" ");
@@ -262,7 +250,6 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	@Override
 	public void onClick(ClickEvent event) {
 		try {
-			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In onClick method ");
 			if(getSuggestBox().getText().equals("")){
 				getSuggestBox().setText(" ");
 			}
@@ -279,7 +266,6 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	public void onSelection(SelectionEvent<Suggestion> event) {
 		
 		try {
-			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In onSelection method ");
 			AppopsSuggestion selectedSuggestion = (AppopsSuggestion) event.getSelectedItem();
 			setSelectedSuggestion(selectedSuggestion);
 			getSuggestBox().setText(selectedSuggestion.getDisplayString());
@@ -298,7 +284,6 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	@Override
 	public void onKeyUp(KeyUpEvent event) {
 		try {
-			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In onKeyUp method ");
 			Integer keycode = event.getNativeKeyCode();
 			
 			if (keycode.equals(KeyCodes.KEY_BACKSPACE)|| keycode.equals(KeyCodes.KEY_DELETE)) {
@@ -312,7 +297,6 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	@Override
 	public void onBlur(BlurEvent event) {
 		try {
-			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In onBlur method ");
 			fireFieldEvent(FieldEvent.EDITCOMPLETED);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception In onBlur method "+e);
@@ -322,7 +306,6 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	@Override
 	public void onKeyPress(KeyPressEvent event) {
 		try {
-			logger.log(Level.INFO, "[AppopsSuggestionBox] ::In onKeyPress method ");
 						
 			/** Scheduler is added because when user press backspace ,tab and delete keyPressEvent is not fired. **/ 
 			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -361,6 +344,16 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 		
 		return false;
 		
+	}
+
+	public void setOpParamMap(HashMap<String, Object> opParamMap) {
+		try{
+			if(opParamMap !=null)
+				oracle.setOpParamMap(opParamMap);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 
