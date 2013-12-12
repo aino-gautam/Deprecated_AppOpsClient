@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>appops.platform.client</groupId>
 	<artifactId>appops_client</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>GWT Maven Archetype</name>
 
@@ -457,14 +457,14 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
-				<executions>
+				<!-- <executions>
 					<execution>
 						<phase>compile</phase>
 						<goals>
 							<goal>exploded</goal>
 						</goals>
 					</execution>
-				</executions>
+				</executions> -->
 				<configuration>
 					<webappDirectory>${webappDirectory}</webappDirectory>
 				</configuration>
@@ -505,7 +505,7 @@
 				<version>2.4</version>
 				<configuration>
 					<file>target/appops_client-${buildNumber}.jar</file>
-					<groupId>appops_platform</groupId>
+					<groupId>mahesh_appops_platform</groupId>
 					<artifactId>appops_client</artifactId>
 					<version>${buildNumber}</version>
 					<packaging>jar</packaging>
