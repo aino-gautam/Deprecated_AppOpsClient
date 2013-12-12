@@ -12,6 +12,8 @@
 	<inherits name="com.google.gwt.json.JSON" />
 	<stylesheet src="Upload.css"/>
 	
+	<inherits name='com.googlecode.gwtphonegap.PhoneGap' />
+	
 	<source path="client" />
 	<source path="touch" />
 	<source path="common" />
