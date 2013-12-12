@@ -43,6 +43,10 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 		
 	}
 
+	@Override
+	protected void initialize() {
+		super.initialize();
+	}
 	/******************************** ****************************************/
 	/**
 	 * creates the field UI
@@ -51,7 +55,6 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 	public void create() {
 		try {
 			logger.log(Level.INFO, "[ToggleImageField] ::In create method ");
-			toggleButton.addValueChangeHandler(this);
 			getBasePanel().add(toggleButton,DockPanel.CENTER);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ToggleImageField] ::Exception in create method :"+e);
@@ -69,7 +72,8 @@ public class ToggleImageField extends BaseField implements ValueChangeHandler{
 			upStateImage = getStateImage(getUpStateImageUrl());
 			downStateImage = getStateImage(getDwnStateImageUrl());
 			toggleButton = new ToggleButton(upStateImage, downStateImage);
-			
+			toggleButton.addValueChangeHandler(this);
+
 			setToggleImageTitle(getUpStateImageTitle());
 			
 			if(getBaseFieldPrimCss()!=null)

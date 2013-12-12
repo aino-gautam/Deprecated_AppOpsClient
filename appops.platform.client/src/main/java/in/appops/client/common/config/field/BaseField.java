@@ -187,7 +187,6 @@ public class BaseField extends Composite implements Field {
 	 */
 	protected void initialize() {
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In initialize  method ");
 			basePanel = new DockPanel();
 			label = new HTML();
 			activeErrors = new ArrayList<String>();
@@ -204,7 +203,6 @@ public class BaseField extends Composite implements Field {
 	 */
 	@Override
 	public Configuration getConfiguration() {
-		logger.log(Level.INFO,"[BaseField]:: In getConfiguration  method ");
 		if(configuration != null) {
 			return configuration;
 		}
@@ -228,7 +226,6 @@ public class BaseField extends Composite implements Field {
 	 */
 	protected boolean hasConfiguration(String configKey) {
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In hasConfiguration  method ");
 			if(configuration != null && configuration.getPropertyByName(configKey) != null) {
 				return true;
 			}
@@ -270,7 +267,6 @@ public class BaseField extends Composite implements Field {
 	public String getBaseFieldId() {
 		String fieldId = Document.get().createUniqueId();
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getBaseFieldId  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_ID) != null) {
 				fieldId = getConfigurationValue(BaseFieldConstant.BF_ID).toString();
 			}
@@ -289,7 +285,6 @@ public class BaseField extends Composite implements Field {
 	protected String getBaseFieldPrimCss() {
 		String primaryCss = null;
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getBaseFieldPrimCss  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_PCLS) != null) {
 				primaryCss = getConfigurationValue(BaseFieldConstant.BF_PCLS).toString();
 			}
@@ -309,7 +304,6 @@ public class BaseField extends Composite implements Field {
 	protected String getBaseFieldDependentCss() {
 		String depCss = null;
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getBaseFieldDependentCss  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_DCLS) != null) {
 				depCss = getConfigurationValue(BaseFieldConstant.BF_DCLS).toString();
 			}
@@ -328,7 +322,6 @@ public class BaseField extends Composite implements Field {
 	protected String getBasePanelPrimCss() {
 		String primaryCss = null;
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getBasePanelPrimCss  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_BASEPANEL_PCLS) != null) {
 				primaryCss = getConfigurationValue(BaseFieldConstant.BF_BASEPANEL_PCLS).toString();
 			}
@@ -348,7 +341,6 @@ public class BaseField extends Composite implements Field {
 	protected String getBasePanelDependentCss() {
 		String depCss = null;
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getBasePanelDependentCss  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_BASEPANEL_DCLS) != null) {
 				depCss = getConfigurationValue(BaseFieldConstant.BF_BASEPANEL_DCLS).toString();
 			}
@@ -368,7 +360,6 @@ public class BaseField extends Composite implements Field {
 	protected Object getDefaultValue() {
 		Object defaultValue = null;
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getDefaultValue  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_DEFVAL) != null) {
 				defaultValue = getConfigurationValue(BaseFieldConstant.BF_DEFVAL);
 			}
@@ -387,7 +378,6 @@ public class BaseField extends Composite implements Field {
 	protected boolean isShowValidField() {
 		boolean isShowValidField = false;
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In isShowValidField  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_SHOW_VALID_FIELD) != null) {
 				isShowValidField = (Boolean) getConfigurationValue(BaseFieldConstant.BF_SHOW_VALID_FIELD);
 			}
@@ -408,7 +398,6 @@ public class BaseField extends Composite implements Field {
 	protected String getErrorPosition() {
 		String errPos = BaseFieldConstant.BF_ERRINLINE;
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getErrorPosition  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_ERRPOS) != null) {
 				errPos = getConfigurationValue(BaseFieldConstant.BF_ERRPOS).toString();
 			}
@@ -422,7 +411,6 @@ public class BaseField extends Composite implements Field {
 	public String getInvalidMsg() {
 		String invalidMsg = "The value in this field is invalid";
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getInvalidMsg  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_INVLDMSG) != null) {
 				invalidMsg = getConfigurationValue(BaseFieldConstant.BF_INVLDMSG).toString();
 			}
@@ -440,7 +428,6 @@ public class BaseField extends Composite implements Field {
 	protected boolean isReadOnly() {
 		boolean readOnly = false;
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In isReadOnly  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_READONLY) != null) {
 				readOnly = (Boolean)getConfigurationValue(BaseFieldConstant.BF_READONLY);
 			}
@@ -454,7 +441,6 @@ public class BaseField extends Composite implements Field {
 	protected boolean isEnabled() {
 		boolean enabled = true;
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In isEnabled  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_ENABLED) != null) {
 				enabled = (Boolean)getConfigurationValue(BaseFieldConstant.BF_ENABLED);
 			}
@@ -470,7 +456,6 @@ public class BaseField extends Composite implements Field {
 	 * @return
 	 */
 	protected String getErrorMsgCls() {
-		logger.log(Level.INFO,"[BaseField]:: In getErrorMsgCls  method ");
 		String errorCss = getErrorPosition() == BaseFieldConstant.BF_BOTTOM || getErrorPosition() == BaseFieldConstant.BF_TOP  || getErrorPosition() == BaseFieldConstant.BF_SIDE 
 				? "appops-errorTopBottomCls" : "appops-errorInvalidInline";
 		try {
@@ -492,7 +477,6 @@ public class BaseField extends Composite implements Field {
 		
 		String errorCss = "appops-errorIconCls";
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getErrorIconCls  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_ERRMSGICONCLS) != null) {
 				errorCss = getConfigurationValue(BaseFieldConstant.BF_ERRMSGICONCLS).toString();
 			}
@@ -511,7 +495,6 @@ public class BaseField extends Composite implements Field {
 		String errorCss = getErrorPosition() == BaseFieldConstant.BF_BOTTOM || getErrorPosition() == BaseFieldConstant.BF_TOP  || getErrorPosition() == BaseFieldConstant.BF_SIDE 
 				? "appops-validFieldTopBottomCls" : "appops-validFieldInline";
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getValidFieldMsgCls  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_VALID_FIELD_MSGCLS) != null) {
 				errorCss = getConfigurationValue(BaseFieldConstant.BF_VALID_FIELD_MSGCLS).toString();
 			}
@@ -529,7 +512,6 @@ public class BaseField extends Composite implements Field {
 		
 		String errorCss = "appops-validFieldIconCls";
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getValidFieldIconCls  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_VALID_FIELD_MSGICONCLS) != null) {
 				errorCss = getConfigurationValue(BaseFieldConstant.BF_VALID_FIELD_MSGICONCLS).toString();
 			}
@@ -549,7 +531,6 @@ public class BaseField extends Composite implements Field {
 		String errorCss = "appops-suggestionText";
 		
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getSuggestionMsgCls  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_SUGGESTION_MSG_CLS) != null) {
 				errorCss = getConfigurationValue(BaseFieldConstant.BF_SUGGESTION_MSG_CLS).toString();
 			}
@@ -563,7 +544,6 @@ public class BaseField extends Composite implements Field {
 	public boolean isValidateOnChange() {
 		boolean validateOnChng = true;
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In isValidateOnChange  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_VALIDATEONCHANGE) != null) {
 				validateOnChng = (Boolean)getConfigurationValue(BaseFieldConstant.BF_VALIDATEONCHANGE);
 			}
@@ -577,7 +557,6 @@ public class BaseField extends Composite implements Field {
 	public boolean isValidateOnBlur() {
 		boolean validateOnBlur = true;
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In isValidateOnBlur  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_VALIDATEONBLUR) != null) {
 				validateOnBlur = (Boolean)getConfigurationValue(BaseFieldConstant.BF_VALIDATEONBLUR);
 			}
@@ -595,7 +574,6 @@ public class BaseField extends Composite implements Field {
 	public boolean isAllowBlank() {
 		boolean allowBlank = true;
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In isAllowBlank  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_ALLOWBLNK) != null) {
 				allowBlank = (Boolean)getConfigurationValue(BaseFieldConstant.BF_ALLOWBLNK);
 			}
@@ -615,7 +593,6 @@ public class BaseField extends Composite implements Field {
 		Integer pos = null;
 		
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getTabIndex  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_TABINDEX) != null) {
 				pos = (Integer) getConfigurationValue(BaseFieldConstant.BF_TABINDEX);
 			}
@@ -635,7 +612,6 @@ public class BaseField extends Composite implements Field {
 		String pos = BaseFieldConstant.BF_SUGGESTION_INLINE;
 		
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getSuggestionPosition  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_SUGGESTION_POS) != null) {
 				pos = getConfigurationValue(BaseFieldConstant.BF_SUGGESTION_POS).toString();
 			}
@@ -653,7 +629,6 @@ public class BaseField extends Composite implements Field {
 	protected String getSuggestionText() {
 		
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getSuggestionText  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_SUGGESTION_TEXT) != null) {
 				return getConfigurationValue(BaseFieldConstant.BF_SUGGESTION_TEXT).toString();
 			}
@@ -672,7 +647,6 @@ public class BaseField extends Composite implements Field {
 		String blankFdText = "Field is required";
 
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getBlankFieldText  method ");
 			if (getConfigurationValue(BaseFieldConstant.BF_BLANK_TEXT) != null) {
 				blankFdText = getConfigurationValue(BaseFieldConstant.BF_BLANK_TEXT).toString();
 			}
@@ -690,7 +664,6 @@ public class BaseField extends Composite implements Field {
 	protected String getErrorIconBlobId(){
 		
 			try {
-				logger.log(Level.INFO,"[BaseField]:: In getErrorIconBlobId  method ");
 				if(getConfigurationValue(BaseFieldConstant.BF_ERRICON_BLOB) !=null){
 					return getConfigurationValue(BaseFieldConstant.BF_ERRICON_BLOB).toString();
 				}
@@ -704,7 +677,6 @@ public class BaseField extends Composite implements Field {
 	protected String getValidIconBlobId(){
 		
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getValidIconBlobId  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_VALIDATION_ICON_BLOBID) !=null){
 				return getConfigurationValue(BaseFieldConstant.BF_VALIDATION_ICON_BLOBID).toString();
 			}
@@ -723,7 +695,6 @@ public class BaseField extends Composite implements Field {
 		String validValueTxt = "OK";
 
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getValidValueText  method ");
 			if (getConfigurationValue(BaseFieldConstant.BF_VALIDVALUE_TEXT) != null) {
 				validValueTxt = getConfigurationValue(
 						BaseFieldConstant.BF_VALIDVALUE_TEXT).toString();
@@ -741,7 +712,6 @@ public class BaseField extends Composite implements Field {
 	public String getBindProperty() {
 		String bindProp = null;
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getBindProperty  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_BINDPROP) != null) {
 				bindProp = getConfigurationValue(BaseFieldConstant.BF_BINDPROP).toString();
 			}
@@ -755,7 +725,6 @@ public class BaseField extends Composite implements Field {
 	public boolean isFieldVisible() {
 		boolean visible = true;
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In isFieldVisible  method ");
 			if(getConfigurationValue(BaseFieldConstant.BF_VISIBLE) != null) {
 				visible = (Boolean) getConfigurationValue(BaseFieldConstant.BF_VISIBLE);
 			}
@@ -773,7 +742,6 @@ public class BaseField extends Composite implements Field {
 	public void configure() {
 		/** Apply Css to the spinner base container, if not configured value default css applied **/
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In configure  method ");
 			if(getBasePanelPrimCss() != null) {
 				basePanel.setStylePrimaryName(getBasePanelPrimCss());
 			}
@@ -811,7 +779,6 @@ public class BaseField extends Composite implements Field {
 	 */
 	protected void clearInlineMsg () {
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In clearInlineMsg  method ");
 			getWidget().addStyleName(getErrorMsgCls());
 			getWidget().addStyleName(getErrorIconCls());
 			
@@ -836,7 +803,6 @@ public class BaseField extends Composite implements Field {
 	protected void setErrorOrSuggestion(Widget widget,String position){
 			
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In setErrorOrSuggestion  method ");
 			if(position.equals(BaseFieldConstant.BF_BOTTOM)){
 				if(bottomWidget ==null){
 					bottomWidget = new HorizontalPanel();
@@ -875,7 +841,6 @@ public class BaseField extends Composite implements Field {
 	public boolean validate() {
 		ArrayList<String> errors = getErrors(getFieldValue());
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In validate  method ");
 			if(errors.isEmpty()) {
 				clearInvalidMarkers();
 				if(isShowValidField())
@@ -893,7 +858,6 @@ public class BaseField extends Composite implements Field {
 	private String getErrorDisplayable(ArrayList<String> errors) {
 		String errorMsg = "";
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In getErrorDisplayable  method ");
 			for(String error : errors) {
 				errorMsg = errorMsg + error + "<br>";
 			}
@@ -911,7 +875,6 @@ public class BaseField extends Composite implements Field {
 	public void markInvalid(ArrayList<String> errors) {
 		
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In markInvalid  method ");
 			Set<String> set1 = new HashSet<String>();
 			set1.addAll(activeErrors);
 			Set<String> set2 = new HashSet<String>();
@@ -945,7 +908,6 @@ public class BaseField extends Composite implements Field {
 	@Override
 	public void markValid() {
 		    try {
-		    	logger.log(Level.INFO,"[BaseField]:: In markValid  method ");
 				clearInvalidMarkers();
 				if(getErrorPosition().equals(BaseFieldConstant.BF_ERRINLINE)) {
 					setValidationMsgInline();
@@ -968,7 +930,6 @@ public class BaseField extends Composite implements Field {
 	
 	protected void setCssPropertyToElement(Widget widget, String value){
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In setCssPropertyToElement  method ");
 			widget.getElement().getStyle().setProperty("background", "white url("+ value+") no-repeat right	center");
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In setCssPropertyToElement  method :"+e);
@@ -981,7 +942,6 @@ public class BaseField extends Composite implements Field {
 	 */
 	protected void clearInvalidMarkers() {
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In clearInvalidMarkers  method ");
 			getActiveErrors().clear();
 			clearError();
 		} catch (Exception e) {
@@ -996,7 +956,6 @@ public class BaseField extends Composite implements Field {
 	public void clearError(){
 		
 		try {
-			logger.log(Level.INFO,"[BaseField]:: In clearError  method ");
 			String position = getErrorPosition();
 			
 			if(position.equals(BaseFieldConstant.BF_BOTTOM)){
@@ -1064,7 +1023,6 @@ public class BaseField extends Composite implements Field {
 	@Override
 	public boolean isValid() {
 		ArrayList<String> errors = getErrors(getFieldValue());
-		logger.log(Level.INFO,"[BaseField]:: In isValid  method ");
 		if(errors.isEmpty()) {
 			return true;
 		}
@@ -1073,7 +1031,6 @@ public class BaseField extends Composite implements Field {
 
 	@Override
 	public boolean isDirty() {
-		logger.log(Level.INFO,"[BaseField]:: In isDirty  method ");
 		if(!getValue().equals(originalValue)) {
 			return true;
 		}

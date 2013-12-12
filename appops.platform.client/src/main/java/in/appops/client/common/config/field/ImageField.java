@@ -38,9 +38,14 @@ public class ImageField extends BaseField implements ClickHandler{
 	private Logger logger = Logger.getLogger(getClass().getName());
 
 	public ImageField(){
-		image = new Image();
 	}
 
+	@Override
+	protected void initialize() {
+		super.initialize();
+		image = new Image();
+		clickHandler = image.addClickHandler(this);
+	}
 	/******************************** ****************************************/
 	/**
 	 * creates the field UI
@@ -48,8 +53,6 @@ public class ImageField extends BaseField implements ClickHandler{
 	@Override
 	public void create() {
 		try {
-			logger.log(Level.INFO, "[ImageField] ::In create method ");
-			clickHandler = image.addClickHandler(this);
 			getBasePanel().add(image,DockPanel.CENTER);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[ImageField] ::Exception in create method :"+e);
@@ -63,7 +66,6 @@ public class ImageField extends BaseField implements ClickHandler{
 	@Override
 	public void configure() {
 		try {
-			logger.log(Level.INFO, "[ImageField] ::In configure method ");
 			
 			image.setVisible(isFieldVisible());
 			
@@ -129,7 +131,6 @@ public class ImageField extends BaseField implements ClickHandler{
 	 */
 	@Override
 	public String getFieldValue() {
-		logger.log(Level.INFO, "[ImageField] ::In getFieldValue method ");
 		String value = null;
 		try {
 			value =  image.getUrl();
@@ -144,7 +145,6 @@ public class ImageField extends BaseField implements ClickHandler{
 	 */
 	@Override
 	public void setFieldValue(String fieldValue) {
-		logger.log(Level.INFO, "[ImageField] ::In setFieldValue method ");
 		try {
 			image.setUrl(fieldValue);
 		} catch (Exception e) {
@@ -161,7 +161,6 @@ public class ImageField extends BaseField implements ClickHandler{
 	private String getImageBlobId() {
 		String blobId = null;
 		try {
-			logger.log(Level.INFO, "[ImageField] ::In getImageBlobId method ");
 			if (getConfigurationValue(ImageFieldConstant.IMGFD_BLOBID) != null) {
 				blobId = getConfigurationValue(ImageFieldConstant.IMGFD_BLOBID).toString();
 			}
@@ -179,7 +178,6 @@ public class ImageField extends BaseField implements ClickHandler{
 	private String getImageTitle() {
 		String title = null;
 		try {
-			logger.log(Level.INFO, "[ImageField] ::In getImageTitle method ");
 			if (getConfigurationValue(ImageFieldConstant.IMGFD_TITLE) != null) {
 				title = getConfigurationValue(ImageFieldConstant.IMGFD_TITLE).toString();
 			}
@@ -192,7 +190,6 @@ public class ImageField extends BaseField implements ClickHandler{
 	@Override
 	public void onClick(ClickEvent event) {
 		try {
-			logger.log(Level.INFO, "[ImageField] ::In onClick method ");
 			if(event.getSource().equals(image)){
 				FieldEvent fieldEvent = new FieldEvent();
 				fieldEvent.setEventType(fieldEvent.CLICKED);

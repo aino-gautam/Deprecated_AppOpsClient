@@ -51,7 +51,6 @@ public class LabelField extends BaseField  {
 	public void create() {
 		
 		try {
-			logger.log(Level.INFO,"[LabelField]:: In create  method ");
 			getBasePanel().add(label, DockPanel.CENTER);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[LabelField]::Exception In create  method :"+e);
@@ -92,7 +91,6 @@ public class LabelField extends BaseField  {
 		
 		String displayTxt = "";
 		try {
-			logger.log(Level.INFO,"[LabelField]:: In getDisplayText  method ");
 			if(getConfigurationValue(LabelFieldConstant.LBLFD_DISPLAYTXT) != null) {
 				
 				displayTxt = getConfigurationValue(LabelFieldConstant.LBLFD_DISPLAYTXT).toString();
@@ -111,7 +109,6 @@ public class LabelField extends BaseField  {
 		
 		String title = "";
 		try {
-			logger.log(Level.INFO,"[LabelField]:: In getLblTitle  method ");
 			if(getConfigurationValue(LabelFieldConstant.LBLFD_TITLE) != null) {
 				
 				title = getConfigurationValue(LabelFieldConstant.LBLFD_TITLE).toString();
@@ -126,7 +123,6 @@ public class LabelField extends BaseField  {
 	private String getLabelFieldCss() {
 		String depCss = null;
 		try {
-			logger.log(Level.INFO,"[LabelField]:: In getLabelFieldCss  method ");
 			if(getConfigurationValue(LabelFieldConstant.LBLFD_FCSS) != null) {
 				depCss = getConfigurationValue(LabelFieldConstant.LBLFD_FCSS).toString();
 			}
@@ -145,7 +141,6 @@ public class LabelField extends BaseField  {
 		Boolean isWordWrap = false;
 		
 		try {
-			logger.log(Level.INFO,"[LabelField]:: In isWordWrap  method ");
 			if(getConfigurationValue(LabelFieldConstant.LBLFD_ISWORDWRAP) != null) {
 				
 				isWordWrap = (Boolean) getConfigurationValue(LabelFieldConstant.LBLFD_ISWORDWRAP);
@@ -159,7 +154,6 @@ public class LabelField extends BaseField  {
 	@Override
 	public void setValue(Object value) {
 		try {
-			logger.log(Level.INFO,"[LabelField]:: In setValue  method ");
 			super.setValue(value);
 			label.setText(value.toString());
 		} catch (Exception e) {

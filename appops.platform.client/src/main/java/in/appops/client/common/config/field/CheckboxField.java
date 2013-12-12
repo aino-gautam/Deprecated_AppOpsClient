@@ -34,7 +34,6 @@ public class CheckboxField extends BaseField implements ValueChangeHandler, Blur
 	
 	@Override
 	public void create() {
-		logger.log(Level.INFO, "[CheckboxField] ::In create method ");
 		changeHandler = checkBox.addValueChangeHandler(this);
 		blurHandler = checkBox.addBlurHandler(this);
 		keydownHandler = checkBox.addKeyDownHandler(this);
@@ -50,7 +49,6 @@ public class CheckboxField extends BaseField implements ValueChangeHandler, Blur
 		
 		String displayText = "";
 		try {
-			logger.log(Level.INFO, "[CheckboxField] ::In getDisplayText method ");
 			if(getConfigurationValue(CheckBoxFieldConstant.CF_DISPLAYTEXT) != null) {
 				
 				displayText = (String) getConfigurationValue(CheckBoxFieldConstant.CF_DISPLAYTEXT);
@@ -70,7 +68,6 @@ public class CheckboxField extends BaseField implements ValueChangeHandler, Blur
 		Boolean isChecked = false;
 		
 		try {
-			logger.log(Level.INFO, "[CheckboxField] ::In isFieldChecked method ");
 			if(getConfigurationValue(CheckBoxFieldConstant.CF_CHECKED) != null) {
 				
 				isChecked = (Boolean) getConfigurationValue(CheckBoxFieldConstant.CF_CHECKED);
@@ -112,7 +109,6 @@ public class CheckboxField extends BaseField implements ValueChangeHandler, Blur
 
 	@Override
 	public void reset() {
-		logger.log(Level.INFO, "[CheckboxField] ::In reset method ");
 		this.setValue(Boolean.valueOf(getFieldValue()));
 	}
 	
@@ -120,7 +116,6 @@ public class CheckboxField extends BaseField implements ValueChangeHandler, Blur
 	@Override
 	public void setValue(Object value) {
 		try {
-			logger.log(Level.INFO, "[CheckboxField] ::In setValue method ");
 			super.setValue(value);
 			checkBox.setValue((Boolean) value);
 		} catch (Exception e) {
@@ -130,7 +125,6 @@ public class CheckboxField extends BaseField implements ValueChangeHandler, Blur
 	
 	@Override
 	public Object getValue() {
-		logger.log(Level.INFO, "[CheckboxField] ::In getValue method ");
 		return checkBox.getValue();
 	}
 	

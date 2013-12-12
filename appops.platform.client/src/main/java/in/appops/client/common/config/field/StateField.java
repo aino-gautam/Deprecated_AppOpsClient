@@ -56,7 +56,6 @@ public class StateField extends BaseField implements FieldEventHandler {
 	public void create() {
 		
 		try {
-			logger.log(Level.INFO, "[StateField] ::In create method ");
 			getBasePanel().add(appopsSuggestionBox,DockPanel.CENTER);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in create method :"+e);
@@ -66,7 +65,6 @@ public class StateField extends BaseField implements FieldEventHandler {
 	@Override
 	public void configure() {
 		try {
-			logger.log(Level.INFO, "[StateField] ::In configure method ");
 			
 			setSuggestionInline();
 			if(isStaticSuggestionBox()){
@@ -80,6 +78,7 @@ public class StateField extends BaseField implements FieldEventHandler {
 				appopsSuggestionBox.setQueryRestrictions(getQueryRestrictions());
 				appopsSuggestionBox.setIsSearchQuery(isSearchQuery());
 				appopsSuggestionBox.setQueryMaxResult(getQueryMaxResult());
+				appopsSuggestionBox.setOpParamMap(getOpParamMap());
 			}
 			
 			if (getBaseFieldPrimCss() != null)
@@ -137,7 +136,6 @@ public class StateField extends BaseField implements FieldEventHandler {
 	public void setValue(Object value) {
 		
 		try { 
-			logger.log(Level.INFO, "[StateField] ::In setValue method ");
 			super.setValue(value);
 			clear();
 			appopsSuggestionBox.getSuggestBox().setText(value.toString());
@@ -152,7 +150,6 @@ public class StateField extends BaseField implements FieldEventHandler {
 	protected void setSuggestionInline () {
 		try {
 			
-			logger.log(Level.INFO, "[StateField] ::In setSuggestionInline method ");
 			if(getSuggestionText()!=null)
 				appopsSuggestionBox.getTextBox().getElement().setPropertyString("placeholder", getSuggestionText());
 		} catch (Exception e) {
@@ -165,7 +162,6 @@ public class StateField extends BaseField implements FieldEventHandler {
 	 */
 	public void clearInlineMsg () {
 		try {
-			logger.log(Level.INFO, "[StateField] ::In clearInlineMsg method ");
 			appopsSuggestionBox.getTextBox().removeStyleName(getErrorMsgCls());
 			appopsSuggestionBox.getTextBox().removeStyleName(getErrorIconCls());
 			appopsSuggestionBox.getTextBox().removeStyleName(getValidFieldMsgCls());
@@ -186,7 +182,6 @@ public class StateField extends BaseField implements FieldEventHandler {
 	@Override
 	public void setErrorInline () {
 		try {
-			logger.log(Level.INFO, "[StateField] ::In setErrorInline method ");
 			appopsSuggestionBox.getTextBox().addStyleName(getErrorMsgCls());
 			appopsSuggestionBox.getTextBox().addStyleName(getErrorIconCls());
 			
@@ -212,7 +207,6 @@ public class StateField extends BaseField implements FieldEventHandler {
 	 */
 	public void setErrorMsg(){
 		try {
-			logger.log(Level.INFO, "[StateField] ::In setError method ");
 			ArrayList<String> errors = new ArrayList<String>();
 			errors.add(getInvalidMsg());
 			markInvalid(errors);
@@ -226,7 +220,6 @@ public class StateField extends BaseField implements FieldEventHandler {
 	 */
 	public void clearErrorMsg(){
 		try {
-			logger.log(Level.INFO, "[StateField] ::In clearErrorMsg method ");
 			clearInvalidMarkers();
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in clearErrorMsg method :"+e); 
@@ -252,7 +245,6 @@ public class StateField extends BaseField implements FieldEventHandler {
 	private Boolean isStaticSuggestionBox() {
 		Boolean isStatic = false;
 		try {
-			logger.log(Level.INFO, "[StateField] ::In isStaticSuggestionBox method ");
 			if(getConfigurationValue(StateFieldConstant.IS_STATIC_BOX) != null) {
 				isStatic =(Boolean) getConfigurationValue(StateFieldConstant.IS_STATIC_BOX);
 			}
@@ -269,7 +261,6 @@ public class StateField extends BaseField implements FieldEventHandler {
 	private Integer getQueryMaxResult() {
 		Integer maxResult = 10;
 		try {
-			logger.log(Level.INFO, "[StateField] ::In getQueryMaxResult method ");
 			if(getConfigurationValue(StateFieldConstant.STFD_QUERY_MAXRESULT) != null) {
 				maxResult =(Integer) getConfigurationValue(StateFieldConstant.STFD_QUERY_MAXRESULT);
 			}
@@ -286,7 +277,6 @@ public class StateField extends BaseField implements FieldEventHandler {
 	private ArrayList<String> getFieldItemList() {
 		ArrayList<String> listOfItems = null;
 		try {
-			logger.log(Level.INFO, "[StateField] ::In getFieldItemList method ");
 			if(getConfigurationValue(StateFieldConstant.ITEMS_LIST) != null) {
 				listOfItems = (ArrayList<String>) getConfigurationValue(StateFieldConstant.ITEMS_LIST);
 			}
@@ -294,6 +284,18 @@ public class StateField extends BaseField implements FieldEventHandler {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in getFieldItemList method :"+e);
 		}
 		return listOfItems;
+	}
+	
+	private HashMap<String, Object> getOpParamMap() {
+		HashMap<String, Object> paramMap = null;
+		try {
+			if(getConfigurationValue(StateFieldConstant.STFD_OPPARAM_MAP) != null) {
+				paramMap =  (HashMap<String, Object>) getConfigurationValue(StateFieldConstant.STFD_OPPARAM_MAP);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception in getOpParamMap method :"+e);
+		}
+		return paramMap;
 	}
 	
 	
@@ -304,7 +306,6 @@ public class StateField extends BaseField implements FieldEventHandler {
 	private HashMap<String, Object> getQueryRestrictions() {
 		HashMap<String, Object> queryRestrictions = null;
 		try {
-			logger.log(Level.INFO, "[StateField] ::In getQueryRestrictions method ");
 			if(getConfigurationValue(StateFieldConstant.STFD_QUERY_RESTRICTION) != null) {
 				queryRestrictions =  (HashMap<String, Object>) getConfigurationValue(StateFieldConstant.STFD_QUERY_RESTRICTION);
 			}
@@ -321,7 +322,6 @@ public class StateField extends BaseField implements FieldEventHandler {
 	private String getQueryName() {
 		String queryname = null;
 		try {
-			logger.log(Level.INFO, "[StateField] ::In getQueryName method ");
 			if(getConfigurationValue(StateFieldConstant.STFD_QUERYNAME) != null) {
 				queryname =(String) getConfigurationValue(StateFieldConstant.STFD_QUERYNAME);
 			}
@@ -338,7 +338,6 @@ public class StateField extends BaseField implements FieldEventHandler {
 	private String getEntPropToDisplay() {
 		String entprop = null;
 		try {
-			logger.log(Level.INFO, "[StateField] ::In getEntPropToDisplay method ");
 			if(getConfigurationValue(StateFieldConstant.STFD_ENTPROP) != null) {
 				entprop = (String) getConfigurationValue(StateFieldConstant.STFD_ENTPROP);
 			}
@@ -356,7 +355,6 @@ public class StateField extends BaseField implements FieldEventHandler {
 	private String getOperationName() {
 		String operation = null;
 		try {
-			logger.log(Level.INFO, "[StateField] ::In getOperationName method ");
 			if(getConfigurationValue(StateFieldConstant.STFD_OPRTION) != null) {
 				operation =(String) getConfigurationValue(StateFieldConstant.STFD_OPRTION);
 			}
@@ -373,7 +371,6 @@ public class StateField extends BaseField implements FieldEventHandler {
 	private Boolean isAutosuggestion() {
 		Boolean isautoSuggetion = true;
 		try {
-			logger.log(Level.INFO, "[StateField] ::In isAutosuggestion method ");
 			if(getConfigurationValue(StateFieldConstant.IS_AUTOSUGGESTION) != null) {
 				isautoSuggetion =(Boolean) getConfigurationValue(StateFieldConstant.IS_AUTOSUGGESTION);
 			}
@@ -390,7 +387,6 @@ public class StateField extends BaseField implements FieldEventHandler {
 	private Boolean isSearchQuery() {
 		Boolean isSearchQuery = false;
 		try {
-			logger.log(Level.INFO, "[StateField] ::In isSearchQuery method ");
 			if(getConfigurationValue(StateFieldConstant.IS_SEARCH_QUERY) != null) {
 				isSearchQuery =(Boolean) getConfigurationValue(StateFieldConstant.IS_SEARCH_QUERY);
 			}
@@ -420,6 +416,8 @@ public class StateField extends BaseField implements FieldEventHandler {
 		public static final String IS_SEARCH_QUERY = "isSearchQuery";
 		
 		public static final String IS_AUTOSUGGESTION = "isAutoSuggestion";
+		
+		public static final String STFD_OPPARAM_MAP = "operationParamMap";
 	}
 	
 	@Override

@@ -38,7 +38,6 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 		
 			String negativeValueText = "Field value cannot be -ve";
 			try {
-				logger.log(Level.INFO, "[NumericTextbox] ::In getNegErrMsg method ");
 				if(getConfigurationValue(TextFieldConstant.NEGATIVE_VALUE_TEXT) != null) {
 					
 					negativeValueText = (String) getConfigurationValue(TextFieldConstant.NEGATIVE_VALUE_TEXT);
@@ -53,7 +52,6 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 		
 			String maxErrMsg = "The maximum value for this field is "+ getMax();
 			try {
-				logger.log(Level.INFO, "[NumericTextbox] ::In getMaxErrMsg method ");
 				if(getConfigurationValue(TextFieldConstant.MAX_VALUE_TEXT) != null) {
 					
 					maxErrMsg = (String) getConfigurationValue(TextFieldConstant.MAX_VALUE_TEXT);
@@ -68,7 +66,6 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 		
 			String minErrMsg = "The minimum value for this field is "+ getMin();
 			try {
-				logger.log(Level.INFO, "[NumericTextbox] ::In getMinErrMsg method ");
 				if(getConfigurationValue(TextFieldConstant.MIN_VALUE_TEXT) != null) {
 					
 					minErrMsg = (String) getConfigurationValue(TextFieldConstant.MIN_VALUE_TEXT);
@@ -82,7 +79,6 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 	private Float getMax() {
 		Float max = Float.MAX_VALUE;
 		try {
-			logger.log(Level.INFO, "[NumericTextbox] ::In getMax method ");
 			if(getConfigurationValue(TextFieldConstant.MAXVALUE) != null) {
 				max = (Float) getConfigurationValue(TextFieldConstant.MAXVALUE);
 			}
@@ -96,7 +92,6 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 	private Float getMin() {
 		Float min = Float.MIN_VALUE;
 		try {
-			logger.log(Level.INFO, "[NumericTextbox] ::In getMin method ");
 			if(getConfigurationValue(TextFieldConstant.MINVALUE) != null) {
 				min = (Float) getConfigurationValue(TextFieldConstant.MINVALUE);
 			}
@@ -110,7 +105,6 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 	public boolean isAllowDecimal() {
 		boolean allowDec = false;
 		try {
-			logger.log(Level.INFO, "[NumericTextbox] ::In isAllowDecimal method ");
 			if(getConfiguration().getPropertyByName(TextFieldConstant.ALLOWDEC) != null) {
 				allowDec = (Boolean)getConfiguration().getPropertyByName(TextFieldConstant.ALLOWDEC);
 			}
@@ -123,7 +117,6 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 	private Integer getPrecision() {
 		int precision = 2;
 		try {
-			logger.log(Level.INFO, "[NumericTextbox] ::In getPrecision method ");
 			if(getConfiguration().getPropertyByName(TextFieldConstant.DEC_PRECISION) != null) {
 				precision = (Integer) getConfiguration().getPropertyByName(TextFieldConstant.DEC_PRECISION);
 			}
@@ -141,7 +134,6 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 		
 			String blankFieldText = "Field is required"; 
 			try {
-				logger.log(Level.INFO, "[NumericTextbox] ::In getBlankErrMsg method ");
 				if(getConfigurationValue(TextFieldConstant.BF_BLANK_TEXT) != null) {
 					
 					blankFieldText = (String) getConfigurationValue(TextFieldConstant.BF_BLANK_TEXT);
@@ -156,7 +148,6 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 						
 		String invalidMsg = "Invalid input - not a number";
 		try {
-			logger.log(Level.INFO, "[NumericTextbox] ::In getInvalidErrMsg method ");
 			if(getConfigurationValue(TextFieldConstant.BF_INVLDMSG) != null) {
 				
 				invalidMsg = (String) getConfigurationValue(TextFieldConstant.BF_INVLDMSG);
@@ -175,7 +166,6 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 	 */
 	protected boolean hasConfiguration(String configKey) {
 		try {
-			logger.log(Level.INFO, "[NumericTextbox] ::In hasConfiguration method ");
 			if(configuration != null && configuration.getPropertyByName(configKey) != null) {
 				return true;
 			}
@@ -187,7 +177,6 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 	
 	protected Serializable getConfigurationValue(String configKey) {
 		try {
-			logger.log(Level.INFO, "[NumericTextbox] ::In getConfigurationValue method ");
 			if(hasConfiguration(configKey)) {
 				return configuration.getPropertyByName(configKey);
 			}
@@ -201,7 +190,6 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 	    BigDecimal bd = new BigDecimal(getText());
 	    BigDecimal rounded = null ;
 	    try {
-	    	logger.log(Level.INFO, "[NumericTextbox] ::In fixPrecision method ");
 			bd.stripTrailingZeros();
 			rounded = bd.setScale(getPrecision(), BigDecimal.ROUND_HALF_UP);
 		} catch (Exception e) {
@@ -218,7 +206,6 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 						
 		ArrayList<String> errors = new ArrayList<String>();
 		try {
-			logger.log(Level.INFO, "[NumericTextbox] ::In validate method ");
 			errors.clear();
 			boolean valid = true;
 			String value = getText();
@@ -255,7 +242,6 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 	
 	public Float parseValue(String value) {
 		try {
-			logger.log(Level.INFO, "[NumericTextbox] ::In parseValue method ");
 			if(isNumeric(value)) {
 				return Float.parseFloat(value);
 			}
@@ -287,7 +273,6 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 		final int charCode = event.getUnicodeCharCode();
 
 		try {
-			logger.log(Level.INFO, "[NumericTextbox] ::In onKeyPress method ");
 			if (!Character.isDigit(event.getCharCode())&& event.getCharCode() != '-' && event.getCharCode() != '.') {
 				event.preventDefault();
 				return;

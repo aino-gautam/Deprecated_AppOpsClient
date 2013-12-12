@@ -55,7 +55,6 @@ public class LinkField extends BaseField implements ClickHandler{
 	@Override
 	public void create(){
 		try {
-			logger.log(Level.INFO, "[LinkField] ::In create method ");
 			getBasePanel().add(getWidget(),DockPanel.CENTER);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[LinkField] ::Exception in create method :"+e);
@@ -69,7 +68,6 @@ public class LinkField extends BaseField implements ClickHandler{
 	public void reset() {
 		
 		try {
-			logger.log(Level.INFO, "[LinkField] ::In reset method ");
 			if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)) {
 				hyperLink.setText(getValue().toString());
 			}else 
@@ -126,7 +124,6 @@ public class LinkField extends BaseField implements ClickHandler{
 	public void clear() {
 		
 		try {
-			logger.log(Level.INFO, "[LinkField] ::In clear method ");
 			if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)){
 				hyperLink.setText("");
 			}else 
@@ -143,7 +140,6 @@ public class LinkField extends BaseField implements ClickHandler{
 	public void setValue(Object value) {
 		
 		try {
-			logger.log(Level.INFO, "[LinkField] ::In setValue method ");
 			super.setValue(value);
 			clear();
 			setFieldValue(value.toString());
@@ -158,7 +154,6 @@ public class LinkField extends BaseField implements ClickHandler{
 	 */
 	@Override
 	public Object getValue() {
-		logger.log(Level.INFO, "[LinkField] ::In getValue method ");
 		if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)){
 			return hyperLink.getText();
 		}else 
@@ -173,7 +168,6 @@ public class LinkField extends BaseField implements ClickHandler{
 	public void setFieldValue(String value) {
 		
 		try {
-			logger.log(Level.INFO, "[LinkField] ::In setFieldValue method ");
 			clear();
 			if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)){
 				hyperLink.setText(value);
@@ -204,7 +198,6 @@ public class LinkField extends BaseField implements ClickHandler{
 	private String getLinkType() {
 		String linkType = LinkFieldConstant.LNKTYPE_ANCHOR;
 		try {
-			logger.log(Level.INFO, "[LinkField] ::In getLinkType method ");
 			if (getConfigurationValue(LinkFieldConstant.LNK_TYPE) != null) {
 				linkType = getConfigurationValue(LinkFieldConstant.LNK_TYPE).toString();
 			}
@@ -221,7 +214,6 @@ public class LinkField extends BaseField implements ClickHandler{
 	private String getDisplayText() {
 		String displayTxt = "";
 		try {
-			logger.log(Level.INFO, "[LinkField] ::In getDisplayText method ");
 			if (getConfigurationValue(LinkFieldConstant.LNK_DISPLAYTEXT) != null) {
 				displayTxt = getConfigurationValue(LinkFieldConstant.LNK_DISPLAYTEXT).toString();
 			}
@@ -245,7 +237,6 @@ public class LinkField extends BaseField implements ClickHandler{
 	private String getLinkTitle() {
 		String linkTitle = null;
 		try {
-			logger.log(Level.INFO, "[LinkField] ::In getLinkTitle method ");
 			if (getConfigurationValue(LinkFieldConstant.LNK_TITLE) != null) {
 				linkTitle = getConfigurationValue(LinkFieldConstant.LNK_TITLE).toString();
 			}
@@ -262,7 +253,6 @@ public class LinkField extends BaseField implements ClickHandler{
 	private String getTargetHistoryToken() {
 		String historyToken = null;
 		try {
-			logger.log(Level.INFO, "[LinkField] ::In getTargetHistoryToken method ");
 			if (getConfigurationValue(LinkFieldConstant.LNK_HISTORYTOKEN) != null) {
 				historyToken = getConfigurationValue(LinkFieldConstant.LNK_HISTORYTOKEN).toString();
 			}
@@ -279,7 +269,6 @@ public class LinkField extends BaseField implements ClickHandler{
 	private String getHref() {
 		String href = null;
 		try {
-			logger.log(Level.INFO, "[LinkField] ::In getHref method ");
 			if (getConfigurationValue(LinkFieldConstant.LNK_HREF) != null) {
 				href = getConfigurationValue(LinkFieldConstant.LNK_HREF).toString();
 			}
@@ -296,7 +285,6 @@ public class LinkField extends BaseField implements ClickHandler{
 	private String getTargetFrame() {
 		String targetFrm = null;
 		try {
-			logger.log(Level.INFO, "[LinkField] ::In getTargetFrame method ");
 			if (getConfigurationValue(LinkFieldConstant.LNK_TARGET_FRAME) != null) {
 				targetFrm = getConfigurationValue(LinkFieldConstant.LNK_TARGET_FRAME).toString();
 			}
@@ -310,7 +298,6 @@ public class LinkField extends BaseField implements ClickHandler{
 	/*********************************************************************/
 	
 	public Widget getWidget() {
-		logger.log(Level.INFO, "[LinkField] ::In getWidget method ");
 		if(getLinkType().equalsIgnoreCase(LinkFieldConstant.LNKTYPE_HYPERLINK)) {
 			return hyperLink;
 		} else 
@@ -321,7 +308,6 @@ public class LinkField extends BaseField implements ClickHandler{
 	public void onClick(ClickEvent event) {
 		
 		try {
-			logger.log(Level.INFO, "[LinkField] ::In onClick method ");
 			FieldEvent fieldEvent = new FieldEvent();
 			fieldEvent.setEventType(FieldEvent.CLICKED);
 			fieldEvent.setEventSource(this);

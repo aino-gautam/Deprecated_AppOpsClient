@@ -47,9 +47,17 @@ public class ButtonField extends BaseField implements ClickHandler, BlurHandler,
 	private Logger logger = Logger.getLogger(getClass().getName());
 
 	public ButtonField() {
-		button = new Button();
+		
 	}
 	
+	@Override
+	protected void initialize() {
+		super.initialize();
+		button = new Button();
+		clickHandler = button.addClickHandler(this);
+		blurHandler = button.addBlurHandler(this);
+		keyUpHandler = button.addKeyUpHandler(this);
+	}
 	/******************************** ****************************************/
 	/**
 	 * creates the field UI
@@ -58,9 +66,6 @@ public class ButtonField extends BaseField implements ClickHandler, BlurHandler,
 	public void create(){
 		
 		try {
-			clickHandler = button.addClickHandler(this);
-			blurHandler = button.addBlurHandler(this);
-			keyUpHandler = button.addKeyUpHandler(this);
 			getBasePanel().add(button,DockPanel.CENTER);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ButtonField]::Exception In create  method :"+e);
@@ -73,8 +78,6 @@ public class ButtonField extends BaseField implements ClickHandler, BlurHandler,
 	@Override
 	public void reset() {
 		try {
-			
-			logger.log(Level.INFO,"[ButtonField]:: In reset  method ");
 			setFieldValue(getValue().toString());
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ButtonField]::Exception In reset  method :"+e);
@@ -101,7 +104,6 @@ public class ButtonField extends BaseField implements ClickHandler, BlurHandler,
 	@Override
 	public void configure() {
 		try {
-			logger.log(Level.INFO,"[ButtonField]:: In configure  method ");
 			setFieldValue(getDisplayText());
 			
 			button.setEnabled(isEnabled());
@@ -131,9 +133,7 @@ public class ButtonField extends BaseField implements ClickHandler, BlurHandler,
 	 */
 	@Override
 	public void clear() {
-		
 		try {
-			logger.log(Level.INFO,"[ButtonField]:: In clear  method ");
 			setFieldValue("");
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ButtonField]::Exception In clear  method :"+e);
@@ -184,7 +184,6 @@ public class ButtonField extends BaseField implements ClickHandler, BlurHandler,
 	@Override
 	public void setFieldValue(String value) {
 		button.setText(value);
-		
 	}
 	
 	/**
@@ -204,7 +203,6 @@ public class ButtonField extends BaseField implements ClickHandler, BlurHandler,
 	private String getDisplayText() {
 		String displayTxt = "";
 		try {
-			logger.log(Level.INFO,"[ButtonField]:: In getDisplayText  method ");
 			if (getConfigurationValue(ButtonFieldConstant.BTNFD_DISPLAYTEXT) != null) {
 				displayTxt = getConfigurationValue(ButtonFieldConstant.BTNFD_DISPLAYTEXT).toString();
 			}
@@ -221,7 +219,6 @@ public class ButtonField extends BaseField implements ClickHandler, BlurHandler,
 	private String getBtnTitle() {
 		String btnTitle = null;
 		try {
-			logger.log(Level.INFO,"[ButtonField]:: In getBtnTitle  method ");
 			if (getConfigurationValue(ButtonFieldConstant.BTNFD_TITLE) != null) {
 				btnTitle = getConfigurationValue(ButtonFieldConstant.BTNFD_TITLE).toString();
 			}
@@ -236,7 +233,6 @@ public class ButtonField extends BaseField implements ClickHandler, BlurHandler,
 	@Override
 	public void onClick(ClickEvent event) {
 		try {
-			logger.log(Level.INFO,"[ButtonField]:: In onClick  method ");
 			FieldEvent fieldEvent = new FieldEvent();
 			fieldEvent.setEventSource(this);
 			fieldEvent.setEventType(FieldEvent.CLICKED);
