@@ -168,6 +168,7 @@ public abstract class AppopsBaseModel implements EntityCacheListener, Configurab
 	protected void executeQuery(final Query query) {
 		Map<String, Serializable> queryParam = new HashMap<String, Serializable>();
 		queryParam.put("query", query);
+		queryParam.put("schemaname", getOperationName().split("\\.")[0]);
 		
 		StandardAction action = new StandardAction(EntityList.class, getOperationName(), queryParam);
 		dispatch.execute(action, new AsyncCallback<Result>() {

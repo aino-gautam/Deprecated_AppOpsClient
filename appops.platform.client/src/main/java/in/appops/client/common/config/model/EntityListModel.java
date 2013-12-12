@@ -36,7 +36,7 @@ public class EntityListModel extends AppopsBaseModel {
 				for(Entry<String, Property<? extends Serializable>> entry : confSet) {
 					String paramName = entry.getKey();
 					Serializable value = entry.getValue().getValue();
-						queryParamMap.put(paramName, value);
+					queryParamMap.put(paramName, value);
 				}
 			}
 		//}
