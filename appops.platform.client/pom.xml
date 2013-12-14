@@ -292,9 +292,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>vikram_appops_platform</groupId>
+			<groupId>appops_platform</groupId>
 			<artifactId>useraccount</artifactId>
-			<version>20.06.2013</version>
+			<version>17.10.2013</version>
 		</dependency>
 
 		<dependency>
@@ -425,16 +425,16 @@
 				<version>2.4.0</version>
 
 				<configuration>
-					<runTarget>formSample.html</runTarget>
+					<runTarget>fields.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 
 					<!-- what ever is needed to complie we can add them as below here. When 
 						nothing is specified we all module are complied -->
 
 					<modules>
-						<module>in.appops.client.Client</module>
+						 <module>in.appops.client.Client</module> 
 						<!-- <module>in.appops.showcase.web.gwt.dragonwheel.dragonwheel</module> -->  
-						<!-- <module>in.appops.showcase.web.gwt.fields.fields</module>  -->
+						 <module>in.appops.showcase.web.gwt.fields.fields</module> 
 						<!-- <module>in.appops.showcase.web.gwt.intellithought.IntelliThought</module>
 						<module>in.appops.showcase.web.gwt.wizardform.wizardform</module>
 						<module>in.appops.showcase.web.gwt.splash.splash</module>
@@ -448,7 +448,7 @@
 						<module>in.appops.showcase.web.gwt.chat.chat</module>
 						<module>in.appops.showcase.web.gwt.search.search</module> 
 						<module>in.appops.showcase.web.gwt.snippets.snippets</module> -->  
-						<module>in.appops.showcase.web.gwt.dynamicsnippet.dynamicsnippet</module>
+						<!-- <module>in.appops.showcase.web.gwt.dynamicsnippet.dynamicsnippet</module> -->
 				</modules>
 				</configuration>
 			</plugin>
@@ -457,14 +457,14 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
-				<!-- <executions>
+				<executions>
 					<execution>
 						<phase>compile</phase>
 						<goals>
 							<goal>exploded</goal>
 						</goals>
 					</execution>
-				</executions> -->
+				</executions>
 				<configuration>
 					<webappDirectory>${webappDirectory}</webappDirectory>
 				</configuration>
@@ -505,7 +505,7 @@
 				<version>2.4</version>
 				<configuration>
 					<file>target/appops_client-${buildNumber}.jar</file>
-					<groupId>mahesh_appops_platform</groupId>
+					<groupId>appops_platform</groupId>
 					<artifactId>appops_client</artifactId>
 					<version>${buildNumber}</version>
 					<packaging>jar</packaging>
