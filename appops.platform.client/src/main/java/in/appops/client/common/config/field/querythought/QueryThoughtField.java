@@ -3,6 +3,7 @@ package in.appops.client.common.config.field.querythought;
 import in.appops.client.common.config.field.intellithought.IntelliThoughtField;
 import in.appops.client.common.config.field.intellithought.IntelliThoughtSuggestion;
 import in.appops.client.common.config.field.intellithought.IntelliThoughtUtil;
+import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
@@ -51,6 +52,7 @@ public class QueryThoughtField extends IntelliThoughtField implements FieldEvent
 	
 	public QueryThoughtField() {
 		super();
+		
 		entityDefList = new EntityList();
 		tableVsPropMap = new HashMap<String, EntityList>();
 		levelVsEntityMap= new HashMap<Integer, Entity>();
@@ -112,10 +114,10 @@ public class QueryThoughtField extends IntelliThoughtField implements FieldEvent
 			String textTillCaretPosition = elementValue.substring(0, caretPosition);
 			String wordBeingTyped = IntelliThoughtUtil.getWordBeingTyped(textTillCaretPosition, caretPosition);
 			
-			/*if(keyCode == 32 && event.getCtrlKey()){
+			if(keyCode == 32 && event.getCtrlKey()){
 				showSuggestionsForLevel(FIRST,null);
 				return;
-			}*/
+			}
 			if(keyCode == KeyCodes.KEY_DOWN || keyCode == KeyCodes.KEY_UP){
 				if(linkedSuggestion.isShowing()){
 					event.preventDefault();
@@ -337,18 +339,15 @@ public class QueryThoughtField extends IntelliThoughtField implements FieldEvent
 					}
 					
 					if (showSuggestion) {
-						if (linkedSuggestionList != null
-								&& !linkedSuggestionList.isEmpty()) {
+						if (linkedSuggestionList != null && !linkedSuggestionList.isEmpty()) {
 
 							if (!linkedSuggestion.isShowing()) {
 								linkedSuggestion.show();
 								linkedSuggestion.setPopupPosition(posx, posy);
 							}
 
-							linkedSuggestion
-									.setEntityList(linkedSuggestionList);
-							linkedSuggestion
-									.setEntPropToDisplay(entityPropToDisplay);
+							linkedSuggestion.setEntityList(linkedSuggestionList);
+							linkedSuggestion.setEntPropToDisplay(entityPropToDisplay);
 							linkedSuggestion.populateSuggestions();
 							linkedSuggestion.setFirstSelection();
 						} else {
@@ -468,6 +467,68 @@ public class QueryThoughtField extends IntelliThoughtField implements FieldEvent
 			logger.log(Level.SEVERE,"[QueryThoughtFieldQueryThoughtField]::Exception In clearInvalidMarkers  method :"+e);
 		}
 	}
+	
+	/**
+	 * Event received are handled here.
+	 */
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		int eventType = event.getEventType();
+				
+		if (this.isVisible()) {
+			if (eventType == FieldEvent.SUGGESTION_CLICKED) {
+				if (linkedSuggestion.isShowing()) {
+					IntelliThoughtSuggestion suggestion = linkedSuggestion.getCurrentSelection();
+					Entity selectedEnt = suggestion.getEntity();
+					levelVsEntityMap.put(CURRENT_SUGGESTION_LEVEL, selectedEnt);
+
+					collectSelectedSuggestion(selectedEnt);
+					
+					linkSuggestionAfterSelection(suggestion.getDisplayText());
+				}
+			}
+		}
+	}
+	
+	protected void linkSuggestionAfterSelection(String text) {
+		try {
+			logger.log(Level.INFO,"[QueryThoughtField] ::In linkSuggestion method ");
+			String elementValue = this.getText();
+						
+			String textTillCaretPosition = elementValue.substring(0, caretPosition);
+			
+			if(linkedSuggestion.isShowing()){
+			Anchor tag = new Anchor(text);
+			tag.setStylePrimaryName(getLinkedSuggestionPrimaryCss());
+			String tagHtml = tag.getElement().getString();
+
+			int start = IntelliThoughtUtil.checkPreviousWord(textTillCaretPosition, text);
+
+			if (start == -1) {
+				start = textTillCaretPosition.lastIndexOf(" ") + 1;
+				if (textTillCaretPosition.lastIndexOf(" ") < textTillCaretPosition.trim().lastIndexOf(".")) {
+					start = textTillCaretPosition.trim().lastIndexOf(".") + 1;
+				}
+			}
+			
+			System.out.println("caret === "+ IntelliThoughtUtil.getCaretPosition(getBaseFieldId()));
+			try {
+				IntelliThoughtUtil.setCaretPosition(intelliText, start,	caretPosition, false);
+			} catch (Exception e) {
+				intelliText.setInnerHTML(intelliText.getInnerHTML().replace("&nbsp;", "&nbsp;&nbsp;"));
+				IntelliThoughtUtil.setCaretPosition(intelliText, start,	caretPosition, false);
+			}
+			
+			
+			IntelliThoughtUtil.insertNodeAtCaret(tagHtml);
+			}
+			linkedSuggestion.hide();
+
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[QueryThoughtField] ::Exception in linkSuggestionAfterSelection method :"+ e);
+			
+		}
+	}
 
 	
 
@@ -477,5 +538,4 @@ public class QueryThoughtField extends IntelliThoughtField implements FieldEvent
 		
 		public static final String QRYTHOUGHT_SCHEMA = "schema";
 	}
-
 }
