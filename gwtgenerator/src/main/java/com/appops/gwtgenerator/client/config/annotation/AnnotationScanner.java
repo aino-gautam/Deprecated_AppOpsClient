@@ -26,17 +26,19 @@ public class AnnotationScanner {
 		Date start = new Date();
 		
 		for (JPackage pack : typeOracle.getPackages()) {
-			
-			for (JClassType type : pack.getTypes()) {
-				for (Class<? extends Annotation> c : annotationClasses) {
-					if (type.getAnnotation(c) != null) {
-						annotationMap.get(c).add(type);
+			System.out.println(pack.getName());
+			//if (pack.getName().equalsIgnoreCase("in.appops.platform.core.shared")) {
+				System.out.println(pack.getName());
+				for (JClassType type : pack.getTypes()) {
+					System.out.println(type.getName());
+					for (Class<? extends Annotation> c : annotationClasses) {
+						if (type.getAnnotation(c) != null) {
+							annotationMap.get(c).add(type);
+						}
 					}
 				}
-			}
-			
+			//}
 			nbClasses += pack.getTypes().length;
-			
 		}
 		
 		Date end = new Date();

@@ -4,7 +4,6 @@ import com.appops.gwtgenerator.client.component.presenter.Presenter;
 
 public interface Dynamic {
 	
-	
 	public Presenter getPresenter();
 	
 	public void setPresenter(Presenter presenter);

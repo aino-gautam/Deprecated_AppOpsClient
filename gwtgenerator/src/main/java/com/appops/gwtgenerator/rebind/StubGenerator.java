@@ -36,6 +36,10 @@ public class StubGenerator extends Generator {
 	private String			libraryName	= "core";
 	private String			generatedClassName;
 	
+	public StubGenerator() {
+		// TODO Auto-generated constructor stub
+	}
+	
 	// inherited generator method
 	public String generate(TreeLogger logger, GeneratorContext context, String typeName) throws UnableToCompleteException {
 		this.typeName = typeName;
@@ -48,6 +52,25 @@ public class StubGenerator extends Generator {
 			generatedClassName = packageName + "." + className;
 			generateStubClass(logger, context);
 			
+			// return the fully qualifed name of the class generated return
+			return generatedClassName;
+		}
+		catch (Exception e) {
+			logger.log(TreeLogger.ERROR, "ERROR!!!", e);
+			throw new UnableToCompleteException();
+		}
+	}
+	
+	// inherited generator method
+	public String generate(TreeLogger logger, GeneratorContext context, String typeName, JClassType classType) throws UnableToCompleteException {
+		this.typeName = typeName;
+		try {
+			// get classType and save instance variables
+			this.classType = classType;
+			packageName = classType.getPackage().getName();
+			className = APPOPS + classType.getSimpleSourceName();
+			generatedClassName = packageName + "." + className;
+			generateStubClass(logger, context);
 			// return the fully qualifed name of the class generated return
 			return generatedClassName;
 		}
@@ -80,10 +103,10 @@ public class StubGenerator extends Generator {
 		
 		composer.addImplementedInterface("com.appops.gwtgenerator.client.generator.Dynamic");
 		//adding Tag annotation 
-		composer.addImport(com.appops.gwtgenerator.client.config.annotation.Tag.class.getCanonicalName());
+		//composer.addImport(com.appops.gwtgenerator.client.config.annotation.Tag.class.getCanonicalName());
 		
-		composer.addAnnotationDeclaration("@" + Tag.class.getSimpleName() + "(tagname = \"" + classType.getSimpleSourceName() + "\", library = \"" + libraryName + "\", classname = \""
-				+ generatedClassName + "\")");
+		/*composer.addAnnotationDeclaration("@" + Tag.class.getSimpleName() + "(tagname = \"" + classType.getSimpleSourceName() + "\", library = \"" + libraryName + "\", classname = \""
+				+ generatedClassName + "\")");*/
 		
 		//add import statement for Presenter
 		composer.addImport(com.appops.gwtgenerator.client.component.presenter.Presenter.class.getCanonicalName());

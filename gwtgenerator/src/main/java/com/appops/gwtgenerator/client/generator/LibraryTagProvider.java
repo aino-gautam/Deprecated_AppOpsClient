@@ -2,18 +2,13 @@ package com.appops.gwtgenerator.client.generator;
 
 import java.util.HashMap;
 
-
 public class LibraryTagProvider {
 	
 	private HashMap<String, TagInstanceProvider>	lib_tagProvider_map	= new HashMap<String, TagInstanceProvider>();
 	
-	public LibraryTagProvider() {
-		// TODO Auto-generated constructor stub
-	}
-	
-	public Object getInstance(String library, String tagName) throws Exception {
+	public Dynamic getInstance(String library, String tagName) throws Exception {
 		try {
-			TagInstanceProvider tagProvider = lib_tagProvider_map.get(tagName);
+			TagInstanceProvider tagProvider = lib_tagProvider_map.get(library);
 			return tagProvider.getInstance(tagName);
 		}
 		catch (Exception e) {
@@ -22,21 +17,14 @@ public class LibraryTagProvider {
 		}
 	}
 	
-	public void add(String library, String tagName, String className) {
+	public void add(String library, String tagName, String clazz) {
+		library = library.toLowerCase();
+		tagName = tagName.toLowerCase();
 		TagInstanceProvider provider = lib_tagProvider_map.get(library);
 		if (provider == null) {
 			provider = new TagInstanceProvider();
-			lib_tagProvider_map.put(tagName, provider);
+			lib_tagProvider_map.put(library, provider);
 		}
-		provider.add(tagName, className);
+		provider.add(tagName, clazz);
 	}
-	
-	/*public void add(String library, String tagName, Class className) {
-		TagInstanceProvider provider = lib_tagProvider_map.get(library);
-		if (provider == null) {
-			provider = new TagInstanceProvider();
-			lib_tagProvider_map.put(tagName, provider);
-		}
-		provider.add(tagName, className.getCanonicalName());
-	}*/
 }

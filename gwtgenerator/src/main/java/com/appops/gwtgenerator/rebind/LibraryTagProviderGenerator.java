@@ -2,37 +2,45 @@ package com.appops.gwtgenerator.rebind;
 
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import com.appops.gwtgenerator.client.config.annotation.AnnotationScanner;
 import com.appops.gwtgenerator.client.config.annotation.Tag;
+import com.appops.gwtgenerator.client.generator.DynamicInstantiator;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
+import com.google.gwt.dev.javac.TypeOracleMediator;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
 public class LibraryTagProviderGenerator extends Generator {
 	/** Simple name of class to be generated */
-	private String			className	= null;
-	private final String	APPOPS		= "AppOps";
+	private String				className			= null;
+	private final String		APPOPS				= "AppOps";
 	/** Fully qualified class name passed into GWT.create() */
-	private String			typeName	= null;
+	private String				typeName			= null;
 	/** Package name of class to be generated */
-	private String			packageName	= "com.appops.gwtgenerator.client.components.generated";
-	private JClassType		classType;
+	private String				packageName			= "com.appops.gwtgenerator.client.components.generated";
+	private JClassType			classType;
 	// need to find a way to pass it dynamically or it should be figured
 	// dynamically
-	private String			generatedClassName;
-	private TypeOracle		typeOracle;
+	private String				generatedClassName;
+	private TypeOracle			typeOracle;
+	
+	private GeneratorContext	context;
+	private List<String>		generatedClasses	= new ArrayList<String>();
 	
 	@Override
 	public String generate(TreeLogger logger, GeneratorContext context, String typeName) throws UnableToCompleteException {
 		this.typeName = typeName;
+		this.context = context;
 		typeOracle = context.getTypeOracle();
 		try {
 			// get classType and save instance variables
@@ -40,6 +48,7 @@ public class LibraryTagProviderGenerator extends Generator {
 			className = APPOPS + classType.getSimpleSourceName();
 			generatedClassName = packageName + "." + className;
 			generateStubClass(logger, context);
+			//generateDynamicInstanctiator(logger);
 			
 			// return the fully qualifed name of the class generated return
 			return generatedClassName;
@@ -49,6 +58,13 @@ public class LibraryTagProviderGenerator extends Generator {
 			throw new UnableToCompleteException();
 		}
 	}
+	
+	/*private void generateDynamicInstanctiator(TreeLogger logger) throws UnableToCompleteException, NotFoundException {
+		classType = typeOracle.getType("com.appops.gwtgenerator.client.generator.DynamicInstantiator");
+		typeName = classType.getSimpleSourceName();
+		DynamicInstantiatorGenerator instantiatorGenerator = new DynamicInstantiatorGenerator();
+		instantiatorGenerator.generate(logger, context, classType, typeName, generatedClasses);
+	}*/
 	
 	/**
 	 * Generate source code for new class. Class extends <code>TextBox</code>.
@@ -89,11 +105,22 @@ public class LibraryTagProviderGenerator extends Generator {
 		sourceWriter.indent();
 		sourceWriter.println("super();");
 		Class[] clazzarray = { Tag.class };
+		
 		Map<Class<? extends Annotation>, List<JClassType>> map = AnnotationScanner.scan(logger, typeOracle, clazzarray);
 		List<JClassType> list = map.get(Tag.class);
+		//StubGenerator stubGenerator = new StubGenerator();
 		for (JClassType jClassType : list) {
-			Tag tag = jClassType.getAnnotation(Tag.class);
-			sourceWriter.println("this.add(" + tag.library() + "," + tag.tagname() + "," + tag.classname() + ");");
+			try {
+				//String generatedClass = stubGenerator.generate(logger, context, jClassType.getName(), jClassType);
+				//generatedClasses.add(generatedClass);
+				//composer.addImport(generatedClass);
+				Tag tag = jClassType.getAnnotation(Tag.class);
+				//sourceWriter.println("this.add(\"" + tag.library() + "\",\"" + tag.tagname() + "\",\"" + ((generatedClass != null) ? generatedClass : tag.classname()) + "\");");
+				sourceWriter.println("this.add(\"" + tag.library() + "\",\"" + tag.tagname() + "\",\"" + jClassType.getQualifiedSourceName() + "\");");
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		sourceWriter.outdent();
 		sourceWriter.println("}");

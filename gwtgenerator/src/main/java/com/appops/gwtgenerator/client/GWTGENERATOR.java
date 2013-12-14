@@ -1,16 +1,17 @@
 package com.appops.gwtgenerator.client;
 
-import com.appops.gwtgenerator.client.generator.LibraryTagProvider;
+import com.appops.gwtgenerator.client.config.util.HtmlPageProcessor;
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class GWTGENERATOR implements EntryPoint {
 	public void onModuleLoad() {
-		LibraryTagProvider LIBRARY_TAG_PROVIDER = GWT.create(LibraryTagProvider.class);
-		LIBRARY_TAG_PROVIDER.toString();
+		HtmlPageProcessor processor = new HtmlPageProcessor();
+		processor.processPageDescription();
+		//	LibraryTagProvider LIBRARY_TAG_PROVIDER = GWT.create(LibraryTagProvider.class);
+		//LIBRARY_TAG_PROVIDER.toString();
 		//Dynamic textBox = GWT.create(TextBox.class);
 		
 		/*Label label = GWT.create(Label.class);

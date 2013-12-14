@@ -20,23 +20,33 @@
 	<!-- Specify the app entry point class. -->
 	<entry-point class='com.appops.gwtgenerator.client.GWTGENERATOR' />
 
-	<generate-with
-		class="com.appops.gwtgenerator.rebind.LibraryTagProviderGenerator">
+	<generate-with class="com.appops.gwtgenerator.rebind.ListTypes">
 		<when-type-is
 			class="com.appops.gwtgenerator.client.generator.LibraryTagProvider" />
 	</generate-with>
-	<generate-with class="com.appops.gwtgenerator.rebind.StubGenerator">
-		<when-type-is class="com.google.gwt.user.client.ui.RadioButton" />
+
+
+
+	<!-- <generate-with
+		class="com.appops.gwtgenerator.rebind.LibraryTagProviderGenerator">
+		<when-type-is
+			class="com.appops.gwtgenerator.client.generator.LibraryTagProvider" />
+	</generate-with> -->
+	<generate-with
+		class="com.appops.gwtgenerator.rebind.DynamicInstantiatorGenerator">
+		<when-type-is
+			class="com.appops.gwtgenerator.client.generator.DynamicInstantiator" />
 	</generate-with>
+	<!-- <generate-with class="com.appops.gwtgenerator.rebind.StubGenerator"> 
+		<when-type-is class="com.google.gwt.user.client.ui.RadioButton" /> </generate-with> -->
 	<generate-with class="com.appops.gwtgenerator.rebind.StubGenerator">
-		<when-type-is class="com.google.gwt.user.client.ui.TextBox" />
+		<when-type-is
+			class="com.appops.gwtgenerator.client.component.generated.sample.textboxrebindergenerated.CoreTextBox" />
 	</generate-with>
-	<generate-with class="com.appops.gwtgenerator.rebind.StubGenerator">
-		<when-type-is class="com.google.gwt.user.client.ui.Label" />
-	</generate-with>
-	<replace-with class="com.appops.gwtgenerator.rebind.StubGenerator">
-		<when-type-is class="com.google.gwt.user.client.ui.CheckBox" />
-	</replace-with>
+	<!-- <generate-with class="com.appops.gwtgenerator.rebind.StubGenerator"> 
+		<when-type-is class="com.google.gwt.user.client.ui.Label" /> </generate-with> 
+		<replace-with class="com.appops.gwtgenerator.rebind.StubGenerator"> <when-type-is 
+		class="com.google.gwt.user.client.ui.CheckBox" /> </replace-with> -->
 
 	<!-- Specify the paths for translatable code -->
 	<source path='client' />
