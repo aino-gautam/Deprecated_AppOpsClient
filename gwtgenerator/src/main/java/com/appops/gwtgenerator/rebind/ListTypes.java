@@ -14,12 +14,13 @@ public class ListTypes extends Generator {
 		
 		for (JPackage pack : context.getTypeOracle().getPackages()) {
 			//System.out.println(pack.getName());
-			if (pack.getName().equalsIgnoreCase("in.appops.platform.core.entity")) {
-				System.out.println(pack.getName());
-				for (JClassType type : pack.getTypes()) {
-					System.out.println(type.getName());
-				}
+			//	if (pack.getName().equalsIgnoreCase("in.appops.platform.core.operation")) {
+			System.out.println("PACKAGE::==>" + pack.getName());
+			for (JClassType type : pack.getTypes()) {
+				System.out.println("type-" + type.getName());
 			}
+			//}
+			
 		}
 		return null;
 	}

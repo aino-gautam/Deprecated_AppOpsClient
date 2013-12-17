@@ -1,10 +1,11 @@
 package com.appops.gwtgenerator.client.component.presenter;
 
+import in.appops.platform.core.shared.Configurable;
+import in.appops.platform.core.shared.Configuration;
+
 import java.util.HashMap;
 import java.util.Set;
 
-import com.appops.gwtgenerator.client.config.core.Configurable;
-import com.appops.gwtgenerator.client.config.core.Configuration;
 import com.google.gwt.user.client.ui.Widget;
 
 // Sample Base presenter
@@ -31,10 +32,13 @@ public class Presenter implements Configurable {
 	public Presenter() {
 		// TODO Auto-generated constructor stub
 	}
-
+	
 	// initialization would be applying the configuration on the view
 	// registering or deregisterations of events.
-	private void initialize() {
+	public void initialize() {
+		if (configuration != null) {
+			
+		}
 		
 	}
 	

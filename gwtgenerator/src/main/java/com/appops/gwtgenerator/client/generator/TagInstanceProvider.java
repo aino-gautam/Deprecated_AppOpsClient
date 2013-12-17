@@ -2,7 +2,6 @@ package com.appops.gwtgenerator.client.generator;
 
 import java.util.HashMap;
 
-import com.appops.gwtgenerator.client.config.core.Configuration;
 import com.google.gwt.core.client.GWT;
 
 public class TagInstanceProvider {
@@ -13,7 +12,7 @@ public class TagInstanceProvider {
 	public Dynamic getInstance(String tagName) throws Exception {
 		try {
 			String correspondingClass = tag_Class_map.get(tagName);
-			return instantiator.getMVP(correspondingClass,new Configuration());
+			return instantiator.getInstance(correspondingClass);
 		}
 		catch (Exception e) {
 			e.printStackTrace();

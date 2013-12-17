@@ -20,18 +20,15 @@
 	<!-- Specify the app entry point class. -->
 	<entry-point class='com.appops.gwtgenerator.client.GWTGENERATOR' />
 
-	<generate-with class="com.appops.gwtgenerator.rebind.ListTypes">
-		<when-type-is
-			class="com.appops.gwtgenerator.client.generator.LibraryTagProvider" />
-	</generate-with>
+	<!-- <generate-with class="com.appops.gwtgenerator.rebind.ListTypes"> <when-type-is 
+		class="com.appops.gwtgenerator.client.generator.LibraryTagProvider" /> </generate-with> -->
 
 
-
-	<!-- <generate-with
+	<generate-with
 		class="com.appops.gwtgenerator.rebind.LibraryTagProviderGenerator">
 		<when-type-is
 			class="com.appops.gwtgenerator.client.generator.LibraryTagProvider" />
-	</generate-with> -->
+	</generate-with>
 	<generate-with
 		class="com.appops.gwtgenerator.rebind.DynamicInstantiatorGenerator">
 		<when-type-is

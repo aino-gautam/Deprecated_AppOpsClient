@@ -1,8 +1,9 @@
 package com.appops.gwtgenerator.client.config.cache;
 
-import java.util.HashMap;
+import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.shared.Configuration;
 
-import com.appops.gwtgenerator.client.config.core.Entity;
+import java.util.HashMap;
 /**
  * Will cache the configuration entities that are loaded with the App
  * @author Administrator
@@ -15,6 +16,13 @@ public class ConfigCache {
 	
 	
 	public ConfigCache() {
+	}
+
+
+
+	public Configuration getConfig(String configID) {
+		return null;
+		
 	}
 	
 }

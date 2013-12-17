@@ -75,8 +75,8 @@
 
 		<dependency>
 			<groupId>appops_platform</groupId>
-			<artifactId>appops_shared</artifactId>
-			<version>08.10.2013</version>
+			<artifactId>appops_shared_EntityGraphExp_commented</artifactId>
+			<version>17.12.2013</version>
 		</dependency>
 
 		<dependency>
@@ -95,10 +95,8 @@
 				<artifactId>gwt-maven-plugin</artifactId>
 				<version>2.4.0</version>
 				<configuration>
-					<!-- <extraJvmArgs>-Xmx1024M</extraJvmArgs>
-					<gen>
-						C:\Users\Administrator\git\AppOpsClient\gwtgenerator\target\.generated
-					</gen> -->
+					<!-- <extraJvmArgs>-Xmx1024M</extraJvmArgs> <gen> C:\Users\Administrator\git\AppOpsClient\gwtgenerator\target\.generated 
+						</gen> -->
 					<runTarget>GWTGENERATOR.html</runTarget>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
 

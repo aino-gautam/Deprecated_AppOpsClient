@@ -5,12 +5,11 @@ import com.appops.gwtgenerator.client.generator.Dynamic;
 import com.appops.gwtgenerator.client.generator.LibraryTagProvider;
 
 public class CoreComponentFactory {
-	public static Dynamic getTagInstance(String tagName) throws Exception {
+	public static Dynamic getTagInstance(String tag) throws Exception {
 		LibraryTagProvider libraryTagProvider = ContextConfigurationManager.getLIBRARY_TAG_PROVIDER();
 		//split tag name
-		String[] splitarray = tagName.split(":");
+		String[] splitarray = tag.split(":");
 		Dynamic widget = libraryTagProvider.getInstance(splitarray[0].toLowerCase(), splitarray[1].toLowerCase());
 		return widget;
 	}
-	
 }

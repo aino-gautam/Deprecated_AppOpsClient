@@ -1,8 +1,8 @@
 package com.appops.gwtgenerator.client.config.util;
 
 import in.appops.client.common.util.JsonToEntityConverter;
+import in.appops.platform.core.shared.Configuration;
 
-import com.appops.gwtgenerator.client.config.core.Configuration;
 import com.google.gwt.i18n.client.Dictionary;
 
 public class ConfigProvider {
