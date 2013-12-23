@@ -1740,4 +1740,15 @@ td.datePickerMonth {
 	box-shadow: 5px 5px 5px #B0B0B0;
 	float: left;
 }
+
+.defaultNotificationIcon {
+	width: 20px;
+	margin: 5px 5px 0px 0px;
+}
+.defaultNotificationMessage{
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 15px;
+	color: #848484;
+	font-weight: 500;
+}
 /*************************/

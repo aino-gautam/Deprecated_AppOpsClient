@@ -83,7 +83,7 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 		try {
 			logger.log(Level.INFO, "[NumericTextbox] ::In getMax method ");
 			if(getConfigurationValue(TextFieldConstant.MAXVALUE) != null) {
-				max = (Float) getConfigurationValue(TextFieldConstant.MAXVALUE);
+				max = Float.parseFloat(getConfigurationValue(TextFieldConstant.MAXVALUE).toString());
 			}
 		} catch (Exception e) {
 			// CONFIG ERROR -- If max value is anything other than a numeric value. 
@@ -97,7 +97,7 @@ public class NumericTextbox extends TextBox implements KeyPressHandler {
 		try {
 			logger.log(Level.INFO, "[NumericTextbox] ::In getMin method ");
 			if(getConfigurationValue(TextFieldConstant.MINVALUE) != null) {
-				min = (Float) getConfigurationValue(TextFieldConstant.MINVALUE);
+				min = Float.parseFloat( getConfigurationValue(TextFieldConstant.MINVALUE).toString());
 			}
 		} catch (Exception e) {
 			// CONFIG ERROR -- If min value is anything other than a numeric value. 
