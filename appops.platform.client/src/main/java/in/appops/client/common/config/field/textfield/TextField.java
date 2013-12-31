@@ -412,10 +412,9 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 	public ArrayList<String> getErrors(String value) {
 		ArrayList<String> errors = new ArrayList<String>();
 		try {
-
+			value = value.trim();
 			String fieldType = getTextFieldType();
 			String errorText = null;
-
 
 			if (fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_EMAILBOX)) {
 				errorText = validateEmail(getFieldValue());
