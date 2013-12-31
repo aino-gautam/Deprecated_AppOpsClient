@@ -18,7 +18,6 @@ public class TagInstanceProvider {
 			e.printStackTrace();
 			throw e;
 		}
-		
 	}
 	
 	public void add(String tagName, String className) {

@@ -67,11 +67,7 @@
 			<artifactId>mvp4g</artifactId>
 			<version>1.4.0</version>
 		</dependency>
-		<dependency>
-			<groupId>appops_platform</groupId>
-			<artifactId>appops_client</artifactId>
-			<version>08.10.2013</version>
-		</dependency>
+		
 
 		<dependency>
 			<groupId>appops_platform</groupId>
@@ -79,10 +75,20 @@
 			<version>17.12.2013</version>
 		</dependency>
 
-		<dependency>
-			<groupId>appops_platform</groupId>
+		<!-- <dependency>
+			<groupId>pallavi_appops_platform</groupId>
 			<artifactId>entityconf_shared</artifactId>
-			<version>11.11.2013</version>
+			<version>26.11.2013</version>
+		</dependency> -->
+		<dependency>
+			<groupId>com.googlecode.gwtupload</groupId>
+			<artifactId>gwtupload</artifactId>
+			<version>0.6.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.gwtphonegap</groupId>
+			<artifactId>gwtphonegap</artifactId>
+			<version>2.0.0.0</version>
 		</dependency>
 	</dependencies>
 

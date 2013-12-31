@@ -1,11 +1,17 @@
 package com.appops.gwtgenerator.client.component.presenter;
 
+import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.shared.Configurable;
 import in.appops.platform.core.shared.Configuration;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import com.appops.gwtgenerator.client.generator.Dynamic;
 import com.google.gwt.user.client.ui.Widget;
 
 // Sample Base presenter
@@ -18,7 +24,7 @@ public class Presenter implements Configurable {
 	
 	private final static String								EVENTRULEMAP	= "event_rule_map";
 	
-	private Widget											view;
+	private Dynamic											view;
 	// holds the event rule set
 	HashMap<String, Set<Configuration>>						eventRuleSet	= new HashMap<String, Set<Configuration>>();
 	HashMap<String, HashMap<String, Set<Configuration>>>	eventRuleMAp	= new HashMap<String, HashMap<String, Set<Configuration>>>();
@@ -37,9 +43,25 @@ public class Presenter implements Configurable {
 	// registering or deregisterations of events.
 	public void initialize() {
 		if (configuration != null) {
-			
+			Configuration viewConfig = configuration.getPropertyByName("view");
+			for (Entry<String, Property<? extends Serializable>> entry : viewConfig.getValue().entrySet()) {
+				String propName = (String) entry.getKey();
+				Property<? extends Serializable> prop = entry.getValue();
+				if (prop instanceof Entity) {
+					
+				}
+				else {
+					try {
+						ArrayList<Serializable> parameters = new ArrayList<Serializable>();
+						parameters.add(prop.getValue());
+						view.im("set" + propName, parameters);
+					}
+					catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		}
-		
 	}
 	
 	// type vs event rule set map.
@@ -64,11 +86,11 @@ public class Presenter implements Configurable {
 	}
 	
 	public Widget getView() {
-		return view;
+		return (Widget) view;
 	}
 	
 	public void setView(Widget view) {
-		this.view = view;
+		this.view = (Dynamic) view;
 	}
 	
 }

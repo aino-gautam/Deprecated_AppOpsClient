@@ -1,7 +1,6 @@
 package com.appops.gwtgenerator.client;
 
-import com.appops.gwtgenerator.client.config.util.HtmlPageProcessor;
-import com.appops.gwtgenerator.client.generator.LibraryTagProvider;
+import com.appops.gwtgenerator.client.component.generated.sample.textboxrebindergenerated.CoreTextBox;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 
@@ -10,16 +9,18 @@ import com.google.gwt.core.client.GWT;
  */
 public class GWTGENERATOR implements EntryPoint {
 	public void onModuleLoad() {
-		HtmlPageProcessor processor = new HtmlPageProcessor();
+		/*HtmlPageProcessor processor = new HtmlPageProcessor();
 		try {
 			processor.processPageDescription();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-		}
-		//LibraryTagProvider LIBRARY_TAG_PROVIDER = GWT.create(LibraryTagProvider.class);
-		//LIBRARY_TAG_PROVIDER.toString();
-		//Dynamic textBox = GWT.create(TextBox.class);
+		}*/
+		
+		GWT.create(CoreTextBox.class);
+		/*	LibraryTagProvider LIBRARY_TAG_PROVIDER = GWT.create(LibraryTagProvider.class);
+			LIBRARY_TAG_PROVIDER.toString();
+		*///Dynamic textBox = GWT.create(TextBox.class);
 		
 		/*Label label = GWT.create(Label.class);
 		

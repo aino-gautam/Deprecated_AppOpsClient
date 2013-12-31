@@ -8,11 +8,6 @@ import java.lang.annotation.RetentionPolicy;
 @Documented
 @Inherited
 @Retention(RetentionPolicy.CLASS)
-public @interface FiresEvent {
-	
-	boolean inherited() default true;
-	
-	String eventName();
-	
-	String[] param();
+public @interface FiresEventSet {
+	Event[] value() default {};
 }

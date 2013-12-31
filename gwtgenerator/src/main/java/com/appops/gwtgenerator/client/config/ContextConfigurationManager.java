@@ -21,7 +21,7 @@ public class ContextConfigurationManager {
 	}
 	
 	public static ConfigCache getConfigCache() {
-		return null;
+		return new ConfigCache();
 	}
 	
 }

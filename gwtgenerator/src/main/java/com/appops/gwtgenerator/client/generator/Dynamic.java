@@ -1,5 +1,8 @@
 package com.appops.gwtgenerator.client.generator;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
 import com.appops.gwtgenerator.client.component.presenter.Presenter;
 
 public interface Dynamic {
@@ -13,7 +16,7 @@ public interface Dynamic {
 	 * @param methodName
 	 * @param parameters
 	 */
-	public Object im(String methodName, Object[] parameters) throws Exception;
+	public Object im(String methodName, ArrayList<Serializable> parameters) throws Exception;
 	
 	/**
 	 * up-(update property), this is to update a property, invokes the setter method.

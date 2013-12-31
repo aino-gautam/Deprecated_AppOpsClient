@@ -1,5 +1,7 @@
 package com.appops.gwtgenerator.client.config.util;
 
+import java.util.ArrayList;
+
 import in.appops.platform.core.shared.Configuration;
 
 import com.appops.gwtgenerator.client.component.factory.CoreComponentFactory;
@@ -62,7 +64,7 @@ public class HtmlPageProcessor {
 		String html = null;
 		String snippetId = getSnippetId(node);
 		if (snippetId != null) {
-			html = SnippetCache.fetchSnippetDesc(snippetId);
+			html = SnippetCache.getSnippetDesc(snippetId);
 		}
 		else {
 			html = ((Element) node).getInnerHTML();
@@ -76,8 +78,7 @@ public class HtmlPageProcessor {
 	}
 	
 	private Configuration getConfig(String configID) throws Exception {
-		ConfigCache cache = ContextConfigurationManager.getConfigCache();
-		Configuration config = cache.getConfig(configID);
+		Configuration config = ConfigCache.getConfig(configID);
 		return config;
 	}
 	
@@ -95,21 +96,23 @@ public class HtmlPageProcessor {
 			if (configID != null) {
 				Configuration configuration = getConfig(configID);
 				presenter.setConfiguration(configuration);
+				presenter.initialize();
 			}
 			// initialize would process the configuration object and update the view. also it will (de)register handlers for events.
 			presenter.initialize();
 			node.getParentNode().replaceChild(widget.getElement(), node);
 			
 			// temp for testing.
-			Object[] parameters = { "My String" };
+			ArrayList parameters = new ArrayList();
+			parameters.add("My String");
 			dynamic.im("setText", parameters);
 		}
 	}
 	
 	private String getConfigId(Node node) {
 		Element element = Element.as(node);
-		if (element.hasAttribute("configId")) {
-			return element.getAttribute("configID");
+		if (element.hasAttribute("configid")) {
+			return element.getAttribute("configid");
 		}
 		return null;
 	}
@@ -130,8 +133,8 @@ public class HtmlPageProcessor {
 	
 	private String getSnippetId(Node node) {
 		Element element = (Element) node;
-		if (element.hasAttribute("snippetId")) {
-			return element.getAttribute("snippetId");
+		if (element.hasAttribute("snippetid")) {
+			return element.getAttribute("snippetid");
 		}
 		return null;
 	}

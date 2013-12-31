@@ -12,9 +12,9 @@ import com.google.gwt.user.rebind.SourceWriter;
 // needs to scan the class for public methods 
 // creates a switch or if else blocks to invoke these methods.
 
-public class EventConfigurationHelper {
+public class CustomGeneratorHelper {
 	
-	public EventConfigurationHelper() {
+	public CustomGeneratorHelper() {
 	}
 	
 	// scans the class for public methods, creates the methods invoking
@@ -24,7 +24,7 @@ public class EventConfigurationHelper {
 	
 	public void generateImMethodImpl(ClassSourceFileComposerFactory composer, SourceWriter sourceWriter, JClassType classType) {
 		sourceWriter.println("@Override ");
-		sourceWriter.println("public Object im(String methodName, Object[] parameters) throws Exception {");
+		sourceWriter.println("public Object im(String methodName, ArrayList<Serializable> parameters) throws Exception {");
 		sourceWriter.indent();
 		JMethod[] jMethods = classType.getInheritableMethods();
 		
@@ -33,7 +33,8 @@ public class EventConfigurationHelper {
 			String methodName = jMethod.getName();
 			try {
 				if (jMethod.isPublic()) {
-					if ((methodName.startsWith("get")) || methodName.startsWith("set") || methodName.startsWith("is")) {
+					if ((methodName.startsWith("add"))/*"get")) || methodName.startsWith("set") || methodName.startsWith("is")*/) {
+						System.out.println(methodName);
 						JParameter[] methodParameters = jMethod.getParameters();
 						sourceWriter.println("if(methodName.equalsIgnoreCase(\"" + methodName + "\")){");
 						sourceWriter.indent();
@@ -47,17 +48,17 @@ public class EventConfigurationHelper {
 								if (parameterType.isPrimitive() != null) {
 									JPrimitiveType jPrimitiveType = parameterType.isPrimitive();
 									if (jPrimitiveType.equals(JPrimitiveType.INT)) {
-										sourceStr = "Integer.parseInt(parameters[" + i + "].toString())";
+										sourceStr = "Integer.parseInt(parameters.get(" + i + ").toString())";
 									}
 									if (jPrimitiveType.equals(JPrimitiveType.BOOLEAN)) {
-										sourceStr = "Boolean.parseBoolean(parameters[" + i + "].toString())";
+										sourceStr = "Boolean.parseBoolean(parameters.get(" + i + ").toString())";
 									}
 									if (jPrimitiveType.equals(JPrimitiveType.CHAR)) {
-										sourceStr = "(parameters[" + i + "].toString()).charAt(0)";
+										sourceStr = "(parameters.get(" + i + ").toString()).charAt(0)";
 									}
 								}
 								else {
-									sourceStr = "(" + parameterType.getQualifiedSourceName() + ")parameters[" + i + "]";
+									sourceStr = "(" + parameterType.getQualifiedSourceName() + ")parameters.get(" + i + ")";
 									composer.addImport(parameterType.getQualifiedSourceName());
 								}
 								int val = methodParameters.length - 1;

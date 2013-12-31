@@ -2,7 +2,6 @@ package com.appops.gwtgenerator.rebind;
 
 import java.io.PrintWriter;
 
-import com.appops.gwtgenerator.client.config.annotation.Tag;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -110,7 +109,8 @@ public class StubGenerator extends Generator {
 		
 		//add import statement for Presenter
 		composer.addImport(com.appops.gwtgenerator.client.component.presenter.Presenter.class.getCanonicalName());
-		
+		composer.addImport(java.io.Serializable.class.getCanonicalName());
+		composer.addImport(java.util.ArrayList.class.getCanonicalName());
 		SourceWriter sourceWriter = composer.createSourceWriter(context, printWriter);
 		
 		// generate constructor source code
@@ -131,7 +131,7 @@ public class StubGenerator extends Generator {
 	}
 	
 	private void generatePresenterAccessMethods(ClassSourceFileComposerFactory composer, SourceWriter sourceWriter) {
-		EventConfigurationHelper helper = new EventConfigurationHelper();
+		CustomGeneratorHelper helper = new CustomGeneratorHelper();
 		helper.generatePresenterAccessMethods(composer, sourceWriter, classType);
 	}
 	
@@ -143,7 +143,7 @@ public class StubGenerator extends Generator {
 	 *            Source writer to output source code
 	 */
 	private void generateMethodIM(ClassSourceFileComposerFactory composer, SourceWriter sourceWriter) {
-		EventConfigurationHelper helper = new EventConfigurationHelper();
+		CustomGeneratorHelper helper = new CustomGeneratorHelper();
 		helper.generateImMethodImpl(composer, sourceWriter, classType);
 	}
 	
@@ -155,7 +155,7 @@ public class StubGenerator extends Generator {
 	 *            Source writer to output source code
 	 */
 	private void generateConstructor(ClassSourceFileComposerFactory composer, SourceWriter sourceWriter) {
-		EventConfigurationHelper helper = new EventConfigurationHelper();
+		CustomGeneratorHelper helper = new CustomGeneratorHelper();
 		helper.generateConstructor(composer, sourceWriter, classType);
 	}
 	

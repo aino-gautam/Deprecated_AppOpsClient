@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.appops.gwtgenerator.client.component.generated.sample.textboxrebindergenerated;
+package com.appops.gwtgenerator.client.component.generated.sample.stubgenerated;
 
 import com.appops.gwtgenerator.client.config.annotation.Appopsify;
 import com.appops.gwtgenerator.client.config.annotation.Attribute;
@@ -48,15 +48,19 @@ import com.google.gwt.user.client.ui.TextBoxBase;
 @Appopsify()
 @FiresEventSet({
 
-@Event(type = ValueChangeEvent.class), @Event(type = ClickEvent.class), @Event(type = FocusEvent.class), @Event(type = BlurEvent.class), @Event(type = DoubleClickEvent.class)
+@Event(type = ValueChangeEvent.class),
+@Event(type = ClickEvent.class),
+@Event(type = FocusEvent.class), 
+@Event(type = BlurEvent.class), 
+@Event(type = DoubleClickEvent.class)
 
 })
-public class CoreTextBox extends TextBoxBase {
+public class TextBox extends TextBoxBase {
 	
 	/**
 	 * Creates an empty text box.
 	 */
-	public CoreTextBox() {
+	public TextBox() {
 		super(DOM.createInputText());
 		setStyleName("gwt-TextBox");
 	}
@@ -66,6 +70,7 @@ public class CoreTextBox extends TextBoxBase {
 	 * 
 	 * @return the maximum length, in characters
 	 */
+	@Attribute(defaultValue = "100")
 	public int getMaxLength() {
 		return DOM.getElementPropertyInt(getElement(), "maxLength");
 	}
@@ -84,7 +89,6 @@ public class CoreTextBox extends TextBoxBase {
 	 * 
 	 * @param length the maximum length, in characters
 	 */
-	@Attribute(defaultValue = "100", alternateValues = { "50", "600" })
 	public void setMaxLength(int length) {
 		DOM.setElementPropertyInt(getElement(), "maxLength", length);
 	}
@@ -99,7 +103,7 @@ public class CoreTextBox extends TextBoxBase {
 	}
 	
 	@Override
-	@Attribute(defaultValue = "E-N-T-E-R text here!",  alternateValues = { "Olaa", "miya" })
+	@Attribute(defaultValue = "E-N-T-E-R text here!")
 	public void setText(String text) {
 		super.setText(text);
 	}
