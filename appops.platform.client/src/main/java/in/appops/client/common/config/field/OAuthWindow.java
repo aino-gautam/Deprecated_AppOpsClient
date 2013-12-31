@@ -1,4 +1,4 @@
-package in.appops.showcase.web.gwt.facebook.client;
+package in.appops.client.common.config.field;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
