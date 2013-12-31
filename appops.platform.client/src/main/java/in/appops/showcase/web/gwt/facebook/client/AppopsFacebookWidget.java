@@ -3,6 +3,7 @@
  */
 package in.appops.showcase.web.gwt.facebook.client;
 
+import in.appops.client.common.config.field.OAuthWindow;
 import in.appops.showcase.web.gwt.facebook.shared.constant.UserPojoConstant;
 
 import com.google.gwt.core.client.GWT;
