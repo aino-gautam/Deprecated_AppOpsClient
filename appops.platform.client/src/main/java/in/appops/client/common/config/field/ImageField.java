@@ -6,7 +6,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ErrorEvent;
+import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.Image;
 
@@ -31,10 +34,11 @@ imageField.configure();<br>
 imageField.create();<br>
 
 </p>*/
-public class ImageField extends BaseField implements ClickHandler{
+public class ImageField extends BaseField implements ClickHandler,ErrorHandler{
 
 	private Image image ;
 	private HandlerRegistration clickHandler = null ;
+	private HandlerRegistration errorHandler = null ;
 	private Logger logger = Logger.getLogger(getClass().getName());
 
 	public ImageField(){
@@ -45,6 +49,7 @@ public class ImageField extends BaseField implements ClickHandler{
 		super.initialize();
 		image = new Image();
 		clickHandler = image.addClickHandler(this);
+		errorHandler = image.addErrorHandler(this);
 	}
 	/******************************** ****************************************/
 	/**
@@ -96,7 +101,8 @@ public class ImageField extends BaseField implements ClickHandler{
 		
 		if(clickHandler!=null)
 			clickHandler.removeHandler();
-		
+		if(errorHandler != null)
+			errorHandler.removeHandler();
 	}
 	
 	/**
@@ -170,6 +176,18 @@ public class ImageField extends BaseField implements ClickHandler{
 		return blobId;
 	}
 	
+	private String getDefaultImageUrl() {
+		String blobId = null;
+		try {
+			if (getConfigurationValue(ImageFieldConstant.IMGFD_DEFAULT_IMG_URL) != null) {
+				blobId = getConfigurationValue(ImageFieldConstant.IMGFD_DEFAULT_IMG_URL).toString();
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[ImageField] ::Exception in getDefaultImageUrl method :"+e);
+		}
+		return blobId;
+	}
+
 	
 	/**
 	 * Method return the image title.
@@ -212,8 +230,11 @@ public class ImageField extends BaseField implements ClickHandler{
 		/**  Specifies the image blobId ****/
 		public static final String IMGFD_BLOBID = "blobId";
 		
+		public static final String IMGFD_DEFAULT_IMG_URL = "defaultImg";
 	}
 
-	
-
+	@Override
+	public void onError(ErrorEvent event) {
+		image.setUrl(getDefaultImageUrl());
+	}
 }
