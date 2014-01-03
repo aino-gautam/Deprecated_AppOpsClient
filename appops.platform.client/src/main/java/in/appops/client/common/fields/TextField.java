@@ -235,7 +235,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			keyPressHandler = passwordTextBox.addKeyPressHandler(this);
 			blurHandler = passwordTextBox.addBlurHandler(this);
 			keyUpHandler = passwordTextBox.addKeyUpHandler(this);
-			keyDownHandler = textBox.addKeyDownHandler(this);
+			keyDownHandler = passwordTextBox.addKeyDownHandler(this);
 			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[TextField] ::Exception In createPasswordBox method " + e);
@@ -269,7 +269,7 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 			keyPressHandler = numericTextbox.addKeyPressHandler(numericTextbox);
 			keyUpHandler = numericTextbox.addKeyUpHandler(this);
 			blurHandler = numericTextbox.addBlurHandler(this);
-			keyDownHandler = textBox.addKeyDownHandler(this);
+			keyDownHandler = numericTextbox.addKeyDownHandler(this);
 			
 		} catch (Exception e) {
 

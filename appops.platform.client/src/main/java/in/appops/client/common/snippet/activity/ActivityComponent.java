@@ -4,6 +4,7 @@
 
 package in.appops.client.common.snippet.activity;
 
+import in.appops.client.common.config.component.Notifier;
 import in.appops.client.common.core.EntityListReceiver;
 import in.appops.client.common.core.EntityReceiver;
 import in.appops.client.common.snippet.SnippetConstant;
@@ -12,25 +13,21 @@ import in.appops.platform.core.entity.GeoLocation;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
-import in.appops.platform.server.core.services.search.constant.OperationParameterConstant;
 import in.appops.platform.server.core.services.search.constant.SearchConstant;
 
 import java.util.HashMap;
 
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * @author mahesh@ensarm.com
+ * @modifiedBy pallavi@ensarm.com
  * 
  */
 public class ActivityComponent extends Composite implements EntityListReceiver,EntityReceiver{
@@ -40,10 +37,15 @@ public class ActivityComponent extends Composite implements EntityListReceiver,E
 	private FlexTable headerContainerFlex;
 	private VerticalPanel resultContainer;
 	private ActivityListSnippet activityListSnippet;
-	private Image loaderImage;
+	private Notifier notifier;
 	private Long maxResult = 0L;
 	private int startIndex =0;
 	private int pageSize = 10;
+	private Configuration configuration = null;
+	
+	public static String DEFAULT_NOTIFICATION_IMG = "images/defaultLoader.gif";
+	public static String DEFAULT_NOTIFICATION_IMGCSS = "defaultNotificationIcon";
+
 
 	public ActivityComponent(ActivityModel model){
 		activityModel = model;
@@ -63,8 +65,6 @@ public class ActivityComponent extends Composite implements EntityListReceiver,E
 			resultContainer.setStylePrimaryName("fullWidth");
 			resultContainer.addStyleName("activityResultDisplayer");
 
-			loaderImage = new Image("images/opptinLoader.gif");
-			loaderImage.setVisible(false);
 
 			activityModel.setEntityListReceiver(this);
 
@@ -84,6 +84,21 @@ public class ActivityComponent extends Composite implements EntityListReceiver,E
 			e.printStackTrace();
 		}
 	}
+	
+	private Configuration getNotifierConfig(String imageUrl,String imageCss,String basePanelcss) {
+		Configuration configuration = null;
+		try {
+			configuration = new Configuration();
+			configuration.setPropertyByName(ActivityComponentConstant.NOTIFICATION_IMAGE_URL, imageUrl);
+			configuration.setPropertyByName(ActivityComponentConstant.NOTIFICATION_IMG_CSS, imageCss);
+			configuration.setPropertyByName(ActivityComponentConstant.NOTIFIER_BASEPANEL_CSS, basePanelcss);
+			return configuration;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return configuration;
+	}
+	
 
 	public void createUi(){
 		try {
@@ -91,12 +106,14 @@ public class ActivityComponent extends Composite implements EntityListReceiver,E
 			resultContainer.clear();
 			baseVp.add(headerContainerFlex);
 
-			baseVp.add(loaderImage);
-			baseVp.setCellHorizontalAlignment(loaderImage,HorizontalPanel.ALIGN_CENTER);
-			loaderImage.setVisible(true);
-
-			startIndex = 0;
-			HashMap<String, Object> parMap = new HashMap<String, Object>();
+			notifier = new Notifier(getNotifierConfig(getNotificationImageUrl(),getNotificationImageCss(),getNotifierBasePanelCss()));
+			notifier.createDefaultNotifier();
+			notifier.setVisible(false);
+			baseVp.add(notifier);
+			baseVp.setCellHorizontalAlignment(notifier,HorizontalPanel.ALIGN_CENTER);
+			notifier.setVisible(true);
+			
+			/*HashMap<String, Object> parMap = new HashMap<String, Object>();
 			parMap.put(OperationParameterConstant.STARTINDEX, startIndex);
 			parMap.put(OperationParameterConstant.LISTSIZE, pageSize);
 			in.appops.platform.core.entity.query.Query appopsQuery = new in.appops.platform.core.entity.query.Query();
@@ -104,7 +121,8 @@ public class ActivityComponent extends Composite implements EntityListReceiver,E
 			appopsQuery.setQueryParameterMap(parMap);
 			activityModel.setQuery(appopsQuery);
 			String operationName = "search.SearchService.getSearchList";
-			activityModel.setOperationName(operationName);
+			activityModel.setOperationName(operationName);*/
+			
 			activityListSnippet = new ActivityListSnippet();
 			activityListSnippet.getScrollPanel().addScrollHandler(new ScrollHandler() {
 
@@ -148,7 +166,7 @@ public class ActivityComponent extends Composite implements EntityListReceiver,E
 				maxResult = entityList.getMaxResult();
 				activityListSnippet.setEntityList(entityList);
 				activityListSnippet.initialize();
-				loaderImage.setVisible(false);
+				notifier.setVisible(false);
 			}
 		}
 		catch (Exception e) {
@@ -224,4 +242,84 @@ public class ActivityComponent extends Composite implements EntityListReceiver,E
 			e.printStackTrace();
 		}
 	}
+	
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+	
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+	
+	public String getNotificationImageUrl() {
+		String imageUrl = DEFAULT_NOTIFICATION_IMG;
+		try {
+			if(hasConfiguration(ActivityComponentConstant.NOTIFICATION_IMAGE_URL)) {
+				imageUrl =  configuration.getPropertyByName(ActivityComponentConstant.NOTIFICATION_IMAGE_URL);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return imageUrl;
+	}
+	
+	public String getNotificationImageCss() {
+		String imageCss = DEFAULT_NOTIFICATION_IMGCSS;
+		try {
+			if(hasConfiguration(ActivityComponentConstant.NOTIFICATION_IMG_CSS)) {
+				imageCss =  configuration.getPropertyByName(ActivityComponentConstant.NOTIFICATION_IMG_CSS);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return imageCss;
+	}
+	
+	public String getNotifierBasePanelCss() {
+		String css = null;
+		try {
+			if(hasConfiguration(ActivityComponentConstant.NOTIFIER_BASEPANEL_CSS)) {
+				css =  configuration.getPropertyByName(ActivityComponentConstant.NOTIFIER_BASEPANEL_CSS);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return css;
+	}
+	
+	/**
+	 * Returns true if the configuration is provided.
+	 * @param configKey - The configuration to check
+	 * @return
+	 */
+	protected boolean hasConfiguration(String configKey) {
+		try {
+			if(configuration != null && configuration.getPropertyByName(configKey) != null) {
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+		return false;
+	}
+	
+	public interface ActivityComponentConstant {
+		
+		public static final String NOTIFICATION_IMAGE_URL = "imageUrl";
+		
+		public static final String NOTIFICATION_IMG_CSS = "imageCss";
+		
+		public static final String NOTIFIER_BASEPANEL_CSS = "notifierBasepanelCss";
+		
+	}
+	
 }
