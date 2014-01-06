@@ -42,7 +42,10 @@ public class ActivityComponent extends Composite implements EntityListReceiver,E
 	private int startIndex =0;
 	private int pageSize = 10;
 	private Configuration configuration = null;
+	private String mode = "";
 	
+	public static String MODE_UPDATE = "modeUpdate";
+	public static String MODE_ACTIVITY = "modeActivity";
 	public static String DEFAULT_NOTIFICATION_IMG = "images/defaultLoader.gif";
 	public static String DEFAULT_NOTIFICATION_IMGCSS = "defaultNotificationIcon";
 
@@ -124,6 +127,7 @@ public class ActivityComponent extends Composite implements EntityListReceiver,E
 			activityModel.setOperationName(operationName);*/
 			
 			activityListSnippet = new ActivityListSnippet();
+			activityListSnippet.setMode(mode);
 			activityListSnippet.getScrollPanel().addScrollHandler(new ScrollHandler() {
 
 				@Override
@@ -311,7 +315,29 @@ public class ActivityComponent extends Composite implements EntityListReceiver,E
 		}
 		return false;
 	}
+
+	public void addNewActivity(Entity entity) {
+		try {
+			ActivitySnippet snippet = new ActivitySnippet();
+			snippet.setMode(mode);
+			snippet.setEntity(entity);
+			snippet.setConfiguration(getConfiguration());
+			snippet.initialize();
+			int row = activityListSnippet.getListFlexTable().insertRow(0);
+			activityListSnippet.getListFlexTable().setWidget(row ,0 ,snippet);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
+	public String getMode() {
+		return mode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+
 	public interface ActivityComponentConstant {
 		
 		public static final String NOTIFICATION_IMAGE_URL = "imageUrl";
@@ -321,5 +347,4 @@ public class ActivityComponent extends Composite implements EntityListReceiver,E
 		public static final String NOTIFIER_BASEPANEL_CSS = "notifierBasepanelCss";
 		
 	}
-	
 }

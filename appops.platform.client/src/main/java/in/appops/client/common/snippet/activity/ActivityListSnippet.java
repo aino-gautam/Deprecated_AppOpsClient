@@ -5,13 +5,17 @@
 package in.appops.client.common.snippet.activity;
 
 import in.appops.client.common.snippet.Snippet;
+import in.appops.client.common.util.AppEnviornment;
 import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
+import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.operation.ActionContext;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
+import in.appops.platform.server.core.services.activity.constant.ActivityConstant;
 
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
+import java.io.Serializable;
+
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -32,7 +36,11 @@ public class ActivityListSnippet extends Composite implements Snippet{
 	private FlexTable listFlexTable;
 	private VerticalPanel basePanel;
 	private ScrollPanel	scrollPanel;
+	private String mode;
 
+	public static String MODE_UPDATE = "modeUpdate";
+	public static String MODE_ACTIVITY = "modeActivity";
+	
 	public ActivityListSnippet(){
 		initailize();
 		initWidget(basePanel);
@@ -101,12 +109,7 @@ public class ActivityListSnippet extends Composite implements Snippet{
 			if(!getEntityList().isEmpty()){
 				for(Entity entity:getEntityList()){
 					//	Snippet snippet = snippetFactory.getSnippetByEntityType(entity.getType(), null);
-					ActivitySnippet snippet = new ActivitySnippet();
-					snippet.setEntity(entity);
-					snippet.setConfiguration(getConfiguration());
-					snippet.initialize();
-					getListFlexTable().setWidget(row ,0 ,snippet);
-					row++;
+					addSnippetToFlex(entity);
 				}
 			}
 			else{
@@ -117,6 +120,30 @@ public class ActivityListSnippet extends Composite implements Snippet{
 		}
 		catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void addSnippetToFlex(Entity entity) {
+		boolean isSkip = false;
+		if(mode.equals(MODE_UPDATE)) {
+			Property<Serializable> property=(Property<Serializable>) entity.getProperty(ActivityConstant.USERID);
+			Entity userEntity = (Entity) property.getValue();
+			Long creatorUserId = ((Key<Long>) userEntity.getPropertyByName("id")).getKeyValue();
+			Long currentUserId = ((Key<Long>) AppEnviornment.CURRENTUSER.getPropertyByName("id")).getKeyValue();
+			if(currentUserId == creatorUserId) {
+				isSkip = true;
+			}
+		}
+		
+		if(!isSkip) {
+			ActivitySnippet snippet = new ActivitySnippet();
+			snippet.setMode(mode);
+			snippet.setEntity(entity);
+			snippet.setConfiguration(getConfiguration());
+			snippet.initialize();
+			getListFlexTable().setWidget(row ,0 ,snippet);
+			row++;
 		}
 	}
 
@@ -172,20 +199,10 @@ public class ActivityListSnippet extends Composite implements Snippet{
 		try{
 			if(row == 0){
 				getListFlexTable().clear();
-				ActivitySnippet snippet = new ActivitySnippet();
-				snippet.setEntity(entity);
-				snippet.setConfiguration(getConfiguration());
-				snippet.initialize();
-				getListFlexTable().setWidget(row ,0 ,snippet);
-				row++;
+				addSnippetToFlex(entity);
 			}
 			else{
-				ActivitySnippet snippet = new ActivitySnippet();
-				snippet.setEntity(entity);
-				snippet.setConfiguration(getConfiguration());
-				snippet.initialize();
-				getListFlexTable().setWidget(0 ,0 ,snippet);
-				row++;
+				addSnippetToFlex(entity);
 			}
 		}
 		catch (Exception e) {
@@ -197,12 +214,7 @@ public class ActivityListSnippet extends Composite implements Snippet{
 		try{
 			if(!getEntityList().isEmpty()){
 				for(Entity entity:getEntityList()){
-					ActivitySnippet snippet = new ActivitySnippet();
-					snippet.setEntity(entity);
-					snippet.setConfiguration(getConfiguration());
-					snippet.initialize();
-					getListFlexTable().setWidget(row ,0 ,snippet);
-					row++;
+					addSnippetToFlex(entity);
 				}
 			}
 		}
@@ -211,4 +223,11 @@ public class ActivityListSnippet extends Composite implements Snippet{
 		}
 	}
 
+	public String getMode() {
+		return mode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
 }

@@ -42,7 +42,10 @@ public class ActivitySnippet extends RowSnippet {
 	private LabelField timeLbl;
 	private VerticalPanel postContentPanel;
 	private HorizontalPanel spaceIconPlusTimePanel ;
-
+	private String mode;
+	
+	public static String MODE_UPDATE = "modeUpdate";
+	public static String MODE_ACTIVITY = "modeActivity";
 	public static final String ACTIVITY_SNIPPET = "activitySnippnet";
 	public static final String POST_TIME_LABEL = "postTimeLabel";
 	public static final String POST_USER_IMAGE = "postUserImage";
@@ -129,8 +132,12 @@ public class ActivitySnippet extends RowSnippet {
 
 		String xmlContent = getEntity().getPropertyByName(PostConstant.CONTENT).toString();
 		PostContentParser postContentParser = new PostContentParser();
-		FlowPanel postContentFlowPanel = postContentParser.getGeneralMsgComponent(xmlContent);
-
+		FlowPanel postContentFlowPanel;
+		if(mode.equals(MODE_ACTIVITY)) {
+			postContentFlowPanel = postContentParser.getSelfMsgComponent(xmlContent);
+		} else {
+			postContentFlowPanel = postContentParser.getGeneralMsgComponent(xmlContent);
+		}
 
 		postContentPanel.add(spaceIconPlusTimePanel);
 		postContentPanel.setCellWidth(spaceIconPlusTimePanel, "10%");
@@ -231,4 +238,11 @@ public class ActivitySnippet extends RowSnippet {
 
 	}
 
+	public String getMode() {
+		return mode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
 }
