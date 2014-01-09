@@ -3,6 +3,7 @@ package in.appops.client.common.config.field.querythought;
 import in.appops.client.common.config.field.intellithought.IntelliThoughtField;
 import in.appops.client.common.config.field.intellithought.IntelliThoughtSuggestion;
 import in.appops.client.common.config.field.intellithought.IntelliThoughtUtil;
+import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
@@ -93,7 +94,6 @@ public class QueryThoughtField extends IntelliThoughtField implements FieldEvent
 					}
 				}
 			}
-			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[QueryThoughtField] ::Exception in handleOnKeyUpEvent method :"+e);
 		}
@@ -108,6 +108,12 @@ public class QueryThoughtField extends IntelliThoughtField implements FieldEvent
 	public void handleOnKeyDownEvent(Event event) {
 		try {
 			logger.log(Level.INFO, "[QueryThoughtField] ::" +	"In handleOnKeyDownEvent method ");
+			
+			FieldEvent fieldEvent = new FieldEvent();
+			fieldEvent.setEventType(FieldEvent.CLEAR_ERROR_MSG);
+			fieldEvent.setEventSource(this);
+			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+			
 			int keyCode = event.getKeyCode();
 			String elementValue = this.getText();
 			caretPosition = IntelliThoughtUtil.getCaretPosition(getBaseFieldId());

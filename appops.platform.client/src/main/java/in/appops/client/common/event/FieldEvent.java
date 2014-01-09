@@ -40,6 +40,7 @@ public class FieldEvent extends GwtEvent<FieldEventHandler> {
 	public static final int BREACRUMBUPDATE = 37;
 	public static final int BREACRUMBHIERARCHYUPDATE = 38;
 	public static final int SELECTION_EVENT=39;
+	public static final int CLEAR_ERROR_MSG = 40;
 
 	
 	public static Type<FieldEventHandler> TYPE = new Type<FieldEventHandler>();
