@@ -235,12 +235,14 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	@Override
 	public void onFocus(FocusEvent event) {
 		try {
-			if(isAutoSuggestion){
-				if(getSuggestBox().getText().equals(""))
-					getSuggestBox().setText(" ");
-				getSuggestBox().showSuggestionList();
-				if(getSuggestBox().getText().equals(" "))
-					getSuggestBox().setText("");
+			if(event.getSource().equals(suggestBox.getTextBox())) {
+				if(isAutoSuggestion){
+					if(getSuggestBox().getText().equals(""))
+						getSuggestBox().setText(" ");
+					getSuggestBox().showSuggestionList();
+					if(getSuggestBox().getText().equals(" "))
+						getSuggestBox().setText("");
+				}
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in onFocus method :"+e);
@@ -250,12 +252,16 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 	@Override
 	public void onClick(ClickEvent event) {
 		try {
-			if(getSuggestBox().getText().equals("")){
-				getSuggestBox().setText(" ");
-			}
-			getSuggestBox().showSuggestionList();
-			if(getSuggestBox().getText().equals(" ")) {
-				getSuggestBox().setText("");
+			if(event.getSource().equals(suggestBox.getTextBox())) {
+				if(isAutoSuggestion){
+					if(getSuggestBox().getText().equals("")){
+						getSuggestBox().setText(" ");
+					}
+					getSuggestBox().showSuggestionList();
+					if(getSuggestBox().getText().equals(" ")) {
+						getSuggestBox().setText("");
+					}
+				}
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in onClick method :"+e);
@@ -289,6 +295,7 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 			if (keycode.equals(KeyCodes.KEY_BACKSPACE)|| keycode.equals(KeyCodes.KEY_DELETE)) {
 				fireFieldEvent(FieldEvent.EDITINPROGRESS);
 			}
+			oracle.setCurrentText(suggestBox.getText());
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[AppopsSuggestionBox] ::Exception In onKeyUp method " + e);
 		}

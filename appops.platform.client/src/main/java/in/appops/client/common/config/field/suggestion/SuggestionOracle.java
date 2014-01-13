@@ -42,7 +42,8 @@ public class SuggestionOracle extends SuggestOracle {
 	private Object itemsToDisplay;
 	private Logger logger = Logger.getLogger(getClass().getName());
 	private HashMap<String, Object> opParamMap;
-
+	private String currentText;
+	
 	public SuggestionOracle() {
 		
 	}
@@ -120,33 +121,34 @@ public class SuggestionOracle extends SuggestOracle {
 
 					@Override
 					public void onSuccess(Result result) {
-						
-						EntityList entityList = (EntityList) result.getOperationResult();
-						if(entityList != null && !entityList.isEmpty()) {
-							store = new LinkedList<AppopsSuggestion>();
-							for (Entity entity : entityList) {
-								if(entity.getProperty(entPropToDisplay).getValue()!=null){
-									AppopsSuggestion appopsSuggestion = new AppopsSuggestion(entity);
-									appopsSuggestion.setPropertToDisplay(entPropToDisplay);
-									store.add(appopsSuggestion);
-								}
-							}
-						}
-						
-						if(search.equals(" ")){
-							response.setSuggestions(store);
-						} else{
-							List<AppopsSuggestion> suggestionList = new LinkedList<AppopsSuggestion>();
-							if(store != null && !store.isEmpty()) {
-								for(AppopsSuggestion suggestion : store){
-									if(suggestion.getDisplayString().toLowerCase().startsWith(search.trim().toLowerCase())){
-										suggestionList.add(suggestion);
+						if(currentText == null || currentText.trim().equals(search.trim())) {
+							EntityList entityList = (EntityList) result.getOperationResult();
+							if(entityList != null && !entityList.isEmpty()) {
+								store = new LinkedList<AppopsSuggestion>();
+								for (Entity entity : entityList) {
+									if(entity.getProperty(entPropToDisplay).getValue()!=null){
+										AppopsSuggestion appopsSuggestion = new AppopsSuggestion(entity);
+										appopsSuggestion.setPropertToDisplay(entPropToDisplay);
+										store.add(appopsSuggestion);
 									}
 								}
 							}
-							response.setSuggestions(suggestionList);
+							
+							if(search.equals(" ")){
+								response.setSuggestions(store);
+							} else{
+								List<AppopsSuggestion> suggestionList = new LinkedList<AppopsSuggestion>();
+								if(store != null && !store.isEmpty()) {
+									for(AppopsSuggestion suggestion : store){
+										if(suggestion.getDisplayString().toLowerCase().startsWith(search.trim().toLowerCase())){
+											suggestionList.add(suggestion);
+										}
+									}
+								}
+								response.setSuggestions(suggestionList);
+							}
+							callback.onSuggestionsReady(request, response);
 						}
-						callback.onSuggestionsReady(request, response);
 					}
 				});
 			}
@@ -221,5 +223,13 @@ public class SuggestionOracle extends SuggestOracle {
 
 	public void setOpParamMap(HashMap<String, Object> opParamMap) {
 		this.opParamMap = opParamMap;
+	}
+
+	public String getCurrentText() {
+		return currentText;
+	}
+
+	public void setCurrentText(String currentText) {
+		this.currentText = currentText;
 	}
 }
