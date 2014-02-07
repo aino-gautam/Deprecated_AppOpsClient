@@ -1,22 +1,29 @@
 package in.appops.client.common.config.field;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.RadioButton;
 
-public class RadioButtonField extends BaseField implements ValueChangeHandler{
+public class RadioButtonField extends BaseField implements ValueChangeHandler, BlurHandler,KeyDownHandler{
 
 	private RadioButton radioBtn;
 	private Logger logger = Logger.getLogger(getClass().getName());
 	private HandlerRegistration changeHandler  =  null;
+	private HandlerRegistration blurHandler  =  null;
+	private HandlerRegistration keyDownHandler  = null;
 	
 	/*******************  Fields ID *****************************/
 	
@@ -31,7 +38,8 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 		logger.log(Level.INFO, "[RadioButtonField] ::In create method ");
 		try {
 			changeHandler = radioBtn.addValueChangeHandler(this);
-			
+			blurHandler = radioBtn.addBlurHandler(this);
+			keyDownHandler = radioBtn.addKeyDownHandler(this);
 			getBasePanel().add(radioBtn,DockPanel.CENTER);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[RadioButtonField] ::Exception in create method :"+e);
@@ -47,9 +55,9 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 		String displayText = "";
 		try {
 			logger.log(Level.INFO, "[RadioButtonField] ::In getDisplayText method ");
-			if(getConfigurationValue(RadionButtonFieldConstant.RF_DISPLAYTEXT) != null) {
+			if(viewConfiguration.getConfigurationValue(RadionButtonFieldConstant.RF_DISPLAYTEXT) != null) {
 				
-				displayText = (String) getConfigurationValue(RadionButtonFieldConstant.RF_DISPLAYTEXT);
+				displayText = (String) viewConfiguration.getConfigurationValue(RadionButtonFieldConstant.RF_DISPLAYTEXT);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[RadioButtonField] ::Exception in getDisplayText method :"+e);
@@ -65,9 +73,9 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 		
 		String name = SINGLE_SELECTION;
 		
-		if(getConfigurationValue(RadionButtonFieldConstant.RF_GROUPID) != null) {
+		if(viewConfiguration.getConfigurationValue(RadionButtonFieldConstant.RF_GROUPID) != null) {
 			
-			name = (String) getConfigurationValue(RadionButtonFieldConstant.RF_GROUPID);
+			name = (String) viewConfiguration.getConfigurationValue(RadionButtonFieldConstant.RF_GROUPID);
 		}
 		return name;
 	}
@@ -82,9 +90,9 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 		
 		try {
 			logger.log(Level.INFO, "[RadioButtonField] ::In isFieldChecked method ");
-			if(getConfigurationValue(RadionButtonFieldConstant.RF_CHECKED) != null) {
+			if(viewConfiguration.getConfigurationValue(RadionButtonFieldConstant.RF_CHECKED) != null) {
 				
-				isChecked = (Boolean) getConfigurationValue(RadionButtonFieldConstant.RF_CHECKED);
+				isChecked = (Boolean) viewConfiguration.getConfigurationValue(RadionButtonFieldConstant.RF_CHECKED);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[RadioButtonField] ::Exception in isFieldChecked method :"+e);
@@ -100,6 +108,13 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 		
 		if(changeHandler!=null)
 			changeHandler.removeHandler();
+		
+		if(blurHandler!=null)
+			blurHandler.removeHandler();
+		
+		if(keyDownHandler!=null)
+			keyDownHandler.removeHandler();
+		
 	}
 
 	@Override
@@ -142,6 +157,8 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 				radioBtn.setStylePrimaryName(getBaseFieldPrimCss());
 			if(getBaseFieldDependentCss()!=null)
 				radioBtn.addStyleName(getBaseFieldDependentCss());
+			if(getTabIndex()!=null)
+				radioBtn.setTabIndex(getTabIndex());
 			
 			if (getBasePanelPrimCss() != null)
 				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
@@ -164,6 +181,40 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 		
 	}
 	
+	@Override
+	public void onKeyDown(KeyDownEvent event) {
+		try {
+			Integer keycode= event.getNativeKeyCode();
+			if(keycode.equals(KeyCodes.KEY_TAB)){
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventSource(this);
+				fieldEvent.setEventData(getValue());
+				fieldEvent.setEventType(FieldEvent.TAB_KEY_PRESSED);
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[RadioButtonField] ::Exception In onKeyUp method "+e);
+		}
+	}
+	
+	@Override
+	public void onBlur(BlurEvent event) {
+		try {
+			FieldEvent fieldEvent = new FieldEvent();
+			fieldEvent.setEventSource(this);
+			fieldEvent.setEventData(getValue());
+			fieldEvent.setEventType(FieldEvent.EDITCOMPLETED);
+			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[RadioButtonField]::Exception In onBlur  method :"+e);
+		}
+		
+	}
+	
+	public void setFieldFocus() {
+		radioBtn.setFocus(true);
+	}
+	
 	public interface RadionButtonFieldConstant extends BaseFieldConstant{
 		
 		/** Display text for radio button **/
@@ -176,5 +227,7 @@ public class RadioButtonField extends BaseField implements ValueChangeHandler{
 		public static final String RF_GROUPID = "groupId";
 		
 	}
+
+
 
 }

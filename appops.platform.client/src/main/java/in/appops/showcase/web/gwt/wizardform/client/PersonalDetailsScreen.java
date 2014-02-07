@@ -9,9 +9,9 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import in.appops.client.common.config.field.textfield.TextField;
+import in.appops.client.common.config.field.textfield.TextField.TextFieldConstant;
 import in.appops.client.common.fields.Field;
-import in.appops.client.common.fields.TextField;
-import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.client.touch.Screen;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Property;
@@ -78,7 +78,7 @@ public class PersonalDetailsScreen extends Composite implements Screen{
 	public Entity populateEntity() {
 		if(entity== null)
 			entity = new Entity();
-		Property<Serializable> prop = new Property<Serializable>();
+/*		Property<Serializable> prop = new Property<Serializable>();
 		prop.setName(tbFName.getConfiguration().getPropertyByName(TextFieldConstant.PROPERTY_BY_FIELD_NAME).toString());
 		//prop.setValue(tbFName.getValue());
 		entity.setProperty(tbFName.getConfiguration().getPropertyByName(TextFieldConstant.PROPERTY_BY_FIELD_NAME).toString(), prop);
@@ -87,7 +87,7 @@ public class PersonalDetailsScreen extends Composite implements Screen{
 		prop1.setName(tbLName.getConfiguration().getPropertyByName(TextFieldConstant.PROPERTY_BY_FIELD_NAME).toString());
 		//prop1.setValue(tbLName.getValue());
 		entity.setProperty(tbLName.getConfiguration().getPropertyByName(TextFieldConstant.PROPERTY_BY_FIELD_NAME).toString(), prop1);
-		
+*/		
 		return entity;
 	}
 	

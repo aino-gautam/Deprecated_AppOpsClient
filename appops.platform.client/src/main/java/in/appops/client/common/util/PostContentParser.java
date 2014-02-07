@@ -69,7 +69,7 @@ public class PostContentParser {
 				      } else if(tagName.equalsIgnoreCase("text")){
 				    	  String text = ele.getFirstChild().getNodeValue();
 				    	  LabelField labelField = new LabelField();
-				    	  labelField.setFieldValue(text);
+				    	  labelField.setValue(text);
 				    	  labelField.setConfiguration(getLabelFieldConfiguration(true, "postLabel", null, null));
 				    	  labelField.create();
 				    	  flowPanel.add(labelField);

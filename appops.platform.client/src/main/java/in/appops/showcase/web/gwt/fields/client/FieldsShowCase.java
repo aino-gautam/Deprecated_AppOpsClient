@@ -21,6 +21,8 @@ import in.appops.client.common.config.field.LocationSelectorField.LocationSelect
 import in.appops.client.common.config.field.RadioButtonField.RadionButtonFieldConstant;
 import in.appops.client.common.config.field.StateField;
 import in.appops.client.common.config.field.StateField.StateFieldConstant;
+import in.appops.client.common.config.field.ToggleImageField;
+import in.appops.client.common.config.field.ToggleImageField.ToggleImageFieldConstant;
 import in.appops.client.common.config.field.date.DateLabelField;
 import in.appops.client.common.config.field.date.DateLabelField.DateLabelFieldConstant;
 import in.appops.client.common.config.field.date.DatePickerField;
@@ -29,27 +31,34 @@ import in.appops.client.common.config.field.date.DateTimePickerField;
 import in.appops.client.common.config.field.date.DateTimePickerField.DateTimePickerFieldConstant;
 import in.appops.client.common.config.field.date.TimePickerField;
 import in.appops.client.common.config.field.date.TimePickerField.TimePickerFieldConstant;
+import in.appops.client.common.config.field.intellithought.IntelliThoughtField;
+import in.appops.client.common.config.field.intellithought.IntelliThoughtField.IntelliThoughtFieldConstant;
 import in.appops.client.common.config.field.media.MediaField;
 import in.appops.client.common.config.field.media.MediaField.MediaFieldConstant;
+import in.appops.client.common.config.field.querythought.QueryThoughtField;
+import in.appops.client.common.config.field.querythought.QueryThoughtField.QueryThoughtFieldConstant;
 import in.appops.client.common.config.field.rangeslider.RangeSliderField;
 import in.appops.client.common.config.field.rangeslider.RangeSliderField.RangeSliderFieldConstant;
 import in.appops.client.common.config.field.spinner.SpinnerField;
 import in.appops.client.common.config.field.spinner.SpinnerField.SpinnerFieldConstant;
+import in.appops.client.common.config.field.textfield.TextField;
+import in.appops.client.common.config.field.textfield.TextField.TextFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.client.common.fields.DateTimeField;
-import in.appops.client.common.fields.TextField;
-import in.appops.client.common.fields.TextField.TextFieldConstant;
-/*import in.appops.client.common.fields.htmleditor.HtmlEditorField;
-import in.appops.client.common.fields.htmleditor.HtmlEditorField.HtmlEditorFieldConstant;*/
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
+import in.appops.platform.core.entity.Entity;
+import in.appops.platform.core.entity.Key;
+import in.appops.platform.core.entity.type.MetaType;
 import in.appops.platform.core.operation.ResponseActionContext;
 import in.appops.platform.core.operation.Result;
+import in.appops.platform.core.schema.SchemaDefinition;
 import in.appops.platform.core.shared.Configuration;
+import in.appops.platform.core.shared.Service;
 import in.appops.platform.core.util.EntityList;
 import in.appops.showcase.web.gwt.holder.client.ShowcaseComponentHolder;
 
@@ -67,10 +76,7 @@ import com.google.code.gwt.geolocation.client.PositionCallback;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -114,12 +120,16 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 	public static final String LINKFIELDANCHOR = "LinkField(Anchor)";
 	public static final String BUTTONFIELD = "ButtonField";
 	public static final String IMAGEFIELD = "ImageField";
+	public static final String  TOGGLEIMAGEFIELD= "ToggleImageField";
 	public static final String LISTBOX_STATIC = "ListBox(Static list)";
 	public static final String LISTBOX_WITH_QUERY = "ListBox(Query Result)";
 	public static final String LOCATIONSELECTOR = "Location Selector";
 	public static final String HTMLEDITOR = "html Editor";
 	public static final String  DATELABEL_WITH_TIMESTAMP= "DateLable(TimeStamp)";
 	public static final String  DATELABEL_WITH_DATETIME= "DateLable(DateTime)";
+	public static final String  INTELLITHOUGHTFIELD= "Intellithought";
+	public static final String  QUERYTHOUGHTFIELD= "QueryThought";
+	
 	private Logger logger = Logger.getLogger(getClass().getName());
 
 	
@@ -177,6 +187,7 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			listBox.addItem(LINKFIELDANCHOR);
 			listBox.addItem(BUTTONFIELD);
 			listBox.addItem(IMAGEFIELD);
+			listBox.addItem(TOGGLEIMAGEFIELD);
 			
 			listBox.addItem(LOCATIONSELECTOR);
 			listBox.addItem(NUMBERRANGE_SLIDER);
@@ -196,6 +207,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 			
 			listBox.addItem(DATELABEL_WITH_TIMESTAMP);
 			listBox.addItem(DATELABEL_WITH_DATETIME);
+			listBox.addItem(INTELLITHOUGHTFIELD);
+			listBox.addItem(QUERYTHOUGHTFIELD);
 			
 			listBox.addChangeHandler(this);
 			listBox.setStylePrimaryName("fieldShowcaseBasePanel");
@@ -516,6 +529,21 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		return configuration;
 	}
 	
+	private Configuration getToggleImageFieldConf(){
+		Configuration configuration = new Configuration();
+		try {
+			logger.log(Level.INFO,"[FieldsShowCase]:: In getToggleImageFieldConf  method ");
+			configuration.setPropertyByName(ToggleImageFieldConstant.TIMGFD_UPSTATE_URL, "images/pinkHeart.jpg");
+			configuration.setPropertyByName(ToggleImageFieldConstant.TIMGFD_UPSTATE_TITLE,"unlike");
+			configuration.setPropertyByName(ToggleImageFieldConstant.TIMGFD_DWNSTATE_URL, "images/grayHeart.jpg");
+			configuration.setPropertyByName(ToggleImageFieldConstant.TIMGFD_DWNSTATE_TITLE,"like");
+			configuration.setPropertyByName(ToggleImageFieldConstant.TIMGFD_STATEIMG_PCLS,"toggleImageCss");
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[FieldsShowCase]::Exception In getToggleImageFieldConf  method :"+e);
+		}
+		return configuration;
+	}
+	
 	private Configuration getStaticListBoxConfiguration() {
 		Configuration configuration = new Configuration();
 		try {
@@ -768,6 +796,15 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				selectedField = imageField;
 				innerPanel.add(imageField);
 				innerPanel.setCellHorizontalAlignment(imageField,HorizontalPanel.ALIGN_CENTER);
+			}else if(fieldName.equals(TOGGLEIMAGEFIELD)) {
+				ToggleImageField toggleImageField = new ToggleImageField();
+				toggleImageField.setConfiguration(getToggleImageFieldConf());
+				toggleImageField.configure();
+				toggleImageField.create();
+				selectedField = toggleImageField;
+				innerPanel.add(toggleImageField);
+				
+				innerPanel.setCellHorizontalAlignment(toggleImageField,HorizontalPanel.ALIGN_CENTER);
 			}else if(fieldName.equals(LISTBOX_WITH_QUERY)) {
 				ListBoxField staticListBox = new ListBoxField();
 				staticListBox.setConfiguration(getDynamicListBoxConfiguration());
@@ -967,6 +1004,17 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				selectedField = dateLabelField;
 				innerPanel.add(dateLabelField);
 				innerPanel.setCellHorizontalAlignment(dateLabelField,HorizontalPanel.ALIGN_CENTER);
+			}else if(fieldName.equals(INTELLITHOUGHTFIELD)) {
+				innerPanel.add(loaderImage);
+				innerPanel.setCellHorizontalAlignment(loaderImage,HorizontalPanel.ALIGN_CENTER);
+				loaderImage.setVisible(true);	
+				addIntellithoughtField();
+			}else if(fieldName.equals(QUERYTHOUGHTFIELD)) {
+				
+				innerPanel.add(loaderImage);
+				innerPanel.setCellHorizontalAlignment(loaderImage,HorizontalPanel.ALIGN_CENTER);
+				loaderImage.setVisible(true);	
+				addQuerythoughtField();
 			}
 			
 			componentHolder.setPackageName(getPackageNameOfSelectedField(fieldName));
@@ -976,6 +1024,52 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		}
 	}
 	
+	private Configuration getIntellithoughtFieldConf() {
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.BF_PCLS, "intelliThoughtField");
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.BF_SUGGESTION_TEXT, "Any thoughts");
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.FIRE_EDITINITIATED_EVENT, true);
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.FIRE_THREECHARENTERED_EVENT, true);
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.FIRE_WORDENTERED_EVENT, true);
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.INTLTHT_ENTPROP, "name");
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.INTLTHT_OPRTION, "spacemanagement.SpaceManagementService.getLinkSuggestions");
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.INTLTHT_MAXCHARLEN, 3);
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.INTLTHT_QUERY_MAXRESULT, 10);
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.BF_ID, "intelliTextField");
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.INTLTHT_SUGGESTIONLBL_PCLS, "appops-intelliThoughtSuggestionLabel");
+		configuration.setPropertyByName(IntelliThoughtFieldConstant.INTLTHT_SUGGESTIONPOPUP_PCLS, "appops-intelliThoughtLinkedSuggestionPopup");
+		return configuration;
+	}
+	
+	private Configuration getQuerythoughtFieldConf() {
+		Configuration configuration = new Configuration();
+		configuration.setPropertyByName(QueryThoughtFieldConstant.BF_PCLS, "intelliThoughtField");
+		configuration.setPropertyByName(QueryThoughtFieldConstant.BF_SUGGESTION_TEXT, "Enter query");
+		configuration.setPropertyByName(QueryThoughtFieldConstant.FIRE_EDITINITIATED_EVENT, true);
+		configuration.setPropertyByName(QueryThoughtFieldConstant.FIRE_THREECHARENTERED_EVENT, true);
+		configuration.setPropertyByName(QueryThoughtFieldConstant.FIRE_WORDENTERED_EVENT, true);
+		configuration.setPropertyByName(QueryThoughtFieldConstant.INTLTHT_ENTPROP, "name");
+		configuration.setPropertyByName(QueryThoughtFieldConstant.INTLTHT_OPRTION, "spacemanagement.SpaceManagementService.getLinkSuggestions");
+		configuration.setPropertyByName(QueryThoughtFieldConstant.INTLTHT_MAXCHARLEN, 3);
+		configuration.setPropertyByName(QueryThoughtFieldConstant.INTLTHT_QUERY_MAXRESULT, 10);
+		configuration.setPropertyByName(QueryThoughtFieldConstant.BF_ID, "intelliTextField");
+		configuration.setPropertyByName(QueryThoughtFieldConstant.INTLTHT_SUGGESTIONLBL_PCLS, "appops-intelliThoughtSuggestionLabel");
+		configuration.setPropertyByName(QueryThoughtFieldConstant.INTLTHT_SUGGESTIONPOPUP_PCLS, "appops-intelliThoughtLinkedSuggestionPopup");
+		
+		Entity serviceEnt = new Entity();
+		serviceEnt.setType(new MetaType(Service.class));
+		serviceEnt.setPropertyByName("id", new Key<Long>(27L));
+		 
+		configuration.setPropertyByName(QueryThoughtFieldConstant.QRYTHOUGHT_SERVICE, serviceEnt);
+		
+		Entity schemaEnt = new Entity();
+		schemaEnt.setType(new MetaType(SchemaDefinition.class));
+		schemaEnt.setPropertyByName("id", new Key<Long>(93L));
+		
+		configuration.setPropertyByName(QueryThoughtFieldConstant.QRYTHOUGHT_SCHEMA, schemaEnt);
+		return configuration;
+	}
+
 	private Configuration getDateLabelTimeStampConf(String displayFormat) {
 		Configuration configuration = new Configuration();
 		try {
@@ -1123,6 +1217,86 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 		}
 	}
 	
+	
+	private void addIntellithoughtField() {
+		try {
+			logger.log(Level.INFO,"[FieldsShowCase]:: In addIntellithoughtField  method ");
+			Map parameters = new HashMap();
+			parameters.put("emailId", "pallavi@ensarm.com");
+			parameters.put("password", "pallavi123");
+			
+			StandardAction action = new StandardAction(EntityList.class, "useraccount.LoginService.validateUser", parameters);
+			
+			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+
+			ResponseActionContext actionContext = new ResponseActionContext();
+			actionContext.setEmbeddedAction(action);
+			
+			dispatch.executeContextAction(actionContext, new AsyncCallback<Result>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(Result result) {
+					innerPanel.clear();
+					IntelliThoughtField intellithoughtField = new IntelliThoughtField();
+					intellithoughtField.setConfiguration(getIntellithoughtFieldConf());
+					intellithoughtField.configure();
+					intellithoughtField.create();
+					selectedField = intellithoughtField;
+					innerPanel.add(intellithoughtField);
+					innerPanel.setCellHorizontalAlignment(intellithoughtField,HorizontalPanel.ALIGN_CENTER);
+				}
+			});
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[FieldsShowCase]::Exception In addIntellithoughtField  method :"+e);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void addQuerythoughtField() {
+		try {
+			logger.log(Level.INFO,"[FieldsShowCase]:: In addIntellithoughtField  method ");
+			Map parameters = new HashMap();
+			parameters.put("emailId", "pallavi@ensarm.com");
+			parameters.put("password", "pallavi123");
+			
+			StandardAction action = new StandardAction(EntityList.class, "useraccount.LoginService.validateUser", parameters);
+			
+			DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
+			DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
+
+			ResponseActionContext actionContext = new ResponseActionContext();
+			actionContext.setEmbeddedAction(action);
+			
+			dispatch.executeContextAction(actionContext, new AsyncCallback<Result>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					caught.printStackTrace();
+				}
+
+				@Override
+				public void onSuccess(Result result) {
+					innerPanel.clear();
+					QueryThoughtField querythoughtField = new QueryThoughtField();
+					querythoughtField.setConfiguration(getQuerythoughtFieldConf());
+					querythoughtField.configure();
+					querythoughtField.create();
+					selectedField = querythoughtField;
+					innerPanel.add(querythoughtField);
+					innerPanel.setCellHorizontalAlignment(querythoughtField,HorizontalPanel.ALIGN_CENTER);
+				}
+			});
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[FieldsShowCase]::Exception In addIntellithoughtField  method :"+e);
+		}
+	}
+	
 	private String getPackageNameOfSelectedField(String fieldName){
 				
 			if(fieldName.equals(TEXTBOX) || fieldName.equals(PASSWORDTEXTBOX) || fieldName.equals(EMAILBOX) || 	fieldName.equals(TEXTAREA) || fieldName.equals(NUMERICBOX)	) {
@@ -1151,6 +1325,8 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 				return LinkField.class.getName();
 			}else if(fieldName.equals(IMAGEFIELD)) {
 				return ImageField.class.getName();
+			}else if(fieldName.equals(TOGGLEIMAGEFIELD)) {
+				return ToggleImageField.class.getName();
 			}else if(fieldName.equals(LISTBOX_WITH_QUERY) || fieldName.equals(LISTBOX_STATIC)) {
 				return ListBoxField.class.getName();
 			}else if(fieldName.equals(BUTTONFIELD)) {
@@ -1161,6 +1337,10 @@ public class FieldsShowCase implements EntryPoint, FieldEventHandler, ChangeHand
 //				return HtmlEditorField.class.getName();
 			}else if(fieldName.equals(DATELABEL_WITH_DATETIME) || fieldName.equals(DATELABEL_WITH_TIMESTAMP)) {
 				return DateLabelField.class.getName();
+			}else if(fieldName.equals(INTELLITHOUGHTFIELD)) {
+				return IntelliThoughtField.class.getName();
+			}else if(fieldName.equals(QUERYTHOUGHTFIELD)) {
+				return QueryThoughtField.class.getName();
 			}
 			
 		return null;

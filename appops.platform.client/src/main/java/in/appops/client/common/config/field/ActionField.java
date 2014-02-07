@@ -1,9 +1,12 @@
 package in.appops.client.common.config.field;
 
-import in.appops.client.common.config.dsnip.EventConstant;
+import in.appops.client.common.config.dsnip.ActionEvent;
+import in.appops.client.common.config.dsnip.event.UpdateConfigurationRule.UpdateConfigurationRuleConstant;
+import in.appops.client.common.config.model.PropertyModel;
 import in.appops.client.common.util.EntityToJsonClientConvertor;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.type.MetaType;
+import in.appops.platform.core.util.EntityGraphException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -14,6 +17,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 
 
@@ -25,29 +29,30 @@ public class ActionField extends BaseField implements ClickHandler{
 		String AF_PAGE = "page";
 		int PAGE = 2;
 		int TOKEN = 1;
-		String ACSS = "acss";
 		String AF_WIDGETTYPE = "widgetType";
 		int AF_ANCHOR = 1;
 		int AF_BUTTON = 2;
 		int AF_LABEL = 3;
+		int AF_IMAGE = 4;
 	}
 
 	
 	private Anchor actionLink;
 	private Button actionButton; 
 	private Label actionLabel; 
+	private Image actionImage;
 	
 	/************************** All Configuration Methods here *****************************************/
 	@Override
-	protected void initialize() {
+	public void initialize() {
 		super.initialize();
 		actionLink = new Anchor();
 	}
 	
 	protected String getTokenValue() {
 		String type = ActionFieldConstant.AF_TOKENVAL;
-		if(getConfigurationValue(ActionFieldConstant.AF_TOKENVAL) != null) {
-			type = getConfigurationValue(ActionFieldConstant.AF_TOKENVAL).toString();;
+		if(viewConfiguration.getConfigurationValue(ActionFieldConstant.AF_TOKENVAL) != null) {
+			type = viewConfiguration.getConfigurationValue(ActionFieldConstant.AF_TOKENVAL).toString();;
 		}
 		return type;
 	}
@@ -70,17 +75,9 @@ public class ActionField extends BaseField implements ClickHandler{
 		return depCss;
 	}
 	
-	protected String getFieldPrimCss() {
-		String primaryCss = "appops-actionField";
-		if(getConfigurationValue(ActionFieldConstant.ACSS) != null) {
-			primaryCss = getConfigurationValue(ActionFieldConstant.ACSS).toString();
-		}
-		return primaryCss;
-	}
-	
 	private int getMode() {
-		if(getConfigurationValue(ActionFieldConstant.MODE) != null) {
-			return Integer.parseInt(getConfigurationValue(ActionFieldConstant.MODE).toString());
+		if(viewConfiguration.getConfigurationValue(ActionFieldConstant.MODE) != null) {
+			return Integer.parseInt(viewConfiguration.getConfigurationValue(ActionFieldConstant.MODE).toString());
 		}
 		return 1;
 	}
@@ -88,16 +85,16 @@ public class ActionField extends BaseField implements ClickHandler{
 
 	private String getPageValue() {
 		String page = null;
-		if(getConfigurationValue(ActionFieldConstant.AF_PAGE) != null) {
-			page = getConfigurationValue(ActionFieldConstant.AF_PAGE).toString();
+		if(viewConfiguration.getConfigurationValue(ActionFieldConstant.AF_PAGE) != null) {
+			page = viewConfiguration.getConfigurationValue(ActionFieldConstant.AF_PAGE).toString();
 		}
 		return page;
 	}
 	
 	
 	private int getWidgetType() {
-		if(getConfigurationValue(ActionFieldConstant.AF_WIDGETTYPE) != null) {
-			return Integer.parseInt(getConfigurationValue(ActionFieldConstant.AF_WIDGETTYPE).toString());
+		if(viewConfiguration.getConfigurationValue(ActionFieldConstant.AF_WIDGETTYPE) != null) {
+			return Integer.parseInt(viewConfiguration.getConfigurationValue(ActionFieldConstant.AF_WIDGETTYPE).toString());
 		}
 		return 1;
 	}
@@ -117,22 +114,27 @@ public class ActionField extends BaseField implements ClickHandler{
 			actionLink = new Anchor();
 		} else if(widgetType == ActionFieldConstant.AF_BUTTON){
 			actionButton = new Button();
-		}	
+		} else if(widgetType == ActionFieldConstant.AF_IMAGE){
+			actionImage = new Image();
+		}		
 		
-		if(getFieldPrimCss()!=null) {
+		if(getBaseFieldPrimCss()!=null) {
 			if(widgetType == ActionFieldConstant.AF_LABEL){
-				actionLabel.setStylePrimaryName(getFieldPrimCss());
+				actionLabel.setStylePrimaryName(getBaseFieldPrimCss());
 			} else if(widgetType == ActionFieldConstant.AF_ANCHOR){
-				actionLink.setStylePrimaryName(getFieldPrimCss());
+				actionLink.setStylePrimaryName(getBaseFieldPrimCss());
 			} else if(widgetType == ActionFieldConstant.AF_BUTTON){
-				actionButton.setStylePrimaryName(getFieldPrimCss());
+				actionButton.setStylePrimaryName(getBaseFieldPrimCss());
+			} else if(widgetType == ActionFieldConstant.AF_IMAGE){
+				actionImage.setStylePrimaryName(getBaseFieldPrimCss());
 			}
 		}
 		
-		if(getDefaultValue() == null) {
-			setValue("");
-		} else {
+		if(getDefaultValue() != null) {
 			setValue(getDefaultValue().toString());
+		} else if(getBindProperty() != null && !getBindProperty().toString().equals("")){
+			Object value = ((PropertyModel)model).getPropertyValue(getBindProperty());
+			setValue(value);
 		}
 	}
 	
@@ -149,7 +151,9 @@ public class ActionField extends BaseField implements ClickHandler{
 			actionLink.setText(value.toString());
 		} else if(widgetType == ActionFieldConstant.AF_BUTTON){
 			actionButton.setText(value.toString());
-		}	
+		} else if(widgetType == ActionFieldConstant.AF_IMAGE){
+			actionImage.setUrl(value.toString());
+		}		
 	}
 	
 	@Override
@@ -166,31 +170,43 @@ public class ActionField extends BaseField implements ClickHandler{
 		} else if(widgetType == ActionFieldConstant.AF_BUTTON){
 			basePanel.add(actionButton, DockPanel.CENTER);
 			actionButton.addClickHandler(this);
+		} else if(widgetType == ActionFieldConstant.AF_IMAGE){
+			basePanel.add(actionImage, DockPanel.CENTER);
+			actionImage.addClickHandler(this);
 		}
 	}
 
 	@Override
 	public void onClick(ClickEvent event) {
-		if(getMode() == ActionFieldConstant.TOKEN) {
-			String token = getTokenValue();
-		
-			/*if(bindId != null) {
-				token = token + Long.toString(bindId);
-			} */
+		try {
+			if(getMode() == ActionFieldConstant.TOKEN) {
+				String token = getTokenValue();
 			
-			Entity appEvent = new Entity();
-			appEvent.setType(new MetaType("EventData"));
-			appEvent.setPropertyByName(EventConstant.EVNT_NAME, token);
-			appEvent.setPropertyByName(EventConstant.EVNT_DATA, bindId);
-			
-			JSONObject appEventJson = EntityToJsonClientConvertor.createJsonFromEntity(appEvent);
-			
-			History.newItem(appEventJson.toString(), true);
-		} else if(getMode() == ActionFieldConstant.PAGE) {
-			String page = getPageValue(); 
-			String moduleUrl = GWT.getHostPageBaseURL();
-			String pageUrl = moduleUrl + page; // + "?gwt.codesvr=127.0.0.1:9997";
-			Window.open(pageUrl, "_self", "");
+				if(token.startsWith(UpdateConfigurationRuleConstant.PARENTENTITY)) {
+
+					String currentEntityProp = token.substring(token.indexOf(UpdateConfigurationRuleConstant.SEPERATOR) + 1);
+					Entity currentEntity = model.getContext().getParentEntity();
+					token = currentEntity.getGraphPropertyValue(currentEntityProp, currentEntity).toString();
+				}
+				
+				ActionEvent actionEvent = new ActionEvent();
+				actionEvent.setType(new MetaType("eventData"));
+				actionEvent.setEventName(token);
+				actionEvent.setEventData(entity);
+				
+				JSONObject appEventJson = EntityToJsonClientConvertor.createJsonFromEntity(actionEvent);
+				
+				History.newItem(appEventJson.toString(), true);
+			} else if(getMode() == ActionFieldConstant.PAGE) {
+				String page = getPageValue(); 
+				String moduleUrl = GWT.getHostPageBaseURL();
+				//String pageUrl = moduleUrl + page; // + "?gwt.codesvr=127.0.0.1:9997";
+				String pageUrl = moduleUrl + "render?viewPage=" + page;
+				Window.open(pageUrl, "_self", "");
+			}
+		} catch (EntityGraphException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	

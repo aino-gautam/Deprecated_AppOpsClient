@@ -113,7 +113,7 @@ productEntitySnippet:"<table> \n" +
 		"							<span id= \"price\" appopsfield=\"true\" widgetType= \"labelField\" data-config=\"priceConfig\"> </span>\n" + 
 		"						</td>\n" + 
 		"					 <td > \n" + 
-		"							<span id= \"pinkHeartImage\" appopsfield=\"true\" widgetType= \"imageField\" data-config=\"pinkHeartImageConfig\"> </span>\n" + 
+		"							<span id= \"heartImage\" appopsfield=\"true\" widgetType= \"toggleImageField\" data-config=\"heartToggleImageConfig\"> </span>\n" + 
 		"					 </td>\n" +
 		" 						<td> \n" + 
 		"							<span id= \"likes\" appopsfield=\"true\" widgetType= \"labelField\" data-config=\"noOfLikesLabelConfig\"> </span>\n" + 

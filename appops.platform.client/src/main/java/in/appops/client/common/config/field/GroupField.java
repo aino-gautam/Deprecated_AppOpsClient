@@ -2,18 +2,19 @@ package in.appops.client.common.config.field;
 
 import in.appops.client.common.config.field.CheckboxField.CheckBoxFieldConstant;
 import in.appops.client.common.config.field.RadioButtonField.RadionButtonFieldConstant;
+import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
 import in.appops.platform.core.shared.Configuration;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -69,6 +70,7 @@ public class GroupField extends BaseField implements FieldEventHandler{
 
 	public GroupField() {
 		 flexTable = new FlexTable();
+		 AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 	}
 
 	@Override
@@ -159,9 +161,9 @@ public class GroupField extends BaseField implements FieldEventHandler{
 		
 		try {
 			logger.log(Level.INFO, "[GroupField] ::In getGroupFieldAlignment method ");
-			if(getConfiguration()!=null){
+			if(viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_ALIGNMENT)!=null){
 				
-				String fieldBasePanel =  getConfiguration().getPropertyByName(GroupFieldConstant.GF_ALIGNMENT);
+				String fieldBasePanel =  viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_ALIGNMENT).toString();
 				if(fieldBasePanel !=null){
 					return fieldBasePanel; 
 				}else{
@@ -182,9 +184,9 @@ public class GroupField extends BaseField implements FieldEventHandler{
 	private String getGroupFieldType(){
 		try {
 			logger.log(Level.INFO, "[GroupField] ::In getGroupFieldType method ");
-			if(getConfiguration()!=null){
+			if(viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_TYPE)!=null){
 				
-				String fieldType =  getConfiguration().getPropertyByName(GroupFieldConstant.GF_TYPE);
+				String fieldType =  viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_TYPE).toString();
 				if(fieldType !=null){
 					return fieldType; 
 				}else{
@@ -346,9 +348,9 @@ public class GroupField extends BaseField implements FieldEventHandler{
 		
 		try {
 			logger.log(Level.INFO, "[GroupField] ::In getListOfItemsInGroupField method ");
-			if(getConfiguration()!=null){
+			if(viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_LIST_OF_ITEMS)!=null){
 				
-				ArrayList<String> listOfItems =  getConfiguration().getPropertyByName(GroupFieldConstant.GF_LIST_OF_ITEMS);
+				ArrayList<String> listOfItems =  (ArrayList<String>) viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_LIST_OF_ITEMS);
 				if(listOfItems !=null){
 					return listOfItems; 
 				}
@@ -368,9 +370,9 @@ public class GroupField extends BaseField implements FieldEventHandler{
 		
 		try {
 			logger.log(Level.INFO, "[GroupField] ::In getChildConfiguration method ");
-			if(getConfiguration()!=null){
+			if(viewConfiguration.getConfigurationValue(id)!=null){
 				
-				Configuration childConfig = getConfiguration().getPropertyByName(id);
+				Configuration childConfig = (Configuration) viewConfiguration.getConfigurationValue(id);
 				if(childConfig !=null){
 					return childConfig;
 				}else{
@@ -393,9 +395,9 @@ public class GroupField extends BaseField implements FieldEventHandler{
 		
 		try {
 			logger.log(Level.INFO, "[GroupField] ::In getFieldLimit method ");
-			if(getConfiguration()!=null){
+			if(viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_LIMIT)!=null){
 				
-				Integer limit =  getConfiguration().getPropertyByName(GroupFieldConstant.GF_LIMIT);
+				Integer limit =  (Integer) viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_LIMIT);
 				if(limit !=null){
 					return limit; 
 				}else{
@@ -415,9 +417,9 @@ public class GroupField extends BaseField implements FieldEventHandler{
 	public String getGroupId(){
 		
 		String name = "groupId";
-		if(getConfigurationValue(GroupFieldConstant.GF_ID) != null) {
+		if(viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_ID) != null) {
 			
-			name = (String) getConfigurationValue(GroupFieldConstant.GF_ID);
+			name = (String) viewConfiguration.getConfigurationValue(GroupFieldConstant.GF_ID);
 		}
 		return name;
 	}
@@ -451,8 +453,40 @@ public class GroupField extends BaseField implements FieldEventHandler{
 			}
 			case FieldEvent.RADIOBUTTON_SELECTED: {
 				selectedItems.clear();
-				RadioButton radioButton = (RadioButton) event.getEventData();
-				selectedItems.add(radioButton);
+				RadioButtonField radioButton = (RadioButtonField) event.getEventSource();
+				if(fieldItems.contains(radioButton)) {
+					selectedItems.add(radioButton);
+					FieldEvent fieldEvent = new FieldEvent();
+					fieldEvent.setEventType(FieldEvent.VALUE_SELECTED);
+					fieldEvent.setEventSource(this);
+					AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+				}
+				break;
+			}
+			case FieldEvent.TAB_KEY_PRESSED: {
+				if(event.getEventSource() instanceof RadioButtonField) {
+					RadioButtonField radioButton = (RadioButtonField) event.getEventSource();
+					if (getGroupFieldType().equals(GroupFieldConstant.GFTYPE_SINGLE_SELECT)) {
+						if(fieldItems.contains(radioButton)) {
+							Iterator<Widget> iterator = fieldItems.iterator();
+							while(iterator.hasNext()) {
+								RadioButtonField radioButtonFld = (RadioButtonField) iterator.next();
+								if(radioButtonFld.equals(radioButton)) {
+									break;
+								}
+							}
+							if(iterator.hasNext()) {
+								RadioButtonField radioButtonFld = (RadioButtonField) iterator.next();
+								radioButtonFld.setFieldFocus();
+							} else {
+								FieldEvent fieldEvent = new FieldEvent();
+								fieldEvent.setEventSource(this);
+								fieldEvent.setEventType(FieldEvent.TAB_KEY_PRESSED);
+								AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+							}
+						}
+					}
+				}
 				break;
 			}
 			default:
@@ -463,6 +497,40 @@ public class GroupField extends BaseField implements FieldEventHandler{
 		}
 		
 	}
+	
+	public void setFieldFocus() {
+		String groupFieldType = getGroupFieldType();
+		if (groupFieldType.equals(GroupFieldConstant.GFTYPE_MULTISELECT)) {
+			CheckboxField chkBoxField = (CheckboxField) fieldItems.get(0);
+			chkBoxField.setFieldFocus();
+		} else if (groupFieldType.equals(GroupFieldConstant.GFTYPE_SINGLE_SELECT)) {
+			RadioButtonField radioButton = (RadioButtonField) fieldItems.get(0);
+			radioButton.setFieldFocus();
+		}
+	}
+	
+	@Override
+	public void setFieldValue(String fieldValue) {
+		String groupFieldType = getGroupFieldType();
+		if (groupFieldType.equals(GroupFieldConstant.GFTYPE_MULTISELECT)) {
+			Iterator<Widget> iterator = fieldItems.iterator();
+			while(iterator.hasNext()) {
+				CheckboxField chkBoxField = (CheckboxField) iterator.next();
+				if(chkBoxField.getDisplayText().equals(fieldValue)) {
+					chkBoxField.setValue(true);
+				}
+			}
+		} else if (groupFieldType.equals(GroupFieldConstant.GFTYPE_SINGLE_SELECT)) {
+			Iterator<Widget> iterator = fieldItems.iterator();
+			while(iterator.hasNext()) {
+				RadioButtonField radioButton = (RadioButtonField) iterator.next();
+				if(radioButton.getDisplayText().equals(fieldValue)) {
+					radioButton.setValue(true);
+				}
+			}
+		}
+	};
+	
 	/***********************************************************************************/
 
 	public interface GroupFieldConstant extends BaseFieldConstant{

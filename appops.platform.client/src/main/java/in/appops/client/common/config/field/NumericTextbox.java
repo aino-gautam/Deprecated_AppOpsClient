@@ -1,9 +1,9 @@
 package in.appops.client.common.config.field;
 
+import in.appops.client.common.config.field.textfield.TextField;
+import in.appops.client.common.config.field.textfield.TextField.TextFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
-import in.appops.client.common.fields.TextField;
-import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.platform.core.shared.Configuration;
 
 import java.io.Serializable;

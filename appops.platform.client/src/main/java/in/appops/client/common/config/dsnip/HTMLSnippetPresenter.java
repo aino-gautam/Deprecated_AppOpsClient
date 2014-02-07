@@ -1,310 +1,108 @@
 package in.appops.client.common.config.dsnip;
 
-import in.appops.client.common.config.component.base.BaseComponentPresenter.BaseComponentConstant;
-import in.appops.client.common.config.field.BaseField;
-import in.appops.client.common.config.field.ListBoxField;
-import in.appops.client.common.config.field.SelectedItem;
-import in.appops.client.common.config.model.EntityModel;
-import in.appops.client.common.config.util.Configurator;
-import in.appops.client.common.config.util.ReusableSnippetStore;
-import in.appops.client.common.core.EntityReceiver;
-import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.config.component.base.BaseComponent.BaseComponentConstant;
+import in.appops.client.common.config.component.base.BaseComponentPresenter;
+import in.appops.client.common.config.dsnip.event.SnippetControllerRule;
+import in.appops.client.common.config.model.ConfigurationModel;
+import in.appops.client.common.config.model.IsConfigurationModel;
 import in.appops.client.common.event.FieldEvent;
-import in.appops.client.common.event.handlers.FieldEventHandler;
-import in.appops.client.common.util.EntityToJsonClientConvertor;
-import in.appops.platform.core.entity.Entity;
-import in.appops.platform.core.entity.Key;
-import in.appops.platform.core.entity.type.MetaType;
-import in.appops.platform.core.shared.Configurable;
-import in.appops.platform.core.shared.Configuration;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import com.google.gwt.event.shared.SimpleEventBus;
 
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.ui.Widget;
+public class HTMLSnippetPresenter extends BaseComponentPresenter {
+	private SimpleEventBus localEventBus;
 
-public class HTMLSnippetPresenter implements Configurable, FieldEventHandler, EntityReceiver {
-
-	public interface HTMLSnippetConstant {
-		String HS_FIELDEVENTS = "interestedFieldEvents";
+	public interface HTMLSnippetConstant extends BaseComponentConstant {
 		String HS_PCLS = "basePrimaryCss";
 		String HS_DCLS = "baseDependentCss";
 	}
-	
-	/**
-	 * Configuration for snippet.
-	 */
-	protected Configuration configuration;
-	
-	/**
-	 * View of the snippet.
-	 */
-	protected HTMLSnippet htmlSnippet;
-	
-	/**
-	 * Model of the snippet.
-	 */
-	protected EntityModel model;
 
-	/**
-	 * Type of snippet. Corresponding html description if fetched from the reusable snippet
-	 */
-	private String snippetType;
-	
-	/**
-	 * Instance of snippet. Corresponding configuration if fetched from the page configurations
-	 */
-	private String snippetInstance;
-	
-	/**
-	 * Entity bound to a snippet.
-	 */
-	private Entity entity;
-
-	/**
-	 * This initialises a snippet w.r.t. the snippet type and instance.
-	 * Applies configurations to view and model.
-	 */
-	public void init() {
-		model = new EntityModel();
-
-		String snippetDesc = ReusableSnippetStore.getSnippetDesc(snippetType);
-		htmlSnippet = new HTMLSnippet(snippetDesc);
-
-		configuration = Configurator.getConfiguration(snippetInstance);
-	
-		if(getModelConfiguration() != null) {
-			model.setConfiguration(getModelConfiguration());
-			model.configure();
-		}
-
-		if(getViewConfiguration() != null) {
-			htmlSnippet.setConfiguration(getViewConfiguration());
-			htmlSnippet.configure();
-		}
-		
-		model.setReceiver(this);
-		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
-	}
-
-	public void load() {
-		if(entity != null) {
-			populateFields();
-		} else {
-			model.fetchEntity();
-		}
-	}
-	
-	private boolean hasConfiguration(String configKey) {
-		if(configuration != null && configuration.getPropertyByName(configKey) != null) {
-			return true;
-		}
-		return false;
-	}
-	
-	private Serializable getConfigurationValue(String configKey) {
-		if(hasConfiguration(configKey)) {
-			return configuration.getPropertyByName(configKey);
-		}
-		return null;
-	}
-	
-	protected Configuration getViewConfiguration() {
-		if(getConfigurationValue(BaseComponentConstant.BC_CONFIGVIEW) != null) {
-			return (Configuration)getConfigurationValue(BaseComponentConstant.BC_CONFIGVIEW);
-		}
-		return null;
-	}
-
-	protected Configuration getModelConfiguration() {
-		if(getConfigurationValue(BaseComponentConstant.BC_CONFIGMODEL) != null) {
-			return (Configuration)getConfigurationValue(BaseComponentConstant.BC_CONFIGMODEL);
-		}
-		return null;
-	}
-	
-	@Override
-	public Configuration getConfiguration() {
-		return configuration;
+	public HTMLSnippetPresenter(String snippetType, String snippetInstance) {
+		super(snippetType, snippetInstance);
 	}
 
 	@Override
-	public void setConfiguration(Configuration conf) {
-		this.configuration = conf;
+	protected void initialize() {
+		localEventBus = injector.getLocalEventBus();
+		model = dynamicFactory.requestModel(DynamicMVPFactory.HTMLSNIPPET);
+		view = dynamicFactory.requestView(DynamicMVPFactory.HTMLSNIPPET);
+		view.setLocalEventBus(localEventBus);
+		view.setModel(model);
+		((HTMLSnippetView) view).setSnippetType(type);
+		view.initialize();
 	}
-
-	public HTMLSnippet getHTMLSnippet() {
-		return htmlSnippet;
-	}
-
-	public String getSnippetType() {
-		return snippetType;
-	}
-
-	public void setSnippetType(String snippetType) {
-		this.snippetType = snippetType;
-	}
-
-	public String getSnippetInstance() {
-		return snippetInstance;
-	}
-
-	public void setSnippetInstance(String snippetInstance) {
-		this.snippetInstance = snippetInstance;
-	}
-
-	public void create() {
-		htmlSnippet.processSnippetDescription();
-	}
-
-	public Entity getEntity() {
-		return entity;
-	}
-
-	public void setEntity(Entity entity) {
-		this.entity = entity;
-		htmlSnippet.setEntity(entity);
-		
-	}
-
-	public void populateFields() {
-		Map<String, Widget> snippetEle = htmlSnippet.getSnippetElement();
-		for (Map.Entry<String, Widget> elementEntry : snippetEle.entrySet()) {
-			Widget element = elementEntry.getValue();
-	    	if(element instanceof BaseField) {
-	    		BaseField baseField = (BaseField)element;
-	    		
-				Key key = (Key)entity.getPropertyByName("id");
-				Long id = (Long)key.getKeyValue();
-				baseField.setBindId(id);
-
-				if(baseField.isFieldVisible()) {
-				
-		    		String bindProp = baseField.getBindProperty();
-		    		if(bindProp != null) {
-		    			Serializable bindValue = entity.getPropertyByName(bindProp);
-		    			baseField.setValue(bindValue);
-		    		}
-				}
-	    	}
-		}
-	}
-
 
 	@Override
-	public void onFieldEvent(FieldEvent event) {
-		try {
-			String eventType = Integer.toString(event.getEventType());
-			Object eventSource = event.getEventSource();
-			
-			String eventSourceId = null;
-			
-			Object eventData = event.getEventData();
-			if(eventSource instanceof BaseField) {
-				BaseField field = (BaseField)eventSource;
-				eventSourceId = field.getBaseFieldId();
+	public void configure() {
+		super.configure();
 
-				if(field instanceof ListBoxField) {
-					SelectedItem selectedItem = (SelectedItem)eventData;
-					eventData = selectedItem.getAssociatedEntity();
-				}
+		if(model.getModelConfiguration() != null) {
+			String operationName = ((HTMLSnippetModel) model).getOperationName();
+			if(operationName != null && !operationName.equals("")) {
+				((HTMLSnippetModel) model).fetchEntity();
 			}
+		}
+	}
 
-			String eventName = eventType + "##" + eventSourceId;
+	@Override
+	public void create() {
+		super.create();
+	}
+
+	@Override
+	protected void registerHandlers() {
+		super.registerHandlers();
+		if(localEventBus != null) {
+			handlerRegistrationList.add(localEventBus.addHandler(FieldEvent.TYPE, this));
+		}
+	}
+	
+	@Override
+	public void processSnippetControllerRule(SnippetControllerRule snippetControllerRule) {
+		boolean transformation = snippetControllerRule.hasTransformation();
+
+		if(transformation) {
+			String transformToSnippet = snippetControllerRule.getTransformToSnippet();
+			String transformFromSnippet = snippetControllerRule.getTransformFromSnippet();
+			String snippetInstance = snippetControllerRule.getSnippetInstance();
+
+			createAddSnippet(transformToSnippet, transformFromSnippet, snippetInstance);
+		}
+	}
+	
+	private void createAddSnippet(String transformToSnippet, String transformFromSnippet, String snippetInstance) {
+		try {
+			HTMLSnippetPresenter snippetFrom = null;
+			if(!((HTMLSnippetView) view).getElementMap().isEmpty()) {
+				if(transformFromSnippet == null) {
+					transformFromSnippet =  ((HTMLSnippetView) view).getElementMap().keySet().toArray()[0].toString();
+				}
+				snippetFrom = (HTMLSnippetPresenter) ((HTMLSnippetView) view).getElementMap().get(transformFromSnippet);
+			}
 			
-			if(isInterestedFieldEvent(eventName)) {
-				Configuration fieldEventConf = getFieldEventConfiguration(eventName);
-				
-				// TODO Check if application context has to be updated (T/F).
-				String appContextParam = fieldEventConf.getPropertyByName(FieldEventConstant.UP_AC_PROP);
-				
-				if(appContextParam != null) {
-					Configuration appContextConfig = Configurator.getConfiguration("applicationContext");
-					ArrayList<String> contextParamList = appContextConfig.getPropertyByName("contextparam");
+			if(snippetFrom != null) {
+				HTMLSnippetPresenter snippetTo = dynamicFactory.requestHTMLSnippet(transformToSnippet, snippetInstance);
+				if(snippetTo != null) {
+					Context componentContext = new Context();
+					componentContext.setParentEntity(((ConfigurationModel)model).getEntity());
+					String componentContextPath = !model.getContext().getContextPath().equals("") ?
+							model.getContext().getContextPath() + IsConfigurationModel.SEPARATOR + model.getInstance() : model.getInstance();
+					componentContext.setContextPath(componentContextPath);
+					snippetTo.getModel().setContext(componentContext);
 					
-					if(contextParamList.contains(appContextParam)) {
-						if(eventData instanceof Entity) {
-							ApplicationContext.getInstance().setProperty(appContextParam, (Entity)eventData);
-						} else {
-							ApplicationContext.getInstance().setPropertyByName(appContextParam, (Serializable)eventData);
-						}
-					}
-				}
-				
-				// TODO Check if fire app event (T/F).
-				String appEventToFire = fieldEventConf.getPropertyByName(FieldEventConstant.EVENT_NAME);
+					snippetTo.configure();
+					snippetTo.create();
+					((HTMLSnippetView) view).addAndReplaceElement(snippetTo.getView(), snippetFrom.getView().getElement());
 
-				Entity appEvent = new Entity();
-				appEvent.setType(new MetaType("EventData"));
-				appEvent.setPropertyByName(EventConstant.EVNT_NAME, appEventToFire);
-				
-				if(eventData instanceof Entity) {
-					appEvent.setProperty(EventConstant.EVNT_DATA, (Entity)eventData);
+					snippetFrom.removeHandlers();
+					((HTMLSnippetView) view).getElementMap().remove(transformFromSnippet);
+					((HTMLSnippetView) view).getElementMap().put(transformToSnippet, snippetTo);
 				}
-				
-				JSONObject appEventJson = EntityToJsonClientConvertor.createJsonFromEntity(appEvent);
-				
-				History.newItem(appEventJson.toString(), true);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private boolean isInterestedFieldEvent(String eventName) {
-		HashMap<String, Configuration> interestedFieldEvents = getInterestedFieldEvents();
-		Set<String> eventSet = interestedFieldEvents.keySet();
-		
-		if(!eventSet.isEmpty()) {
-			if(eventSet.contains(eventName)) {
-				return true;
-			}
-		}
-		return false;
-	}
 
-	private HashMap<String, Configuration> getInterestedFieldEvents() {
-		HashMap<String, Configuration> interestedFieldEvents = new HashMap<String, Configuration>();
-		if(getConfigurationValue(HTMLSnippetConstant.HS_FIELDEVENTS) != null) {
-			interestedFieldEvents = (HashMap<String, Configuration>) getConfigurationValue(HTMLSnippetConstant.HS_FIELDEVENTS);
-		}
-		return interestedFieldEvents;
-	}
-	
-
-	private Configuration getFieldEventConfiguration(String event) {
-		HashMap<String, Configuration> interestedFieldEvents = getInterestedFieldEvents();
-		
-		if(!interestedFieldEvents.isEmpty() && interestedFieldEvents.containsKey(event)) {
-			return interestedFieldEvents.get(event);
-		}
-		return null;
-	}
-
-	@Override
-	public void noMoreData() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onEntityReceived(Entity entity) {
-		if(entity != null) {
-			this.entity = entity;
-			populateFields();
-		}
-	}
-
-	@Override
-	public void onEntityUpdated(Entity entity) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	
 }

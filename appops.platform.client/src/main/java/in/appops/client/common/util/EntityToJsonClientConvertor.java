@@ -25,33 +25,48 @@ public class EntityToJsonClientConvertor {
 	// Need to clean up the code. Would review it later.
 	
 	protected static <T> JSONArray encodeList(ArrayList<T> data) {
-		JSONArray jsona = new JSONArray();
-		for (int i = 0; i < data.size(); i++) {
-			Object val = data.get(i);
-			if(val instanceof String || val instanceof Integer || val instanceof Long) {
-				jsona.set(i, new JSONString(val.toString()));
-			} else if(val instanceof Entity){
-				jsona.set(i, createJsonFromEntity((Entity)val));
-			} 
+		try {
+			JSONArray jsona = new JSONArray();
+			for (int i = 0; i < data.size(); i++) {
+				Object val = data.get(i);
+				if(val instanceof String || val instanceof Integer || val instanceof Long) {
+					jsona.set(i, new JSONString(val.toString()));
+				} else if(val instanceof Entity){
+					jsona.set(i, createJsonFromEntity((Entity)val));
+				} 
+			}
+			return jsona;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
-		return jsona;
 	}
 	
 	 protected static JSONObject encodeMap(HashMap<String, Object> data) {
-		    JSONObject jsobj = new JSONObject();
-		    for (String key : data.keySet()) {
-		      Object val = data.get(key);
-		      if (val instanceof String) {
-		        jsobj.put(key, new JSONString(val.toString()));
-		      } else if(val instanceof Entity){
-		    	  JSONObject entJsonObj = createJsonFromEntity((Entity)val);
-		    	  jsobj.put(key, entJsonObj);
-		      }
-		    }
-		    return jsobj;
+		    try {
+				JSONObject jsobj = new JSONObject();
+				for (String key : data.keySet()) {
+					Object val = data.get(key);
+				  if (val instanceof String) {
+				    jsobj.put(key, new JSONString(val.toString()));
+				  } else if(val instanceof Entity){
+					  JSONObject entJsonObj = createJsonFromEntity((Entity)val);
+					  jsobj.put(key, entJsonObj);
+				  } else if(val  instanceof ArrayList) {
+					  ArrayList arrayList = (ArrayList)val;
+					  JSONArray jsonArray = encodeList(arrayList);
+					  jsobj.put(key, jsonArray);
+				  }
+				}
+				return jsobj;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
 	  }
 	
 	
+	@SuppressWarnings("unchecked")
 	public static JSONObject createJsonFromEntity(Entity entity) {
 		JSONObject mainJson = null;
 		JSONObject childJson=null;

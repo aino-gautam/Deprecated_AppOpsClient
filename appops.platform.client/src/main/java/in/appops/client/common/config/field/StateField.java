@@ -2,6 +2,9 @@ package in.appops.client.common.config.field;
 
 
 import in.appops.client.common.config.field.suggestion.AppopsSuggestionBox;
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
+import in.appops.client.common.event.handlers.FieldEventHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,13 +40,14 @@ stateField.create();<br>
 
 </p>*/
 
-public class StateField extends BaseField {
+public class StateField extends BaseField implements FieldEventHandler {
 
 	private AppopsSuggestionBox appopsSuggestionBox;
 	private Logger logger = Logger.getLogger(getClass().getName());
 
 	public StateField(){
-		
+		appopsSuggestionBox = new AppopsSuggestionBox();
+		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 	}
 	
 	/****************************************** *******************************/
@@ -63,10 +67,12 @@ public class StateField extends BaseField {
 	public void configure() {
 		try {
 			logger.log(Level.INFO, "[StateField] ::In configure method ");
-			appopsSuggestionBox = new AppopsSuggestionBox();
+			
+			setSuggestionInline();
 			if(isStaticSuggestionBox()){
 				appopsSuggestionBox.setStaticSuggestionBox(isStaticSuggestionBox());
 				appopsSuggestionBox.setItemsToDisplay(getFieldItemList());
+				appopsSuggestionBox.setPropertyToDisplay(getEntPropToDisplay());
 			}else{
 				appopsSuggestionBox.setQueryName(getQueryName());
 				appopsSuggestionBox.setPropertyToDisplay(getEntPropToDisplay());
@@ -77,25 +83,81 @@ public class StateField extends BaseField {
 			}
 			
 			if (getBaseFieldPrimCss() != null)
-				appopsSuggestionBox.setStylePrimaryName(getBaseFieldPrimCss());
+				appopsSuggestionBox.getTextBox().setStylePrimaryName(getBaseFieldPrimCss());
 			if (getBaseFieldDependentCss() != null)
-				appopsSuggestionBox.addStyleName(getBaseFieldDependentCss());
+				appopsSuggestionBox.getTextBox().addStyleName(getBaseFieldDependentCss());
 
 			if (getBasePanelPrimCss() != null)
 				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
 			if (getBasePanelDependentCss() != null)
 				getBasePanel().addStyleName(getBasePanelDependentCss());
 			
+			removeRegisteredHandlers();
 			appopsSuggestionBox.setAutoSuggestion(isAutosuggestion());
 			appopsSuggestionBox.createUi();
+			
+			appopsSuggestionBox.setEnabled(isEnabled());
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in configure method :"+e);
+		}
+	}
+	
+	/**
+	 * Method removed registered handlers from field
+	 */
+	@Override
+	public void removeRegisteredHandlers() {
+		
+		try {
+			appopsSuggestionBox.removeRegisteredHandlers();
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception in removeRegisteredHandlers method :"+e);
 		}
 	}
 
 	@Override
 	public void reset() {
 		
+	}
+	
+	@Override
+	public void clear() {
+		appopsSuggestionBox.clearSuggestionTextBox();
+	}
+	
+	@Override
+	public Object getValue() {
+		String suggestion = appopsSuggestionBox.getSuggestBox().getText();
+		
+		return suggestion;
+	}
+	
+	@Override
+	public void setValue(Object value) {
+		
+		try { 
+			logger.log(Level.INFO, "[StateField] ::In setValue method ");
+			super.setValue(value);
+			clear();
+			appopsSuggestionBox.getSuggestBox().setText(value.toString());
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception In setValue method "+e);
+			
+		}
+		
+	}
+	
+	@Override
+	protected void setSuggestionInline () {
+		try {
+			
+			logger.log(Level.INFO, "[StateField] ::In setSuggestionInline method ");
+			if(getSuggestionText()!=null)
+				appopsSuggestionBox.getTextBox().getElement().setPropertyString("placeholder", getSuggestionText());
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception In setSuggestionInline method "+e);
+		}
 	}
 	
 	/****************************************************************************/
@@ -118,8 +180,8 @@ public class StateField extends BaseField {
 		Boolean isStatic = false;
 		try {
 			logger.log(Level.INFO, "[StateField] ::In isStaticSuggestionBox method ");
-			if(getConfigurationValue(StateFieldConstant.IS_STATIC_BOX) != null) {
-				isStatic =(Boolean) getConfigurationValue(StateFieldConstant.IS_STATIC_BOX);
+			if(viewConfiguration.getConfigurationValue(StateFieldConstant.IS_STATIC_BOX) != null) {
+				isStatic =(Boolean) viewConfiguration.getConfigurationValue(StateFieldConstant.IS_STATIC_BOX);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in isStaticSuggestionBox method :"+e);
@@ -135,8 +197,8 @@ public class StateField extends BaseField {
 		Integer maxResult = 10;
 		try {
 			logger.log(Level.INFO, "[StateField] ::In getQueryMaxResult method ");
-			if(getConfigurationValue(StateFieldConstant.STFD_QUERY_MAXRESULT) != null) {
-				maxResult =(Integer) getConfigurationValue(StateFieldConstant.STFD_QUERY_MAXRESULT);
+			if(viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_QUERY_MAXRESULT) != null) {
+				maxResult =(Integer) viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_QUERY_MAXRESULT);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in getQueryMaxResult method :"+e);
@@ -152,8 +214,8 @@ public class StateField extends BaseField {
 		ArrayList<String> listOfItems = null;
 		try {
 			logger.log(Level.INFO, "[StateField] ::In getFieldItemList method ");
-			if(getConfigurationValue(StateFieldConstant.ITEMS_LIST) != null) {
-				listOfItems = (ArrayList<String>) getConfigurationValue(StateFieldConstant.ITEMS_LIST);
+			if(viewConfiguration.getConfigurationValue(StateFieldConstant.ITEMS_LIST) != null) {
+				listOfItems = (ArrayList<String>) viewConfiguration.getConfigurationValue(StateFieldConstant.ITEMS_LIST);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in getFieldItemList method :"+e);
@@ -170,8 +232,8 @@ public class StateField extends BaseField {
 		HashMap<String, Object> queryRestrictions = null;
 		try {
 			logger.log(Level.INFO, "[StateField] ::In getQueryRestrictions method ");
-			if(getConfigurationValue(StateFieldConstant.STFD_QUERY_RESTRICTION) != null) {
-				queryRestrictions =  (HashMap<String, Object>) getConfigurationValue(StateFieldConstant.STFD_QUERY_RESTRICTION);
+			if(viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_QUERY_RESTRICTION) != null) {
+				queryRestrictions =  (HashMap<String, Object>) viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_QUERY_RESTRICTION);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in getQueryRestrictions method :"+e);
@@ -187,8 +249,8 @@ public class StateField extends BaseField {
 		String queryname = null;
 		try {
 			logger.log(Level.INFO, "[StateField] ::In getQueryName method ");
-			if(getConfigurationValue(StateFieldConstant.STFD_QUERYNAME) != null) {
-				queryname =(String) getConfigurationValue(StateFieldConstant.STFD_QUERYNAME);
+			if(viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_QUERYNAME) != null) {
+				queryname =(String) viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_QUERYNAME);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in getQueryName method :"+e);
@@ -204,8 +266,8 @@ public class StateField extends BaseField {
 		String entprop = null;
 		try {
 			logger.log(Level.INFO, "[StateField] ::In getEntPropToDisplay method ");
-			if(getConfigurationValue(StateFieldConstant.STFD_ENTPROP) != null) {
-				entprop = (String) getConfigurationValue(StateFieldConstant.STFD_ENTPROP);
+			if(viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_ENTPROP) != null) {
+				entprop = (String) viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_ENTPROP);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in getEntPropToDisplay method :"+e);
@@ -222,8 +284,8 @@ public class StateField extends BaseField {
 		String operation = null;
 		try {
 			logger.log(Level.INFO, "[StateField] ::In getOperationName method ");
-			if(getConfigurationValue(StateFieldConstant.STFD_OPRTION) != null) {
-				operation =(String) getConfigurationValue(StateFieldConstant.STFD_OPRTION);
+			if(viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_OPRTION) != null) {
+				operation =(String) viewConfiguration.getConfigurationValue(StateFieldConstant.STFD_OPRTION);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in getOperationName method :"+e);
@@ -239,8 +301,8 @@ public class StateField extends BaseField {
 		Boolean isautoSuggetion = true;
 		try {
 			logger.log(Level.INFO, "[StateField] ::In isAutosuggestion method ");
-			if(getConfigurationValue(StateFieldConstant.IS_AUTOSUGGESTION) != null) {
-				isautoSuggetion =(Boolean) getConfigurationValue(StateFieldConstant.IS_AUTOSUGGESTION);
+			if(viewConfiguration.getConfigurationValue(StateFieldConstant.IS_AUTOSUGGESTION) != null) {
+				isautoSuggetion =(Boolean) viewConfiguration.getConfigurationValue(StateFieldConstant.IS_AUTOSUGGESTION);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in isAutosuggestion method :"+e);
@@ -256,8 +318,8 @@ public class StateField extends BaseField {
 		Boolean isSearchQuery = false;
 		try {
 			logger.log(Level.INFO, "[StateField] ::In isSearchQuery method ");
-			if(getConfigurationValue(StateFieldConstant.IS_SEARCH_QUERY) != null) {
-				isSearchQuery =(Boolean) getConfigurationValue(StateFieldConstant.IS_SEARCH_QUERY);
+			if(viewConfiguration.getConfigurationValue(StateFieldConstant.IS_SEARCH_QUERY) != null) {
+				isSearchQuery =(Boolean) viewConfiguration.getConfigurationValue(StateFieldConstant.IS_SEARCH_QUERY);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in isSearchQuery method :"+e);
@@ -285,5 +347,25 @@ public class StateField extends BaseField {
 		public static final String IS_SEARCH_QUERY = "isSearchQuery";
 		
 		public static final String IS_AUTOSUGGESTION = "isAutoSuggestion";
+	}
+	
+	@Override
+	public void onFieldEvent(FieldEvent event) {
+		try {
+			int eventType = event.getEventType();
+			if (eventType == FieldEvent.VALUE_SELECTED) {
+				if (event.getEventSource() instanceof AppopsSuggestionBox) {
+					if(event.getEventSource().equals(appopsSuggestionBox)){
+						FieldEvent fieldEvent = new FieldEvent();
+						fieldEvent.setEventData(event.getEventData());
+						fieldEvent.setEventSource(this);
+						fieldEvent.setEventType(FieldEvent.SUGGESTION_SELECTED);
+						AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

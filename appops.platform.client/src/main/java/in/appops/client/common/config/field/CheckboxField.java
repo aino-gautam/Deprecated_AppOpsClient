@@ -1,22 +1,29 @@
 package in.appops.client.common.config.field;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DockPanel;
 
-public class CheckboxField extends BaseField implements ValueChangeHandler{
+public class CheckboxField extends BaseField implements ValueChangeHandler, BlurHandler, KeyDownHandler{
 
 	private CheckBox checkBox;
 	public Logger logger = Logger.getLogger(getClass().getName());
 	private HandlerRegistration changeHandler  =  null;
+	private HandlerRegistration blurHandler  =  null;
+	private HandlerRegistration keydownHandler  =  null;
 	
 	/*******************  Fields ID *****************************/
 	private static String MULTI_SELECTION = "multiSelection";
@@ -29,7 +36,8 @@ public class CheckboxField extends BaseField implements ValueChangeHandler{
 	public void create() {
 		logger.log(Level.INFO, "[CheckboxField] ::In create method ");
 		changeHandler = checkBox.addValueChangeHandler(this);
-		
+		blurHandler = checkBox.addBlurHandler(this);
+		keydownHandler = checkBox.addKeyDownHandler(this);
 		getBasePanel().add(checkBox,DockPanel.CENTER);
 		
 	}
@@ -43,9 +51,9 @@ public class CheckboxField extends BaseField implements ValueChangeHandler{
 		String displayText = "";
 		try {
 			logger.log(Level.INFO, "[CheckboxField] ::In getDisplayText method ");
-			if(getConfigurationValue(CheckBoxFieldConstant.CF_DISPLAYTEXT) != null) {
+			if(viewConfiguration.getConfigurationValue(CheckBoxFieldConstant.CF_DISPLAYTEXT) != null) {
 				
-				displayText = (String) getConfigurationValue(CheckBoxFieldConstant.CF_DISPLAYTEXT);
+				displayText = (String) viewConfiguration.getConfigurationValue(CheckBoxFieldConstant.CF_DISPLAYTEXT);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[CheckboxField] ::Exception in getDisplayText method :"+e);
@@ -63,9 +71,9 @@ public class CheckboxField extends BaseField implements ValueChangeHandler{
 		
 		try {
 			logger.log(Level.INFO, "[CheckboxField] ::In isFieldChecked method ");
-			if(getConfigurationValue(CheckBoxFieldConstant.CF_CHECKED) != null) {
+			if(viewConfiguration.getConfigurationValue(CheckBoxFieldConstant.CF_CHECKED) != null) {
 				
-				isChecked = (Boolean) getConfigurationValue(CheckBoxFieldConstant.CF_CHECKED);
+				isChecked = (Boolean) viewConfiguration.getConfigurationValue(CheckBoxFieldConstant.CF_CHECKED);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[CheckboxField] ::Exception in isFieldChecked method :"+e);
@@ -80,9 +88,9 @@ public class CheckboxField extends BaseField implements ValueChangeHandler{
 	public String getGroupId(){
 		
 		String id = MULTI_SELECTION;
-		if(getConfigurationValue(CheckBoxFieldConstant.CF_GROUPID) != null) {
+		if(viewConfiguration.getConfigurationValue(CheckBoxFieldConstant.CF_GROUPID) != null) {
 			
-			id = (String) getConfigurationValue(CheckBoxFieldConstant.CF_GROUPID);
+			id = (String) viewConfiguration.getConfigurationValue(CheckBoxFieldConstant.CF_GROUPID);
 		}
 		return id;
 	}
@@ -92,9 +100,14 @@ public class CheckboxField extends BaseField implements ValueChangeHandler{
 	 */
 	@Override
 	public void removeRegisteredHandlers() {
-		
 		if(changeHandler!=null)
 			changeHandler.removeHandler();
+		
+		if(blurHandler!=null)
+			blurHandler.removeHandler();
+		
+		if(keydownHandler!=null)
+			keydownHandler.removeHandler();
 	}
 
 	@Override
@@ -151,17 +164,36 @@ public class CheckboxField extends BaseField implements ValueChangeHandler{
 	@Override
 	public void onValueChange(ValueChangeEvent event) {
 		
-		CheckBox checkBox = (CheckBox) event.getSource();
-		boolean checked = checkBox.getValue();
-		FieldEvent fieldEvent = new FieldEvent();
-		if(checked)
-			fieldEvent.setEventType(FieldEvent.CHECKBOX_SELECT);
-		else
-			fieldEvent.setEventType(FieldEvent.CHECKBOX_DESELECT);
-		
-		fieldEvent.setEventData(checkBox.getName());
-		fieldEvent.setEventSource(this);
-		AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		try {
+			CheckBox checkBox = (CheckBox) event.getSource();
+			boolean checked = checkBox.getValue();
+			FieldEvent fieldEvent = new FieldEvent();
+			if(checked)
+				fieldEvent.setEventType(FieldEvent.CHECKBOX_SELECT);
+			else
+				fieldEvent.setEventType(FieldEvent.CHECKBOX_DESELECT);
+			
+			checkBox.setFocus(true);
+			fieldEvent.setEventData(checkBox.getName());
+			fieldEvent.setEventSource(this);
+			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.log(Level.SEVERE,"[CheckboxField]::Exception In onValueChange  method :"+e);
+		}
+	}
+	
+	@Override
+	public void onBlur(BlurEvent event) {
+		try {
+			FieldEvent fieldEvent = new FieldEvent();
+			fieldEvent.setEventSource(this);
+			fieldEvent.setEventData(getValue());
+			fieldEvent.setEventType(FieldEvent.EDITCOMPLETED);
+			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[CheckboxField]::Exception In onBlur  method :"+e);
+		}
 		
 	}
 	
@@ -174,5 +206,25 @@ public class CheckboxField extends BaseField implements ValueChangeHandler{
 		public static final String CF_GROUPID = "groupId";
 		
 	}
+
+	@Override
+	public void onKeyDown(KeyDownEvent event) {
+		try {
+			Integer keycode= event.getNativeKeyCode();
+			if(keycode.equals(KeyCodes.KEY_TAB)){
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventSource(this);
+				fieldEvent.setEventData(getValue());
+				fieldEvent.setEventType(FieldEvent.TAB_KEY_PRESSED);
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[CheckboxField] ::Exception In onKeyDown method "+e);
+		}
+		
+	}
 	
+	public void setFieldFocus() {
+		checkBox.setFocus(true);
+	}
 }

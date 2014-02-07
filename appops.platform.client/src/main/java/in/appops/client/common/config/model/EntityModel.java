@@ -1,65 +1,25 @@
 package in.appops.client.common.config.model;
 
 import in.appops.client.common.core.EntityReceiver;
-import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.query.Query;
-import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
-import in.appops.platform.core.util.EntityList;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
 public class EntityModel extends AppopsBaseModel {
-	private Entity entity;
+	
 	private EntityReceiver receiver;
-
+	private Entity entity;
 	
-	public void saveEntity(String operation) {
-		/*StandardAction action = new StandardAction(EntityList.class, operation, parameterMap);
-		dispatch.execute(action, new AsyncCallback<Result>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
-			}
-
-			@Override
-			public void onSuccess(Result result) {
-				Entity entity = (Entity) result.getOperationResult();
-			
-				entityReceiver.onEntityReceived(entity);
-			}
-		});*/
-
-	}
-	
-	public void draftEntity(Property<Serializable> prop) {
-		
-		if(entity == null) {
-			entity = new Entity();
-		}
-		entity.setProperty(prop);
-	}
-	
-	public void deleteEntity() {
-		
-	}
-	
-	@SuppressWarnings("unchecked")
 	public void fetchEntity() {
-		String queryName = getQueryName();
-		
 		if(queryName != null) {
 			
-			Configuration queryParam = getQueryParam();
+			Configuration queryParam = queryParameters;
 			if(queryParam != null) {
 				HashMap<String, Object> queryParamMap = new HashMap<String, Object>();
 		
@@ -78,40 +38,42 @@ public class EntityModel extends AppopsBaseModel {
 					query.setQueryName(queryName);
 					query.setQueryParameterMap(queryParamMap);
 					
+					String querypPointer = globalEntityCache.getQueryIdentifier(query);
+					if(!interestedQueryList.contains(querypPointer)) {
+						interestedQueryList.add(querypPointer);
+					}
+						
+					setEntity(globalEntityCache.getEntity(query));
+					if(getEntity() != null) {
+						receiver.onEntityReceived(getEntity());
+					}
 					executeQuery(query);
 				}
 			}
 		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void executeQuery(Query query) {
-		Map<String, Serializable> queryParam = new HashMap<String, Serializable>();
-		queryParam.put("query", query);
-		
-		StandardAction action = new StandardAction(EntityList.class, getOperationName(), queryParam);
-		dispatch.execute(action, new AsyncCallback<Result<Entity>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
-			}
-
-			@Override
-			public void onSuccess(Result<Entity> result) {
-				Entity ent = result.getOperationResult();
-				//TODO
-				if(ent != null) {
-					receiver.onEntityReceived(ent);
-				}
-			
-			}
-		});
 	}
 
 	public void setReceiver(EntityReceiver receiver) {
 		this.receiver = receiver;
 	}
 	
+	@Override
+	public void onQueryUpdated(String query, Serializable data) {
+		if(isInterestingQuery(query)) {
+			setEntity((Entity)data);
+			receiver.onEntityReceived(getEntity());
+		}
+	}
 	
+	public EntityReceiver getReceiver() {
+		return receiver;
+	}
+
+	public Entity getEntity() {
+		return entity;
+	}
+
+	public void setEntity(Entity entity) {
+		this.entity = entity;
+	}
 }

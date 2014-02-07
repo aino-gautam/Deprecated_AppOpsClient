@@ -92,8 +92,8 @@ public class DateTimePickerField extends BaseField{
 	 */
 	private String getValueFromConf(String propertyName){
 		logger.log(Level.INFO,"[DateTimePickerField]:: In getValueFromConf  method ");
-		if(getConfigurationValue(propertyName)!=null)
-			return getConfigurationValue(propertyName).toString();
+		if(viewConfiguration.getConfigurationValue(propertyName)!=null)
+			return viewConfiguration.getConfigurationValue(propertyName).toString();
 		
 		return null;
 	}

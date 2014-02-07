@@ -1686,6 +1686,17 @@ td.datePickerMonth {
 	width: 500px;
 }
 
+.toggleImageCss{
+	width: 15px;
+	height: 15px;
+}
+
+.intelliThoughtField{
+	height: 32px;
+	width: 400px;
+}
+
+
 /*********** product  entity snippet css ****/
 .cartImageCss{
 	width: 15px;
@@ -1707,13 +1718,16 @@ td.datePickerMonth {
 	font-size: 13px;
 }
 
-.pinkHeartCss{
+.heartCss{
 	width: 15px;
 	height:15px;
 	cursor: pointer;
 	cursor: hand;
 }
 
+.heartToggleImageFieldCss{
+	margin-top: 4px;
+}
 
 .productSnippetCss{
 	width: 100px;
@@ -1724,5 +1738,6 @@ td.datePickerMonth {
 	border: 1px solid;
 	border-color: gray;
 	box-shadow: 5px 5px 5px #B0B0B0;
+	float: left;
 }
 /*************************/

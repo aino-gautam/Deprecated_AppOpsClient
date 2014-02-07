@@ -1,7 +1,7 @@
 package in.appops.client.common.components;
 
-import in.appops.client.common.fields.TextField;
-import in.appops.client.common.fields.TextField.TextFieldConstant;
+import in.appops.client.common.config.field.textfield.TextField;
+import in.appops.client.common.config.field.textfield.TextField.TextFieldConstant;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.client.common.snippet.SnippetFactory;
 import in.appops.client.common.util.AppEnviornment;

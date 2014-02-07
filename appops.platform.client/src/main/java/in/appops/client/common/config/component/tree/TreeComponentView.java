@@ -1,9 +1,9 @@
 package in.appops.client.common.config.component.tree;
 
-import in.appops.client.common.config.component.base.BaseComponentView;
+import in.appops.client.common.config.component.base.BaseComponent;
 import in.appops.client.common.config.component.tree.TreeComponentPresenter.TreeComponentConstant;
 import in.appops.client.common.config.dsnip.HTMLSnippetPresenter;
-import in.appops.client.common.config.dsnip.SnippetGenerator;
+import in.appops.client.common.config.dsnip.DynamicMVPFactory;
 import in.appops.client.common.gin.AppOpsGinjector;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.util.EntityList;
@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
-public class TreeComponentView extends BaseComponentView {
+public class TreeComponentView extends BaseComponent {
 	
 	private ScrollPanel scrollPanel;
 	private String instanceType;
@@ -66,26 +66,28 @@ public class TreeComponentView extends BaseComponentView {
 	protected void populate() {
 		TreeItem selectedTreeItem = root.getSelectedItem();
 		if(selectedTreeItem == null) {
+			root.clear();
 			for(Entity entity : entityList){
 				HTMLSnippetPresenter snippetPres  = getChildSnippet();
-				TreeItem item = root.addItem(snippetPres.getHTMLSnippet());
+				TreeItem item = root.addItem(snippetPres.getView());
 				item.setTitle("0");
 				item.setStylePrimaryName("treeItem");
 				item.addItem("");
-				snippetPres.setEntity(entity);
-				snippetPres.load();
+//				snippetPres.setEntity(entity);
+//				snippetPres.load();
 			}
 		} else {
+			selectedTreeItem.removeItems();
 			for(Entity entity : entityList){
 				HTMLSnippetPresenter snippetPres  = getChildSnippet();
-				TreeItem item = selectedTreeItem.addItem(snippetPres.getHTMLSnippet());
+				TreeItem item = selectedTreeItem.addItem(snippetPres.getView());
 				int depth = (Integer.parseInt(selectedTreeItem.getTitle())) + 1;
 				item.setTitle(Integer.toString(depth));
 
 				item.setStylePrimaryName("treeItem");
 				item.addItem("");
-				snippetPres.setEntity(entity);
-				snippetPres.load();
+//				snippetPres.setEntity(entity);
+//				snippetPres.load();
 			}
 		}
 		scrollPanel.setWidget(root);
@@ -93,16 +95,16 @@ public class TreeComponentView extends BaseComponentView {
 
 	private HTMLSnippetPresenter getChildSnippet() {
 		AppOpsGinjector injector = GWT.create(AppOpsGinjector.class);
-		SnippetGenerator snippetGenerator = (SnippetGenerator)injector.getSnippetGenerator();
-		HTMLSnippetPresenter snippetPres = snippetGenerator.generateSnippet(snippetType, instanceType);
+		DynamicMVPFactory snippetGenerator = (DynamicMVPFactory)injector.getMVPFactory();
+		HTMLSnippetPresenter snippetPres = snippetGenerator.requestHTMLSnippet(snippetType, instanceType);
 		return snippetPres;
 	}
 
 
 	private String getInstanceType() {
 		String instanceType = null;
-		if(getConfigurationValue(TreeComponentConstant.TR_INSTANCETYPE) != null) {
-			instanceType = getConfigurationValue(TreeComponentConstant.TR_INSTANCETYPE).toString();
+		if(viewConfiguration.getConfigurationValue(TreeComponentConstant.TR_INSTANCETYPE) != null) {
+			instanceType = viewConfiguration.getConfigurationValue(TreeComponentConstant.TR_INSTANCETYPE).toString();
 		}
 		return instanceType;
 	}
@@ -110,8 +112,8 @@ public class TreeComponentView extends BaseComponentView {
 
 	private String getSnippetType() {
 		String snippetType = null;
-		if(getConfigurationValue(TreeComponentConstant.TR_SNIPPETTYPE) != null) {
-			snippetType = getConfigurationValue(TreeComponentConstant.TR_SNIPPETTYPE).toString();
+		if(viewConfiguration.getConfigurationValue(TreeComponentConstant.TR_SNIPPETTYPE) != null) {
+			snippetType = viewConfiguration.getConfigurationValue(TreeComponentConstant.TR_SNIPPETTYPE).toString();
 		}
 		return snippetType;
 	}

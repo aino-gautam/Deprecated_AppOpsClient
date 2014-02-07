@@ -1,156 +1,65 @@
 package in.appops.client.common.config.component.tree;
 
+import in.appops.client.common.config.component.base.BaseComponent.BaseComponentConstant;
 import in.appops.client.common.config.component.base.BaseComponentPresenter;
-import in.appops.client.common.config.dsnip.ApplicationContext;
-import in.appops.client.common.config.dsnip.Container.ContainerConstant;
-import in.appops.client.common.config.dsnip.EventConstant;
-import in.appops.client.common.config.dsnip.HTMLSnippet;
 import in.appops.client.common.config.model.TreeModel;
 import in.appops.client.common.core.EntityListReceiver;
-import in.appops.client.common.util.JsonToEntityConverter;
 import in.appops.platform.core.entity.Entity;
-import in.appops.platform.core.entity.Key;
-import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.user.client.ui.TreeItem;
 
 public class TreeComponentPresenter extends BaseComponentPresenter implements OpenHandler<TreeItem>, CloseHandler<TreeItem>, EntityListReceiver {
+	
+	public TreeComponentPresenter(String type, String instance) {
+		super(type, instance);
+		// TODO Auto-generated constructor stub
+	}
+
 	TreeItem treeItem = null;
 
-	public TreeComponentPresenter() {
-		model = new TreeModel();
+	@Override
+	public void initialize() {
+//		model = new TreeModel();
 		((TreeModel)model).setReceiver(this);
-		view = new TreeComponentView();
+		view = new TreeComponentView();		
 	}
 	
 	@Override
 	public void configure() {
 		super.configure();
-		model.setConfiguration(getModelConfiguration());
-		model.configure(); 
-		view.setConfiguration(getViewConfiguration());
-		
-		view.configure();
-		view.create();
 		((TreeComponentView)view).getRoot().addOpenHandler(this);
 	}
 	
-	@Override
-	public void init() {
-		super.init();
-
+	/*@Override
+	public void load() {
 		if(getCurrentRequestedDepth() != -1) {
 			((TreeModel)model).getItems(getCurrentRequestedDepth());
 		}
-	}
-	
-	@Override
-	public void load() {
-		super.load();
-		if(isTypeInteresting("onLoad")) {
-			Configuration eventConf = getEventConfiguration("onLoad");
+	}*/
 
-			processEvent(eventConf, null);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void onValueChange(ValueChangeEvent<String> event) {
-		String appEventJson = event.getValue();
-		
-		Entity appEvent = new JsonToEntityConverter().convertjsonStringToEntity(appEventJson);
-		
-		String eventName = appEvent.getPropertyByName(EventConstant.EVNT_NAME);
-		Object eventData = appEvent.getPropertyByName(EventConstant.EVNT_DATA);
-
-		if(isTypeInteresting(eventName)) {
-			Configuration eventConf = getEventConfiguration(eventName);
-			processEvent(eventConf, eventData);
-		}
- 	}
-	
-	@SuppressWarnings("unchecked")
-	private void processEvent(Configuration conf, Object eventData) {
-		try {
-			Configuration updateConf =  conf.getPropertyByName("updateConfiguration");
-			Set<String> confSet = updateConf.getValue().keySet();
-			
-			for(String confToUpdate : confSet) {
-				Object confValue = updateConf.getPropertyByName(confToUpdate);
-				configuration.setPropertyByName(confToUpdate, (Serializable)confValue);
-			}
-			
-			if(getCurrentRequestedDepth() == 0) {
-				TreeComponentView treeView = (TreeComponentView)view;
-				treeView.getRoot().clear();
-				treeView.getRoot().setSelectedItem(null);
-			}
-			HashMap<String, Configuration> depthList = ((TreeModel)model).getDepthList(); 
-			
-			Configuration depthConfig = depthList.get(Integer.toString(getCurrentRequestedDepth()));
-			
-			ArrayList<Configuration> paramList = depthConfig.getPropertyByName(TreeComponentConstant.TM_DEPTH_QUERY_PARAM);
-			
-			for(Configuration paramConfig : paramList) {
-				Serializable value = null; paramConfig.getPropertyByName("value");
-					String paramType = paramConfig.getPropertyByName("paramType");
-					if(paramType == null) {
-						value = paramConfig.getPropertyByName("value");
-					} else {
-						if(paramType.equals("entityParam")) {
-							Entity entity = (Entity)eventData;
-							String entityProp = paramConfig.getPropertyByName("entityProp");
-							
-							value = entity.getPropertyByName(entityProp);
-						} else {
-								String entityProp = paramConfig.getPropertyByName("entityProp");
-								
-								value = ApplicationContext.getInstance().getGraphPropertyValue(entityProp, null);
-								
-								if(value instanceof Key) {
-									Key key = (Key)value;
-									value = key.getKeyValue();
-								}
-						}
-					}
-					paramConfig.setPropertyByName("value", value);
-			}
-			
-			init();
-		} catch(Exception e) {
-			
-		}
-	}
-	
-	
 	private int getCurrentRequestedDepth() {
 		int operation = -1;
-		if(getConfigurationValue("currentRequestedDepth") != null) {
-			operation = Integer.parseInt(getConfigurationValue("currentRequestedDepth").toString());
-		}
+//		if(getConfigurationValue("currentRequestedDepth") != null) {
+//			operation = Integer.parseInt(getConfigurationValue("currentRequestedDepth").toString());
+//		}
 		return operation;
 	}
 
 	@SuppressWarnings("unchecked")
 	protected HashMap<String, Configuration> getInterestedEvents() {
 		HashMap<String, Configuration> interestedEvents = new HashMap<String, Configuration>();
-		if(getConfigurationValue(ContainerConstant.CT_INTRSDEVNTS) != null) {
-			interestedEvents = (HashMap<String, Configuration>) getConfigurationValue(ContainerConstant.CT_INTRSDEVNTS);
-		}
+//		if(getConfigurationValue(ContainerConstant.CT_INTRSDEVNTS) != null) {
+//			interestedEvents = (HashMap<String, Configuration>) getConfigurationValue(ContainerConstant.CT_INTRSDEVNTS);
+//		}
 		return interestedEvents;
 	}
 	
@@ -185,13 +94,13 @@ public class TreeComponentPresenter extends BaseComponentPresenter implements Op
 	@Override
 	public void onOpen(OpenEvent<TreeItem> event) {
 		try {
-			TreeItem treeItem = event.getTarget();
+			/*TreeItem treeItem = event.getTarget();
 			TreeComponentView treeView = (TreeComponentView)view;
 			int depth = Integer.parseInt(treeItem.getTitle());
 
 			treeView.getRoot().setSelectedItem(treeItem);
 
-			HTMLSnippet treeSnippet = (HTMLSnippet) treeItem.getWidget();
+			HTMLSnippetView treeSnippet = (HTMLSnippetView) treeItem.getWidget();
 			
 			configuration.setPropertyByName("currentRequestedDepth", depth + 1);
 			
@@ -231,7 +140,7 @@ public class TreeComponentPresenter extends BaseComponentPresenter implements Op
 
 				
 			}
-			
+			*/
 /*			for(Configuration paramConfig : paramList) {
 				Serializable value = null;
 				
@@ -254,7 +163,7 @@ public class TreeComponentPresenter extends BaseComponentPresenter implements Op
 				paramConfig.setPropertyByName("value", value);
 			}
 			*/
-			init();
+			//load();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

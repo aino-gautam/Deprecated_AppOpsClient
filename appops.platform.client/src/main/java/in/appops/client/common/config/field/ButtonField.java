@@ -1,13 +1,18 @@
 package in.appops.client.common.config.field;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -33,10 +38,12 @@ btnField.configure();<br>
 btnField.create();<br>
 
 </p>*/
-public class ButtonField extends BaseField implements ClickHandler{
+public class ButtonField extends BaseField implements ClickHandler, BlurHandler, KeyUpHandler{
 	
 	private Button button ;
 	private HandlerRegistration clickHandler = null ;
+	private HandlerRegistration blurHandler = null ;
+	private HandlerRegistration keyUpHandler  = null;
 	private Logger logger = Logger.getLogger(getClass().getName());
 
 	public ButtonField() {
@@ -52,6 +59,8 @@ public class ButtonField extends BaseField implements ClickHandler{
 		
 		try {
 			clickHandler = button.addClickHandler(this);
+			blurHandler = button.addBlurHandler(this);
+			keyUpHandler = button.addKeyUpHandler(this);
 			getBasePanel().add(button,DockPanel.CENTER);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ButtonField]::Exception In create  method :"+e);
@@ -72,12 +81,31 @@ public class ButtonField extends BaseField implements ClickHandler{
 		}
 	}
 	
+	@Override
+	public void onKeyUp(KeyUpEvent event) {
+		try {
+			Integer keycode= event.getNativeKeyCode();
+			if(keycode.equals(KeyCodes.KEY_TAB)){
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventSource(this);
+				fieldEvent.setEventData(getValue());
+				fieldEvent.setEventType(FieldEvent.TAB_KEY_PRESSED);
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[ButtonField] ::Exception In onKeyUp method "+e);
+		}
+	}
+	
 
 	@Override
 	public void configure() {
 		try {
 			logger.log(Level.INFO,"[ButtonField]:: In configure  method ");
 			setFieldValue(getDisplayText());
+			
+			button.setEnabled(isEnabled());
+			
 			if(getBtnTitle()!=null)
 				button.setTitle(getBtnTitle());
 			
@@ -91,7 +119,7 @@ public class ButtonField extends BaseField implements ClickHandler{
 			if (getBasePanelDependentCss() != null)
 				getBasePanel().addStyleName(getBasePanelDependentCss());
 			
-			button.setEnabled(isEnabled());
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ButtonField]::Exception In configure  method :"+e);
 		}
@@ -120,6 +148,12 @@ public class ButtonField extends BaseField implements ClickHandler{
 		
 		if(clickHandler!=null)
 			clickHandler.removeHandler();
+		
+		if(blurHandler!=null)
+			blurHandler.removeHandler();
+		
+		if(keyUpHandler!=null)
+			keyUpHandler.removeHandler();
 	}
 	
 	/**
@@ -171,8 +205,8 @@ public class ButtonField extends BaseField implements ClickHandler{
 		String displayTxt = "";
 		try {
 			logger.log(Level.INFO,"[ButtonField]:: In getDisplayText  method ");
-			if (getConfigurationValue(ButtonFieldConstant.BTNFD_DISPLAYTEXT) != null) {
-				displayTxt = getConfigurationValue(ButtonFieldConstant.BTNFD_DISPLAYTEXT).toString();
+			if (viewConfiguration.getConfigurationValue(ButtonFieldConstant.BTNFD_DISPLAYTEXT) != null) {
+				displayTxt = viewConfiguration.getConfigurationValue(ButtonFieldConstant.BTNFD_DISPLAYTEXT).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ButtonField]::Exception In creagetDisplayTextte  method :"+e);
@@ -188,8 +222,8 @@ public class ButtonField extends BaseField implements ClickHandler{
 		String btnTitle = null;
 		try {
 			logger.log(Level.INFO,"[ButtonField]:: In getBtnTitle  method ");
-			if (getConfigurationValue(ButtonFieldConstant.BTNFD_TITLE) != null) {
-				btnTitle = getConfigurationValue(ButtonFieldConstant.BTNFD_TITLE).toString();
+			if (viewConfiguration.getConfigurationValue(ButtonFieldConstant.BTNFD_TITLE) != null) {
+				btnTitle = viewConfiguration.getConfigurationValue(ButtonFieldConstant.BTNFD_TITLE).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ButtonField]::Exception In getBtnTitle  method :"+e);
@@ -213,6 +247,20 @@ public class ButtonField extends BaseField implements ClickHandler{
 		
 	}
 	
+	@Override
+	public void onBlur(BlurEvent event) {
+		try {
+			FieldEvent fieldEvent = new FieldEvent();
+			fieldEvent.setEventSource(this);
+			fieldEvent.setEventData(getValue());
+			fieldEvent.setEventType(FieldEvent.EDITCOMPLETED);
+			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ButtonField]::Exception In onBlur  method :"+e);
+		}
+		
+	}
+	
 	/*********************************************************************************/
 	
 	public interface ButtonFieldConstant extends BaseFieldConstant{
@@ -227,5 +275,7 @@ public class ButtonField extends BaseField implements ClickHandler{
 		public static final String BTNFD_CLICK_EVENT = "clickEvent";
 		
 	}
+
+	
 
 }

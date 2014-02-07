@@ -50,8 +50,8 @@ public class HtmlEditorField extends BaseField  {
 	
 //	private String getEditorPrimaryCls() {
 //		String css = "appops-SpinnerBoxPrimary";
-//		if(getConfigurationValue(HtmlEditorFieldConstant.HF_EDTCLS) != null) {
-//			css = getConfigurationValue(HtmlEditorFieldConstant.HF_EDTCLS).toString();
+//		if(viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.HF_EDTCLS) != null) {
+//			css = viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.HF_EDTCLS).toString();
 //		}
 //		return css;
 //	}
@@ -76,24 +76,24 @@ public class HtmlEditorField extends BaseField  {
 	
 	private String getFieldConfigMode() {
 		String mode = null;
-		if(getConfigurationValue(HtmlEditorFieldConstant.FIELD_CONFIG_MODE) != null) {
-			 mode = getConfigurationValue(HtmlEditorFieldConstant.FIELD_CONFIG_MODE).toString();
+		if(viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.FIELD_CONFIG_MODE) != null) {
+			 mode = viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.FIELD_CONFIG_MODE).toString();
 		}
 		return mode;
 	}
 
 	private boolean getFieldResizeEnable() {
 		boolean isEnable = false;
-		if(getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_ENABLE) != null) {
-			isEnable = (Boolean) getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_ENABLE);
+		if(viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_ENABLE) != null) {
+			isEnable = (Boolean) viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_ENABLE);
 		}
 		return isEnable;
 	}
 
 	private int getMinResizeWidth() {
 		int minWidth = 0;
-		if(getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_MIN_WIDTH) != null) {
-			String minimum = getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_MIN_WIDTH).toString();
+		if(viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_MIN_WIDTH) != null) {
+			String minimum = viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_MIN_WIDTH).toString();
 			if(minimum.contains("px")) {
 				minimum = minimum.replace("px", "");
 			}
@@ -104,8 +104,8 @@ public class HtmlEditorField extends BaseField  {
 
 	private int getMaxResizeWidth() {
 		int maxWidth = 0;
-		if(getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_MAX_WIDTH) != null) {
-			String maximum = getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_MAX_WIDTH).toString();
+		if(viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_MAX_WIDTH) != null) {
+			String maximum = viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_MAX_WIDTH).toString();
 			if(maximum.contains("px")) {
 				maximum = maximum.replace("px", "");
 			}
@@ -116,8 +116,8 @@ public class HtmlEditorField extends BaseField  {
 
 	private int getMinResizeHeight() {
 		int minHeight = 0;
-		if(getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_MIN_HEIGHT) != null) {
-			String minimum = getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_MIN_HEIGHT).toString();
+		if(viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_MIN_HEIGHT) != null) {
+			String minimum = viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_MIN_HEIGHT).toString();
 			if(minimum.contains("px")) {
 				minimum = minimum.replace("px", "");
 			}
@@ -128,8 +128,8 @@ public class HtmlEditorField extends BaseField  {
 
 	private int getMaxResizeHeight() {
 		int maxHeight = 0;
-		if(getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_MAX_HEIGHT) != null) {
-			String maximum = getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_MAX_HEIGHT).toString();
+		if(viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_MAX_HEIGHT) != null) {
+			String maximum = viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.FIELD_RESIZE_MAX_HEIGHT).toString();
 			if(maximum.contains("px")) {
 				maximum = maximum.replace("px", "");
 			}
@@ -140,24 +140,24 @@ public class HtmlEditorField extends BaseField  {
 
 	private String getFieldWidth() {
 		String width = null;
-		if(getConfigurationValue(HtmlEditorFieldConstant.FIELD_WIDTH) != null) {
-			 width = getConfigurationValue(HtmlEditorFieldConstant.FIELD_WIDTH).toString();
+		if(viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.FIELD_WIDTH) != null) {
+			 width = viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.FIELD_WIDTH).toString();
 		}
 		return width;
 	}
 	
 	private String getFieldHeight() {
 		String height = null;
-		if(getConfigurationValue(HtmlEditorFieldConstant.FIELD_HEIGHT) != null) {
-			 height = getConfigurationValue(HtmlEditorFieldConstant.FIELD_HEIGHT).toString();
+		if(viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.FIELD_HEIGHT) != null) {
+			 height = viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.FIELD_HEIGHT).toString();
 		}
 		return height;
 	}
 
 	private String getFieldMode() {
 		String mode = null;
-		if(getConfigurationValue(HtmlEditorFieldConstant.FIELD_MODE) != null) {
-			 mode = getConfigurationValue(HtmlEditorFieldConstant.FIELD_MODE).toString();
+		if(viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.FIELD_MODE) != null) {
+			 mode = viewConfiguration.getConfigurationValue(HtmlEditorFieldConstant.FIELD_MODE).toString();
 		}
 		return mode;
 	}

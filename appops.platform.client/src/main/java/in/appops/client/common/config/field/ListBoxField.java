@@ -1,5 +1,7 @@
 package in.appops.client.common.config.field;
 
+import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
+import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
@@ -10,6 +12,7 @@ import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.Key;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.operation.Result;
+import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 
 import java.util.ArrayList;
@@ -18,11 +21,18 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 
 /**
@@ -47,18 +57,24 @@ configuration.setPropertyByName(ListBoxFieldConstant.LSTFD_ITEMS,items);
 staticListBox.setConfiguration(conf);<br>
 staticListBox.configure();<br>
 staticListBox.create();<br>
-
 </p>*/
-public class ListBoxField extends BaseField implements ChangeHandler{
+public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler, KeyDownHandler{
 
 	private ListBox listBox;
 	private HashMap<String, Entity> nameVsEntity  = null;
 	private final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
 	private final DispatchAsync	dispatch = new StandardDispatchAsync(exceptionHandler);
 	private HandlerRegistration selectionHandler = null ;
+	private HandlerRegistration blurHandler = null ;
+	private HandlerRegistration keyDownHandler = null ;
+	private HorizontalPanel boxPlusLoaderPanel ;
+	private ImageField imageField ;
+	private String selectDefaultValue;
 	private Logger logger = Logger.getLogger(getClass().getName());
 	public ListBoxField(){
 		listBox = new ListBox();
+		boxPlusLoaderPanel = new HorizontalPanel();
+		imageField = new ImageField();
 	}
 	
 	/******************************** ****************************************/
@@ -72,18 +88,20 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	@Override
 	public void create() {
 		try {
-			if (getListQueryName() != null) {
+			if (getOperationName() != null) {
 				excuteListQuery();
 			} else {
 				if (getStaticListOfItems() != null) {
 					Object obj = getStaticListOfItems();
 					if (obj instanceof ArrayList) {
 						ArrayList<Object> staticList = (ArrayList<Object>) obj;
-						if (staticList.get(0) instanceof String) {
-							populateList((ArrayList<String>) obj);
-						} else if (staticList.get(0) instanceof Entity) {
-							EntityList list = (EntityList) obj;
-							populateEntityList(list);
+						if(!staticList.isEmpty()) {
+							if (staticList.get(0) instanceof String) {
+								populateList((ArrayList<String>) obj);
+							} else if (staticList.get(0) instanceof Entity) {
+								EntityList list = (EntityList) obj;
+								populateEntityList(list);
+							}
 						}
 					} else if (obj instanceof EntityList) {
 						EntityList list = (EntityList) obj;
@@ -92,8 +110,13 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 
 				}
 			}
-
-			getBasePanel().add(listBox, DockPanel.CENTER);
+			boxPlusLoaderPanel.clear();
+			boxPlusLoaderPanel.add(listBox);
+			boxPlusLoaderPanel.setCellWidth(listBox, "80%");
+			boxPlusLoaderPanel.add(imageField);
+			boxPlusLoaderPanel.setCellWidth(imageField, "20%");
+			boxPlusLoaderPanel.setCellVerticalAlignment(imageField, HasVerticalAlignment.ALIGN_MIDDLE);
+			getBasePanel().add(boxPlusLoaderPanel, DockPanel.CENTER);
 
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,
@@ -105,6 +128,7 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	@Override
 	public void configure() {
 		try {
+			listBox.clear();
 			listBox.setVisibleItemCount(getVisibleItemCount());
 			listBox.setEnabled(isEnabled());
 
@@ -122,8 +146,13 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 				getBasePanel().setStylePrimaryName(getBasePanelPrimCss());
 			if (getBasePanelDependentCss() != null)
 				getBasePanel().addStyleName(getBasePanelDependentCss());
+			
 
+				removeRegisteredHandlers();
 				selectionHandler = listBox.addChangeHandler(this);
+				blurHandler = listBox.addBlurHandler(this);
+				keyDownHandler = listBox.addKeyDownHandler(this);
+				
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In configure  method :" + e);
 		}
@@ -147,6 +176,12 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	public void removeRegisteredHandlers() {
 		if(selectionHandler!=null)
 			selectionHandler.removeHandler();
+		
+		if(blurHandler!=null)
+			blurHandler.removeHandler();
+		
+		if(keyDownHandler!=null)
+			keyDownHandler.removeHandler();
 	}
 	
 	@Override
@@ -178,8 +213,8 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		Integer noOfVisibleItems = 1;
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getVisibleItemCount  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_VISIBLE_ITEM_CNT) != null) {
-				noOfVisibleItems = (Integer) getConfigurationValue(ListBoxFieldConstant.LSTFD_VISIBLE_ITEM_CNT);
+			if(viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_VISIBLE_ITEM_CNT) != null) {
+				noOfVisibleItems = (Integer) viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_VISIBLE_ITEM_CNT);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getVisibleItemCount  method :"+e);
@@ -195,8 +230,8 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	private Object getStaticListOfItems() {
 		Object listOfItems = null;
 		try {
-			if (getConfigurationValue(ListBoxFieldConstant.LSTFD_ITEMS) != null) {
-				listOfItems = getConfigurationValue(ListBoxFieldConstant.LSTFD_ITEMS);
+			if (viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_ITEMS) != null) {
+				listOfItems = viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_ITEMS);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getStaticListOfItems  method :"
@@ -214,8 +249,8 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		String query = null;
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getListQueryName  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERYNAME) != null) {
-				query = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERYNAME);
+			if(viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERYNAME) != null) {
+				query = (String) viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERYNAME);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getListQueryName  method :"+e);
@@ -231,8 +266,8 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		String entprop = null;
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getEntPropToShow  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_ENTPROP) != null) {
-				entprop = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_ENTPROP);
+			if(viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_ENTPROP) != null) {
+				entprop = (String) viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_ENTPROP);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getEntPropToShow  method :"+e);
@@ -248,8 +283,8 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		HashMap<String, Object> queryRestrictions = null;
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getQueryRestrictions  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_RESTRICTION) != null) {
-				queryRestrictions =  (HashMap<String, Object>) getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_RESTRICTION);
+			if(viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_RESTRICTION) != null) {
+				queryRestrictions =  (HashMap<String, Object>) viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_RESTRICTION);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getQueryRestrictions  method :"+e);
@@ -262,11 +297,11 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	 * @return
 	 */
 	private Integer getQueryMaxResult() {
-		Integer maxResult = 10;
+		Integer maxResult = 100;
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getQueryMaxResult  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_MAXRESULT) != null) {
-				maxResult =(Integer) getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_MAXRESULT);
+			if(viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_MAXRESULT) != null) {
+				maxResult =(Integer) viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_QUERY_MAXRESULT);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getQueryMaxResult  method :"+e);
@@ -282,8 +317,8 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		String operation = null;
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getOperationName  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_OPRTION) != null) {
-				operation =(String) getConfigurationValue(ListBoxFieldConstant.LSTFD_OPRTION);
+			if(viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_OPRTION) != null) {
+				operation =(String) viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_OPRTION);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getOperationName  method :"+e);
@@ -299,8 +334,8 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		String selectedTxt = null;
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In getDefaultSelectedText  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_SELECTED_TXT) != null) {
-				selectedTxt = (String) getConfigurationValue(ListBoxFieldConstant.LSTFD_SELECTED_TXT);
+			if(viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_SELECTED_TXT) != null) {
+				selectedTxt = (String) viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_SELECTED_TXT);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getDefaultSelectedText  method :"+e);
@@ -316,11 +351,17 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	private void populateEntityList(EntityList entityList){
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In populateEntityList  method ");
+			imageField.setConfiguration(getImageVisibleConfiguration());
+			imageField.configure();
+			imageField.create();
 			if(nameVsEntity==null)
 				nameVsEntity = new HashMap<String, Entity>();
-			
-			String defaultValue = getDefaultValueName();
-			listBox.addItem(defaultValue);
+						
+			listBox.clear();
+			if (getDefaultValue() != null) {
+				listBox.insertItem(getDefaultValue().toString(), 0);
+				listBox.setSelectedIndex(0);
+			}
 			
 			for(Entity entity : entityList){
 				String item = entity.getPropertyByName(getEntPropToShow());
@@ -332,6 +373,10 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 			
 			if(getDefaultSelectedText()!=null){
 				listBox.setSelectedIndex(getIndexFromText(getDefaultSelectedText()));
+			}
+			if(selectDefaultValue != null) {
+				setValue(selectDefaultValue);
+				selectDefaultValue = null;
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In populateEntityList  method :"+e);
@@ -346,6 +391,9 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	private void populateList(ArrayList<String> listOfItems){
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In populateList  method ");
+			imageField.setConfiguration(getImageVisibleConfiguration());
+			imageField.configure();
+			imageField.create();
 			for(int count = 0; count<listOfItems.size() ;count ++){
 				String item = listOfItems.get(count);
 				listBox.addItem(item);
@@ -368,30 +416,41 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In excuteListQuery  method ");
-			Query queryObj = new Query();
-			queryObj.setQueryName(getListQueryName());
-			queryObj.setListSize(getQueryMaxResult());
-			if(getQueryRestrictions()!=null)
-				queryObj.setQueryParameterMap(getQueryRestrictions());
+			if(getListQueryName()!=null){
+				Query queryObj = new Query();
+				queryObj.setQueryName(getListQueryName());
+				queryObj.setListSize(getQueryMaxResult());
+				if(getQueryRestrictions()!=null)
+					queryObj.setQueryParameterMap(getQueryRestrictions());
+				
+				Map parameterMap = new HashMap();
+				parameterMap.put("query", queryObj);
+				executeOperation(parameterMap);
+			}else{
+				executeOperation(null);
+			}
 			
-			Map parameterMap = new HashMap();
-			parameterMap.put("query", queryObj);
 			
-			executeOperation(parameterMap);
+			
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In excuteListQuery  method :"+e);
 		}
 	}
 	
 	/**
-	 * Method returns associated entity of the item text.
+	 * Method returns associated entity of the selected text.
 	 * @param itemText
 	 * @return
 	 */
 	public Entity getAssociatedEntity(String itemText){
 		logger.log(Level.INFO,"[ListBoxField]:: In getAssociatedEntity  method ");
-		if(nameVsEntity !=null)
-		  return nameVsEntity.get(itemText);
+		
+		for (Entity ent  : nameVsEntity.values()) {
+			String propValue = ent.getPropertyByName(getEntPropToShow()).toString();
+			if(propValue.equals(itemText)){
+				return ent;
+			}
+		}
 		return null;
 		
 	}
@@ -424,32 +483,24 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In onChange  method ");
-			boolean fireEvent = true;
-			
-			if(getDefaultValue()!=null){
-				if(!getValue().toString().equals(getDefaultValue().toString())){
-					fireEvent = true;
-				}else{
-					fireEvent = false;
-				}
-			}
-			
-			if(fireEvent){
 				
-				FieldEvent fieldEvent = new FieldEvent();
-				String selectedItem = getValue().toString();
-				String selectedValue = getSelectedValue().toString();
-				Entity entity = nameVsEntity.get(selectedValue);
-				SelectedItem selectedEntity = new SelectedItem();
-				selectedEntity.setItemString(selectedItem);
+			FieldEvent fieldEvent = new FieldEvent();
+			String item = getValue().toString();
+			String value = getSelectedValue().toString();
+			SelectedItem selectedItem = new SelectedItem();
+			selectedItem.setItemString(item);
+
+			if(nameVsEntity != null && !nameVsEntity.isEmpty()) {
+				Entity entity = nameVsEntity.get(value);
 				if(nameVsEntity!=null){
-					selectedEntity.setAssociatedEntity(entity);
+					selectedItem.setAssociatedEntity(entity);
 				}
-				fieldEvent.setEventSource(this);
-				fieldEvent.setEventData(selectedEntity);
-				fieldEvent.setEventType(FieldEvent.VALUECHANGED);
-				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 			}
+			
+			fieldEvent.setEventSource(this);
+			fieldEvent.setEventData(selectedItem);
+			fieldEvent.setEventType(FieldEvent.VALUECHANGED);
+			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In onChange  method :"+e);
 		}
@@ -461,6 +512,12 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 	private void executeOperation(Map parameterMap) {
 		try {
 			logger.log(Level.INFO,"[ListBoxField]:: In executeOperation  method ");
+			
+			
+			imageField.setConfiguration(getImageConfiguration());
+			imageField.configure();
+			imageField.create();
+			
 			StandardAction action = new StandardAction(EntityList.class, getOperationName(), parameterMap);
 			dispatch.execute(action, new AsyncCallback<Result<EntityList>>() {
 
@@ -471,7 +528,9 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 
 				@Override
 				public void onSuccess(Result<EntityList> result) {
-					
+					imageField.setConfiguration(getImageVisibleConfiguration());
+					imageField.configure();
+					imageField.create();
 					if(result!=null){
 						EntityList list   = result.getOperationResult();
 						if(!list.isEmpty())
@@ -479,31 +538,100 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 					}
 					
 				}
+
+				
 			});
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In executeOperation  method :"+e);
 		}
 	}
 	
-	private String getDefaultValueName() {
-		String defaultName = null;
+	public String getSuggestionValueForListBox() {
+		String defaultName = "-- Select --";
 		try {
-			logger.log(Level.INFO,"[ListBoxField]:: In getDefaultValueName  method ");
-			if(getConfigurationValue(ListBoxFieldConstant.LISTBOX_DEFAULT_VALUE) != null) {
-				String value =(String) getConfigurationValue(ListBoxFieldConstant.LISTBOX_DEFAULT_VALUE);
-				defaultName = value;
-			} else {
-				defaultName = "-- Select --";
-			}
+			logger.log(Level.INFO,"[ListBoxField]:: In getSuggestionValueForListBox  method ");
+			if(getDefaultValue() != null) {
+				defaultName = (String) getDefaultValue();
+			} 
 		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getDefaultValueName  method :"+e);
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getSuggestionValueForListBox  method :"+e);
 		}
 		return defaultName;
 	}
 	
+	public String getListBoxImageLoader() {
+		String defaultImageLoader = "images/defaultLoader.gif";
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getListBoxImageLoader  method ");
+			if(viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_LOADERIMG_BLOBID) != null) {
+				defaultImageLoader = (String) viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_LOADERIMG_BLOBID);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getListBoxImageLoader  method :"+e);
+		}
+		return defaultImageLoader;
+	}
+	
+	public String getListBoxImageLoaderPcls() {
+		String defaultPcls = "appops-listBoxLoaderPcls";
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getListBoxImageLoaderPcls  method ");
+			if(viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_LOADERIMG_PCLS) != null) {
+				defaultPcls = (String) viewConfiguration.getConfigurationValue(ListBoxFieldConstant.LSTFD_LOADERIMG_PCLS);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getListBoxImageLoaderPcls  method :"+e);
+		}
+		return defaultPcls;
+	}
+		
+	private Configuration getImageConfiguration(){
+		Configuration configuration = new Configuration();
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getImageConfiguration  method ");
+			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, getListBoxImageLoader());
+			configuration.setPropertyByName(ImageFieldConstant.BF_PCLS,getListBoxImageLoaderPcls());
+			
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getImageConfiguration  method :"+e);
+		}
+		return configuration;
+	}
+	
+	private Configuration getImageVisibleConfiguration() {
+		Configuration configuration = new Configuration();
+		try {
+			logger.log(Level.INFO,"[ListBoxField]:: In getImageVisibleConfiguration  method ");
+				configuration.setPropertyByName(ButtonFieldConstant.BC_VISIBLE, false);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getImageVisibleConfiguration  method :"+e);
+		}
+		return configuration;
+	}
+	/**
+	 * Method returns id of the selected entity in the listbox.
+	 * @return
+	 */
 	public Object getSelectedValue() {
-		String selectedValue = listBox.getValue(listBox.getSelectedIndex());
-		return selectedValue;
+		try {
+			String selectedValue = listBox.getValue(listBox.getSelectedIndex());
+			return selectedValue;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	@Override
+	public void onBlur(BlurEvent event) {
+		try {
+			FieldEvent fieldEvent = new FieldEvent();
+			fieldEvent.setEventSource(this);
+			fieldEvent.setEventData(getValue());
+			fieldEvent.setEventType(FieldEvent.EDITCOMPLETED);
+			AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In onBlur  method :"+e);
+		}
 	}
 	
 	public interface ListBoxFieldConstant extends BaseFieldConstant{
@@ -526,8 +654,37 @@ public class ListBoxField extends BaseField implements ChangeHandler{
 		
 		public static final String LSTFD_SELECTED_TXT = "defaultSelectedText";
 		
-		public static final String LISTBOX_DEFAULT_VALUE = "listboxDefaultValue";
+		public static final String LSTFD_LOADERIMG_BLOBID="loaderImgBlobId";
+		
+		public static final String LSTFD_LOADERIMG_PCLS ="loaderImgPrimarycss";
+		
+		public static final String LSTFD_LOADERIMG_DCLS="loaderImgSecondarycss";
 		
 	}
 
+	@Override
+	public void onKeyDown(KeyDownEvent event) {
+		try {
+			Integer keycode= event.getNativeKeyCode();
+			if(keycode.equals(KeyCodes.KEY_TAB)){
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventSource(this);
+				fieldEvent.setEventData(getValue());
+				fieldEvent.setEventType(FieldEvent.TAB_KEY_PRESSED);
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[ListBoxField] ::Exception In onKeyDown method "+e);
+		}
+		
+		
+	}
+	
+	public boolean isFieldEnabled() {
+		return isEnabled();
+	}
+
+	public void setSelectDefaultValue(String selectDefaultValue) {
+		this.selectDefaultValue = selectDefaultValue;
+	}
 }

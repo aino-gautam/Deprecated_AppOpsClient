@@ -1,9 +1,9 @@
 package in.appops.client.common.config.field;
 
+import in.appops.client.common.config.component.base.BaseComponent;
 import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.shared.Configuration;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -37,9 +36,9 @@ Represents base class for all the fields.
 </p>
 */
 
-public class BaseField extends Composite implements Field {
+public class BaseField extends BaseComponent implements Field {
 	
-	public interface BaseFieldConstant {
+	public interface BaseFieldConstant extends BaseComponentConstant {
 		
 		/** Sets an id to the field **/
 		public static final String BF_ID = "baseFieldId";
@@ -57,7 +56,7 @@ public class BaseField extends Composite implements Field {
 		public static final String BF_SHOW_VALID_FIELD = "showValidField";
 		
 		/** Specifies the position of the error marker. viz. {@link BaseFieldConstant#BF_SIDE}, {@link BaseFieldConstant#BF_TOP}, {@link BaseFieldConstant#BF_BOTTOM}
-		 *  Defaults to {@link BaseFieldConstant#SP_ERRINLINE} **/
+		 *  Defaults to {@link BaseFieldConstant#BF_ERRINLINE} **/
 		public static final String BF_ERRPOS = "errorPosition";
 		
 		/** Specifies the position of the suggestion. viz. {@link BaseFieldConstant#BF_SIDE}, {@link BaseFieldConstant#BF_TOP}, {@link BaseFieldConstant#BF_BOTTOM}
@@ -79,7 +78,7 @@ public class BaseField extends Composite implements Field {
 		/** Suggestion to be shown inline of field. {@link BaseFieldConstant#BF_ERRPOS} **/
 		public static final String BF_SUGGESTION_INLINE = "suggestionInline";
 		
-		/** Suggestion text to be shown. {@link BaseFieldConstant#BF_ERRPOS} **/
+		/** Suggestion text to be shown. **/
 		public static final String BF_SUGGESTION_TEXT = "suggestionText";
 		
 		/** Blank field error text to be shown.**/
@@ -89,7 +88,7 @@ public class BaseField extends Composite implements Field {
 		 * Specifies whether the field be disabled.
 		 * Defaults to <code>false</code>
 		 */
-		public static final String BF_ENABLED = "disabled";
+		public static final String BF_ENABLED = "enabled";
 		
 		/** Specifies whether this field should be validated immediately whenever a change in its value is detected. 
 		 *  When set to true, it would allow the field to show feedback about the validity of its contents immediately as the user is typing.
@@ -117,7 +116,7 @@ public class BaseField extends Composite implements Field {
 		public static final String BF_ERRMSGICONCLS = "errorMsgIconCls";
 		
 		/** Set the fields suggestion msg css class **/
-		public static final String BF_SUGGESTION_MSG_CLS = "sugegstionMsgCls";
+		public static final String BF_SUGGESTION_MSG_CLS = "suggestionMsgCls";
 		
 		/** Set the field tab index **/
 		public static final String BF_TABINDEX = "tabIndex";
@@ -140,16 +139,9 @@ public class BaseField extends Composite implements Field {
 		/** Set the fields valid field msg css class **/
 		public static final String BF_VALID_FIELD_MSGCLS = "validFieldMsgCls";
 		
-		/** Style class primary for basepanel on which field is added . **/
-		public static final String BF_BASEPANEL_PCLS = "basePanelPrimaryCss";
-		
-		/** Style class dependent for basepanel on which field is added . **/
-		public static final String BF_BASEPANEL_DCLS = "basePanelDependentCss";
-		
+		/** Property from the Entity to bind the field to. The data displayed in the field is the value of the property **/
 		public static final String BF_BINDPROP = "bindProperty";
-		public static final String BF_VISIBLE = "visible";
 
-		
 	}
 	
 	
@@ -164,31 +156,24 @@ public class BaseField extends Composite implements Field {
 	/** List of current active error displayed **/
 	private ArrayList<String> activeErrors;
 	
-	private Entity entity;
+	protected Entity entity;
 	
-	protected DockPanel basePanel;
 	private HTML label;
 	private HorizontalPanel topWidget = null;
 	private HorizontalPanel sideWidget = null;
 	private HorizontalPanel bottomWidget = null;
 	private Logger logger = Logger.getLogger(getClass().getName());
-	private Configuration configuration;
 
 	protected Long bindId;	
-	
-	
-	public BaseField() {
-		initialize();
-		initWidget(basePanel);
-	}
+
 	
 	/**
 	 * Initializes the member variables
 	 */
-	protected void initialize() {
+	public void initialize() {
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In initialize  method ");
-			basePanel = new DockPanel();
+			super.initialize();
 			label = new HTML();
 			activeErrors = new ArrayList<String>();
 		} catch (Exception e) {
@@ -200,49 +185,8 @@ public class BaseField extends Composite implements Field {
 	/****************************** *********************************/
 	
 	/**
-	 * Returns configuration if present else creates a new one
-	 */
-	@Override
-	public Configuration getConfiguration() {
-		logger.log(Level.INFO,"[BaseField]:: In getConfiguration  method ");
-		if(configuration != null) {
-			return configuration;
-		}
-		else {
-			return new Configuration();	
-		}
-	}
-
-	/**
-	 * Sets the configuration for the field
-	 */
-	@Override
-	public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
-	}
-
-	/**
-	 * Returns true if the configuration is provided.
-	 * @param configKey - The configuration to check
-	 * @return
-	 */
-	protected boolean hasConfiguration(String configKey) {
-		try {
-			logger.log(Level.INFO,"[BaseField]:: In hasConfiguration  method ");
-			if(configuration != null && configuration.getPropertyByName(configKey) != null) {
-				return true;
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[BaseField]::Exception In hasConfiguration  method :"+e);
-
-		}
-		return false;
-	}
-	
-	/**
 	 * clears the field .
 	 */
-	
 	protected void clear() { }
 	
 	/**
@@ -250,18 +194,7 @@ public class BaseField extends Composite implements Field {
 	 */
 	
 	protected void removeRegisteredHandlers() { }
-	
-	/**
-	 * Returns the value of the configuration if the configuration is provided.
-	 * @param configKey - The configuration whose value it to be retrieved
-	 * @return
-	 */
-	protected Serializable getConfigurationValue(String configKey) {
-		if(hasConfiguration(configKey)) {
-			return configuration.getPropertyByName(configKey);
-		}
-		return null;
-	}
+
 	
 	/**
 	 * Returns the id of the field.
@@ -271,8 +204,8 @@ public class BaseField extends Composite implements Field {
 		String fieldId = Document.get().createUniqueId();
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getBaseFieldId  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_ID) != null) {
-				fieldId = getConfigurationValue(BaseFieldConstant.BF_ID).toString();
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_ID) != null) {
+				fieldId = viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_ID).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In getBaseFieldId  method :"+e);
@@ -290,8 +223,8 @@ public class BaseField extends Composite implements Field {
 		String primaryCss = null;
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getBaseFieldPrimCss  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_PCLS) != null) {
-				primaryCss = getConfigurationValue(BaseFieldConstant.BF_PCLS).toString();
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_PCLS) != null) {
+				primaryCss = viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_PCLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In getBaseFieldPrimCss  method :"+e);
@@ -310,8 +243,8 @@ public class BaseField extends Composite implements Field {
 		String depCss = null;
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getBaseFieldDependentCss  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_DCLS) != null) {
-				depCss = getConfigurationValue(BaseFieldConstant.BF_DCLS).toString();
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_DCLS) != null) {
+				depCss = viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_DCLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In getBaseFieldDependentCss  method :"+e);
@@ -319,46 +252,6 @@ public class BaseField extends Composite implements Field {
 		}
 		return depCss;
 	}
-	
-	/**
-	 * Returns the primary style to be applied to the base field basepanel.
-	 * If the style is not provided through configuration default is returned
-	 * @return
-	 */
-	protected String getBasePanelPrimCss() {
-		String primaryCss = null;
-		try {
-			logger.log(Level.INFO,"[BaseField]:: In getBasePanelPrimCss  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_BASEPANEL_PCLS) != null) {
-				primaryCss = getConfigurationValue(BaseFieldConstant.BF_BASEPANEL_PCLS).toString();
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[BaseField]::Exception In getBasePanelPrimCss  method :"+e);
-
-		}
-		return primaryCss;
-	}
-	
-
-	/**
-	 * Returns the dependent style to be applied to the field basepanel.
-	 * If the style is not provided through configuration default is returned
-	 * @return
-	 */
-	protected String getBasePanelDependentCss() {
-		String depCss = null;
-		try {
-			logger.log(Level.INFO,"[BaseField]:: In getBasePanelDependentCss  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_BASEPANEL_DCLS) != null) {
-				depCss = getConfigurationValue(BaseFieldConstant.BF_BASEPANEL_DCLS).toString();
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[BaseField]::Exception In getBasePanelDependentCss  method :"+e);
-
-		}
-		return depCss;
-	}
-	
 	
 	/**
 	 * Returns the default value to be set to the field, which is provided through configuration.
@@ -369,8 +262,8 @@ public class BaseField extends Composite implements Field {
 		Object defaultValue = null;
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getDefaultValue  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_DEFVAL) != null) {
-				defaultValue = getConfigurationValue(BaseFieldConstant.BF_DEFVAL);
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_DEFVAL) != null) {
+				defaultValue = viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_DEFVAL);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In getDefaultValue  method :"+e);
@@ -388,8 +281,8 @@ public class BaseField extends Composite implements Field {
 		boolean isShowValidField = false;
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In isShowValidField  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_SHOW_VALID_FIELD) != null) {
-				isShowValidField = (Boolean) getConfigurationValue(BaseFieldConstant.BF_SHOW_VALID_FIELD);
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_SHOW_VALID_FIELD) != null) {
+				isShowValidField = (Boolean) viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_SHOW_VALID_FIELD);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In isShowValidField  method :"+e);
@@ -409,8 +302,8 @@ public class BaseField extends Composite implements Field {
 		String errPos = BaseFieldConstant.BF_ERRINLINE;
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getErrorPosition  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_ERRPOS) != null) {
-				errPos = getConfigurationValue(BaseFieldConstant.BF_ERRPOS).toString();
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_ERRPOS) != null) {
+				errPos = viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_ERRPOS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In getErrorPosition  method :"+e);
@@ -419,12 +312,12 @@ public class BaseField extends Composite implements Field {
 		return errPos;
 	}
 	
-	protected String getInvalidMsg() {
+	public String getInvalidMsg() {
 		String invalidMsg = "The value in this field is invalid";
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getInvalidMsg  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_INVLDMSG) != null) {
-				invalidMsg = getConfigurationValue(BaseFieldConstant.BF_INVLDMSG).toString();
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_INVLDMSG) != null) {
+				invalidMsg = viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_INVLDMSG).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In getInvalidMsg  method :"+e);
@@ -441,8 +334,8 @@ public class BaseField extends Composite implements Field {
 		boolean readOnly = false;
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In isReadOnly  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_READONLY) != null) {
-				readOnly = (Boolean)getConfigurationValue(BaseFieldConstant.BF_READONLY);
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_READONLY) != null) {
+				readOnly = (Boolean)viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_READONLY);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In isReadOnly  method :"+e);
@@ -455,8 +348,8 @@ public class BaseField extends Composite implements Field {
 		boolean enabled = true;
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In isEnabled  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_ENABLED) != null) {
-				enabled = (Boolean)getConfigurationValue(BaseFieldConstant.BF_ENABLED);
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_ENABLED) != null) {
+				enabled = (Boolean)viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_ENABLED);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In isEnabled  method :"+e);
@@ -474,8 +367,8 @@ public class BaseField extends Composite implements Field {
 		String errorCss = getErrorPosition() == BaseFieldConstant.BF_BOTTOM || getErrorPosition() == BaseFieldConstant.BF_TOP  || getErrorPosition() == BaseFieldConstant.BF_SIDE 
 				? "appops-errorTopBottomCls" : "appops-errorInvalidInline";
 		try {
-			if(getConfigurationValue(BaseFieldConstant.BF_ERRMSGCLS) != null) {
-				errorCss = getConfigurationValue(BaseFieldConstant.BF_ERRMSGCLS).toString();
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_ERRMSGCLS) != null) {
+				errorCss = viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_ERRMSGCLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In getErrorMsgCls  method :"+e);
@@ -493,8 +386,8 @@ public class BaseField extends Composite implements Field {
 		String errorCss = "appops-errorIconCls";
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getErrorIconCls  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_ERRMSGICONCLS) != null) {
-				errorCss = getConfigurationValue(BaseFieldConstant.BF_ERRMSGICONCLS).toString();
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_ERRMSGICONCLS) != null) {
+				errorCss = viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_ERRMSGICONCLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In getErrorIconCls  method :"+e);
@@ -512,8 +405,8 @@ public class BaseField extends Composite implements Field {
 				? "appops-validFieldTopBottomCls" : "appops-validFieldInline";
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getValidFieldMsgCls  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_VALID_FIELD_MSGCLS) != null) {
-				errorCss = getConfigurationValue(BaseFieldConstant.BF_VALID_FIELD_MSGCLS).toString();
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_VALID_FIELD_MSGCLS) != null) {
+				errorCss = viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_VALID_FIELD_MSGCLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In getValidFieldMsgCls  method :"+e);
@@ -530,8 +423,8 @@ public class BaseField extends Composite implements Field {
 		String errorCss = "appops-validFieldIconCls";
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getValidFieldIconCls  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_VALID_FIELD_MSGICONCLS) != null) {
-				errorCss = getConfigurationValue(BaseFieldConstant.BF_VALID_FIELD_MSGICONCLS).toString();
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_VALID_FIELD_MSGICONCLS) != null) {
+				errorCss = viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_VALID_FIELD_MSGICONCLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In getValidFieldIconCls  method :"+e);
@@ -550,8 +443,8 @@ public class BaseField extends Composite implements Field {
 		
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getSuggestionMsgCls  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_SUGGESTION_MSG_CLS) != null) {
-				errorCss = getConfigurationValue(BaseFieldConstant.BF_SUGGESTION_MSG_CLS).toString();
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_SUGGESTION_MSG_CLS) != null) {
+				errorCss = viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_SUGGESTION_MSG_CLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In getSuggestionMsgCls  method :"+e);
@@ -564,8 +457,8 @@ public class BaseField extends Composite implements Field {
 		boolean validateOnChng = true;
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In isValidateOnChange  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_VALIDATEONCHANGE) != null) {
-				validateOnChng = (Boolean)getConfigurationValue(BaseFieldConstant.BF_VALIDATEONCHANGE);
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_VALIDATEONCHANGE) != null) {
+				validateOnChng = (Boolean)viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_VALIDATEONCHANGE);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In isValidateOnChange  method :"+e);
@@ -578,8 +471,8 @@ public class BaseField extends Composite implements Field {
 		boolean validateOnBlur = true;
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In isValidateOnBlur  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_VALIDATEONBLUR) != null) {
-				validateOnBlur = (Boolean)getConfigurationValue(BaseFieldConstant.BF_VALIDATEONBLUR);
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_VALIDATEONBLUR) != null) {
+				validateOnBlur = (Boolean)viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_VALIDATEONBLUR);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In isValidateOnBlur  method :"+e);
@@ -596,8 +489,8 @@ public class BaseField extends Composite implements Field {
 		boolean allowBlank = true;
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In isAllowBlank  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_ALLOWBLNK) != null) {
-				allowBlank = (Boolean)getConfigurationValue(BaseFieldConstant.BF_ALLOWBLNK);
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_ALLOWBLNK) != null) {
+				allowBlank = (Boolean)viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_ALLOWBLNK);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In isAllowBlank  method :"+e);
@@ -616,8 +509,8 @@ public class BaseField extends Composite implements Field {
 		
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getTabIndex  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_TABINDEX) != null) {
-				pos = (Integer) getConfigurationValue(BaseFieldConstant.BF_TABINDEX);
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_TABINDEX) != null) {
+				pos = (Integer) viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_TABINDEX);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In getTabIndex  method :"+e);
@@ -636,8 +529,8 @@ public class BaseField extends Composite implements Field {
 		
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getSuggestionPosition  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_SUGGESTION_POS) != null) {
-				pos = getConfigurationValue(BaseFieldConstant.BF_SUGGESTION_POS).toString();
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_SUGGESTION_POS) != null) {
+				pos = viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_SUGGESTION_POS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In getSuggestionPosition  method :"+e);
@@ -654,8 +547,8 @@ public class BaseField extends Composite implements Field {
 		
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getSuggestionText  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_SUGGESTION_TEXT) != null) {
-				return getConfigurationValue(BaseFieldConstant.BF_SUGGESTION_TEXT).toString();
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_SUGGESTION_TEXT) != null) {
+				return viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_SUGGESTION_TEXT).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In getSuggestionText  method :"+e);
@@ -673,8 +566,8 @@ public class BaseField extends Composite implements Field {
 
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getBlankFieldText  method ");
-			if (getConfigurationValue(BaseFieldConstant.BF_BLANK_TEXT) != null) {
-				blankFdText = getConfigurationValue(BaseFieldConstant.BF_BLANK_TEXT).toString();
+			if (viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_BLANK_TEXT) != null) {
+				blankFdText = viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_BLANK_TEXT).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In getBlankFieldText  method :"+e);
@@ -691,8 +584,8 @@ public class BaseField extends Composite implements Field {
 		
 			try {
 				logger.log(Level.INFO,"[BaseField]:: In getErrorIconBlobId  method ");
-				if(getConfigurationValue(BaseFieldConstant.BF_ERRICON_BLOB) !=null){
-					return getConfigurationValue(BaseFieldConstant.BF_ERRICON_BLOB).toString();
+				if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_ERRICON_BLOB) !=null){
+					return viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_ERRICON_BLOB).toString();
 				}
 			} catch (Exception e) {
 				logger.log(Level.SEVERE,"[BaseField]::Exception In getErrorIconBlobId  method :"+e);
@@ -705,8 +598,8 @@ public class BaseField extends Composite implements Field {
 		
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getValidIconBlobId  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_VALIDATION_ICON_BLOBID) !=null){
-				return getConfigurationValue(BaseFieldConstant.BF_VALIDATION_ICON_BLOBID).toString();
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_VALIDATION_ICON_BLOBID) !=null){
+				return viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_VALIDATION_ICON_BLOBID).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In getValidIconBlobId  method :"+e);
@@ -724,8 +617,8 @@ public class BaseField extends Composite implements Field {
 
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getValidValueText  method ");
-			if (getConfigurationValue(BaseFieldConstant.BF_VALIDVALUE_TEXT) != null) {
-				validValueTxt = getConfigurationValue(
+			if (viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_VALIDVALUE_TEXT) != null) {
+				validValueTxt = viewConfiguration.getConfigurationValue(
 						BaseFieldConstant.BF_VALIDVALUE_TEXT).toString();
 			}
 		} catch (Exception e) {
@@ -735,15 +628,13 @@ public class BaseField extends Composite implements Field {
 		return validValueTxt;
 
 	}
-	/***********************************************/
-
 	
 	public String getBindProperty() {
 		String bindProp = null;
 		try {
 			logger.log(Level.INFO,"[BaseField]:: In getBindProperty  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_BINDPROP) != null) {
-				bindProp = getConfigurationValue(BaseFieldConstant.BF_BINDPROP).toString();
+			if(viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_BINDPROP) != null) {
+				bindProp = viewConfiguration.getConfigurationValue(BaseFieldConstant.BF_BINDPROP).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[BaseField]::Exception In getBindProperty  method :"+e);
@@ -752,35 +643,14 @@ public class BaseField extends Composite implements Field {
 		return bindProp;
 	}
 	
-	public boolean isFieldVisible() {
-		boolean visible = true;
-		try {
-			logger.log(Level.INFO,"[BaseField]:: In isFieldVisible  method ");
-			if(getConfigurationValue(BaseFieldConstant.BF_VISIBLE) != null) {
-				visible = (Boolean) getConfigurationValue(BaseFieldConstant.BF_VISIBLE);
-			}
-		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[BaseField]::Exception In isFieldVisible  method :"+e);
-
-		}
-		return visible;
-	}
+	
 
 	/***********************************************/
 	
 	
 	@Override
 	public void configure() {
-		/** Apply Css to the spinner base container, if not configured value default css applied **/
-		try {
-			logger.log(Level.INFO,"[BaseField]:: In configure  method ");
-			basePanel.setStylePrimaryName(getBaseFieldPrimCss());
-			basePanel.addStyleName(getBaseFieldDependentCss());
-			basePanel.setVisible(isFieldVisible());
-		} catch (Exception e) {
-			logger.log(Level.SEVERE,"[BaseField]::Exception In configure  method :"+e);
-
-		}
+		super.configure();
 	}
 
 		
@@ -1012,11 +882,6 @@ public class BaseField extends Composite implements Field {
 	}
 	
 	@Override
-	public void create() {
-
-	}
-
-	@Override
 	public void setValue(Object value) {
 		this.value = value;
 	}
@@ -1117,6 +982,10 @@ public class BaseField extends Composite implements Field {
 
 	public void setOriginalValue(Object originalValue) {
 		this.originalValue = originalValue;
+	}
+	
+	public void setConfiguration(Configuration configuration) {
+		this.viewConfiguration = configuration;
 	}
 	
 }

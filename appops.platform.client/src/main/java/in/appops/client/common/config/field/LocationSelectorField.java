@@ -3,10 +3,10 @@ package in.appops.client.common.config.field;
 import in.appops.client.common.config.field.ButtonField.ButtonFieldConstant;
 import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
+import in.appops.client.common.config.field.textfield.TextField.TextFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
-import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.platform.core.shared.Configuration;
 
 import java.util.logging.Level;
@@ -143,9 +143,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		Boolean isMapInPopup = false;
 		try {
 			logger.log(Level.INFO,"[LocationSelectorField]:: In isMapInPopup  method ");
-			if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SHOWINPOPUP) != null) {
+			if(viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SHOWINPOPUP) != null) {
 				
-				isMapInPopup = (Boolean) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SHOWINPOPUP);
+				isMapInPopup = (Boolean) viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SHOWINPOPUP);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In isMapInPopup  method :"+e);
@@ -163,9 +163,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		String isMapInPopup = "images/locationMarker1.png";
 		try {
 			logger.log(Level.INFO,"[LocationSelectorField]:: In getImageBlobForMapPopup  method ");
-			if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_POPUP_ICON_BLOB) != null) {
+			if(viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_POPUP_ICON_BLOB) != null) {
 				
-				isMapInPopup = (String) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_POPUP_ICON_BLOB);
+				isMapInPopup = (String) viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_POPUP_ICON_BLOB);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In getImageBlobForMapPopup  method :"+e);
@@ -183,9 +183,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		String height = "800px";
 		try {
 			logger.log(Level.INFO,"[LocationSelectorField]:: In getMapHeight  method ");
-			if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_HEIGHT) != null) {
+			if(viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_HEIGHT) != null) {
 				
-				height = (String) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_HEIGHT);
+				height = (String) viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_HEIGHT);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In getMapHeight  method :"+e);
@@ -203,9 +203,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		String searchFieldcss = null;
 		try {
 			logger.log(Level.INFO,"[LocationSelectorField]:: In getSearchFieldPrimaryCss  method ");
-			if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SEARCHBOX_PCLS) != null) {
+			if(viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SEARCHBOX_PCLS) != null) {
 				
-				searchFieldcss = (String) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SEARCHBOX_PCLS);
+				searchFieldcss = (String) viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SEARCHBOX_PCLS);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In getSearchFieldPrimaryCss  method :"+e);
@@ -223,9 +223,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		String dependentcss = null;
 		try {
 			logger.log(Level.INFO,"[LocationSelectorField]:: In getSearchFieldDependentCss  method ");
-			if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SEARCHBOX_DCLS) != null) {
+			if(viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SEARCHBOX_DCLS) != null) {
 				
-				dependentcss = (String) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SEARCHBOX_DCLS);
+				dependentcss = (String) viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_SEARCHBOX_DCLS);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In getSearchFieldDependentCss  method :"+e);
@@ -244,9 +244,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		String doneBtncss = null;
 		try {
 			logger.log(Level.INFO,"[LocationSelectorField]:: In getDoneBtnCss  method ");
-			if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_DONEBTN_CSS) != null) {
+			if(viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_DONEBTN_CSS) != null) {
 				
-				doneBtncss = (String) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_DONEBTN_CSS);
+				doneBtncss = (String) viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_DONEBTN_CSS);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In getDoneBtnCss  method :"+e);
@@ -264,9 +264,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		String doneBtncss = null;
 		try {
 			logger.log(Level.INFO,"[LocationSelectorField]:: In getCurrentLocationLblCss  method ");
-			if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_CURR_LOC_LBL_CSS) != null) {
+			if(viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_CURR_LOC_LBL_CSS) != null) {
 				
-				doneBtncss = (String) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_CURR_LOC_LBL_CSS);
+				doneBtncss = (String) viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_CURR_LOC_LBL_CSS);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In getCurrentLocationLblCss  method :"+e);
@@ -284,9 +284,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		String height = "650px";
 		try {
 			logger.log(Level.INFO,"[LocationSelectorField]:: In getMapWidth  method ");
-			if(getConfigurationValue(LocationSelectorFieldConstant.LOCFD_WIDTH) != null) {
+			if(viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCFD_WIDTH) != null) {
 				
-				height = (String) getConfigurationValue(LocationSelectorFieldConstant.LOCFD_WIDTH);
+				height = (String) viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCFD_WIDTH);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In getMapWidth  method :"+e);
@@ -305,9 +305,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		
 		try {
 			logger.log(Level.INFO,"[LocationSelectorField]:: In getZoomlevel  method ");
-			if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_ZOOMLEVEL) != null) {
+			if(viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_ZOOMLEVEL) != null) {
 				
-				zoomLevel = (Integer) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_ZOOMLEVEL);
+				zoomLevel = (Integer) viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_ZOOMLEVEL);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In getZoomlevel  method :"+e);
@@ -325,9 +325,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		Double latitude = null;
 		try {
 			logger.log(Level.INFO,"[LocationSelectorField]:: In getLatitude  method ");
-			if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_LATITUDE) != null) {
+			if(viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_LATITUDE) != null) {
 				
-				latitude = (Double) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_LATITUDE);
+				latitude = (Double) viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_LATITUDE);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In getLatitude  method :"+e);
@@ -345,9 +345,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		Double longitude = null;
 		try {
 			logger.log(Level.INFO,"[LocationSelectorField]:: In getLongitude  method ");
-			if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_LONGITUDE) != null) {
+			if(viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_LONGITUDE) != null) {
 				
-				longitude = (Double) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_LONGITUDE);
+				longitude = (Double) viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_LONGITUDE);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In getLongitude  method :"+e);
@@ -365,9 +365,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		String address = null;
 		try {
 			logger.log(Level.INFO,"[LocationSelectorField]:: In getCurrentAddress  method ");
-			if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_CURRENT_ADDRESS) != null) {
+			if(viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_CURRENT_ADDRESS) != null) {
 				
-				address = (String) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_CURRENT_ADDRESS);
+				address = (String) viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_CURRENT_ADDRESS);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In getCurrentAddress  method :"+e);
@@ -385,9 +385,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		String imgCss = null;
 		try {
 			logger.log(Level.INFO,"[LocationSelectorField]:: In getLocationImageCss  method ");
-			if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_LOCATION_IMG_CSS) != null) {
+			if(viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_LOCATION_IMG_CSS) != null) {
 				
-				imgCss = (String) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_LOCATION_IMG_CSS);
+				imgCss = (String) viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_LOCATION_IMG_CSS);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In getLocationImageCss  method :"+e);
@@ -405,9 +405,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		String pos = null;
 		try {
 			logger.log(Level.INFO,"[LocationSelectorField]:: In getSearchFieldErrorPos  method ");
-			if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_ERRPOS) != null) {
+			if(viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_ERRPOS) != null) {
 				
-				pos = (String) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_ERRPOS);
+				pos = (String) viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_ERRPOS);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In getSearchFieldErrorPos  method :"+e);
@@ -425,9 +425,9 @@ public class LocationSelectorField extends BaseField implements FieldEventHandle
 		String pos = null;
 		try {
 			logger.log(Level.INFO,"[LocationSelectorField]:: In getSearchInvalidMsg  method ");
-			if(getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_INVALID_LOCNMSG) != null) {
+			if(viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_INVALID_LOCNMSG) != null) {
 				
-				pos = (String) getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_INVALID_LOCNMSG);
+				pos = (String) viewConfiguration.getConfigurationValue(LocationSelectorFieldConstant.LOCNFD_INVALID_LOCNMSG);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[LocationSelectorField]::Exception In getSearchInvalidMsg  method :"+e);

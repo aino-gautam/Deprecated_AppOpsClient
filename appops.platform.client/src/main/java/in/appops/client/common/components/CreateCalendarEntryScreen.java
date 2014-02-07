@@ -2,6 +2,8 @@ package in.appops.client.common.components;
 
 import in.appops.client.common.config.field.LabelField;
 import in.appops.client.common.config.field.LabelField.LabelFieldConstant;
+import in.appops.client.common.config.field.textfield.TextField;
+import in.appops.client.common.config.field.textfield.TextField.TextFieldConstant;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
@@ -10,8 +12,6 @@ import in.appops.client.common.fields.DateOnlyPicker;
 import in.appops.client.common.fields.DateTimeField;
 import in.appops.client.common.fields.DateTimePicker;
 import in.appops.client.common.fields.LinkField;
-import in.appops.client.common.fields.TextField;
-import in.appops.client.common.fields.TextField.TextFieldConstant;
 import in.appops.client.common.fields.TimePicker;
 import in.appops.client.common.util.AppEnviornment;
 import in.appops.client.touch.Screen;

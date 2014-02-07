@@ -151,8 +151,8 @@ public class TimePickerField extends BaseField{
 		String format = TimePickerFieldConstant.AMPMFORMAT_WITH_SECONDS;
 		try {
 			logger.log(Level.INFO,"[TimePickerField]:: In getTimeFormat  method ");
-			if(getConfigurationValue(TimePickerFieldConstant.TIME_FORMAT) != null) {
-				format = getConfigurationValue(TimePickerFieldConstant.TIME_FORMAT).toString();
+			if(viewConfiguration.getConfigurationValue(TimePickerFieldConstant.TIME_FORMAT) != null) {
+				format = viewConfiguration.getConfigurationValue(TimePickerFieldConstant.TIME_FORMAT).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[TimePickerField]::Exception In getTimeFormat  method :"+e);
@@ -164,9 +164,9 @@ public class TimePickerField extends BaseField{
 		String primCss = "timeSpinner";
 		try {
 			logger.log(Level.INFO,"[TimePickerField]:: In getSpinnerPrimaryCss  method ");
-			if(getConfigurationValue(TimePickerFieldConstant.TIMESPINNER_PCLS) != null) {
+			if(viewConfiguration.getConfigurationValue(TimePickerFieldConstant.TIMESPINNER_PCLS) != null) {
 				
-				primCss = getConfigurationValue(TimePickerFieldConstant.TIMESPINNER_PCLS).toString();
+				primCss = viewConfiguration.getConfigurationValue(TimePickerFieldConstant.TIMESPINNER_PCLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[TimePickerField]::Exception In getSpinnerPrimaryCss  method :"+e);
@@ -179,9 +179,9 @@ public class TimePickerField extends BaseField{
 		String dependentCss = null;
 		try {
 			logger.log(Level.INFO,"[TimePickerField]:: In getSpinnerDependentCss  method ");
-			if(getConfigurationValue(TimePickerFieldConstant.TIMESPINNER_DCLS) != null) {
+			if(viewConfiguration.getConfigurationValue(TimePickerFieldConstant.TIMESPINNER_DCLS) != null) {
 				
-				dependentCss = getConfigurationValue(TimePickerFieldConstant.TIMESPINNER_DCLS).toString();
+				dependentCss = viewConfiguration.getConfigurationValue(TimePickerFieldConstant.TIMESPINNER_DCLS).toString();
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[TimePickerField]::Exception In getSpinnerDependentCss  method :"+e);

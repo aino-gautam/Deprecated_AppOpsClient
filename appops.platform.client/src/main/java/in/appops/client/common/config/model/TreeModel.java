@@ -2,39 +2,33 @@ package in.appops.client.common.config.model;
 
 import in.appops.client.common.config.component.tree.TreeComponentPresenter.TreeComponentConstant;
 import in.appops.client.common.core.EntityListReceiver;
-import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.core.entity.Property;
 import in.appops.platform.core.entity.query.Query;
-import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configuration;
 import in.appops.platform.core.util.EntityList;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.Set;
 
 public class TreeModel extends AppopsBaseModel {
 	
 	private HashMap<String,Configuration> depthConfigList;
 	private EntityListReceiver receiver;
 	
-	@Override
+/*	@Override
 	public void configure() {
 		super.configure();
 		setDepthList(getDepthConfigList());
-	}
+	}*/
 	
 	@SuppressWarnings("unchecked")
 	private HashMap<String,Configuration> getDepthConfigList() {
 		HashMap<String,Configuration> depthConfigList = null;
-		if(getConfigurationValue("depthConfigList") != null) {
-			depthConfigList = (HashMap<String,Configuration>)getConfigurationValue("depthConfigList");
-		}
+//		if(getConfigurationValue("depthConfigList") != null) {
+//			depthConfigList = (HashMap<String,Configuration>)getConfigurationValue("depthConfigList");
+//		}
 		return depthConfigList;
 	}
 
@@ -51,7 +45,7 @@ public class TreeModel extends AppopsBaseModel {
 	 * @param depth
 	 */
 	public void getItems(int depth) {
-		Configuration depthConfig = (Configuration) configuration.getProperty(Integer.toString(depth));
+	/*	Configuration depthConfig = (Configuration) configuration.getProperty(Integer.toString(depth));
 		
 		String depthQuery = depthConfig.getPropertyByName(TreeComponentConstant.TM_DEPTH_QUERY);
 		Configuration param = depthConfig.getPropertyByName("queryParam");
@@ -71,11 +65,20 @@ public class TreeModel extends AppopsBaseModel {
 			query.setQueryName(depthQuery);
 			query.setQueryParameterMap(queryParamMap);
 			
+			String querypPointer = globalEntityCache.getQueryIdentifier(query);
+			if(!interestedQueryList.contains(querypPointer)) {
+				interestedQueryList.add(querypPointer);
+			}
+			
+			EntityList entityList = globalEntityCache.getEntityList(query);
+			if(entityList != null && !entityList.isEmpty()) {
+				receiver.onEntityListReceived(entityList);
+			}
 			executeQuery(query);
-		}
+		}*/
 	}
 	
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	public void executeQuery(Query query) {
 		Map<String, Serializable> queryParam = new HashMap<String, Serializable>();
 		queryParam.put("query", query);
@@ -98,13 +101,13 @@ public class TreeModel extends AppopsBaseModel {
 			
 			}
 		});
-	}
+	}*/
 	
 	public String getTreeOperationName() {
 		String operation = null;
-		if(getConfigurationValue(TreeComponentConstant.TM_OPERATION) != null) {
+		/*if(getConfigurationValue(TreeComponentConstant.TM_OPERATION) != null) {
 			operation = getConfigurationValue(TreeComponentConstant.TM_OPERATION).toString();
-		}
+		}*/
 		return operation;
 	}
 
@@ -112,4 +115,12 @@ public class TreeModel extends AppopsBaseModel {
 		this.receiver = receiver;
 	}
 	
+	@Override
+	public void onQueryUpdated(String query, Serializable data) {
+		
+		if(isInterestingQuery(query)) {
+			EntityList entityList = (EntityList)data;
+			receiver.onEntityListReceived(entityList);
+		}
+	}
 }
