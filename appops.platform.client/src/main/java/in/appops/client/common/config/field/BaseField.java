@@ -174,8 +174,9 @@ public class BaseField extends Composite implements Field {
 	private Logger logger = Logger.getLogger(getClass().getName());
 	private Configuration configuration;
 
-	protected Long bindId;	
+	protected Long bindId;
 	
+	private Widget fieldParent;
 	
 	public BaseField() {
 		initialize();
@@ -1081,6 +1082,14 @@ public class BaseField extends Composite implements Field {
 
 	public void setOriginalValue(Object originalValue) {
 		this.originalValue = originalValue;
+	}
+
+	public Widget getFieldParent() {
+		return fieldParent;
+	}
+
+	public void setFieldParent(Widget fieldParent) {
+		this.fieldParent = fieldParent;
 	}
 	
 }

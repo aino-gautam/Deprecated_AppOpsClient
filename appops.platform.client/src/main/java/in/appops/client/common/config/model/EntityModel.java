@@ -13,7 +13,8 @@ import java.util.Set;
 
 public class EntityModel extends AppopsBaseModel {
 	private EntityReceiver receiver;
-
+	private Entity entity;
+	
 	public void fetchEntity() {
 		String queryName = getQueryName();
 		
@@ -38,7 +39,7 @@ public class EntityModel extends AppopsBaseModel {
 					query.setQueryName(queryName);
 					query.setQueryParameterMap(queryParamMap);
 					
-					String querypPointer = globalEntityCache.getQueryIdentifier(query);
+					/*String querypPointer = globalEntityCache.getQueryIdentifier(query);
 					if(!interestedQueryList.contains(querypPointer)) {
 						interestedQueryList.add(querypPointer);
 					}
@@ -46,7 +47,7 @@ public class EntityModel extends AppopsBaseModel {
 					Entity entity = globalEntityCache.getEntity(query);
 					if(entity != null) {
 						receiver.onEntityReceived(entity);
-					}
+					}*/
 					executeQuery(query);
 				}
 			}
@@ -68,5 +69,11 @@ public class EntityModel extends AppopsBaseModel {
 	
 	public EntityReceiver getReceiver() {
 		return receiver;
+	}
+
+	@Override
+	public void onDataReceived(Serializable data) {
+		entity = (Entity)data;
+		receiver.onEntityReceived(entity);
 	}
 }

@@ -14,6 +14,8 @@ import java.util.Set;
 public class EntityListModel extends AppopsBaseModel {
 
 	protected EntityListReceiver listReceiver;
+	private EntityList entityList;
+	private int START_INDEX = 0;
 	
 	@Override
 	public void configure() {
@@ -45,27 +47,42 @@ public class EntityListModel extends AppopsBaseModel {
 			query.setQueryName(queryName);
 			query.setQueryParameterMap(queryParamMap);
 			
-			EntityList entityList = globalEntityCache.getEntityList(query);
+			if(!isFetchAll()) {
+				query.setListSize(getFetchSize());
+				query.setStartIndex(START_INDEX);
+			}
+			
+/*			EntityList entityList = globalEntityCache.getEntityList(query);
 			if(entityList != null && !entityList.isEmpty()) {
 				listReceiver.onEntityListReceived(entityList);
 			}
 			
-			String querypPointer = globalEntityCache.getQueryIdentifier(query);
+			collect(entityList);
+			
+			String querypPointer = GlobalEntityCache.getQueryIdentifier(query);
 			
 			if(!interestedQueryList.contains(querypPointer)) {
 				interestedQueryList.add(querypPointer);
-			}
+			}*/
 			executeQuery(query);
 		}
 	}
 	
-	public void setReceiver(EntityListReceiver listReceiver) {
-		this.listReceiver = listReceiver;
+	private void collect(EntityList entityList) {
+		try {
+			if(this.entityList == null) {
+				this.entityList = entityList;
+				return;
+			}
+			this.entityList.addAll(entityList); 
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
-	
-	public EntityListReceiver getReceiver() {
-		return listReceiver;
+	public boolean isEmpty() {
+		return (entityList != null && !entityList.isEmpty()) ? false : true;
 	}
 	
 	@Override
@@ -73,6 +90,52 @@ public class EntityListModel extends AppopsBaseModel {
 		if(isInterestingQuery(query)) {
 			EntityList entityList = (EntityList)data;
 			listReceiver.onEntityListReceived(entityList);
+			collect(entityList);
 		}
 	}
+
+	public void setReceiver(EntityListReceiver listReceiver) {
+		this.listReceiver = listReceiver;
+	}
+
+	public EntityList getEntityList() {
+		return entityList;
+	}
+	
+	private Boolean isFetchAll() {
+		Boolean param = true;
+		if(getConfigurationValue(EntityListModelConstant.FETCH_ALL) != null) {
+			param = (Boolean) getConfigurationValue(EntityListModelConstant.FETCH_ALL);
+		}
+		return param;
+	}
+	
+	private int getFetchSize() {
+		int size = 5;
+		if(getConfigurationValue(EntityListModelConstant.FETCH_SIZE) != null) {
+			size = (Integer) getConfigurationValue(EntityListModelConstant.FETCH_SIZE);
+		}
+		return size;
+	}
+	
+	public interface EntityListModelConstant extends AppopsModelConstant {
+		String FETCH_ALL = "fetchAll";
+		String FETCH_SIZE = "fetchSize";
+	}
+
+	@Override
+	public void onDataReceived(Serializable data) {
+		EntityList receivedEntityList = null;  
+		if(data != null) {
+			receivedEntityList = (EntityList)data;
+			collect(receivedEntityList);
+		
+			if(!receivedEntityList.isEmpty() && !isFetchAll()) {
+				START_INDEX = receivedEntityList.size() == getFetchSize() ? 
+						START_INDEX + getFetchSize() : START_INDEX + receivedEntityList.size();
+			}
+		}
+		listReceiver.onEntityListReceived(receivedEntityList);
+	}
+
 }

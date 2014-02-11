@@ -5,6 +5,7 @@ import in.appops.client.common.config.field.NumericTextbox;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -391,14 +392,14 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 
 		if(fieldType.equalsIgnoreCase(TextFieldConstant.TFTYPE_NUMERIC)){
 			if(validate()){
-				if(numericTextbox.isAllowDecimal())
-					return Double.parseDouble(numericTextbox.getText());
-				else{
-					if(numericTextbox.getText().toString().trim().equals(""))
-						return 0;
-					else
-						return Integer.parseInt(numericTextbox.getText());
+				if(!numericTextbox.getText().trim().equals("")) {
+					return new BigDecimal(numericTextbox.getText().trim());
 				}
+//				if(numericTextbox.isAllowDecimal()) {
+//					return Double.parseDouble(numericTextbox.getText().trim());
+//				} else {
+//					return Integer.parseInt(numericTextbox.getText());
+//				}
 			}
 		}
 		return getFieldValue();
@@ -804,9 +805,9 @@ public class TextField extends BaseField implements BlurHandler, KeyUpHandler,Ke
 					}
 				}
 
-				if(isDirty()){
+				//if(isDirty()){
 					fieldEvent.setEventType(FieldEvent.EDITINPROGRESS);
-				}
+				//}
 			}/*
 			TODO : need validation focus goes to next tf and it become source
 			else if(keycode.equals(KeyCodes.KEY_TAB)){

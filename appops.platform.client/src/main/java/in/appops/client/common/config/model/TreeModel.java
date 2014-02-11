@@ -123,4 +123,10 @@ public class TreeModel extends AppopsBaseModel {
 			receiver.onEntityListReceived(entityList);
 		}
 	}
+
+	@Override
+	public void onDataReceived(Serializable data) {
+		// TODO Auto-generated method stub
+		
+	}
 }

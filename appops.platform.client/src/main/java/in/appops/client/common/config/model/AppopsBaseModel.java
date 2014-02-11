@@ -6,7 +6,6 @@ import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.exception.DefaultExceptionHandler;
-import in.appops.platform.core.entity.Entity;
 import in.appops.platform.core.entity.query.Query;
 import in.appops.platform.core.operation.Result;
 import in.appops.platform.core.shared.Configurable;
@@ -29,6 +28,7 @@ public abstract class AppopsBaseModel implements EntityCacheListener, Configurab
 		String ABM_CHCBLE = "cacheable";
 		String ABM_OPR_PARAM = "operationParam";
 		String ABM_HAS_QRYPARAM = "hasQueryParam";
+		String ABM_ISEMS = "isEms";
 	}
 	
 	protected final DefaultExceptionHandler exceptionHandler = new DefaultExceptionHandler();
@@ -164,11 +164,22 @@ public abstract class AppopsBaseModel implements EntityCacheListener, Configurab
 		return null;
 	}
 	
+	private Boolean isEms() {
+		Boolean param = false;
+		if(getConfigurationValue(AppopsModelConstant.ABM_ISEMS) != null) {
+			param = (Boolean) getConfigurationValue(AppopsModelConstant.ABM_ISEMS);
+		}
+		return param;
+	}
+	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected void executeQuery(final Query query) {
 		Map<String, Serializable> queryParam = new HashMap<String, Serializable>();
 		queryParam.put("query", query);
-		queryParam.put("schemaname", getOperationName().split("\\.")[0]);
+		
+		if(isEms()) {
+			queryParam.put("schemaname", getOperationName().split("\\.")[0]);
+		}
 		
 		StandardAction action = new StandardAction(EntityList.class, getOperationName(), queryParam);
 		dispatch.execute(action, new AsyncCallback<Result>() {
@@ -183,8 +194,8 @@ public abstract class AppopsBaseModel implements EntityCacheListener, Configurab
 				Serializable opResult =  result.getOperationResult();
 				//TODO
 				
-				if(opResult != null) {
-					if(opResult instanceof EntityList) {
+				//if(opResult != null) {
+					/*if(opResult instanceof EntityList) {
 						EntityList entList = (EntityList)opResult;
 						if(entList != null) {
 							globalEntityCache.updateCache(query, entList);
@@ -194,8 +205,9 @@ public abstract class AppopsBaseModel implements EntityCacheListener, Configurab
 						if(ent != null) {
 							globalEntityCache.updateCache(query, ent);
 						} 
-					}
-				}
+					}*/
+					onDataReceived(opResult);
+				//}
 			
 			}
 		});
@@ -206,4 +218,6 @@ public abstract class AppopsBaseModel implements EntityCacheListener, Configurab
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public abstract void onDataReceived(Serializable data);
 }

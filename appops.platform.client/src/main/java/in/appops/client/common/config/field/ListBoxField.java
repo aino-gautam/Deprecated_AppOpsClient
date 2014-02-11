@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -110,12 +111,16 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 
 				}
 			}
+			boxPlusLoaderPanel.setWidth("100%");
 			boxPlusLoaderPanel.clear();
 			boxPlusLoaderPanel.add(listBox);
-			boxPlusLoaderPanel.setCellWidth(listBox, "80%");
-			boxPlusLoaderPanel.add(imageField);
-			boxPlusLoaderPanel.setCellWidth(imageField, "20%");
-			boxPlusLoaderPanel.setCellVerticalAlignment(imageField, HasVerticalAlignment.ALIGN_MIDDLE);
+			
+			if(isShowLoading()) {
+				boxPlusLoaderPanel.setCellWidth(listBox, "80%");
+				boxPlusLoaderPanel.add(imageField);
+				boxPlusLoaderPanel.setCellWidth(imageField, "20%");
+				boxPlusLoaderPanel.setCellVerticalAlignment(imageField, HasVerticalAlignment.ALIGN_MIDDLE);
+			}
 			getBasePanel().add(boxPlusLoaderPanel, DockPanel.CENTER);
 
 		} catch (Exception e) {
@@ -124,7 +129,7 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 
 		}
 	}
-	
+
 	@Override
 	public void configure() {
 		try {
@@ -340,6 +345,33 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		}
 		return selectedTxt;
 	}
+	
+	
+	private boolean isShowLoading() {
+		boolean visible = false;
+		try {
+			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_SHOWLOADING) != null) {
+				visible = (Boolean) getConfigurationValue(ListBoxFieldConstant.LSTFD_SHOWLOADING);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[BaseField]::Exception In isFieldVisible  method :"+e);
+
+		}
+		return visible;
+	}
+	
+	private boolean isHideFirst() {
+		boolean visible = false;
+		try {
+			if(getConfigurationValue(ListBoxFieldConstant.LSTFD_HIDEFIRST) != null) {
+				visible = (Boolean) getConfigurationValue(ListBoxFieldConstant.LSTFD_HIDEFIRST);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[BaseField]::Exception In isFieldVisible  method :"+e);
+
+		}
+		return visible;
+	}
 	/***********************************************************************************/
 
 	/**
@@ -397,6 +429,10 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 			
 			if(getDefaultSelectedText()!=null){
 				listBox.setSelectedIndex(getIndexFromText(getDefaultSelectedText()));
+			}
+			
+			if(isHideFirst()) {
+				listBox.getElement().getFirstChildElement().getStyle().setDisplay(Display.NONE);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE,"[ListBoxField]::Exception In populateList  method :"+e);
@@ -645,6 +681,10 @@ public class ListBoxField extends BaseField implements ChangeHandler,BlurHandler
 		public static final String LSTFD_LOADERIMG_PCLS ="loaderImgPrimarycss";
 		
 		public static final String LSTFD_LOADERIMG_DCLS="loaderImgSecondarycss";
+		
+		public static final String LSTFD_SHOWLOADING= "showLoading";
+		
+		public static final String LSTFD_HIDEFIRST = "hideFirst";
 		
 	}
 
