@@ -8,15 +8,12 @@ import java.util.Map;
 
 import com.appops.gwtgenerator.client.config.annotation.AnnotationScanner;
 import com.appops.gwtgenerator.client.config.annotation.Tag;
-import com.appops.gwtgenerator.client.generator.DynamicInstantiator;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
-import com.google.gwt.dev.javac.TypeOracleMediator;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
@@ -27,7 +24,7 @@ public class LibraryTagProviderGenerator extends Generator {
 	/** Fully qualified class name passed into GWT.create() */
 	private String				typeName			= null;
 	/** Package name of class to be generated */
-	private String				packageName			= "com.appops.gwtgenerator.client.components.generated";
+	private String				packageName			= "com.appops.gwtgenerator.client.component.generated";
 	private JClassType			classType;
 	// need to find a way to pass it dynamically or it should be figured
 	// dynamically

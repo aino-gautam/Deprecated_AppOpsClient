@@ -10,7 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.CLASS)
 public @interface EventRuleMap {
 	
-	boolean eventName() default true;
+	String eventName();
 	
 	EventSet eventSet() default @EventSet();
 	

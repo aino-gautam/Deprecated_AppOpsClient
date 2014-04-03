@@ -1,32 +1,53 @@
 <!doctype html>
-
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <link type="text/css" rel="stylesheet" href="GWTGENERATOR.css">
 
-<script type="text/javascript" src="config.js"></script>
-
-<script type="text/javascript" src="snippetstore.js"></script>
+<!-- <script type="text/javascript" src="config.js"></script>
+		<script type="text/javascript" src="snippetstore.js"></script> -->
 <script type="text/javascript"
 	src="GWTGENERATOR/GWTGENERATOR.nocache.js"></script>
 <script type="text/javascript">
-	var snippetStore = {
-		entityTextSnippet : "<table cellspacing=\"5\" cellpadding=\"0\" style=\"width: 100%;\"><tbody><tr><td align=\"left\" style=\"vertical-align: top; \">"
-				+ "<core:textbox id =\"coreanchor\" configid = \"pinkConfig\" />"
-				+ "</td></tr></tbody></table>"
-	};
+	var snippetStore = {};
 
 	var config = {
-		labelConfig : "{\"LabelFieldConfig\":{\"model\":{\"ModelConfig\":{}},\"view\":{\"ViewConfig\":{\"enabled\":{\"Boolean\":\"true\"},\"title\":{\"Integer\":\"500\"},\"baseFieldPrimaryCss\":{\"String\":\"labelFieldPreview\"},\"visible\":{\"Boolean\":\"true\"},\"isWordWrap\":{\"Boolean\":\"true\"},\"displayTxt\":{\"String\":\"I am a Label Field\"}}},\"presenter\":{\"PresenterConfig\":{\"eventActionRuleMap\":{\"EventActionRuleMapConfig\":{}}}}}}",
-		pinkConfig : "{\"TextFieldConfig\":{\"model\":{\"ModelConfig\":{}},\"view\":{\"ViewConfig\":{\"Text\":{\"String\":\"Hello to the new world\"}}},\"presenter\":{\"PresenterConfig\":{\"eventActionRuleMap\":{\"EventActionRuleMapConfig\":{}}}}}}",
+		userFormSnippetConfig : "{\"config\":{\"event_rule_map\":{\"event_rule_map\":{\"saveBtn.click\":{\"arrayList\":[{\"createEntityRule\":{\"prop_name\":{\"String\":\"nameTxt.getText\"}, \"type\":{\"String\":\"user\"}, \"returnvar_\":{\"String\":\"UserEntity\"}}},{\"invokeOperationRule\":{\"on_success_rule\":{\"arrayList\":[{\"fireEventRule\":{\"event_type\":{\"String\":\"UserEntitySaved\"}}}]}, \"param_entity\":{\"String\":\"@UserEntity\"}, param_schemaname\":{\"String\":\"static_DynamicTestUser\"},param_isUpdate\":{\"Boolean\":\"static_false\"}, \"op_name\":{\"String\":\"DynamicTestUser.DynamicService.saveUser\"}}}]}}}}}",
+
+		userListSnippetConfig : "{\"config\":{\"event_rule_map\":{\"event_rule_map\":{\"UserEntitySaved\":{\"arrayList\":[{\"EventActionRules\":{\"im\":{\"String\":\"userLst.getList\"}}}]}}}}}",
+
 	};
 </script>
-<title>DynamicConfig UI</title>
+<title>DynamicConfig UI for POC</title>
 </head>
 
 <body>
-	<Snippet snippetid="entityTextSnippet" />
-</body>
+	<!--Snippet 1, is a form snippet where the components result in an entity  -->
 
+	<Snippet id="userFormSnippet" configid="userFormSnippetConfig">
+	<table style="border: 1px;">
+		<tr>
+			<td align="center" style="vertical-align: middle;">
+			<textbox isCustom="true" id="nameTxt" configid="nameTxtConfig" /></td>
+		</tr>
+		<tr>
+			<td align="center" style="vertical-align: middle;">
+			<button	isCustom="true" id="saveBtn" configid="saveBtnConfig" /></td>
+		</tr>
+	</table>
+	</Snippet>
+
+
+	<!-- Snippet 2, is a list snippet, the entity saved in the first snippet is displayed in a list in this snippet. -->
+
+	<Snippet id="userListSnippet" configid="userListSnippetConfig">
+	<table>
+		<tr>
+			<td align="center" style="vertical-align: middle;">
+			<UserListSnippet isCustom="true" id="userLst" />
+			</td>
+		</tr>
+	</table>
+	</Snippet>
+</body>
 </html>

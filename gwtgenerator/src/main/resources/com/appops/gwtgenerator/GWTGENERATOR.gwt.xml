@@ -15,37 +15,70 @@
 	<!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/> -->
 
 	<!-- Other module inherits -->
+
 	<inherits name="in.appops.platform.core.Core" />
+	<inherits name='in.appops.platform.bindings.web.gwt.dispatch.Dispatch' />
+	<inherits name="com.google.gwt.logging.Logging" />
+
+
+	<inherits name="com.google.gwt.json.JSON" />
 
 	<!-- Specify the app entry point class. -->
 	<entry-point class='com.appops.gwtgenerator.client.GWTGENERATOR' />
 
-	<!-- <generate-with class="com.appops.gwtgenerator.rebind.ListTypes"> <when-type-is 
-		class="com.appops.gwtgenerator.client.generator.LibraryTagProvider" /> </generate-with> -->
+	<!-- <generate-with class="com.appops.gwtgenerator.rebind.StubGenerator"> 
+		<when-type-is class="com.google.gwt.user.client.ui.RadioButton" /> </generate-with> -->
 
+	<generate-with class="com.appops.gwtgenerator.rebind.StubGenerator">
+		<when-type-is
+			class="com.appops.gwtgenerator.client.component.generated.sample.stubgenerated.TextBox" />
+	</generate-with>
 
-	<!-- <generate-with
+	<generate-with class="com.appops.gwtgenerator.rebind.StubGenerator">
+		<when-type-is
+			class="com.appops.gwtgenerator.client.component.generated.sample.stubgenerated.SimpleList" />
+	</generate-with>
+
+	<generate-with class="com.appops.gwtgenerator.rebind.StubGenerator">
+		<when-type-is
+			class="com.appops.gwtgenerator.client.component.generated.sample.stubgenerated.UserListSnippet" />
+	</generate-with>
+
+	<generate-with class="com.appops.gwtgenerator.rebind.StubGenerator">
+		<when-type-is
+			class="com.appops.gwtgenerator.client.component.generated.sample.stubgenerated.Button" />
+	</generate-with>
+
+	<generate-with class="com.appops.gwtgenerator.rebind.DriverStubGenerator">
+		<when-type-is
+			class="com.appops.gwtgenerator.client.component.generated.sample.stubgenerated.PlaySnippet" />
+	</generate-with>
+
+	<generate-with
 		class="com.appops.gwtgenerator.rebind.LibraryTagProviderGenerator">
 		<when-type-is
 			class="com.appops.gwtgenerator.client.generator.LibraryTagProvider" />
 	</generate-with>
+
 	<generate-with
 		class="com.appops.gwtgenerator.rebind.DynamicInstantiatorGenerator">
 		<when-type-is
 			class="com.appops.gwtgenerator.client.generator.DynamicInstantiator" />
-	</generate-with> -->
-	<!-- <generate-with class="com.appops.gwtgenerator.rebind.StubGenerator"> 
-		<when-type-is class="com.google.gwt.user.client.ui.RadioButton" /> </generate-with> -->
-	<generate-with class="com.appops.gwtgenerator.rebind.ConfigTypeGenerator">
-		<when-type-is
-			class="com.appops.gwtgenerator.client.component.generated.sample.textboxrebindergenerated.CoreTextBox" />
 	</generate-with>
-	<!-- <generate-with class="com.appops.gwtgenerator.rebind.StubGenerator"> 
-		<when-type-is class="com.google.gwt.user.client.ui.Label" /> </generate-with> 
-		<replace-with class="com.appops.gwtgenerator.rebind.StubGenerator"> <when-type-is 
-		class="com.google.gwt.user.client.ui.CheckBox" /> </replace-with> -->
 
+	<!-- <generate-with class="com.appops.gwtgenerator.rebind.ConfigTypeGenerator"> 
+		<when-type-is class="com.appops.gwtgenerator.client.component.generated.sample.textboxrebindergenerated.CoreTextBox" 
+		/> </generate-with> -->
+
+	<!-- <generate-with class="com.appops.gwtgenerator.rebind.ListTypes"> <when-type-is 
+		class="com.appops.gwtgenerator.client.generator.LibraryTagProvider" /> </generate-with> -->
 	<!-- Specify the paths for translatable code -->
+
+	<set-property name="gwt.logging.logLevel" value="SEVERE" />
+	# To enable logging
+	<set-property name="gwt.logging.enabled" value="TRUE" />
+	# To disable a popup Handler
+	<set-property name="gwt.logging.popupHandler" value="ENABLED" />
 	<source path='client' />
 	<source path='rebind' />
 

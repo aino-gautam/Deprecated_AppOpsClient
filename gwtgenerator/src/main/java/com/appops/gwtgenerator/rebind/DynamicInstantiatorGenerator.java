@@ -7,6 +7,8 @@ import java.util.Map;
 
 import com.appops.gwtgenerator.client.config.annotation.AnnotationScanner;
 import com.appops.gwtgenerator.client.config.annotation.Tag;
+import com.appops.gwtgenerator.client.config.util.SuperClassTypeScanner;
+import com.appops.gwtgenerator.client.generator.Driver;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
@@ -44,24 +46,18 @@ public class DynamicInstantiatorGenerator extends Generator {
 		}
 	}
 	
-	/*public String generate(TreeLogger logger, GeneratorContext context, JClassType classType, String typeName, List generatedClasses) throws UnableToCompleteException {
-		try {
-			this.typeName = typeName;
-			// get classType and save instance variables
-			this.classType = classType;
-			packageName = classType.getPackage().getName();
-			className = APPOPS + classType.getSimpleSourceName();
-			generatedClassName = packageName + "." + className;
-			generateStubClass(logger, context, generatedClasses);
-			// return the fully qualifed name of the class generated return
-			return generatedClassName;
-		}
-		catch (Exception e) {
-			logger.log(TreeLogger.ERROR, "ERROR!!!", e);
-			throw new UnableToCompleteException();
-		}
-	}
-	*/
+	/*
+	 * public String generate(TreeLogger logger, GeneratorContext context,
+	 * JClassType classType, String typeName, List generatedClasses) throws
+	 * UnableToCompleteException { try { this.typeName = typeName; // get
+	 * classType and save instance variables this.classType = classType;
+	 * packageName = classType.getPackage().getName(); className = APPOPS +
+	 * classType.getSimpleSourceName(); generatedClassName = packageName + "." +
+	 * className; generateStubClass(logger, context, generatedClasses); //
+	 * return the fully qualifed name of the class generated return return
+	 * generatedClassName; } catch (Exception e) { logger.log(TreeLogger.ERROR,
+	 * "ERROR!!!", e); throw new UnableToCompleteException(); } }
+	 */
 	/**
 	 * Generate source code for new class. Class extends <code>TextBox</code>.
 	 * 
@@ -83,18 +79,15 @@ public class DynamicInstantiatorGenerator extends Generator {
 		composer = new ClassSourceFileComposerFactory(packageName, className);
 		composer.setSuperclass(typeName);
 		composer.addImport("com.appops.gwtgenerator.client.generator.Dynamic");
+		composer.addImport("com.appops.gwtgenerator.client.generator.Driver");
+		
 		composer.addImport("com.google.gwt.core.client.GWT");
 		Class[] clazzarray = { Tag.class };
 		
 		Map<Class<? extends Annotation>, List<JClassType>> map = AnnotationScanner.scan(logger, context.getTypeOracle(), clazzarray);
 		List<JClassType> list = map.get(Tag.class);
-		//StubGenerator stubGenerator = new StubGenerator();
-		/*for (JClassType jClassType : list) {
-			composer.addImport(jClassType.getQualifiedSourceName());
-		}*/
 		SourceWriter sourceWriter = composer.createSourceWriter(context, printWriter);
 		
-		// generate "im" method implementation in newly generated class
 		sourceWriter.println("@Override ");
 		sourceWriter.println("public Dynamic getInstance(String correspondingClass) throws Exception {");
 		sourceWriter.indent();
@@ -102,13 +95,40 @@ public class DynamicInstantiatorGenerator extends Generator {
 		
 		for (JClassType jClassType : list) {
 			try {
-				sourceWriter.println("if(correspondingClass.equalsIgnoreCase(\"" +jClassType.getQualifiedSourceName() + "\"))");
+				sourceWriter.println("if(correspondingClass.equalsIgnoreCase(\"" + jClassType.getQualifiedSourceName() + "\"))");
 				sourceWriter.println("return GWT.create(" + jClassType.getQualifiedSourceName() + ".class);");
 			}
 			catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+		sourceWriter.println("}");
+		sourceWriter.println("catch (Exception e) {");
+		sourceWriter.println("e.printStackTrace();");
+		sourceWriter.println("	throw e;");
+		sourceWriter.println("}");
+		sourceWriter.println("return null;");
+		sourceWriter.outdent();
+		sourceWriter.println("}");
+		
+		sourceWriter.println("@Override ");
+		sourceWriter.println("public Driver getDriverInstance(String correspondingClass) throws Exception {");
+		sourceWriter.indent();
+		sourceWriter.println("try {");
+		sourceWriter.println("System.out.println(\"in getDriverInstanceMethod-=>\"+correspondingClass);");
+		
+		List<JClassType> listOfSubtypes = SuperClassTypeScanner.scan(logger, context.getTypeOracle(), Driver.class);
+		
+		for (JClassType jClassType : listOfSubtypes) {
+			try {
+				sourceWriter.println("if(correspondingClass.equalsIgnoreCase(\"" + jClassType.getQualifiedSourceName() + "\"))");
+				sourceWriter.println("return GWT.create(" + jClassType.getQualifiedSourceName() + ".class);");
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
 		sourceWriter.println("}");
 		sourceWriter.println("catch (Exception e) {");
 		sourceWriter.println("e.printStackTrace();");

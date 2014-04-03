@@ -18,7 +18,8 @@ package com.appops.gwtgenerator.client.component.generated.sample.stubgenerated;
 import com.appops.gwtgenerator.client.config.annotation.Appopsify;
 import com.appops.gwtgenerator.client.config.annotation.Attribute;
 import com.appops.gwtgenerator.client.config.annotation.Event;
-import com.appops.gwtgenerator.client.config.annotation.FiresEventSet;
+import com.appops.gwtgenerator.client.config.annotation.FiresEvents;
+import com.appops.gwtgenerator.client.config.annotation.Tag;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -46,7 +47,7 @@ import com.google.gwt.user.client.ui.TextBoxBase;
  * </p>
  */
 @Appopsify()
-@FiresEventSet({
+@FiresEvents({
 
 @Event(type = ValueChangeEvent.class),
 @Event(type = ClickEvent.class),
@@ -55,6 +56,7 @@ import com.google.gwt.user.client.ui.TextBoxBase;
 @Event(type = DoubleClickEvent.class)
 
 })
+@Tag(tagname = "TextBox", library = "core")
 public class TextBox extends TextBoxBase {
 	
 	/**
@@ -70,7 +72,6 @@ public class TextBox extends TextBoxBase {
 	 * 
 	 * @return the maximum length, in characters
 	 */
-	@Attribute(defaultValue = "100")
 	public int getMaxLength() {
 		return DOM.getElementPropertyInt(getElement(), "maxLength");
 	}
@@ -89,6 +90,7 @@ public class TextBox extends TextBoxBase {
 	 * 
 	 * @param length the maximum length, in characters
 	 */
+	@Attribute(defaultValue = "100", alternateValues = { "50", "600" })
 	public void setMaxLength(int length) {
 		DOM.setElementPropertyInt(getElement(), "maxLength", length);
 	}
@@ -103,7 +105,7 @@ public class TextBox extends TextBoxBase {
 	}
 	
 	@Override
-	@Attribute(defaultValue = "E-N-T-E-R text here!")
+	@Attribute(defaultValue = "E-N-T-E-R text here!",  alternateValues = { "Olaa", "miya" })
 	public void setText(String text) {
 		super.setText(text);
 	}
