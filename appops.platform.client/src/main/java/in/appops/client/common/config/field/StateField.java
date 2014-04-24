@@ -74,6 +74,7 @@ public class StateField extends BaseField implements FieldEventHandler {
 			}else{
 				appopsSuggestionBox.setQueryName(getQueryName());
 				appopsSuggestionBox.setPropertyToDisplay(getEntPropToDisplay());
+				appopsSuggestionBox.setPrefixToDisplayText(getPrefixToDisplayText());
 				appopsSuggestionBox.setOperationName(getOperationName());
 				appopsSuggestionBox.setQueryRestrictions(getQueryRestrictions());
 				appopsSuggestionBox.setIsSearchQuery(isSearchQuery());
@@ -347,6 +348,22 @@ public class StateField extends BaseField implements FieldEventHandler {
 		return entprop;
 	}
 	
+	/**
+	 * Method returns the prefix word to that should be added before the display text;
+	 * @return
+	 */
+	private String getPrefixToDisplayText() {
+		String prefixText = null;
+		try {
+			if(getConfigurationValue(StateFieldConstant.PREFIX_TO_DISPLAYTEXT) != null) {
+				prefixText = (String) getConfigurationValue(StateFieldConstant.PREFIX_TO_DISPLAYTEXT);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception in getPrefixToDisplayText method :"+e);
+		}
+		return prefixText;
+	}
+	
 	
 	/**
 	 * Method returns the operation to execute.
@@ -418,6 +435,8 @@ public class StateField extends BaseField implements FieldEventHandler {
 		public static final String IS_AUTOSUGGESTION = "isAutoSuggestion";
 		
 		public static final String STFD_OPPARAM_MAP = "operationParamMap";
+		
+		public static final String PREFIX_TO_DISPLAYTEXT = "prefixToDisplayText";
 	}
 	
 	@Override
@@ -454,5 +473,13 @@ public class StateField extends BaseField implements FieldEventHandler {
 		}
 		return isSuggestionExist;
 		
+	}
+	
+	public void clearSuggestions() {
+		try {
+			appopsSuggestionBox.clearSuggestions();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

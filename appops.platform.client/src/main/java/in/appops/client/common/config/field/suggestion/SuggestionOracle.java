@@ -43,6 +43,7 @@ public class SuggestionOracle extends SuggestOracle {
 	private Logger logger = Logger.getLogger(getClass().getName());
 	private HashMap<String, Object> opParamMap;
 	private String currentText;
+	private String prefixToDisplayText;
 	
 	public SuggestionOracle() {
 		
@@ -128,6 +129,7 @@ public class SuggestionOracle extends SuggestOracle {
 								for (Entity entity : entityList) {
 									if(entity.getProperty(entPropToDisplay).getValue()!=null){
 										AppopsSuggestion appopsSuggestion = new AppopsSuggestion(entity);
+										appopsSuggestion.setPrefixToDisplayText(prefixToDisplayText);
 										appopsSuggestion.setPropertToDisplay(entPropToDisplay);
 										store.add(appopsSuggestion);
 									}
@@ -186,6 +188,7 @@ public class SuggestionOracle extends SuggestOracle {
 		for (Entity entity : list) {
 			if(entity.getProperty(entPropToDisplay).getValue()!=null){
 				AppopsSuggestion appopsSuggestion = new AppopsSuggestion(entity);
+				appopsSuggestion.setPrefixToDisplayText(prefixToDisplayText);
 				appopsSuggestion.setPropertToDisplay(entPropToDisplay);
 				store.add(appopsSuggestion);
 			}
@@ -231,5 +234,9 @@ public class SuggestionOracle extends SuggestOracle {
 
 	public void setCurrentText(String currentText) {
 		this.currentText = currentText;
+	}
+
+	public void setPrefixToDisplayText(String prefixToDisplayText) {
+		this.prefixToDisplayText = prefixToDisplayText;
 	}
 }

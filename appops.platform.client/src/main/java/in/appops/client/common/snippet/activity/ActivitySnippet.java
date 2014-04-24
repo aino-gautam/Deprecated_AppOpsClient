@@ -86,7 +86,7 @@ public class ActivitySnippet extends RowSnippet {
 					blobUrl	="images/default_userIcon.png";
 				}
 			} else{
-				userEntity=(Entity) property.getValue();
+				userEntity=(Entity) getEntity().getProperty(ActivityConstant.USERID);
 				if(userEntity.getPropertyByName("imgBlobId") != null)
 					blobUrl=blobDownloader.getIconDownloadURL(userEntity.getPropertyByName("imgBlobId").toString());
 				else

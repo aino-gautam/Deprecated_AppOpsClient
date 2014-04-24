@@ -127,8 +127,7 @@ public class ActivityListSnippet extends Composite implements Snippet{
 	private void addSnippetToFlex(Entity entity) {
 		boolean isSkip = false;
 		if(mode.equals(MODE_UPDATE)) {
-			Property<Serializable> property=(Property<Serializable>) entity.getProperty(ActivityConstant.USERID);
-			Entity userEntity = (Entity) property.getValue();
+			Entity userEntity = (Entity) entity.getProperty(ActivityConstant.USERID);
 			Long creatorUserId = ((Key<Long>) userEntity.getPropertyByName("id")).getKeyValue();
 			Long currentUserId = ((Key<Long>) AppEnviornment.CURRENTUSER.getPropertyByName("id")).getKeyValue();
 			if(currentUserId == creatorUserId) {

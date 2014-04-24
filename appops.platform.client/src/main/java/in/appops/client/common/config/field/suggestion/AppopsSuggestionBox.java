@@ -363,5 +363,19 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 		}
 	}
 
+	public void setPrefixToDisplayText(String prefixToDisplayText) {
+		try {
+			oracle.setPrefixToDisplayText(prefixToDisplayText);
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[AppopsSuggestionBox] ::Exception in setPrefixToDisplayText method :"+e);
+		}
+	}
 
+	public void clearSuggestions() {
+		try {
+			oracle.getStore().clear();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
