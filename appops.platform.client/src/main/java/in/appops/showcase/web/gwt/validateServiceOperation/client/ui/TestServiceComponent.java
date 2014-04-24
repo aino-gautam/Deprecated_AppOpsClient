@@ -177,7 +177,8 @@ public class TestServiceComponent extends Composite implements ClickHandler{
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void getServiceInformation(String seriveName) {
+	//commented out method due to compilation error at line no.222, cannot convert from HashMap<String,ArrayList<OperationDescriptor>> to HashMap<String,OperationDescriptor>
+	private void getServiceInformation(String seriveName) {/*
 		try {
 			Map map = new HashMap();
 			map.put("serviceName", seriveName);
@@ -237,9 +238,10 @@ public class TestServiceComponent extends Composite implements ClickHandler{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	*/}
 
-	private void createParametersUI(String selectedMethodName) {
+	//commented out method due to compilation error at line no.254, cannot convert from ArrayList<OperationDescriptor> to OperationDescriptor
+	private void createParametersUI(String selectedMethodName) {/*
 		try {
 			InterfaceDescriptor interfaceDescriptor = null;
 			for(String intrfcNameKey : descriptor.getInterfaceDescriptors().keySet()){
@@ -280,7 +282,7 @@ public class TestServiceComponent extends Composite implements ClickHandler{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	*/}
 	
 	@SuppressWarnings("unchecked")
 	private void getServiceList(){
