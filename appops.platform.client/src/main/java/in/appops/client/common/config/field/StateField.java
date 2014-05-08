@@ -1,10 +1,13 @@
 package in.appops.client.common.config.field;
 
 
+import in.appops.client.common.config.field.ImageField.ImageFieldConstant;
 import in.appops.client.common.config.field.suggestion.AppopsSuggestionBox;
+import in.appops.client.common.config.field.suggestion.SuggestionOracle;
 import in.appops.client.common.event.AppUtils;
 import in.appops.client.common.event.FieldEvent;
 import in.appops.client.common.event.handlers.FieldEventHandler;
+import in.appops.platform.core.shared.Configuration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +15,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 
 /**
 Field class to represent a {@link StateField}
@@ -44,9 +50,13 @@ public class StateField extends BaseField implements FieldEventHandler {
 
 	private AppopsSuggestionBox appopsSuggestionBox;
 	private Logger logger = Logger.getLogger(getClass().getName());
-
+	private HorizontalPanel innerBasePanel;
+	private ImageField loader;
+	
 	public StateField(){
+		innerBasePanel = new HorizontalPanel();
 		appopsSuggestionBox = new AppopsSuggestionBox();
+		loader = new ImageField();
 		AppUtils.EVENT_BUS.addHandler(FieldEvent.TYPE, this);
 	}
 	
@@ -56,7 +66,19 @@ public class StateField extends BaseField implements FieldEventHandler {
 	public void create() {
 		
 		try {
-			getBasePanel().add(appopsSuggestionBox,DockPanel.CENTER);
+			innerBasePanel.clear();
+			innerBasePanel.add(appopsSuggestionBox);
+			innerBasePanel.add(loader);
+			innerBasePanel.setCellVerticalAlignment(loader, HasVerticalAlignment.ALIGN_BOTTOM);
+			innerBasePanel.setCellHorizontalAlignment(loader, HasHorizontalAlignment.ALIGN_RIGHT);
+			innerBasePanel.setCellWidth(loader, "18px");
+			
+			if(getInnerBasePanelCss() != null) {
+				innerBasePanel.setStylePrimaryName(getInnerBasePanelCss());
+			}
+			
+			getBasePanel().add(innerBasePanel,DockPanel.CENTER);
+			loader.setVisible(false);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in create method :"+e);
 		}
@@ -98,6 +120,9 @@ public class StateField extends BaseField implements FieldEventHandler {
 			
 			appopsSuggestionBox.setEnabled(isEnabled());
 			
+			loader.setConfiguration(getImageConfiguration());
+			loader.configure();
+			loader.create();
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in configure method :"+e);
 		}
@@ -437,6 +462,8 @@ public class StateField extends BaseField implements FieldEventHandler {
 		public static final String STFD_OPPARAM_MAP = "operationParamMap";
 		
 		public static final String PREFIX_TO_DISPLAYTEXT = "prefixToDisplayText";
+		
+		public static final String INNERBASEPANEL_CSS = "innerBasePanelCss";
 	}
 	
 	@Override
@@ -457,6 +484,12 @@ public class StateField extends BaseField implements FieldEventHandler {
 					fieldEvent.setEventType(FieldEvent.EDITCOMPLETED);
 				}
 				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+			} else if(event.getEventSource() instanceof SuggestionOracle && event.getEventSource().equals(appopsSuggestionBox.getOracle())) {
+				if (eventType == FieldEvent.SHOW_LOADER) {
+					loader.setVisible(true);
+				} else if (eventType == FieldEvent.HIDE_LOADER) {
+					loader.setVisible(false);
+				}
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "[StateField] ::Exception in onFieldEvent method :"+e);
@@ -481,5 +514,28 @@ public class StateField extends BaseField implements FieldEventHandler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private Configuration getImageConfiguration(){
+		Configuration configuration = new Configuration();
+		try {
+			configuration.setPropertyByName(ImageFieldConstant.IMGFD_BLOBID, "images/loginLoader.gif");
+			//configuration.setPropertyByName(ImageFieldConstant.BF_PCLS,getListBoxImageLoaderPcls());
+		} catch (Exception e) {
+			logger.log(Level.SEVERE,"[ListBoxField]::Exception In getImageConfiguration  method :"+e);
+		}
+		return configuration;
+	}
+	
+	private String getInnerBasePanelCss() {
+		String css = null;
+		try {
+			if(getConfigurationValue(StateFieldConstant.INNERBASEPANEL_CSS) != null) {
+				css =(String) getConfigurationValue(StateFieldConstant.INNERBASEPANEL_CSS);
+			}
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "[StateField] ::Exception in getOperationName method :"+e);
+		}
+		return css;
 	}
 }

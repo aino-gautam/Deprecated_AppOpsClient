@@ -378,4 +378,8 @@ public class AppopsSuggestionBox extends Composite implements SelectionHandler<S
 			e.printStackTrace();
 		}
 	}
+
+	public SuggestionOracle getOracle() {
+		return oracle;
+	}
 }

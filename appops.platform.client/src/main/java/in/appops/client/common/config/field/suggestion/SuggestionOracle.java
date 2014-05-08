@@ -1,5 +1,7 @@
 package in.appops.client.common.config.field.suggestion;
 
+import in.appops.client.common.event.AppUtils;
+import in.appops.client.common.event.FieldEvent;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.DispatchAsync;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardAction;
 import in.appops.platform.bindings.web.gwt.dispatch.client.action.StandardDispatchAsync;
@@ -112,6 +114,11 @@ public class SuggestionOracle extends SuggestOracle {
 					opParamMap= new HashMap();
 				opParamMap.put("query", queryObj);
 				
+				FieldEvent fieldEvent = new FieldEvent();
+				fieldEvent.setEventSource(this);
+				fieldEvent.setEventType(FieldEvent.SHOW_LOADER);
+				AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+				
 				StandardAction action = new StandardAction(Entity.class, operationName, opParamMap);
 				dispatch.execute(action, new AsyncCallback<Result>() {
 
@@ -122,6 +129,11 @@ public class SuggestionOracle extends SuggestOracle {
 
 					@Override
 					public void onSuccess(Result result) {
+						FieldEvent fieldEvent = new FieldEvent();
+						fieldEvent.setEventSource(getInstance());
+						fieldEvent.setEventType(FieldEvent.HIDE_LOADER);
+						AppUtils.EVENT_BUS.fireEvent(fieldEvent);
+						
 						if(currentText == null || currentText.trim().equals(search.trim())) {
 							EntityList entityList = (EntityList) result.getOperationResult();
 							if(entityList != null && !entityList.isEmpty()) {
@@ -238,5 +250,9 @@ public class SuggestionOracle extends SuggestOracle {
 
 	public void setPrefixToDisplayText(String prefixToDisplayText) {
 		this.prefixToDisplayText = prefixToDisplayText;
+	}
+	
+	public SuggestionOracle getInstance() {
+		return this;
 	}
 }
